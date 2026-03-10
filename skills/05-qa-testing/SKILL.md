@@ -17,6 +17,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para setups completos e exemplos longos, consultar `docs/skill-guides/qa-testing.md` apenas quando necessario.
 
+Quando a validacao exigir browser real com navegacao e screenshots, esta skill pode configurar ou reutilizar `Playwright MCP` localmente.
+
 ## Quando Usar
 
 - escrever ou revisar testes unitarios, integracao e E2E
@@ -60,6 +62,17 @@ Para setups completos e exemplos longos, consultar `docs/skill-guides/qa-testing
 - usar dados de teste simples e deterministicos
 - cobrir caminho feliz, erro principal e uma regressao conhecida quando houver
 - manter testes legiveis e focados em comportamento observavel
+
+## Playwright MCP
+
+Usar `Playwright MCP` quando a tarefa exigir:
+
+- navegacao real no app rodando
+- verificacao visual de layout e estados
+- screenshots de evidencias
+- inspecao manual assistida de regressao em browser
+
+Isso complementa os testes e2e formais e ajuda especialmente em verificacoes visuais ou exploratorias.
 
 ## Cobertura Minima Recomendada
 

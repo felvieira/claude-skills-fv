@@ -76,6 +76,9 @@ Fluxo padrao de feature nova:
 - `Data Analytics` entra quando a feature precisar de evento, tracking, KPI ou funil
 - `Accessibility Specialist` entra quando a criticidade de acessibilidade exigir validacao dedicada
 - `Release Manager` entra quando houver liberacao formal, changelog, rollout e comunicacao de release
+- `AI Integration Architect` entra quando a feature integrar texto, imagem ou video no app do usuario
+- `Prompt Engineer` entra quando o prompt for parte critica da qualidade ou do custo da feature
+- `Playwright MCP` pode ser configurado ou reutilizado em tarefas que exigirem navegacao real, screenshots e verificacao visual do app em execucao
 
 ## Skill Inicial: Repo Auditor
 
@@ -112,6 +115,7 @@ O Orquestrador deve reduzir ou expandir o pipeline conforme risco e impacto:
 - `fluxo critico de acessibilidade`: UI/UX/Frontend afetado -> Accessibility Specialist -> QA -> Reviewer
 - `migracao grande`: Repo Auditor -> Migration Refactor Specialist -> skill afetada -> QA -> Security -> Reviewer -> Deploy
 - `release formal`: pipeline normal -> Release Manager -> Deploy
+- `feature de IA no app`: Repo Auditor -> AI Integration Architect -> Prompt Engineer quando necessario -> Frontend/Backend -> QA -> Security -> Reviewer
 
 ## Workflow de Rejeicao
 

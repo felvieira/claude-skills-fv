@@ -20,6 +20,7 @@ Usar tools e MCP com minimo privilegio, baixo risco operacional e boa auditabili
 - escrita local em arquivos do repositorio
 - execucao de testes, build e scripts sem efeito externo
 - chamadas de leitura em APIs internas ou MCP confiavel
+- instalacao ou configuracao local de MCP para produtividade de design/frontend, quando reversivel e dentro do workspace
 
 ### Alto risco
 - comandos destrutivos
@@ -38,6 +39,8 @@ Usar tools e MCP com minimo privilegio, baixo risco operacional e boa auditabili
 - nao enviar segredos, tokens, PII ou contexto desnecessario
 - registrar quais tools foram usadas e por que foram necessarias
 - preferir fallback local ou leitura estaticamente controlada quando o MCP for opcional
+- se instalar/configurar MCP localmente, confirmar compatibilidade com a stack e o design system antes de prosseguir
+- para MCPs de browser automation como Playwright, confirmar tambem como o app sera iniciado, qual ambiente sera usado e se a navegacao e local/reversivel
 
 ## Rede e Credenciais
 - nao usar rede quando o objetivo puder ser resolvido localmente

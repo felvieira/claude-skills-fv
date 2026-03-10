@@ -1,0 +1,46 @@
+{
+  "essential": [
+    {
+      "name": "context7",
+      "description": "Docs atualizadas para qualquer biblioteca via Context7",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "requires": "node",
+      "setup_extra": null
+    },
+    {
+      "name": "playwright",
+      "description": "Browser automation para testes E2E (alinha com QA skill 05)",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "requires": "node",
+      "setup_extra": null
+    }
+  ],
+  "optional": [
+    {
+      "name": "fal",
+      "description": "Geracao de imagens via fal.ai (alinha com Image Generator skill 17)",
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://docs.fal.ai/mcp"],
+      "requires": "node",
+      "setup_extra": "Configurar FAL_KEY no .env do projeto"
+    },
+    {
+      "name": "fetch",
+      "description": "Busca e processa conteudo web",
+      "command": "python",
+      "args": ["-m", "mcp_server_fetch"],
+      "requires": "python",
+      "setup_extra": "pip install mcp-server-fetch"
+    },
+    {
+      "name": "notebooklm",
+      "description": "Integra NotebookLM do Google para pesquisa com fontes citadas, podcasts e infograficos",
+      "command": "uvx",
+      "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"],
+      "requires": "python+uv",
+      "setup_extra": "uv tool install notebooklm-mcp-cli && nlm login (autentica com Google)"
+    }
+  ]
+}

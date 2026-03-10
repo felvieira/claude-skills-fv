@@ -18,6 +18,10 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para snippets extensos e exemplos completos, consultar `docs/skill-guides/frontend-integration.md` apenas quando a tarefa exigir.
 
+Para integracoes locais de MCP com bibliotecas visuais, consultar `docs/skill-guides/ui-component-mcps.md`.
+
+Quando a tarefa exigir navegacao real, screenshots ou verificacao visual do app rodando, esta skill pode configurar ou reutilizar `Playwright MCP` localmente.
+
 ## Quando Usar
 
 - implementar tela, componente, estado ou integracao com API
@@ -69,6 +73,28 @@ Para estrutura de pastas e exemplos completos de store, auth e API client, consu
 - `accessToken` apenas em memoria
 - server state separado do estado local
 - estados de loading, erro, vazio e retry definidos por tela
+
+## MCPs de Componentes
+
+Esta skill pode instalar ou configurar localmente MCPs de bibliotecas como `Magic UI MCP` e `React Bits MCP` quando isso acelerar a implementacao e o projeto nao tiver equivalente melhor.
+
+Regras:
+
+- verificar se o MCP ja existe antes de configurar outro
+- adaptar componentes ao design system do app
+- nao introduzir visual ou motion que destoem do produto
+- registrar a instalacao/configuracao local no handoff quando houver mudanca no workspace
+
+## MCP de Browser
+
+Para validacao visual real, esta skill pode usar `Playwright MCP` para:
+
+- abrir o app localmente
+- navegar por telas e fluxos
+- verificar comportamento responsivo
+- capturar screenshots para confirmar detalhes de UI
+
+Usar especialmente quando a mudanca visual nao puder ser validada com confianca apenas por leitura de codigo.
 
 Para exemplos completos de store, authStore, uiStore e api client, consultar `docs/skill-guides/frontend-integration.md`.
 

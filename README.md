@@ -1,6 +1,8 @@
 # Dev Team Kit — Fullstack Web Development
 
-Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 24 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
+**Versao atual:** veja `VERSION`
+
+Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 27 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
 
 ## Governanca Global
 
@@ -12,6 +14,7 @@ O kit agora tem uma camada persistente de governanca para reduzir conflito entre
 - `policies/evals.md` define evidencia minima para evitar regressao em prompts, skills e tools
 - `templates/` concentra formatos curtos de plano, handoff, review e rejeicao
 - `skills/*/SKILL.md` ficam focadas no papel especifico de cada especialista
+- `patterns/ai-integration/` concentra padroes reutilizaveis para integrar IA em aplicacoes
 
 Hierarquia de instrucoes:
 
@@ -29,6 +32,11 @@ Para uso rapido no dia a dia:
 - reutilize `docs/repo-audit/assets.md` antes de gerar ou alterar assets visuais
 - use `commands/` como atalhos operacionais
 - consulte `docs/skill-call-matrix.md` quando houver duvida sobre overlap entre skills
+- consulte `patterns/ai-integration/` quando a task for implementar IA dentro do app do usuario
+- consulte `patterns/ai-integration/examples/` quando precisar de adapter/hook de referencia
+- consulte `docs/ai-integration-playbook.md` para a visao consolidada de integracao IA
+- consulte `docs/skill-guides/ui-component-mcps.md` quando quiser acelerar UI/frontend com MCPs de bibliotecas visuais
+- consulte `docs/skill-guides/ui-component-mcps.md` tambem quando precisar de `Playwright MCP` para navegar, validar UI e tirar screenshots
 
 ## Instalacao em Repo Existente
 
@@ -109,7 +117,7 @@ Documentador atua em paralelo nas mudancas que alteram feature, API, arquitetura
 
 ---
 
-## Skills (24 especialistas)
+## Skills (27 especialistas)
 
 ### Gestao e Coordenacao
 
@@ -128,6 +136,9 @@ Documentador atua em paralelo nas mudancas que alteram feature, API, arquitetura
 | 22 | **Accessibility Specialist** | Revisa WCAG, teclado, screen reader, contraste, semantica e motion reduction com rigor dedicado |
 | 23 | **Migration Refactor Specialist** | Conduz migracoes grandes, legacy modernization, rollout incremental e rollback seguro |
 | 24 | **Release Manager** | Coordena versionamento, changelog, release notes, rollout, rollback e comunicacao de release |
+| 25 | **AI Integration Architect** | Define adapters, hooks, gateways, observabilidade e custo para integrar IA no app |
+| 26 | **Prompt Engineer** | Cria prompts e templates reutilizaveis para texto, imagem e video com foco em controle e custo |
+| 27 | **Video Integration Specialist** | Integra video generativo no app com foco em custo, latencia, prompt cinematografico e UX |
 
 ### Produto e Design
 
@@ -247,7 +258,7 @@ Esta e a stack de referencia do kit. Se o repositorio real usar outra stack, ada
 
 ## Estrutura de Arquivos
 
-### Skills (17 especialistas)
+### Skills (27 especialistas)
 
 ```
 GLOBAL.md                               → Regras universais do kit
@@ -273,7 +284,17 @@ skills/
 ├── 14-seo-specialist/SKILL.md        → Meta tags, schema markup, Web Vitals
 ├── 15-mobile-tauri/SKILL.md          → Tauri, APK, apps desktop (opcional)
 ├── 16-llm-selector/SKILL.md          → Recomenda modelo LLM por complexidade
-└── 17-image-generator/SKILL.md       → Geracao de imagens fal.ai + pos-processamento Python
+├── 17-image-generator/SKILL.md       → Geracao de imagens fal.ai + pos-processamento Python
+├── 18-repo-auditor/SKILL.md           → Audita stack, convencoes, assets, testes e riscos
+├── 19-asset-librarian/SKILL.md        → Inventario de imagens, icones, logos, fontes e tokens
+├── 20-observability-sre/SKILL.md      → Logs, metricas, tracing, health checks, alertas
+├── 21-data-analytics/SKILL.md         → Eventos, funis, KPIs, tracking
+├── 22-accessibility-specialist/SKILL.md → WCAG, teclado, screen reader, contraste
+├── 23-migration-refactor-specialist/SKILL.md → Migracoes, legacy, rollout incremental
+├── 24-release-manager/SKILL.md        → Versionamento, changelog, release notes, rollout
+├── 25-ai-integration-architect/SKILL.md → Adapters, hooks, gateways para IA no app
+├── 26-prompt-engineer/SKILL.md        → Prompts reutilizaveis para texto, imagem e video
+└── 27-video-integration-specialist/SKILL.md → Video generativo no app
 ```
 
 ### Codigo Fonte (pronto pra usar)
@@ -311,6 +332,7 @@ docs/
 ├── repo-audit/                        → Auditoria persistida do repositorio para reduzir releitura
 │   ├── current.md                     → Fotografia operacional reutilizavel do repo
 │   └── assets.md                      → Inventario visual reutilizavel para UI/UX e Image Generator
+├── patterns/ai-integration/           → Padroes de integracao de IA para apps
 ├── skill-guides/                      → Guias auxiliares carregados sob demanda
 ├── features/<feature>/                → Doc por feature
 │   ├── README.md, rules.md, flow.md
@@ -428,12 +450,79 @@ npm install -D @tauri-apps/cli@latest
 
 ---
 
+## MCP Servers
+
+O kit recomenda MCP servers para potencializar as skills. O script `setup/install.sh` configura automaticamente.
+
+### Essenciais (habilitados pelo setup)
+
+| MCP | Comando | Requisito | Skill relacionada |
+|-----|---------|-----------|-------------------|
+| **context7** | `npx @upstash/context7-mcp@latest` | Node.js | Todas — docs atualizadas |
+| **playwright** | `npx @playwright/mcp@latest` | Node.js | QA (skill 05) — E2E testing |
+
+### Opcionais (desabilitados, ativar quando necessario)
+
+| MCP | Comando | Requisito | Setup extra | Skill relacionada |
+|-----|---------|-----------|-------------|-------------------|
+| **fal** | `npx mcp-remote https://docs.fal.ai/mcp` | Node.js | `FAL_KEY` no `.env` | Image Generator (skill 17) |
+| **fetch** | `python -m mcp_server_fetch` | Python | `pip install mcp-server-fetch` | Geral — busca web |
+| **notebooklm** | `uvx --from notebooklm-mcp-cli notebooklm-mcp` | Python + uv | `uv tool install notebooklm-mcp-cli` + `nlm login` | Pesquisa com fontes citadas |
+
+### Como ativar um MCP opcional
+
+1. Instalar dependencias listadas em "Setup extra"
+2. Na config da sua plataforma, mudar `"disabled": true` para `"disabled": false`
+3. Reiniciar o agente
+
+Ver `setup/README.md` para detalhes de cada plataforma.
+
+---
+
+## Setup Multi-Plataforma
+
+O kit funciona em qualquer agente de coding. O script `setup/install.sh` configura tudo automaticamente.
+
+### Plataformas Suportadas
+
+| Plataforma | Entry Point | MCP Config | Skills |
+|-----------|------------|-----------|--------|
+| **Claude Code** | `CLAUDE.md` | `.claude/settings.json` | Via `.bot/skills/` |
+| **GitHub Copilot** | `.github/copilot-instructions.md` + `AGENTS.md` | N/A | Via instrucoes |
+| **Windsurf** | `.windsurf/rules/dev-team-kit.md` + `AGENTS.md` | `.windsurf/mcp.json` | Via regras |
+| **Antigravity** | `GEMINI.md` + `.agent/skills/` | `.gemini/settings.json` | Nativo (SKILL.md) |
+| **Gemini CLI** | `GEMINI.md` | `.gemini/settings.json` | Via instrucoes |
+
+### Instalacao Rapida
+
+```bash
+# Dentro do repo onde quer instalar o kit:
+bash /caminho/para/claude-skills-fv/setup/install.sh .
+
+# Ou se o kit ja esta em .bot/:
+bash .bot/setup/install.sh
+```
+
+O script:
+1. Verifica Node.js, Python, uv e detecta IDEs instaladas
+2. Copia o kit para `.bot/`
+3. Gera entry points (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`)
+4. Gera configs de todas as plataformas
+5. Configura MCPs em todas as plataformas (Claude, Windsurf, Gemini)
+6. Instala dependencias dos MCPs (pip, uv)
+7. Oferece autenticacao do NotebookLM e configuracao da FAL_KEY
+8. Adiciona `.bot/` ao `.gitignore`
+
+Ver `setup/README.md` para documentacao completa.
+
+---
+
 ## Como Usar
 
-1. Copie `GLOBAL.md`, `policies/`, `templates/`, `src/` e `skills/` pro seu projeto
-2. Instale as dependencias listadas acima
-3. Configure as env vars seguindo o `.env.example` da skill de deploy
-4. Leia `GLOBAL.md` e as policies antes de adaptar as skills ao seu ambiente
+1. Rode `bash setup/install.sh /caminho/do/seu/projeto` — instala o kit, configura todas as plataformas e MCPs
+2. Instale as dependencias do seu projeto listadas acima
+3. Configure API keys no `.env.local` (FAL_KEY, etc.) — o script oferece configurar durante a instalacao
+4. Abra o projeto na sua IDE/agente de preferencia — o kit sera reconhecido automaticamente
 5. Se `docs/repo-audit/current.md` nao existir ou estiver desatualizado, rode primeiro o **Repo Auditor** (skill 18)
 6. Use `docs/skill-guides/` apenas quando precisar de exemplos extensos ou playbooks detalhados
 7. Inicie pelo **Orquestrador** (skill 09) — ele analisa sua tarefa e define o pipeline

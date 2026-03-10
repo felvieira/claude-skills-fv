@@ -42,3 +42,4 @@ Este repositorio define um kit de skills e governanca para agentes de coding em 
 - `docs/skill-guides/` = anexos sob demanda
 - `evals/` = casos de avaliacao do sistema
 - `docs/setup-bot-folder.md` = modo recomendado de instalacao em `.bot/`
+- `patterns/ai-integration/` = padroes reutilizaveis para integrar IA em apps

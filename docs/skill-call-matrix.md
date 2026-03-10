@@ -17,6 +17,10 @@ Matriz curta de quem costuma chamar quem.
 
 - `PO` chama `Data Analytics` quando a feature precisar de medicao formal
 - `Frontend` e `Backend` consomem o plano de eventos definido por `Data Analytics`
+- `Orchestrator` chama `AI Integration Architect` quando o app precisar integrar IA
+- `AI Integration Architect` chama `Prompt Engineer` quando o prompt for parte critica da feature
+- `AI Integration Architect` chama `Video Integration Specialist` quando a modalidade for video
+- `Video Integration Specialist` consulta `Prompt Engineer` para prompts cinematograficos
 
 ## Fluxo de qualidade
 

@@ -17,6 +17,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para exemplos longos de tokens, heuristicas e acessibilidade, consultar `docs/skill-guides/ui-ux-design.md` apenas quando necessario.
 
+Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar `docs/skill-guides/ui-component-mcps.md`.
+
 ## Quando Usar
 
 - definir interface, fluxo e comportamento responsivo
@@ -47,6 +49,16 @@ Para exemplos longos de tokens, heuristicas e acessibilidade, consultar `docs/sk
 4. Garantir acessibilidade (WCAG 2.1 AA mínimo)
 5. Definir breakpoints e comportamento responsivo
 6. Validar usabilidade com heurísticas de Nielsen
+
+## Bibliotecas com MCP
+
+Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, esta skill pode consultar ou configurar MCPs como `Magic UI MCP` e `React Bits MCP`, desde que:
+
+- o projeto seja compativel com a stack exigida
+- a integracao nao conflite com o design system existente
+- o componente seja adaptado ao contexto visual real do app
+
+Se o projeto ja tiver componentes, branding ou linguagem visual estabelecidos, o MCP serve como referencia ou acelerador, nunca como desculpa para destoar do produto.
 
 ## Design System - Tokens Base
 

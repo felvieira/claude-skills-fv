@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "disabled": false
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "disabled": false
+    },
+    "fal": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://docs.fal.ai/mcp"],
+      "disabled": true,
+      "env": {
+        "FAL_KEY": "${FAL_KEY}"
+      }
+    },
+    "fetch": {
+      "command": "python",
+      "args": ["-m", "mcp_server_fetch"],
+      "disabled": true
+    },
+    "notebooklm": {
+      "command": "uvx",
+      "args": ["--from", "notebooklm-mcp-cli", "notebooklm-mcp"],
+      "disabled": true
+    }
+  }
+}

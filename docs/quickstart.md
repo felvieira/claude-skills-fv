@@ -33,6 +33,15 @@ Guia curto para usar o kit no dia a dia sem reler tudo.
 ### Release formal
 pipeline normal `-> Release Manager -> Deploy`
 
+### Feature de IA no app
+`Repo Auditor -> AI Integration Architect -> Prompt Engineer` quando necessario `-> Backend/Frontend -> QA -> Security -> Reviewer`
+
+### Feature de video no app
+`Repo Auditor -> AI Integration Architect -> Video Integration Specialist -> Prompt Engineer` quando necessario `-> Backend/Frontend -> QA -> Security -> Reviewer`
+
+### Migracao grande
+`Repo Auditor -> Migration Refactor Specialist -> skill afetada -> QA -> Security -> Reviewer -> Deploy`
+
 ## Quando chamar skills novas
 
 - `Asset Librarian`: quando houver duvida sobre logos, icones, imagens, fontes ou consistencia visual
@@ -42,10 +51,16 @@ pipeline normal `-> Release Manager -> Deploy`
 - `Migration Refactor Specialist`: quando a mudanca for estrutural, incremental ou de legacy
 - `Observability SRE`: quando a mudanca tocar monitoramento, logs, tracing, readiness, alerta ou rollback
 - `Release Manager`: quando a entrega precisar de release notes, changelog e rollout controlado
+- `AI Integration Architect`: quando a task for integrar texto, imagem ou video no app do usuario
+- `Prompt Engineer`: quando a qualidade, reproducao ou custo do prompt for parte central da feature
+- `Video Integration Specialist`: quando a task envolver video generativo no app
+- `Playwright MCP`: quando for importante subir o app, navegar, validar visualmente e tirar screenshots
 
 ## Regra de economia de token
 
 - reutilizar `docs/repo-audit/current.md`
 - reutilizar `docs/repo-audit/assets.md` para contexto visual
+- reutilizar `patterns/ai-integration/` em vez de redesenhar plumbing de IA do zero
+- reutilizar MCPs locais de browser automation quando validacao visual real for importante
 - abrir `docs/skill-guides/` so sob demanda
 - evitar reauditar o repo inteiro sem mudanca relevante

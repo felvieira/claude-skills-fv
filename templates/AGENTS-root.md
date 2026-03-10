@@ -10,6 +10,7 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 4. `.bot/README.md` ou `README.md`
 5. `.bot/skills/*/SKILL.md`
 6. `.bot/docs/skill-guides/` somente sob demanda
+7. `.bot/patterns/ai-integration/` quando a task envolver integracao de IA no app
 
 ## Regra de Auditoria Inicial
 - se `.bot/docs/repo-audit/current.md` nao existir, iniciar por `Repo Auditor`
@@ -21,6 +22,7 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 - mudanca relevante em assets, branding ou design tokens
 - mudanca relevante em testes, deploy ou observabilidade
 - reestruturacao grande de pastas ou convencoes
+- mudanca relevante em integracoes de IA, providers ou prompts
 
 ## Defaults
 - responder curto por padrao
