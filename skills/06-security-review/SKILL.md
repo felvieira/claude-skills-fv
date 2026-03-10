@@ -6,6 +6,7 @@ description: |
   garantir DRY e clean code, ou qualquer review de segurança. Trigger em: "segurança", "security review",
   "vulnerabilidade", "OWASP", "XSS", "CSRF", "CORS", "injection", "HttpOnly", "cookie seguro", "DRY",
   "code review", "boas práticas", "audit", "pentest", "sanitização".
+allowed-tools: Read, Grep, Glob, Bash(grep *), Bash(git log *), Bash(git diff *), Bash(npm audit *), Bash(npx *), Bash(pip audit *)
 ---
 
 # Security Reviewer - Segurança e Boas Práticas

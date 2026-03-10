@@ -6,6 +6,7 @@ description: |
   ou qualquer operação de infraestrutura. Trigger em: "deploy", "Docker", "Dockerfile", "docker-compose",
   "CI/CD", "pipeline", "GitHub Actions", "nginx", "SSL", "produção", "staging", "Kubernetes", "AWS",
   "infraestrutura", "ambiente", "build", "release".
+allowed-tools: Read, Edit, Write, Grep, Glob, Bash(docker *), Bash(docker-compose *), Bash(git *), Bash(npm run *), Bash(gh *)
 ---
 
 # Deployer - Dockerização e Deploy

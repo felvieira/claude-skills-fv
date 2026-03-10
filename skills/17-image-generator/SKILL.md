@@ -5,6 +5,8 @@ description: |
   background, ilustracao, icone, favicon, mascote ou derivacao de imagem existente sem destoar do app.
   Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon", "icone",
   "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons".
+argument-hint: "[tipo: t2i|i2i|rembg|ico] [prompt ou caminho-da-imagem]"
+allowed-tools: Read, Write, Bash(python *), Bash(uv run *)
 ---
 
 # Image Generator
