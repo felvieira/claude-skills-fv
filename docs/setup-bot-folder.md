@@ -15,7 +15,7 @@ repo/
 │   └── rules/
 │       └── dev-team-kit.md
 ├── .agent/
-│   └── skills/          ← symlink ou copia de .bot/skills/
+│   └── skills/          ← copia gerada pelo setup a partir do kit
 ├── .claude/
 │   └── settings.json    ← MCP servers
 └── .bot/

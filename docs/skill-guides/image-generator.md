@@ -117,7 +117,7 @@ python scripts/generate-image.py "social card for blog post" \
 ## Integracao com Outras Skills
 
 - **Asset Librarian (skill 19)** — fornece inventario de logos, fontes, paleta e tokens visuais. Consultar antes de gerar para saber quais assets derivar (`i2i`), extrair paleta e evitar duplicatas.
-- **Repo Auditor (skill 20)** — identifica assets faltantes referenciados no codigo, favicons ausentes e inconsistencias entre assets declarados e existentes.
+- **Repo Auditor (skill 18)** — identifica assets faltantes referenciados no codigo, favicons ausentes e inconsistencias entre assets declarados e existentes.
 
 Fluxo tipico: Repo Auditor detecta favicon ausente > Asset Librarian fornece logo e paleta > Image Generator gera favicon derivado (`i2i` + `--post-process ico`) > Frontend confirma integracao.
 

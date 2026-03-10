@@ -115,7 +115,7 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ### Documentação
 
 ```
-☐ Feature documentada em docs/features/
+☐ Feature documentada em `docs/features/` quando o projeto usar essa estrutura
 ☐ API documentada (endpoints, request/response, erros)
 ☐ ADR criado se houve decisão arquitetural
 ☐ README atualizado com novas instruções (se aplicável)
