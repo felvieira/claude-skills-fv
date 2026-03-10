@@ -1,6 +1,24 @@
 # Dev Team Kit — Fullstack Web Development
 
-Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 16 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
+Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 17 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
+
+## Governanca Global
+
+O kit agora tem uma camada persistente de governanca para reduzir conflito entre skills, economizar token e padronizar handoffs:
+
+- `GLOBAL.md` define comportamento universal da IA
+- `policies/` concentra regras compartilhadas de execucao, qualidade, persistencia e economia de token
+- `policies/tool-safety.md` define approvals, risco e hygiene para tools/MCP
+- `policies/evals.md` define evidencia minima para evitar regressao em prompts, skills e tools
+- `templates/` concentra formatos curtos de plano, handoff, review e rejeicao
+- `skills/*/SKILL.md` ficam focadas no papel especifico de cada especialista
+
+Hierarquia de instrucoes:
+
+1. `GLOBAL.md`
+2. `policies/*.md`
+3. `skills/*/SKILL.md`
+4. `templates/*.md`
 
 ## Estrutura do Time
 
@@ -47,6 +65,8 @@ Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsiv
 PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Security → Reviewer → Deploy
 ```
 
+Documentador atua em paralelo nas mudancas que alteram feature, API, arquitetura ou operacao.
+
 ### O Orquestrador decide — pode adaptar:
 
 | Tipo de Tarefa | Pipeline |
@@ -62,21 +82,24 @@ PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Sec
 - QA (skill 05)
 - Security (skill 06)
 - Reviewer (skill 11)
-- Documentador (skill 10)
+
+### Skill transversal obrigatoria
+- Documentador (skill 10) sempre participa quando houver mudanca de feature, contrato, arquitetura ou operacao
 
 ---
 
-## Skills (16 especialistas)
+## Skills (17 especialistas)
 
 ### Gestao e Coordenacao
 
 | # | Skill | Responsabilidade |
 |---|-------|-----------------|
-| 08 | **Context Manager** | Rastreia tarefas com Tasks nativo, detecta mudanca de foco, reseta com historico resumido, persiste estado entre sessoes |
+| 08 | **Context Manager** | Rastreia tarefas com as ferramentas de task/todo disponiveis, detecta mudanca de foco, reseta com historico resumido, persiste estado entre sessoes |
 | 09 | **Orquestrador** | Lider tecnico continuo. Analisa tarefa, define pipeline, coordena entre etapas, adapta ordem |
 | 10 | **Documentador** | Documenta por nivel de decisao: feature, contrato API, implementacao, operacao |
 | 11 | **Reviewer** | Ultima porta antes do deploy. Checa codigo, testes, seguranca, docs. Nao documenta — valida |
-| 16 | **LLM Selector** | Recomenda modelo ideal (Haiku/Sonnet/Opus) por tarefa, otimizando custo vs qualidade |
+| 16 | **LLM Selector** | Recomenda nivel de modelo por tarefa, otimizando custo vs qualidade |
+| 17 | **Image Generator** | Gera imagens via fal.ai (layout, hero, icone, favicon, mascote), pos-processa com Python (rembg/Pillow), detecta estrutura do projeto |
 
 ### Produto e Design
 
@@ -113,18 +136,20 @@ PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Sec
 
 ## Como Funciona o Orquestrador
 
-1. **Inicio**: Recebe tarefa → analisa escopo → classifica tipo → define pipeline
+1. **Inicio**: Recebe tarefa → analisa escopo → classifica tipo → define pipeline e envolvimento do Documentador
 2. **Comunica**: "Pipeline definido: [X] → [Y] → [Z]. Iniciando por [X]."
 3. **Delega**: Invoca a primeira skill do pipeline
 4. **Entre etapas**: Verifica handoff → atualiza Context Manager → decide proxima skill
 5. **Adapta**: Pode pular skills desnecessarias, mudar ordem, ou voltar etapas
 6. **Finaliza**: So libera quando Reviewer aprova
 
+Todos os handoffs devem seguir `policies/handoffs.md` e, quando util, reutilizar `templates/handoff.md`.
+
 ---
 
 ## Como Funciona o Context Manager
 
-1. **Cria tasks** ao iniciar qualquer trabalho (TaskCreate nativo)
+1. **Cria tasks** ao iniciar qualquer trabalho usando a ferramenta de task/todo disponivel no ambiente
 2. **Atualiza status** em tempo real (pending → in_progress → completed)
 3. **Detecta mudanca de foco** — se a nova tarefa nao se relaciona com as atuais:
    - Arquiva contexto antigo em `docs/context/history.md` (1-2 linhas por task)
@@ -133,23 +158,43 @@ PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Sec
 4. **Persiste** em `docs/context/current-focus.md` e `docs/context/history.md`
 5. **Nunca acumula** mais de 15 tasks ativas
 
+O que vale a pena persistir fica definido em `policies/persistence.md`.
+
 ---
 
 ## Como Funciona o LLM Selector
 
-O Orquestrador invoca o LLM Selector (skill 16) ao iniciar cada etapa do pipeline para recomendar o modelo ideal:
+O Orquestrador invoca o LLM Selector (skill 16) ao iniciar cada etapa do pipeline para recomendar o nivel de modelo ideal:
 
-| Nivel | Modelo | Quando usar |
-|-------|--------|-------------|
-| Rapido | Haiku | Tasks repetitivas, boilerplate, formatacao, commits |
-| Balanceado | Sonnet | Maioria das tasks: CRUD, testes, componentes, reviews simples |
-| Profundo | Opus | Arquitetura, seguranca, debugging complexo, decisoes criticas |
+| Nivel | Exemplo de modelo | Quando usar |
+|-------|-------------------|-------------|
+| Rapido | modelo rapido e barato | Tasks repetitivas, boilerplate, formatacao, commits |
+| Balanceado | modelo geral equilibrado | Maioria das tasks: CRUD, testes, componentes, reviews simples |
+| Profundo | modelo mais forte para raciocinio | Arquitetura, seguranca, debugging complexo, decisoes criticas |
 
-O selector mostra o comando `/model` para o dev executar. Cada skill tem um nivel default com overrides por complexidade.
+O selector sugere o nivel e, se o ambiente suportar troca manual de modelo, pode sugerir o comando correspondente. Cada skill tem um nivel default com overrides por complexidade.
+
+---
+
+## Como Funciona o Image Generator
+
+O Orchestrator aciona o skill 17 a qualquer momento que um asset visual for necessario:
+
+1. **Analisa** o tipo de imagem (hero, icone, favicon, mascote, background)
+2. **Engenheira o prompt** seguindo as guidelines por tipo
+3. **Seleciona o modelo** (Gemini Flash por padrao, Gemini 3 Pro para tipografia, GPT-Image-1.5 para acabamento)
+4. **Detecta o modo**: text-to-image (novo) ou image-to-image (derivar existente)
+5. **Executa**: `python scripts/generate-image.py --type ... --model ... "prompt"`
+6. **Pos-processa**: rembg (transparencia), ico (favicon), tauri-icons (desktop)
+7. **Entrega paths** ao Orchestrator para continuar o pipeline
+
+Setup: `pip install pillow rembg` + `FAL_KEY=...` no `.env.local`
 
 ---
 
 ## Stack Tecnica
+
+Esta e a stack de referencia do kit. Se o repositorio real usar outra stack, adapte seguindo `policies/stack-flexibility.md`.
 
 | Camada | Tecnologia |
 |--------|-----------|
@@ -165,7 +210,7 @@ O selector mostra o comando `/model` para o dev executar. Cada skill tem um nive
 | Testes E2E | Playwright (Chrome, Firefox, Mobile) |
 | Backend | Node.js + Express/NestJS + Prisma |
 | Banco | PostgreSQL |
-| Auth | JWT (access 15min) + Refresh Token (HttpOnly cookie 7d) |
+| Auth | JWT (access 15min em memoria) + Refresh Token (HttpOnly cookie 7d) |
 | Mobile/Desktop | Tauri v2 (opcional) |
 | Deploy | Docker (multi-stage) + Nginx + GitHub Actions |
 | SEO | Schema.org JSON-LD, Open Graph, Core Web Vitals |
@@ -174,9 +219,15 @@ O selector mostra o comando `/model` para o dev executar. Cada skill tem um nive
 
 ## Estrutura de Arquivos
 
-### Skills (16 especialistas)
+### Skills (17 especialistas)
 
 ```
+GLOBAL.md                               → Regras universais do kit
+AGENTS.md                               → Entrada rapida para agentes compativeis
+policies/                               → Regras persistentes compartilhadas
+docs/skill-guides/                      → Anexos extensos carregados apenas quando necessario
+templates/                              → Templates curtos de execucao
+evals/                                  → Casos versionados de avaliacao
 skills/
 ├── 01-po-feature-spec/SKILL.md       → Feature spec, user stories, priorizacao
 ├── 02-ui-ux-design/SKILL.md          → Design tokens, breakpoints, skeleton, Nielsen
@@ -193,7 +244,8 @@ skills/
 ├── 13-marketing-copy/SKILL.md        → Copy de venda, landing page, CTAs
 ├── 14-seo-specialist/SKILL.md        → Meta tags, schema markup, Web Vitals
 ├── 15-mobile-tauri/SKILL.md          → Tauri, APK, apps desktop (opcional)
-└── 16-llm-selector/SKILL.md          → Recomenda modelo LLM por complexidade
+├── 16-llm-selector/SKILL.md          → Recomenda modelo LLM por complexidade
+└── 17-image-generator/SKILL.md       → Geracao de imagens fal.ai + pos-processamento Python
 ```
 
 ### Codigo Fonte (pronto pra usar)
@@ -228,6 +280,7 @@ src/
 ```
 docs/
 ├── README.md                          → Mapa da documentacao
+├── skill-guides/                      → Guias auxiliares carregados sob demanda
 ├── features/<feature>/                → Doc por feature
 │   ├── README.md, rules.md, flow.md
 │   ├── api.md, ui.md
@@ -304,7 +357,7 @@ docs/
 
 ## Seguranca — Nao-Negociaveis
 
-- JWT access token no body (15 min)
+- JWT access token no response body apenas para uso em memoria (15 min)
 - Refresh token em HttpOnly cookie (7 dias)
 - CSRF token em double-submit pattern
 - CORS com origin explicita
@@ -312,7 +365,7 @@ docs/
 - Zod validation em TODA entrada
 - Security headers (HSTS, CSP, X-Frame-Options...)
 - npm audit sem HIGH/CRITICAL
-- NUNCA localStorage pra tokens
+- NUNCA localStorage/sessionStorage pra tokens
 - Rate limiting em auth endpoints
 
 ---
@@ -346,14 +399,16 @@ npm install -D @tauri-apps/cli@latest
 
 ## Como Usar
 
-1. Copie o diretorio `src/` e `skills/` pro seu projeto
+1. Copie `GLOBAL.md`, `policies/`, `templates/`, `src/` e `skills/` pro seu projeto
 2. Instale as dependencias listadas acima
 3. Configure as env vars seguindo o `.env.example` da skill de deploy
-4. Inicie pelo **Orquestrador** (skill 09) — ele analisa sua tarefa e define o pipeline
-5. O **Context Manager** (skill 08) rastreia progresso automaticamente
-6. O **Documentador** (skill 10) documenta durante o desenvolvimento
-7. O **Reviewer** (skill 11) valida tudo antes de liberar pro deploy
-8. Siga o fluxo definido pelo Orquestrador — ele adapta conforme necessidade
+4. Leia `GLOBAL.md` e as policies antes de adaptar as skills ao seu ambiente
+5. Use `docs/skill-guides/` apenas quando precisar de exemplos extensos ou playbooks detalhados
+6. Inicie pelo **Orquestrador** (skill 09) — ele analisa sua tarefa e define o pipeline
+7. O **Context Manager** (skill 08) rastreia progresso automaticamente
+8. O **Documentador** (skill 10) documenta durante o desenvolvimento
+9. O **Reviewer** (skill 11) valida tudo antes de liberar pro deploy
+10. Siga o fluxo definido pelo Orquestrador — ele adapta conforme necessidade
 
 ### Exemplo: Nova Feature Completa
 
@@ -388,8 +443,8 @@ npm install -D @tauri-apps/cli@latest
 
 ### Regras Globais
 
-- **Codigo limpo**: Zero comentarios. Nomes descritivos. Codigo auto-explicativo.
-- **Sem pular etapas obrigatorias**: QA, Security, Reviewer, Documentador — sempre.
-- **Handoff explicito**: Cada skill entrega algo concreto pra proxima.
-- **Context Manager**: Sempre rastreando. Sempre atualizado.
-- **Orquestrador**: Sempre coordenando. Sempre adaptando.
+- **Codigo limpo**: Siga `GLOBAL.md` para comentarios, clareza e criterio de documentacao.
+- **Sem pular etapas obrigatorias**: QA, Security e Reviewer seguem obrigatorios; Documentador e transversal quando houver mudanca relevante.
+- **Handoff explicito**: Cada skill entrega algo concreto pra proxima seguindo `policies/handoffs.md`.
+- **Context Manager**: Persistencia enxuta, focada no que ajuda a proxima sessao.
+- **Orquestrador**: Sempre coordenando, adaptando e respeitando a hierarquia global.
