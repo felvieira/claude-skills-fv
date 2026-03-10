@@ -1,5 +1,8 @@
 # LLM Selector Guide
 
+![Skill](https://img.shields.io/badge/skill-16-blue)
+![Decision](https://img.shields.io/badge/decision-model_level-0f766e)
+
 Guia auxiliar da skill `16-llm-selector` com tabela de decisao, overrides, integracao com o Orchestrator e exemplos praticos.
 
 ## Tabela de Decisao por Nivel
@@ -78,6 +81,20 @@ llm-selector -> Orchestrator:
   Acao manual opcional: nenhuma
   Motivo: integracao com servico externo, logica moderada
 Orchestrator -> backend-api: executa com nivel Balanceado
+```
+
+## Fluxo visual
+
+```mermaid
+flowchart LR
+    A[Nova etapa do pipeline] --> B[LLM Selector avalia risco e complexidade]
+    B --> C{Nivel ideal}
+    C --> D[Rapido]
+    C --> E[Balanceado]
+    C --> F[Profundo]
+    D --> G[Orchestrator delega etapa]
+    E --> G
+    F --> G
 ```
 
 ## Exemplos Praticos
