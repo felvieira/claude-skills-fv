@@ -15,7 +15,7 @@ Use este playbook quando a tarefa for integrar texto, imagem ou video no app do 
 5. validar runtime em `patterns/ai-integration/runtime-requirements.md`
 6. validar instalacao em `patterns/ai-integration/install-policy.md`
 7. consultar `patterns/ai-integration/prompt-patterns.md`
-8. consultar exemplos em `patterns/ai-integration/examples/`
+8. consultar os exemplos de implementacao em `src/` e os guias de `docs/skill-guides/` quando precisar de referencia pratica
 
 ## Decisao de provider
 

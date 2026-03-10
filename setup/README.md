@@ -1,8 +1,12 @@
-# Setup — Dev Team Kit
+# Setup - Dev Team Kit
+
+![Installer](https://img.shields.io/badge/installer-.bot-ready-0f766e)
+![MCP](https://img.shields.io/badge/MCP-context7%20%7C%20playwright-1d4ed8)
+![Platforms](https://img.shields.io/badge/platforms-5-f59e0b)
 
 ## O que faz
 
-O script de setup instala o Dev Team Kit em qualquer repositorio e configura automaticamente todas as plataformas de IA suportadas. Ele copia skills, regras e configuracoes de MCP, deixando o repo pronto para uso imediato com Claude Code, Copilot, Windsurf e Antigravity.
+O script de setup instala o Dev Team Kit em qualquer repositorio consumidor e configura automaticamente as plataformas suportadas. Ele copia skills, regras, docs e configuracoes de MCP, deixando o repo pronto para uso com Claude Code, GitHub Copilot, Windsurf, Gemini CLI e Antigravity.
 
 ## Pre-requisitos
 
@@ -32,10 +36,11 @@ O script detecta automaticamente as plataformas instaladas e gera os arquivos de
 
 | Plataforma | Arquivo de regras | Arquivo de MCPs |
 |------------|-------------------|-----------------|
-| **Claude Code** | `AGENTS.md` (raiz) | `.claude/settings.json` |
+| **Claude Code** | `CLAUDE.md` + `AGENTS.md` | `.claude/settings.json` |
 | **Copilot** | `.github/copilot-instructions.md` | N/A (usa MCPs do editor) |
 | **Windsurf** | `.windsurf/rules/dev-team-kit.md` | `.windsurf/mcp.json` |
-| **Antigravity** | `.agent/skills/*.md` | `.gemini/settings.json` |
+| **Gemini CLI** | `GEMINI.md` | `.gemini/settings.json` |
+| **Antigravity** | `.agent/skills/*/SKILL.md` + `GEMINI.md` | `.gemini/settings.json` |
 
 ## MCPs Essenciais
 
@@ -111,11 +116,13 @@ Arquivo: `.github/copilot-instructions.md`
 
 O Copilot nao tem suporte nativo a MCPs via config de repo. Os MCPs devem ser configurados no editor (VS Code settings).
 
-### Antigravity / Gemini
+### Gemini CLI / Antigravity
 
 Arquivos:
-- Skills: `.agent/skills/*.md` (uma skill por arquivo)
+- Skills: `.agent/skills/*/SKILL.md` (um diretorio por skill)
 - MCPs: `.gemini/settings.json`
+
+No modo atual do kit, o instalador copia cada skill como diretorio em `.agent/skills/<skill>/SKILL.md` para manter compatibilidade com Windows e com a estrutura original do repositorio.
 
 O formato de MCPs do Gemini segue a mesma estrutura `mcpServers` do Claude Code.
 
@@ -135,10 +142,12 @@ repo/
 │   └── mcp.json
 ├── .agent/
 │   └── skills/
-│       └── *.md
+│       └── <skill>/SKILL.md
 ├── .gemini/
 │   └── settings.json
-└── AGENTS.md
+├── AGENTS.md
+├── CLAUDE.md
+└── GEMINI.md
 ```
 
 ## Troubleshooting

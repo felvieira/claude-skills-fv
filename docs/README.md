@@ -1,11 +1,14 @@
 # Mapa da Documentacao
 
-## Estrutura
+## Estrutura atual do kit
 
 - `repo-audit/` — Auditoria persistida do repositorio (current.md, assets.md)
 - `skill-guides/` — Guias auxiliares carregados sob demanda por cada skill
 - `context/` — Gerenciado automaticamente pelo Context Manager
 - `plans/` — Planos de implementacao
+
+## Estrutura sugerida para repos consumidores
+
 - `features/` — Documentacao por feature (objetivo, regras, fluxo, API, UI)
 - `architecture/` — Visao geral, padroes front/back, ADRs
 - `api/` — Contratos de API, erros, paginacao
