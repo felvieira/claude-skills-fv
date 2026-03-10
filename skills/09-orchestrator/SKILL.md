@@ -66,11 +66,20 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 
 Fluxo padrao de feature nova:
 
-`PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
+`Repo Auditor -> PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
+- `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator
 - `Mobile Tauri` entra como branch opcional apos Frontend e antes de QA
 - `Image Generator` atua de forma transversal quando qualquer etapa precisar de asset visual (hero, icone, favicon, mascote, background)
+- `Observability SRE` entra quando a task tocar deploy, operacao, monitoramento, incidentes ou confiabilidade
+- `Data Analytics` entra quando a feature precisar de evento, tracking, KPI ou funil
+- `Accessibility Specialist` entra quando a criticidade de acessibilidade exigir validacao dedicada
+- `Release Manager` entra quando houver liberacao formal, changelog, rollout e comunicacao de release
+
+## Skill Inicial: Repo Auditor
+
+Quando o repositorio ainda nao tiver auditoria valida em `docs/repo-audit/current.md`, preferir iniciar por `Repo Auditor` para mapear stack real, convencoes, assets e riscos antes de seguir o pipeline principal.
 
 ## Skill Transversal: Image Generator
 
@@ -82,8 +91,9 @@ Invoke skill 17 (image-generator) ao identificar necessidade de assets visuais e
 
 **Como acionar:**
 ```
-Contexto: [tipo de imagem], [onde sera usada], [paleta/estilo do projeto]
-Assets existentes: [paths de imagens existentes se i2i]
+Contexto: [tipo de imagem], [onde sera usada], [paleta/estilo do projeto], [pagina/componente de destino]
+Assets existentes: [paths de imagens, icones, backgrounds, mascotes ou referencias visuais ja existentes]
+Design system: [cores, mood, contraste, linguagem visual]
 Output: [onde salvar, ou deixar auto-detectar]
 ```
 
@@ -97,6 +107,11 @@ O Orquestrador deve reduzir ou expandir o pipeline conforme risco e impacto:
 - `landing page`: Copy -> UI/UX -> Frontend -> Motion -> SEO -> QA -> Security -> Reviewer
 - `refactor`: skill afetada -> QA -> Security -> Reviewer
 - `legacy`: Context Manager primeiro para mapear estado antes da skill afetada
+- `infra/operacao`: skill afetada -> Observability SRE -> QA/Security conforme risco -> Reviewer -> Deploy
+- `feature orientada a metrica`: skill afetada -> Data Analytics -> QA -> Reviewer
+- `fluxo critico de acessibilidade`: UI/UX/Frontend afetado -> Accessibility Specialist -> QA -> Reviewer
+- `migracao grande`: Repo Auditor -> Migration Refactor Specialist -> skill afetada -> QA -> Security -> Reviewer -> Deploy
+- `release formal`: pipeline normal -> Release Manager -> Deploy
 
 ## Workflow de Rejeicao
 
@@ -136,6 +151,7 @@ Entre etapas:
 - consultar `LLM Selector` quando houver trade-off real entre custo, latencia e profundidade
 - nao pular `QA`, `Security` ou `Reviewer` sem excecao formal prevista no fluxo
 - documentar toda adaptacao relevante do pipeline
+- reutilizar `docs/repo-audit/current.md` antes de reexplorar o repositorio inteiro
 
 ## Plano de Execucao
 

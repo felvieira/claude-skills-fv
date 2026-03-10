@@ -11,6 +11,45 @@ description: |
 
 Documentação existe para responder perguntas antes que alguém precise fazer a pergunta. Cada nível de decisão tem seu próprio tipo de documentação.
 
+## Governanca Global
+
+Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
+
+- `policies/execution.md`
+- `policies/handoffs.md`
+- `policies/persistence.md`
+- `policies/token-efficiency.md`
+- `policies/evals.md`
+
+Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
+
+Para templates completos de feature, ADR, runbook e playbook, consultar `docs/skill-guides/documenter-templates.md` apenas quando necessario.
+
+## Quando Usar
+
+- Registrar feature, contrato, arquitetura, operacao ou runbook
+- Atualizar documentacao apos decisao, mudanca de fluxo ou alteracao de contrato
+- Consolidar conhecimento util para proxima iteracao
+
+## Quando Nao Usar
+
+- Para comentar linha de codigo obvia
+- Para duplicar informacao ja existente em outra doc sem necessidade
+- Para substituir review tecnico ou QA
+
+## Entradas Esperadas
+
+- Artefatos da feature ou da mudanca
+- Decisoes tecnicas e trade-offs
+- Contratos de API e regras de negocio
+- Contexto operacional relevante
+
+## Saidas Esperadas
+
+- Documentacao atualizada no nivel correto
+- Registro de decisao quando houver impacto arquitetural ou operacional
+- Handoff curto com o que mudou e onde foi registrado
+
 ## Responsabilidades
 
 1. Documentar features com objetivo, regras de negócio e critérios de aceitação
@@ -69,49 +108,9 @@ Conteúdo obrigatório:
 
 ### Runbooks e Playbooks
 
-Adicionar pasta `docs/ops/runbooks/` com templates:
+Manter runbooks em `docs/ops/runbooks/`.
 
-Template de Runbook:
-```markdown
-# Runbook: [Nome da Operacao]
-
-## Trigger
-Quando executar este runbook.
-
-## Pre-requisitos
-- Acesso ao servidor X
-- Credenciais Y
-
-## Passos
-1. [passo]
-2. [passo]
-
-## Rollback
-Se algo der errado:
-1. [passo]
-
-## Escalacao
-Se nao resolver: contatar [pessoa/time]
-```
-
-Template de Playbook de Incidente:
-```markdown
-# Incidente: [Tipo]
-
-## Sintomas
-- [sintoma observavel]
-
-## Diagnostico Rapido
-1. Verificar [X]
-2. Se [Y], fazer [Z]
-
-## Resolucao
-1. [passo]
-
-## Pos-Incidente
-- [ ] Post-mortem escrito
-- [ ] Acao preventiva definida
-```
+Para templates completos de runbook e playbook, consultar `docs/skill-guides/documenter-templates.md`.
 
 ## Estrutura de Diretórios
 
@@ -147,88 +146,9 @@ docs/
 
 O diretório `context/` é gerenciado pelo Context Manager. O diretório `plans/` armazena planos de implementação.
 
-## Template de Feature
+## Templates de Feature e ADR
 
-```markdown
-# Feature: [NOME]
-
-## Objetivo
-O que faz e por que existe.
-
-## Escopo
-- IN: o que está incluído
-- OUT: o que NÃO está incluído
-
-## Regras de Negócio
-- RN-001: [descrição]
-- RN-002: [descrição]
-
-## Fluxo Principal
-1. Usuário faz X
-2. Sistema valida Y
-3. Sistema executa Z
-4. Usuário recebe feedback
-
-## Fluxos Alternativos
-- FA-001: [quando condição] → [comportamento]
-- FA-002: [quando condição] → [comportamento]
-
-## Permissões
-| Ação | USER | ADMIN | MODERATOR |
-|------|------|-------|-----------|
-| Criar | ✓ | ✓ | ✓ |
-| Editar próprio | ✓ | ✓ | ✓ |
-| Editar qualquer | ✗ | ✓ | ✓ |
-| Deletar | ✗ | ✓ | ✗ |
-
-## Contratos de API
-- `POST /api/v1/recurso` — cria recurso
-- `GET /api/v1/recurso/:id` — detalhe do recurso
-(detalhes completos em `api.md`)
-
-## Frontend
-- Telas envolvidas e comportamento esperado
-- Estados de loading, erro, vazio
-(detalhes completos em `ui.md`)
-
-## Dependências
-- [ ] Dependência 1
-- [ ] Dependência 2
-
-## Critérios de Aceitação
-- [ ] DADO [contexto] QUANDO [ação] ENTÃO [resultado]
-- [ ] DADO [contexto] QUANDO [ação] ENTÃO [resultado]
-```
-
-## Template de ADR
-
-```markdown
-# ADR-NNN: [Título da Decisão]
-
-**Data**: YYYY-MM-DD
-**Status**: proposto | aceito | depreciado | substituído por ADR-XXX
-
-## Contexto
-Qual situação motivou essa decisão. Qual problema precisava ser resolvido.
-
-## Decisão
-O que foi decidido e como será implementado.
-
-## Alternativas Consideradas
-
-### Alternativa A: [nome]
-- Prós: ...
-- Contras: ...
-
-### Alternativa B: [nome]
-- Prós: ...
-- Contras: ...
-
-## Consequências
-- Positivas: o que ganhamos
-- Negativas: o que perdemos ou fica mais difícil
-- Riscos: o que pode dar errado
-```
+Usar `templates/doc-update.md` para atualizacao curta e `docs/skill-guides/documenter-templates.md` quando precisar dos templates completos de feature, ADR, runbook e playbook.
 
 ## Regras de Documentação
 
@@ -252,7 +172,7 @@ Documentação escrita depois do fato é incompleta por definição. Ninguém le
 
 ## Código Limpo: Zero Comentários
 
-Código bem escrito não precisa de comentários. Se precisa de comentário, refatore.
+Codigo bem escrito prioriza clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 Exceções permitidas:
 - Links para documentação externa ou RFCs
@@ -260,3 +180,13 @@ Exceções permitidas:
 - Regex complexa com explicação do que faz
 
 Tudo mais é sinal de que o código precisa de refatoração, não de comentário.
+
+## Evidencia de Conclusao
+
+- Mudanca documentada no nivel correto
+- Arquivos de documentacao atualizados ou criados
+- Relacao entre decisao e impacto registrada quando necessario
+
+## Handoff
+
+Seguir `policies/handoffs.md` e, quando util, `templates/doc-update.md`.

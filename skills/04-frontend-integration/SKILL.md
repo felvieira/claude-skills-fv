@@ -10,7 +10,37 @@ description: |
 
 # Frontend Developer - React/Next.js + Zustand + React Query
 
-O Frontend transforma design em código, integrando com a API e garantindo UX fluida.
+O Frontend transforma design em codigo, integrando com a API e garantindo UX fluida.
+
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
+
+Para snippets extensos e exemplos completos, consultar `docs/skill-guides/frontend-integration.md` apenas quando a tarefa exigir.
+
+## Quando Usar
+
+- implementar tela, componente, estado ou integracao com API
+- fechar comportamento de loading, erro, vazio e refresh
+
+## Quando Nao Usar
+
+- para definir regras de negocio sem apoio do Backend ou PO
+- para motion, SEO ou review final como atividade principal
+
+## Entradas Esperadas
+
+- spec do PO e direcao de UI/UX
+- contrato de API
+- restricoes de estado, auth e navegacao
+
+## Saidas Esperadas
+
+- interface funcional integrada
+- estados de UX tratados
+- handoff claro para QA
+
+Para auth, o access token fica apenas em memoria. Persistencia local fica reservada a preferencias nao sensiveis, nunca a tokens.
 
 ## Responsabilidades
 
@@ -23,156 +53,24 @@ O Frontend transforma design em código, integrando com a API e garantindo UX fl
 
 ## Stack e Estrutura
 
-```
-Framework:   React 18+ / Next.js 14+ (App Router)
-Estado:      Zustand (global) + React Query (server state)
-Estilo:      Tailwind CSS
-Forms:       React Hook Form + Zod
-HTTP:        Axios (com interceptors)
-Tipos:       TypeScript strict mode
-```
+Stack de referencia:
 
-### Estrutura de Pastas
+- React ou Next.js
+- Zustand para estado global quando necessario
+- React Query para server state
+- Axios ou cliente HTTP equivalente
+- TypeScript strict mode
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── (auth)/             # Grupo de rotas auth
-│   │   ├── login/page.tsx
-│   │   └── register/page.tsx
-│   ├── (dashboard)/        # Grupo de rotas logadas
-│   │   ├── layout.tsx      # Layout com sidebar
-│   │   └── users/
-│   │       ├── page.tsx
-│   │       └── [id]/page.tsx
-│   ├── layout.tsx          # Root layout
-│   └── providers.tsx       # QueryClient + providers
-├── components/
-│   ├── ui/                 # Componentes base (Button, Input, Modal...)
-│   ├── layout/             # Header, Sidebar, Footer
-│   ├── features/           # Componentes de feature (UserCard, PostList...)
-│   └── skeletons/          # Skeleton components
-├── hooks/                  # Custom hooks
-├── stores/                 # Zustand stores
-├── lib/                    # Utilitários (api client, validators, helpers)
-├── types/                  # TypeScript types/interfaces
-└── middleware.ts           # Next.js middleware (auth redirect)
-```
+Para estrutura de pastas e exemplos completos de store, auth e API client, consultar `docs/skill-guides/frontend-integration.md`.
 
-## Zustand - Padrão de Store
+## Padroes Principais
 
-**src/stores/createStore.ts**
+- estado global pequeno e focado em UI ou sessao
+- `accessToken` apenas em memoria
+- server state separado do estado local
+- estados de loading, erro, vazio e retry definidos por tela
 
-```typescript
-import { create, StateCreator } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-
-export const createStore = <T extends object>(
-  name: string,
-  initializer: StateCreator<T, [['zustand/devtools', never], ['zustand/immer', never]]>,
-  options?: { persist?: boolean }
-) => {
-  let store = (set, get, api) => initializer(set, get, api);
-
-  if (options?.persist) {
-    return create<T>()(
-      devtools(
-        persist(
-          immer(initializer),
-          { name: `${name}-storage` }
-        ),
-        { name }
-      )
-    );
-  }
-
-  return create<T>()(
-    devtools(
-      immer(initializer),
-      { name }
-    )
-  );
-};
-```
-
-**src/stores/authStore.ts**
-
-```typescript
-import { createStore } from './createStore';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-}
-
-interface AuthState {
-  user: User | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
-  setAuth: (user: User, token: string) => void;
-  clearAuth: () => void;
-  updateUser: (data: Partial<User>) => void;
-}
-
-export const useAuthStore = createStore<AuthState>(
-  'auth',
-  (set) => ({
-    user: null,
-    accessToken: null,
-    isAuthenticated: false,
-
-    setAuth: (user, accessToken) =>
-      set((state) => {
-        state.user = user;
-        state.accessToken = accessToken;
-        state.isAuthenticated = true;
-      }),
-
-    clearAuth: () =>
-      set((state) => {
-        state.user = null;
-        state.accessToken = null;
-        state.isAuthenticated = false;
-      }),
-
-    updateUser: (data) =>
-      set((state) => {
-        if (state.user) Object.assign(state.user, data);
-      }),
-  }),
-  { persist: true }
-);
-```
-
-**src/stores/uiStore.ts**
-
-```typescript
-import { createStore } from './createStore';
-
-interface UIState {
-  sidebarOpen: boolean;
-  theme: 'light' | 'dark' | 'system';
-  toggleSidebar: () => void;
-  setSidebarOpen: (open: boolean) => void;
-  setTheme: (theme: UIState['theme']) => void;
-}
-
-export const useUIStore = createStore<UIState>(
-  'ui',
-  (set) => ({
-    sidebarOpen: true,
-    theme: 'system',
-
-    toggleSidebar: () => set((s) => { s.sidebarOpen = !s.sidebarOpen; }),
-    setSidebarOpen: (open) => set((s) => { s.sidebarOpen = open; }),
-    setTheme: (theme) => set((s) => { s.theme = theme; }),
-  }),
-  { persist: true }
-);
-```
+Para exemplos completos de store, authStore, uiStore e api client, consultar `docs/skill-guides/frontend-integration.md`.
 
 ## React Query - Padrão de Hooks
 
@@ -587,6 +485,12 @@ const RETRY_CONFIG = {
 };
 ```
 
+## Evidencia de Conclusao
+
+- interface implementada conforme fluxo esperado
+- loading, erro, vazio e auth tratados
+- pontos criticos para QA e Motion destacados
+
 ## Handoff para QA
 
 Entregar:
@@ -598,8 +502,7 @@ Entregar:
 
 ## Código Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

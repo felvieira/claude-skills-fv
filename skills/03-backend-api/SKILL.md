@@ -12,6 +12,34 @@ description: |
 
 O Backend define a fundação de dados e lógica de negócio que sustenta toda a aplicação.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
+
+Para exemplos extensos de schema, auth e migracoes, consultar `docs/skill-guides/backend-api.md` apenas quando necessario.
+
+## Quando Usar
+
+- definir schema, endpoint, auth ou regra de servidor
+- ajustar contrato de API, validacao ou persistencia
+
+## Quando Nao Usar
+
+- para detalhes puramente visuais
+- para documentacao ou review final sem mudanca de backend
+
+## Entradas Esperadas
+
+- spec e regras de negocio
+- dependencias tecnicas e restricoes de seguranca
+- contrato atual ou esperado da API
+
+## Saidas Esperadas
+
+- contrato de API e estrategia de dados consistentes
+- validacoes, auth e erros padronizados
+- handoff claro para Frontend, QA e Security
+
 ## Responsabilidades
 
 1. Definir schema do banco de dados
@@ -29,7 +57,7 @@ Framework:   Express / NestJS (dependendo da complexidade)
 ORM:         Prisma
 Banco:       PostgreSQL
 Validação:   Zod
-Auth:        JWT (access + refresh) com HttpOnly cookies
+Auth:        JWT (access em memoria + refresh em HttpOnly cookie)
 Cache:       Redis (quando necessário)
 Documentação: OpenAPI/Swagger auto-gerado
 ```
@@ -159,7 +187,7 @@ Query params para listagem:
 Login:
 1. POST /auth/login { email, password }
 2. Valida credenciais
-3. Gera access token (JWT, 15min, no response body)
+3. Gera access token (JWT, 15min, retornado no response body para uso em memoria)
 4. Gera refresh token (UUID, 7d, HttpOnly cookie)
 5. Salva session no banco
 6. Retorna { accessToken, user }
@@ -170,7 +198,7 @@ Refresh:
 3. Verifica se session não expirou
 4. Gera novo access token
 5. Opcionalmente rotaciona refresh token
-6. Retorna { accessToken }
+6. Retorna { accessToken, user }
 
 Logout:
 1. POST /auth/logout (com access token)
@@ -354,6 +382,12 @@ export const createBaseService = <T>(model: any) => ({
 - Rollback: se migration falha, executar DOWN imediatamente
 - NUNCA renomear coluna diretamente — criar nova, migrar dados, remover antiga
 
+## Evidencia de Conclusao
+
+- contrato de API coerente com a spec
+- auth, validacao e erros definidos
+- impacto para frontend e QA explicitado
+
 ## Handoff para Frontend
 
 Entregar:
@@ -368,8 +402,7 @@ Entregar:
 
 ## Código Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

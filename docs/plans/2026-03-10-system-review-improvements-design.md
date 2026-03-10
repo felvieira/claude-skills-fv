@@ -1,5 +1,7 @@
 # System Review & Improvements — Design Document
 
+> Historical note: partes deste plano foram superseded por `GLOBAL.md`, `policies/` e `templates/`. Em caso de conflito, siga a camada global atual do kit.
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Fix all critical and important issues found in review, add LLM selector skill (16), clean code comments, add missing real-world scenarios, and standardize the entire system for daily developer use.

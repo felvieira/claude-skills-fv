@@ -11,6 +11,34 @@ description: |
 
 O Motion Designer entra após o Frontend, quando os componentes estão prontos para receber vida. Toda animação deve ser intencional, performática e acessível.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
+
+Para exemplos extensos de tokens e variants, consultar `docs/skill-guides/motion-design.md` apenas quando necessario.
+
+## Quando Usar
+
+- adicionar movimento significativo a componentes e fluxos
+- definir microinteracoes, transicoes e comportamento de entrada/saida
+
+## Quando Nao Usar
+
+- para substituir UI/UX estrutural ou implementacao frontend base
+- quando o movimento nao agrega clareza ou acessibilidade
+
+## Entradas Esperadas
+
+- componentes frontend ja definidos
+- intencao da interface e hierarquia visual
+- restricoes de performance e acessibilidade
+
+## Saidas Esperadas
+
+- sistema de motion coerente
+- transicoes e microinteracoes justificadas
+- handoff claro para QA/Frontend
+
 ## Responsabilidades
 
 1. Criar sistema de animação consistente com tokens reutilizáveis
@@ -447,6 +475,12 @@ const contentVariants: Variants = {
   },
 };
 ```
+
+## Evidencia de Conclusao
+
+- movimento com intencao clara
+- `prefers-reduced-motion` considerado
+- impacto em performance e QA destacado
 
 ## Handoff
 

@@ -1,6 +1,6 @@
 # Dev Team Kit — Fullstack Web Development
 
-Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 17 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
+Kit completo de skills e codigo para desenvolvimento de aplicacoes web responsivas com time estruturado de 24 especialistas, coordenados por um Orquestrador e rastreados por um Context Manager.
 
 ## Governanca Global
 
@@ -19,6 +19,27 @@ Hierarquia de instrucoes:
 2. `policies/*.md`
 3. `skills/*/SKILL.md`
 4. `templates/*.md`
+
+## Ergonomia Diaria
+
+Para uso rapido no dia a dia:
+
+- leia `docs/quickstart.md`
+- reutilize `docs/repo-audit/current.md` antes de reexplorar o repo inteiro
+- reutilize `docs/repo-audit/assets.md` antes de gerar ou alterar assets visuais
+- use `commands/` como atalhos operacionais
+- consulte `docs/skill-call-matrix.md` quando houver duvida sobre overlap entre skills
+
+## Instalacao em Repo Existente
+
+Modo recomendado para usar este kit em um repo ja existente:
+
+- manter `AGENTS.md` na raiz do repo consumidor
+- copiar o kit para `.bot/`
+- usar `templates/AGENTS-root.md` como base do `AGENTS.md` da raiz
+- deixar o `Repo Auditor` criar ou atualizar `.bot/docs/repo-audit/current.md`
+
+Ver `docs/setup-bot-folder.md` para a estrutura sugerida.
 
 ## Estrutura do Time
 
@@ -88,7 +109,7 @@ Documentador atua em paralelo nas mudancas que alteram feature, API, arquitetura
 
 ---
 
-## Skills (17 especialistas)
+## Skills (24 especialistas)
 
 ### Gestao e Coordenacao
 
@@ -99,7 +120,14 @@ Documentador atua em paralelo nas mudancas que alteram feature, API, arquitetura
 | 10 | **Documentador** | Documenta por nivel de decisao: feature, contrato API, implementacao, operacao |
 | 11 | **Reviewer** | Ultima porta antes do deploy. Checa codigo, testes, seguranca, docs. Nao documenta — valida |
 | 16 | **LLM Selector** | Recomenda nivel de modelo por tarefa, otimizando custo vs qualidade |
-| 17 | **Image Generator** | Gera imagens via fal.ai (layout, hero, icone, favicon, mascote), pos-processa com Python (rembg/Pillow), detecta estrutura do projeto |
+| 17 | **Image Generator** | Gera e adapta assets visuais coerentes com o app, considerando identidade visual, assets existentes e output correto |
+| 18 | **Repo Auditor** | Audita stack real, convencoes, assets, testes e riscos; persiste resumo reutilizavel em markdown |
+| 19 | **Asset Librarian** | Organiza inventario de imagens, icones, logos, fontes e tokens visuais para manter consistencia do sistema |
+| 20 | **Observability SRE** | Define logs, metricas, tracing, health checks, alertas, rollback e confiabilidade operacional |
+| 21 | **Data Analytics** | Define eventos, funis, KPIs e naming de tracking para medir resultado real das features |
+| 22 | **Accessibility Specialist** | Revisa WCAG, teclado, screen reader, contraste, semantica e motion reduction com rigor dedicado |
+| 23 | **Migration Refactor Specialist** | Conduz migracoes grandes, legacy modernization, rollout incremental e rollback seguro |
+| 24 | **Release Manager** | Coordena versionamento, changelog, release notes, rollout, rollback e comunicacao de release |
 
 ### Produto e Design
 
@@ -280,6 +308,9 @@ src/
 ```
 docs/
 ├── README.md                          → Mapa da documentacao
+├── repo-audit/                        → Auditoria persistida do repositorio para reduzir releitura
+│   ├── current.md                     → Fotografia operacional reutilizavel do repo
+│   └── assets.md                      → Inventario visual reutilizavel para UI/UX e Image Generator
 ├── skill-guides/                      → Guias auxiliares carregados sob demanda
 ├── features/<feature>/                → Doc por feature
 │   ├── README.md, rules.md, flow.md
@@ -403,12 +434,13 @@ npm install -D @tauri-apps/cli@latest
 2. Instale as dependencias listadas acima
 3. Configure as env vars seguindo o `.env.example` da skill de deploy
 4. Leia `GLOBAL.md` e as policies antes de adaptar as skills ao seu ambiente
-5. Use `docs/skill-guides/` apenas quando precisar de exemplos extensos ou playbooks detalhados
-6. Inicie pelo **Orquestrador** (skill 09) — ele analisa sua tarefa e define o pipeline
-7. O **Context Manager** (skill 08) rastreia progresso automaticamente
-8. O **Documentador** (skill 10) documenta durante o desenvolvimento
-9. O **Reviewer** (skill 11) valida tudo antes de liberar pro deploy
-10. Siga o fluxo definido pelo Orquestrador — ele adapta conforme necessidade
+5. Se `docs/repo-audit/current.md` nao existir ou estiver desatualizado, rode primeiro o **Repo Auditor** (skill 18)
+6. Use `docs/skill-guides/` apenas quando precisar de exemplos extensos ou playbooks detalhados
+7. Inicie pelo **Orquestrador** (skill 09) — ele analisa sua tarefa e define o pipeline
+8. O **Context Manager** (skill 08) rastreia progresso automaticamente
+9. O **Documentador** (skill 10) documenta durante o desenvolvimento
+10. O **Reviewer** (skill 11) valida tudo antes de liberar pro deploy
+11. Siga o fluxo definido pelo Orquestrador — ele adapta conforme necessidade
 
 ### Exemplo: Nova Feature Completa
 
@@ -447,4 +479,6 @@ npm install -D @tauri-apps/cli@latest
 - **Sem pular etapas obrigatorias**: QA, Security e Reviewer seguem obrigatorios; Documentador e transversal quando houver mudanca relevante.
 - **Handoff explicito**: Cada skill entrega algo concreto pra proxima seguindo `policies/handoffs.md`.
 - **Context Manager**: Persistencia enxuta, focada no que ajuda a proxima sessao.
+- **Repo Auditor**: Quando existir `docs/repo-audit/current.md`, reutilize esse resumo antes de reanalisar o repo inteiro.
+- **Observability SRE**: Em mudancas operacionais, nao tratar monitoramento e rollback como detalhe opcional.
 - **Orquestrador**: Sempre coordenando, adaptando e respeitando a hierarquia global.

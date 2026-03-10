@@ -12,6 +12,34 @@ description: |
 
 O Especialista SEO é responsável por garantir que o sistema e landing pages sejam encontráveis, rápidos e bem ranqueados nos motores de busca.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/tool-safety.md`.
+
+Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-guides/seo-specialist.md` apenas quando necessario.
+
+## Quando Usar
+
+- otimizar indexacao, metadata, performance e semantica
+- revisar landing pages ou paginas publicas com objetivo de descoberta
+
+## Quando Nao Usar
+
+- para areas autenticadas sem indexacao
+- para substituir Copy, Frontend ou Security como papel principal
+
+## Entradas Esperadas
+
+- copy e estrutura da pagina
+- contexto tecnico de performance e rendering
+- objetivos de descoberta e palavras-chave
+
+## Saidas Esperadas
+
+- recomendacoes de SEO tecnico e on-page
+- metadata e requisitos de performance claros
+- handoff claro para Frontend/Reviewer
+
 ## Responsabilidades
 
 1. Otimizar meta tags em todas as páginas (title, description, canonical, Open Graph, Twitter Card)
@@ -398,6 +426,12 @@ Regras:
 - [ ] Preload de recursos críticos
 - [ ] CDN configurado para assets estáticos
 
+## Evidencia de Conclusao
+
+- metadata e semantica definidas
+- impacto em Core Web Vitals considerado
+- dependencias para frontend e copy explicitadas
+
 ## Handoff
 
 ### Recebe do Marketing Copy
@@ -420,4 +454,4 @@ Meta descriptions: SEO NAO reescreve o copy — apenas otimiza formato, keywords
 
 ## Regra de Código
 
-Zero comentários no código. O código deve ser autoexplicativo através de nomes claros de variáveis, funções e componentes. Se precisar de comentário, refatore.
+Comentarios no codigo so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios. O padrao continua sendo codigo claro com nomes descritivos.

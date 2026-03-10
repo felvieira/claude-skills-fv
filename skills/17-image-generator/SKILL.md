@@ -1,234 +1,154 @@
 ---
 name: image-generator
-description: >
-  Especialista em geração e processamento de imagens via fal.ai.
-  Invocado pelo Orchestrator quando qualquer etapa do pipeline precisa
-  de assets visuais: layout images, hero sections, ícones, favicons,
-  mascotes, backgrounds.
-triggers:
-  - gerar imagem
-  - criar imagem
-  - image generator
-  - fal.ai
-  - favicon
-  - ícone
-  - hero image
-  - landing page image
-  - mascote
-  - background image
-  - remover fundo
-  - transparent icon
-  - tauri icons
+description: |
+  Skill para geracao e adaptacao de assets visuais. Use quando o projeto precisar de hero image,
+  background, ilustracao, icone, favicon, mascote ou derivacao de imagem existente sem destoar do app.
+  Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon", "icone",
+  "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons".
 ---
 
 # Image Generator
 
-Especialista em geração e processamento de imagens para projetos web e mobile.
-Invocado pelo Orchestrator sempre que um asset visual é necessário.
+O Image Generator cria ou adapta assets visuais mantendo consistencia com o contexto real do produto.
 
-## Setup
+## Governanca Global
 
-```bash
-pip install fal-client pillow rembg
-```
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
 
-Adicionar no `.env.local`:
-```
-FAL_KEY=sua-chave-aqui
-```
+## Quando Usar
 
-## Análise de Necessidade
+- criar hero image, background, ilustracao, icone, favicon ou mascote
+- derivar asset existente sem quebrar identidade visual do app
+- preparar assets para web, SEO social cards ou Tauri/mobile
 
-Antes de gerar, determine:
+## Quando Nao Usar
 
-**Modo:**
-- `t2i` (text-to-image): imagem nova do zero
-- `i2i` (image-to-image): derivar/editar imagem existente (mascote em nova pose, ícone em novo contexto)
+- para inventar estilo novo sem analisar o produto existente
+- para substituir UI/UX, SEO ou Frontend na definicao de uso do asset
+- para gerar imagem final sem antes verificar contexto visual quando o repo ja tiver assets
 
-**Tipo:**
+## Entradas Esperadas
+
+- tipo de asset necessario
+- onde o asset sera usado
+- contexto visual do projeto
+- paths de assets existentes, se houver
+- restricoes de formato, tamanho, transparencia e output
+
+## Saidas Esperadas
+
+- prompt final reproduzivel
+- asset coerente com o projeto
+- output path e variacoes geradas
+- handoff claro para Orchestrator, UI/UX, Frontend ou SEO
+
+## Responsabilidades
+
+1. Decidir entre gerar do zero (`t2i`) ou derivar asset existente (`i2i`)
+2. Analisar identidade visual antes de propor prompt ou modelo
+3. Garantir consistencia com cores, composicao, linguagem visual e assets do projeto
+4. Escolher formato e pos-processamento adequados ao uso final
+5. Registrar prompt, modelo, output e motivo das escolhas
+
+## Regra Mais Importante
+
+Se o repositorio ja tiver imagens, ilustracoes, icones, logos, backgrounds, mascotes ou design tokens, a skill DEVE analisar esse contexto primeiro.
+
+Nunca gerar asset como se o projeto fosse uma folha em branco quando ja existir linguagem visual estabelecida.
+
+## Analise de Contexto Visual
+
+Antes de gerar qualquer imagem, verificar nesta ordem:
+
+1. `UI/UX` e design tokens do projeto
+2. assets existentes em `public/`, `assets/`, `src-tauri/icons/` ou caminhos equivalentes
+3. componentes e paginas onde a imagem vai entrar
+4. metadata/SEO quando a imagem for social card, thumbnail ou hero publica
+5. restricoes de plataforma, como favicon, app icon ou transparencia
+
+## Checklist Antes de Gerar
+
+- qual e a funcao do asset no produto
+- o projeto ja tem paleta, contraste, mood e linguagem visual definidos
+- existem imagens ou icones parecidos para derivacao ou referencia
+- a imagem precisa parecer parte do mesmo app, e nao um elemento isolado de outro estilo
+- o output final precisa de transparencia, resize, ico ou pacote para Tauri
+
+## Modos de Trabalho
+
+- `t2i`: usar apenas quando nao houver asset base adequado
+- `i2i`: preferir quando o projeto ja tiver mascote, icone, ilustracao ou base visual reutilizavel
+
+## Tipos de Asset
+
 | Tipo | Quando usar |
 |------|-------------|
-| `layout` | Imagem compondo seção ou tela inteira |
-| `hero` | Imagem principal acima da dobra |
-| `icon` | Ícone de funcionalidade ou serviço |
-| `favicon` | Favicon multi-tamanho + apple-touch-icon |
-| `mascote` | Personagem da marca em nova situação |
-| `background` | Textura ou fundo de seção |
-| `illustration` | Ilustração explicativa de conceito |
+| `layout` | imagem compondo secao ou tela inteira |
+| `hero` | imagem principal acima da dobra |
+| `icon` | icone de funcionalidade ou servico |
+| `favicon` | favicon multi-tamanho e apple-touch-icon |
+| `mascote` | personagem da marca em nova situacao |
+| `background` | textura ou fundo de secao |
+| `illustration` | ilustracao explicativa de conceito |
+| `social-card` | imagem para Open Graph, Twitter ou compartilhamento |
 
-## Engenharia de Prompt
+## Regras de Prompt
 
-Construa o prompt ANTES de chamar o script. Cada tipo tem estrutura diferente:
+- refletir a paleta, contraste e mood reais do produto
+- mencionar explicitamente estilo visual existente quando ele ja estiver definido
+- para `i2i`, descrever apenas a mudanca desejada e preservar o resto
+- evitar adjetivos vagos como "bonito" ou "moderno" sem contexto do projeto
+- nao introduzir cores, personagens ou composicoes que destoem dos assets ja usados no app
 
-**Hero / Layout:**
-```
-[sujeito principal], [estilo visual], [paleta de cores], [composição], [iluminação], [mood]
-Exemplo: "Modern SaaS dashboard interface, dark theme, electric blue accents,
-          clean minimal layout, soft ambient lighting, professional corporate mood"
-```
+## Selecao de Modelo
 
-**Ícone:**
-```
-[objeto isolado], flat design, transparent background, vector style, minimalist,
-simple geometric shapes, [cor primária]
-Exemplo: "Shield icon with checkmark, flat design, transparent background,
-          vector style, minimalist, deep blue"
-```
+Escolher modelo conforme necessidade do ambiente:
 
-**Mascote:**
-```
-[personagem], [pose/ação específica], clean white background,
-cartoon illustration style, friendly expression, [detalhes de design]
-Exemplo: "Friendly robot mascot, waving hello, clean white background,
-          cartoon illustration style, friendly expression, blue and white colors"
-```
+- variacoes rapidas e testes: modelo mais barato e rapido
+- hero, background e ilustracao padrao: modelo equilibrado
+- tipografia ou prompt mais dificil: modelo mais forte quando necessario
+- acabamento final: modelo com melhor fidelidade visual disponivel
 
-**Background:**
-```
-[cena ou textura], [mood], [paleta], no central focus element,
-subtle texture, suitable as website background
-Exemplo: "Abstract geometric pattern, modern tech mood, deep navy and purple palette,
-          no central focus, subtle texture, suitable as website background"
-```
+## Execucao
 
-**Favicon:**
-```
-[símbolo único simples], high contrast, readable at 32x32 pixels,
-bold design, [cor primária] on [cor de fundo]
-Exemplo: "Letter F monogram, high contrast, readable at 32x32 pixels,
-          bold design, white on deep blue"
-```
+Se o projeto usar script local, seguir o fluxo dele. Se nao usar, adaptar ao mecanismo disponivel no ambiente sem acoplar a skill a um vendor unico.
 
-### Regras Gerais de Prompt
+## Output Path
 
-- Seja específico sobre estilo visual (flat, 3D, fotorrealista, cartoon)
-- Sempre mencione a paleta de cores do projeto quando disponível
-- Para ícones/favicons: sempre inclua "transparent background" ou "flat design"
-- Para i2i: descreva APENAS o que muda, não o que permanece igual
-- Evite prompts genéricos como "beautiful image" — use adjetivos técnicos
+Preferencia de destino:
 
-## Seleção de Modelo
+1. `src-tauri/icons/` para assets nativos de Tauri
+2. `public/images/generated/` para web app com `public/`
+3. `assets/images/` se a base do projeto usar `assets/`
+4. pasta local equivalente do repositorio quando a estrutura for diferente
 
-| Caso de uso | Modelo | Custo |
-|-------------|--------|-------|
-| Variações rápidas, testes, volume | `gpt-image-1-mini` | ~$0.005-0.036 |
-| Layouts, heroes, backgrounds (padrão) | `gemini-25-flash-image` | $0.039 |
-| Tipografia no layout, prompt complexo | `gemini-3-pro` | $0.15 |
-| Acabamento máximo, assets finais | `gpt-image-1.5` | $0.034-0.20 |
-| Criativos estéticos, redes sociais | `grok-imagine` | $0.02 |
+## Integracao com Outras Skills
 
-**i2i sempre usa o mesmo modelo da imagem original** (ou `gemini-25-flash-image` se não souber).
+- `UI/UX`: confirma encaixe visual e composicao
+- `Asset Librarian`: fornece inventario de assets, logos, fontes e tokens visuais existentes
+- `Frontend`: confirma uso real do asset e dimensoes
+- `SEO`: confirma necessidades de Open Graph, alt text e imagem publica
+- `Mobile Tauri`: confirma formatos e tamanhos para icones nativos
+- `Orchestrator`: decide momento certo da geracao no pipeline
 
-## Execução via Script Python
+## Evidencia de Conclusao
 
-O script fica em `scripts/generate-image.py` no projeto.
+- contexto visual existente analisado antes da geracao
+- prompt final coerente com o app
+- asset salvo no local correto com formato adequado
+- modelo, variacoes e output registrados para reproducao
 
-**Text-to-image (do zero):**
-```bash
-python scripts/generate-image.py \
-  --mode t2i \
-  --type hero \
-  --model gemini-25-flash-image \
-  --aspect 16:9 \
-  --output public/images/hero.png \
-  "Modern SaaS dashboard, dark theme, electric blue accents, clean minimal, professional"
-```
+## Handoff
 
-**Image-to-image (derivar existente):**
-```bash
-python scripts/generate-image.py \
-  --mode i2i \
-  --type mascote \
-  --model gemini-25-flash-image \
-  --image public/images/mascot-base.png \
-  --post-process rembg \
-  --output public/images/mascot-waving.png \
-  "same robot mascot, waving hello, white background"
-```
+Entregar sempre:
 
-**Favicon completo:**
-```bash
-python scripts/generate-image.py \
-  --type favicon \
-  --model gpt-image-1-mini \
-  --aspect 1:1 \
-  --post-process ico \
-  --output public/favicon.ico \
-  "Letter F monogram, high contrast, readable at 32x32px, white on deep blue"
-```
+- paths dos arquivos gerados
+- prompt usado
+- contexto visual considerado
+- formato, dimensao e pos-processamento
 
-**Ícone com fundo transparente:**
-```bash
-python scripts/generate-image.py \
-  --type icon \
-  --model gpt-image-1-mini \
-  --aspect 1:1 \
-  --post-process rembg \
-  --output public/images/icon-shield.png \
-  "Shield with checkmark, flat design, deep blue, white background"
-```
+Seguir `policies/handoffs.md` e, quando util, `templates/handoff.md`.
 
-**Ícones para app Tauri:**
-```bash
-python scripts/generate-image.py \
-  --type icon \
-  --model gpt-image-1-mini \
-  --aspect 1:1 \
-  --post-process tauri-icons \
-  --output src-tauri/icons/icon.png \
-  "App icon, geometric logo mark, deep blue gradient, clean minimal"
-```
+## Codigo Limpo
 
-## Detecção Automática de Output Path
-
-Se `--output` não for informado, o script detecta automaticamente:
-
-| Estrutura do projeto | Output |
-|----------------------|--------|
-| `src-tauri/icons/` existe | `src-tauri/icons/` |
-| `public/` existe | `public/images/generated/` |
-| `assets/` existe | `assets/images/` |
-| Nenhuma das acima | `./generated-images/` |
-
-## Pós-processamento (`--post-process`)
-
-| Flag | O que faz | Quando usar |
-|------|-----------|-------------|
-| `none` | Salva direto | Layouts, heroes, backgrounds |
-| `rembg` | Remove fundo → PNG transparente | Ícones, mascotes, elementos isolados |
-| `resize:WxH` | Redimensiona (ex: `resize:800x600`) | Assets com tamanho específico |
-| `ico` | ICO 16/32/48/64px + apple-touch-icon 180px | Favicons web |
-| `tauri-icons` | PNGs 32/128/256/512 + icon.ico | Apps Tauri/desktop |
-
-## Integração com Pipeline
-
-**Recebe do Orchestrator:**
-- Tipo de imagem necessária
-- Contexto visual do projeto (paleta, estilo, assets existentes)
-- Caminho de assets existentes (para i2i)
-- Onde salvar (ou deixar auto-detectar)
-
-**Entrega ao Orchestrator:**
-- Paths dos arquivos gerados
-- Lista de variações geradas (se múltiplas)
-- Prompt usado (para reprodução futura)
-- Modelo e parâmetros utilizados
-
-**Exemplo de handoff:**
-
-```
-Image Generator → Orchestrator
-
-Gerado:
-- public/images/hero.png (1536x1024, gemini-25-flash-image)
-- public/images/mascot-hero.png (1024x1024, fundo removido via rembg)
-- public/favicon.ico (ICO multi-size: 16/32/48/64px)
-- public/apple-touch-icon.png (180px)
-
-Prompt hero: "Modern SaaS dashboard, dark theme, electric blue accents, clean minimal"
-Prompt mascote: "same robot mascot waving hello, white background" (derivado de mascot-base.png)
-```
-
-## Código Limpo
-
-Zero comentários. Código auto-explicativo. Nomes descritivos.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.

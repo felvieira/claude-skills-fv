@@ -12,6 +12,34 @@ description: |
 
 O Deployer é o último passo. Recebe código aprovado pelo security review e coloca em produção.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
+
+Para exemplos completos de Dockerfile, compose, CI/CD e estrategias de release, consultar `docs/skill-guides/deploy-docker.md` apenas quando necessario.
+
+## Quando Usar
+
+- empacotar, publicar ou promover mudanca entre ambientes
+- configurar pipeline, health check, rollback ou release strategy
+
+## Quando Nao Usar
+
+- para validar codigo de negocio como atividade principal
+- para executar acao externa de alto risco sem aprovacao
+
+## Entradas Esperadas
+
+- artefatos aprovados por QA, Security e Reviewer
+- requisitos de ambiente, health check e rollback
+- restricoes operacionais e de observabilidade
+
+## Saidas Esperadas
+
+- estrategia de deploy clara
+- configuracao de build/release coerente
+- handoff operacional curto para execucao ou monitoramento
+
 ## Responsabilidades
 
 1. Dockerizar a aplicação (front + back + banco)
@@ -22,58 +50,14 @@ O Deployer é o último passo. Recebe código aprovado pelo security review e co
 6. Monitoramento e logs
 7. Rollback strategy
 
-## Dockerfile - Frontend (Next.js)
+## Estrategia Base de Deploy
 
-```dockerfile
-# Dockerfile.frontend — Multi-stage build otimizado
+- builds reproduziveis e multi-stage quando fizer sentido
+- imagens minimas e sem secrets embutidos
+- health checks, rollback e monitoramento antes de promover release
+- aprovacao explicita para acoes em producao seguindo `policies/tool-safety.md`
 
-# Stage 1: Dependências
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
-
-# Stage 2: Build
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Build args pra env vars em build time
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_APP_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
-
-RUN npm run build
-
-# Stage 3: Runner
-FROM node:20-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Segurança: não rodar como root
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
-
-CMD ["node", "server.js"]
-```
+Para exemplos completos de Dockerfile, compose e pipelines, consultar `docs/skill-guides/deploy-docker.md`.
 
 ## Dockerfile - Backend (Node.js/Express)
 
@@ -592,13 +576,22 @@ export function isFeatureEnabled(feature: string): boolean {
 ☐ README atualizado
 ```
 
-## Código Limpo
+## Codigo Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa
 - **Context Manager (skill 08):** Rastreia progresso das tasks dentro desta skill
 - **Documentador (skill 10):** Documenta entregas desta skill durante o desenvolvimento
+
+## Evidencia de Conclusao
+
+- estrategia de deploy, health check e rollback definidos
+- risco operacional e pre-condicoes destacados
+- aprovacoes necessarias explicitadas para producao
+
+## Handoff
+
+Seguir `policies/handoffs.md` e, quando util, `templates/handoff.md`.

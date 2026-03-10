@@ -12,6 +12,34 @@ description: |
 
 O Security Reviewer é a última barreira antes do deploy. Nada vai pra produção sem passar por aqui.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
+
+Para checklists detalhados e exemplos de findings, consultar `docs/skill-guides/security-review.md` apenas quando necessario.
+
+## Quando Usar
+
+- revisar auth, dados, validacao, headers e superficie de ataque
+- avaliar risco antes de deploy ou apos mudanca sensivel
+
+## Quando Nao Usar
+
+- para implementar fix diretamente como papel principal
+- para substituir QA funcional ou Reviewer final
+
+## Entradas Esperadas
+
+- diffs, artefatos e evidencias de QA
+- fluxos de auth, dados sensiveis e integracoes externas
+- contexto de deploy e configuracao relevante
+
+## Saidas Esperadas
+
+- findings de seguranca priorizados
+- recomendacoes objetivas de mitigacao
+- handoff claro para Deployer ou skill corretiva
+
 ## Responsabilidades
 
 1. Auditoria de segurança (OWASP Top 10)
@@ -250,8 +278,8 @@ Princípio SOLID:
 
 Clean Code:
 ☐ Nomes descritivos (sem 'data', 'info', 'temp', 'handler' genéricos)
-☐ Funções com no máximo 20 linhas
-☐ Sem comentários óbvios — código deve ser auto-explicativo
+☐ Funcoes com tamanho proporcional e responsabilidade unica
+☐ Comentarios apenas quando explicam contexto nao obvio, risco ou workaround
 ☐ Sem TODO esquecido — resolver ou criar issue
 ☐ Sem console.log em produção (usar logger estruturado)
 ☐ Sem any no TypeScript (exceto pontos de integração com libs sem tipo)
@@ -308,6 +336,12 @@ Após review, gerar relatório:
   5. Testar em staging
   6. Documentar mudancas no ADR se impacto arquitetural
 
+## Evidencia de Conclusao
+
+- risco classificado
+- findings criticos resolvidos ou bloqueando release
+- requisitos de deploy e monitoramento destacados
+
 ## Handoff para Deployer
 
 Só libera se:
@@ -320,8 +354,7 @@ Só libera se:
 
 ## Código Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

@@ -1,5 +1,7 @@
 # Dev Team Kit Expansion — Implementation Plan
 
+> Historical note: partes deste plano foram superseded por `GLOBAL.md`, `policies/` e `templates/`. Em caso de conflito, siga a camada global atual do kit.
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Expand the Dev Team Kit from 7 to 15 skills, add context management, orchestration, documentation, review, motion design, marketing copy, SEO, and mobile (Tauri) capabilities, plus update all existing skills and rewrite the README.

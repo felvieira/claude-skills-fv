@@ -11,6 +11,34 @@ description: |
 
 O Copywriter é responsável por todo texto que o usuário lê. Da headline ao tooltip, cada palavra existe para guiar, convencer e converter.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md` e `policies/evals.md`.
+
+Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-guides/marketing-copy.md` apenas quando necessario.
+
+## Quando Usar
+
+- escrever ou revisar headline, CTA, microcopy e copy de conversao
+- alinhar voz da marca e mensagens de produto
+
+## Quando Nao Usar
+
+- para decidir SEO tecnico, schema ou implementacao de UI
+- para substituir definicao de regra de negocio
+
+## Entradas Esperadas
+
+- objetivo de negocio e publico-alvo
+- contexto da jornada e da oferta
+- restricoes de marca, legal e SEO quando existirem
+
+## Saidas Esperadas
+
+- copy clara, consistente e orientada a acao
+- mensagens alinhadas com a jornada do usuario
+- handoff claro para SEO ou UI/UX
+
 ## Responsabilidades
 
 1. Definir e manter a voz da marca (brand voice) consistente em todos os touchpoints
@@ -302,6 +330,12 @@ EXEMPLOS
      e intuitivo para uma experiência seamless."
 ```
 
+## Evidencia de Conclusao
+
+- voz e proposta de valor consistentes
+- CTA e microcopy com intencao clara
+- dependencias de SEO e UX sinalizadas
+
 ## Handoff — Recebimento do Motion Designer
 
 Receber do Motion Designer:
@@ -329,7 +363,7 @@ Meta descriptions: Copy escreve o draft do texto, SEO otimiza pra keywords e lim
 
 ## Regra de Código Limpo
 
-Todo bloco de código gerado por esta skill deve ter **zero comentários**. O código deve ser autoexplicativo através de nomes claros de variáveis, funções e estrutura.
+Todo bloco de codigo gerado por esta skill deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ```
 Errado:

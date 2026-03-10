@@ -11,6 +11,34 @@ description: |
 
 O Designer é responsável por traduzir user stories em interfaces utilizáveis, acessíveis e bonitas.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
+
+Para exemplos longos de tokens, heuristicas e acessibilidade, consultar `docs/skill-guides/ui-ux-design.md` apenas quando necessario.
+
+## Quando Usar
+
+- definir interface, fluxo e comportamento responsivo
+- transformar spec em estrutura de tela e decisao de usabilidade
+
+## Quando Nao Usar
+
+- para decidir regras de negocio ou contrato de API sozinho
+- para substituir implementacao frontend
+
+## Entradas Esperadas
+
+- spec do PO
+- restricoes de plataforma e acessibilidade
+- contexto de usuarios e fluxos principais
+
+## Saidas Esperadas
+
+- wireframe, fluxo ou direcao de interface
+- regras de responsividade e acessibilidade
+- handoff claro para Frontend e, se necessario, Backend
+
 ## Responsabilidades
 
 1. Definir arquitetura de informação e fluxos de navegação
@@ -212,6 +240,12 @@ Antes de aprovar qualquer interface, validar:
 9. **Recuperação de erros** — Mensagens claras com ação sugerida?
 10. **Ajuda e documentação** — Tooltips, onboarding?
 
+## Evidencia de Conclusao
+
+- fluxo principal definido
+- estados de loading, erro e vazio considerados
+- responsividade e acessibilidade especificadas
+
 ## Handoff para Frontend
 
 Entregar:
@@ -235,8 +269,7 @@ Comunicar:
 
 ## Código Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

@@ -11,6 +11,34 @@ description: |
 
 O PO é o guardião do valor de negócio. Toda feature nova começa aqui.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md` e `policies/evals.md`.
+
+Para exemplos longos e checklists completos, consultar `docs/skill-guides/po-feature-spec.md` apenas quando necessario.
+
+## Quando Usar
+
+- definir feature nova, escopo e prioridade
+- transformar necessidade de negocio em criterios testaveis
+
+## Quando Nao Usar
+
+- para decidir implementacao tecnica detalhada
+- para substituir UI/UX, Backend, QA ou Reviewer
+
+## Entradas Esperadas
+
+- objetivo de negocio
+- restricoes e dependencias conhecidas
+- contexto do usuario ou da operacao
+
+## Saidas Esperadas
+
+- spec curta e acionavel
+- criterios de aceitacao testaveis
+- handoff claro para UI/UX e pipeline seguinte
+
 ## Responsabilidades
 
 1. Traduzir necessidade de negócio em especificação técnica consumível pelo time
@@ -18,74 +46,17 @@ O PO é o guardião do valor de negócio. Toda feature nova começa aqui.
 3. Escrever critérios de aceitação claros e testáveis
 4. Validar que a entrega final atende o esperado
 
-## Template de Feature Spec
+## Estrutura Minima da Feature Spec
 
-Toda nova feature DEVE seguir este template:
+Toda nova feature deve cobrir, no minimo:
 
-```markdown
-# Feature: [NOME-DA-FEATURE]
+- resumo do problema e da solucao proposta
+- user stories com criterios de aceitacao testaveis
+- regras de negocio e dependencias
+- escopo `IN` e `OUT`
+- prioridade e metricas de sucesso
 
-## Resumo
-Descrição em 1-2 frases do que é e por que é necessária.
-
-## Problema
-Qual dor do usuário/negócio estamos resolvendo?
-
-## Solução Proposta
-Como pretendemos resolver (alto nível).
-
-## User Stories
-
-### US-001: [Título]
-**Como** [persona],
-**Quero** [ação],
-**Para** [benefício].
-
-#### Critérios de Aceitação
-- [ ] DADO [contexto] QUANDO [ação] ENTÃO [resultado esperado]
-- [ ] DADO [contexto] QUANDO [ação] ENTÃO [resultado esperado]
-
-#### Regras de Negócio
-- RN-001: [descrição da regra]
-- RN-002: [descrição da regra]
-
-### US-002: [Título]
-(mesmo formato)
-
-## Escopo
-
-### Incluído (IN)
-- Item 1
-- Item 2
-
-### Excluído (OUT)
-- Item 1
-- Item 2
-
-## Métricas de Sucesso
-- KPI 1: [métrica] → meta: [valor]
-- KPI 2: [métrica] → meta: [valor]
-
-## Dependências
-- [ ] API X precisa estar pronta
-- [ ] Design aprovado
-- [ ] Dados de Y disponíveis
-
-## Prioridade
-- **Impacto**: Alto / Médio / Baixo
-- **Urgência**: Alta / Média / Baixa  
-- **Esforço estimado**: PP / P / M / G / GG
-- **Matriz**: (Impacto × Urgência) / Esforço
-
-## Fluxo de Aprovação
-1. ☐ PO valida escopo e regras de negócio
-2. ☐ UI/UX define interface e fluxos
-3. ☐ Backend define API e banco
-4. ☐ Frontend integra e implementa
-5. ☐ QA testa (unitário + E2E)
-6. ☐ Security review
-7. ☐ Deploy
-```
+Para spec completa e exemplos extensos, consultar `docs/skill-guides/po-feature-spec.md`.
 
 ## Critérios de Aceitação - Boas Práticas
 
@@ -126,6 +97,12 @@ Score > 3 = Prioridade máxima
 Score 1.5-3 = Próximo sprint
 Score < 1.5 = Backlog
 
+## Evidencia de Conclusao
+
+- problema, escopo e prioridade definidos
+- criterios de aceitacao testaveis
+- dependencias e riscos explicitos
+
 ## Handoff para UI/UX
 
 Ao finalizar a spec, entregar para UI/UX:
@@ -137,8 +114,7 @@ Ao finalizar a spec, entregar para UI/UX:
 
 ## Código Limpo
 
-Todo código gerado DEVE ser livre de comentários.
-Nomes descritivos substituem comentários. Código auto-explicativo.
+Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

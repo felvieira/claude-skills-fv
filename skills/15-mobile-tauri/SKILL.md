@@ -12,6 +12,34 @@ description: |
 
 Skill OPCIONAL. Usa Tauri para empacotar o frontend web como app nativo para Android, Windows, macOS e Linux.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/tool-safety.md` e `policies/evals.md`.
+
+Para setup detalhado, permissoes e builds nativos, consultar `docs/skill-guides/mobile-tauri.md` apenas quando necessario.
+
+## Quando Usar
+
+- adaptar projeto web para app desktop ou mobile via Tauri
+- configurar build nativo, permissao e integracao com APIs nativas
+
+## Quando Nao Usar
+
+- quando o projeto nao precisa de distribuicao nativa
+- para deploy web padrao sem camada nativa
+
+## Entradas Esperadas
+
+- frontend web funcional
+- restricoes de plataforma e distribuicao
+- requisitos de permissao, storage e notificacao
+
+## Saidas Esperadas
+
+- estrategia de empacotamento nativo
+- configuracao de permissao e build coerentes
+- handoff claro para QA/Deploy
+
 ## Responsabilidades
 
 1. Configurar projeto Tauri no repositório existente
@@ -311,6 +339,12 @@ Fallback offline implementado para features criticas
 Assinatura de APK configurada para release
 ```
 
+## Evidencia de Conclusao
+
+- build e permissao planejados com menor privilegio
+- impacto de mobile/desktop documentado
+- riscos de distribuicao e QA destacados
+
 ## Handoff
 
 ### Recebe do Frontend
@@ -330,4 +364,4 @@ Assinatura de APK configurada para release
 
 ## Regra de Codigo
 
-Zero comentarios no codigo. Nomes de funcoes, variaveis e tipos devem ser autoexplicativos. Codigo limpo dispensa comentarios.
+Comentarios no codigo so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios. Nomes de funcoes, variaveis e tipos devem ser autoexplicativos.
