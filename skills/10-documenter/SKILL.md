@@ -108,7 +108,7 @@ Conteúdo obrigatório:
 
 ### Runbooks e Playbooks
 
-Quando o repo consumidor tiver documentacao operacional estruturada, manter runbooks em `docs/ops/runbooks/`.
+Manter runbooks em `docs/ops/runbooks/`.
 
 Para templates completos de runbook e playbook, consultar `docs/skill-guides/documenter-templates.md`.
 
