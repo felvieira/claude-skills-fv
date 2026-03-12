@@ -66,7 +66,7 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 
 Fluxo padrao de feature nova:
 
-`Repo Auditor -> PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
+`Repo Auditor -> CLAUDE.md Generator -> PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
 - `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator
@@ -83,6 +83,11 @@ Fluxo padrao de feature nova:
 ## Skill Inicial: Repo Auditor
 
 Quando o repositorio ainda nao tiver auditoria valida em `docs/repo-audit/current.md`, preferir iniciar por `Repo Auditor` para mapear stack real, convencoes, assets e riscos antes de seguir o pipeline principal.
+
+## Skill Pos-Audit: CLAUDE.md Generator
+
+Apos o Repo Auditor completar a auditoria, verificar se o projeto consumidor tem um CLAUDE.md util.
+Se nao existir ou estiver generico/desatualizado, acionar `CLAUDE.md Generator` (28) para gerar um CLAUDE.md especifico e acionavel antes de seguir o pipeline principal.
 
 ## Skill Transversal: Image Generator
 
