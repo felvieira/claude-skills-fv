@@ -1,7 +1,7 @@
 # Dev Team Kit for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-27-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-28-1d4ed8)
 ![Setup](https://img.shields.io/badge/setup-multi--platform-f59e0b)
 ![Docs](https://img.shields.io/badge/docs-governed-7c3aed)
 
@@ -13,7 +13,7 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 
 - `GLOBAL.md` define as regras universais do kit
 - `policies/` concentra execucao, seguranca de tools, handoffs, evals e qualidade
-- `skills/*/SKILL.md` implementa 27 especialistas numerados
+- `skills/*/SKILL.md` implementa 28 especialistas numerados
 - `templates/` oferece formatos curtos e reutilizaveis
 - `docs/` guarda guias, quickstart, contexto e auditorias reutilizaveis
 - `patterns/ai-integration/` organiza padroes para integrar IA em apps reais
