@@ -28,7 +28,7 @@ flowchart TD
     A[Usuario pede uma task] --> B[Orchestrator 09]
     B --> C[Context Manager 08]
     B --> D[Escolhe pipeline minimo suficiente]
-    D --> E[Skills especialistas 01-27]
+    D --> E[Skills especialistas 01-28]
     E --> F[Documentador 10 quando houver mudanca relevante]
     E --> G[QA 05 + Security 06 + Reviewer 11]
     G --> H[Deploy 07 ou Release 24]
@@ -70,6 +70,7 @@ graph TD
     G1 --> S17[17 Image Generator]
     G1 --> S18[18 Repo Auditor]
     G1 --> S19[19 Asset Librarian]
+    G1 --> S28[28 CLAUDE.md Generator]
 
     G2 --> S01[01 PO]
     G2 --> S02[02 UI/UX]
@@ -122,7 +123,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 - `Reviewer` 11 nao e pulada
 - `Documentador` 10 entra sempre que houver mudanca de feature, contrato, arquitetura ou operacao
 
-## As 27 Skills
+## As 28 Skills
 
 ### Gestao e coordenacao
 
