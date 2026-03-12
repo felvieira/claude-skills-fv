@@ -144,6 +144,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 | 25 | AI Integration Architect | projeta adapters, hooks, gateways e custo de IA |
 | 26 | Prompt Engineer | cria prompts e templates reutilizaveis |
 | 27 | Video Integration Specialist | integra video generativo com foco em UX e latencia |
+| 28 | CLAUDE.md Generator | gera CLAUDE.md inteligente para projetos consumidores |
 
 ### Produto e design
 
