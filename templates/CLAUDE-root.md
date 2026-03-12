@@ -14,3 +14,7 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 ## Auditoria Inicial
 - se `.bot/docs/repo-audit/current.md` nao existir, iniciar por `Repo Auditor`
 - se existir, reutilizar antes de reexplorar o repo
+
+## CLAUDE.md Inteligente
+- se o CLAUDE.md da raiz estiver generico, rodar `CLAUDE.md Generator` (skill 28) apos o Repo Auditor
+- a skill faz entrevista guiada e gera um CLAUDE.md especifico para o projeto
