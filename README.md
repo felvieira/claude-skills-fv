@@ -13,7 +13,7 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 
 - `GLOBAL.md` define as regras universais do kit
 - `policies/` concentra execucao, seguranca de tools, handoffs, evals e qualidade
-- `skills/*/SKILL.md` implementa 28 especialistas numerados
+- `skills/*/SKILL.md` implementa 29 especialistas numerados
 - `templates/` oferece formatos curtos e reutilizaveis
 - `docs/` guarda guias, quickstart, contexto e auditorias reutilizaveis
 - `patterns/ai-integration/` organiza padroes para integrar IA em apps reais
@@ -75,6 +75,7 @@ graph TD
     G2 --> S01[01 PO]
     G2 --> S02[02 UI/UX]
     G2 --> S22[22 Accessibility]
+    G2 --> S29[29 Design Intelligence]
 
     G3 --> S03[03 Backend]
     G3 --> S04[04 Frontend]
@@ -123,7 +124,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 - `Reviewer` 11 nao e pulada
 - `Documentador` 10 entra sempre que houver mudanca de feature, contrato, arquitetura ou operacao
 
-## As 28 Skills
+## As 29 Skills
 
 ### Gestao e coordenacao
 
@@ -153,6 +154,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 |---|---|---|
 | 01 | PO | spec, historias, criterios de aceitacao e prioridade |
 | 02 | UI/UX | layout, tokens, responsividade e heuristicas de uso |
+| 29 | Design Intelligence | pesquisa competitiva, analise visual, moodboard e dossie estrategico |
 
 ### Desenvolvimento
 

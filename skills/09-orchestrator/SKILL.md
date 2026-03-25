@@ -66,7 +66,7 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 
 Fluxo padrao de feature nova:
 
-`Repo Auditor -> CLAUDE.md Generator -> PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
+`Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
 - `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator
@@ -78,6 +78,7 @@ Fluxo padrao de feature nova:
 - `Release Manager` entra quando houver liberacao formal, changelog, rollout e comunicacao de release
 - `AI Integration Architect` entra quando a feature integrar texto, imagem ou video no app do usuario
 - `Prompt Engineer` entra quando o prompt for parte critica da qualidade ou do custo da feature
+- `Design Intelligence` entra antes do UI/UX quando a task envolver construcao ou melhoria de interface, pesquisando concorrentes, tendencias visuais e gerando moodboard. Em melhoria de UI existente, pula o PO e vai direto: `Design Intelligence -> UI/UX -> Frontend`
 - `Playwright MCP` pode ser configurado ou reutilizado em tarefas que exigirem navegacao real, screenshots e verificacao visual do app em execucao
 
 ## Skill Inicial: Repo Auditor
@@ -111,8 +112,8 @@ O Orquestrador deve reduzir ou expandir o pipeline conforme risco e impacto:
 
 - `bugfix`: skill afetada -> QA -> Security -> Reviewer
 - `hotfix critico`: skill afetada -> Security -> Reviewer -> Deploy
-- `melhoria de UI`: UI/UX -> Frontend -> Motion -> QA -> Security -> Reviewer
-- `landing page`: Copy -> UI/UX -> Frontend -> Motion -> SEO -> QA -> Security -> Reviewer
+- `melhoria de UI`: Design Intelligence -> UI/UX -> Frontend -> Motion -> QA -> Security -> Reviewer
+- `landing page`: Copy -> Design Intelligence -> UI/UX -> Frontend -> Motion -> SEO -> QA -> Security -> Reviewer
 - `refactor`: skill afetada -> QA -> Security -> Reviewer
 - `legacy`: Context Manager primeiro para mapear estado antes da skill afetada
 - `infra/operacao`: skill afetada -> Observability SRE -> QA/Security conforme risco -> Reviewer -> Deploy

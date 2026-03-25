@@ -18,3 +18,8 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 ## CLAUDE.md Inteligente
 - se o CLAUDE.md da raiz estiver generico, rodar `CLAUDE.md Generator` (skill 28) apos o Repo Auditor
 - a skill faz entrevista guiada e gera um CLAUDE.md especifico para o projeto
+
+## Design Intelligence
+- para construir ou melhorar interfaces, rodar `Design Intelligence` (skill 29) antes do UI/UX
+- pesquisa concorrentes, analisa tendencias visuais do nicho, gera moodboards e entrega dossie estrategico
+- em melhoria de UI existente, pula o PO e vai direto: `Design Intelligence -> UI/UX -> Frontend`
