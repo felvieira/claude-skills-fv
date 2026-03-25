@@ -34,6 +34,7 @@ Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar
 - spec do PO
 - restricoes de plataforma e acessibilidade
 - contexto de usuarios e fluxos principais
+- dossie de Design Intelligence (skill 29), quando disponivel: concorrentes analisados, tendencias visuais, moodboards, paleta e tipografia sugeridas, direcao estrategica (copiar/evitar/diferenciar)
 
 ## Saidas Esperadas
 

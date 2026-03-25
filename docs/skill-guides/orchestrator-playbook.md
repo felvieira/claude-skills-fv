@@ -55,7 +55,8 @@ Use quando houver integracao entre camadas.
 Exemplos:
 - nova tela com backend e testes
 - refactor moderado de fluxo de cadastro
-- landing page com copy, UI e SEO
+- landing page com copy, Design Intelligence, UI e SEO
+- melhoria de UI existente: Design Intelligence -> UI/UX -> Frontend (pula PO)
 
 ### Pipeline amplo
 

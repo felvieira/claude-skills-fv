@@ -1,7 +1,7 @@
 # Dev Team Kit for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-28-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-29-1d4ed8)
 ![Setup](https://img.shields.io/badge/setup-multi--platform-f59e0b)
 ![Docs](https://img.shields.io/badge/docs-governed-7c3aed)
 
@@ -28,7 +28,7 @@ flowchart TD
     A[Usuario pede uma task] --> B[Orchestrator 09]
     B --> C[Context Manager 08]
     B --> D[Escolhe pipeline minimo suficiente]
-    D --> E[Skills especialistas 01-28]
+    D --> E[Skills especialistas 01-29]
     E --> F[Documentador 10 quando houver mudanca relevante]
     E --> G[QA 05 + Security 06 + Reviewer 11]
     G --> H[Deploy 07 ou Release 24]
