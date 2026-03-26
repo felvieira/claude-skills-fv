@@ -88,6 +88,24 @@ Regras praticas:
 - skills transversais incluidas quando necessario
 - criterio claro de encerramento definido
 
+## Skill Transversal: Design Intelligence
+
+Invoke skill 29 (design-intelligence) antes do UI/UX quando a task envolver construcao ou melhoria de interface:
+
+- feature nova com interface: PO -> Design Intelligence -> UI/UX -> Frontend
+- melhoria de UI existente: Design Intelligence -> UI/UX -> Frontend (pula PO)
+- landing page: Copy -> Design Intelligence -> UI/UX -> Frontend -> SEO
+
+A skill pesquisa concorrentes via Brave Search, captura screenshots via Playwright, analisa tendencias visuais via LLM Selector, gera moodboards via Image Generator, e entrega dossie estrategico pro UI/UX.
+
+**Como acionar:**
+```
+Contexto: [nicho ou descricao do projeto]
+Tipo de interface: [landing page, dashboard, app mobile, SaaS, e-commerce]
+Concorrentes conhecidos: [URLs, se houver]
+Restricoes de branding: [paleta, tipografia, identidade existente]
+```
+
 ## Uso
 
 - preferir o core curto da skill para classificacao inicial

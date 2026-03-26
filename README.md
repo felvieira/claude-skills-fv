@@ -332,7 +332,28 @@ O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
 | `fetch` | desabilitado | leitura e transformacao de conteudo web |
 | `notebooklm` | desabilitado | pesquisa com fontes citadas |
 
-Ver `setup/README.md` para detalhes por plataforma.
+### Configurar MCP Localmente
+
+```json
+// .claude/settings.json (Claude Code)
+{
+  "mcpServers": {
+    "dev-team-kit": {
+      "command": "node",
+      "args": [".bot/mcp-server/dist/index.js"],
+      "env": {
+        "FAL_KEY": "fal-...",
+        "BRAVE_SEARCH_KEY": "BSA...",
+        "FIRECRAWL_KEY": "fc-..."
+      }
+    }
+  }
+}
+```
+
+Mesmo formato para `.windsurf/mcp.json` e `.gemini/settings.json`.
+
+Ver `setup/README.md` e `mcp-server/README.md` para detalhes.
 
 ## Ergonomia Diaria
 
