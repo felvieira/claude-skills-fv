@@ -1,0 +1,769 @@
+#!/usr/bin/env node
+
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+// Services
+import * as fileReader from "./services/file-reader.js";
+import { searchBrave, searchCompetitors, searchDesignReferences } from "./services/brave-search.js";
+import { scrapeWithFirecrawl, isFirecrawlAvailable } from "./services/firecrawl.js";
+import { generateImage } from "./services/fal-ai.js";
+import { buildScreenshotInstruction, buildImageExtractionInstruction, buildScrapeInstruction } from "./services/playwright.js";
+
+// Lib
+import { classifyTask } from "./lib/classifier.js";
+import { buildPipeline, getNextStep } from "./lib/pipeline-engine.js";
+
+// Load .env.local fallback
+import fs from "fs";
+import path from "path";
+import { KIT_ROOT } from "./constants.js";
+
+function loadEnvFile() {
+  for (const envFile of [".env.local", ".env"]) {
+    // Try project root (when installed in .bot/) and kit root
+    for (const base of [process.cwd(), KIT_ROOT]) {
+      const envPath = path.join(base, envFile);
+      try {
+        const content = fs.readFileSync(envPath, "utf-8");
+        for (const line of content.split("\n")) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith("#")) continue;
+          const eqIdx = trimmed.indexOf("=");
+          if (eqIdx === -1) continue;
+          const key = trimmed.slice(0, eqIdx).trim();
+          const value = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
+          if (!process.env[key]) {
+            process.env[key] = value;
+          }
+        }
+      } catch {
+        // File not found, continue
+      }
+    }
+  }
+}
+
+loadEnvFile();
+
+const server = new McpServer({
+  name: "dev-team-kit-mcp-server",
+  version: "1.0.0",
+});
+
+// ============================================================================
+// KNOWLEDGE BLOCK
+// ============================================================================
+
+server.registerTool(
+  "devkit_route_task",
+  {
+    title: "Route Task",
+    description: "Classifies a task description and returns the recommended pipeline with skills, policies and templates",
+    inputSchema: {
+      description: z.string().describe("Task description in natural language"),
+      project_context: z.string().optional().describe("Optional project context"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ description }) => {
+    const taskType = classifyTask(description);
+    const pipeline = buildPipeline(taskType);
+    const result = {
+      type: pipeline.type,
+      pipeline: pipeline.steps.map((s, i) => ({
+        step: i + 1,
+        skill_id: s.id,
+        skill_name: s.name,
+        purpose: s.purpose,
+      })),
+      policies: pipeline.policies,
+      templates: pipeline.templates,
+    };
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_skill",
+  {
+    title: "Get Skill",
+    description: "Returns the full SKILL.md content, skill guide and relevant template for a skill",
+    inputSchema: {
+      skill_id: z.string().describe("Skill ID, e.g. '29-design-intelligence', '02-ui-ux-design'"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ skill_id }) => {
+    const { content, guide, template } = await fileReader.getSkillContent(skill_id);
+    if (!content) {
+      return { content: [{ type: "text" as const, text: `Skill '${skill_id}' not found` }] };
+    }
+    const result = {
+      skill_content: content,
+      skill_guide: guide,
+      template,
+    };
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_next_step",
+  {
+    title: "Next Pipeline Step",
+    description: "Returns the next skill in the pipeline given current progress",
+    inputSchema: {
+      pipeline_type: z.string().describe("Pipeline type from route_task"),
+      current_step: z.number().describe("Current step number (0-indexed)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ pipeline_type, current_step }) => {
+    const next = getNextStep(pipeline_type as any, current_step);
+    if (!next) {
+      return { content: [{ type: "text" as const, text: "Pipeline complete — no more steps" }] };
+    }
+    const { content } = await fileReader.getSkillContent(next.id);
+    const handoffTemplate = await fileReader.getTemplate("handoff");
+    const result = {
+      next_skill: { ...next, content },
+      handoff_template: handoffTemplate,
+    };
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_list_skills",
+  {
+    title: "List Skills",
+    description: "Lists all 29 skills with ID, name, description and triggers",
+    inputSchema: {},
+    annotations: { readOnlyHint: true },
+  },
+  async () => {
+    const skills = await fileReader.listSkills();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ skills }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_governance",
+  {
+    title: "Get Governance",
+    description: "Returns GLOBAL.md and relevant policies for a task type",
+    inputSchema: {
+      task_type: z.string().optional().describe("Task type to filter relevant policies"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async () => {
+    const global = await fileReader.getGlobal();
+    const policies = await fileReader.getPolicies();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ global, policies }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_template",
+  {
+    title: "Get Template",
+    description: "Returns a specific template by name (handoff, plan, review, design-intelligence-dossier, etc.)",
+    inputSchema: {
+      template_name: z.string().describe("Template name without .md extension"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ template_name }) => {
+    const content = await fileReader.getTemplate(template_name);
+    return {
+      content: [{ type: "text" as const, text: content || `Template '${template_name}' not found` }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_patterns",
+  {
+    title: "Get AI Patterns",
+    description: "Returns AI integration patterns (hooks, providers, cost-efficiency, security, etc.)",
+    inputSchema: {
+      pattern: z.string().optional().describe("Specific pattern name, or omit for overview"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ pattern }) => {
+    const content = await fileReader.getPatterns(pattern);
+    return {
+      content: [{ type: "text" as const, text: content || "Pattern not found" }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_code_snippets",
+  {
+    title: "Get Code Snippets",
+    description: "Returns reusable code from the kit (hooks, components, stores, types, middleware)",
+    inputSchema: {
+      type: z.enum(["hooks", "components", "stores", "types", "middleware"]).describe("Type of code to retrieve"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ type }) => {
+    const files = await fileReader.getCodeSnippets(type);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ files }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_repo_audit",
+  {
+    title: "Get Repo Audit",
+    description: "Returns persisted repo audit and asset inventory",
+    inputSchema: {
+      project_path: z.string().optional().describe("Path to consumer project (defaults to kit)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path }) => {
+    const { audit, assets } = await fileReader.getRepoAudit(project_path);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ audit, assets, exists: !!(audit || assets) }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_recommend_model",
+  {
+    title: "Recommend Model Level",
+    description: "LLM Selector logic — recommends Fast/Balanced/Deep based on task complexity",
+    inputSchema: {
+      task_type: z.string().describe("Type of task"),
+      complexity: z.enum(["low", "medium", "high"]).describe("Task complexity"),
+      risk: z.enum(["low", "medium", "high"]).describe("Risk level"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ task_type, complexity, risk }) => {
+    let level: string;
+    let modelClass: string;
+
+    if (risk === "high" || complexity === "high") {
+      level = "Deep";
+      modelClass = "Most capable model available (Claude Opus, GPT-4, Gemini Ultra)";
+    } else if (complexity === "medium" || risk === "medium") {
+      level = "Balanced";
+      modelClass = "Standard model (Claude Sonnet, GPT-4o, Gemini Pro)";
+    } else {
+      level = "Fast";
+      modelClass = "Fast model (Claude Haiku, GPT-4o-mini, Gemini Flash)";
+    }
+
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({ level, model_class: modelClass, reason: `${complexity} complexity, ${risk} risk for ${task_type}` }, null, 2),
+      }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_skill_matrix",
+  {
+    title: "Get Skill Matrix",
+    description: "Returns dependency matrix showing which skills call/are called by other skills",
+    inputSchema: {
+      skill_id: z.string().optional().describe("Filter to specific skill"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async () => {
+    // Static matrix based on kit architecture
+    const matrix = [
+      { skill: "09-orchestrator", calls: ["all"], called_by: ["user"] },
+      { skill: "01-po-feature-spec", calls: ["02-ui-ux-design", "03-backend-api"], called_by: ["09-orchestrator"] },
+      { skill: "29-design-intelligence", calls: ["16-llm-selector", "17-image-generator", "19-asset-librarian", "02-ui-ux-design"], called_by: ["09-orchestrator", "01-po-feature-spec"] },
+      { skill: "02-ui-ux-design", calls: ["04-frontend", "12-motion-design"], called_by: ["29-design-intelligence", "01-po-feature-spec"] },
+      { skill: "17-image-generator", calls: [], called_by: ["29-design-intelligence", "02-ui-ux-design", "04-frontend"] },
+      { skill: "16-llm-selector", calls: [], called_by: ["all"] },
+      { skill: "18-repo-auditor", calls: ["28-claude-md-generator", "19-asset-librarian"], called_by: ["09-orchestrator"] },
+      { skill: "05-qa-testing", calls: ["06-security-review"], called_by: ["03-backend-api", "04-frontend"] },
+      { skill: "06-security-review", calls: ["11-reviewer"], called_by: ["05-qa-testing"] },
+      { skill: "11-reviewer", calls: ["07-deploy"], called_by: ["06-security-review"] },
+    ];
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ matrix }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_eval_cases",
+  {
+    title: "Get Eval Cases",
+    description: "Returns test/eval cases for a skill or flow",
+    inputSchema: {
+      skill_id: z.string().optional().describe("Skill ID to filter evals"),
+      flow: z.string().optional().describe("Flow name to filter evals"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ skill_id, flow }) => {
+    const cases = await fileReader.getEvalCases(skill_id, flow);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ cases }, null, 2) }],
+    };
+  },
+);
+
+// ============================================================================
+// EXECUTION BLOCK
+// ============================================================================
+
+server.registerTool(
+  "devkit_search_web",
+  {
+    title: "Search Web",
+    description: "Search via Brave Search API for competitors, design references, or general queries. Requires BRAVE_SEARCH_KEY.",
+    inputSchema: {
+      query: z.string().describe("Search query"),
+      count: z.number().optional().describe("Number of results (default 5)"),
+      search_type: z.enum(["general", "competitors", "design_references"]).optional().describe("Type of search"),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  async ({ query, count, search_type }) => {
+    try {
+      let results;
+      switch (search_type) {
+        case "competitors":
+          results = await searchCompetitors(query, count);
+          break;
+        case "design_references":
+          results = await searchDesignReferences(query, count);
+          break;
+        default:
+          results = await searchBrave(query, count);
+      }
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify({ results }, null, 2) }],
+      };
+    } catch (error) {
+      return {
+        content: [{ type: "text" as const, text: `Search error: ${error instanceof Error ? error.message : String(error)}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+server.registerTool(
+  "devkit_scrape_page",
+  {
+    title: "Scrape Page",
+    description: "Extract structured content from a URL. Uses Firecrawl if available, otherwise returns Playwright instructions for the LLM to execute.",
+    inputSchema: {
+      url: z.string().describe("URL to scrape"),
+      format: z.enum(["markdown", "html", "text"]).optional().describe("Output format (default markdown)"),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  async ({ url, format }) => {
+    if (isFirecrawlAvailable()) {
+      try {
+        const result = await scrapeWithFirecrawl(url, format);
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error) {
+        // Fall through to Playwright instructions
+      }
+    }
+
+    // Return Playwright instructions for the LLM to execute via Playwright MCP
+    const instruction = buildScrapeInstruction(url);
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          fallback: "playwright",
+          message: "Firecrawl not available. Use Playwright MCP to execute this scrape.",
+          instruction,
+        }, null, 2),
+      }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_screenshot_page",
+  {
+    title: "Screenshot Page",
+    description: "Returns instructions to take a full-page screenshot via Playwright MCP",
+    inputSchema: {
+      url: z.string().describe("URL to screenshot"),
+      full_page: z.boolean().optional().describe("Full page screenshot (default true)"),
+      viewport_width: z.number().optional().describe("Viewport width"),
+      viewport_height: z.number().optional().describe("Viewport height"),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  async ({ url, full_page, viewport_width, viewport_height }) => {
+    const viewport = viewport_width && viewport_height
+      ? { width: viewport_width, height: viewport_height }
+      : undefined;
+    const instruction = buildScreenshotInstruction(url, full_page ?? true, viewport);
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          message: "Use Playwright MCP to execute this screenshot. Steps: 1) browser_navigate to URL, 2) browser_take_screenshot with fullPage option",
+          instruction,
+        }, null, 2),
+      }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_extract_images",
+  {
+    title: "Extract Images",
+    description: "Returns instructions to extract images from a page via Playwright MCP",
+    inputSchema: {
+      url: z.string().describe("URL to extract images from"),
+      selector: z.string().optional().describe("CSS selector to filter images (default 'img')"),
+      limit: z.number().optional().describe("Max images to extract (default 10)"),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  async ({ url, selector, limit }) => {
+    const instruction = buildImageExtractionInstruction(url, selector, limit);
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          message: "Use Playwright MCP to execute. Steps: 1) browser_navigate, 2) browser_evaluate to query all matching img elements and extract src/alt",
+          instruction,
+        }, null, 2),
+      }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_generate_image",
+  {
+    title: "Generate Image",
+    description: "Generate images via fal.ai API. Supports text-to-image, image-to-image, background removal and icon generation. Requires FAL_KEY.",
+    inputSchema: {
+      mode: z.enum(["t2i", "i2i", "rembg", "ico"]).describe("Generation mode"),
+      prompt: z.string().optional().describe("Text prompt for t2i/i2i"),
+      image_path: z.string().optional().describe("Input image URL for i2i/rembg"),
+      model: z.string().optional().describe("fal.ai model ID override"),
+      width: z.number().optional().describe("Output width"),
+      height: z.number().optional().describe("Output height"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+  },
+  async ({ mode, prompt, image_path, model, width, height }) => {
+    try {
+      const result = await generateImage({
+        mode,
+        prompt,
+        imagePath: image_path,
+        model,
+        width,
+        height,
+      });
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      return {
+        content: [{ type: "text" as const, text: `Image generation error: ${error instanceof Error ? error.message : String(error)}` }],
+        isError: true,
+      };
+    }
+  },
+);
+
+server.registerTool(
+  "devkit_analyze_visual_prompt",
+  {
+    title: "Analyze Visual Prompt",
+    description: "Returns a structured prompt for the LLM to analyze competitor screenshots. Does NOT call any LLM — builds the prompt for the client LLM to execute.",
+    inputSchema: {
+      screenshot_paths: z.array(z.string()).describe("Local paths or URLs of screenshots to analyze"),
+      analysis_type: z.enum(["competitive", "trends", "palette", "typography", "layout", "cta"]).describe("Type of visual analysis"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ screenshot_paths, analysis_type }) => {
+    const prompts: Record<string, string> = {
+      competitive: `Analyze these competitor screenshots and return a structured comparison:
+1. **Color Palettes**: Dominant colors, contrast approach, dark/light mode
+2. **Typography**: Font families, hierarchy (H1-H4 sizes), weight usage
+3. **Layout Patterns**: Hero section structure, grid system, whitespace strategy
+4. **CTAs**: Primary CTA text, color, placement, urgency tactics
+5. **Conversion Strategy**: Trust signals, social proof, pricing presentation
+6. **Visual Identity**: Photography style, illustration style, icon system
+7. **Differentiators**: What makes each unique vs. industry standard
+
+Return as a structured markdown table comparing all screenshots.`,
+
+      trends: `Analyze these design references and identify current trends:
+1. What visual patterns are dominant across all references?
+2. What emerging design trends are visible?
+3. What color schemes are trending in this niche?
+4. What typography choices are most common?
+5. What layout innovations stand out?`,
+
+      palette: `Extract the color palette from each screenshot:
+1. Primary colors (hex values)
+2. Secondary/accent colors
+3. Background colors
+4. Text colors
+5. CTA/action colors
+6. Overall mood (warm/cool/neutral)
+Return as a structured list per screenshot.`,
+
+      typography: `Analyze typography choices in each screenshot:
+1. Primary heading font (serif/sans-serif/display)
+2. Body text font
+3. Font size hierarchy
+4. Weight variations used
+5. Letter-spacing and line-height patterns`,
+
+      layout: `Analyze layout patterns:
+1. Grid system (columns, gutters)
+2. Hero section pattern (text-left/center/split)
+3. Section rhythm and spacing
+4. Navigation pattern
+5. Footer structure
+6. Mobile-first indicators`,
+
+      cta: `Analyze CTA patterns:
+1. Primary CTA text and verb used
+2. CTA color and contrast ratio
+3. CTA placement (above fold, sticky, multiple)
+4. Secondary CTA patterns
+5. Urgency/scarcity tactics
+6. Trust signals near CTAs`,
+    };
+
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          prompt: prompts[analysis_type],
+          images: screenshot_paths,
+          instructions: "Send this prompt along with the referenced images to your vision-capable model for analysis. Each image path should be read and included as image content.",
+        }, null, 2),
+      }],
+    };
+  },
+);
+
+// ============================================================================
+// PERSISTENCE BLOCK
+// ============================================================================
+
+server.registerTool(
+  "devkit_save_artifact",
+  {
+    title: "Save Artifact",
+    description: "Saves an artifact to the correct location in the project",
+    inputSchema: {
+      type: z.enum(["spec", "dossier", "audit", "assets", "plan", "handoff", "context", "custom"]).describe("Artifact type"),
+      content: z.string().describe("Artifact content"),
+      filename: z.string().optional().describe("Custom filename"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ type, content, filename, project_path }) => {
+    const base = project_path || KIT_ROOT;
+    const pathMap: Record<string, string> = {
+      spec: "docs/superpowers/specs",
+      dossier: "docs/design-intelligence",
+      audit: "docs/repo-audit",
+      assets: "docs/repo-audit",
+      plan: "docs/plans",
+      handoff: "docs/handoffs",
+      context: "docs/context",
+      custom: "docs",
+    };
+
+    const dir = path.join(base, pathMap[type] || "docs");
+    const defaultNames: Record<string, string> = {
+      dossier: "dossier.md",
+      audit: "current.md",
+      assets: "assets.md",
+      context: "current-focus.md",
+    };
+
+    const finalFilename = filename || defaultNames[type] || `${type}-${Date.now()}.md`;
+    const fullPath = path.join(dir, finalFilename);
+
+    await fs.promises.mkdir(dir, { recursive: true });
+    await fs.promises.writeFile(fullPath, content, "utf-8");
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ saved_path: fullPath }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_artifact",
+  {
+    title: "Get Artifact",
+    description: "Retrieves a previously saved artifact",
+    inputSchema: {
+      type: z.enum(["spec", "dossier", "audit", "assets", "plan", "handoff", "context", "custom"]).describe("Artifact type"),
+      filename: z.string().optional().describe("Specific filename"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ type, filename, project_path }) => {
+    const base = project_path || KIT_ROOT;
+    const pathMap: Record<string, string> = {
+      spec: "docs/superpowers/specs",
+      dossier: "docs/design-intelligence",
+      audit: "docs/repo-audit",
+      assets: "docs/repo-audit",
+      plan: "docs/plans",
+      handoff: "docs/handoffs",
+      context: "docs/context",
+      custom: "docs",
+    };
+
+    const dir = path.join(base, pathMap[type] || "docs");
+    const defaultNames: Record<string, string> = {
+      dossier: "dossier.md",
+      audit: "current.md",
+      assets: "assets.md",
+      context: "current-focus.md",
+    };
+
+    const finalFilename = filename || defaultNames[type] || "";
+    const fullPath = path.join(dir, finalFilename);
+
+    try {
+      const content = await fs.promises.readFile(fullPath, "utf-8");
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify({ content, path: fullPath, exists: true }, null, 2) }],
+      };
+    } catch {
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify({ content: null, path: fullPath, exists: false }, null, 2) }],
+      };
+    }
+  },
+);
+
+server.registerTool(
+  "devkit_save_context",
+  {
+    title: "Save Context",
+    description: "Persists current focus, decisions, blockers and next steps for session continuity",
+    inputSchema: {
+      focus: z.string().describe("Current task focus"),
+      decisions: z.array(z.string()).optional().describe("Key decisions made"),
+      blockers: z.array(z.string()).optional().describe("Current blockers"),
+      next_steps: z.array(z.string()).optional().describe("Recommended next steps"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ focus, decisions, blockers, next_steps, project_path }) => {
+    const base = project_path || KIT_ROOT;
+    const dir = path.join(base, "docs", "context");
+    const fullPath = path.join(dir, "current-focus.md");
+
+    const content = [
+      `# Current Focus`,
+      ``,
+      `**Focus:** ${focus}`,
+      `**Updated:** ${new Date().toISOString()}`,
+    ];
+
+    if (decisions?.length) {
+      content.push(``, `## Decisions`, ...decisions.map((d) => `- ${d}`));
+    }
+    if (blockers?.length) {
+      content.push(``, `## Blockers`, ...blockers.map((b) => `- ${b}`));
+    }
+    if (next_steps?.length) {
+      content.push(``, `## Next Steps`, ...next_steps.map((n) => `- ${n}`));
+    }
+
+    await fs.promises.mkdir(dir, { recursive: true });
+    await fs.promises.writeFile(fullPath, content.join("\n"), "utf-8");
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ saved_path: fullPath }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_get_context",
+  {
+    title: "Get Context",
+    description: "Retrieves persisted context from previous session",
+    inputSchema: {
+      project_path: z.string().optional().describe("Consumer project root path"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path }) => {
+    const base = project_path || KIT_ROOT;
+    const fullPath = path.join(base, "docs", "context", "current-focus.md");
+
+    try {
+      const content = await fs.promises.readFile(fullPath, "utf-8");
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify({ content, exists: true }, null, 2) }],
+      };
+    } catch {
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify({ content: null, exists: false }, null, 2) }],
+      };
+    }
+  },
+);
+
+// ============================================================================
+// START SERVER
+// ============================================================================
+
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("Dev Team Kit MCP server running on stdio");
+}
+
+main().catch((error) => {
+  console.error("Failed to start server:", error);
+  process.exit(1);
+});
