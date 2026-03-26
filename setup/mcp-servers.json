@@ -1,6 +1,19 @@
 {
   "essential": [
     {
+      "name": "dev-team-kit",
+      "description": "MCP do Dev Team Kit — 29 skills, roteamento, pesquisa competitiva, geracao de imagens, scraping",
+      "command": "npx",
+      "args": ["-y", "@felvieira/dev-team-kit-mcp"],
+      "requires": "node",
+      "env": {
+        "FAL_KEY": "${FAL_KEY}",
+        "BRAVE_SEARCH_KEY": "${BRAVE_SEARCH_KEY}",
+        "FIRECRAWL_KEY": "${FIRECRAWL_KEY}"
+      },
+      "setup_extra": "Configurar FAL_KEY, BRAVE_SEARCH_KEY e opcionalmente FIRECRAWL_KEY no .env.local"
+    },
+    {
       "name": "context7",
       "description": "Docs atualizadas para qualquer biblioteca via Context7",
       "command": "npx",

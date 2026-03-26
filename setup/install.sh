@@ -298,29 +298,50 @@ step "Step 6b/7: API Keys"
 
 ENV_FILE="$TARGET_DIR/.env.local"
 
-# FAL_KEY — needed for Image Generator (skill 17)
-echo ""
-info "O Image Generator (skill 17) usa fal.ai para gerar imagens."
-info "Voce pode obter uma key em: https://fal.ai/dashboard/keys"
-echo ""
-read -r -p "  Inserir FAL_KEY agora? [Y/n] " FAL_ANSWER
-FAL_ANSWER="${FAL_ANSWER:-Y}"
-if [[ "$FAL_ANSWER" =~ ^[Yy]$ ]]; then
-  read -r -p "  FAL_KEY: " FAL_KEY_VALUE
-  if [[ -n "$FAL_KEY_VALUE" ]]; then
-    # Append to .env.local (create if needed, never overwrite existing keys)
-    if [[ -f "$ENV_FILE" ]] && grep -q "^FAL_KEY=" "$ENV_FILE" 2>/dev/null; then
-      warn "FAL_KEY already exists in .env.local, skipping"
+# Helper to ask and save a key
+ask_key() {
+  local key_name="$1" description="$2" url="$3" required="$4"
+  echo ""
+  info "$description"
+  info "Obter key em: $url"
+  [[ "$required" == "optional" ]] && info "(Opcional — tem fallback gratuito)"
+  echo ""
+  read -r -p "  Inserir $key_name agora? [Y/n] " KEY_ANSWER
+  KEY_ANSWER="${KEY_ANSWER:-Y}"
+  if [[ "$KEY_ANSWER" =~ ^[Yy]$ ]]; then
+    read -r -p "  $key_name: " KEY_VALUE
+    if [[ -n "$KEY_VALUE" ]]; then
+      if [[ -f "$ENV_FILE" ]] && grep -q "^${key_name}=" "$ENV_FILE" 2>/dev/null; then
+        warn "$key_name already exists in .env.local, skipping"
+      else
+        echo "${key_name}=${KEY_VALUE}" >> "$ENV_FILE"
+        ok "$key_name saved to .env.local"
+      fi
     else
-      echo "FAL_KEY=$FAL_KEY_VALUE" >> "$ENV_FILE"
-      ok "FAL_KEY saved to .env.local"
+      warn "Empty key, skipping. Set $key_name in .env.local later."
     fi
   else
-    warn "Empty key, skipping. Set FAL_KEY in .env.local later."
+    warn "Skipped. Set $key_name in .env.local when needed."
   fi
-else
-  warn "Skipped. Set FAL_KEY in .env.local when needed."
-fi
+}
+
+# FAL_KEY — needed for Image Generator (skill 17) and MCP moodboard generation
+ask_key "FAL_KEY" \
+  "Image Generator (skill 17) e MCP usam fal.ai para gerar imagens e moodboards." \
+  "https://fal.ai/dashboard/keys" \
+  "recommended"
+
+# BRAVE_SEARCH_KEY — needed for Design Intelligence (skill 29) and MCP competitor search
+ask_key "BRAVE_SEARCH_KEY" \
+  "Design Intelligence (skill 29) e MCP usam Brave Search para pesquisar concorrentes e tendencias." \
+  "https://brave.com/search/api/" \
+  "recommended"
+
+# FIRECRAWL_KEY — optional, Playwright is the free fallback
+ask_key "FIRECRAWL_KEY" \
+  "Firecrawl acelera scraping de paginas web (MCP e skill 29). Playwright e o fallback gratuito." \
+  "https://firecrawl.dev/" \
+  "optional"
 
 # Ensure .env.local is in .gitignore
 GITIGNORE="$TARGET_DIR/.gitignore"
@@ -385,7 +406,7 @@ echo " ${YELLOW}Passos manuais:${RESET}"
 MANUAL_STEPS=()
 [[ "$HAS_UV" != true ]] && [[ "$HAS_PYTHON" == true ]] && MANUAL_STEPS+=("  - notebooklm: instalar uv (${BOLD}pip install uv${RESET}), depois ${BOLD}uv tool install notebooklm-mcp-cli && nlm login${RESET}")
 [[ "$HAS_UV" != true ]] && [[ "$HAS_PYTHON" != true ]] && MANUAL_STEPS+=("  - notebooklm: instalar Python + uv, depois ${BOLD}uv tool install notebooklm-mcp-cli && nlm login${RESET}")
-MANUAL_STEPS+=("  - Configurar API keys no .env (FAL_KEY, etc.) — NUNCA commitar secrets")
+MANUAL_STEPS+=("  - Configurar API keys no .env.local (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) — NUNCA commitar secrets")
 MANUAL_STEPS+=("  - Rodar ${BOLD}Repo Auditor${RESET} na primeira sessao com o agente")
 
 for s in "${MANUAL_STEPS[@]}"; do

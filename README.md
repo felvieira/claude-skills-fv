@@ -284,8 +284,35 @@ O instalador em `setup/install.sh`:
 3. gera `CLAUDE.md`, `AGENTS.md` e `GEMINI.md`
 4. cria configs para Claude Code, Copilot, Windsurf, Gemini CLI e Antigravity
 5. configura MCPs essenciais e opcionais
-6. oferece autenticacao NotebookLM e configuracao de `FAL_KEY`
-7. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
+6. configura API keys (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) no `.env.local`
+7. oferece autenticacao NotebookLM
+8. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
+
+## API Keys
+
+O kit usa APIs externas para execucao real de pesquisa, scraping e geracao de imagens:
+
+| Key | Obrigatoria | Onde obter | Usada por |
+|-----|-------------|-----------|-----------|
+| `FAL_KEY` | Recomendada | [fal.ai/dashboard/keys](https://fal.ai/dashboard/keys) | Image Generator (17), MCP moodboards |
+| `BRAVE_SEARCH_KEY` | Recomendada | [brave.com/search/api](https://brave.com/search/api/) | Design Intelligence (29), MCP busca de concorrentes |
+| `FIRECRAWL_KEY` | Opcional | [firecrawl.dev](https://firecrawl.dev/) | MCP scraping (Playwright e o fallback gratuito) |
+
+**Onde configurar:**
+
+```bash
+# .env.local (nunca commitar)
+FAL_KEY=fal-...
+BRAVE_SEARCH_KEY=BSA...
+FIRECRAWL_KEY=fc-...
+```
+
+**Prioridade de leitura:**
+1. Variavel de ambiente do processo (MCP recebe via config do cliente)
+2. `.env.local` do projeto consumidor
+3. `.env` do projeto consumidor
+
+O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
 
 ## MCPs Recomendados
 
@@ -293,6 +320,7 @@ O instalador em `setup/install.sh`:
 
 | MCP | Estado padrao | Uso |
 |---|---|---|
+| `dev-team-kit` | habilitado | MCP completo do kit — 29 skills, roteamento, pesquisa, scraping, geracao de imagens |
 | `context7` | habilitado | documentacao atualizada de bibliotecas |
 | `playwright` | habilitado | navegacao e validacao E2E |
 
@@ -300,7 +328,7 @@ O instalador em `setup/install.sh`:
 
 | MCP | Estado padrao | Quando ativar |
 |---|---|---|
-| `fal` | desabilitado | geracao de imagem com a skill 17 |
+| `fal` | desabilitado | geracao de imagem com a skill 17 (alternativa ao MCP do kit) |
 | `fetch` | desabilitado | leitura e transformacao de conteudo web |
 | `notebooklm` | desabilitado | pesquisa com fontes citadas |
 
