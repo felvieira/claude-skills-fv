@@ -20,6 +20,38 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 - `setup/install.sh` instala o kit em `.bot/` e configura multiplas plataformas
 - `scripts/` inclui utilitarios reais, como geracao de imagens via fal.ai
 - `src/` traz codigo de referencia pronto para reaproveitamento
+- `mcp-server/` expoe o kit inteiro como MCP server com 22 tools
+
+## MCP Server — Use o Kit de Qualquer Lugar
+
+O kit agora tem um **MCP server proprio** que transforma todas as 29 skills em tools acessiveis de qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
+
+**O que o MCP faz:**
+
+| Bloco | Tools | Exemplos |
+|-------|-------|----------|
+| **Knowledge** | 12 | Classifica task, monta pipeline, entrega skills/policies/templates |
+| **Execution** | 6 | Busca concorrentes (Brave), scraping (Firecrawl/Playwright), gera imagens (fal.ai) |
+| **Persistence** | 4 | Salva/recupera artefatos e contexto entre sessoes |
+
+**Como usar:**
+
+```json
+{
+  "mcpServers": {
+    "dev-team-kit": {
+      "command": "node",
+      "args": [".bot/mcp-server/dist/index.js"],
+      "env": {
+        "FAL_KEY": "fal-...",
+        "BRAVE_SEARCH_KEY": "BSA..."
+      }
+    }
+  }
+}
+```
+
+Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP. Ver `mcp-server/README.md` para detalhes completos.
 
 ## O Que o Sistema Faz
 
