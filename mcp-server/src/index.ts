@@ -1080,6 +1080,43 @@ server.registerTool(
   },
 );
 
+server.registerTool(
+  "devkit_context_guard",
+  {
+    title: "Context Guard",
+    description: "Checks context usage and advises whether to compact before stopping. Call before ending long sessions.",
+    inputSchema: {
+      input_tokens: z.number().describe("Current input token count"),
+      context_window: z.number().describe("Model context window size"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ input_tokens, context_window }) => {
+    const usage = input_tokens / context_window;
+    const usagePercent = Math.round(usage * 100);
+    const should_compact = usage > 0.60;
+    const should_block_stop = usage > 0.75;
+
+    let message = `Context usage: ${usagePercent}%.`;
+    if (should_block_stop) {
+      message += ` HIGH — run /compact before stopping to preserve session state.`;
+    } else if (should_compact) {
+      message += ` WARN — consider running /compact soon.`;
+    } else {
+      message += ` OK — safe to continue or stop.`;
+    }
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({
+        usage_percent: usagePercent,
+        should_compact,
+        should_block_stop,
+        message,
+      }, null, 2) }],
+    };
+  },
+);
+
 // ============================================================================
 // START SERVER
 // ============================================================================

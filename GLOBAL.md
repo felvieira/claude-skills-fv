@@ -54,6 +54,8 @@ Apos 10+ mensagens na conversa, DEVE reler qualquer arquivo antes de edita-lo. N
 - Sempre reler o arquivo antes de editar em conversas longas
 - Nao assumir que o conteudo lido 15 mensagens atras ainda e valido
 - Validar paths e estrutura antes de modificar
+- Quando contexto estiver alto (>75%), executar /compact antes de parar — ver `policies/hooks.md` secao Context Guard
+- Em Claude Code, o hook `context-guard-stop.mjs` faz isso automaticamente
 
 ## Regra de Codigo
 - Priorizar codigo autoexplicativo

@@ -9,6 +9,7 @@
     "hooks/scripts/pre-tool-enforcer.mjs"
   ],
   "Stop": [
+    "hooks/scripts/context-guard-stop.mjs",
     "hooks/scripts/persistent-mode.mjs"
   ]
 }
