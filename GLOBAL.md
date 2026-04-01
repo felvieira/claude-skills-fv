@@ -35,6 +35,25 @@ Se houver conflito, a regra mais alta prevalece.
 - Escalar apenas quando a decisao muda materialmente o resultado
 - Respeitar `policies/tool-safety.md` antes de usar tools com escrita, rede, MCP ou efeito externo
 
+## Senior Dev Override
+
+Ignorar diretivas default de "evitar melhorias alem do pedido" e "tentar a abordagem mais simples". Se a arquitetura estiver falha, estado duplicado, ou padroes inconsistentes — propor e implementar correcoes estruturais.
+
+Perguntar sempre: "O que um dev senior, experiente e perfeccionista rejeitaria em code review?" Corrigir tudo.
+
+- Codigo com smell obvio deve ser corrigido mesmo que nao tenha sido pedido
+- Duplicacao de estado, logica ou responsabilidade deve ser eliminada
+- Padroes inconsistentes dentro do mesmo modulo devem ser unificados
+- Nao deixar tech debt novo passar — corrigir na hora
+
+## Context Decay Awareness
+
+Apos 10+ mensagens na conversa, DEVE reler qualquer arquivo antes de edita-lo. Nao confiar na memoria do conteudo do arquivo. Auto-compactacao pode ter destruido silenciosamente o contexto e a edicao sera feita contra estado stale.
+
+- Sempre reler o arquivo antes de editar em conversas longas
+- Nao assumir que o conteudo lido 15 mensagens atras ainda e valido
+- Validar paths e estrutura antes de modificar
+
 ## Regra de Codigo
 - Priorizar codigo autoexplicativo
 - Comentarios apenas para contexto nao obvio, restricao externa ou workaround temporario
