@@ -1,4 +1,7 @@
 {
+  "UserPromptSubmit": [
+    "hooks/scripts/keyword-detector.mjs"
+  ],
   "SessionStart": [
     "hooks/scripts/session-start.mjs"
   ],
