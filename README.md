@@ -32,7 +32,7 @@ O kit agora tem um **MCP server proprio** que transforma todas as 32 skills em t
 |-------|-------|----------|
 | **Knowledge** | 12 | Classifica task, monta pipeline, entrega skills/policies/templates |
 | **Execution** | 6 | Busca concorrentes (Brave), scraping (Firecrawl/Playwright), gera imagens (fal.ai) |
-| **Persistence** | 4 | Salva/recupera artefatos e contexto entre sessoes |
+| **Persistence** | 7 | Salva/recupera artefatos e contexto, rastreia custo, consolida sessao, sugere proxima acao |
 
 **Como usar:**
 
@@ -77,6 +77,7 @@ flowchart TD
 - `docs/repo-audit/current.md` e `docs/repo-audit/assets.md` evitam releitura desnecessaria do repo
 - `policies/tool-safety.md` define o uso seguro de escrita, rede, MCP e acoes externas
 - `policies/evals.md` define evidencia minima para mudancas estruturais no kit
+- `policies/cost-optimization.md` guia reducao de tokens, cache, rate limits e selecao de modelo
 
 ### Hierarquia de Instrucoes
 
@@ -295,6 +296,7 @@ repo-consumidor/
     ├── commands/
     ├── docs/
     ├── evals/
+    ├── mcp-server/       ← copiado e compilado pelo install.sh
     ├── patterns/
     ├── policies/
     ├── scripts/
@@ -318,7 +320,7 @@ bash .bot/setup/install.sh
 O instalador em `setup/install.sh`:
 
 1. verifica Node.js e opcionalmente Python e uv
-2. copia o kit para `.bot/`
+2. copia o kit para `.bot/` — incluindo `mcp-server/` — e compila o MCP (`npm install && npm run build`)
 3. gera `CLAUDE.md`, `AGENTS.md` e `GEMINI.md`
 4. cria configs para Claude Code, Copilot, Windsurf, Gemini CLI e Antigravity
 5. configura MCPs essenciais e opcionais
