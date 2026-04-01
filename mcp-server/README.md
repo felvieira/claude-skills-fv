@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe as 29 skills do Dev Team Kit como tools para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe as 32 skills do Dev Team Kit como tools para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -65,7 +65,7 @@ Mesmo formato acima.
 
 Prioridade de leitura: env vars > .env.local > .env
 
-## Tools (22)
+## Tools (25)
 
 ### Knowledge (12)
 
@@ -74,7 +74,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_route_task` | Classifica pedido e retorna pipeline com skills |
 | `devkit_get_skill` | Retorna SKILL.md + guide + template |
 | `devkit_next_step` | Proxima skill no pipeline |
-| `devkit_list_skills` | Lista 29 skills |
+| `devkit_list_skills` | Lista 32 skills |
 | `devkit_get_governance` | GLOBAL.md + policies |
 | `devkit_get_template` | Template especifico |
 | `devkit_get_patterns` | Patterns de AI integration |
@@ -103,6 +103,9 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_get_artifact` | Recupera artefato |
 | `devkit_save_context` | Persiste foco e decisoes |
 | `devkit_get_context` | Recupera contexto anterior |
+| `devkit_track_cost` | Rastreia custo de tokens e API calls da sessao |
+| `devkit_session_summary` | Gera resumo da sessao para handoff |
+| `devkit_smart_suggestions` | Sugere proxima acao baseado no estado do projeto |
 
 ## Desenvolvimento
 

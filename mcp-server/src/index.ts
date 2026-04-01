@@ -754,6 +754,333 @@ server.registerTool(
 );
 
 // ============================================================================
+// ANALYTICS & SESSION BLOCK
+// ============================================================================
+
+server.registerTool(
+  "devkit_track_cost",
+  {
+    title: "Track Cost",
+    description: "Tracks and reports estimated cost per session based on skills used and API calls",
+    inputSchema: {
+      session_id: z.string().optional().describe("Session identifier (defaults to today's date)"),
+      skills_used: z.array(z.string()).optional().describe("Array of skill names used in this session"),
+      api_calls: z.object({
+        fal_ai: z.number().default(0),
+        brave_search: z.number().default(0),
+        firecrawl: z.number().default(0),
+      }).optional().describe("API call counts"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ session_id, skills_used, api_calls }) => {
+    const today = new Date().toISOString().slice(0, 10);
+    const sid = session_id || today;
+    const skills = skills_used || [];
+    const calls = api_calls || { fal_ai: 0, brave_search: 0, firecrawl: 0 };
+
+    // Complexity map for token estimation
+    const complexSkills = ["09-orchestrator", "29-design-intelligence", "18-repo-auditor", "28-claude-md-generator"];
+    const mediumSkills = ["01-po-feature-spec", "02-ui-ux-design", "03-backend-api", "04-frontend", "05-qa-testing", "06-security-review", "11-reviewer"];
+
+    let estimatedTokens = 0;
+    for (const skill of skills) {
+      if (complexSkills.some((s) => skill.includes(s))) {
+        estimatedTokens += 10000;
+      } else if (mediumSkills.some((s) => skill.includes(s))) {
+        estimatedTokens += 5000;
+      } else {
+        estimatedTokens += 2000;
+      }
+    }
+
+    // Cost estimation: tokens * rate + API call costs
+    const tokenRate = 0.000003; // ~$3 per 1M tokens (blended input/output)
+    const apiRates = { fal_ai: 0.01, brave_search: 0.005, firecrawl: 0.01 };
+    const apiCost =
+      calls.fal_ai * apiRates.fal_ai +
+      calls.brave_search * apiRates.brave_search +
+      calls.firecrawl * apiRates.firecrawl;
+    const estimatedCost = estimatedTokens * tokenRate + apiCost;
+
+    const report = {
+      session_id: sid,
+      timestamp: new Date().toISOString(),
+      skills_used: skills,
+      estimated_tokens: estimatedTokens,
+      api_calls: calls,
+      estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
+    };
+
+    // Save report to docs/cost-reports/
+    const reportDir = path.join(KIT_ROOT, "docs", "cost-reports");
+    const reportPath = path.join(reportDir, `session-${today}.md`);
+    const reportMd = [
+      `# Cost Report: ${sid}`,
+      ``,
+      `**Generated:** ${report.timestamp}`,
+      ``,
+      `## Skills Used`,
+      ...(skills.length ? skills.map((s) => `- ${s}`) : ["- (none)"]),
+      ``,
+      `## Token Estimate`,
+      `- Estimated tokens: ${estimatedTokens}`,
+      ``,
+      `## API Calls`,
+      `- fal.ai: ${calls.fal_ai}`,
+      `- Brave Search: ${calls.brave_search}`,
+      `- Firecrawl: ${calls.firecrawl}`,
+      ``,
+      `## Cost Estimate`,
+      `- **Total: $${report.estimated_cost_usd}**`,
+    ].join("\n");
+
+    try {
+      await fs.promises.mkdir(reportDir, { recursive: true });
+      await fs.promises.writeFile(reportPath, reportMd, "utf-8");
+      (report as any).saved_path = reportPath;
+    } catch {
+      // Non-fatal: report still returned even if save fails
+    }
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(report, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_session_summary",
+  {
+    title: "Session Summary",
+    description: "Generates a session summary for handoff. Reads recent git log, saved context, and pipeline state.",
+    inputSchema: {
+      project_path: z.string().optional().describe("Path to consumer project"),
+      actions_performed: z.array(z.string()).optional().describe("Actions performed in this session"),
+      decisions_made: z.array(z.string()).optional().describe("Key decisions made"),
+      pending_items: z.array(z.string()).optional().describe("Items still pending"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ project_path, actions_performed, decisions_made, pending_items }) => {
+    const base = project_path || KIT_ROOT;
+    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date().toISOString();
+    const actions = actions_performed || [];
+    const decisions = decisions_made || [];
+    const pending = pending_items || [];
+
+    // Read recent git log
+    let gitLog = "(not available)";
+    try {
+      const { execSync } = await import("child_process");
+      gitLog = execSync("git log --oneline -10", { cwd: base, encoding: "utf-8" }).trim();
+    } catch {
+      // git not available or not a repo
+    }
+
+    // Read existing context
+    let existingContext = "";
+    try {
+      existingContext = await fs.promises.readFile(path.join(base, "docs", "context", "current-focus.md"), "utf-8");
+    } catch {
+      // No existing context
+    }
+
+    // Build summary markdown
+    const summary = [
+      `# Session Summary: ${today}`,
+      ``,
+      `**Generated:** ${now}`,
+      `**Project:** ${base}`,
+      ``,
+      `## Actions Performed`,
+      ...(actions.length ? actions.map((a) => `- ${a}`) : ["- (none recorded)"]),
+      ``,
+      `## Decisions Made`,
+      ...(decisions.length ? decisions.map((d) => `- ${d}`) : ["- (none recorded)"]),
+      ``,
+      `## Pending Items`,
+      ...(pending.length ? pending.map((p) => `- ${p}`) : ["- (none)"]),
+      ``,
+      `## Recent Git Activity`,
+      "```",
+      gitLog,
+      "```",
+      ``,
+      ...(existingContext ? [`## Previous Context`, ``, existingContext] : []),
+    ].join("\n");
+
+    // Save session summary
+    const contextDir = path.join(base, "docs", "context");
+    const summaryPath = path.join(contextDir, `session-${today}.md`);
+    try {
+      await fs.promises.mkdir(contextDir, { recursive: true });
+      await fs.promises.writeFile(summaryPath, summary, "utf-8");
+    } catch {
+      // Non-fatal
+    }
+
+    // Update current-focus.md with latest state
+    const focusContent = [
+      `# Current Focus`,
+      ``,
+      `**Updated:** ${now}`,
+      `**Last Session:** ${today}`,
+      ``,
+      ...(pending.length
+        ? [`## Pending Items`, ...pending.map((p) => `- ${p}`), ``]
+        : []),
+      ...(decisions.length
+        ? [`## Last Decisions`, ...decisions.map((d) => `- ${d}`), ``]
+        : []),
+      `## Last Actions`,
+      ...(actions.length ? actions.map((a) => `- ${a}`) : ["- (see session summary)"]),
+    ].join("\n");
+
+    try {
+      await fs.promises.writeFile(path.join(contextDir, "current-focus.md"), focusContent, "utf-8");
+    } catch {
+      // Non-fatal
+    }
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ summary, saved_path: summaryPath }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_smart_suggestions",
+  {
+    title: "Smart Suggestions",
+    description: "Analyzes project state and suggests next actions based on repo audit, git log, CLAUDE.md, and session context",
+    inputSchema: {
+      project_path: z.string().optional().describe("Path to consumer project"),
+      current_context: z.string().optional().describe("What the user is working on"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path, current_context }) => {
+    const base = project_path || KIT_ROOT;
+    const suggestions: Array<{
+      action: string;
+      skill_number: string;
+      skill_name: string;
+      reason: string;
+      priority: "high" | "medium" | "low";
+    }> = [];
+
+    // Helper to check if file/dir exists
+    const exists = async (p: string) => {
+      try { await fs.promises.access(p); return true; } catch { return false; }
+    };
+
+    // Check repo audit
+    const hasAudit = await exists(path.join(base, "docs", "repo-audit", "current.md"));
+    if (!hasAudit) {
+      suggestions.push({
+        action: "Run Repo Auditor to map the project structure",
+        skill_number: "18",
+        skill_name: "repo-auditor",
+        reason: "No repo audit found. This is the foundation for all other skills.",
+        priority: "high",
+      });
+    }
+
+    // Check CLAUDE.md
+    let claudeMdMissing = false;
+    try {
+      const claudeMd = await fs.promises.readFile(path.join(base, "CLAUDE.md"), "utf-8");
+      if (claudeMd.length < 200) {
+        claudeMdMissing = true;
+      }
+    } catch {
+      claudeMdMissing = true;
+    }
+    if (claudeMdMissing) {
+      suggestions.push({
+        action: "Generate CLAUDE.md with project-specific instructions",
+        skill_number: "28",
+        skill_name: "claude-md-generator",
+        reason: "CLAUDE.md is missing or too generic. A proper CLAUDE.md improves all agent interactions.",
+        priority: "high",
+      });
+    }
+
+    // Check for tests directory
+    const testDirs = ["tests", "test", "__tests__", "spec", "e2e"];
+    let hasTests = false;
+    for (const dir of testDirs) {
+      if (await exists(path.join(base, dir))) {
+        hasTests = true;
+        break;
+      }
+    }
+    if (!hasTests) {
+      suggestions.push({
+        action: "Create a test strategy and initial test suite",
+        skill_number: "05",
+        skill_name: "qa-testing",
+        reason: "No tests directory found. A test strategy ensures code quality.",
+        priority: "medium",
+      });
+    }
+
+    // Check context for UI-related work
+    const ctx = (current_context || "").toLowerCase();
+    if (ctx.includes("ui") || ctx.includes("design") || ctx.includes("frontend") || ctx.includes("layout") || ctx.includes("css")) {
+      suggestions.push({
+        action: "Run Design Intelligence for competitive analysis and design recommendations",
+        skill_number: "29",
+        skill_name: "design-intelligence",
+        reason: "UI improvement context detected. Design Intelligence provides data-driven design decisions.",
+        priority: "medium",
+      });
+    }
+
+    // Check for recent code changes without review
+    let hasRecentChanges = false;
+    try {
+      const { execSync } = await import("child_process");
+      const recentLog = execSync("git log --oneline -5 --since='24 hours ago'", { cwd: base, encoding: "utf-8" }).trim();
+      if (recentLog.length > 0) {
+        hasRecentChanges = true;
+      }
+    } catch {
+      // Not a git repo or git unavailable
+    }
+    if (hasRecentChanges) {
+      suggestions.push({
+        action: "Run Security Review and Code Reviewer on recent changes",
+        skill_number: "06, 11",
+        skill_name: "security-review + reviewer",
+        reason: "Recent code changes detected in the last 24h without review.",
+        priority: "medium",
+      });
+    }
+
+    // Default: suggest orchestrator if we have fewer than 3 suggestions
+    if (suggestions.length < 3) {
+      suggestions.push({
+        action: "Run the Orchestrator to plan your next development cycle",
+        skill_number: "09",
+        skill_name: "orchestrator",
+        reason: "The Orchestrator analyzes your project and builds a tailored pipeline of skills.",
+        priority: "low",
+      });
+    }
+
+    // Cap at 5 suggestions
+    const finalSuggestions = suggestions.slice(0, 5);
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ suggestions: finalSuggestions, project_path: base, context: current_context || null }, null, 2) }],
+    };
+  },
+);
+
+// ============================================================================
 // START SERVER
 // ============================================================================
 

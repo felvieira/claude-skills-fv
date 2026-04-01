@@ -1,7 +1,7 @@
 # Dev Team Kit for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-29-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-32-1d4ed8)
 ![Setup](https://img.shields.io/badge/setup-multi--platform-f59e0b)
 ![Docs](https://img.shields.io/badge/docs-governed-7c3aed)
 
@@ -13,18 +13,18 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 
 - `GLOBAL.md` define as regras universais do kit
 - `policies/` concentra execucao, seguranca de tools, handoffs, evals e qualidade
-- `skills/*/SKILL.md` implementa 29 especialistas numerados
+- `skills/*/SKILL.md` implementa 32 especialistas numerados
 - `templates/` oferece formatos curtos e reutilizaveis
 - `docs/` guarda guias, quickstart, contexto e auditorias reutilizaveis
 - `patterns/ai-integration/` organiza padroes para integrar IA em apps reais
 - `setup/install.sh` instala o kit em `.bot/` e configura multiplas plataformas
 - `scripts/` inclui utilitarios reais, como geracao de imagens via fal.ai
 - `src/` traz codigo de referencia pronto para reaproveitamento
-- `mcp-server/` expoe o kit inteiro como MCP server com 22 tools
+- `mcp-server/` expoe o kit inteiro como MCP server com 25 tools
 
 ## MCP Server — Use o Kit de Qualquer Lugar
 
-O kit agora tem um **MCP server proprio** que transforma todas as 29 skills em tools acessiveis de qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
+O kit agora tem um **MCP server proprio** que transforma todas as 32 skills em tools acessiveis de qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
 
 **O que o MCP faz:**
 
@@ -60,7 +60,7 @@ flowchart TD
     A[Usuario pede uma task] --> B[Orchestrator 09]
     B --> C[Context Manager 08]
     B --> D[Escolhe pipeline minimo suficiente]
-    D --> E[Skills especialistas 01-29]
+    D --> E[Skills especialistas 01-32]
     E --> F[Documentador 10 quando houver mudanca relevante]
     E --> G[QA 05 + Security 06 + Reviewer 11]
     G --> H[Deploy 07 ou Release 24]
@@ -103,6 +103,9 @@ graph TD
     G1 --> S18[18 Repo Auditor]
     G1 --> S19[19 Asset Librarian]
     G1 --> S28[28 CLAUDE.md Generator]
+    G1 --> S30[30 Cost Tracker]
+    G1 --> S31[31 Session Summary]
+    G1 --> S32[32 Smart Suggestions]
 
     G2 --> S01[01 PO]
     G2 --> S02[02 UI/UX]
@@ -156,7 +159,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 - `Reviewer` 11 nao e pulada
 - `Documentador` 10 entra sempre que houver mudanca de feature, contrato, arquitetura ou operacao
 
-## As 29 Skills
+## As 32 Skills
 
 ### Gestao e coordenacao
 
@@ -179,6 +182,9 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 | 26 | Prompt Engineer | cria prompts e templates reutilizaveis |
 | 27 | Video Integration Specialist | integra video generativo com foco em UX e latencia |
 | 28 | CLAUDE.md Generator | gera CLAUDE.md inteligente para projetos consumidores |
+| 30 | Cost Tracker | rastreia custo de tokens e API calls por sessao |
+| 31 | Session Summary | consolida resumo de sessao para handoff entre sessoes |
+| 32 | Smart Suggestions | sugere proxima acao baseado no estado do projeto |
 
 ### Produto e design
 
@@ -352,7 +358,7 @@ O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
 
 | MCP | Estado padrao | Uso |
 |---|---|---|
-| `dev-team-kit` | habilitado | MCP completo do kit — 29 skills, roteamento, pesquisa, scraping, geracao de imagens |
+| `dev-team-kit` | habilitado | MCP completo do kit — 32 skills, roteamento, pesquisa, scraping, geracao de imagens |
 | `context7` | habilitado | documentacao atualizada de bibliotecas |
 | `playwright` | habilitado | navegacao e validacao E2E |
 

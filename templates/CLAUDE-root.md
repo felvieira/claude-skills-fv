@@ -23,3 +23,8 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 - para construir ou melhorar interfaces, rodar `Design Intelligence` (skill 29) antes do UI/UX
 - pesquisa concorrentes, analisa tendencias visuais do nicho, gera moodboards e entrega dossie estrategico
 - em melhoria de UI existente, pula o PO e vai direto: `Design Intelligence -> UI/UX -> Frontend`
+
+## Sessao e Custo
+- ao encerrar sessao longa, rodar `Session Summary` (skill 31) para registrar contexto
+- `Cost Tracker` (skill 30) gera relatorio de custo quando solicitado
+- `Smart Suggestions` (skill 32) sugere proxima acao quando nao souber por onde comecar

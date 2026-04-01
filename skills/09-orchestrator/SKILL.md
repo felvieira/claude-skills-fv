@@ -66,7 +66,7 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 
 Fluxo padrao de feature nova:
 
-`Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy`
+`Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy -> [Session Summary + Cost Tracker]`
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
 - `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator
@@ -80,6 +80,9 @@ Fluxo padrao de feature nova:
 - `Prompt Engineer` entra quando o prompt for parte critica da qualidade ou do custo da feature
 - `Design Intelligence` entra antes do UI/UX quando a task envolver construcao ou melhoria de interface, pesquisando concorrentes, tendencias visuais e gerando moodboard. Em melhoria de UI existente, pula o PO e vai direto: `Design Intelligence -> UI/UX -> Frontend`
 - `Playwright MCP` pode ser configurado ou reutilizado em tarefas que exigirem navegacao real, screenshots e verificacao visual do app em execucao
+- `Cost Tracker` (30) gera relatorio de custo ao final de sessoes longas ou quando solicitado
+- `Session Summary` (31) consolida resumo ao encerrar sessao para continuidade
+- `Smart Suggestions` (32) sugere proxima acao entre steps ou quando usuario pede orientacao
 
 ## Skill Inicial: Repo Auditor
 
