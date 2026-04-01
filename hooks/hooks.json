@@ -1,0 +1,19 @@
+{
+  "UserPromptSubmit": [
+    "hooks/scripts/pre-execution-gate.mjs",
+    "hooks/scripts/keyword-detector.mjs"
+  ],
+  "PreToolUse": [
+    "hooks/scripts/pre-tool-enforcer.mjs"
+  ],
+  "Stop": [
+    "hooks/scripts/context-guard-stop.mjs",
+    "hooks/scripts/persistent-mode.mjs"
+  ],
+  "SessionStart": [
+    "hooks/scripts/session-start.mjs"
+  ],
+  "PostToolUse": [
+    "hooks/scripts/post-tool-verifier.mjs"
+  ]
+}

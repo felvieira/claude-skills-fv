@@ -1,0 +1,16 @@
+{
+  "context_guard": {
+    "warn_threshold": 0.60,
+    "block_threshold": 0.75,
+    "max_blocks_per_session": 2
+  },
+  "pre_execution_gate": {
+    "enrich_threshold": 0.40,
+    "block_threshold": 0.70,
+    "max_guided_questions": 2
+  },
+  "keyword_detector": {
+    "max_learned_skills_per_session": 3,
+    "informational_context_window": 80
+  }
+}
