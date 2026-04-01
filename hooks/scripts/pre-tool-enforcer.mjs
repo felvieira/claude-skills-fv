@@ -7,7 +7,13 @@ process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
   let input = {};
-  try { input = JSON.parse(_input); } catch {}
+  try {
+    input = JSON.parse(_input);
+  } catch {
+    if (!_input.trim()) {
+      process.stderr.write('[PreToolUse] Empty stdin received — passing through\n');
+    }
+  }
   const toolName = input.tool_name || '';
 
   if (WRITE_TOOLS.includes(toolName)) {

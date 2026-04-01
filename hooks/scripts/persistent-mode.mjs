@@ -16,9 +16,11 @@ process.stdin.on('end', () => {
             additionalContext: `[PersistentMode] Pipeline "${state.pipeline}" is active (step ${state.current_step || '?'}/${state.total_steps || '?'}). Complete the current pipeline stage before stopping. To force stop, delete .bot/docs/context/pipeline-active.json.`
           }
         }));
-        process.exit(0);
+        return;
       }
-    } catch {}
+    } catch (err) {
+      process.stderr.write(`[PersistentMode] Failed to read state file: ${err.message}\n`);
+    }
   }
   process.stdout.write(JSON.stringify({ continue: true }));
 });
