@@ -95,7 +95,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_generate_image` | Gera imagem via fal.ai | FAL_KEY |
 | `devkit_analyze_visual_prompt` | Prompt de analise visual | — |
 
-### Persistence (4)
+### Persistence (7)
 
 | Tool | O que faz |
 |------|-----------|

@@ -126,11 +126,19 @@ for item in GLOBAL.md README.md VERSION; do
   [[ -f "$SCRIPT_DIR/$item" ]] && safe_copy_file "$SCRIPT_DIR/$item" "$BOT_DIR/$item"
 done
 
-for dir in policies templates skills patterns scripts docs commands evals; do
+for dir in policies templates skills patterns scripts docs commands evals mcp-server; do
   if [[ -d "$SCRIPT_DIR/$dir" ]]; then
     safe_copy_dir "$SCRIPT_DIR/$dir" "$BOT_DIR/$dir"
   fi
 done
+
+# Build MCP server after copying
+if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]; then
+  info "Building MCP server (npm install + tsc)..."
+  (cd "$BOT_DIR/mcp-server" && npm install --silent && npm run build --silent) \
+    && ok "MCP server built successfully" \
+    || warn "MCP build failed — run manually: cd .bot/mcp-server && npm install && npm run build"
+fi
 
 # ---------------------------------------------------------------------------
 # Step 3: Generate entry-point files
