@@ -1081,6 +1081,59 @@ server.registerTool(
 );
 
 server.registerTool(
+  "devkit_ambiguity_score",
+  {
+    title: "Ambiguity Score",
+    description: "Calculates how ambiguous a task description is and recommends whether to proceed, enrich, or run Deep Interview",
+    inputSchema: {
+      description: z.string().describe("Task or feature description from the user"),
+      is_brownfield: z.boolean().optional().describe("True if this is an existing codebase (adds context_clarity dimension)"),
+      mentioned_files: z.array(z.string()).optional().describe("File paths mentioned in the description"),
+      constraints: z.array(z.string()).optional().describe("Constraints explicitly mentioned"),
+      criteria: z.array(z.string()).optional().describe("Success criteria explicitly mentioned"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ description, is_brownfield, mentioned_files, constraints, criteria }) => {
+    const hasVerb = /add|create|fix|remove|update|refactor|implement|build|change|improve|migrate/i.test(description);
+    const hasNoun = description.split(' ').length > 3;
+    const hasScope = /in\s+\w+|on\s+\w+|for\s+\w+|when\s+\w+|at\s+\w+/i.test(description);
+    const goalScore = ((hasVerb ? 0.4 : 0) + (hasNoun ? 0.3 : 0) + (hasScope ? 0.3 : 0));
+
+    const constraintScore = Math.min(1, (constraints?.length || 0) * 0.4 + (description.match(/max|min|must|cannot|without|no more than|at least/gi)?.length || 0) * 0.2);
+    const criteriaScore = Math.min(1, (criteria?.length || 0) * 0.5 + (description.match(/when|then|should|must|expect|verify|returns?|loads? in/gi)?.length || 0) * 0.2);
+
+    let score: number;
+    const dimensions: Record<string, number> = {
+      goal: Math.round(goalScore * 100) / 100,
+      constraints: Math.round(constraintScore * 100) / 100,
+      criteria: Math.round(criteriaScore * 100) / 100,
+    };
+
+    if (is_brownfield) {
+      const contextScore = Math.min(1, (mentioned_files?.length || 0) * 0.5 + (description.match(/\b\w+\.(ts|js|py|go|rs|md)\b/g)?.length || 0) * 0.3);
+      dimensions.context_clarity = Math.round(contextScore * 100) / 100;
+      score = 1 - (goalScore * 0.30 + constraintScore * 0.25 + criteriaScore * 0.25 + contextScore * 0.20);
+    } else {
+      score = 1 - (goalScore * 0.40 + constraintScore * 0.30 + criteriaScore * 0.30);
+    }
+
+    score = Math.max(0, Math.min(1, Math.round(score * 100) / 100));
+    const action = score < 0.40 ? "proceed" : score < 0.70 ? "warn" : "block";
+
+    const suggestedQuestions: string[] = [];
+    if (dimensions.goal < 0.5) suggestedQuestions.push("O que exatamente precisa ser feito? (acao + objeto + contexto)");
+    if (dimensions.constraints < 0.3) suggestedQuestions.push("Ha restricoes tecnicas ou de negocio? (performance, compatibilidade, prazo)");
+    if (dimensions.criteria < 0.3) suggestedQuestions.push("Como saberemos que esta pronto? (criterio verificavel)");
+    if (is_brownfield && (dimensions.context_clarity || 0) < 0.3) suggestedQuestions.push("Quais arquivos ou componentes serao afetados?");
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ score, dimensions, action, suggested_questions: suggestedQuestions }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
   "devkit_suggest_trailers",
   {
     title: "Suggest Commit Trailers",

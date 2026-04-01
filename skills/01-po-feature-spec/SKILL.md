@@ -112,6 +112,49 @@ Ao finalizar a spec, entregar para UI/UX:
 4. Restrições técnicas que impactam UI (ex: "não temos API de upload ainda")
 5. Personas e contexto de uso
 
+## Ambiguity Scoring
+
+Antes de iniciar a spec, calcular o ambiguity score para decidir se o briefing e suficiente.
+
+**Formula:**
+```
+ambiguity = 1 - (goal * 0.40 + constraints * 0.30 + criteria * 0.30)
+```
+
+**Variante Brownfield** (codebase conhecida):
+```
+ambiguity = 1 - (goal * 0.30 + constraints * 0.25 + criteria * 0.25 + context_clarity * 0.20)
+```
+
+**Thresholds:**
+- `score < 0.4` → prosseguir direto
+- `score 0.4-0.7` → enrich mode (inferir do repo-audit e confirmar)
+- `score > 0.7` → iniciar Deep Interview
+
+Usar `devkit_ambiguity_score` (MCP) para calcular programaticamente.
+
+## Deep Interview Protocol
+
+Acionar quando `score > 0.7`. Seguir `templates/deep-interview.md`.
+
+**Principios:**
+- Uma pergunta por rodada, preferencialmente multipla escolha
+- Sistema infere e confirma — nunca devolve "escreva mais"
+- Max 5 rodadas, parar quando stability ratio > 0.8 por 2 rodadas
+- Fail-forward: apos 5 rodadas sem estabilidade, prosseguir com melhor entendimento
+
+**Enrich Mode** (score 0.4-0.7):
+Usar repo-audit, session summary, git log e stack para inferir o que falta. Apresentar:
+```
+"Entendi que voce quer [X]. Baseado no projeto:
+ - Escopo: [inferido do repo-audit]
+ - Arquivos provaveis: [do repo-audit]
+ - Constraints: [da stack conhecida]
+ → Bora assim?
+ → Quer ajustar ou detalhar algo?
+ → Ou era outra coisa?"
+```
+
 ## Código Limpo
 
 Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
