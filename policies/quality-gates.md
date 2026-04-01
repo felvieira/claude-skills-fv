@@ -31,3 +31,15 @@ Definir o que realmente bloqueia uma entrega.
 
 ## Evals do Sistema
 - seguir `policies/evals.md` quando a mudanca afetar prompts, skills, tools, templates ou governanca global
+
+## Regra de Commit Trailers
+
+Commits com decisao arquitetural, trade-off ou risco lateral DEVEM incluir trailers relevantes.
+
+Aplicar `templates/commit-trailers.md`:
+- `Constraint:` quando restricao externa limitou opcoes
+- `Rejected:` quando alternativa foi desconsiderada
+- `Not-tested:` quando algo ficou fora da cobertura por motivo valido
+- `Scope-risk:` quando mudanca pode impactar outros modulos
+
+Nao aplicar em commits triviais (typo, rename, lint, docs simples).

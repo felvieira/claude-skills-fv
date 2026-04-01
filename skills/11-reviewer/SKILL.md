@@ -196,3 +196,20 @@ Garantir sempre:
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/review.md` e `templates/rejection.md`.
+
+## Commit Trailers
+
+Ao aprovar, identificar se o commit envolve trade-off ou decisao arquitetural. Se sim, sugerir trailers usando `templates/commit-trailers.md`.
+
+**Quando sugerir trailers obrigatoriamente:**
+- solucao foi limitada por restricao externa (`Constraint:`)
+- alternativa foi descartada (`Rejected:`)
+- algo ficou sem teste por razao valida (`Not-tested:`)
+- mudanca tem risco de impacto lateral (`Scope-risk: medium+`)
+
+**Como sugerir:**
+1. identificar os trailers aplicaveis ao contexto do review
+2. propor draft do commit message com trailers preenchidos
+3. o dev ajusta e commita — nao e obrigatorio aceitar todos os sugeridos
+
+Usar `devkit_suggest_trailers` (MCP) para gerar sugestao automatica com base no diff.

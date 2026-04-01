@@ -1081,6 +1081,47 @@ server.registerTool(
 );
 
 server.registerTool(
+  "devkit_suggest_trailers",
+  {
+    title: "Suggest Commit Trailers",
+    description: "Analyzes a diff summary and decisions to suggest relevant git commit trailers",
+    inputSchema: {
+      diff_summary: z.string().describe("Short description of what changed in the diff"),
+      decisions: z.array(z.string()).optional().describe("Design decisions made during implementation"),
+      rejected_alternatives: z.array(z.string()).optional().describe("Alternatives considered and rejected (format: 'alternative | reason')"),
+      constraints: z.array(z.string()).optional().describe("External constraints that limited the solution"),
+      not_tested: z.array(z.string()).optional().describe("Scenarios not covered by tests and why"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ diff_summary, decisions, rejected_alternatives, constraints, not_tested }) => {
+    const trailers: Array<{ type: string; value: string }> = [];
+
+    if (constraints && constraints.length > 0) {
+      constraints.forEach(c => trailers.push({ type: "Constraint", value: c }));
+    }
+    if (rejected_alternatives && rejected_alternatives.length > 0) {
+      rejected_alternatives.forEach(r => trailers.push({ type: "Rejected", value: r }));
+    }
+    if (decisions && decisions.length > 0) {
+      decisions.forEach(d => trailers.push({ type: "Directive", value: d }));
+    }
+    if (not_tested && not_tested.length > 0) {
+      not_tested.forEach(n => trailers.push({ type: "Not-tested", value: n }));
+    }
+
+    const trailerLines = trailers.map(t => `${t.type}: ${t.value}`).join('\n');
+    const commitMessage = trailers.length > 0
+      ? `${diff_summary}\n\n${trailerLines}`
+      : diff_summary;
+
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ trailers, commit_message: commitMessage }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
   "devkit_context_guard",
   {
     title: "Context Guard",
