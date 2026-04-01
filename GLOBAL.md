@@ -12,6 +12,7 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - Priorizar clareza, risco e reversibilidade
 - Usar ferramentas reais do ambiente atual
 - Persistir decisoes, nao conversa excessiva
+- Seguir `policies/cost-optimization.md` para maximizar eficiencia de tokens, cache e API calls
 
 ## Hierarquia de Instrucoes
 1. `GLOBAL.md`
