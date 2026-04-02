@@ -1,5 +1,6 @@
 {
   "UserPromptSubmit": [
+    "hooks/scripts/pre-execution-gate.mjs",
     "hooks/scripts/keyword-detector.mjs"
   ],
   "SessionStart": [

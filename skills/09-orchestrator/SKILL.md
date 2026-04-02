@@ -142,6 +142,31 @@ Quando houver rejeicao:
 - atualizar `in_progress`, `completed` ou `rejected` com handoff curto
 - manter blockers e reexecucoes visiveis sem inflar historico
 
+## Pre-execution Gate
+
+Antes de classificar e montar pipeline, avaliar se o prompt tem contexto suficiente.
+
+**Sinais concretos que bypassam o gate** (qualquer um destes = contexto suficiente):
+- file path (`src/lib/auth.ts`, `#423`, `.ts`, `.py` com diretorio)
+- numero de issue/PR (`#123`, `issue 42`)
+- simbolo de codigo (camelCase, PascalCase, snake_case longo)
+- steps numerados ou checklists (`1.`, `2.`, `- [ ]`)
+- acceptance criteria (DADO/QUANDO/ENTAO, GIVEN/WHEN/THEN)
+- referencia a erro (stack trace, TypeError, ENOENT)
+- bloco de codigo (triple backtick)
+- prefixo de escape (`force:` ou `!`)
+
+**Fluxo quando nao ha sinais concretos:**
+
+1. calcular ambiguity score (goal × 0.40 + constraints × 0.30 + criteria × 0.30)
+2. `score < 0.4` → prosseguir normalmente
+3. `score 0.4-0.7` → ENRICH: inferir escopo do repo-audit, confirmar com 3 opcoes
+4. `score > 0.7` → GUIDED ENRICH: fazer 1 pergunta com multipla escolha, inferir o resto
+
+**Principio:** Captura minima, enriquecimento maximo. Nunca devolver "escreva mais" — o sistema infere e confirma. Sempre oferecer 3 saidas: "Bora assim? / Quer ajustar ou detalhar algo? / Ou era outra coisa?"
+
+Em Claude Code, o hook `pre-execution-gate.mjs` faz isso automaticamente. Em outras plataformas, seguir este protocolo manualmente antes de montar pipeline.
+
 ## Protocolo de Execucao
 
 Ao iniciar uma task:
