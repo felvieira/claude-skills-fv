@@ -1081,6 +1081,70 @@ server.registerTool(
 );
 
 server.registerTool(
+  "devkit_learned_skills",
+  {
+    title: "Learned Skills",
+    description: "List, get, or save project-specific learned skills from .bot/learned-skills/",
+    inputSchema: {
+      action: z.enum(["list", "get", "save"]).describe("Action to perform"),
+      name: z.string().optional().describe("Skill name (required for get/save)"),
+      content: z.string().optional().describe("Full markdown content for save action"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ action, name, content, project_path }) => {
+    const base = project_path || process.cwd();
+    const learnedDir = path.join(base, ".bot", "learned-skills");
+
+    if (action === "list") {
+      try {
+        await fs.promises.mkdir(learnedDir, { recursive: true });
+        const files = await fs.promises.readdir(learnedDir);
+        const skills = await Promise.all(
+          files.filter((f: string) => f.endsWith(".md")).map(async (file: string) => {
+            const raw = await fs.promises.readFile(path.join(learnedDir, file), "utf-8");
+            const nameMatch = raw.match(/^name:\s*(.+)$/m);
+            const descMatch = raw.match(/^description:\s*(.+)$/m);
+            const triggersMatch = raw.match(/^triggers:\s*\[([^\]]+)\]/m);
+            const typeMatch = raw.match(/^type:\s*(.+)$/m);
+            return {
+              file,
+              name: nameMatch?.[1]?.trim() || file.replace(".md", ""),
+              description: descMatch?.[1]?.trim() || "",
+              triggers: triggersMatch?.[1]?.split(",").map((t: string) => t.replace(/['"]/g, "").trim()) || [],
+              type: typeMatch?.[1]?.trim() || "expertise",
+            };
+          })
+        );
+        return { content: [{ type: "text" as const, text: JSON.stringify({ skills, directory: learnedDir }, null, 2) }] };
+      } catch (err) {
+        return { content: [{ type: "text" as const, text: JSON.stringify({ skills: [], directory: learnedDir, error: String(err) }, null, 2) }] };
+      }
+    }
+
+    if (action === "get" && name) {
+      const filePath = path.join(learnedDir, `${name}.md`);
+      try {
+        const raw = await fs.promises.readFile(filePath, "utf-8");
+        return { content: [{ type: "text" as const, text: JSON.stringify({ name, content: raw, path: filePath }, null, 2) }] };
+      } catch {
+        return { content: [{ type: "text" as const, text: JSON.stringify({ name, content: null, path: filePath, exists: false }, null, 2) }] };
+      }
+    }
+
+    if (action === "save" && name && content) {
+      await fs.promises.mkdir(learnedDir, { recursive: true });
+      const filePath = path.join(learnedDir, `${name}.md`);
+      await fs.promises.writeFile(filePath, content, "utf-8");
+      return { content: [{ type: "text" as const, text: JSON.stringify({ saved: true, path: filePath }, null, 2) }] };
+    }
+
+    return { content: [{ type: "text" as const, text: JSON.stringify({ error: "Invalid action or missing required parameters" }, null, 2) }] };
+  },
+);
+
+server.registerTool(
   "devkit_ambiguity_score",
   {
     title: "Ambiguity Score",

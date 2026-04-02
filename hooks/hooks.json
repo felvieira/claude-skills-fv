@@ -12,5 +12,8 @@
   "Stop": [
     "hooks/scripts/context-guard-stop.mjs",
     "hooks/scripts/persistent-mode.mjs"
+  ],
+  "PostToolUse": [
+    "hooks/scripts/post-tool-verifier.mjs"
   ]
 }

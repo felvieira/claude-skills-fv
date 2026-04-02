@@ -141,6 +141,45 @@ if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]
 fi
 
 # ---------------------------------------------------------------------------
+# Step 2b: Install hooks + create learned-skills/
+# ---------------------------------------------------------------------------
+step "Step 2b/7: Installing hooks"
+
+# Copy hooks to .bot/hooks/
+if [[ -d "$SCRIPT_DIR/hooks" ]]; then
+  safe_copy_dir "$SCRIPT_DIR/hooks" "$BOT_DIR/hooks"
+  ok "Copied hooks/ to .bot/hooks/"
+fi
+
+# Create learned-skills/ directory (empty — project-specific)
+mkdir -p "$BOT_DIR/learned-skills"
+ok "Created .bot/learned-skills/ (project-specific skill memory)"
+
+# Register hooks in .claude/settings.json
+CLAUDE_CFG="$TARGET_DIR/.claude/settings.json"
+if [[ -f "$BOT_DIR/hooks/hooks.json" ]] && [[ -f "$CLAUDE_CFG" ]]; then
+  info "Registering hooks in .claude/settings.json..."
+  node -e "
+    const fs = require('fs');
+    const hooksReg = JSON.parse(fs.readFileSync('$BOT_DIR/hooks/hooks.json', 'utf8'));
+    const settings = JSON.parse(fs.readFileSync('$CLAUDE_CFG', 'utf8'));
+    const hooks = settings.hooks || {};
+    for (const [event, scripts] of Object.entries(hooksReg)) {
+      hooks[event] = hooks[event] || [];
+      for (const script of scripts) {
+        const cmd = { type: 'command', command: 'node .bot/' + script };
+        const exists = hooks[event].some(h => h.command === cmd.command);
+        if (!exists) hooks[event].push(cmd);
+      }
+    }
+    settings.hooks = hooks;
+    fs.writeFileSync('$CLAUDE_CFG', JSON.stringify(settings, null, 2) + '\n');
+  " && ok "Hooks registered in .claude/settings.json" || warn "Failed to register hooks — add manually from hooks/hooks.json"
+elif [[ -f "$BOT_DIR/hooks/hooks.json" ]]; then
+  warn ".claude/settings.json not found — hooks not auto-registered. Add from .bot/hooks/hooks.json manually."
+fi
+
+# ---------------------------------------------------------------------------
 # Step 3: Generate entry-point files
 # ---------------------------------------------------------------------------
 step "Step 3/7: Generating entry points"
