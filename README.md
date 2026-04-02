@@ -20,7 +20,8 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 - `setup/install.sh` instala o kit em `.bot/` e configura multiplas plataformas
 - `scripts/` inclui utilitarios reais, como geracao de imagens via fal.ai
 - `src/` traz codigo de referencia pronto para reaproveitamento
-- `mcp-server/` expoe o kit inteiro como MCP server com 25 tools
+- `mcp-server/` expoe o kit inteiro como MCP server com 29 tools
+- `hooks/` implementa lifecycle hooks nativos para Claude Code (fallback via `policies/hooks.md`)
 
 ## MCP Server — Use o Kit de Qualquer Lugar
 
@@ -30,9 +31,9 @@ O kit agora tem um **MCP server proprio** que transforma todas as 32 skills em t
 
 | Bloco | Tools | Exemplos |
 |-------|-------|----------|
-| **Knowledge** | 12 | Classifica task, monta pipeline, entrega skills/policies/templates |
+| **Knowledge** | 14 | Classifica task, monta pipeline, scoring de ambiguidade, trailers de commit |
 | **Execution** | 6 | Busca concorrentes (Brave), scraping (Firecrawl/Playwright), gera imagens (fal.ai) |
-| **Persistence** | 7 | Salva/recupera artefatos e contexto, rastreia custo, consolida sessao, sugere proxima acao |
+| **Persistence** | 9 | Salva/recupera artefatos e contexto, rastreia custo, consolida sessao, learned skills |
 
 **Como usar:**
 
@@ -52,6 +53,25 @@ O kit agora tem um **MCP server proprio** que transforma todas as 32 skills em t
 ```
 
 Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP. Ver `mcp-server/README.md` para detalhes completos.
+
+## Hook System — Lifecycle Intelligence (Claude Code)
+
+O kit inclui hooks nativos para Claude Code que interceptam lifecycle events e injetam inteligencia automaticamente. Em outras plataformas (Copilot, Windsurf, Gemini CLI), as mesmas regras estao em `policies/hooks.md`.
+
+| Hook | Evento | O que faz |
+|------|--------|-----------|
+| `pre-execution-gate` | UserPromptSubmit | Detecta prompt vago, infere contexto e confirma antes de agir |
+| `keyword-detector` | UserPromptSubmit | Sanitiza input e injeta skill ou learned skill relevante |
+| `context-guard-stop` | Stop | Bloqueia stop quando contexto > 75%, sugere /compact |
+| `persistent-mode` | Stop | Bloqueia stop quando pipeline esta ativo |
+| `pre-tool-enforcer` | PreToolUse | Lembra de re-ler arquivo antes de editar em sessao longa |
+| `session-start` | SessionStart | Restaura estado da sessao anterior |
+| `post-tool-verifier` | PostToolUse | Detecta debugging patterns e sugere extracao de learned skill |
+
+**Como os hooks sao instalados:**
+O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `.claude/settings.json`.
+
+**Learned Skills:** `.bot/learned-skills/` acumula conhecimento especifico do projeto — insights nao-Googleaveis descobertos durante debugging. Injetados automaticamente em sessoes futuras via keyword matching.
 
 ## O Que o Sistema Faz
 
