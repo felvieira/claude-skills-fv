@@ -73,6 +73,19 @@ O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `
 
 **Learned Skills:** `.bot/learned-skills/` acumula conhecimento especifico do projeto — insights nao-Googleaveis descobertos durante debugging. Injetados automaticamente em sessoes futuras via keyword matching.
 
+## Ferramentas de Code Intelligence (Opcionais)
+
+O kit detecta e recomenda automaticamente ferramentas que reduzem drasticamente o consumo de tokens na exploracao de codigo. O hook `pre-tool-enforcer` sugere a ferramenta correta quando o agente tenta usar Grep/Read/Glob.
+
+| Ferramenta | Tipo | O que faz | Token savings | Licenca |
+|---|---|---|---|---|
+| [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | MCP server | Knowledge graph AST — call paths, architecture, 66 linguagens | ~120x | MIT |
+| [cymbal](https://github.com/1broseidon/cymbal) | CLI | Symbol navigator — investigate, impact, structure, 24 linguagens | ~62-100% | MIT |
+| [ory/lumen](https://github.com/ory/lumen) | Claude plugin | Busca semantica local via embeddings | ~26-39% | Apache 2.0 |
+
+**Instalacao:** `setup/install.sh` Step 8 (opcional) ou manual.
+**Hierarquia:** Graph > Symbol > Semantic > Grep/Read — ver `policies/code-exploration.md`.
+
 ## O Que o Sistema Faz
 
 ```mermaid
