@@ -53,11 +53,43 @@ Para auditorias mais completas e revisoes incrementais, consultar `docs/skill-gu
 
 ## Arquivo de Persistencia
 
-Persistir em `docs/repo-audit/current.md`.
+Persistir em `docs/repo-audit/current.md` (indice) e splits dinamicos no mesmo diretorio.
 
-Se o kit estiver instalado em `.bot/`, persistir em `.bot/docs/repo-audit/current.md`.
+Se o kit estiver instalado em `.bot/`, persistir em `.bot/docs/repo-audit/`.
 
 Se houver reauditoria relevante, arquivar snapshots curtos em `docs/repo-audit/history/`.
+
+## Output Split
+
+Ao auditar, gerar arquivos focados por tipo alem do `current.md`. Decidir quais gerar baseado no que o repo contem — nao gerar arquivos vazios.
+
+### Catalogo de Splits
+
+| Arquivo | Gerar quando detectar | Conteudo |
+|---|---|---|
+| `current.md` | **sempre** | Indice enxuto: stack, convencoes, riscos, gaps. Aponta para splits: `Ver routes.md para endpoints` |
+| `routes.md` | API routes (Express, Fastify, Next API, Django urls, Flask, etc.) | Endpoints por recurso, metodos HTTP, middlewares, auth |
+| `schema.md` | ORM/schema (Prisma, Drizzle, TypeORM, Sequelize, migrations) | Models, campos-chave, relacoes FK, enums |
+| `components.md` | Framework de componentes (React, Vue, Svelte, Angular) | Arvore por feature, props, client/server, lazy |
+| `services.md` | Camada de servicos/usecases (classes com patterns service/usecase) | Servicos, dependencias, metodos publicos |
+| `infra.md` | Docker, CI/CD, Terraform, k8s, serverless | Containers, pipelines, environments, secrets ref |
+
+### Regras do Split
+
+1. **current.md nunca duplica conteudo dos splits** — apenas referencia com ponteiro
+2. **Cada split cabe em ~200 linhas** — se passar, resumir mais agressivamente
+3. **Notacao compacta** — usar `fn nome(args): tipo`, `[auth,db]` pra tags, `(c)` pra client components
+4. **Geracao incremental** — so re-gerar split se arquivos relevantes mudaram (verificar via git diff)
+5. **Path dos splits** — mesmo diretorio do `current.md` (`docs/repo-audit/` ou `.bot/docs/repo-audit/`)
+
+### Deteccao
+
+Para decidir quais splits gerar, verificar:
+- `routes.md`: existencia de `app.get/post/put/delete`, `router.`, `@Get/@Post`, `urlpatterns`, `api/` dir com handlers
+- `schema.md`: existencia de `schema.prisma`, `*.entity.ts`, `models.py`, diretorio `migrations/`
+- `components.md`: existencia de `.tsx`/`.vue`/`.svelte` em `src/components/` ou `app/`
+- `services.md`: existencia de `*Service.ts`, `*UseCase.ts`, `services/` dir, `usecases/` dir
+- `infra.md`: existencia de `Dockerfile`, `.github/workflows/`, `terraform/`, `k8s/`, `docker-compose`
 
 ## Quando Reauditar
 
@@ -87,7 +119,8 @@ Usar `templates/audit.md` como base e manter secoes curtas, atualizaveis e reuti
 
 ## Evidencia de Conclusao
 
-- `docs/repo-audit/current.md` criado ou atualizado
+- `docs/repo-audit/current.md` criado ou atualizado (indice enxuto)
+- splits relevantes gerados (`routes.md`, `schema.md`, etc.) conforme deteccao
 - stack e convencoes reais mapeadas
 - riscos e gaps principais registrados
 
