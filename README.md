@@ -64,7 +64,7 @@ O kit inclui hooks nativos para Claude Code que interceptam lifecycle events e i
 | `keyword-detector` | UserPromptSubmit | Sanitiza input e injeta skill ou learned skill relevante |
 | `context-guard-stop` | Stop | Bloqueia stop quando contexto > 75%, sugere /compact |
 | `persistent-mode` | Stop | Bloqueia stop quando pipeline esta ativo |
-| `pre-tool-enforcer` | PreToolUse | Lembra de re-ler arquivo antes de editar em sessao longa |
+| `pre-tool-enforcer` | PreToolUse | Re-ler antes de editar + sugere code intelligence tools quando disponíveis |
 | `session-start` | SessionStart | Restaura estado da sessao anterior |
 | `post-tool-verifier` | PostToolUse | Detecta debugging patterns e sugere extracao de learned skill |
 
@@ -278,6 +278,10 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 │   └── skill-guides/
 ├── evals/
 │   └── flows/
+├── hooks/
+│   ├── hooks.json
+│   ├── config.json
+│   └── scripts/
 ├── patterns/
 │   └── ai-integration/
 ├── policies/
@@ -328,7 +332,10 @@ repo-consumidor/
     ├── README.md
     ├── commands/
     ├── docs/
+    ├── .env.tools        ← ferramentas de code intelligence detectadas
     ├── evals/
+    ├── hooks/            ← lifecycle hooks para Claude Code
+    ├── learned-skills/   ← conhecimento especifico do projeto
     ├── mcp-server/       ← copiado e compilado pelo install.sh
     ├── patterns/
     ├── policies/
@@ -353,13 +360,13 @@ bash .bot/setup/install.sh
 O instalador em `setup/install.sh`:
 
 1. verifica Node.js e opcionalmente Python e uv
-2. copia o kit para `.bot/` — incluindo `mcp-server/` — e compila o MCP (`npm install && npm run build`)
+2. copia o kit para `.bot/` — incluindo `mcp-server/`, `hooks/` e `learned-skills/` — e compila o MCP
 3. gera `CLAUDE.md`, `AGENTS.md` e `GEMINI.md`
 4. cria configs para Claude Code, Copilot, Windsurf, Gemini CLI e Antigravity
 5. configura MCPs essenciais e opcionais
 6. configura API keys (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) no `.env.local`
-7. oferece autenticacao NotebookLM
-8. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
+7. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
+8. oferece instalacao opcional de ferramentas de code intelligence (codebase-memory, cymbal, lumen)
 
 ## API Keys
 
