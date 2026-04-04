@@ -63,3 +63,20 @@ Antes de editar arquivo em sessao longa (10+ mensagens):
 - Validar que o conteudo lido ainda e o atual
 
 Em Claude Code: `pre-tool-enforcer.mjs` injeta este lembrete automaticamente.
+
+## Code Exploration
+
+Quando ferramentas de code intelligence estiverem disponiveis, preferir na seguinte ordem:
+
+1. **Graph** (codebase-memory): `search_graph`, `trace_call_path`, `get_architecture`
+2. **Symbol** (cymbal): `investigate`, `structure`, `impact`, `trace`
+3. **Semantic** (lumen): `semantic_search`
+4. **Bruto** (Grep/Glob/Read): apenas como fallback
+
+Nunca ler arquivo inteiro para entender estrutura. Nunca grep por nome de funcao para achar callers.
+
+Se nenhuma ferramenta externa esta instalada, explorar normalmente com Grep/Glob/Read.
+
+Ver `policies/code-exploration.md` para regras completas e exemplos.
+
+Em Claude Code: `pre-tool-enforcer.mjs` sugere a ferramenta correta automaticamente.
