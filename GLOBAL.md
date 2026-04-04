@@ -13,6 +13,7 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - Usar ferramentas reais do ambiente atual
 - Persistir decisoes, nao conversa excessiva
 - Seguir `policies/cost-optimization.md` para maximizar eficiencia de tokens, cache e API calls
+- Preferir ferramentas de code intelligence (graph, symbol, semantic) sobre Grep/Read bruto — ver `policies/code-exploration.md`
 
 ## Hierarquia de Instrucoes
 1. `GLOBAL.md`
