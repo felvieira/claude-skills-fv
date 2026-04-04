@@ -58,3 +58,7 @@ Quando usar: apenas quando niveis 1-3 nao estao disponíveis ou nao resolveram.
 O arquivo `.bot/.env.tools` indica quais ferramentas estao instaladas. Gerado pelo `setup/install.sh`.
 
 Em Claude Code, o hook `pre-tool-enforcer.mjs` detecta automaticamente e sugere a ferramenta correta quando o agente tenta usar Grep/Read/Glob.
+
+## Referencia Expandida
+
+Para exemplos detalhados de cada ferramenta e anti-patterns, consultar `docs/skill-guides/code-exploration.md`.

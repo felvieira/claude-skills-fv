@@ -1,0 +1,47 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: mcp-server/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python test dependency
+        run: python -m pip install pytest
+
+      - name: Run Python tests
+        run: pytest scripts/tests -q
+
+      - name: Run consistency check
+        run: node scripts/check-consistency.mjs
+
+      - name: Run installer smoke test
+        run: bash scripts/smoke-install.sh
+
+      - name: Install MCP server dependencies
+        working-directory: mcp-server
+        run: npm ci
+
+      - name: Build MCP server
+        working-directory: mcp-server
+        run: npm run build

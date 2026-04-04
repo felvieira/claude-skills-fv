@@ -25,7 +25,7 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 
 ## MCP Server — Use o Kit de Qualquer Lugar
 
-O kit agora tem um **MCP server proprio** que transforma todas as 32 skills em tools acessiveis de qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
+O kit agora tem um **MCP server proprio** que expoe 29 tools apoiadas pelas 32 skills para qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
 
 **O que o MCP faz:**
 
@@ -69,7 +69,7 @@ O kit inclui hooks nativos para Claude Code que interceptam lifecycle events e i
 | `post-tool-verifier` | PostToolUse | Detecta debugging patterns e sugere extracao de learned skill |
 
 **Como os hooks sao instalados:**
-O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `.claude/settings.json`.
+O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `.claude/settings.json` depois de criar ou mesclar a config.
 
 **Learned Skills:** `.bot/learned-skills/` acumula conhecimento especifico do projeto — insights nao-Googleaveis descobertos durante debugging. Injetados automaticamente em sessoes futuras via keyword matching.
 
@@ -357,6 +357,8 @@ bash setup/install.sh /caminho/do/projeto
 bash .bot/setup/install.sh
 ```
 
+Quando instalado em `.bot/`, o kit inclui `setup/`, entao o comando acima funciona sem depender do repo original.
+
 O instalador em `setup/install.sh`:
 
 1. verifica Node.js e opcionalmente Python e uv
@@ -397,6 +399,10 @@ O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
 ## MCPs Recomendados
 
 ### Essenciais
+
+O MCP `dev-team-kit` hoje expoe 29 tools apoiadas pelas 32 skills do kit.
+
+Na tabela abaixo, considere o `dev-team-kit` como 29 tools apoiadas pelas 32 skills.
 
 | MCP | Estado padrao | Uso |
 |---|---|---|
@@ -499,6 +505,9 @@ Os artefatos principais ficam em:
 
 ```bash
 pytest scripts/tests -q
+node scripts/check-consistency.mjs
+cd mcp-server && npm run build
+bash scripts/smoke-install.sh
 ```
 
 ## Regras Globais

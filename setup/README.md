@@ -18,7 +18,7 @@ O script de setup instala o Dev Team Kit em qualquer repositorio consumidor e co
 
 ## Como usar
 
-Dentro do proprio repo:
+Dentro do repo consumidor ja com o kit em `.bot/`:
 
 ```bash
 bash .bot/setup/install.sh
@@ -30,7 +30,7 @@ Ou apontando para outro repo:
 bash setup/install.sh /path/to/repo
 ```
 
-O script detecta automaticamente as plataformas instaladas e gera os arquivos de configuracao correspondentes.
+O script detecta automaticamente as plataformas instaladas, gera os arquivos de configuracao correspondentes e registra os hooks no `.claude/settings.json` depois de criar ou mesclar a config.
 
 ## Plataformas configuradas
 
@@ -45,6 +45,17 @@ O script detecta automaticamente as plataformas instaladas e gera os arquivos de
 ## MCPs Essenciais
 
 Instalados automaticamente pelo setup. Nao precisam de configuracao extra.
+
+### dev-team-kit
+
+MCP local do proprio kit. Aponta para `.bot/mcp-server/dist/index.js` e expoe as tools de roteamento, governance, execucao e persistencia.
+
+```json
+{
+  "command": "node",
+  "args": [".bot/mcp-server/dist/index.js"]
+}
+```
 
 ### context7
 
@@ -149,6 +160,8 @@ repo/
 ├── CLAUDE.md
 └── GEMINI.md
 ```
+
+E dentro de `.bot/` ficam tambem `setup/`, `hooks/`, `learned-skills/` e `mcp-server/`, permitindo reexecutar `bash .bot/setup/install.sh` sem depender do repo original.
 
 ## Troubleshooting
 

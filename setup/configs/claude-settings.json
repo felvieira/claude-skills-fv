@@ -1,5 +1,15 @@
 {
   "mcpServers": {
+    "dev-team-kit": {
+      "command": "node",
+      "args": [".bot/mcp-server/dist/index.js"],
+      "disabled": false,
+      "env": {
+        "FAL_KEY": "${FAL_KEY}",
+        "BRAVE_SEARCH_KEY": "${BRAVE_SEARCH_KEY}",
+        "FIRECRAWL_KEY": "${FIRECRAWL_KEY}"
+      }
+    },
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],

@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe as 32 skills do Dev Team Kit como tools para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 29 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -65,9 +65,9 @@ Mesmo formato acima.
 
 Prioridade de leitura: env vars > .env.local > .env
 
-## Tools (25)
+## Tools (29)
 
-### Knowledge (12)
+### Knowledge (15)
 
 | Tool | O que faz |
 |------|-----------|
@@ -83,6 +83,9 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_recommend_model` | LLM Selector (Fast/Balanced/Deep) |
 | `devkit_get_skill_matrix` | Dependencias entre skills |
 | `devkit_get_eval_cases` | Casos de teste |
+| `devkit_ambiguity_score` | Score de ambiguidade e perguntas faltantes |
+| `devkit_suggest_trailers` | Sugere commit trailers a partir do diff |
+| `devkit_context_guard` | Avalia uso de contexto antes de encerrar |
 
 ### Execution (6)
 
@@ -95,7 +98,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_generate_image` | Gera imagem via fal.ai | FAL_KEY |
 | `devkit_analyze_visual_prompt` | Prompt de analise visual | — |
 
-### Persistence (7)
+### Persistence (8)
 
 | Tool | O que faz |
 |------|-----------|
@@ -106,6 +109,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_track_cost` | Rastreia custo de tokens e API calls da sessao |
 | `devkit_session_summary` | Gera resumo da sessao para handoff |
 | `devkit_smart_suggestions` | Sugere proxima acao baseado no estado do projeto |
+| `devkit_learned_skills` | Lista, le e salva learned skills do projeto |
 
 ## Desenvolvimento
 

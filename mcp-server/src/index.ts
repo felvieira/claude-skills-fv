@@ -18,7 +18,7 @@ import { buildPipeline, getNextStep } from "./lib/pipeline-engine.js";
 // Load .env.local fallback
 import fs from "fs";
 import path from "path";
-import { KIT_ROOT } from "./constants.js";
+import { KIT_ROOT, resolveConsumerProjectRoot } from "./constants.js";
 
 function loadEnvFile() {
   for (const envFile of [".env.local", ".env"]) {
@@ -962,7 +962,7 @@ server.registerTool(
     annotations: { readOnlyHint: true },
   },
   async ({ project_path, current_context }) => {
-    const base = project_path || KIT_ROOT;
+    const base = resolveConsumerProjectRoot(project_path);
     const suggestions: Array<{
       action: string;
       skill_number: string;

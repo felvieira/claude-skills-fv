@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Dev Team Kit — Installer
+# Dev Team Kit - Installer
 # ============================================================================
-# Installs the kit into a consumer repo and configures ALL platforms + MCPs.
+# Installs the kit into a consumer repo and configures all platforms + MCPs.
 #
 # Usage:
 #   bash setup/install.sh [target-dir]
 #
-# On Linux/macOS:  chmod +x setup/install.sh
+# On Linux/macOS: chmod +x setup/install.sh
 # ============================================================================
 
 set -euo pipefail
@@ -41,16 +41,17 @@ SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")/.." && pwd)"
 
 TARGET_DIR="${1:-.}"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+BOT_DIR="$TARGET_DIR/.bot"
 
 echo ""
-echo "${BOLD}Dev Team Kit — Installer${RESET}"
+echo "${BOLD}Dev Team Kit - Installer${RESET}"
 echo "Kit:    $SCRIPT_DIR"
 echo "Target: $TARGET_DIR"
 
 # ---------------------------------------------------------------------------
 # Step 1: Prerequisites
 # ---------------------------------------------------------------------------
-step "Step 1/7: Checking prerequisites"
+step "Step 1/8: Checking prerequisites"
 
 HAS_NODE=false; HAS_PYTHON=false; HAS_UV=false; HAS_JQ=false
 DETECTED_IDES=()
@@ -58,7 +59,7 @@ DETECTED_IDES=()
 if command -v node &>/dev/null; then
   ok "Node.js $(node --version)"; HAS_NODE=true
 else
-  err "Node.js not found — REQUIRED for MCP servers"
+  err "Node.js not found - required for MCP servers"
   err "Install: https://nodejs.org/"
   exit 1
 fi
@@ -68,24 +69,23 @@ if command -v python3 &>/dev/null; then
 elif command -v python &>/dev/null; then
   ok "Python $(python --version 2>&1 | cut -d' ' -f2)"; HAS_PYTHON=true
 else
-  warn "Python not found — optional MCPs (fetch, notebooklm) unavailable"
+  warn "Python not found - optional MCPs (fetch, notebooklm) unavailable"
 fi
 
 if command -v uv &>/dev/null; then
   ok "uv $(uv --version 2>&1 | head -1)"; HAS_UV=true
 else
-  [[ "$HAS_PYTHON" == true ]] && warn "uv not found — notebooklm MCP unavailable (install: pip install uv)"
+  [[ "$HAS_PYTHON" == true ]] && warn "uv not found - notebooklm MCP unavailable (install: pip install uv)"
 fi
 
 command -v jq &>/dev/null && HAS_JQ=true
 
-# Detect installed IDEs
-command -v claude &>/dev/null   && DETECTED_IDES+=("Claude Code")
-command -v code &>/dev/null     && DETECTED_IDES+=("VS Code (Copilot)")
-command -v windsurf &>/dev/null && DETECTED_IDES+=("Windsurf")
-command -v gemini &>/dev/null   && DETECTED_IDES+=("Gemini CLI")
+command -v claude &>/dev/null      && DETECTED_IDES+=("Claude Code")
+command -v code &>/dev/null        && DETECTED_IDES+=("VS Code (Copilot)")
+command -v windsurf &>/dev/null    && DETECTED_IDES+=("Windsurf")
+command -v gemini &>/dev/null      && DETECTED_IDES+=("Gemini CLI")
 command -v antigravity &>/dev/null && DETECTED_IDES+=("Antigravity")
-command -v cursor &>/dev/null   && DETECTED_IDES+=("Cursor")
+command -v cursor &>/dev/null      && DETECTED_IDES+=("Cursor")
 
 if [[ ${#DETECTED_IDES[@]} -gt 0 ]]; then
   ok "Detected: ${DETECTED_IDES[*]}"
@@ -114,75 +114,79 @@ safe_copy_dir() {
   ok "Copied: $dest/"
 }
 
-# ---------------------------------------------------------------------------
-# Step 2: Copy kit to .bot/ (excluding setup/ to avoid redundancy)
-# ---------------------------------------------------------------------------
-step "Step 2/7: Copying kit to .bot/"
+register_claude_hooks() {
+  local hooks_json="$BOT_DIR/hooks/hooks.json"
+  local claude_cfg="$TARGET_DIR/.claude/settings.json"
 
-BOT_DIR="$TARGET_DIR/.bot"
+  if [[ ! -f "$hooks_json" ]]; then
+    return 0
+  fi
+
+  if [[ ! -f "$claude_cfg" ]]; then
+    warn ".claude/settings.json not found - hooks not registered"
+    return 0
+  fi
+
+  info "Registering hooks in .claude/settings.json..."
+  node -e "
+    const fs = require('fs');
+    const hooksReg = JSON.parse(fs.readFileSync('$hooks_json', 'utf8'));
+    const settings = JSON.parse(fs.readFileSync('$claude_cfg', 'utf8'));
+    const hooks = settings.hooks || {};
+    for (const [event, scripts] of Object.entries(hooksReg)) {
+      hooks[event] = hooks[event] || [];
+      for (const script of scripts) {
+        const cmd = { type: 'command', command: 'node .bot/' + script };
+        const exists = hooks[event].some((hook) => hook.command === cmd.command);
+        if (!exists) hooks[event].push(cmd);
+      }
+    }
+    settings.hooks = hooks;
+    fs.writeFileSync('$claude_cfg', JSON.stringify(settings, null, 2) + '\n');
+  " && ok "Hooks registered in .claude/settings.json" || warn "Failed to register hooks - add manually from .bot/hooks/hooks.json"
+}
+
+# ---------------------------------------------------------------------------
+# Step 2: Copy kit to .bot/
+# ---------------------------------------------------------------------------
+step "Step 2/8: Copying kit to .bot/"
+
 mkdir -p "$BOT_DIR"
 
 for item in GLOBAL.md README.md VERSION; do
   [[ -f "$SCRIPT_DIR/$item" ]] && safe_copy_file "$SCRIPT_DIR/$item" "$BOT_DIR/$item"
 done
 
-for dir in policies templates skills patterns scripts docs commands evals mcp-server; do
+for dir in policies templates skills patterns scripts docs commands evals setup mcp-server; do
   if [[ -d "$SCRIPT_DIR/$dir" ]]; then
     safe_copy_dir "$SCRIPT_DIR/$dir" "$BOT_DIR/$dir"
   fi
 done
 
-# Build MCP server after copying
 if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]; then
   info "Building MCP server (npm install + tsc)..."
   (cd "$BOT_DIR/mcp-server" && npm install --silent && npm run build --silent) \
     && ok "MCP server built successfully" \
-    || warn "MCP build failed — run manually: cd .bot/mcp-server && npm install && npm run build"
+    || warn "MCP build failed - run manually: cd .bot/mcp-server && npm install && npm run build"
 fi
 
 # ---------------------------------------------------------------------------
 # Step 2b: Install hooks + create learned-skills/
 # ---------------------------------------------------------------------------
-step "Step 2b/7: Installing hooks"
+step "Step 2b/8: Installing hooks"
 
-# Copy hooks to .bot/hooks/
 if [[ -d "$SCRIPT_DIR/hooks" ]]; then
   safe_copy_dir "$SCRIPT_DIR/hooks" "$BOT_DIR/hooks"
   ok "Copied hooks/ to .bot/hooks/"
 fi
 
-# Create learned-skills/ directory (empty — project-specific)
 mkdir -p "$BOT_DIR/learned-skills"
 ok "Created .bot/learned-skills/ (project-specific skill memory)"
-
-# Register hooks in .claude/settings.json
-CLAUDE_CFG="$TARGET_DIR/.claude/settings.json"
-if [[ -f "$BOT_DIR/hooks/hooks.json" ]] && [[ -f "$CLAUDE_CFG" ]]; then
-  info "Registering hooks in .claude/settings.json..."
-  node -e "
-    const fs = require('fs');
-    const hooksReg = JSON.parse(fs.readFileSync('$BOT_DIR/hooks/hooks.json', 'utf8'));
-    const settings = JSON.parse(fs.readFileSync('$CLAUDE_CFG', 'utf8'));
-    const hooks = settings.hooks || {};
-    for (const [event, scripts] of Object.entries(hooksReg)) {
-      hooks[event] = hooks[event] || [];
-      for (const script of scripts) {
-        const cmd = { type: 'command', command: 'node .bot/' + script };
-        const exists = hooks[event].some(h => h.command === cmd.command);
-        if (!exists) hooks[event].push(cmd);
-      }
-    }
-    settings.hooks = hooks;
-    fs.writeFileSync('$CLAUDE_CFG', JSON.stringify(settings, null, 2) + '\n');
-  " && ok "Hooks registered in .claude/settings.json" || warn "Failed to register hooks — add manually from hooks/hooks.json"
-elif [[ -f "$BOT_DIR/hooks/hooks.json" ]]; then
-  warn ".claude/settings.json not found — hooks not auto-registered. Add from .bot/hooks/hooks.json manually."
-fi
 
 # ---------------------------------------------------------------------------
 # Step 3: Generate entry-point files
 # ---------------------------------------------------------------------------
-step "Step 3/7: Generating entry points"
+step "Step 3/8: Generating entry points"
 
 for mapping in \
   "templates/CLAUDE-root.md:CLAUDE.md" \
@@ -196,17 +200,14 @@ done
 # ---------------------------------------------------------------------------
 # Step 4: Generate platform configs
 # ---------------------------------------------------------------------------
-step "Step 4/7: Generating platform configs"
+step "Step 4/8: Generating platform configs"
 
-# GitHub Copilot
 [[ -f "$SCRIPT_DIR/setup/configs/copilot-instructions.md" ]] && \
   safe_copy_file "$SCRIPT_DIR/setup/configs/copilot-instructions.md" "$TARGET_DIR/.github/copilot-instructions.md"
 
-# Windsurf rule
 [[ -f "$SCRIPT_DIR/setup/configs/windsurf-rule.md" ]] && \
   safe_copy_file "$SCRIPT_DIR/setup/configs/windsurf-rule.md" "$TARGET_DIR/.windsurf/rules/dev-team-kit.md"
 
-# Antigravity skills (copy, not symlink — Windows compat)
 if [[ -d "$SCRIPT_DIR/skills" ]]; then
   AGENT_DIR="$TARGET_DIR/.agent/skills"
   mkdir -p "$AGENT_DIR"
@@ -221,19 +222,17 @@ if [[ -d "$SCRIPT_DIR/skills" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Step 5: Configure MCPs for ALL platforms
+# Step 5: Configure MCPs for all platforms
 # ---------------------------------------------------------------------------
-step "Step 5/7: Configuring MCP servers"
+step "Step 5/8: Configuring MCP servers"
 
 MCP_TEMPLATE="$SCRIPT_DIR/setup/configs/claude-settings.json"
 
-# --- Claude Code: .claude/settings.json ---
 if [[ -f "$MCP_TEMPLATE" ]]; then
   CLAUDE_CFG="$TARGET_DIR/.claude/settings.json"
   mkdir -p "$TARGET_DIR/.claude"
 
   if [[ -f "$CLAUDE_CFG" ]]; then
-    # Merge — preserve existing, add new MCPs
     if [[ "$HAS_JQ" == true ]]; then
       MERGED=$(jq -s '.[0] as $e | .[1] as $n | $e * {mcpServers: (($e.mcpServers // {}) + ($n.mcpServers // {}))}' \
         "$CLAUDE_CFG" "$MCP_TEMPLATE")
@@ -241,11 +240,11 @@ if [[ -f "$MCP_TEMPLATE" ]]; then
       ok "Merged MCPs into .claude/settings.json"
     else
       node -e "
-        const fs=require('fs');
-        const e=JSON.parse(fs.readFileSync('$CLAUDE_CFG','utf8'));
-        const n=JSON.parse(fs.readFileSync('$MCP_TEMPLATE','utf8'));
-        e.mcpServers={...(e.mcpServers||{}),...(n.mcpServers||{})};
-        fs.writeFileSync('$CLAUDE_CFG',JSON.stringify(e,null,2)+'\n');
+        const fs = require('fs');
+        const existing = JSON.parse(fs.readFileSync('$CLAUDE_CFG', 'utf8'));
+        const incoming = JSON.parse(fs.readFileSync('$MCP_TEMPLATE', 'utf8'));
+        existing.mcpServers = { ...(existing.mcpServers || {}), ...(incoming.mcpServers || {}) };
+        fs.writeFileSync('$CLAUDE_CFG', JSON.stringify(existing, null, 2) + '\n');
       "
       ok "Merged MCPs into .claude/settings.json (via Node)"
     fi
@@ -255,7 +254,8 @@ if [[ -f "$MCP_TEMPLATE" ]]; then
   fi
 fi
 
-# --- Windsurf: .windsurf/mcp.json ---
+register_claude_hooks
+
 WINDSURF_MCP="$TARGET_DIR/.windsurf/mcp.json"
 if [[ -f "$MCP_TEMPLATE" ]] && [[ ! -f "$WINDSURF_MCP" ]]; then
   mkdir -p "$TARGET_DIR/.windsurf"
@@ -265,7 +265,6 @@ elif [[ -f "$WINDSURF_MCP" ]]; then
   warn "Exists, skipping: .windsurf/mcp.json"
 fi
 
-# --- Antigravity/Gemini CLI: .gemini/settings.json ---
 GEMINI_CFG="$TARGET_DIR/.gemini/settings.json"
 if [[ -f "$MCP_TEMPLATE" ]]; then
   mkdir -p "$TARGET_DIR/.gemini"
@@ -277,11 +276,11 @@ if [[ -f "$MCP_TEMPLATE" ]]; then
       ok "Merged MCPs into .gemini/settings.json"
     else
       node -e "
-        const fs=require('fs');
-        const e=JSON.parse(fs.readFileSync('$GEMINI_CFG','utf8'));
-        const n=JSON.parse(fs.readFileSync('$MCP_TEMPLATE','utf8'));
-        e.mcpServers={...(e.mcpServers||{}),...(n.mcpServers||{})};
-        fs.writeFileSync('$GEMINI_CFG',JSON.stringify(e,null,2)+'\n');
+        const fs = require('fs');
+        const existing = JSON.parse(fs.readFileSync('$GEMINI_CFG', 'utf8'));
+        const incoming = JSON.parse(fs.readFileSync('$MCP_TEMPLATE', 'utf8'));
+        existing.mcpServers = { ...(existing.mcpServers || {}), ...(incoming.mcpServers || {}) };
+        fs.writeFileSync('$GEMINI_CFG', JSON.stringify(existing, null, 2) + '\n');
       "
       ok "Merged MCPs into .gemini/settings.json (via Node)"
     fi
@@ -294,9 +293,8 @@ fi
 # ---------------------------------------------------------------------------
 # Step 6: Install optional MCP dependencies
 # ---------------------------------------------------------------------------
-step "Step 6/7: Installing MCP dependencies"
+step "Step 6/8: Installing MCP dependencies"
 
-# pip-based MCPs (only if Python available)
 if [[ "$HAS_PYTHON" == true ]]; then
   PIP_CMD="pip"
   command -v pip3 &>/dev/null && PIP_CMD="pip3"
@@ -305,20 +303,22 @@ if [[ "$HAS_PYTHON" == true ]]; then
     ok "mcp-server-fetch already installed"
   else
     info "Installing mcp-server-fetch..."
-    $PIP_CMD install mcp-server-fetch --quiet 2>/dev/null && ok "Installed mcp-server-fetch" || warn "Failed to install mcp-server-fetch (run manually: pip install mcp-server-fetch)"
+    $PIP_CMD install mcp-server-fetch --quiet 2>/dev/null \
+      && ok "Installed mcp-server-fetch" \
+      || warn "Failed to install mcp-server-fetch (run manually: pip install mcp-server-fetch)"
   fi
 fi
 
-# uv-based MCPs
 if [[ "$HAS_UV" == true ]]; then
   if uv tool list 2>/dev/null | grep -q notebooklm-mcp-cli; then
     ok "notebooklm-mcp-cli already installed"
   else
     info "Installing notebooklm-mcp-cli..."
-    uv tool install notebooklm-mcp-cli 2>/dev/null && ok "Installed notebooklm-mcp-cli" || warn "Failed (run manually: uv tool install notebooklm-mcp-cli)"
+    uv tool install notebooklm-mcp-cli 2>/dev/null \
+      && ok "Installed notebooklm-mcp-cli" \
+      || warn "Failed (run manually: uv tool install notebooklm-mcp-cli)"
   fi
 
-  # NotebookLM authentication — needs browser login
   if command -v nlm &>/dev/null; then
     echo ""
     info "NotebookLM MCP requires Google authentication."
@@ -328,30 +328,28 @@ if [[ "$HAS_UV" == true ]]; then
     NLM_ANSWER="${NLM_ANSWER:-Y}"
     if [[ "$NLM_ANSWER" =~ ^[Yy]$ ]]; then
       info "Opening browser for Google login... (waiting for you to finish)"
-      nlm login && ok "NotebookLM authenticated!" || warn "nlm login failed — run manually later: nlm login"
+      nlm login && ok "NotebookLM authenticated!" || warn "nlm login failed - run manually later: nlm login"
     else
       warn "Skipped. Run 'nlm login' later to authenticate NotebookLM."
     fi
   fi
 fi
 
-# npx-based MCPs are auto-resolved on first use — no install needed
 ok "npx MCPs (context7, playwright, fal) auto-install on first use"
 
 # ---------------------------------------------------------------------------
 # Step 6b: API Keys setup
 # ---------------------------------------------------------------------------
-step "Step 6b/7: API Keys"
+step "Step 6b/8: API Keys"
 
 ENV_FILE="$TARGET_DIR/.env.local"
 
-# Helper to ask and save a key
 ask_key() {
   local key_name="$1" description="$2" url="$3" required="$4"
   echo ""
   info "$description"
   info "Obter key em: $url"
-  [[ "$required" == "optional" ]] && info "(Opcional — tem fallback gratuito)"
+  [[ "$required" == "optional" ]] && info "(Opcional - tem fallback gratuito)"
   echo ""
   read -r -p "  Inserir $key_name agora? [Y/n] " KEY_ANSWER
   KEY_ANSWER="${KEY_ANSWER:-Y}"
@@ -372,28 +370,24 @@ ask_key() {
   fi
 }
 
-# FAL_KEY — needed for Image Generator (skill 17) and MCP moodboard generation
 ask_key "FAL_KEY" \
   "Image Generator (skill 17) e MCP usam fal.ai para gerar imagens e moodboards." \
   "https://fal.ai/dashboard/keys" \
   "recommended"
 
-# BRAVE_SEARCH_KEY — needed for Design Intelligence (skill 29) and MCP competitor search
 ask_key "BRAVE_SEARCH_KEY" \
   "Design Intelligence (skill 29) e MCP usam Brave Search para pesquisar concorrentes e tendencias." \
   "https://brave.com/search/api/" \
   "recommended"
 
-# FIRECRAWL_KEY — optional, Playwright is the free fallback
 ask_key "FIRECRAWL_KEY" \
   "Firecrawl acelera scraping de paginas web (MCP e skill 29). Playwright e o fallback gratuito." \
   "https://firecrawl.dev/" \
   "optional"
 
-# Ensure .env.local is in .gitignore
 GITIGNORE="$TARGET_DIR/.gitignore"
 if [[ -f "$GITIGNORE" ]]; then
-  if ! grep -q "\.env\.local" "$GITIGNORE" 2>/dev/null; then
+  if ! grep -q "^\.env\.local$" "$GITIGNORE" 2>/dev/null; then
     echo ".env.local" >> "$GITIGNORE"
   fi
 fi
@@ -403,7 +397,6 @@ fi
 # ---------------------------------------------------------------------------
 step "Step 7/8: Finishing up"
 
-# Add .bot/ to .gitignore if not already there
 GITIGNORE="$TARGET_DIR/.gitignore"
 if [[ -f "$GITIGNORE" ]]; then
   if ! grep -q "^\.bot/" "$GITIGNORE" 2>/dev/null; then
@@ -415,20 +408,25 @@ if [[ -f "$GITIGNORE" ]]; then
   else
     ok ".bot/ already in .gitignore"
   fi
+
+  if ! grep -q "^\.env\.local$" "$GITIGNORE" 2>/dev/null; then
+    echo ".env.local" >> "$GITIGNORE"
+    ok "Added .env.local to .gitignore"
+  fi
 else
   cat > "$GITIGNORE" <<'GITEOF'
 # Dev Team Kit (installed via setup)
 .bot/
 .agent/skills/
+.env.local
 GITEOF
   ok "Created .gitignore with .bot/ exclusion"
 fi
 
-
 # ---------------------------------------------------------------------------
 # Step 8: Code Intelligence Tools (optional)
 # ---------------------------------------------------------------------------
-step "Step 8: Code Intelligence Tools (optional)"
+step "Step 8/8: Code Intelligence Tools (optional)"
 echo ""
 echo "  Estas ferramentas reduzem drasticamente o uso de tokens na exploracao de codigo."
 echo "  Todas sao opcionais. Enter pula."
@@ -436,11 +434,10 @@ echo ""
 
 ENV_TOOLS_FILE="$TARGET_DIR/.bot/.env.tools"
 cat > "$ENV_TOOLS_FILE" <<'ENVEOF'
-# Gerado por setup/install.sh — nao editar manualmente
+# Gerado por setup/install.sh - nao editar manualmente
 # Ferramentas de code intelligence detectadas
 ENVEOF
 
-# --- 1/3: codebase-memory-mcp ---
 CODEBASE_MEMORY_AVAILABLE=0
 if command -v codebase-memory-mcp &>/dev/null; then
   ok "codebase-memory-mcp ja instalado"
@@ -469,13 +466,12 @@ else
   fi
 fi
 
-# Register codebase-memory-mcp as MCP server if installed
 if [[ "$CODEBASE_MEMORY_AVAILABLE" == 1 ]]; then
   CLAUDE_SETTINGS="$TARGET_DIR/.claude/settings.json"
   if [[ -f "$CLAUDE_SETTINGS" ]]; then
     node -e "
       const fs = require('fs');
-      const s = JSON.parse(fs.readFileSync('$CLAUDE_SETTINGS','utf-8'));
+      const s = JSON.parse(fs.readFileSync('$CLAUDE_SETTINGS', 'utf-8'));
       if (!s.mcpServers) s.mcpServers = {};
       if (!s.mcpServers['codebase-memory']) {
         s.mcpServers['codebase-memory'] = {
@@ -488,7 +484,6 @@ if [[ "$CODEBASE_MEMORY_AVAILABLE" == 1 ]]; then
   fi
 fi
 
-# --- 2/3: cymbal ---
 CYMBAL_AVAILABLE=0
 if command -v cymbal &>/dev/null; then
   ok "cymbal ja instalado"
@@ -524,7 +519,6 @@ else
   fi
 fi
 
-# --- 3/3: ory/lumen ---
 LUMEN_AVAILABLE=0
 if claude plugin list 2>/dev/null | grep -q "lumen"; then
   ok "ory/lumen ja instalado"
@@ -548,13 +542,11 @@ else
   fi
 fi
 
-# --- Write .env.tools ---
 echo "CODEBASE_MEMORY_AVAILABLE=$CODEBASE_MEMORY_AVAILABLE" >> "$ENV_TOOLS_FILE"
 echo "CYMBAL_AVAILABLE=$CYMBAL_AVAILABLE" >> "$ENV_TOOLS_FILE"
 echo "LUMEN_AVAILABLE=$LUMEN_AVAILABLE" >> "$ENV_TOOLS_FILE"
 ok "Disponibilidade registrada em .bot/.env.tools"
 
-# Show tool summary
 TOOLS_INSTALLED=0
 [[ "$CODEBASE_MEMORY_AVAILABLE" == 1 ]] && ((TOOLS_INSTALLED++))
 [[ "$CYMBAL_AVAILABLE" == 1 ]] && ((TOOLS_INSTALLED++))
@@ -570,36 +562,34 @@ else
 fi
 echo ""
 
-# --- Summary ---
 echo ""
 echo "=================================================================="
 echo "${BOLD} Installation Complete${RESET}"
 echo "=================================================================="
 echo ""
 echo " ${GREEN}Platform configs:${RESET}"
-echo "   CLAUDE.md                       → Claude Code"
-echo "   AGENTS.md                       → Multi-agent (Copilot, Windsurf)"
-echo "   GEMINI.md                       → Antigravity / Gemini CLI"
-echo "   .github/copilot-instructions.md → GitHub Copilot"
-echo "   .windsurf/rules/dev-team-kit.md → Windsurf"
-echo "   .agent/skills/                  → Antigravity"
+echo "   CLAUDE.md                       -> Claude Code"
+echo "   AGENTS.md                       -> Multi-agent (Copilot, Windsurf)"
+echo "   GEMINI.md                       -> Antigravity / Gemini CLI"
+echo "   .github/copilot-instructions.md -> GitHub Copilot"
+echo "   .windsurf/rules/dev-team-kit.md -> Windsurf"
+echo "   .agent/skills/                  -> Antigravity"
 echo ""
 echo " ${GREEN}MCP servers configured in:${RESET}"
-echo "   .claude/settings.json           → Claude Code"
-echo "   .windsurf/mcp.json              → Windsurf"
-echo "   .gemini/settings.json           → Antigravity / Gemini CLI"
+echo "   .claude/settings.json           -> Claude Code"
+echo "   .windsurf/mcp.json              -> Windsurf"
+echo "   .gemini/settings.json           -> Antigravity / Gemini CLI"
 echo ""
-echo " ${GREEN}MCPs enabled:${RESET}  context7, playwright"
+echo " ${GREEN}MCPs enabled:${RESET}  dev-team-kit, context7, playwright"
 echo " ${YELLOW}MCPs disabled:${RESET} fal, fetch, notebooklm (ativar na config quando precisar)"
 echo ""
 
-# Manual steps
 echo " ${YELLOW}Passos manuais:${RESET}"
 
 MANUAL_STEPS=()
 [[ "$HAS_UV" != true ]] && [[ "$HAS_PYTHON" == true ]] && MANUAL_STEPS+=("  - notebooklm: instalar uv (${BOLD}pip install uv${RESET}), depois ${BOLD}uv tool install notebooklm-mcp-cli && nlm login${RESET}")
 [[ "$HAS_UV" != true ]] && [[ "$HAS_PYTHON" != true ]] && MANUAL_STEPS+=("  - notebooklm: instalar Python + uv, depois ${BOLD}uv tool install notebooklm-mcp-cli && nlm login${RESET}")
-MANUAL_STEPS+=("  - Configurar API keys no .env.local (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) — NUNCA commitar secrets")
+MANUAL_STEPS+=("  - Configurar API keys no .env.local (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) - nunca commitar secrets")
 MANUAL_STEPS+=("  - Rodar ${BOLD}Repo Auditor${RESET} na primeira sessao com o agente")
 
 for s in "${MANUAL_STEPS[@]}"; do

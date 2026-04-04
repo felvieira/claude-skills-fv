@@ -7,6 +7,19 @@ const __dirname = path.dirname(__filename);
 // Kit root is one level up from mcp-server/src/
 export const KIT_ROOT = path.resolve(__dirname, "..", "..");
 
+export function resolveConsumerProjectRoot(projectPath?: string): string {
+  if (projectPath) {
+    return path.resolve(projectPath);
+  }
+
+  // When the MCP server is installed inside .bot/, inspect the consumer repo root.
+  if (path.basename(KIT_ROOT) === ".bot") {
+    return path.dirname(KIT_ROOT);
+  }
+
+  return process.cwd();
+}
+
 export const PATHS = {
   skills: path.join(KIT_ROOT, "skills"),
   policies: path.join(KIT_ROOT, "policies"),
