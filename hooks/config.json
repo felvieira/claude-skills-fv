@@ -12,5 +12,10 @@
   "keyword_detector": {
     "max_learned_skills_per_session": 3,
     "informational_context_window": 80
+  },
+  "code_exploration": {
+    "suggest_on_tools": ["Read", "Grep", "Glob"],
+    "min_suggestions_interval_ms": 30000,
+    "env_file": ".bot/.env.tools"
   }
 }
