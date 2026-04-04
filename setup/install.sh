@@ -401,7 +401,7 @@ fi
 # ---------------------------------------------------------------------------
 # Step 7: .gitignore + Summary
 # ---------------------------------------------------------------------------
-step "Step 7/7: Finishing up"
+step "Step 7/8: Finishing up"
 
 # Add .bot/ to .gitignore if not already there
 GITIGNORE="$TARGET_DIR/.gitignore"
@@ -423,6 +423,152 @@ else
 GITEOF
   ok "Created .gitignore with .bot/ exclusion"
 fi
+
+
+# ---------------------------------------------------------------------------
+# Step 8: Code Intelligence Tools (optional)
+# ---------------------------------------------------------------------------
+step "Step 8: Code Intelligence Tools (optional)"
+echo ""
+echo "  Estas ferramentas reduzem drasticamente o uso de tokens na exploracao de codigo."
+echo "  Todas sao opcionais. Enter pula."
+echo ""
+
+ENV_TOOLS_FILE="$TARGET_DIR/.bot/.env.tools"
+cat > "$ENV_TOOLS_FILE" <<'ENVEOF'
+# Gerado por setup/install.sh — nao editar manualmente
+# Ferramentas de code intelligence detectadas
+ENVEOF
+
+# --- 1/3: codebase-memory-mcp ---
+CODEBASE_MEMORY_AVAILABLE=0
+if command -v codebase-memory-mcp &>/dev/null; then
+  ok "codebase-memory-mcp ja instalado"
+  CODEBASE_MEMORY_AVAILABLE=1
+else
+  printf "  [1/3] codebase-memory-mcp (knowledge graph AST, 66 linguagens)\n"
+  printf "        Instalar? [s/N] "
+  read -r INSTALL_CBM
+  if [[ "$INSTALL_CBM" =~ ^[sS]$ ]]; then
+    echo "  Instalando codebase-memory-mcp..."
+    if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "win32" ]]; then
+      if powershell -Command "irm https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.ps1 | iex" 2>/dev/null; then
+        CODEBASE_MEMORY_AVAILABLE=1
+        ok "codebase-memory-mcp instalado"
+      else
+        warn "Falha na instalacao. Instale manualmente: https://github.com/DeusData/codebase-memory-mcp"
+      fi
+    else
+      if curl -sSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash 2>/dev/null; then
+        CODEBASE_MEMORY_AVAILABLE=1
+        ok "codebase-memory-mcp instalado"
+      else
+        warn "Falha na instalacao. Instale manualmente: https://github.com/DeusData/codebase-memory-mcp"
+      fi
+    fi
+  fi
+fi
+
+# Register codebase-memory-mcp as MCP server if installed
+if [[ "$CODEBASE_MEMORY_AVAILABLE" == 1 ]]; then
+  CLAUDE_SETTINGS="$TARGET_DIR/.claude/settings.json"
+  if [[ -f "$CLAUDE_SETTINGS" ]]; then
+    node -e "
+      const fs = require('fs');
+      const s = JSON.parse(fs.readFileSync('$CLAUDE_SETTINGS','utf-8'));
+      if (!s.mcpServers) s.mcpServers = {};
+      if (!s.mcpServers['codebase-memory']) {
+        s.mcpServers['codebase-memory'] = {
+          command: 'codebase-memory-mcp',
+          args: ['--project-root', '.']
+        };
+      }
+      fs.writeFileSync('$CLAUDE_SETTINGS', JSON.stringify(s, null, 2));
+    " 2>/dev/null && ok "codebase-memory registrado em .claude/settings.json"
+  fi
+fi
+
+# --- 2/3: cymbal ---
+CYMBAL_AVAILABLE=0
+if command -v cymbal &>/dev/null; then
+  ok "cymbal ja instalado"
+  CYMBAL_AVAILABLE=1
+elif command -v docker &>/dev/null && docker image inspect 1broseidon/cymbal &>/dev/null 2>&1; then
+  ok "cymbal (Docker) ja disponivel"
+  CYMBAL_AVAILABLE=1
+else
+  printf "  [2/3] cymbal (symbol navigator CLI, 24 linguagens)\n"
+  printf "        Instalar via Docker? [s/N] "
+  read -r INSTALL_CYMBAL
+  if [[ "$INSTALL_CYMBAL" =~ ^[sS]$ ]]; then
+    if command -v docker &>/dev/null; then
+      echo "  Baixando cymbal via Docker..."
+      if docker pull 1broseidon/cymbal 2>/dev/null; then
+        CYMBAL_AVAILABLE=1
+        ok "cymbal instalado via Docker"
+        echo "  Uso: docker run --rm -v \"\$(pwd):/repo\" 1broseidon/cymbal investigate <symbol>"
+      else
+        warn "Falha no docker pull. Instale manualmente: https://github.com/1broseidon/cymbal"
+      fi
+    elif command -v go &>/dev/null; then
+      echo "  Docker nao encontrado. Tentando go install..."
+      if go install github.com/1broseidon/cymbal@latest 2>/dev/null; then
+        CYMBAL_AVAILABLE=1
+        ok "cymbal instalado via go install"
+      else
+        warn "Falha no go install. Instale manualmente: https://github.com/1broseidon/cymbal"
+      fi
+    else
+      warn "Docker e Go nao encontrados. Instale manualmente: https://github.com/1broseidon/cymbal"
+    fi
+  fi
+fi
+
+# --- 3/3: ory/lumen ---
+LUMEN_AVAILABLE=0
+if claude plugin list 2>/dev/null | grep -q "lumen"; then
+  ok "ory/lumen ja instalado"
+  LUMEN_AVAILABLE=1
+else
+  printf "  [3/3] ory/lumen (busca semantica local, requer Ollama)\n"
+  printf "        Instalar como Claude plugin? [s/N] "
+  read -r INSTALL_LUMEN
+  if [[ "$INSTALL_LUMEN" =~ ^[sS]$ ]]; then
+    if command -v claude &>/dev/null; then
+      echo "  Instalando lumen plugin..."
+      if claude plugin add ory/lumen 2>/dev/null; then
+        LUMEN_AVAILABLE=1
+        ok "ory/lumen instalado"
+      else
+        warn "Falha na instalacao. Instale manualmente: claude plugin add ory/lumen"
+      fi
+    else
+      warn "Claude CLI nao encontrado. Instale manualmente: claude plugin add ory/lumen"
+    fi
+  fi
+fi
+
+# --- Write .env.tools ---
+echo "CODEBASE_MEMORY_AVAILABLE=$CODEBASE_MEMORY_AVAILABLE" >> "$ENV_TOOLS_FILE"
+echo "CYMBAL_AVAILABLE=$CYMBAL_AVAILABLE" >> "$ENV_TOOLS_FILE"
+echo "LUMEN_AVAILABLE=$LUMEN_AVAILABLE" >> "$ENV_TOOLS_FILE"
+ok "Disponibilidade registrada em .bot/.env.tools"
+
+# Show tool summary
+TOOLS_INSTALLED=0
+[[ "$CODEBASE_MEMORY_AVAILABLE" == 1 ]] && ((TOOLS_INSTALLED++))
+[[ "$CYMBAL_AVAILABLE" == 1 ]] && ((TOOLS_INSTALLED++))
+[[ "$LUMEN_AVAILABLE" == 1 ]] && ((TOOLS_INSTALLED++))
+
+if [[ "$TOOLS_INSTALLED" -gt 0 ]]; then
+  echo ""
+  echo "  ${GREEN}$TOOLS_INSTALLED ferramenta(s) de code intelligence ativa(s).${RESET}"
+  echo "  O hook pre-tool-enforcer vai sugerir automaticamente quando apropriado."
+else
+  echo ""
+  echo "  Nenhuma ferramenta instalada. O kit funciona normalmente sem elas."
+fi
+echo ""
 
 # --- Summary ---
 echo ""
