@@ -30,6 +30,9 @@ async function main() {
     mcpIndex,
     mcpPackageRaw,
     claudeSettingsRaw,
+    preExecutionGate,
+    contextGuard,
+    keywordDetector,
   ] = await Promise.all([
     read("README.md"),
     read("setup/README.md"),
@@ -38,6 +41,9 @@ async function main() {
     read("mcp-server/src/index.ts"),
     read("mcp-server/package.json"),
     read("setup/configs/claude-settings.json"),
+    read("hooks/scripts/pre-execution-gate.mjs"),
+    read("hooks/scripts/context-guard-stop.mjs"),
+    read("hooks/scripts/keyword-detector.mjs"),
   ]);
 
   const toolCount = (mcpIndex.match(/server\.registerTool\(/g) || []).length;
@@ -46,17 +52,25 @@ async function main() {
 
   expect(rootReadme.includes(`com ${toolCount} tools`), `README.md should mention ${toolCount} tools`);
   expect(rootReadme.includes(`expoe ${toolCount} tools`) || rootReadme.includes(`expoe ${toolCount} tools apoiadas`), `README.md should describe the MCP as exposing ${toolCount} tools`);
-  expect(rootReadme.includes("Na tabela abaixo, considere o `dev-team-kit` como 29 tools apoiadas pelas 32 skills."), "README.md should clarify the dev-team-kit MCP table entry");
+  expect(rootReadme.includes(`Na tabela abaixo, considere o \`dev-team-kit\` como ${toolCount} tools apoiadas pelas ${skillCount} skills.`), "README.md should clarify the dev-team-kit MCP table entry");
   expect(rootReadme.includes("bash .bot/setup/install.sh"), "README.md should document running .bot/setup/install.sh");
   expect(rootReadme.includes("inclui `setup/`"), "README.md should state that setup/ is copied into .bot/");
+  expect(rootReadme.includes("--profile lean") && rootReadme.includes("--no-input"), "README.md should document non-interactive setup profiles");
 
   expect(setupReadme.includes("bash .bot/setup/install.sh"), "setup/README.md should document running .bot/setup/install.sh");
   expect(setupReadme.includes("dev-team-kit"), "setup/README.md should mention the dev-team-kit MCP");
+  expect(setupReadme.includes("--profile lean") && setupReadme.includes("--yes"), "setup/README.md should document installer profile flags");
 
   expect(mcpReadme.includes(`## Tools (${toolCount})`), `mcp-server/README.md should list ${toolCount} tools`);
   expect(mcpPackage.description.includes(`${toolCount} tools`), "mcp-server/package.json description should mention the tool count");
   expect(mcpPackage.description.includes(`${skillCount} skills`), "mcp-server/package.json description should mention the skill count");
   expect(mcpIndex.includes("resolveConsumerProjectRoot(project_path)"), "smart suggestions should resolve the consumer project root");
+  expect(preExecutionGate.includes("readHookConfig("), "pre-execution-gate should load config through the shared hook helper");
+  expect(contextGuard.includes("readHookConfig("), "context-guard should load config through the shared hook helper");
+  expect(keywordDetector.includes("summary:"), "keyword-detector should store a summarized learned-skill payload");
+  expect(!keywordDetector.includes("learnedSkill.content"), "keyword-detector should not inject full learned-skill content");
+  expect(mcpIndex.includes("bytes_read"), "track_cost telemetry should include bytes_read");
+  expect(mcpIndex.includes("large_read_count"), "track_cost telemetry should include large_read_count");
 
   const knowledgeMatch = mcpReadme.match(/### Knowledge \((\d+)\)/);
   const executionMatch = mcpReadme.match(/### Execution \((\d+)\)/);
@@ -72,6 +86,7 @@ async function main() {
   expect(installSh.includes("register_claude_hooks()"), "setup/install.sh should define register_claude_hooks()");
   expect(installSh.includes("register_claude_hooks"), "setup/install.sh should call register_claude_hooks");
   expect(installSh.includes(".env.local"), "setup/install.sh should protect .env.local");
+  expect(installSh.includes("--profile") && installSh.includes("--no-input") && installSh.includes("--yes"), "setup/install.sh should support non-interactive profile flags");
 
   const createdClaudeConfigIndex = installSh.indexOf('ok "Created .claude/settings.json"');
   const hookCallIndex = installSh.lastIndexOf("register_claude_hooks");

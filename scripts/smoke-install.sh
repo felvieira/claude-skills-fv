@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-(yes n || true) | bash "$ROOT_DIR/setup/install.sh" "$TMP_DIR"
+bash "$ROOT_DIR/setup/install.sh" --no-input --profile lean "$TMP_DIR"
 
 assert_file() {
   local file_path="$1"
@@ -29,6 +29,7 @@ assert_dir "$TMP_DIR/.bot/hooks"
 assert_dir "$TMP_DIR/.bot/learned-skills"
 assert_file "$TMP_DIR/.claude/settings.json"
 assert_file "$TMP_DIR/.gitignore"
+assert_file "$TMP_DIR/.bot/.env.tools"
 
 node -e "
   const fs = require('fs');

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync } from 'fs';
+import { readHookConfig } from './utils.mjs';
 
 const CONCRETE_SIGNALS = [
   /(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/,
@@ -65,11 +66,7 @@ process.stdin.on('end', () => {
 
   const score = scoreAmbiguity(prompt);
 
-  let cfg = { enrich_threshold: 0.40, block_threshold: 0.70 };
-  try {
-    const raw = JSON.parse(readFileSync('hooks/config.json', 'utf-8'));
-    if (raw.pre_execution_gate) Object.assign(cfg, raw.pre_execution_gate);
-  } catch {}
+  const cfg = readHookConfig('pre_execution_gate', { enrich_threshold: 0.40, block_threshold: 0.70 });
 
   if (score < cfg.enrich_threshold) {
     process.stdout.write(JSON.stringify({ continue: true }));

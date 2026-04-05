@@ -20,20 +20,20 @@ Este repositorio entrega um sistema completo para agentes compativeis com Claude
 - `setup/install.sh` instala o kit em `.bot/` e configura multiplas plataformas
 - `scripts/` inclui utilitarios reais, como geracao de imagens via fal.ai
 - `src/` traz codigo de referencia pronto para reaproveitamento
-- `mcp-server/` expoe o kit inteiro como MCP server com 29 tools
+- `mcp-server/` expoe o kit inteiro como MCP server com 32 tools
 - `hooks/` implementa lifecycle hooks nativos para Claude Code (fallback via `policies/hooks.md`)
 
 ## MCP Server — Use o Kit de Qualquer Lugar
 
-O kit agora tem um **MCP server proprio** que expoe 29 tools apoiadas pelas 32 skills para qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
+O kit agora tem um **MCP server proprio** que expoe 32 tools apoiadas pelas 32 skills para qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
 
 **O que o MCP faz:**
 
 | Bloco | Tools | Exemplos |
 |-------|-------|----------|
-| **Knowledge** | 14 | Classifica task, monta pipeline, scoring de ambiguidade, trailers de commit |
+| **Knowledge** | 14 | Classifica task, monta pipeline, monta context pack e resume diff |
 | **Execution** | 6 | Busca concorrentes (Brave), scraping (Firecrawl/Playwright), gera imagens (fal.ai) |
-| **Persistence** | 9 | Salva/recupera artefatos e contexto, rastreia custo, consolida sessao, learned skills |
+| **Persistence** | 12 | Salva contexto, working set, custo, learned skills e guardrails de sessao |
 
 **Como usar:**
 
@@ -355,6 +355,9 @@ bash setup/install.sh /caminho/do/projeto
 
 # ou de dentro do repo consumidor ja com o kit em .bot/
 bash .bot/setup/install.sh
+
+# modo enxuto e nao interativo
+bash .bot/setup/install.sh --profile lean --no-input
 ```
 
 Quando instalado em `.bot/`, o kit inclui `setup/`, entao o comando acima funciona sem depender do repo original.
@@ -369,6 +372,18 @@ O instalador em `setup/install.sh`:
 6. configura API keys (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) no `.env.local`
 7. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
 8. oferece instalacao opcional de ferramentas de code intelligence (codebase-memory, cymbal, lumen)
+
+Perfis de setup:
+
+- `lean`: minimiza prompts e installs opcionais para economizar tempo e token
+- `daily-dev`: fluxo padrao para uso diario
+- `research`: preserva o fluxo completo para exploracao e pesquisa
+
+Flags uteis:
+
+- `--profile lean`
+- `--no-input`
+- `--yes`
 
 ## API Keys
 
@@ -400,13 +415,13 @@ O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
 
 ### Essenciais
 
-O MCP `dev-team-kit` hoje expoe 29 tools apoiadas pelas 32 skills do kit.
+O MCP `dev-team-kit` hoje expoe 32 tools apoiadas pelas 32 skills do kit.
 
-Na tabela abaixo, considere o `dev-team-kit` como 29 tools apoiadas pelas 32 skills.
+Na tabela abaixo, considere o `dev-team-kit` como 32 tools apoiadas pelas 32 skills.
 
 | MCP | Estado padrao | Uso |
 |---|---|---|
-| `dev-team-kit` | habilitado | MCP completo do kit — 32 skills, roteamento, pesquisa, scraping, geracao de imagens |
+| `dev-team-kit` | habilitado | MCP completo do kit com 32 tools apoiadas pelas 32 skills, contexto minimo, working set, pesquisa, scraping e geracao de imagens |
 | `context7` | habilitado | documentacao atualizada de bibliotecas |
 | `playwright` | habilitado | navegacao e validacao E2E |
 
@@ -446,6 +461,10 @@ Ver `setup/README.md` e `mcp-server/README.md` para detalhes.
 - leia `docs/quickstart.md` para entrar rapido no fluxo
 - reutilize `docs/repo-audit/current.md` antes de explorar o repo inteiro
 - reutilize `docs/repo-audit/assets.md` antes de criar ou mudar assets
+- use `devkit_context_pack` para iniciar task sem reler metade do repo
+- use `devkit_diff_brief` para retomar trabalho ou preparar review
+- use `devkit_working_set` para persistir arquivos quentes, decisoes e proximos passos
+- consulte `docs/daily-token-workflow.md` para o fluxo operacional enxuto
 - use `commands/` como atalhos operacionais
 - consulte `docs/skill-call-matrix.md` quando houver overlap entre skills
 - consulte `docs/skill-guides/` apenas sob demanda
@@ -518,3 +537,15 @@ bash scripts/smoke-install.sh
 - persistir decisao util, nao conversa excessiva
 - manter mudancas pequenas e revisaveis
 - seguir `policies/tool-safety.md` e `policies/evals.md` em mudancas sensiveis
+
+## Timestamp Log
+
+Atualize esta secao ao fechar mudancas estruturais no kit.
+
+### 2026-04-04
+
+- alinhado o setup para instalacao em `.bot/`, hooks automaticos, MCP local `dev-team-kit` e smoke test do instalador
+- corrigidos hooks para ler config no modo instalado e reduzir injecao de contexto de learned skills
+- implementados `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` e telemetria expandida em `devkit_track_cost`
+- adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo nao interativo
+- atualizadas docs principais, README do MCP, quickstart e guias de operacao com foco em economia de token

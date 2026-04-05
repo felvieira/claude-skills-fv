@@ -72,3 +72,13 @@ Se o relatorio mostrar custo muito acima do esperado:
 O MCP `devkit_track_cost` persiste os dados de custo por sessao. Para acumular historico:
 - chamar ao final de cada skill relevante
 - usar `devkit_session_summary` para consolidar o relatorio final
+
+## Sinais locais que entram na estimativa
+
+- `read_count` e `search_count` para medir exploracao bruta
+- `write_count` para medir volume de alteracao
+- `bytes_read` para penalizar leitura recorrente de arquivos grandes
+- `large_read_count` para destacar leitura pesada
+- `repeated_signals` para detectar loops de exploracao
+
+Esses sinais nao substituem telemetria real do modelo, mas melhoram bastante a estimativa operacional de desperdicio.

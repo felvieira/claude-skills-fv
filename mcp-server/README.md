@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe 29 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 32 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -65,9 +65,9 @@ Mesmo formato acima.
 
 Prioridade de leitura: env vars > .env.local > .env
 
-## Tools (29)
+## Tools (32)
 
-### Knowledge (15)
+### Knowledge (14)
 
 | Tool | O que faz |
 |------|-----------|
@@ -83,9 +83,8 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_recommend_model` | LLM Selector (Fast/Balanced/Deep) |
 | `devkit_get_skill_matrix` | Dependencias entre skills |
 | `devkit_get_eval_cases` | Casos de teste |
-| `devkit_ambiguity_score` | Score de ambiguidade e perguntas faltantes |
-| `devkit_suggest_trailers` | Sugere commit trailers a partir do diff |
-| `devkit_context_guard` | Avalia uso de contexto antes de encerrar |
+| `devkit_context_pack` | Monta contexto minimo por task com audit, focus, git status e previews |
+| `devkit_diff_brief` | Resume diff atual, status e working set para retomada ou review |
 
 ### Execution (6)
 
@@ -98,7 +97,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_generate_image` | Gera imagem via fal.ai | FAL_KEY |
 | `devkit_analyze_visual_prompt` | Prompt de analise visual | — |
 
-### Persistence (8)
+### Persistence (12)
 
 | Tool | O que faz |
 |------|-----------|
@@ -106,10 +105,14 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_get_artifact` | Recupera artefato |
 | `devkit_save_context` | Persiste foco e decisoes |
 | `devkit_get_context` | Recupera contexto anterior |
-| `devkit_track_cost` | Rastreia custo de tokens e API calls da sessao |
+| `devkit_track_cost` | Rastreia custo com sinais reais de leitura, busca, escrita e repeticao |
+| `devkit_working_set` | Persiste arquivos quentes, foco, decisoes e proximos passos |
 | `devkit_session_summary` | Gera resumo da sessao para handoff |
 | `devkit_smart_suggestions` | Sugere proxima acao baseado no estado do projeto |
 | `devkit_learned_skills` | Lista, le e salva learned skills do projeto |
+| `devkit_ambiguity_score` | Mede ambiguidade antes de executar uma task |
+| `devkit_suggest_trailers` | Sugere trailers de commit a partir do diff |
+| `devkit_context_guard` | Avalia uso de contexto antes de encerrar |
 
 ## Desenvolvimento
 

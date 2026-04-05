@@ -1,26 +1,31 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
-
-// ── Sanitization ─────────────────────────────────────────────────────────────
+import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
+import { readHookConfig, resolveBotPath } from "./utils.mjs";
 
 function sanitize(text) {
   return text
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`[^`]+`/g, '')
-    .replace(/https?:\/\/\S+/g, '')
-    .replace(/(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/g, '')
-    .replace(/\s+at\s+\w[\w.<>]+\s*\([^)]*\)/g, '')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\{[\s\S]{0,500}?\}/g, '');
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]+`/g, "")
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/g, "")
+    .replace(/\s+at\s+\w[\w.<>]+\s*\([^)]*\)/g, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\{[\s\S]{0,500}?\}/g, "");
 }
 
-// ── Informational intent check ────────────────────────────────────────────────
-
 const INFORMATIONAL_PATTERNS = [
-  /o que [eé]/i, /como funciona/i, /explica/i, /explain/i,
-  /what is/i, /how does/i, /what does/i, /tell me about/i,
-  /what\s+(?:is|are|does)/i, /como usar/i, /para que serve/i,
+  /o que [eé]/i,
+  /como funciona/i,
+  /explica/i,
+  /explain/i,
+  /what is/i,
+  /how does/i,
+  /what does/i,
+  /tell me about/i,
+  /what\s+(?:is|are|does)/i,
+  /como usar/i,
+  /para que serve/i,
 ];
 
 function isInformational(text, keyword, windowSize = 80) {
@@ -29,67 +34,95 @@ function isInformational(text, keyword, windowSize = 80) {
   const start = Math.max(0, idx - windowSize);
   const end = Math.min(text.length, idx + keyword.length + windowSize);
   const window = text.slice(start, end);
-  return INFORMATIONAL_PATTERNS.some(p => p.test(window));
+  return INFORMATIONAL_PATTERNS.some((pattern) => pattern.test(window));
 }
-
-// ── Skill trigger loader ──────────────────────────────────────────────────────
 
 function loadSkillTriggers() {
   const skills = [];
-  const skillsDir = existsSync('.bot/skills') ? '.bot/skills' : 'skills';
+  const skillsDir = existsSync(resolveBotPath("skills")) ? resolveBotPath("skills") : "skills";
   if (!existsSync(skillsDir)) return skills;
 
   for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
-    const skillFile = join(skillsDir, entry.name, 'SKILL.md');
+    const skillFile = join(skillsDir, entry.name, "SKILL.md");
     if (!existsSync(skillFile)) continue;
+
     try {
-      const content = readFileSync(skillFile, 'utf-8');
+      const content = readFileSync(skillFile, "utf-8");
       const triggerMatch = content.match(/Trigger em:\s*"([^"]+)"/);
       if (!triggerMatch) continue;
-      const triggers = triggerMatch[1].split(',').map(t => t.trim().toLowerCase());
+
+      const triggers = triggerMatch[1].split(",").map((trigger) => trigger.trim().toLowerCase());
       const nameMatch = content.match(/^name:\s*(.+)$/m);
       const name = nameMatch ? nameMatch[1].trim() : entry.name;
       skills.push({ id: entry.name, name, triggers });
     } catch {}
   }
+
   return skills;
 }
 
-// ── Learned skill loader ──────────────────────────────────────────────────────
+function summarizeLearnedSkill(content) {
+  const body = content
+    .replace(/^name:.*$/gm, "")
+    .replace(/^description:.*$/gm, "")
+    .replace(/^triggers:.*$/gm, "")
+    .trim();
+
+  const bullets = body
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- ") || line.startsWith("* "))
+    .slice(0, 3);
+
+  if (bullets.length > 0) {
+    return bullets.join("\n");
+  }
+
+  return body
+    .split(/\n\s*\n/)
+    .map((chunk) => chunk.replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("\n");
+}
 
 function loadLearnedSkills() {
   const learned = [];
-  const learnedDir = existsSync('.bot/learned-skills') ? '.bot/learned-skills' : null;
+  const learnedDir = existsSync(resolveBotPath("learned-skills")) ? resolveBotPath("learned-skills") : null;
   if (!learnedDir) return learned;
 
   try {
     for (const file of readdirSync(learnedDir)) {
-      if (!file.endsWith('.md')) continue;
+      if (!file.endsWith(".md")) continue;
+
       try {
-        const content = readFileSync(join(learnedDir, file), 'utf-8');
+        const content = readFileSync(join(learnedDir, file), "utf-8");
         const triggersMatch = content.match(/^triggers:\s*\[([^\]]+)\]/m);
         const nameMatch = content.match(/^name:\s*(.+)$/m);
         const descMatch = content.match(/^description:\s*(.+)$/m);
         if (!triggersMatch || !nameMatch) continue;
-        const triggers = triggersMatch[1].split(',').map(t => t.replace(/['"]/g, '').trim().toLowerCase());
+
+        const triggers = triggersMatch[1]
+          .split(",")
+          .map((trigger) => trigger.replace(/['"]/g, "").trim().toLowerCase());
+
         learned.push({
           name: nameMatch[1].trim(),
-          description: descMatch ? descMatch[1].trim() : '',
+          description: descMatch ? descMatch[1].trim() : "",
           triggers,
-          content,
+          summary: summarizeLearnedSkill(content),
         });
       } catch {}
     }
   } catch {}
+
   return learned;
 }
 
-// ── Session dedup tracker ─────────────────────────────────────────────────────
-
 function getSessionInjected() {
   try {
-    return JSON.parse(readFileSync('.bot/.hook-session.json', 'utf-8')).injected || [];
+    return JSON.parse(readFileSync(resolveBotPath(".hook-session.json"), "utf-8")).injected || [];
   } catch {
     return [];
   }
@@ -97,71 +130,88 @@ function getSessionInjected() {
 
 function saveSessionInjected(list) {
   try {
-    mkdirSync('.bot', { recursive: true });
-    writeFileSync('.bot/.hook-session.json', JSON.stringify({ injected: list }));
+    mkdirSync(resolveBotPath(), { recursive: true });
+    writeFileSync(resolveBotPath(".hook-session.json"), JSON.stringify({ injected: list }));
   } catch {}
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+let inputBuffer = "";
+process.stdin.setEncoding("utf-8");
+process.stdin.on("data", (chunk) => {
+  inputBuffer += chunk;
+});
 
-let _input = '';
-process.stdin.setEncoding('utf-8');
-process.stdin.on('data', (chunk) => { _input += chunk; });
-process.stdin.on('end', () => {
+process.stdin.on("end", () => {
   let input = {};
-  try { input = JSON.parse(_input); } catch {}
-  const prompt = input.prompt || '';
-  const clean = sanitize(prompt);
+  try {
+    input = JSON.parse(inputBuffer);
+  } catch {}
 
+  const cfg = readHookConfig("keyword_detector", {
+    max_learned_skills_per_session: 3,
+    informational_context_window: 80,
+  });
+
+  const prompt = input.prompt || "";
+  const clean = sanitize(prompt);
   const injectedThisSession = getSessionInjected();
   const additionalContextParts = [];
 
-  // ── Learned skills (higher priority) ──
   const learnedSkills = loadLearnedSkills();
-  let learnedCount = injectedThisSession.filter(n => n.startsWith('learned:')).length;
-  const maxLearned = 3;
+  let learnedCount = injectedThisSession.filter((name) => name.startsWith("learned:")).length;
+  const maxLearned = cfg.max_learned_skills_per_session || 3;
+  const infoWindow = cfg.informational_context_window || 80;
 
-  for (const ls of learnedSkills) {
+  for (const learnedSkill of learnedSkills) {
     if (learnedCount >= maxLearned) break;
-    const key = `learned:${ls.name}`;
+
+    const key = `learned:${learnedSkill.name}`;
     if (injectedThisSession.includes(key)) continue;
-    const matched = ls.triggers.some(t => {
-      if (!clean.toLowerCase().includes(t)) return false;
-      return !isInformational(clean, t);
+
+    const matched = learnedSkill.triggers.some((trigger) => {
+      if (!clean.toLowerCase().includes(trigger)) return false;
+      return !isInformational(clean, trigger, infoWindow);
     });
-    if (matched) {
-      additionalContextParts.push(`[LearnedSkill: ${ls.name}] ${ls.description}\n${ls.content}`);
-      injectedThisSession.push(key);
-      learnedCount++;
-    }
+
+    if (!matched) continue;
+
+    additionalContextParts.push(
+      `[LearnedSkill: ${learnedSkill.name}] ${learnedSkill.description}\n${learnedSkill.summary}`,
+    );
+    injectedThisSession.push(key);
+    learnedCount++;
   }
 
-  // ── Official skill triggers ──
   const skills = loadSkillTriggers();
   for (const skill of skills) {
-    const matched = skill.triggers.some(t => {
-      if (!clean.toLowerCase().includes(t)) return false;
-      return !isInformational(clean, t);
+    const matched = skill.triggers.some((trigger) => {
+      if (!clean.toLowerCase().includes(trigger)) return false;
+      return !isInformational(clean, trigger, infoWindow);
     });
-    if (matched) {
-      additionalContextParts.push(`[SkillDetected: ${skill.id}] Trigger matched for "${skill.name}". Use this skill for the current task.`);
-      break;
-    }
+
+    if (!matched) continue;
+
+    additionalContextParts.push(
+      `[SkillDetected: ${skill.id}] Trigger matched for "${skill.name}". Use this skill for the current task.`,
+    );
+    break;
   }
 
-  // Save session state
   if (injectedThisSession.length > 0) {
     saveSessionInjected(injectedThisSession);
   }
 
   if (additionalContextParts.length > 0) {
-    process.stdout.write(JSON.stringify({
-      continue: true,
-      hookSpecificOutput: {
-        additionalContext: additionalContextParts.join('\n\n---\n\n')
-      }
-    }));
-  } else {
-    process.stdout.write(JSON.stringify({ continue: true }));
+    process.stdout.write(
+      JSON.stringify({
+        continue: true,
+        hookSpecificOutput: {
+          additionalContext: additionalContextParts.join("\n\n---\n\n"),
+        },
+      }),
+    );
+    return;
   }
+
+  process.stdout.write(JSON.stringify({ continue: true }));
 });

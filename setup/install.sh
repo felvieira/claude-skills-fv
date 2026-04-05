@@ -39,7 +39,34 @@ while [[ -L "$SOURCE" ]]; do
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")/.." && pwd)"
 
-TARGET_DIR="${1:-.}"
+PROFILE="daily-dev"
+NO_INPUT=false
+ASSUME_YES=false
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --profile)
+      PROFILE="${2:-daily-dev}"
+      shift 2
+      ;;
+    --no-input)
+      NO_INPUT=true
+      shift
+      ;;
+    --yes)
+      ASSUME_YES=true
+      NO_INPUT=true
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+TARGET_DIR="${POSITIONAL_ARGS[0]:-.}"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 BOT_DIR="$TARGET_DIR/.bot"
 
@@ -93,6 +120,24 @@ else
   warn "No known IDEs/agents detected in PATH (configs will be generated anyway)"
 fi
 
+SKIP_OPTIONAL_INSTALLS=false
+SKIP_API_PROMPTS=false
+SKIP_CODE_INTELLIGENCE_PROMPTS=false
+
+case "$PROFILE" in
+  lean)
+    SKIP_OPTIONAL_INSTALLS=true
+    SKIP_API_PROMPTS=true
+    SKIP_CODE_INTELLIGENCE_PROMPTS=true
+    ;;
+  daily-dev|research)
+    ;;
+  *)
+    warn "Unknown profile '$PROFILE' - falling back to daily-dev"
+    PROFILE="daily-dev"
+    ;;
+esac
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -112,6 +157,23 @@ safe_copy_dir() {
   mkdir -p "$dest"
   cp -r "$src"/. "$dest"/
   ok "Copied: $dest/"
+}
+
+prompt_yes_no() {
+  local prompt="$1"
+  local default="${2:-N}"
+  local answer=""
+
+  if [[ "$NO_INPUT" == true ]]; then
+    if [[ "$ASSUME_YES" == true ]]; then
+      return 0
+    fi
+    [[ "$default" =~ ^[Yy]$ ]] && return 0 || return 1
+  fi
+
+  read -r -p "$prompt" answer
+  answer="${answer:-$default}"
+  [[ "$answer" =~ ^[YySs]$ ]]
 }
 
 register_claude_hooks() {
@@ -295,7 +357,9 @@ fi
 # ---------------------------------------------------------------------------
 step "Step 6/8: Installing MCP dependencies"
 
-if [[ "$HAS_PYTHON" == true ]]; then
+if [[ "$SKIP_OPTIONAL_INSTALLS" == true ]]; then
+  warn "Skipping optional MCP dependency installs due to profile '$PROFILE'"
+elif [[ "$HAS_PYTHON" == true ]]; then
   PIP_CMD="pip"
   command -v pip3 &>/dev/null && PIP_CMD="pip3"
 
@@ -324,9 +388,7 @@ if [[ "$HAS_UV" == true ]]; then
     info "NotebookLM MCP requires Google authentication."
     info "A browser window will open. Log in with your Google account."
     echo ""
-    read -r -p "  Authenticate NotebookLM now? [Y/n] " NLM_ANSWER
-    NLM_ANSWER="${NLM_ANSWER:-Y}"
-    if [[ "$NLM_ANSWER" =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "  Authenticate NotebookLM now? [Y/n] " "Y"; then
       info "Opening browser for Google login... (waiting for you to finish)"
       nlm login && ok "NotebookLM authenticated!" || warn "nlm login failed - run manually later: nlm login"
     else
@@ -346,14 +408,16 @@ ENV_FILE="$TARGET_DIR/.env.local"
 
 ask_key() {
   local key_name="$1" description="$2" url="$3" required="$4"
+  if [[ "$SKIP_API_PROMPTS" == true ]]; then
+    warn "Skipping $key_name prompt due to profile '$PROFILE'"
+    return 0
+  fi
   echo ""
   info "$description"
   info "Obter key em: $url"
   [[ "$required" == "optional" ]] && info "(Opcional - tem fallback gratuito)"
   echo ""
-  read -r -p "  Inserir $key_name agora? [Y/n] " KEY_ANSWER
-  KEY_ANSWER="${KEY_ANSWER:-Y}"
-  if [[ "$KEY_ANSWER" =~ ^[Yy]$ ]]; then
+  if prompt_yes_no "  Inserir $key_name agora? [Y/n] " "Y"; then
     read -r -p "  $key_name: " KEY_VALUE
     if [[ -n "$KEY_VALUE" ]]; then
       if [[ -f "$ENV_FILE" ]] && grep -q "^${key_name}=" "$ENV_FILE" 2>/dev/null; then
@@ -444,9 +508,9 @@ if command -v codebase-memory-mcp &>/dev/null; then
   CODEBASE_MEMORY_AVAILABLE=1
 else
   printf "  [1/3] codebase-memory-mcp (knowledge graph AST, 66 linguagens)\n"
-  printf "        Instalar? [s/N] "
-  read -r INSTALL_CBM
-  if [[ "$INSTALL_CBM" =~ ^[sS]$ ]]; then
+  if [[ "$SKIP_CODE_INTELLIGENCE_PROMPTS" == true ]]; then
+    :
+  elif prompt_yes_no "        Instalar? [s/N] " "N"; then
     echo "  Instalando codebase-memory-mcp..."
     if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "win32" ]]; then
       if powershell -Command "irm https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.ps1 | iex" 2>/dev/null; then
@@ -493,9 +557,9 @@ elif command -v docker &>/dev/null && docker image inspect 1broseidon/cymbal &>/
   CYMBAL_AVAILABLE=1
 else
   printf "  [2/3] cymbal (symbol navigator CLI, 24 linguagens)\n"
-  printf "        Instalar via Docker? [s/N] "
-  read -r INSTALL_CYMBAL
-  if [[ "$INSTALL_CYMBAL" =~ ^[sS]$ ]]; then
+  if [[ "$SKIP_CODE_INTELLIGENCE_PROMPTS" == true ]]; then
+    :
+  elif prompt_yes_no "        Instalar via Docker? [s/N] " "N"; then
     if command -v docker &>/dev/null; then
       echo "  Baixando cymbal via Docker..."
       if docker pull 1broseidon/cymbal 2>/dev/null; then
@@ -525,9 +589,9 @@ if claude plugin list 2>/dev/null | grep -q "lumen"; then
   LUMEN_AVAILABLE=1
 else
   printf "  [3/3] ory/lumen (busca semantica local, requer Ollama)\n"
-  printf "        Instalar como Claude plugin? [s/N] "
-  read -r INSTALL_LUMEN
-  if [[ "$INSTALL_LUMEN" =~ ^[sS]$ ]]; then
+  if [[ "$SKIP_CODE_INTELLIGENCE_PROMPTS" == true ]]; then
+    :
+  elif prompt_yes_no "        Instalar como Claude plugin? [s/N] " "N"; then
     if command -v claude &>/dev/null; then
       echo "  Instalando lumen plugin..."
       if claude plugin add ory/lumen 2>/dev/null; then

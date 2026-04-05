@@ -30,6 +30,19 @@ Ou apontando para outro repo:
 bash setup/install.sh /path/to/repo
 ```
 
+Perfis e modo nao interativo:
+
+```bash
+bash .bot/setup/install.sh --profile lean --no-input
+bash .bot/setup/install.sh --profile daily-dev --yes
+```
+
+Perfis disponiveis:
+
+- `lean`: pula installs opcionais e prompts de API/code intelligence
+- `daily-dev`: fluxo padrao
+- `research`: preserva o fluxo completo para exploracao
+
 O script detecta automaticamente as plataformas instaladas, gera os arquivos de configuracao correspondentes e registra os hooks no `.claude/settings.json` depois de criar ou mesclar a config.
 
 ## Plataformas configuradas

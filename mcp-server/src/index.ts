@@ -14,6 +14,13 @@ import { buildScreenshotInstruction, buildImageExtractionInstruction, buildScrap
 // Lib
 import { classifyTask } from "./lib/classifier.js";
 import { buildPipeline, getNextStep } from "./lib/pipeline-engine.js";
+import {
+  buildContextPack,
+  buildCostTelemetry,
+  buildDiffBrief,
+  loadWorkingSet,
+  saveWorkingSet,
+} from "./lib/project-intel.js";
 
 // Load .env.local fallback
 import fs from "fs";
@@ -329,6 +336,65 @@ server.registerTool(
     const cases = await fileReader.getEvalCases(skill_id, flow);
     return {
       content: [{ type: "text" as const, text: JSON.stringify({ cases }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_context_pack",
+  {
+    title: "Context Pack",
+    description: "Builds a minimal context pack for a task using repo audit, current focus, working set, git status and relevant file previews",
+    inputSchema: {
+      task_description: z.string().describe("Task description to scope the pack"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+      max_files: z.number().optional().describe("Maximum number of file previews to include"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ task_description, project_path, max_files }) => {
+    const base = resolveConsumerProjectRoot(project_path);
+    const pack = await buildContextPack(base, task_description, max_files ?? 5);
+    const taskType = classifyTask(task_description);
+    const pipeline = buildPipeline(taskType);
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          ...pack,
+          task_type: taskType,
+          pipeline: pipeline.steps.map((step) => ({
+            skill_id: step.id,
+            skill_name: step.name,
+            purpose: step.purpose,
+          })),
+          policies: pipeline.policies,
+        }, null, 2),
+      }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_diff_brief",
+  {
+    title: "Diff Brief",
+    description: "Builds a concise brief of the current git diff and recent activity for resuming work or preparing a review",
+    inputSchema: {
+      project_path: z.string().optional().describe("Consumer project root path"),
+      max_files: z.number().optional().describe("Maximum changed files to include"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path, max_files }) => {
+    const base = resolveConsumerProjectRoot(project_path);
+    const brief = buildDiffBrief(base, max_files ?? 10);
+    const workingSet = await loadWorkingSet(base);
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({ ...brief, working_set: workingSet }, null, 2),
+      }],
     };
   },
 );
@@ -719,6 +785,13 @@ server.registerTool(
 
     await fs.promises.mkdir(dir, { recursive: true });
     await fs.promises.writeFile(fullPath, content.join("\n"), "utf-8");
+    await saveWorkingSet(resolveConsumerProjectRoot(project_path), {
+      files: (await loadWorkingSet(resolveConsumerProjectRoot(project_path))).files || [],
+      focus,
+      decisions: decisions || [],
+      next_steps: next_steps || [],
+      updated_at: new Date().toISOString(),
+    });
 
     return {
       content: [{ type: "text" as const, text: JSON.stringify({ saved_path: fullPath }, null, 2) }],
@@ -761,23 +834,35 @@ server.registerTool(
   "devkit_track_cost",
   {
     title: "Track Cost",
-    description: "Tracks and reports estimated cost per session based on skills used and API calls",
+    description: "Tracks and reports estimated cost per session based on skills used, API calls and local telemetry signals",
     inputSchema: {
       session_id: z.string().optional().describe("Session identifier (defaults to today's date)"),
       skills_used: z.array(z.string()).optional().describe("Array of skill names used in this session"),
+      project_path: z.string().optional().describe("Consumer project root path"),
       api_calls: z.object({
         fal_ai: z.number().default(0),
         brave_search: z.number().default(0),
         firecrawl: z.number().default(0),
       }).optional().describe("API call counts"),
+      telemetry: z.object({
+        read_count: z.number().optional(),
+        search_count: z.number().optional(),
+        write_count: z.number().optional(),
+        bytes_read: z.number().optional(),
+        large_read_count: z.number().optional(),
+        total_tool_calls: z.number().optional(),
+        changed_files: z.number().optional(),
+      }).optional().describe("Optional explicit telemetry overrides"),
     },
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
-  async ({ session_id, skills_used, api_calls }) => {
+  async ({ session_id, skills_used, api_calls, project_path, telemetry }) => {
     const today = new Date().toISOString().slice(0, 10);
     const sid = session_id || today;
     const skills = skills_used || [];
     const calls = api_calls || { fal_ai: 0, brave_search: 0, firecrawl: 0 };
+    const projectRoot = resolveConsumerProjectRoot(project_path);
+    const usage = await buildCostTelemetry(projectRoot, telemetry);
 
     // Complexity map for token estimation
     const complexSkills = ["09-orchestrator", "29-design-intelligence", "18-repo-auditor", "28-claude-md-generator"];
@@ -793,6 +878,13 @@ server.registerTool(
         estimatedTokens += 2000;
       }
     }
+    estimatedTokens += (usage.read_count || 0) * 180;
+    estimatedTokens += (usage.search_count || 0) * 90;
+    estimatedTokens += (usage.write_count || 0) * 60;
+    estimatedTokens += Math.round((Number(usage.bytes_read || 0) / 6));
+    estimatedTokens += (usage.large_read_count || 0) * 400;
+    estimatedTokens += ((usage.changed_files || 0) * 120);
+    estimatedTokens += ((usage.repeated_signals?.length || 0) * 250);
 
     // Cost estimation: tokens * rate + API call costs
     const tokenRate = 0.000003; // ~$3 per 1M tokens (blended input/output)
@@ -809,6 +901,7 @@ server.registerTool(
       skills_used: skills,
       estimated_tokens: estimatedTokens,
       api_calls: calls,
+      telemetry: usage,
       estimated_cost_usd: Math.round(estimatedCost * 10000) / 10000,
     };
 
@@ -850,6 +943,52 @@ server.registerTool(
 );
 
 server.registerTool(
+  "devkit_working_set",
+  {
+    title: "Working Set",
+    description: "Gets, updates, adds to, or resets the persistent working set for the current project",
+    inputSchema: {
+      action: z.enum(["get", "set", "add", "reset"]).describe("Working set action"),
+      project_path: z.string().optional().describe("Consumer project root path"),
+      files: z.array(z.string()).optional().describe("Files to store in the working set"),
+      focus: z.string().optional().describe("Current focus"),
+      decisions: z.array(z.string()).optional().describe("Current decisions"),
+      next_steps: z.array(z.string()).optional().describe("Next steps"),
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false },
+  },
+  async ({ action, project_path, files, focus, decisions, next_steps }) => {
+    const base = resolveConsumerProjectRoot(project_path);
+    if (action === "reset") {
+      const entry = { files: [], decisions: [], next_steps: [], updated_at: new Date().toISOString() };
+      const saved_path = await saveWorkingSet(base, entry);
+      return { content: [{ type: "text" as const, text: JSON.stringify({ working_set: entry, saved_path }, null, 2) }] };
+    }
+
+    const current = await loadWorkingSet(base);
+    if (action === "get") {
+      return { content: [{ type: "text" as const, text: JSON.stringify({ working_set: current }, null, 2) }] };
+    }
+
+    const incomingFiles = files || [];
+    const mergedFiles = action === "add"
+      ? Array.from(new Set([...(current.files || []), ...incomingFiles])).slice(-15)
+      : incomingFiles;
+    const entry = {
+      files: mergedFiles,
+      focus: focus ?? current.focus,
+      decisions: decisions ?? current.decisions ?? [],
+      next_steps: next_steps ?? current.next_steps ?? [],
+      updated_at: new Date().toISOString(),
+    };
+    const saved_path = await saveWorkingSet(base, entry);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ working_set: entry, saved_path }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
   "devkit_session_summary",
   {
     title: "Session Summary",
@@ -864,6 +1003,7 @@ server.registerTool(
   },
   async ({ project_path, actions_performed, decisions_made, pending_items }) => {
     const base = project_path || KIT_ROOT;
+    const consumerBase = resolveConsumerProjectRoot(project_path);
     const today = new Date().toISOString().slice(0, 10);
     const now = new Date().toISOString();
     const actions = actions_performed || [];
@@ -943,6 +1083,14 @@ server.registerTool(
     } catch {
       // Non-fatal
     }
+    const currentWorkingSet = await loadWorkingSet(consumerBase);
+    await saveWorkingSet(consumerBase, {
+      files: currentWorkingSet.files || [],
+      focus: actions[0] || currentWorkingSet.focus,
+      decisions,
+      next_steps: pending,
+      updated_at: now,
+    });
 
     return {
       content: [{ type: "text" as const, text: JSON.stringify({ summary, saved_path: summaryPath }, null, 2) }],
@@ -977,7 +1125,9 @@ server.registerTool(
     };
 
     // Check repo audit
-    const hasAudit = await exists(path.join(base, "docs", "repo-audit", "current.md"));
+    const hasAudit =
+      await exists(path.join(base, ".bot", "docs", "repo-audit", "current.md")) ||
+      await exists(path.join(base, "docs", "repo-audit", "current.md"));
     if (!hasAudit) {
       suggestions.push({
         action: "Run Repo Auditor to map the project structure",
@@ -1094,7 +1244,7 @@ server.registerTool(
     annotations: { readOnlyHint: false, destructiveHint: false },
   },
   async ({ action, name, content, project_path }) => {
-    const base = project_path || process.cwd();
+    const base = resolveConsumerProjectRoot(project_path);
     const learnedDir = path.join(base, ".bot", "learned-skills");
 
     if (action === "list") {

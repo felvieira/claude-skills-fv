@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { readHookConfig, resolveBotPath } from './utils.mjs';
 
 let _input = '';
 process.stdin.setEncoding('utf-8');
@@ -15,14 +16,14 @@ process.stdin.on('end', () => {
   }
 
   // Load config
-  let cfg = { warn_threshold: 0.60, block_threshold: 0.75, max_blocks_per_session: 2 };
-  try {
-    const raw = JSON.parse(readFileSync('hooks/config.json', 'utf-8'));
-    if (raw.context_guard) cfg = { ...cfg, ...raw.context_guard };
-  } catch {}
+  const cfg = readHookConfig('context_guard', {
+    warn_threshold: 0.60,
+    block_threshold: 0.75,
+    max_blocks_per_session: 2,
+  });
 
   // Track blocks this session
-  const blockFile = '.bot/.context-guard-blocks.json';
+  const blockFile = resolveBotPath('.context-guard-blocks.json');
   let blocks = 0;
   try { blocks = JSON.parse(readFileSync(blockFile, 'utf-8')).count || 0; } catch {}
 

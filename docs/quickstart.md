@@ -60,7 +60,16 @@ pipeline normal `-> Release Manager -> Deploy`
 
 - reutilizar `docs/repo-audit/current.md`
 - reutilizar `docs/repo-audit/assets.md` para contexto visual
+- usar `devkit_context_pack` antes de abrir muitos arquivos
+- usar `devkit_diff_brief` para retomar branch, review ou handoff
+- manter `devkit_working_set` atualizado com arquivos quentes e proximos passos
+- consultar `devkit_track_cost` quando a sessao estiver longa ou repetitiva
 - reutilizar `patterns/ai-integration/` em vez de redesenhar plumbing de IA do zero
 - reutilizar MCPs locais de browser automation quando validacao visual real for importante
 - abrir `docs/skill-guides/` so sob demanda
 - evitar reauditar o repo inteiro sem mudanca relevante
+- consultar `docs/daily-token-workflow.md` para o fluxo operacional enxuto
+
+## Roadmap atual
+
+- ver `docs/plans/2026-04-04-token-economy-roadmap.md` para o roadmap implementado de economia de token e uso diario com IA
