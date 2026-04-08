@@ -186,7 +186,7 @@ Entre etapas:
 ## Regras de Decisao
 
 - escolher sempre o pipeline minimo suficiente para reduzir custo e risco
-- consultar `LLM Selector` quando houver trade-off real entre custo, latencia e profundidade
+- consultar `policies/model-routing.md` quando houver trade-off real entre custo, latencia e profundidade
 - nao pular `QA`, `Security` ou `Reviewer` sem excecao formal prevista no fluxo
 - documentar toda adaptacao relevante do pipeline
 - reutilizar `docs/repo-audit/current.md` antes de reexplorar o repositorio inteiro

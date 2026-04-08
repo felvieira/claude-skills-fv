@@ -83,9 +83,9 @@ Acoes:
 
 ### Analise Visual (obrigatorio)
 
-**Selecao de modelo:** delegar para LLM Selector (skill 16)
+**Selecao de modelo:** seguir `policies/model-routing.md`
 
-O LLM Selector escolhe o modelo multimodal adequado para analisar os screenshots. Isso garante que funcione independente do ambiente (Claude, Gemini, GPT, etc).
+O Model Routing define o tier adequado para analisar screenshots (tipicamente Deep para analise multimodal). Funciona independente do ambiente.
 
 ### Geracao de Moodboard (obrigatorio)
 
@@ -106,7 +106,7 @@ Montar super-prompt enriquecido com insights da analise e fazer handoff para o s
 
 ### Fase 2: Analise Visual Competitiva
 
-1. LLM Selector (skill 16) escolhe modelo multimodal
+1. Model Routing (`policies/model-routing.md`) define tier para analise multimodal
 2. Enviar screenshots para analise estruturada
 3. Modelo retorna: paletas, tipografia, layouts, CTAs, hierarquia, padroes de conversao
 4. Comparar concorrentes entre si: padrao do nicho vs diferencial
@@ -191,7 +191,7 @@ Se uma fase falhar, a skill retoma da ultima fase completa. Cada fase salva arte
 ## Integracao com Outras Skills
 
 - `Asset Librarian (19)`: fornece inventario de assets e identidade visual existente
-- `LLM Selector (16)`: escolhe modelo multimodal para analise de screenshots
+- `Model Routing (policy)`: define tier de modelo para analise de screenshots. Ver `policies/model-routing.md`
 - `Image Generator (17)`: gera moodboards proprietarios a partir do briefing
 - `UI/UX Designer (02)`: recebe o dossie final e executa a interface
 - `Orchestrator (09)`: coordena quando esta skill entra no pipeline
