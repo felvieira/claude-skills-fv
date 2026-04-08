@@ -67,6 +67,7 @@ O kit inclui hooks nativos para Claude Code que interceptam lifecycle events e i
 | `pre-tool-enforcer` | PreToolUse | Re-ler antes de editar + sugere code intelligence tools quando disponíveis |
 | `session-start` | SessionStart | Restaura estado da sessao anterior |
 | `post-tool-verifier` | PostToolUse | Detecta debugging patterns e sugere extracao de learned skill |
+| `model-routing-hook` | PreToolUse | Sugere troca de model em plan mode e valida model em subagent spawns |
 
 **Como os hooks sao instalados:**
 O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `.claude/settings.json` depois de criar ou mesclar a config.
@@ -86,6 +87,23 @@ O kit detecta e recomenda automaticamente ferramentas que reduzem drasticamente 
 **Instalacao:** `setup/install.sh` Step 8 (opcional) ou manual.
 **Hierarquia:** Graph > Symbol > Semantic > Grep/Read — ver `policies/code-exploration.md`.
 
+## Model Routing — Selecao Automatica de Modelo
+
+O kit inclui policy e hook para selecao inteligente de modelo por fase de trabalho, reduzindo custo sem sacrificar qualidade.
+
+| Tier | Model | Quando |
+|---|---|---|
+| Fast | haiku | boilerplate, rename, microcopy, templates |
+| Balanced | sonnet | implementacao, testes, debug, design |
+| Deep | opus | arquitetura, security, orquestracao |
+
+**Enforcement automatico (Claude Code):**
+- `EnterPlanMode` → hook sugere `/model opus`
+- `ExitPlanMode` → hook sugere `/model sonnet`
+- Subagent sem `model` explicito → hook alerta e sugere tier
+
+**Em outros ambientes:** seguir `policies/model-routing.md` manualmente.
+
 ## O Que o Sistema Faz
 
 ```mermaid
@@ -97,7 +115,7 @@ flowchart TD
     E --> F[Documentador 10 quando houver mudanca relevante]
     E --> G[QA 05 + Security 06 + Reviewer 11]
     G --> H[Deploy 07 ou Release 24]
-    B --> I[LLM Selector 16 por etapa]
+    B --> I[Model Routing por etapa]
     E --> J[Repo Auditor 18 e Asset Librarian 19 quando necessario]
     E --> K[AI Integration 25 + Prompt 26 + Video 27 quando a task envolve IA]
 ```
@@ -111,6 +129,7 @@ flowchart TD
 - `policies/tool-safety.md` define o uso seguro de escrita, rede, MCP e acoes externas
 - `policies/evals.md` define evidencia minima para mudancas estruturais no kit
 - `policies/cost-optimization.md` guia reducao de tokens, cache, rate limits e selecao de modelo
+- `policies/model-routing.md` define tiers de modelo, enforcement e integracao com cost-tracker
 
 ### Hierarquia de Instrucoes
 
@@ -132,7 +151,7 @@ graph TD
 
     G1 --> S10[10 Documentador]
     G1 --> S11[11 Reviewer]
-    G1 --> S16[16 LLM Selector]
+    G1 --> MR[Model Routing policy]
     G1 --> S17[17 Image Generator]
     G1 --> S18[18 Repo Auditor]
     G1 --> S19[19 Asset Librarian]
@@ -203,7 +222,7 @@ PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security ->
 | 09 | Orchestrator | define pipeline, delega, adapta ordem e fecha o fluxo |
 | 10 | Documentador | registra decisao, contrato, operacao e impactos |
 | 11 | Reviewer | valida delta final antes de liberar |
-| 16 | LLM Selector | recomenda nivel de modelo por etapa |
+| — | Model Routing | selecao de modelo unificada — agora em `policies/model-routing.md` |
 | 17 | Image Generator | gera e adapta assets visuais com fluxo real em Python |
 | 18 | Repo Auditor | fotografa stack, convencoes, riscos e contexto do repo |
 | 19 | Asset Librarian | inventaria logos, icones, fontes e tokens visuais |
@@ -549,3 +568,9 @@ Atualize esta secao ao fechar mudancas estruturais no kit.
 - implementados `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` e telemetria expandida em `devkit_track_cost`
 - adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo nao interativo
 - atualizadas docs principais, README do MCP, quickstart e guias de operacao com foco em economia de token
+
+### 2026-04-08
+
+- unificado model routing em policy unica (`policies/model-routing.md`), absorvendo skill 16 (llm-selector)
+- adicionado hook `model-routing-hook.mjs` para enforcement em plan mode e subagent spawns
+- atualizadas referencias em cost-tracker, cost-optimization, orchestrator, design-intelligence e hooks policy

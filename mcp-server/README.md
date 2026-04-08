@@ -80,7 +80,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_get_patterns` | Patterns de AI integration |
 | `devkit_get_code_snippets` | Hooks, components, types |
 | `devkit_get_repo_audit` | Audit e assets persistidos |
-| `devkit_recommend_model` | LLM Selector (Fast/Balanced/Deep) |
+| `devkit_recommend_model` | Model Routing (Fast/Balanced/Deep) — ver `policies/model-routing.md` |
 | `devkit_get_skill_matrix` | Dependencias entre skills |
 | `devkit_get_eval_cases` | Casos de teste |
 | `devkit_context_pack` | Monta contexto minimo por task com audit, focus, git status e previews |

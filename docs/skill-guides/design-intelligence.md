@@ -51,7 +51,7 @@ Vantagens sobre Playwright para scraping de texto:
 - Sem problemas de rendering JS
 - Retorna estrutura limpa
 
-### LLM Selector (skill 16)
+### Model Routing
 
 Delegar sempre a escolha do modelo multimodal. Niveis tipicos:
 - Analise de 1-3 screenshots: Balanced
@@ -108,7 +108,7 @@ Fase 1 - Discovery:
 - Playwright: screenshots de cada + extracao de hero images
 
 Fase 2 - Analise:
-- LLM Selector: Balanced (5 screenshots)
+- Model Routing: Balanced (5 screenshots)
 - Resultado: "paletas escuras com acentos neon, tipografia sans bold, hero com mockup de celular, CTA 'Start Free Trial'"
 
 Fase 3 - Estrategia:
