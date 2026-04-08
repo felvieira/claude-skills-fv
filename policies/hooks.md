@@ -80,3 +80,20 @@ Se nenhuma ferramenta externa esta instalada, explorar normalmente com Grep/Glob
 Ver `policies/code-exploration.md` para regras completas e exemplos.
 
 Em Claude Code: `pre-tool-enforcer.mjs` sugere a ferramenta correta automaticamente.
+
+## Model Routing
+
+Sugerir troca de modelo em dois contextos:
+
+- **Plan mode**: sugerir opus ao entrar (`EnterPlanMode`), sonnet ao sair (`ExitPlanMode`)
+- **Agent spawn**: avisar quando subagent nao tem `model` explicito e sugerir tier baseado no prompt (keywords → Deep/Balanced/Fast)
+
+Regras:
+- Anti-spam de 60s entre sugestoes (configuravel em `hooks/config.json`)
+- Se agente ja definiu `model`, passar silenciosamente
+- Sugestao, nao bloqueio — o agente decide
+
+Config em `hooks/config.json` secao `model_routing`.
+Ver `policies/model-routing.md` para regras completas de selecao.
+
+Em Claude Code: `model-routing-hook.mjs` faz isso automaticamente.

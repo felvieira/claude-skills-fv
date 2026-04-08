@@ -35,12 +35,10 @@ Maximizar eficiencia de tokens, cache e API calls para reduzir custo real sem sa
 - Firecrawl: usar Playwright (gratuito) como fallback pra scraping simples
 - Nao repetir chamada de API que ja retornou resultado valido — cachear no artefato
 
-## Selecao de Modelo (LLM Selector)
+## Selecao de Modelo
 
-- Fast (haiku): rename, boilerplate, microcopy, formatacao
-- Balanced (sonnet): implementacao, debug, design, testes
-- Deep (opus): arquitetura, security, orquestracao, decisoes complexas
-- Nao usar Deep pra tasks que Balanced resolve — custo 5x maior
+Ver `policies/model-routing.md` para regras completas de selecao e enforcement.
+Resumo: Fast (haiku) < Balanced (sonnet) < Deep (opus). Nao usar Deep pra tasks que Balanced resolve — custo 5x maior.
 
 ## Metricas de Alerta
 

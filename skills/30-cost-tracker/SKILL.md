@@ -58,7 +58,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 | Chamadas API Brave | Contagem por tool call | 5 chamadas (search) |
 | Chamadas API Firecrawl | Contagem por tool call | 2 chamadas (scrape) |
 | Tempo de execucao | Timestamps inicio/fim | 14min 32s |
-| Modelo usado | LLM Selector output | claude-sonnet-4-20250514 |
+| Modelo usado | Model Routing policy | claude-sonnet-4-20250514 |
 
 ## Formato do Relatorio
 
@@ -90,7 +90,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 ## Integracao com Outras Skills
 
 - **Orchestrator (09)**: aciona o Cost Tracker ao final do pipeline para gerar relatorio
-- **LLM Selector (16)**: fornece o nivel de modelo usado, impactando o calculo de custo
+- **Model Routing (policy)**: fornece o tier de modelo usado por skill/subagent, impactando o calculo de custo. Ver `policies/model-routing.md`
 - **Todas as skills**: reportam consumo de tokens e chamadas no handoff
 
 ## Evidencia de Conclusao
