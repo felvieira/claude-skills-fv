@@ -17,5 +17,13 @@
     "suggest_on_tools": ["Read", "Grep", "Glob"],
     "min_suggestions_interval_ms": 30000,
     "env_file": ".bot/.env.tools"
+  },
+  "model_routing": {
+    "suggest_on_plan_mode": true,
+    "suggest_on_agent_spawn": true,
+    "min_suggestion_interval_ms": 60000,
+    "plan_model": "opus",
+    "exec_model": "sonnet",
+    "fast_model": "haiku"
   }
 }

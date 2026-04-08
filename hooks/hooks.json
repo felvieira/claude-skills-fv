@@ -7,7 +7,8 @@
     "hooks/scripts/session-start.mjs"
   ],
   "PreToolUse": [
-    "hooks/scripts/pre-tool-enforcer.mjs"
+    "hooks/scripts/pre-tool-enforcer.mjs",
+    "hooks/scripts/model-routing-hook.mjs"
   ],
   "Stop": [
     "hooks/scripts/context-guard-stop.mjs",
