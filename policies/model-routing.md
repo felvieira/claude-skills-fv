@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Fonte unica de regras para selecao de modelo por tarefa, complexidade e fase de trabalho. Substitui `skills/16-llm-selector` e unifica com enforcement automatico via hooks.
+Fonte unica de regras para selecao de modelo por tarefa, complexidade e fase de trabalho, com enforcement automatico via hooks.
 
 ## Tiers
 

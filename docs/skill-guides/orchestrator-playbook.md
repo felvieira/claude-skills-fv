@@ -96,7 +96,7 @@ Invoke skill 29 (design-intelligence) antes do UI/UX quando a task envolver cons
 - melhoria de UI existente: Design Intelligence -> UI/UX -> Frontend (pula PO)
 - landing page: Copy -> Design Intelligence -> UI/UX -> Frontend -> SEO
 
-A skill pesquisa concorrentes via Brave Search, captura screenshots via Playwright, analisa tendencias visuais via LLM Selector, gera moodboards via Image Generator, e entrega dossie estrategico pro UI/UX.
+A skill pesquisa concorrentes via Brave Search, captura screenshots via Playwright, analisa tendencias visuais via Model Routing, gera moodboards via Image Generator, e entrega dossie estrategico pro UI/UX.
 
 **Como acionar:**
 ```

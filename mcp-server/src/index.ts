@@ -259,7 +259,7 @@ server.registerTool(
   "devkit_recommend_model",
   {
     title: "Recommend Model Level",
-    description: "LLM Selector logic — recommends Fast/Balanced/Deep based on task complexity",
+    description: "Model Routing — recommends Fast/Balanced/Deep based on task complexity. Ver policies/model-routing.md",
     inputSchema: {
       task_type: z.string().describe("Type of task"),
       complexity: z.enum(["low", "medium", "high"]).describe("Task complexity"),
@@ -306,10 +306,10 @@ server.registerTool(
     const matrix = [
       { skill: "09-orchestrator", calls: ["all"], called_by: ["user"] },
       { skill: "01-po-feature-spec", calls: ["02-ui-ux-design", "03-backend-api"], called_by: ["09-orchestrator"] },
-      { skill: "29-design-intelligence", calls: ["16-llm-selector", "17-image-generator", "19-asset-librarian", "02-ui-ux-design"], called_by: ["09-orchestrator", "01-po-feature-spec"] },
+      { skill: "29-design-intelligence", calls: ["17-image-generator", "19-asset-librarian", "02-ui-ux-design"], called_by: ["09-orchestrator", "01-po-feature-spec"] },
       { skill: "02-ui-ux-design", calls: ["04-frontend", "12-motion-design"], called_by: ["29-design-intelligence", "01-po-feature-spec"] },
       { skill: "17-image-generator", calls: [], called_by: ["29-design-intelligence", "02-ui-ux-design", "04-frontend"] },
-      { skill: "16-llm-selector", calls: [], called_by: ["all"] },
+      { skill: "model-routing-policy", calls: [], called_by: ["all"] },
       { skill: "18-repo-auditor", calls: ["28-claude-md-generator", "19-asset-librarian"], called_by: ["09-orchestrator"] },
       { skill: "05-qa-testing", calls: ["06-security-review"], called_by: ["03-backend-api", "04-frontend"] },
       { skill: "06-security-review", calls: ["11-reviewer"], called_by: ["05-qa-testing"] },
