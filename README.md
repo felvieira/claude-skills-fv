@@ -1,461 +1,215 @@
-# Dev Team Kit for Coding Agents
+# Dev Team Kit — 31 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-32-1d4ed8)
-![Setup](https://img.shields.io/badge/setup-multi--platform-f59e0b)
-![Docs](https://img.shields.io/badge/docs-governed-7c3aed)
+![Skills](https://img.shields.io/badge/skills-31-1d4ed8)
+![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
+![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
-> Um kit visual e governado para agentes de coding trabalharem com pipeline, contexto persistente, auditoria de repo e skills especializadas.
+> Um time completo de especialistas de software dentro do seu agente de código.  
+> Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
 
-## Visao Geral
+---
 
-Este repositorio entrega um sistema completo para agentes compativeis com Claude, OpenCode, Copilot, Windsurf, Gemini CLI e Antigravity:
+## O Que É
 
-- `GLOBAL.md` define as regras universais do kit
-- `policies/` concentra execucao, seguranca de tools, handoffs, evals e qualidade
-- `skills/*/SKILL.md` implementa 32 especialistas numerados
-- `templates/` oferece formatos curtos e reutilizaveis
-- `docs/` guarda guias, quickstart, contexto e auditorias reutilizaveis
-- `patterns/ai-integration/` organiza padroes para integrar IA em apps reais
-- `setup/install.sh` instala o kit em `.bot/` e configura multiplas plataformas
-- `scripts/` inclui utilitarios reais, como geracao de imagens via fal.ai
-- `src/` traz codigo de referencia pronto para reaproveitamento
-- `mcp-server/` expoe o kit inteiro como MCP server com 32 tools
-- `hooks/` implementa lifecycle hooks nativos para Claude Code (fallback via `policies/hooks.md`)
+O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
-## MCP Server — Use o Kit de Qualquer Lugar
+**O que você ganha:**
 
-O kit agora tem um **MCP server proprio** que expoe 32 tools apoiadas pelas 32 skills para qualquer cliente MCP. O usuario acopla, manda qualquer pedido, e o MCP roteia, executa e entrega.
+- **Pipeline estruturado** — cada task passa pelas etapas certas, na ordem certa, sem improvisar
+- **QA, Security e Reviewer obrigatórios** — nenhuma entrega sai sem validação
+- **Model routing automático** — haiku para boilerplate, sonnet para implementação, opus para arquitetura
+- **Lifecycle hooks** — o agente detecta contexto vago, re-lê arquivos antes de editar, monitora custo de tokens
+- **MCP server próprio** — 31 tools expostas para qualquer cliente MCP
+- **Memória persistente** — working set, context pack, learned skills acumuladas por projeto
+- **Instalação multi-plataforma** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI e mais
 
-**O que o MCP faz:**
+---
 
-| Bloco | Tools | Exemplos |
-|-------|-------|----------|
-| **Knowledge** | 14 | Classifica task, monta pipeline, monta context pack e resume diff |
-| **Execution** | 6 | Busca concorrentes (Brave), scraping (Firecrawl/Playwright), gera imagens (fal.ai) |
-| **Persistence** | 12 | Salva contexto, working set, custo, learned skills e guardrails de sessao |
+## Instalação Rápida
 
-**Como usar:**
+### Modo 1 — Plugin Global (Claude Code)
 
-```json
-{
-  "mcpServers": {
-    "dev-team-kit": {
-      "command": "node",
-      "args": [".bot/mcp-server/dist/index.js"],
-      "env": {
-        "FAL_KEY": "fal-...",
-        "BRAVE_SEARCH_KEY": "BSA..."
-      }
-    }
-  }
-}
+Instala as 31 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+
+```bash
+# Via Claude Code CLI
+claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP. Ver `mcp-server/README.md` para detalhes completos.
+O que é instalado globalmente: skills, hooks, commands (`/audit-repo`, `/devkit-install-fv`, `/plan-feature`, `/review-release`, `/inventory-assets`).
 
-## Hook System — Lifecycle Intelligence (Claude Code)
+### Modo 2 — Kit Completo por Repo (via comando)
 
-O kit inclui hooks nativos para Claude Code que interceptam lifecycle events e injetam inteligencia automaticamente. Em outras plataformas (Copilot, Windsurf, Gemini CLI), as mesmas regras estao em `policies/hooks.md`.
+Com o plugin instalado, rode dentro do repo que quer configurar:
 
-| Hook | Evento | O que faz |
-|------|--------|-----------|
-| `pre-execution-gate` | UserPromptSubmit | Detecta prompt vago, infere contexto e confirma antes de agir |
-| `keyword-detector` | UserPromptSubmit | Sanitiza input e injeta skill ou learned skill relevante |
-| `context-guard-stop` | Stop | Bloqueia stop quando contexto > 75%, sugere /compact |
-| `persistent-mode` | Stop | Bloqueia stop quando pipeline esta ativo |
-| `pre-tool-enforcer` | PreToolUse | Re-ler antes de editar + sugere code intelligence tools quando disponíveis |
-| `session-start` | SessionStart | Restaura estado da sessao anterior |
-| `post-tool-verifier` | PostToolUse | Detecta debugging patterns e sugere extracao de learned skill |
-| `model-routing-hook` | PreToolUse | Sugere troca de model em plan mode e valida model em subagent spawns |
+```
+/devkit-install-fv
+```
 
-**Como os hooks sao instalados:**
-O `install.sh` copia `hooks/` para `.bot/hooks/` e registra automaticamente no `.claude/settings.json` depois de criar ou mesclar a config.
+Isso instala `.bot/` completo: MCP server, policies, templates, docs, hooks, learned-skills e configs multi-plataforma.
 
-**Learned Skills:** `.bot/learned-skills/` acumula conhecimento especifico do projeto — insights nao-Googleaveis descobertos durante debugging. Injetados automaticamente em sessoes futuras via keyword matching.
+### Modo 3 — Bash Direto
 
-## Ferramentas de Code Intelligence (Opcionais)
+```bash
+git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
+bash /tmp/dev-team-kit/setup/install.sh /caminho/do/projeto
+```
 
-O kit detecta e recomenda automaticamente ferramentas que reduzem drasticamente o consumo de tokens na exploracao de codigo. O hook `pre-tool-enforcer` sugere a ferramenta correta quando o agente tenta usar Grep/Read/Glob.
+### Comparativo dos Modos
 
-| Ferramenta | Tipo | O que faz | Token savings | Licenca |
-|---|---|---|---|---|
-| [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) | MCP server | Knowledge graph AST — call paths, architecture, 66 linguagens | ~120x | MIT |
-| [cymbal](https://github.com/1broseidon/cymbal) | CLI | Symbol navigator — investigate, impact, structure, 24 linguagens | ~62-100% | MIT |
-| [ory/lumen](https://github.com/ory/lumen) | Claude plugin | Busca semantica local via embeddings | ~26-39% | Apache 2.0 |
+| O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
+|---|:---:|:---:|:---:|
+| 31 skills | ✅ | ✅ | ✅ |
+| Hooks (lifecycle) | ✅ | ✅ | ✅ |
+| Slash commands | ✅ | ✅ | ✅ |
+| Policies | ❌ | ✅ | ✅ |
+| MCP server (31 tools) | ❌ | ✅ | ✅ |
+| Templates de handoff | ❌ | ✅ | ✅ |
+| Docs + repo-audit | ❌ | ✅ | ✅ |
+| Configs multi-plataforma | ❌ | ✅ | ✅ |
+| Learned skills por projeto | ❌ | ✅ | ✅ |
 
-**Instalacao:** `setup/install.sh` Step 8 (opcional) ou manual.
-**Hierarquia:** Graph > Symbol > Semantic > Grep/Read — ver `policies/code-exploration.md`.
+---
 
-## Model Routing — Selecao Automatica de Modelo
+## Plataformas Compatíveis
 
-O kit inclui policy e hook para selecao inteligente de modelo por fase de trabalho, reduzindo custo sem sacrificar qualidade.
+| Plataforma | Skills | Hooks | MCP | Slash Commands | Notas |
+|---|:---:|:---:|:---:|:---:|---|
+| **Claude Code** | ✅ | ✅ | ✅ | ✅ | suporte completo — plugin nativo |
+| **Cursor** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md, MCP via config |
+| **Windsurf** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via rules, MCP via `.windsurf/mcp.json` |
+| **GitHub Copilot** | ✅ via `.bot/` | ❌ | ❌ | ❌ | skills via `.github/copilot-instructions.md` |
+| **Gemini CLI** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via GEMINI.md, MCP via `.gemini/settings.json` |
+| **OpenCode** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md |
+| **Antigravity** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via config local |
 
-| Tier | Model | Quando |
+> Para plataformas sem hooks nativos, as mesmas regras estão em `policies/hooks.md` — o agente as aplica manualmente.
+
+---
+
+## Os 31 Especialistas
+
+### Gestao e Coordenacao
+
+| # | Skill | O que faz |
 |---|---|---|
-| Fast | haiku | boilerplate, rename, microcopy, templates |
-| Balanced | sonnet | implementacao, testes, debug, design |
-| Deep | opus | arquitetura, security, orquestracao |
+| 08 | **Context Manager** | rastreia foco, tasks abertas, arquivos quentes e handoffs entre sessões |
+| 09 | **Orchestrator** | define o pipeline mínimo suficiente, delega para specialists, adapta em caso de rejeição |
+| 10 | **Documenter** | registra decisões, contratos de API, operações e impactos em docs vivos |
+| 11 | **Reviewer** | valida o delta final antes de liberar — qualidade, escopo e risco |
+| 17 | **Image Generator** | gera e adapta assets visuais via fal.ai com suporte a t2i, i2i, rembg e ícones Tauri |
+| 18 | **Repo Auditor** | fotografia completa do repo — stack, convenções, riscos, entry points e dívida técnica |
+| 19 | **Asset Librarian** | inventaria logos, ícones, fontes, tokens visuais e assets reutilizáveis |
+| 20 | **Observability SRE** | define logs estruturados, métricas, tracing, alertas e plano de rollback |
+| 21 | **Data Analytics** | define eventos de tracking, naming, funis e KPIs de produto |
+| 22 | **Accessibility Specialist** | revisa WCAG 2.2, navegação por teclado, semântica HTML e motion reduction |
+| 23 | **Migration & Refactor Specialist** | conduz migrações incrementais, feature flags e rollback seguro |
+| 24 | **Release Manager** | organiza changelog, release notes, versionamento e rollout gradual |
+| 25 | **AI Integration Architect** | projeta adapters de IA, gateways, streaming, fallbacks e custo de inferência |
+| 26 | **Prompt Engineer** | cria e itera prompts, templates reutilizáveis e estratégias de few-shot |
+| 27 | **Video Integration Specialist** | integra vídeo generativo com foco em UX, latência e formatos de output |
+| 28 | **CLAUDE.md Generator** | gera `CLAUDE.md` inteligente para projetos consumidores do kit |
+| 30 | **Cost Tracker** | rastreia custo de tokens e API calls por sessão, por skill e por tier de modelo |
+| 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
+| 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 
-**Enforcement automatico (Claude Code):**
-- `EnterPlanMode` → hook sugere `/model opus`
-- `ExitPlanMode` → hook sugere `/model sonnet`
-- Subagent sem `model` explicito → hook alerta e sugere tier
+### Produto e Design
 
-**Em outros ambientes:** seguir `policies/model-routing.md` manualmente.
-
-## O Que o Sistema Faz
-
-```mermaid
-flowchart TD
-    A[Usuario pede uma task] --> B[Orchestrator 09]
-    B --> C[Context Manager 08]
-    B --> D[Escolhe pipeline minimo suficiente]
-    D --> E[Skills especialistas 01-32]
-    E --> F[Documentador 10 quando houver mudanca relevante]
-    E --> G[QA 05 + Security 06 + Reviewer 11]
-    G --> H[Deploy 07 ou Release 24]
-    B --> I[Model Routing por etapa]
-    E --> J[Repo Auditor 18 e Asset Librarian 19 quando necessario]
-    E --> K[AI Integration 25 + Prompt 26 + Video 27 quando a task envolve IA]
-```
-
-## Governanca Global
-
-- `GLOBAL.md` e a camada mais alta de instrucao
-- `policies/` padroniza execucao, risco, persistencia, qualidade e avaliacao
-- `templates/` reduz variacao de handoff, plano, review e rejeicao
-- `docs/repo-audit/current.md` e `docs/repo-audit/assets.md` evitam releitura desnecessaria do repo
-- `policies/tool-safety.md` define o uso seguro de escrita, rede, MCP e acoes externas
-- `policies/evals.md` define evidencia minima para mudancas estruturais no kit
-- `policies/cost-optimization.md` guia reducao de tokens, cache, rate limits e selecao de modelo
-- `policies/model-routing.md` define tiers de modelo, enforcement e integracao com cost-tracker
-
-### Hierarquia de Instrucoes
-
-1. `GLOBAL.md`
-2. `policies/*.md`
-3. `skills/*/SKILL.md`
-4. `templates/*.md`
-
-## Organograma do Kit
-
-```mermaid
-graph TD
-    O[09 Orchestrator] --> C[08 Context Manager]
-    O --> G1[Gestao e Coordenacao]
-    O --> G2[Produto e Design]
-    O --> G3[Desenvolvimento]
-    O --> G4[Conteudo e SEO]
-    O --> G5[Qualidade, Release e Operacao]
-
-    G1 --> S10[10 Documentador]
-    G1 --> S11[11 Reviewer]
-    G1 --> MR[Model Routing policy]
-    G1 --> S17[17 Image Generator]
-    G1 --> S18[18 Repo Auditor]
-    G1 --> S19[19 Asset Librarian]
-    G1 --> S28[28 CLAUDE.md Generator]
-    G1 --> S30[30 Cost Tracker]
-    G1 --> S31[31 Session Summary]
-    G1 --> S32[32 Smart Suggestions]
-
-    G2 --> S01[01 PO]
-    G2 --> S02[02 UI/UX]
-    G2 --> S22[22 Accessibility]
-    G2 --> S29[29 Design Intelligence]
-
-    G3 --> S03[03 Backend]
-    G3 --> S04[04 Frontend]
-    G3 --> S12[12 Motion]
-    G3 --> S15[15 Mobile Tauri]
-    G3 --> S23[23 Migration Refactor]
-    G3 --> S25[25 AI Integration Architect]
-    G3 --> S26[26 Prompt Engineer]
-    G3 --> S27[27 Video Integration]
-
-    G4 --> S13[13 Marketing Copy]
-    G4 --> S14[14 SEO]
-    G4 --> S21[21 Data Analytics]
-
-    G5 --> S05[05 QA]
-    G5 --> S06[06 Security]
-    G5 --> S07[07 Deploy]
-    G5 --> S20[20 Observability SRE]
-    G5 --> S24[24 Release Manager]
-```
-
-## Pipeline Principal
-
-### Feature completa
-
-```text
-PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy
-```
-
-### Adaptacoes comuns
-
-| Tipo de tarefa | Pipeline tipico |
-|---|---|
-| Feature completa | `PO -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy` |
-| Bug fix | `Backend -> QA -> Security -> Reviewer -> Deploy` |
-| Hotfix critico | `Backend -> Security -> Reviewer -> Deploy` |
-| Melhoria de UI | `UI/UX -> Frontend -> Motion -> QA -> Security -> Reviewer -> Deploy` |
-| Landing page | `Copy -> UI/UX -> Frontend -> Motion -> SEO -> QA -> Security -> Reviewer -> Deploy` |
-| Integracao de IA | `Repo Auditor -> AI Integration Architect -> Prompt Engineer -> Backend/Frontend -> Observability -> QA -> Security -> Reviewer` |
-| Release formal | `Reviewer -> Observability SRE -> Release Manager -> Deploy` |
-
-### Etapas obrigatorias
-
-- `QA` 05 nao e pulada
-- `Security` 06 nao e pulada
-- `Reviewer` 11 nao e pulada
-- `Documentador` 10 entra sempre que houver mudanca de feature, contrato, arquitetura ou operacao
-
-## As 32 Skills
-
-### Gestao e coordenacao
-
-| # | Skill | Papel |
+| # | Skill | O que faz |
 |---|---|---|
-| 08 | Context Manager | rastreia foco, tasks, historico e persistencia enxuta |
-| 09 | Orchestrator | define pipeline, delega, adapta ordem e fecha o fluxo |
-| 10 | Documentador | registra decisao, contrato, operacao e impactos |
-| 11 | Reviewer | valida delta final antes de liberar |
-| — | Model Routing | selecao de modelo unificada — agora em `policies/model-routing.md` |
-| 17 | Image Generator | gera e adapta assets visuais com fluxo real em Python |
-| 18 | Repo Auditor | fotografa stack, convencoes, riscos e contexto do repo |
-| 19 | Asset Librarian | inventaria logos, icones, fontes e tokens visuais |
-| 20 | Observability SRE | define logs, metricas, tracing, alertas e rollback |
-| 21 | Data Analytics | define eventos, naming, funis e KPIs |
-| 22 | Accessibility Specialist | revisa WCAG, teclado, semantica e motion reduction |
-| 23 | Migration Refactor Specialist | conduz migracoes, rollout incremental e rollback |
-| 24 | Release Manager | organiza changelog, release notes e rollout |
-| 25 | AI Integration Architect | projeta adapters, hooks, gateways e custo de IA |
-| 26 | Prompt Engineer | cria prompts e templates reutilizaveis |
-| 27 | Video Integration Specialist | integra video generativo com foco em UX e latencia |
-| 28 | CLAUDE.md Generator | gera CLAUDE.md inteligente para projetos consumidores |
-| 30 | Cost Tracker | rastreia custo de tokens e API calls por sessao |
-| 31 | Session Summary | consolida resumo de sessao para handoff entre sessoes |
-| 32 | Smart Suggestions | sugere proxima acao baseado no estado do projeto |
-
-### Produto e design
-
-| # | Skill | Papel |
-|---|---|---|
-| 01 | PO | spec, historias, criterios de aceitacao e prioridade |
-| 02 | UI/UX | layout, tokens, responsividade e heuristicas de uso |
-| 29 | Design Intelligence | pesquisa competitiva, analise visual, moodboard e dossie estrategico |
+| 01 | **PO** | escreve spec, histórias de usuário, critérios de aceitação e define prioridade |
+| 02 | **UI/UX Designer** | define layout, sistema de tokens, responsividade e heurísticas de uso |
+| 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
 
 ### Desenvolvimento
 
-| # | Skill | Papel |
+| # | Skill | O que faz |
 |---|---|---|
-| 03 | Backend | APIs, contratos, auth, validacao e integracoes |
-| 04 | Frontend | React/Next, estado, chamadas e experiencia do app |
-| 12 | Motion Design | animacoes, transicoes e comportamento visual |
-| 15 | Mobile Tauri | extensao opcional para desktop/mobile com Tauri |
+| 03 | **Backend Engineer** | APIs REST/GraphQL, contratos, auth, validação, banco de dados e integrações |
+| 04 | **Frontend Engineer** | React/Next.js, estado, chamadas de API, performance e experiência do app |
+| 12 | **Motion Designer** | animações, transições, micro-interações e comportamento visual coeso |
+| 15 | **Mobile / Tauri** | extensão opcional para apps desktop e mobile com Tauri + React Native |
 
-### Conteudo e descoberta
+### Conteudo e Descoberta
 
-| # | Skill | Papel |
+| # | Skill | O que faz |
 |---|---|---|
-| 13 | Marketing Copy | copy, CTAs, landing pages e brand voice |
-| 14 | SEO Specialist | metadata, schema, performance e discoverability |
+| 13 | **Marketing Copy** | copy de produto, CTAs, landing pages, brand voice e mensagens de conversão |
+| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap e discoverability |
 
-### Qualidade e entrega
+### Qualidade e Entrega
 
-| # | Skill | Papel |
+| # | Skill | O que faz |
 |---|---|---|
-| 05 | QA | testes unitarios, integracao, E2E e cobertura |
-| 06 | Security | OWASP, headers, CORS, CSRF, XSS e risco real |
-| 07 | Deploy | containerizacao, CI/CD, rollout e rollback |
+| 05 | **QA Engineer** | testes unitários, integração, E2E, cobertura e edge cases críticos |
+| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injeção e exposição de dados |
+| 07 | **Deploy Engineer** | containerização, CI/CD, rollout blue-green, rollback e infra como código |
 
-## Estrutura Real Deste Repo
+---
 
-```text
-.
-├── AGENTS.md
-├── CLAUDE.md
-├── GLOBAL.md
-├── README.md
-├── VERSION
-├── commands/
-│   ├── audit-repo.md
-│   ├── inventory-assets.md
-│   ├── plan-feature.md
-│   └── review-release.md
-├── docs/
-│   ├── README.md
-│   ├── ai-integration-playbook.md
-│   ├── context/
-│   ├── plans/
-│   ├── quickstart.md
-│   ├── repo-audit/
-│   ├── setup-bot-folder.md
-│   ├── skill-call-matrix.md
-│   └── skill-guides/
-├── evals/
-│   └── flows/
-├── hooks/
-│   ├── hooks.json
-│   ├── config.json
-│   └── scripts/
-├── patterns/
-│   └── ai-integration/
-├── policies/
-├── scripts/
-│   ├── generate-image.py
-│   └── tests/
-├── setup/
-│   ├── README.md
-│   ├── configs/
-│   ├── install.sh
-│   └── mcp-servers.json
-├── skills/
-│   └── */SKILL.md
-├── src/
-│   ├── components/ui/
-│   ├── hooks/
-│   ├── lib/
-│   ├── middleware.ts
-│   ├── stores/
-│   └── types/
-└── templates/
+## Pipeline Principal
+
+```mermaid
+flowchart LR
+    A[Task] --> B[Orchestrator 09]
+    B --> C[Context Manager 08]
+    B --> D[Pipeline mínimo suficiente]
+    D --> E[Specialists 01–32]
+    E --> F[QA 05 + Security 06 + Reviewer 11]
+    F --> G[Deploy 07 ou Release 24]
+    B --> H[Model Routing por etapa]
 ```
 
-### O que existe hoje em `src/`
+### Pipelines Comuns
 
-- hooks de API, auth, debounce, media query, formulario, infinite scroll e utilitarios
-- `src/components/ui/Skeleton.tsx` e `src/components/ui/ErrorBoundary.tsx`
-- `src/lib/index.ts`, `src/stores/index.ts`, `src/types/index.ts`
-- `src/middleware.ts` como referencia de middleware auth/security
+| Tipo de tarefa | Pipeline |
+|---|---|
+| Feature completa | `PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Security → Reviewer → Deploy` |
+| Bug fix | `Backend → QA → Security → Reviewer → Deploy` |
+| Hotfix crítico | `Backend → Security → Reviewer → Deploy` |
+| Melhoria de UI | `UI/UX → Frontend → Motion → QA → Security → Reviewer → Deploy` |
+| Landing page | `Copy → Design Intelligence → UI/UX → Frontend → SEO → QA → Reviewer` |
+| Integração de IA | `Repo Auditor → AI Architect → Prompt Engineer → Backend → Observability → QA → Security → Reviewer` |
+| Release formal | `Reviewer → Observability SRE → Release Manager → Deploy` |
 
-## Estrutura Recomendada no Repo Consumidor
+---
 
-Quando este kit e instalado em outro projeto, o modo recomendado e:
+## Model Routing — Modelo Certo para Cada Etapa
 
-```text
-repo-consumidor/
-├── AGENTS.md
-├── CLAUDE.md
-├── GEMINI.md
-├── .claude/settings.json
-├── .github/copilot-instructions.md
-├── .windsurf/rules/dev-team-kit.md
-├── .windsurf/mcp.json
-├── .gemini/settings.json
-├── .agent/skills/
-└── .bot/
-    ├── GLOBAL.md
-    ├── README.md
-    ├── commands/
-    ├── docs/
-    ├── .env.tools        ← ferramentas de code intelligence detectadas
-    ├── evals/
-    ├── hooks/            ← lifecycle hooks para Claude Code
-    ├── learned-skills/   ← conhecimento especifico do projeto
-    ├── mcp-server/       ← copiado e compilado pelo install.sh
-    ├── patterns/
-    ├── policies/
-    ├── scripts/
-    ├── setup/
-    ├── skills/
-    └── templates/
-```
-
-Ver `docs/setup-bot-folder.md` para a estrutura detalhada.
-
-## Instalacao em Repo Existente
-
-```bash
-# a partir do repo do kit
-bash setup/install.sh /caminho/do/projeto
-
-# ou de dentro do repo consumidor ja com o kit em .bot/
-bash .bot/setup/install.sh
-
-# modo enxuto e nao interativo
-bash .bot/setup/install.sh --profile lean --no-input
-```
-
-Quando instalado em `.bot/`, o kit inclui `setup/`, entao o comando acima funciona sem depender do repo original.
-
-O instalador em `setup/install.sh`:
-
-1. verifica Node.js e opcionalmente Python e uv
-2. copia o kit para `.bot/` — incluindo `mcp-server/`, `hooks/` e `learned-skills/` — e compila o MCP
-3. gera `CLAUDE.md`, `AGENTS.md` e `GEMINI.md`
-4. cria configs para Claude Code, Copilot, Windsurf, Gemini CLI e Antigravity
-5. configura MCPs essenciais e opcionais
-6. configura API keys (FAL_KEY, BRAVE_SEARCH_KEY, FIRECRAWL_KEY) no `.env.local`
-7. adiciona `.bot/` e `.agent/skills/` ao `.gitignore`
-8. oferece instalacao opcional de ferramentas de code intelligence (codebase-memory, cymbal, lumen)
-
-Perfis de setup:
-
-- `lean`: minimiza prompts e installs opcionais para economizar tempo e token
-- `daily-dev`: fluxo padrao para uso diario
-- `research`: preserva o fluxo completo para exploracao e pesquisa
-
-Flags uteis:
-
-- `--profile lean`
-- `--no-input`
-- `--yes`
-
-## API Keys
-
-O kit usa APIs externas para execucao real de pesquisa, scraping e geracao de imagens:
-
-| Key | Obrigatoria | Onde obter | Usada por |
-|-----|-------------|-----------|-----------|
-| `FAL_KEY` | Recomendada | [fal.ai/dashboard/keys](https://fal.ai/dashboard/keys) | Image Generator (17), MCP moodboards |
-| `BRAVE_SEARCH_KEY` | Recomendada | [brave.com/search/api](https://brave.com/search/api/) | Design Intelligence (29), MCP busca de concorrentes |
-| `FIRECRAWL_KEY` | Opcional | [firecrawl.dev](https://firecrawl.dev/) | MCP scraping (Playwright e o fallback gratuito) |
-
-**Onde configurar:**
-
-```bash
-# .env.local (nunca commitar)
-FAL_KEY=fal-...
-BRAVE_SEARCH_KEY=BSA...
-FIRECRAWL_KEY=fc-...
-```
-
-**Prioridade de leitura:**
-1. Variavel de ambiente do processo (MCP recebe via config do cliente)
-2. `.env.local` do projeto consumidor
-3. `.env` do projeto consumidor
-
-O `install.sh` pergunta cada key durante a instalacao e salva em `.env.local`.
-
-## MCPs Recomendados
-
-### Essenciais
-
-O MCP `dev-team-kit` hoje expoe 32 tools apoiadas pelas 32 skills do kit.
-
-Na tabela abaixo, considere o `dev-team-kit` como 32 tools apoiadas pelas 32 skills.
-
-| MCP | Estado padrao | Uso |
+| Tier | Modelo | Quando usar |
 |---|---|---|
-| `dev-team-kit` | habilitado | MCP completo do kit com 32 tools apoiadas pelas 32 skills, contexto minimo, working set, pesquisa, scraping e geracao de imagens |
-| `context7` | habilitado | documentacao atualizada de bibliotecas |
-| `playwright` | habilitado | navegacao e validacao E2E |
+| Fast | haiku | boilerplate, rename, microcopy, templates, formatação |
+| Balanced | sonnet | implementação, testes, debug, integração, design |
+| Deep | opus | arquitetura, security review, orquestração, decisões críticas |
 
-### Opcionais
+**Enforcement automático (Claude Code):**
+- `EnterPlanMode` → hook sugere `/model opus`
+- `ExitPlanMode` → hook sugere `/model sonnet`
+- Subagent sem `model` explícito → hook alerta e sugere tier por keywords
 
-| MCP | Estado padrao | Quando ativar |
-|---|---|---|
-| `fal` | desabilitado | geracao de imagem com a skill 17 (alternativa ao MCP do kit) |
-| `fetch` | desabilitado | leitura e transformacao de conteudo web |
-| `notebooklm` | desabilitado | pesquisa com fontes citadas |
+**Em outros ambientes:** seguir `policies/model-routing.md` manualmente.
 
-### Configurar MCP Localmente
+---
+
+## Hook System — Inteligência em Lifecycle Events
+
+| Hook | Evento | O que faz |
+|------|--------|-----------|
+| `pre-execution-gate` | UserPromptSubmit | detecta prompt vago e confirma antes de agir |
+| `keyword-detector` | UserPromptSubmit | injeta skill ou learned skill relevante automaticamente |
+| `context-guard-stop` | Stop | bloqueia stop quando contexto > 75%, sugere /compact |
+| `persistent-mode` | Stop | bloqueia stop quando pipeline está ativo |
+| `pre-tool-enforcer` | PreToolUse | re-lê antes de editar, sugere code intelligence tools |
+| `session-start` | SessionStart | restaura estado da sessão anterior |
+| `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill |
+| `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns |
+
+---
+
+## MCP Server — 31 Tools para Qualquer Cliente MCP
 
 ```json
-// .claude/settings.json (Claude Code)
 {
   "mcpServers": {
     "dev-team-kit": {
@@ -471,73 +225,119 @@ Na tabela abaixo, considere o `dev-team-kit` como 32 tools apoiadas pelas 32 ski
 }
 ```
 
-Mesmo formato para `.windsurf/mcp.json` e `.gemini/settings.json`.
+Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP.
 
-Ver `setup/README.md` e `mcp-server/README.md` para detalhes.
+| Bloco | Tools | Exemplos |
+|-------|-------|----------|
+| **Knowledge** | 14 | classifica task, monta pipeline, resume diff, monta context pack |
+| **Execution** | 6 | busca concorrentes (Brave), scraping (Playwright/Firecrawl), gera imagens (fal.ai) |
+| **Persistence** | 11 | salva contexto, working set, custo, learned skills e guardrails de sessão |
+
+Ver `mcp-server/README.md` para documentação completa das tools.
+
+---
+
+## API Keys Necessárias
+
+| Key | Para que serve | Onde obter |
+|-----|---------------|-----------|
+| `FAL_KEY` | geração de imagens (skill 17, MCP moodboards) | fal.ai/dashboard/keys |
+| `BRAVE_SEARCH_KEY` | pesquisa de concorrentes (skill 29, MCP) | brave.com/search/api |
+| `FIRECRAWL_KEY` | scraping avançado (opcional) | firecrawl.dev |
+
+O instalador solicita cada key e salva em `.env.local` do projeto.
+
+---
 
 ## Ergonomia Diaria
 
-- leia `docs/quickstart.md` para entrar rapido no fluxo
-- reutilize `docs/repo-audit/current.md` antes de explorar o repo inteiro
-- reutilize `docs/repo-audit/assets.md` antes de criar ou mudar assets
+- leia `docs/quickstart.md` para entrar rápido no fluxo
+- reutilize `docs/repo-audit/current.md` antes de explorar o repo
 - use `devkit_context_pack` para iniciar task sem reler metade do repo
 - use `devkit_diff_brief` para retomar trabalho ou preparar review
-- use `devkit_working_set` para persistir arquivos quentes, decisoes e proximos passos
-- consulte `docs/daily-token-workflow.md` para o fluxo operacional enxuto
+- use `devkit_working_set` para persistir arquivos quentes e próximos passos
 - use `commands/` como atalhos operacionais
 - consulte `docs/skill-call-matrix.md` quando houver overlap entre skills
 - consulte `docs/skill-guides/` apenas sob demanda
-- use `patterns/ai-integration/` e `docs/ai-integration-playbook.md` quando a task envolver IA
-- use `docs/skill-guides/ui-component-mcps.md` quando quiser acelerar UI ou validar interfaces com MCP
 
-## AI Integration
+---
 
-```mermaid
-flowchart LR
-    A[Repo Auditor] --> B[AI Integration Architect]
-    B --> C[Provider + runtime]
-    C --> D[Prompt Engineer]
-    D --> E[Backend or Frontend integration]
-    E --> F[Observability + Analytics]
-    F --> G[QA + Security + Reviewer]
+## Governanca Global
+
+- `GLOBAL.md` é a camada mais alta de instrução
+- `policies/` padroniza execução, risco, persistência, qualidade e avaliação
+- `templates/` reduz variação de handoff, plano, review e rejeição
+- `policies/tool-safety.md` — uso seguro de escrita, rede, MCP e ações externas
+- `policies/model-routing.md` — tiers de modelo, enforcement e integração com cost-tracker
+- `policies/evals.md` — evidência mínima para mudanças estruturais no kit
+
+### Hierarquia de Instrucoes
+
+1. `GLOBAL.md`
+2. `policies/*.md`
+3. `skills/*/SKILL.md`
+4. `templates/*.md`
+
+---
+
+## Estrutura Real Deste Repo
+
+```text
+.
+├── .claude-plugin/       ← manifesto do plugin Claude Code
+│   └── plugin.json
+├── AGENTS.md
+├── CLAUDE.md
+├── GLOBAL.md
+├── README.md
+├── commands/             ← slash commands (/audit-repo, /devkit-install-fv, ...)
+├── docs/
+│   ├── quickstart.md
+│   ├── repo-audit/
+│   ├── skill-guides/
+│   └── skill-call-matrix.md
+├── evals/
+├── hooks/                ← lifecycle hooks para Claude Code
+│   ├── hooks.json
+│   ├── config.json
+│   └── scripts/
+├── mcp-server/           ← MCP server com 31 tools
+├── patterns/ai-integration/
+├── policies/             ← model-routing, tool-safety, cost-optimization, evals
+├── scripts/              ← generate-image.py e utilitários
+├── setup/                ← install.sh multi-plataforma
+├── skills/               ← 31 specialists (*/SKILL.md)
+├── src/                  ← hooks, stores, components e middleware reutilizáveis
+└── templates/            ← handoff, plano, review, rejeição
 ```
 
-Os artefatos principais ficam em:
+---
 
-- `patterns/ai-integration/README.md`
-- `patterns/ai-integration/providers.md`
-- `patterns/ai-integration/runtime-requirements.md`
-- `patterns/ai-integration/install-policy.md`
-- `patterns/ai-integration/prompt-patterns.md`
-- `patterns/ai-integration/text-generation.md`
-- `patterns/ai-integration/image-generation.md`
-- `patterns/ai-integration/video-generation.md`
+## Estrutura Instalada no Repo Consumidor
 
-## Utilitarios Reais Incluidos
+Quando instalado via `/devkit-install-fv` ou `setup/install.sh`:
 
-- `scripts/generate-image.py` gera assets via fal.ai com suporte a `t2i`, `i2i`, resize, `ico`, `rembg` e icones para Tauri
-- `scripts/tests/test_generate_image.py` valida payloads, modelos e deteccao de saida
-- `src/` funciona como base reutilizavel para hooks, stores, middleware e componentes utilitarios
+```text
+repo-consumidor/
+├── AGENTS.md
+├── CLAUDE.md
+├── GEMINI.md
+├── .claude/settings.json         ← hooks + MCP registrados
+├── .github/copilot-instructions.md
+├── .windsurf/rules/dev-team-kit.md
+├── .windsurf/mcp.json
+├── .gemini/settings.json
+└── .bot/
+    ├── GLOBAL.md
+    ├── hooks/                    ← lifecycle hooks
+    ├── learned-skills/           ← conhecimento acumulado do projeto
+    ├── mcp-server/               ← compilado e pronto
+    ├── policies/
+    ├── skills/
+    └── templates/
+```
 
-## Como Usar no Dia a Dia
-
-1. rode o setup para instalar o kit no projeto consumidor
-2. se faltar auditoria, comece por `Repo Auditor`
-3. inicie pelo `Orchestrator` para definir o pipeline minimo suficiente
-4. deixe o `Context Manager` rastrear foco, tarefas e handoffs
-5. passe por `QA`, `Security` e `Reviewer` antes de considerar a entrega pronta
-
-## Arquivos-Chave
-
-| Arquivo | Funcao |
-|---|---|
-| `GLOBAL.md` | regra universal do kit |
-| `AGENTS.md` | entrada rapida para agentes compativeis |
-| `CLAUDE.md` | entry point para Claude Code |
-| `docs/repo-audit/current.md` | resumo operacional reutilizavel do repo |
-| `docs/repo-audit/assets.md` | resumo visual reutilizavel |
-| `setup/install.sh` | instalador multi-plataforma |
-| `setup/README.md` | detalhes de setup e MCP |
+---
 
 ## Validacao Rapida
 
@@ -548,29 +348,26 @@ cd mcp-server && npm run build
 bash scripts/smoke-install.sh
 ```
 
-## Regras Globais
-
-- responder curto por padrao
-- agir primeiro quando houver default seguro
-- usar tools com minimo privilegio
-- persistir decisao util, nao conversa excessiva
-- manter mudancas pequenas e revisaveis
-- seguir `policies/tool-safety.md` e `policies/evals.md` em mudancas sensiveis
+---
 
 ## Timestamp Log
 
-Atualize esta secao ao fechar mudancas estruturais no kit.
-
 ### 2026-04-04
 
-- alinhado o setup para instalacao em `.bot/`, hooks automaticos, MCP local `dev-team-kit` e smoke test do instalador
-- corrigidos hooks para ler config no modo instalado e reduzir injecao de contexto de learned skills
+- alinhado o setup para instalação em `.bot/`, hooks automáticos, MCP local `dev-team-kit` e smoke test do instalador
+- corrigidos hooks para ler config no modo instalado e reduzir injeção de contexto de learned skills
 - implementados `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` e telemetria expandida em `devkit_track_cost`
-- adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo nao interativo
-- atualizadas docs principais, README do MCP, quickstart e guias de operacao com foco em economia de token
+- adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo não interativo
+- atualizadas docs principais, README do MCP, quickstart e guias de operação com foco em economia de token
 
 ### 2026-04-08
 
-- unificado model routing em policy unica (`policies/model-routing.md`), absorvendo skill 16 (llm-selector)
+- unificado model routing em policy única (`policies/model-routing.md`), absorvendo skill 16 (llm-selector)
 - adicionado hook `model-routing-hook.mjs` para enforcement em plan mode e subagent spawns
-- atualizadas referencias em cost-tracker, cost-optimization, orchestrator, design-intelligence e hooks policy
+- atualizadas referências em cost-tracker, cost-optimization, orchestrator, design-intelligence e hooks policy
+
+### 2026-04-09
+
+- adicionado manifesto de plugin Claude Code (`.claude-plugin/plugin.json`) com 31 skills, hooks e commands
+- adicionado slash command `/devkit-install-fv` para instalação full `.bot/` a partir do plugin global
+- README redesenhado com hero section, tabela de especialistas com descrição por skill, comparativo de modos de instalação e tabela de compatibilidade multi-plataforma

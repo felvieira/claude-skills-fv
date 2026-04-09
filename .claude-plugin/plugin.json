@@ -1,0 +1,55 @@
+{
+  "name": "dev-team-kit-fv",
+  "description": "31 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy and more. Includes model routing policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
+  "version": "1.0.0",
+  "author": {
+    "name": "felvieira"
+  },
+  "homepage": "https://github.com/felvieira/claude-skills-fv",
+  "repository": "https://github.com/felvieira/claude-skills-fv",
+  "license": "MIT",
+  "keywords": ["skills", "coding", "pipeline", "orchestrator", "dev-team", "qa", "security", "backend", "frontend"],
+  "skills": [
+    "skills/01-po-feature-spec/SKILL.md",
+    "skills/02-ui-ux-design/SKILL.md",
+    "skills/03-backend-api/SKILL.md",
+    "skills/04-frontend-integration/SKILL.md",
+    "skills/05-qa-testing/SKILL.md",
+    "skills/06-security-review/SKILL.md",
+    "skills/07-deploy-docker/SKILL.md",
+    "skills/08-context-manager/SKILL.md",
+    "skills/09-orchestrator/SKILL.md",
+    "skills/10-documenter/SKILL.md",
+    "skills/11-reviewer/SKILL.md",
+    "skills/12-motion-design/SKILL.md",
+    "skills/13-marketing-copy/SKILL.md",
+    "skills/14-seo-specialist/SKILL.md",
+    "skills/15-mobile-tauri/SKILL.md",
+    "skills/17-image-generator/SKILL.md",
+    "skills/18-repo-auditor/SKILL.md",
+    "skills/19-asset-librarian/SKILL.md",
+    "skills/20-observability-sre/SKILL.md",
+    "skills/21-data-analytics/SKILL.md",
+    "skills/22-accessibility-specialist/SKILL.md",
+    "skills/23-migration-refactor-specialist/SKILL.md",
+    "skills/24-release-manager/SKILL.md",
+    "skills/25-ai-integration-architect/SKILL.md",
+    "skills/26-prompt-engineer/SKILL.md",
+    "skills/27-video-integration-specialist/SKILL.md",
+    "skills/28-claude-md-generator/SKILL.md",
+    "skills/29-design-intelligence/SKILL.md",
+    "skills/30-cost-tracker/SKILL.md",
+    "skills/31-session-summary/SKILL.md",
+    "skills/32-smart-suggestions/SKILL.md"
+  ],
+  "hooks": [
+    "hooks/hooks.json"
+  ],
+  "commands": [
+    "commands/audit-repo.md",
+    "commands/devkit-install-fv.md",
+    "commands/inventory-assets.md",
+    "commands/plan-feature.md",
+    "commands/review-release.md"
+  ]
+}
