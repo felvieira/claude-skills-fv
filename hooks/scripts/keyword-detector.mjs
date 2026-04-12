@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
-import { readHookConfig, resolveBotPath } from "./utils.mjs";
+import { readHookConfig, resolveBotPath, isHookDisabled } from "./utils.mjs";
 
 function sanitize(text) {
   return text
@@ -146,6 +146,11 @@ process.stdin.on("end", () => {
   try {
     input = JSON.parse(inputBuffer);
   } catch {}
+
+  if (isHookDisabled('keyword-detector')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
 
   const cfg = readHookConfig("keyword_detector", {
     max_learned_skills_per_session: 3,

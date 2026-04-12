@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
-import { readHookConfig, resolveBotPath } from './utils.mjs';
+import { readHookConfig, resolveBotPath, isHookDisabled } from './utils.mjs';
 
 let _input = '';
 process.stdin.setEncoding('utf-8');
@@ -8,6 +8,11 @@ process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
   let input = {};
   try { input = JSON.parse(_input); } catch {}
+
+  if (isHookDisabled('context-guard-stop')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
 
   // Never block context-limit stops (prevents compaction deadlock)
   if (input.reason === 'context_limit' || input.stop_reason === 'context_limit') {

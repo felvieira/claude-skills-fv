@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync } from 'fs';
+import { isHookDisabled } from './utils.mjs';
 
 let _input = '';
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
+  if (isHookDisabled('persistent-mode')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
   const stateFile = '.bot/docs/context/pipeline-active.json';
   if (existsSync(stateFile)) {
     try {

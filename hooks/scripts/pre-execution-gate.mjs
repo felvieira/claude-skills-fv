@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync } from 'fs';
-import { readHookConfig } from './utils.mjs';
+import { readHookConfig, isHookDisabled } from './utils.mjs';
 
 const CONCRETE_SIGNALS = [
   /(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/,
@@ -57,6 +57,12 @@ process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
   let input = {};
   try { input = JSON.parse(_input); } catch {}
+
+  if (isHookDisabled('pre-execution-gate')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
   const prompt = (input.prompt || '').trim();
 
   if (hasConcreteSignal(prompt)) {

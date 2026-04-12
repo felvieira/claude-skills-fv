@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { isHookDisabled } from './utils.mjs';
 
 function detectDebuggingPattern(input) {
   const toolName = input.tool_name || '';
@@ -40,6 +41,11 @@ process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
   let input = {};
   try { input = JSON.parse(_input); } catch {}
+
+  if (isHookDisabled('post-tool-verifier')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
 
   const { hasDebuggingComment, isWriteTool } = detectDebuggingPattern(input);
 

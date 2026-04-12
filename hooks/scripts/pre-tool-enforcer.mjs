@@ -2,7 +2,7 @@
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "fs";
 import { join } from "path";
-import { resolveBotPath } from "./utils.mjs";
+import { resolveBotPath, isHookDisabled } from "./utils.mjs";
 
 const WRITE_TOOLS = ["Edit", "Write", "NotebookEdit", "mcp__Desktop_Commander__write_file", "mcp__Desktop_Commander__edit_block"];
 const EXPLORE_TOOLS = ["Read", "Grep", "Glob"];
@@ -163,6 +163,11 @@ process.stdin.on("end", () => {
     if (!inputBuffer.trim()) {
       process.stderr.write("[PreToolUse] Empty stdin received - passing through\n");
     }
+  }
+
+  if (isHookDisabled('pre-tool-enforcer')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
   }
 
   const toolName = input.tool_name || "";

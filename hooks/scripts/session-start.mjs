@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync } from 'fs';
+import { isHookDisabled } from './utils.mjs';
 
 let _input = '';
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
+  if (isHookDisabled('session-start')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
   let contextNote = '';
   if (existsSync('.bot/docs/context/current-focus.md')) {
     try {

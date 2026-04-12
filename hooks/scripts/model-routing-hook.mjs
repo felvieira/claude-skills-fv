@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
-import { readHookConfig, resolveBotPath } from "./utils.mjs";
+import { readHookConfig, resolveBotPath, isHookDisabled } from "./utils.mjs";
 
 const PLAN_TOOLS = ["EnterPlanMode", "ExitPlanMode"];
 const AGENT_TOOL = "Agent";
@@ -74,6 +74,11 @@ process.stdin.on("end", () => {
   } catch {
     process.stdout.write(JSON.stringify({ continue: true }));
     return;
+  }
+
+  if (isHookDisabled('model-routing-hook')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
   }
 
   const toolName = input.tool_name || "";
