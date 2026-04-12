@@ -172,6 +172,11 @@ Em Claude Code, o hook `pre-execution-gate.mjs` faz isso automaticamente. Em out
 Ao iniciar uma task:
 
 - classificar tipo e complexidade
+- **pesquisar antes de implementar** (obrigatorio para implementacao, integracao, refactor — ver `policies/search-first.md`):
+  - reutilizar `docs/repo-audit/current.md` se existir
+  - buscar patterns similares no codigo (Glob/Grep)
+  - consultar docs externas via Context7 MCP para libs envolvidas
+  - hotfixes triviais e tasks mecanicas sao excecao
 - mapear artefatos e dependencias existentes
 - definir pipeline minimo suficiente
 - registrar skills puladas com justificativa
