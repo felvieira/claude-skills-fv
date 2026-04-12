@@ -1,8 +1,9 @@
 {
   "context_guard": {
-    "warn_threshold": 0.60,
+    "warn_threshold": 0.50,
     "block_threshold": 0.75,
-    "max_blocks_per_session": 2
+    "max_blocks_per_session": 2,
+    "strategic_compact": true
   },
   "pre_execution_gate": {
     "enrich_threshold": 0.40,
@@ -25,5 +26,31 @@
     "plan_model": "opus",
     "exec_model": "sonnet",
     "fast_model": "haiku"
+  },
+  "learned_skills_scoring": {
+    "initial_score": 0.7,
+    "boost_on_use": 0.1,
+    "decay_per_week": 0.1,
+    "archive_threshold": 0.3,
+    "archive_dir": ".archive"
+  },
+  "hook_profiles": {
+    "active": "standard",
+    "disabled": [],
+    "profiles": {
+      "minimal": {
+        "disabled": ["pre-execution-gate", "keyword-detector", "post-tool-verifier", "model-routing-hook"]
+      },
+      "standard": {
+        "disabled": []
+      },
+      "strict": {
+        "disabled": [],
+        "overrides": {
+          "context_guard": { "warn_threshold": 0.40, "block_threshold": 0.60 },
+          "pre_execution_gate": { "block_threshold": 0.50 }
+        }
+      }
+    }
   }
 }
