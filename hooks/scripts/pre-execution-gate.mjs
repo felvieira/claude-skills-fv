@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { readHookConfig, isHookDisabled } from './utils.mjs';
 
 const CONCRETE_SIGNALS = [
@@ -64,6 +64,16 @@ process.stdin.on('end', () => {
   }
 
   const prompt = (input.prompt || '').trim();
+
+  // Save last_prompt for context-guard-stop strategic compact
+  try {
+    const sessionPath = '.bot/.hook-session.json';
+    let session = {};
+    try { session = JSON.parse(readFileSync(sessionPath, 'utf-8')); } catch {}
+    session.last_prompt = prompt.slice(0, 80).replace(/\s+/g, ' ').trim();
+    mkdirSync('.bot', { recursive: true });
+    writeFileSync(sessionPath, JSON.stringify(session));
+  } catch {}
 
   if (hasConcreteSignal(prompt)) {
     process.stdout.write(JSON.stringify({ continue: true }));
