@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { dirname } from 'path';
 import { execSync } from 'child_process';
 import { readHookConfig, resolveBotPath, isHookDisabled } from './utils.mjs';
 
@@ -83,7 +84,7 @@ process.stdin.on('end', () => {
       }
 
       try {
-        mkdirSync('.bot', { recursive: true });
+        mkdirSync(dirname(blockFile), { recursive: true });
         writeFileSync(blockFile, JSON.stringify({ count: blocks + 1 }));
       } catch {}
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
-import { readHookConfig, isHookDisabled } from './utils.mjs';
+import { dirname } from 'path';
+import { readHookConfig, isHookDisabled, resolveBotPath } from './utils.mjs';
 
 const CONCRETE_SIGNALS = [
   /(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/,
@@ -67,11 +68,11 @@ process.stdin.on('end', () => {
 
   // Save last_prompt for context-guard-stop strategic compact
   try {
-    const sessionPath = '.bot/.hook-session.json';
+    const sessionPath = resolveBotPath('.hook-session.json');
     let session = {};
     try { session = JSON.parse(readFileSync(sessionPath, 'utf-8')); } catch {}
     session.last_prompt = prompt.slice(0, 80).replace(/\s+/g, ' ').trim();
-    mkdirSync('.bot', { recursive: true });
+    mkdirSync(dirname(sessionPath), { recursive: true });
     writeFileSync(sessionPath, JSON.stringify(session));
   } catch {}
 
