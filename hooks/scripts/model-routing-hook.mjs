@@ -68,17 +68,16 @@ process.stdin.on("data", (chunk) => {
 });
 
 process.stdin.on("end", () => {
+  if (isHookDisabled('model-routing-hook')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
   let input = {};
   try {
     input = JSON.parse(inputBuffer);
   } catch {
-    process.stdout.write(JSON.stringify({ continue: true }));
-    return;
-  }
-
-  if (isHookDisabled('model-routing-hook')) {
-    process.stdout.write(JSON.stringify({ continue: true }));
-    process.exit(0);
+    // fall through — input stays {}
   }
 
   const toolName = input.tool_name || "";
