@@ -80,10 +80,21 @@ Regras praticas:
 - se o problema for de seguranca, reencaminhar tambem para `06-security-review`
 - se o problema tocar regra de negocio, garantir nova passagem por `05-qa-testing`
 
+## Search-First: Etapa de Pesquisa Antes da Implementacao
+
+Para tasks de implementacao, integracao ou refactor, o orchestrator executa uma etapa de pesquisa antes de delegar para skills de desenvolvimento:
+
+1. **Grep/Glob** — localizar codigo existente relacionado ao escopo
+2. **Repo Auditor** (se audit estiver desatualizado) — entender convencoes e entry points
+3. **Brave Search / Firecrawl** (para integracoes externas) — verificar API, SDK ou padroes relevantes
+
+So apos essa etapa o pipeline de implementacao comeca. Isso evita duplicar logica existente, respeitar convencoes do projeto e reduzir retrabalho.
+
 ## Checklist do plano de execucao
 
 - tipo de tarefa classificado
 - risco principal identificado
+- etapa de pesquisa executada (para implementacao, integracao, refactor)
 - pipeline minimo suficiente definido
 - skills transversais incluidas quando necessario
 - criterio claro de encerramento definido

@@ -21,7 +21,7 @@ O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qua
 - **Model routing automático** — haiku para boilerplate, sonnet para implementação, opus para arquitetura
 - **Lifecycle hooks** — o agente detecta contexto vago, re-lê arquivos antes de editar, monitora custo de tokens
 - **MCP server próprio** — 31 tools expostas para qualquer cliente MCP
-- **Memória persistente** — working set, context pack, learned skills acumuladas por projeto
+- **Memória persistente** — working set, context pack, learned skills com confidence scoring acumuladas por projeto
 - **Instalação multi-plataforma** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI e mais
 
 ---
@@ -194,16 +194,35 @@ flowchart LR
 
 ## Hook System — Inteligência em Lifecycle Events
 
-| Hook | Evento | O que faz |
-|------|--------|-----------|
-| `pre-execution-gate` | UserPromptSubmit | detecta prompt vago e confirma antes de agir |
-| `keyword-detector` | UserPromptSubmit | injeta skill ou learned skill relevante automaticamente |
-| `context-guard-stop` | Stop | bloqueia stop quando contexto > 75%, sugere /compact |
-| `persistent-mode` | Stop | bloqueia stop quando pipeline está ativo |
-| `pre-tool-enforcer` | PreToolUse | re-lê antes de editar, sugere code intelligence tools |
-| `session-start` | SessionStart | restaura estado da sessão anterior |
-| `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill |
-| `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns |
+| Hook | Evento | O que faz | Perfil |
+|------|--------|-----------|--------|
+| `pre-execution-gate` | UserPromptSubmit | detecta prompt vago e confirma antes de agir | standard, strict |
+| `keyword-detector` | UserPromptSubmit | injeta skill ou learned skill relevante automaticamente | standard, strict |
+| `context-guard-stop` | Stop | avisa em 50% (não-bloqueante) e bloqueia em 75% com resumo inteligente | todos |
+| `persistent-mode` | Stop | bloqueia stop quando pipeline está ativo | todos |
+| `pre-tool-enforcer` | PreToolUse | re-lê antes de editar, sugere code intelligence tools | todos |
+| `session-start` | SessionStart | restaura estado da sessão anterior | todos |
+| `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill | standard, strict |
+| `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns | standard, strict |
+
+### Perfis de Hook
+
+Controlados pela variável de ambiente `DEVKIT_HOOK_PROFILE` (padrão: `standard`):
+
+| Perfil | Hooks ativos |
+|--------|-------------|
+| `minimal` | `context-guard-stop`, `persistent-mode`, `pre-tool-enforcer`, `session-start` |
+| `standard` | todos |
+| `strict` | todos |
+
+- **`DEVKIT_HOOK_PROFILE`** — define o perfil ativo (`minimal`, `standard` ou `strict`)
+- **`DEVKIT_DISABLED_HOOKS`** — lista separada por vírgula de hookIds a desativar independente do perfil
+
+### Context Guard — Strategic Compact
+
+O hook `context-guard-stop` opera em dois níveis:
+- **50%** — aviso não-bloqueante: sugere `/compact` enquanto ainda há margem
+- **75%** — bloqueio inteligente: exibe hint da task atual, arquivos editados na sessão e decisões do working set antes de bloquear
 
 ---
 
@@ -270,6 +289,8 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - `policies/tool-safety.md` — uso seguro de escrita, rede, MCP e ações externas
 - `policies/model-routing.md` — tiers de modelo, enforcement e integração com cost-tracker
 - `policies/evals.md` — evidência mínima para mudanças estruturais no kit
+- `policies/search-first.md` — pesquisa obrigatória antes de implementar (feature, bugfix, integração, refactor)
+- `policies/iterative-retrieval.md` — retrieval progressivo em 3 rounds para subagents e skills delegadas
 
 ### Hierarquia de Instrucoes
 
@@ -330,7 +351,7 @@ repo-consumidor/
 └── .bot/
     ├── GLOBAL.md
     ├── hooks/                    ← lifecycle hooks
-    ├── learned-skills/           ← conhecimento acumulado do projeto
+    ├── learned-skills/           ← conhecimento acumulado do projeto (score 0-1, decay semanal, auto-arquivado em .archive/ abaixo de 0.3)
     ├── mcp-server/               ← compilado e pronto
     ├── policies/
     ├── skills/
@@ -371,3 +392,11 @@ bash scripts/smoke-install.sh
 - adicionado manifesto de plugin Claude Code (`.claude-plugin/plugin.json`) com 31 skills, hooks e commands
 - adicionado slash command `/devkit-install-fv` para instalação full `.bot/` a partir do plugin global
 - README redesenhado com hero section, tabela de especialistas com descrição por skill, comparativo de modos de instalação e tabela de compatibilidade multi-plataforma
+
+### 2026-04-11
+
+- adicionados Hook Profiles (`minimal`/`standard`/`strict`) com env vars `DEVKIT_HOOK_PROFILE` e `DEVKIT_DISABLED_HOOKS`
+- implementado Confidence Scoring em learned skills: score 0-1, decay semanal, boost por uso, auto-arquivo abaixo de 0.3
+- adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
+- adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
+- `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%

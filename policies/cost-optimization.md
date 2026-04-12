@@ -49,6 +49,11 @@ Sinais de que o custo esta alto demais:
 - retry loop em rate limit
 - geracao de imagem sem briefing claro (gera lixo e regera)
 
+## Policies Complementares
+
+- `policies/search-first.md` — pesquisar antes de implementar evita trabalho desperdicado: entender o que ja existe e o contexto real antes de gerar codigo reduz retrabalho e tokens gastos em correcoes
+- `policies/iterative-retrieval.md` — retrieval progressivo em 3 rounds evita carregar dumps completos de contexto: buscar apenas o que cada etapa precisa, incrementalmente
+
 ## Anti-patterns
 
 - "analise todo o projeto" sem escopo definido
@@ -57,3 +62,4 @@ Sinais de que o custo esta alto demais:
 - pedir explicacao longa do que foi feito (ver diff)
 - reexplorar repo quando audit existe e esta atual
 - gerar moodboard sem estrategia definida (desperdiça calls do fal.ai)
+- implementar sem pesquisar — duplica logica existente e gera retrabalho
