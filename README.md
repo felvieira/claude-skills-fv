@@ -204,6 +204,7 @@ flowchart LR
 | `session-start` | SessionStart | restaura estado da sessão anterior | todos |
 | `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill | standard, strict |
 | `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns | standard, strict |
+| `simplify-ignore` | PreToolUse + PostToolUse | Protege blocos `simplify-ignore-start/end` de simplificação automática | standard, strict |
 
 ### Perfis de Hook
 
@@ -278,6 +279,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - use `commands/` como atalhos operacionais
 - consulte `docs/skill-call-matrix.md` quando houver overlap entre skills
 - consulte `docs/skill-guides/` apenas sob demanda
+- consulte `docs/skill-guides/ideation-frameworks.md` — SCAMPER, HMW, First Principles, JTBD para fase de ideação
 
 ---
 
@@ -291,6 +293,9 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - `policies/evals.md` — evidência mínima para mudanças estruturais no kit
 - `policies/search-first.md` — pesquisa obrigatória antes de implementar (feature, bugfix, integração, refactor)
 - `policies/iterative-retrieval.md` — retrieval progressivo em 3 rounds para subagents e skills delegadas
+- `policies/anti-rationalization.md` — tabelas de racionalizações comuns + rebuttals por skill crítica
+- `policies/source-driven.md` — hierarquia de fontes obrigatória para decisões de framework/lib
+- `policies/confusion-management.md` — protocolo STOP-NAME-OPTIONS-WAIT para confusão detectada
 
 ### Hierarquia de Instrucoes
 
@@ -400,3 +405,7 @@ bash scripts/smoke-install.sh
 - adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+
+### 2026-04-13
+
+- **Agent Intelligence v2:** anti-rationalization tables em 5 skills críticas (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy com hierarquia de fontes e integração no orchestrator, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook que protege blocos críticos de simplificação automática via PreToolUse/PostToolUse.
