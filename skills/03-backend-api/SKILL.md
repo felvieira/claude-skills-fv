@@ -409,3 +409,15 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa
 - **Context Manager (skill 08):** Rastreia progresso das tasks dentro desta skill
 - **Documentador (skill 10):** Documenta entregas desta skill durante o desenvolvimento
+
+## Anti-Rationalization
+
+Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/anti-rationalization.md`.
+
+| Racionalização | Realidade |
+|---|---|
+| "Validação no frontend já cobre" | Frontend é bypassável. Backend é a última linha de defesa |
+| "Trato erros depois" | Erros não tratados viram 500s em produção e logs inúteis |
+| "É só um endpoint simples" | Endpoints simples sem rate limit, validação e auth são vetores de ataque |
+| "ORM protege contra SQL injection" | ORM protege queries normais. Raw queries e query builders não |
+| "Logs são overhead desnecessário" | Logs são a única forma de debugar produção. Sem logs = voo cego |

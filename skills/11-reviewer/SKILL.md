@@ -213,3 +213,15 @@ Ao aprovar, identificar se o commit envolve trade-off ou decisao arquitetural. S
 3. o dev ajusta e commita — nao e obrigatorio aceitar todos os sugeridos
 
 Usar `devkit_suggest_trailers` (MCP) para gerar sugestao automatica com base no diff.
+
+## Anti-Rationalization
+
+Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/anti-rationalization.md`.
+
+| Racionalização | Realidade |
+|---|---|
+| "É só uma mudança cosmética" | Mudanças "cosméticas" escondem alterações de lógica. Revise tudo |
+| "O autor é sênior, confio" | Senioridade não é imunidade. Code review é sobre o código, não a pessoa |
+| "PR é grande demais pra revisar linha a linha" | PR grande é sinal de que deveria ter sido dividido. Revise ou peça split |
+| "Já vi esse pattern, funciona" | Contexto importa. O mesmo pattern em contexto diferente pode ser bug |
+| "Não entendo essa parte, mas parece OK" | "Parece OK" não é aprovação. Pergunte ou pesquise antes de aprovar |

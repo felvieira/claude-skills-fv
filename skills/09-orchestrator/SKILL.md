@@ -221,3 +221,15 @@ Comentarios no codigo so fazem sentido quando explicam contexto nao obvio, restr
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/plan.md` e `templates/handoff.md`.
+
+## Anti-Rationalization
+
+Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/anti-rationalization.md`.
+
+| Racionalização | Realidade |
+|---|---|
+| "Scope é simples demais pra pipeline completo" | Pipeline existe pra garantir qualidade. Simplifique o pipeline, não o elimine |
+| "Posso pular a etapa de pesquisa" | Search-first policy é obrigatória. Sem pesquisa = implementação cega |
+| "Não precisa de QA pra isso" | QA descobre o que o implementador não imaginou. Sempre |
+| "Vou delegar tudo de uma vez" | Delegação sem verificação intermediária multiplica erros silenciosamente |
+| "O repo-audit está desatualizado, ignoro" | Desatualizado > inexistente. Use como base e verifique |

@@ -362,3 +362,15 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa
 - **Context Manager (skill 08):** Rastreia progresso das tasks dentro desta skill
 - **Documentador (skill 10):** Documenta entregas desta skill durante o desenvolvimento
+
+## Anti-Rationalization
+
+Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/anti-rationalization.md`.
+
+| Racionalização | Realidade |
+|---|---|
+| "É só código interno, não precisa de segurança" | Lateralização de ataque vem de código interno. Interno ≠ seguro |
+| "Não tem input do usuário aqui" | Input vem de APIs, DBs, configs, env vars — não só de forms |
+| "Vou hardcodar temporário" | "Temporário" no código vive pra sempre. Secrets hardcoded são CVEs |
+| "Escopo é muito pequeno pra ter vulnerabilidade" | SQLi precisa de 1 linha. XSS precisa de 1 linha. Tamanho é irrelevante |
+| "Já passou no linter de segurança" | Linters pegam patterns conhecidos. Lógica de negócio insegura passa limpa |

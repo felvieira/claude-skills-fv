@@ -111,3 +111,15 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - **Orquestrador (skill 09):** define quando QA entra e se precisa reexecucao
 - **Context Manager (skill 08):** registra estado da validacao
 - **Documentador (skill 10):** registra evidencias quando necessario
+
+## Anti-Rationalization
+
+Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/anti-rationalization.md`.
+
+| Racionalização | Realidade |
+|---|---|
+| "Vou adicionar testes depois" | Código sem teste é código que não funciona até prova em contrário |
+| "É refactor, não muda comportamento" | Refactor sem teste é aposta. Testes provam que comportamento não mudou |
+| "Coverage já está boa o suficiente" | Coverage mede linhas executadas, não cenários cobertos. Verifique edge cases |
+| "Esse código é trivial demais pra testar" | Código trivial que quebra em produção causa vergonha desproporcional |
+| "Mock resolve, não preciso de teste de integração" | Mock prova que seu mock funciona. Integração prova que o sistema funciona |
