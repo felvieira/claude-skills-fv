@@ -56,6 +56,20 @@ git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
 bash /tmp/dev-team-kit/setup/install.sh /caminho/do/projeto
 ```
 
+Se o kit já estiver em `.bot/`, você também pode rodar diretamente do repo instalado:
+
+```bash
+bash .bot/setup/install.sh
+```
+
+O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta flags de perfil não-interativo:
+- `--profile lean` — instala sem MCP e sem scripts pesados
+- `--no-input` — sem prompts, usa defaults
+- `--yes` — aceita tudo automaticamente
+
+Na tabela abaixo, considere o `dev-team-kit` como 32 tools apoiadas pelas 31 skills.
+O MCP expoe 32 tools apoiadas pelas skills instaladas.
+
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
