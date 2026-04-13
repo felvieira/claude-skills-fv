@@ -19,6 +19,10 @@ Este repositorio usa um kit de skills em `.bot/` para desenvolvimento estruturad
 - se `.bot/docs/repo-audit/current.md` nao existir, iniciar por Repo Auditor
 - reutilizar antes de reexplorar o repo
 
+## Slash Commands
+Atalhos por fase: `/spec` `/plan` `/build` `/test` `/review` `/simplify` `/ship` `/pipeline` `/best` `/auto`
+Navegação: `.bot/docs/skill-guides/skill-discovery.md` | Personas: `.bot/personas/` | Context: `.bot/policies/context-engineering.md`
+
 ## Defaults
 - responder curto por padrao
 - agir primeiro quando houver default seguro

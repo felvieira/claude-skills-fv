@@ -1,6 +1,6 @@
 # Dev Team Kit
 
-Este repositorio usa um kit de skills em `.bot/` para desenvolvimento estruturado com 27 especialistas coordenados por um Orquestrador.
+Este repositorio usa um kit de skills em `.bot/` para desenvolvimento estruturado com 31 especialistas coordenados por um Orquestrador.
 
 ## Ordem de Leitura
 1. `.bot/GLOBAL.md` — regras universais
@@ -18,6 +18,10 @@ Este repositorio usa um kit de skills em `.bot/` para desenvolvimento estruturad
 - Agir primeiro quando houver default seguro
 - Nunca pular QA (skill 05), Security (skill 06) e Reviewer (skill 11)
 - Handoffs curtos seguindo `.bot/policies/handoffs.md`
+
+## Slash Commands
+Atalhos por fase: `/spec` `/plan` `/build` `/test` `/review` `/simplify` `/ship` `/pipeline` `/best` `/auto`
+Navegação: `.bot/docs/skill-guides/skill-discovery.md` | Personas: `.bot/personas/` | Context: `.bot/policies/context-engineering.md`
 
 ## Pipeline Padrao
 PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Security → Reviewer → Deploy

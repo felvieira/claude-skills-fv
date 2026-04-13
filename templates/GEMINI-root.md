@@ -16,6 +16,12 @@ As skills em `.bot/skills/*/SKILL.md` seguem o formato YAML frontmatter compativ
 ## Antigravity Skills
 As skills tambem estao disponiveis em `.agent/skills/` para ativacao automatica pelo Antigravity.
 
+## Slash Commands
+- `/spec` `/plan` `/build` `/test` `/review` `/simplify` `/ship` `/pipeline` `/best` `/auto`
+- Navegação de skills: `.bot/docs/skill-guides/skill-discovery.md`
+- Personas de review: `.bot/personas/` (code-reviewer, security-auditor, test-engineer)
+- Context engineering: `.bot/policies/context-engineering.md`
+
 ## Auditoria Inicial
 - se `.bot/docs/repo-audit/current.md` nao existir, iniciar por Repo Auditor
 - reutilizar antes de reexplorar o repo
