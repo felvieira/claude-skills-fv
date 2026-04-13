@@ -4,9 +4,13 @@ description: Agente autônomo — executa task completa sem intervenção humana
 
 # /auto — Agente Autônomo
 
-**Objetivo:** Executar uma task completa de ponta a ponta sem perguntar ao usuário, usando todo o kit como base. Só para quando estiver **pronto, funcional e testado**.
+**Início imediato:** Ao receber este comando, leia o guia completo antes de qualquer outra ação:
+- Se instalado como plugin global: `docs/skill-guides/autonomous-loop.md`
+- Se instalado em `.bot/`: `.bot/docs/skill-guides/autonomous-loop.md`
 
-**Protocolo completo:** Ver `docs/skill-guides/autonomous-loop.md`
+Leia o guia com o Read tool agora. Depois execute o loop completo sem parar para perguntar.
+
+---
 
 ## Regras Invioláveis
 
@@ -27,101 +31,113 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
 
 ### Fase 0 — Setup
 1. Criar diretório `.auto/` para tracking de progresso
-2. Pesquisar o codebase (`policies/search-first.md`) para entender stack e patterns
-3. Ler `docs/repo-audit/current.md` se existir
-4. Detectar ferramentas disponíveis: test framework, lint, typecheck, build
+2. Pesquisar o codebase — usar política de search-first (arquivo em `policies/search-first.md` ou `.bot/policies/search-first.md`)
+3. Ler `docs/repo-audit/current.md` ou `.bot/docs/repo-audit/current.md` se existir
+4. Detectar ferramentas disponíveis: test framework, lint, typecheck, build (verificar `package.json`, `pyproject.toml`, `Makefile`, etc.)
 5. Registrar ferramentas detectadas em `.auto/env.md`
-6. Snapshot inicial: `git diff --stat` para baseline
+6. Snapshot inicial: rodar `git diff --stat` para baseline
 
 ### Fase 1 — Plan (máx 2 iterações)
 1. Classificar a task (feature/bugfix/refactor) e montar pipeline mínimo
-2. Emitir plano em `.auto/plan.md` com checkboxes:
+2. Escrever plano em `.auto/plan.md` com checkboxes:
    ```markdown
    ## Plano Autônomo
    **Task:** [descrição]
    **Tipo:** [feature/bugfix/refactor]
-   
+   **Iteration budget:** [N]
+
    ### Tasks
    - [ ] [arquivo/mudança 1]
    - [ ] [arquivo/mudança 2]
-   - [ ] [testes]
-   - [ ] [validação]
-   - [ ] [review]
+   - [ ] [testes — cenários]
+   - [ ] [validação — lint/typecheck/build]
+   - [ ] [review — self-review]
+
+   ### Critérios de Done
+   - [ ] Testes passando
+   - [ ] Lint passando
+   - [ ] Zero findings críticos no review
+   - [ ] Commit criado
    ```
-3. Se a task for ambígua, usar `policies/source-driven.md` para resolver — **não perguntar**
-4. Calcular iteration budget: 2 tasks simples = 8 iterações máx, 5+ tasks = 15 iterações máx
+3. Se ambíguo: resolver via codebase — **não perguntar**
+4. Budget: 1-2 tasks = 8 iterações, 3-4 tasks = 12, 5+ = 15
 
 ### Fase 2 — Build (budget dinâmico)
-1. Para cada task do plano, implementar e marcar `[x]` no `.auto/plan.md`
-2. Seguir patterns do projeto (`policies/stack-flexibility.md`)
-3. Após cada arquivo, rodar testes existentes como sanity check
-4. Se encontrar código duplicado, refatorar inline (Senior Dev Override)
-5. Após cada task completa, escrever em `.auto/progress.md`:
+1. Para cada task, implementar e marcar `[x]` no `.auto/plan.md`
+2. Rodar testes existentes após cada arquivo como sanity check
+3. Append em `.auto/progress.md` após cada task:
    ```
-   ## Iteração N — [timestamp]
-   **Fase:** Build
+   ## Iteração N — [fase]
    **Task:** [descrição]
    **Arquivos mudados:** [lista]
-   **Testes existentes:** ✅ passando / ❌ [erro]
-   **Status:** [progresso/bloqueado/completo]
+   **Testes existentes:** ✅ / ❌ [erro]
+   **Status:** progresso/bloqueado/completo
    ```
+4. Context narrowing: iter 1-2 = contexto completo, iter 3-5 = arquivos do plano + erros, iter 6+ = task atual + erro + `.auto/progress.md`
 
 ### Fase 3 — Test (máx 3 iterações)
-1. Escrever testes para: happy path, erro principal, edge case
-2. Rodar testes e confirmar que passam
-3. Se testes falharem: analisar erro, corrigir **código** (não os testes)
-4. **Validation feedback:** Se o erro persistir, copiar a mensagem de erro exata e usá-la como contexto para a próxima tentativa de fix
+1. Escrever testes: happy path, erro principal, edge case
+2. Rodar testes
+3. Se falhar: copiar erro completo → corrigir **código** (não testes) → re-rodar
+4. Error deduplication: normalizar erro antes de contar (remover line numbers, timestamps)
 5. Marcar `[x]` no plano quando testes passarem
 
-### Fase 4 — Validate (máx 2 iterações)
-1. **Tiered validation** (do mais rápido ao mais lento):
-   - Lint primeiro (rápido, ~5s)
-   - Type-check segundo (médio, ~15s)
-   - Build de produção último (lento, ~30-60s)
-2. Se lint falhar: corrigir e re-rodar só lint
-3. Se build falhar: injetar mensagem de erro completa como contexto, corrigir, re-rodar
-4. Se nenhuma ferramenta disponível: pular fase com nota
+### Fase 4 — Validate (tiered, máx 2 iterações)
+1. Lint primeiro (~5s) → se falhar, corrigir só lint
+2. Type-check (~15s) → se falhar, corrigir
+3. Build (~60s) apenas quando todas as tasks do plano estão `[x]`
+4. Se build falhar: injetar erro completo como contexto → corrigir → re-rodar → se falhar 2x, extend budget +2 (uma vez só)
+5. Se sem ferramentas: pular com nota
 
 ### Fase 5 — Review (1 iteração)
-1. Self-review do diff completo usando `personas/code-reviewer.md` — 5 eixos
-2. Security check usando `personas/security-auditor.md` — inputs, auth, secrets
-3. Se finding 🔴 Critical — corrigir, re-rodar testes, e review só do finding corrigido
-4. Gerar relatório resumido
+1. Ler personas de review (tentar em ordem):
+   - `personas/code-reviewer.md`
+   - `.bot/personas/code-reviewer.md`
+2. Self-review com os 5 eixos: Correctness, Design, Readability, Performance, Security
+3. Security check (tentar em ordem):
+   - `personas/security-auditor.md`
+   - `.bot/personas/security-auditor.md`
+4. Finding 🔴 Critical → corrigir → re-rodar testes → re-review do finding
+5. Emitir relatório resumido
 
 ### Fase 6 — Commit
-1. **Completion check:** reler `.auto/plan.md` — se houver tasks `[ ]` pendentes, **voltar a Fase 2**
-2. Stage apenas arquivos relevantes (não `git add .`)
-3. Commit com mensagem semântica (`feat:` / `fix:` / `refactor:`)
-4. Não fazer push (decisão do usuário)
-5. Emitir relatório final
+1. **Completion check:** reler `.auto/plan.md` — tasks `[ ]` pendentes = voltar Fase 2
+2. Stage apenas arquivos relevantes (não `git add .`, não incluir `.auto/`)
+3. Commit semântico (`feat:` / `fix:` / `refactor:`)
+4. Não fazer push
+5. Emitir relatório final:
+   ```markdown
+   ## ✅ Task Completa — /auto
+   **Task:** [descrição]
+   **Iterações:** [N] / [budget]
+   **Arquivos:** criados [lista] | modificados [lista]
+   **Testes:** [N passando] / [N cenários]
+   **Validação:** lint ✅ | typecheck ✅ | build ✅
+   **Commit:** [hash] — [mensagem]
+   ### Decisões tomadas
+   [Suposições feitas, patterns seguidos]
+   ### Risco residual
+   [Nenhum / lista]
+   ```
 
 ## Circuit Breaker
 
-O agente DEVE parar se:
-- **Mesmo erro 3x:** Normalizar erro (ignorar line numbers e timestamps) antes de comparar
-- **Stall detectado:** 3 iterações consecutivas sem mudança em nenhum arquivo = stuck
-- **Budget estourado:** Mais iterações que o budget calculado na Fase 1
-- **Regressão:** Testes que passavam começam a falhar após uma mudança
-- **Decisão de negócio:** Erro requer informação que não está no codebase nem nas policies
+Parar imediatamente se:
+- **Mesmo erro 3x normalizados** consecutivos
+- **Stall:** 3 iterações sem `git diff` mostrar mudanças
+- **Budget estourado** sem conclusão
+- **Regressão:** testes que passavam voltaram a falhar → `git checkout -- [arquivo]`, parar
+- **Decisão de negócio** impossível de resolver via codebase
 
-Ao parar, emitir:
 ```
 ## 🛑 Bloqueio Autônomo
 **Erro:** [descrição]
+**Tipo:** [mesmo-erro/stall/budget/regressão/negócio]
 **Tentativas:** [N]
-**Diagnóstico:** [análise da causa raiz]
-**Sugestão:** [o que o usuário pode fazer para desbloquear]
-**Progresso até aqui:** [o que foi feito — ver .auto/progress.md]
-**Plan status:** [N/M tasks completas — ver .auto/plan.md]
+**Diagnóstico:** [causa raiz]
+**Sugestão:** [o que desbloqueia]
+**Plan status:** [N/M tasks — ver .auto/plan.md]
 ```
-
-## Policies Aplicáveis
-- `policies/search-first.md` — pesquisar antes de implementar
-- `policies/anti-rationalization.md` — não racionalizar atalhos
-- `policies/context-engineering.md` — hierarquia de contexto
-- `policies/confusion-management.md` — resolver confusão sem perguntar (STOP-NAME-OPTIONS-WAIT internamente, sem expor ao user)
-- `policies/source-driven.md` — decisões baseadas em fontes
-- `policies/quality-gates.md` — critérios de qualidade
 
 ## Uso
 
