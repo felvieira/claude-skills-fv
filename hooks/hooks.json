@@ -8,13 +8,15 @@
   ],
   "PreToolUse": [
     "hooks/scripts/pre-tool-enforcer.mjs",
-    "hooks/scripts/model-routing-hook.mjs"
+    "hooks/scripts/model-routing-hook.mjs",
+    "hooks/scripts/simplify-ignore.mjs"
   ],
   "Stop": [
     "hooks/scripts/context-guard-stop.mjs",
     "hooks/scripts/persistent-mode.mjs"
   ],
   "PostToolUse": [
-    "hooks/scripts/post-tool-verifier.mjs"
+    "hooks/scripts/post-tool-verifier.mjs",
+    "hooks/scripts/simplify-ignore.mjs"
   ]
 }

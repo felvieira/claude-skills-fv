@@ -39,7 +39,7 @@
     "disabled": [],
     "profiles": {
       "minimal": {
-        "disabled": ["pre-execution-gate", "keyword-detector", "post-tool-verifier", "model-routing-hook"]
+        "disabled": ["pre-execution-gate", "keyword-detector", "post-tool-verifier", "model-routing-hook", "simplify-ignore"]
       },
       "standard": {
         "disabled": []
@@ -52,5 +52,9 @@
         }
       }
     }
+  },
+  "simplify_ignore": {
+    "state_file": ".simplify-ignore-state.json",
+    "config_file": "simplify-ignore.json"
   }
 }
