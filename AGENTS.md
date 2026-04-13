@@ -33,13 +33,34 @@ Este repositorio define um kit de skills e governanca para agentes de coding em 
 - siga `policies/evals.md` para mudancas de skills, prompts e tools
 - siga `policies/tool-safety.md` para MCP, rede, escrita e acoes externas
 
+## Slash Commands
+
+Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
+
+| Command | O que faz |
+|---------|-----------|
+| `/spec` | Especificar feature com critérios de aceitação |
+| `/plan` | Classificar task e montar pipeline |
+| `/build` | Implementar com stack do projeto |
+| `/test` | Escrever e rodar testes |
+| `/review` | Review final + security audit |
+| `/simplify` | Simplificar e refatorar código |
+| `/ship` | Release e deploy |
+| `/pipeline` | Pipeline completo end-to-end |
+| `/best` | Auditoria de boas práticas, clean code e DRY |
+| `/auto` | Agente autônomo — executa task completa sem intervenção |
+
+Navegação de skills: `docs/skill-guides/skill-discovery.md`
+
 ## Artefatos Principais
 - `GLOBAL.md` = regras universais
-- `policies/` = regras compartilhadas
+- `policies/` = regras compartilhadas (inclui `context-engineering.md` para hierarquia de contexto)
 - `templates/` = formatos curtos padronizados
 - `skills/` = especialidades
+- `personas/` = personas estruturadas para review (code-reviewer, security-auditor, test-engineer)
 - `docs/repo-audit/` = auditoria reutilizavel do repositorio
-- `docs/skill-guides/` = anexos sob demanda
+- `docs/skill-guides/` = anexos sob demanda (inclui `skill-discovery.md` e `context-engineering.md`)
 - `evals/` = casos de avaliacao do sistema
 - `docs/setup-bot-folder.md` = modo recomendado de instalacao em `.bot/`
 - `patterns/ai-integration/` = padroes reutilizaveis para integrar IA em apps
+- `.claude/commands/` = slash commands por fase de desenvolvimento

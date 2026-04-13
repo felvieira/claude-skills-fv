@@ -15,6 +15,7 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - Seguir `policies/cost-optimization.md` para maximizar eficiencia de tokens, cache e API calls
 - Preferir ferramentas de code intelligence (graph, symbol, semantic) sobre Grep/Read bruto — ver `policies/code-exploration.md`
 - Definir `model` explicito ao spawnar subagents — ver `policies/model-routing.md`
+- Respeitar hierarquia de contexto (Rules > Specs > Source > Errors > Conversation) e trust levels — ver `policies/context-engineering.md`
 
 ## Hierarquia de Instrucoes
 1. `GLOBAL.md`

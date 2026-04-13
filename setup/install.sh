@@ -219,11 +219,21 @@ for item in GLOBAL.md README.md VERSION; do
   [[ -f "$SCRIPT_DIR/$item" ]] && safe_copy_file "$SCRIPT_DIR/$item" "$BOT_DIR/$item"
 done
 
-for dir in policies templates skills patterns scripts docs commands evals setup mcp-server; do
+for dir in policies templates skills patterns scripts docs commands evals setup mcp-server personas; do
   if [[ -d "$SCRIPT_DIR/$dir" ]]; then
     safe_copy_dir "$SCRIPT_DIR/$dir" "$BOT_DIR/$dir"
   fi
 done
+
+# Copy .claude/commands/ to consumer repo's .claude/commands/
+if [[ -d "$SCRIPT_DIR/.claude/commands" ]]; then
+  mkdir -p "$TARGET_DIR/.claude/commands"
+  for cmd_file in "$SCRIPT_DIR"/.claude/commands/*.md; do
+    [[ -f "$cmd_file" ]] || continue
+    safe_copy_file "$cmd_file" "$TARGET_DIR/.claude/commands/$(basename "$cmd_file")"
+  done
+  ok "Copied slash commands to .claude/commands/"
+fi
 
 if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]; then
   info "Building MCP server (npm install + tsc)..."

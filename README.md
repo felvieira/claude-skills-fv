@@ -282,6 +282,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - consulte `docs/skill-guides/ideation-frameworks.md` — SCAMPER, HMW, First Principles, JTBD para fase de ideação
 - consulte `docs/skill-guides/skill-discovery.md` — decision tree para escolher skill certa por tipo de task
 - consulte `docs/skill-guides/context-engineering.md` — hierarquia de contexto, trust levels e packing strategies
+- consulte `docs/skill-guides/autonomous-loop.md` — protocolo do `/auto` para execução autônoma
 
 ---
 
@@ -298,6 +299,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/ship` | Release e deploy | Release Manager (24) + Deploy (07) |
 | `/pipeline` | Pipeline completo end-to-end | Orchestrator (09) → todas |
 | `/best` | Auditoria de boas práticas, clean code e DRY | Reviewer (11) + Security (06) + QA (05) |
+| `/auto` | Agente autônomo — executa task completa sem intervenção | Todas as necessárias + circuit breaker |
 
 ---
 
@@ -433,4 +435,4 @@ bash scripts/smoke-install.sh
 ### 2026-04-13
 
 - **Agent Intelligence v2:** anti-rationalization tables em 5 skills críticas (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy com hierarquia de fontes e integração no orchestrator, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook que protege blocos críticos de simplificação automática via PreToolUse/PostToolUse.
-- **Agent Intelligence v3:** 9 slash commands mapeando fases de desenvolvimento a skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`), meta-skill de descoberta com decision tree e 6 core operating behaviors, session-start bootstrap com injeção automática do skill-discovery, 3 agent personas com output estruturado (code-reviewer, security-auditor, test-engineer) referenciadas por skills 11/06/05, context engineering policy com hierarquia de 5 níveis e 3 trust levels, plugin validation CI com GitHub Actions.
+- **Agent Intelligence v3:** 10 slash commands mapeando fases de desenvolvimento a skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`, `/auto`), meta-skill de descoberta com decision tree e 6 core operating behaviors, session-start bootstrap com injeção automática do skill-discovery, 3 agent personas com output estruturado (code-reviewer, security-auditor, test-engineer) referenciadas por skills 11/06/05, context engineering policy com hierarquia de 5 níveis e 3 trust levels, plugin validation CI com GitHub Actions, comando `/auto` para execução autônoma com loop plan-build-test-validate-review-commit e circuit breaker. Integração v3 corrigida: plugin.json com 10 commands, install.sh copia personas/ e .claude/commands/, AGENTS.md e GLOBAL.md referenciam novos artefatos, templates de consumer repos atualizados, minimal profile desabilita session-start.

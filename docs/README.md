@@ -3,7 +3,7 @@
 ## Estrutura atual do kit
 
 - `repo-audit/` - Auditoria persistida do repositorio (`current.md`, `assets.md`)
-- `skill-guides/` - Guias auxiliares carregados sob demanda por cada skill
+- `skill-guides/` - Guias auxiliares carregados sob demanda por cada skill (inclui `skill-discovery.md` e `context-engineering.md`)
 - `context/` - Gerenciado automaticamente pelo Context Manager e pelos tools de working set
 - `plans/` - Planos de implementacao
 

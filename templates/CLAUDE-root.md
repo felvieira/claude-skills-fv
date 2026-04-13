@@ -24,6 +24,21 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 - pesquisa concorrentes, analisa tendencias visuais do nicho, gera moodboards e entrega dossie estrategico
 - em melhoria de UI existente, pula o PO e vai direto: `Design Intelligence -> UI/UX -> Frontend`
 
+## Slash Commands
+
+Use estes atalhos em vez de lembrar nomes de skills:
+- `/spec` — especificar feature | `/plan` — montar pipeline | `/build` — implementar
+- `/test` — testar | `/review` — review + security | `/simplify` — refatorar
+- `/ship` — release e deploy | `/pipeline` — ciclo completo | `/best` — auditoria de boas práticas
+- `/auto` — agente autônomo que executa task completa sem intervenção
+
+## Personas de Review
+
+Para reviews estruturados com output padronizado:
+- `.bot/personas/code-reviewer.md` — 5 eixos de review + severity labels
+- `.bot/personas/security-auditor.md` — 5 scopes de auditoria + PoC para criticals
+- `.bot/personas/test-engineer.md` — 5 tipos de cenário + coverage analysis
+
 ## Sessao e Custo
 - ao encerrar sessao longa, rodar `Session Summary` (skill 31) para registrar contexto
 - `Cost Tracker` (skill 30) gera relatorio de custo quando solicitado

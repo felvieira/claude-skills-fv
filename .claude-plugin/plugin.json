@@ -50,6 +50,16 @@
     "commands/devkit-install-fv.md",
     "commands/inventory-assets.md",
     "commands/plan-feature.md",
-    "commands/review-release.md"
+    "commands/review-release.md",
+    ".claude/commands/spec.md",
+    ".claude/commands/plan.md",
+    ".claude/commands/build.md",
+    ".claude/commands/test.md",
+    ".claude/commands/review.md",
+    ".claude/commands/simplify.md",
+    ".claude/commands/ship.md",
+    ".claude/commands/pipeline.md",
+    ".claude/commands/best.md",
+    ".claude/commands/auto.md"
   ]
 }

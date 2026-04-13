@@ -24,6 +24,14 @@ Este repositorio usa um kit de skills em `.bot/` para orientar agentes de coding
 - reestruturacao grande de pastas ou convencoes
 - mudanca relevante em integracoes de IA, providers ou prompts
 
+## Slash Commands
+
+Atalhos por fase de desenvolvimento:
+- `/spec` `/plan` `/build` `/test` `/review` `/simplify` `/ship` `/pipeline` `/best` `/auto`
+- Navegação de skills: `.bot/docs/skill-guides/skill-discovery.md`
+- Personas de review: `.bot/personas/` (code-reviewer, security-auditor, test-engineer)
+- Context engineering: `.bot/policies/context-engineering.md`
+
 ## Defaults
 - responder curto por padrao
 - agir primeiro quando houver default seguro
