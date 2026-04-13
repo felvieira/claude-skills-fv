@@ -30,7 +30,8 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
 2. Pesquisar o codebase (`policies/search-first.md`) para entender stack e patterns
 3. Ler `docs/repo-audit/current.md` se existir
 4. Detectar ferramentas disponíveis: test framework, lint, typecheck, build
-5. Snapshot inicial: listar arquivos que serão tocados
+5. Registrar ferramentas detectadas em `.auto/env.md`
+6. Snapshot inicial: `git diff --stat` para baseline
 
 ### Fase 1 — Plan (máx 2 iterações)
 1. Classificar a task (feature/bugfix/refactor) e montar pipeline mínimo

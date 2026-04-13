@@ -20,7 +20,7 @@ O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qua
 - **QA, Security e Reviewer obrigatórios** — nenhuma entrega sai sem validação
 - **Model routing automático** — haiku para boilerplate, sonnet para implementação, opus para arquitetura
 - **Lifecycle hooks** — o agente detecta contexto vago, re-lê arquivos antes de editar, monitora custo de tokens
-- **MCP server próprio** — 31 tools expostas para qualquer cliente MCP
+- **MCP server próprio** — 32 tools expostas para qualquer cliente MCP
 - **Memória persistente** — working set, context pack, learned skills com confidence scoring acumuladas por projeto
 - **Instalação multi-plataforma** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI e mais
 
@@ -64,7 +64,7 @@ bash /tmp/dev-team-kit/setup/install.sh /caminho/do/projeto
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
-| MCP server (31 tools) | ❌ | ✅ | ✅ |
+| MCP server (32 tools) | ❌ | ✅ | ✅ |
 | Templates de handoff | ❌ | ✅ | ✅ |
 | Docs + repo-audit | ❌ | ✅ | ✅ |
 | Configs multi-plataforma | ❌ | ✅ | ✅ |
@@ -201,7 +201,7 @@ flowchart LR
 | `context-guard-stop` | Stop | avisa em 50% (não-bloqueante) e bloqueia em 75% com resumo inteligente | todos |
 | `persistent-mode` | Stop | bloqueia stop quando pipeline está ativo | todos |
 | `pre-tool-enforcer` | PreToolUse | re-lê antes de editar, sugere code intelligence tools | todos |
-| `session-start` | SessionStart | restaura estado da sessão anterior | todos |
+| `session-start` | SessionStart | restaura estado da sessão anterior e injeta skill-discovery | standard, strict |
 | `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill | standard, strict |
 | `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns | standard, strict |
 | `simplify-ignore` | PreToolUse + PostToolUse | Protege blocos `simplify-ignore-start/end` de simplificação automática | standard, strict |
@@ -212,7 +212,7 @@ Controlados pela variável de ambiente `DEVKIT_HOOK_PROFILE` (padrão: `standard
 
 | Perfil | Hooks ativos |
 |--------|-------------|
-| `minimal` | `context-guard-stop`, `persistent-mode`, `pre-tool-enforcer`, `session-start` |
+| `minimal` | `context-guard-stop`, `persistent-mode`, `pre-tool-enforcer` |
 | `standard` | todos |
 | `strict` | todos |
 
@@ -227,7 +227,7 @@ O hook `context-guard-stop` opera em dois níveis:
 
 ---
 
-## MCP Server — 31 Tools para Qualquer Cliente MCP
+## MCP Server — 32 Tools para Qualquer Cliente MCP
 
 ```json
 {
@@ -251,7 +251,7 @@ Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP.
 |-------|-------|----------|
 | **Knowledge** | 14 | classifica task, monta pipeline, resume diff, monta context pack |
 | **Execution** | 6 | busca concorrentes (Brave), scraping (Playwright/Firecrawl), gera imagens (fal.ai) |
-| **Persistence** | 11 | salva contexto, working set, custo, learned skills e guardrails de sessão |
+| **Persistence** | 12 | salva contexto, working set, custo, learned skills e guardrails de sessão |
 
 Ver `mcp-server/README.md` para documentação completa das tools.
 
@@ -331,11 +331,11 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 
 ```text
 .
-├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best)
+├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best, /auto)
 │   └── commands/
 ├── .claude-plugin/       ← manifesto do plugin Claude Code
 │   └── plugin.json
-├── .github/              ← CI workflows (validate-plugin)
+├── .github/              ← CI workflows (validate-plugin, validate)
 │   └── workflows/
 ├── AGENTS.md
 ├── CLAUDE.md
@@ -352,7 +352,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 │   ├── hooks.json
 │   ├── config.json
 │   └── scripts/
-├── mcp-server/           ← MCP server com 31 tools
+├── mcp-server/           ← MCP server com 32 tools
 ├── patterns/ai-integration/
 ├── personas/             ← agent personas (code-reviewer, security-auditor, test-engineer)
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
@@ -381,13 +381,23 @@ repo-consumidor/
 ├── .gemini/settings.json
 └── .bot/
     ├── GLOBAL.md
+    ├── commands/                 ← comandos operacionais (/audit-repo, /devkit-install-fv, ...)
+    ├── docs/                     ← skill-guides, repo-audit, quickstart
+    ├── evals/
     ├── hooks/                    ← lifecycle hooks
     ├── learned-skills/           ← conhecimento acumulado do projeto (score 0-1, decay semanal, auto-arquivado em .archive/ abaixo de 0.3)
     ├── mcp-server/               ← compilado e pronto
+    ├── patterns/ai-integration/
+    ├── personas/                 ← code-reviewer, security-auditor, test-engineer
     ├── policies/
+    ├── scripts/
+    ├── setup/
     ├── skills/
     └── templates/
 ```
+
+O repo consumidor também recebe `.claude/commands/` (10 slash commands) na raiz, instalado pelo `setup/install.sh`.
+
 
 ---
 

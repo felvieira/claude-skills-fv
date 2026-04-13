@@ -7,6 +7,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- README.md: MCP tool count corrigido de 31 para 32 em todas as ocorrências (badge, tabela, header, tree)
+- README.md: Persistence block corrigido de 11 para 12 na tabela do MCP
+- README.md: hook `session-start` perfil corrigido de `todos` para `standard, strict`
+- README.md: perfil `minimal` não listava session-start como ativo — corrigido
+- README.md: `.claude/` tree incluía apenas 9 commands — adicionado `/auto`
+- README.md: `Estrutura Instalada` tree incompleta — adicionados todos os diretórios copiados pelo install.sh
+- `mcp-server/package.json`: description dizia "32 skills", corrigido para "31 skills" (o MCP tem 32 tools, não skills)
+- `.claude/commands/auto.md`: Fase 0 não mencionava criação de `.auto/env.md` — corrigido
+- `docs/skill-guides/skill-discovery.md`: Decision Tree não tinha entrada para task autônoma — adicionado `/auto`
+- `docs/README.md`: skill-guides index só mencionava 2 guias — atualizado para incluir autonomous-loop e ideation-frameworks
+
 ---
 
 ## [1.3.0] — 2026-04-13 — Agent Intelligence v3
@@ -99,7 +111,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - **31 specialist skills** cobrindo todo o ciclo de desenvolvimento
 - **Plugin manifest** (`.claude-plugin/plugin.json`) com 31 skills, hooks e commands
 - **`/devkit-install-fv`** slash command para instalação full `.bot/`
-- **MCP server** com 31 tools (Knowledge, Execution, Persistence)
+- **MCP server** com 32 tools (Knowledge 14, Execution 6, Persistence 12)
 - **Lifecycle hooks**: pre-execution-gate, keyword-detector, context-guard-stop, persistent-mode, pre-tool-enforcer, session-start, post-tool-verifier, model-routing-hook
 - **Model routing policy** unificada — absorve skill 16 (llm-selector)
 - **Multi-platform support**: Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity
