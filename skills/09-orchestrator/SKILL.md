@@ -177,6 +177,10 @@ Ao iniciar uma task:
   - buscar patterns similares no codigo (Glob/Grep)
   - consultar docs externas via Context7 MCP para libs envolvidas
   - hotfixes triviais e tasks mecanicas sao excecao
+- **verificar fontes para decisoes de framework/lib** (obrigatorio quando task envolve integracao de lib externa — ver `policies/source-driven.md`):
+  - checar versao da lib no projeto antes de buscar docs
+  - usar Context7 MCP (`resolve-library-id` → `query-docs`) para libs conhecidas
+  - citar fonte inline ao recomendar API ou config especifica
 - mapear artefatos e dependencias existentes
 - definir pipeline minimo suficiente
 - registrar skills puladas com justificativa
