@@ -31,6 +31,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | `/ship` | Release e deploy |
 | `/pipeline` | Pipeline completo end-to-end |
 | `/best` | Auditoria de boas práticas, arquitetura, clean code e DRY |
+| `/auto` | Agente autônomo — executa task completa sem intervenção |
 
 ## 6 Core Operating Behaviors
 
