@@ -193,6 +193,10 @@ Garantir sempre:
 - Findings classificados e atribuídos
 - Revalidacao indicada quando necessaria
 
+## Persona
+
+Para output estruturado e persona detalhada com eixos de review, severity labels e template de relatório, ver `personas/code-reviewer.md`.
+
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/review.md` e `templates/rejection.md`.

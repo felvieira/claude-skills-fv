@@ -56,5 +56,9 @@
   "simplify_ignore": {
     "state_file": ".simplify-ignore-state.json",
     "config_file": "simplify-ignore.json"
+  },
+  "session_bootstrap": {
+    "inject_meta_skill": true,
+    "meta_skill_path": "docs/skill-guides/skill-discovery.md"
   }
 }

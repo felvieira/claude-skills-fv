@@ -95,6 +95,10 @@ Isso complementa os testes e2e formais e ajuda especialmente em verificacoes vis
 - regressao principal verificada
 - falhas ou gaps classificados por impacto
 
+## Persona
+
+Para output estruturado e persona detalhada com tipos de cenário, coverage analysis e template de relatório, ver `personas/test-engineer.md`.
+
 ## Handoff para Security Review
 
 Entregar:

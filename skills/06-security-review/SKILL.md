@@ -343,6 +343,10 @@ Após review, gerar relatório:
 - findings criticos resolvidos ou bloqueando release
 - requisitos de deploy e monitoramento destacados
 
+## Persona
+
+Para output estruturado e persona detalhada com scopes de auditoria, severity labels, PoC requirements e template de relatório, ver `personas/security-auditor.md`.
+
 ## Handoff para Deployer
 
 Só libera se:

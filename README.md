@@ -280,6 +280,24 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - consulte `docs/skill-call-matrix.md` quando houver overlap entre skills
 - consulte `docs/skill-guides/` apenas sob demanda
 - consulte `docs/skill-guides/ideation-frameworks.md` — SCAMPER, HMW, First Principles, JTBD para fase de ideação
+- consulte `docs/skill-guides/skill-discovery.md` — decision tree para escolher skill certa por tipo de task
+- consulte `docs/skill-guides/context-engineering.md` — hierarquia de contexto, trust levels e packing strategies
+
+---
+
+## Slash Commands — Atalhos por Fase de Desenvolvimento
+
+| Command | O que faz | Skills ativadas |
+|---------|-----------|-----------------|
+| `/spec` | Especificar feature com critérios de aceitação | PO (01) |
+| `/plan` | Classificar task e montar pipeline | Orchestrator (09) |
+| `/build` | Implementar com stack do projeto | Backend (03) + Frontend (04) |
+| `/test` | Escrever e rodar testes | QA (05) |
+| `/review` | Review final + security audit | Reviewer (11) + Security (06) |
+| `/simplify` | Simplificar e refatorar código | Migration & Refactor (23) |
+| `/ship` | Release e deploy | Release Manager (24) + Deploy (07) |
+| `/pipeline` | Pipeline completo end-to-end | Orchestrator (09) → todas |
+| `/best` | Auditoria de boas práticas, clean code e DRY | Reviewer (11) + Security (06) + QA (05) |
 
 ---
 
@@ -296,6 +314,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 - `policies/anti-rationalization.md` — tabelas de racionalizações comuns + rebuttals por skill crítica
 - `policies/source-driven.md` — hierarquia de fontes obrigatória para decisões de framework/lib
 - `policies/confusion-management.md` — protocolo STOP-NAME-OPTIONS-WAIT para confusão detectada
+- `policies/context-engineering.md` — hierarquia de contexto em 5 níveis e 3 trust levels
 
 ### Hierarquia de Instrucoes
 
@@ -310,8 +329,12 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 
 ```text
 .
+├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best)
+│   └── commands/
 ├── .claude-plugin/       ← manifesto do plugin Claude Code
 │   └── plugin.json
+├── .github/              ← CI workflows (validate-plugin)
+│   └── workflows/
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── GLOBAL.md
@@ -329,6 +352,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 │   └── scripts/
 ├── mcp-server/           ← MCP server com 31 tools
 ├── patterns/ai-integration/
+├── personas/             ← agent personas (code-reviewer, security-auditor, test-engineer)
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py e utilitários
 ├── setup/                ← install.sh multi-plataforma
@@ -409,3 +433,4 @@ bash scripts/smoke-install.sh
 ### 2026-04-13
 
 - **Agent Intelligence v2:** anti-rationalization tables em 5 skills críticas (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy com hierarquia de fontes e integração no orchestrator, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook que protege blocos críticos de simplificação automática via PreToolUse/PostToolUse.
+- **Agent Intelligence v3:** 9 slash commands mapeando fases de desenvolvimento a skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`), meta-skill de descoberta com decision tree e 6 core operating behaviors, session-start bootstrap com injeção automática do skill-discovery, 3 agent personas com output estruturado (code-reviewer, security-auditor, test-engineer) referenciadas por skills 11/06/05, context engineering policy com hierarquia de 5 níveis e 3 trust levels, plugin validation CI com GitHub Actions.
