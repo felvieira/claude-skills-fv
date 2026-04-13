@@ -49,6 +49,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/pipeline` | Pipeline completo end-to-end |
 | `/best` | Auditoria de boas práticas, clean code e DRY |
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
+| `/loop` | Loop subprocess idêntico ao ralph-starter (`node scripts/auto-loop.mjs "task"`) |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

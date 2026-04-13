@@ -1,8 +1,23 @@
-# Autonomous Loop — Guia Operacional do /auto
+# Autonomous Loop — Guia Operacional do /auto e /loop
 
 Protocolo completo para execução autônoma de tasks sem intervenção humana.
-Inspirado em patterns de loop autônomo com tiered validation, progress tracking,
-error deduplication e circuit breaker.
+Dois modos disponíveis:
+
+| Modo | Como usar | Quando usar |
+|------|-----------|-------------|
+| `/auto` | Prompt no contexto atual da conversa | Claude executa no seu contexto, vê seus arquivos |
+| `/loop` | `node scripts/auto-loop.mjs "task"` | Processo externo real, budget fixo, commit automático |
+
+`auto-loop.mjs` implementa o mesmo padrão do [ralph-starter](https://github.com/multivmlabs/ralph-starter):
+roda `claude --print` em subprocess Node.js, itera até done com circuit breaker completo.
+
+```bash
+# Uso básico
+node scripts/auto-loop.mjs "adicionar endpoint /api/health com teste"
+
+# Em repos consumidores (.bot/ instalado via setup/install.sh)
+node .bot/scripts/auto-loop.mjs "task" --validate --verbose
+```
 
 ## Princípios
 

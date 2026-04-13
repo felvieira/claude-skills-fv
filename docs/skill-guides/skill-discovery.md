@@ -17,7 +17,8 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Auditoria de boas práticas** | `/best` (Reviewer 11 + Security 06 + QA 05) |
 | **Landing page** | Copy (13) → Design Intelligence (29) → UI/UX (02) → Frontend (04) → SEO (14) |
 | **Release formal** | Reviewer (11) → Observability (20) → Release Manager (24) → Deploy (07) |
-| **Task autônoma** (sem intervenção) | `/auto` — loop completo com circuit breaker |
+| **Task autônoma** (sem intervenção, via prompt) | `/auto` — loop completo com circuit breaker no contexto atual |
+| **Task autônoma** (sem intervenção, via subprocess) | `/loop` — `node scripts/auto-loop.mjs "task"` — ralph-identical |
 
 ## Slash Commands — Atalhos Rápidos
 
