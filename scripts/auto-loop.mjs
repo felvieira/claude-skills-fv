@@ -57,7 +57,7 @@ const COMPLETION_PATTERNS = [
   { pattern: /ready for review/i, score: 0.75 },
   { pattern: /successfully implemented/i, score: 0.8 },
   { pattern: /commit.*created/i, score: 0.85 },
-  { pattern: /\bdonei\b|\bfinished\b|\bcomplete\b/i, score: 0.5 },
+  { pattern: /\bdone\b|\bfinished\b|\bcomplete\b/i, score: 0.5 },
 ];
 
 const STUCK_PATTERNS = [
@@ -147,6 +147,8 @@ function detectTools() {
       tools.manager = 'pnpm';
       if (scripts.test) tools.test = 'pnpm test';
       if (scripts.lint) tools.lint = 'pnpm lint';
+      if (scripts.typecheck) tools.typecheck = 'pnpm typecheck';
+      else if (scripts['type-check']) tools.typecheck = 'pnpm type-check';
       if (scripts.build) tools.build = 'pnpm build';
     } else if (existsSync('yarn.lock')) {
       tools.manager = 'yarn';
@@ -218,7 +220,8 @@ function gitDiffSinceBaseline() {
 function gitCommit(message) {
   try {
     execSync('git add -A', { stdio: 'inherit' });
-    execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { stdio: 'inherit' });
+    // Use spawnSync to avoid shell injection via task description in commit message
+    spawnSync('git', ['commit', '-m', message], { stdio: 'inherit' });
     return execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
   } catch (e) {
     return null;
@@ -236,7 +239,8 @@ function countPlanTasks() {
 }
 
 function hasPendingTasks() {
-  return countPlanTasks().pending > 0;
+  const { done, total } = countPlanTasks();
+  return total > 0 && done < total;
 }
 
 function calcBudget(taskDesc) {
@@ -434,7 +438,7 @@ class CircuitBreaker {
     this.maxStall = maxStall;
     this.errorCounts = {};
     this.stallCount = 0;
-    this.lastChangedFiles = '';
+    this.lastChangedFiles = null;
   }
 
   recordError(error) {
@@ -448,8 +452,10 @@ class CircuitBreaker {
 
   checkStall() {
     const changed = gitDiffSinceBaseline();
-    if (changed === this.lastChangedFiles && changed !== '') {
-      // Files changed but same as last check — might be stall
+    // Skip stall detection on first iteration (planning phase may not produce file changes)
+    if (this.lastChangedFiles === null) {
+      this.lastChangedFiles = changed;
+      return { tripped: false };
     }
     if (changed === this.lastChangedFiles) {
       this.stallCount++;
@@ -520,6 +526,10 @@ async function main() {
     // Run Claude
     log(`Calling Claude (${opts.model})...`);
     const { output, error: claudeErr } = runClaude(prompt, opts.model);
+
+    if (claudeErr && claudeErr.trim()) {
+      log(`Claude stderr: ${claudeErr.trim().slice(0, 200)}`, '⚠️');
+    }
 
     if (opts.verbose) console.log('\n--- Claude Output ---\n', output, '\n---');
     else log(`Output: ${output.split('\n').length} lines, ${output.length} chars`);
