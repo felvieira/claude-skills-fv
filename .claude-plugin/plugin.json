@@ -60,6 +60,7 @@
     ".claude/commands/ship.md",
     ".claude/commands/pipeline.md",
     ".claude/commands/best.md",
-    ".claude/commands/auto.md"
+    ".claude/commands/auto.md",
+    ".claude/commands/loop.md"
   ]
 }

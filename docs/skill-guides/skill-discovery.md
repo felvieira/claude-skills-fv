@@ -33,6 +33,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | `/pipeline` | Pipeline completo end-to-end |
 | `/best` | Auditoria de boas práticas, arquitetura, clean code e DRY |
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
+| `/loop` | Loop subprocess idêntico ao ralph-starter — invoca `auto-loop.mjs` externamente |
 
 ## 6 Core Operating Behaviors
 

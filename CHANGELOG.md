@@ -7,6 +7,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- **`scripts/auto-loop.mjs`** — loop autônomo idêntico ao ralph-starter: roda `claude --print` em subprocess Node.js com todos os 10 padrões de produção:
+  - Progress tracking via checkboxes em `.auto/plan.md`
+  - Inter-iteration memory em `.auto/progress.md` (append-only)
+  - Context narrowing progressivo (3 níveis por iteração)
+  - Tiered validation: lint → typecheck → build
+  - Error deduplication (MD5 hash de erro normalizado)
+  - Completion override (reler plan antes de parar)
+  - Dynamic budget (8/12/15 por complexidade da task)
+  - Validation feedback loop (erro vira contexto)
+  - Stall detection (3 iter sem `git diff` = stuck)
+  - Build-fix extension (+2 iterações uma vez se build falha)
+  - CLI: `node scripts/auto-loop.mjs "task" [--max-iterations N] [--validate] [--no-commit] [--model M] [--push] [--verbose]`
+- **`.claude/commands/loop.md`** — slash command `/loop` documentando como invocar `auto-loop.mjs`
+- **plugin.json**: comando `/loop` registrado
+- **README.md**: seção `/loop` com tabela de 10 padrões e exemplos de uso
+- **README.md**: `.claude/` tree atualizado para incluir `/loop`
+
 ### Fixed
 - README.md: MCP tool count corrigido de 31 para 32 em todas as ocorrências (badge, tabela, header, tree)
 - README.md: Persistence block corrigido de 11 para 12 na tabela do MCP

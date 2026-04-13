@@ -314,6 +314,39 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/pipeline` | Pipeline completo end-to-end | Orchestrator (09) → todas |
 | `/best` | Auditoria de boas práticas, clean code e DRY | Reviewer (11) + Security (06) + QA (05) |
 | `/auto` | Agente autônomo — executa task completa sem intervenção | Todas as necessárias + circuit breaker |
+| `/loop` | Loop autônomo via subprocess (Ralph-identical) — documenta como invocar `auto-loop.mjs` | `scripts/auto-loop.mjs` |
+
+### `/loop` — Autonomous Loop (Ralph-identical)
+
+`scripts/auto-loop.mjs` implementa o mesmo padrão do [ralph-starter](https://github.com/multivmlabs/ralph-starter): roda `claude --print` em subprocess Node.js, iterando até a task estar pronta, funcional e testada.
+
+```bash
+# Uso básico
+node scripts/auto-loop.mjs "sua task aqui"
+
+# Em repos consumidores (instalado em .bot/)
+node .bot/scripts/auto-loop.mjs "sua task aqui"
+
+# Opções
+node scripts/auto-loop.mjs "task" --max-iterations 20 --validate --verbose --no-commit
+```
+
+**10 padrões de produção implementados:**
+
+| Padrão | Implementação |
+|--------|--------------|
+| Progress tracking | Checkboxes em `.auto/plan.md` |
+| Inter-iteration memory | `.auto/progress.md` append-only |
+| Context narrowing | 3 níveis progressivos por iteração |
+| Tiered validation | lint → typecheck → build |
+| Error deduplication | MD5 hash de erro normalizado |
+| Completion override | Re-lê plan antes de parar |
+| Dynamic budget | 8 / 12 / 15 iterações por complexidade |
+| Validation feedback loop | Erro vira contexto da próxima iteração |
+| Stall detection | 3 iter sem `git diff` = stuck |
+| Build-fix extension | +2 iterações uma vez se build falha |
+
+**Circuit breaker:** para automaticamente se mesmo erro 3x, stall detectado, budget estourado ou task bloqueada.
 
 ---
 
@@ -345,7 +378,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 
 ```text
 .
-├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best, /auto)
+├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best, /auto, /loop)
 │   └── commands/
 ├── .claude-plugin/       ← manifesto do plugin Claude Code
 │   └── plugin.json
