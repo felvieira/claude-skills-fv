@@ -112,6 +112,24 @@ Ao finalizar a spec, entregar para UI/UX:
 4. Restrições técnicas que impactam UI (ex: "não temos API de upload ainda")
 5. Personas e contexto de uso
 
+## Fase Divergente (Opcional)
+
+Para features ambíguas ou inovadoras, use frameworks de ideação antes de especificar.
+Consultar: `docs/skill-guides/ideation-frameworks.md`
+
+**Quando usar:**
+- Requisito vago ("melhore a experiência de busca")
+- Feature sem referência clara no mercado
+- Stakeholder indeciso entre abordagens
+- Solução atual não está funcionando
+
+**Quando pular:**
+- User story já está clara e específica
+- É task de implementação com scope definido
+- Time já convergiu em abordagem validada
+
+**Ordem recomendada:** JTBD → HMW → SCAMPER → First Principles
+
 ## Ambiguity Scoring
 
 Antes de iniciar a spec, calcular o ambiguity score para decidir se o briefing e suficiente.
