@@ -10,7 +10,7 @@
 
 | # | Feature | Artefatos principais | Esforço |
 |---|---|---|---|
-| 1 | Slash Commands | 8 arquivos em `.claude/commands/` | Baixo |
+| 1 | Slash Commands | 9 arquivos em `.claude/commands/` | Baixo |
 | 2 | Meta-Skill de Descoberta | `docs/skill-guides/skill-discovery.md` | Médio |
 | 3 | SessionStart Bootstrap | `session-start.mjs` + `config.json` | Baixo |
 | 4 | Agent Personas | 3 arquivos em `personas/` + 3 skill edits | Médio |
@@ -27,7 +27,7 @@ O kit tem 32 skills mas nenhuma interface memorável para o usuário. É preciso
 
 ### Solução
 
-8 commands em `.claude/commands/` que mapeiam fases de desenvolvimento a skills.
+9 commands em `.claude/commands/` que mapeiam fases de desenvolvimento a skills.
 
 | Command | Arquivo | Invoca | Descrição |
 |---------|---------|--------|-----------|
@@ -39,6 +39,7 @@ O kit tem 32 skills mas nenhuma interface memorável para o usuário. É preciso
 | `/simplify` | `simplify.md` | skill 23 (Migration/Refactor) | Simplificar e refatorar código |
 | `/ship` | `ship.md` | skills 24 + 07 (Release + Deploy) | Release e deploy |
 | `/pipeline` | `pipeline.md` | skill 09 (Orchestrator) | Pipeline completo end-to-end |
+| `/best` | `best.md` | skills 11 + 06 + 05 (Reviewer + Security + QA) | Auditoria de boas práticas, arquitetura, clean code e DRY |
 
 **Formato de cada command:**
 
@@ -66,6 +67,7 @@ Seguido de instruções em markdown (5-15 linhas) que:
 | `.claude/commands/simplify.md` | Novo |
 | `.claude/commands/ship.md` | Novo |
 | `.claude/commands/pipeline.md` | Novo |
+| `.claude/commands/best.md` | Novo |
 
 ---
 
