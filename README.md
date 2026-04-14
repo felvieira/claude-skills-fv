@@ -459,6 +459,18 @@ bash scripts/smoke-install.sh
 
 ---
 
+## Contribuindo
+
+Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia completo em **[CONTRIBUTING.md](./CONTRIBUTING.md)**.
+
+**Resumo rápido:**
+1. Crie a skill em `skills/NN-nome/SKILL.md` e registre no `plugin.json`
+2. Para slash commands, adicione em `.claude/commands/` e registre no `plugin.json`
+3. Rode `node scripts/check-consistency.mjs` antes de commitar
+4. Abra um PR com entry no `CHANGELOG.md`
+
+---
+
 ## Timestamp Log
 
 ### 2026-04-04

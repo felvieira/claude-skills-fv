@@ -1,85 +1,144 @@
-# Contribuindo para o Claude Skills Dev Kit
+# Contribuindo com o Dev Team Kit
 
-## Licença
+Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, corrigir bugs, propor melhorias e manter a consistência do kit.
 
-MIT — use estas skills em seus projetos, times e ferramentas. Veja o arquivo `LICENSE` na raiz do repositório.
-
-## Barra de Qualidade
-
-Toda contribuição deve ser:
-
-- **Específica** — passos acionáveis, não conselhos vagos
-- **Verificável** — critérios de saída claros com evidências
-- **Testada em campo** — baseada em workflows reais, não teoria
-- **Mínima** — apenas o necessário para guiar o agente
-
-Se uma skill não atende esses quatro critérios, ela não está pronta para merge.
-
-## Estrutura do Repositório
-
-| Diretório   | Conteúdo                                                       |
-| ----------- | -------------------------------------------------------------- |
-| `skills/`   | Skills completas — cada uma em seu próprio diretório           |
-| `policies/` | Regras compartilhadas em Markdown (anti-racionalização, etc.)  |
-| `hooks/`    | Scripts Node.js e configuração de hooks do agente              |
-| `docs/`     | Documentação, guias de setup e referências de arquitetura      |
-
-## Como Contribuir
-
-1. **Fork** o repositório
-2. Crie uma **branch** descritiva: `feat/nova-skill-xyz` ou `fix/corrige-hook-abc`
-3. Implemente sua mudança seguindo os formatos abaixo
-4. Abra um **Pull Request** com descrição clara do que foi adicionado ou alterado
-5. Aguarde review — PRs são avaliados contra a barra de qualidade acima
-
-## Formato de Skills
-
-Cada skill vive em `skills/<nn>-<nome>/SKILL.md` com frontmatter YAML:
-
-```yaml
 ---
-name: nome-da-skill
-description: Uma linha descrevendo o objetivo
-triggers:
-  - "quando o usuário pede X"
-  - "quando o agente detecta Y"
+
+## Índice
+
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Adicionando uma nova skill](#adicionando-uma-nova-skill)
+- [Editando skills existentes](#editando-skills-existentes)
+- [Adicionando slash commands](#adicionando-slash-commands)
+- [Editando hooks](#editando-hooks)
+- [Checklist antes de abrir PR](#checklist-antes-de-abrir-pr)
+- [Convenções de commit](#convenções-de-commit)
+
 ---
+
+## Estrutura do projeto
+
+```text
+.
+├── skills/           ← uma pasta por skill (01-po-feature-spec, 02-ui-ux-design, ...)
+│   └── NN-nome/
+│       └── SKILL.md  ← prompt da skill
+├── .claude/commands/ ← slash commands (/spec, /plan, /build, /loop, ...)
+├── policies/         ← regras compartilhadas entre skills
+├── personas/         ← personas de output estruturado
+├── hooks/            ← hooks PreToolUse / PostToolUse / SessionStart
+├── docs/skill-guides/← guias operacionais (skill-discovery, autonomous-loop, ...)
+├── scripts/          ← utilitários (auto-loop.mjs, check-consistency.mjs, ...)
+├── mcp-server/       ← servidor MCP TypeScript (expõe as 32 tools)
+├── setup/            ← instalador (install.sh) e configs de plataforma
+└── templates/        ← templates de handoff, plano, review, rejeição
 ```
 
-O corpo do arquivo deve conter as seguintes seções:
+---
 
-- **Governança** — quem é responsável, escopo de atuação
-- **Quando Usar** — gatilhos e condições de ativação
-- **Responsabilidades** — checklist do que a skill deve fazer
-- **Anti-Rationalization** — armadilhas comuns que o agente deve evitar
-- **Handoff** — quando e como transferir para outro agente ou humano
+## Adicionando uma nova skill
 
-Para o formato detalhado, consulte `docs/skill-anatomy.md`.
+1. **Crie a pasta** com o próximo número disponível:
+   ```bash
+   mkdir skills/NN-nome-da-skill
+   ```
 
-## Formato de Policies
+2. **Escreva `SKILL.md`** seguindo o template das skills existentes:
+   - Seção `## Papel` — quem é o agente
+   - Seção `## Inputs` — o que recebe
+   - Seção `## Processo` — como executa (use `### Passo N`)
+   - Seção `## Output` — o que entrega
+   - Seção `## Handoff` — para qual skill passa adiante
+   - Seção `## Persona` (opcional) — referência a `personas/*.md`
 
-Policies são arquivos Markdown em `policies/`. Cada policy define uma regra compartilhada que pode ser referenciada por múltiplas skills. Mantenha policies curtas, declarativas e sem ambiguidade.
+3. **Registre no `plugin.json`**:
+   ```json
+   "skills/NN-nome-da-skill/SKILL.md"
+   ```
 
-## Formato de Hooks
+4. **Atualize o `README.md`** — adicione a skill na tabela de especialistas com número, nome, papel e handoffs.
 
-Hooks são scripts **Node.js ESM** localizados em `hooks/scripts/`. Cada hook deve ser registrado em `hooks/hooks.json` com seu trigger e configuração. Perfis de configuração ficam em `hooks/config.json`.
+5. **Rode o check de consistência**:
+   ```bash
+   node scripts/check-consistency.mjs
+   ```
 
-Exemplo de registro em `hooks/hooks.json`:
+---
 
-```json
-{
-  "hooks": [
-    {
-      "name": "meu-hook",
-      "script": "hooks/scripts/meu-hook.mjs",
-      "trigger": "on-commit"
-    }
-  ]
-}
+## Editando skills existentes
+
+- Edite apenas `skills/NN-nome/SKILL.md`
+- Se alterar a seção `## Handoff`, atualize skills dependentes
+- Se adicionar `## Persona`, crie o arquivo em `personas/` e referencie o caminho completo
+- Rode `node scripts/check-consistency.mjs` antes de commitar
+
+---
+
+## Adicionando slash commands
+
+1. **Crie `.claude/commands/nome.md`** com frontmatter:
+   ```markdown
+   ---
+   description: Descrição curta do comando
+   ---
+   ```
+
+2. **Registre no `plugin.json`**:
+   ```json
+   ".claude/commands/nome.md"
+   ```
+
+3. **Adicione à tabela de slash commands** no `README.md`, `AGENTS.md` e `docs/skill-guides/skill-discovery.md`
+
+4. **Rode o check de consistência** e adicione entrada no `CHANGELOG.md`
+
+---
+
+## Editando hooks
+
+Os hooks ficam em `hooks/scripts/`. Cada arquivo `.mjs` é um hook Node.js.
+
+- **Não altere `hooks/hooks.json`** sem atualizar o `install.sh` junto
+- Teste localmente com `node hooks/scripts/nome-do-hook.mjs`
+- Hooks são copiados para `.bot/hooks/` pelo instalador
+
+---
+
+## Checklist antes de abrir PR
+
+```
+[ ] node scripts/check-consistency.mjs passa sem erros
+[ ] node --check scripts/auto-loop.mjs (se editou o script)
+[ ] plugin.json parseia como JSON válido
+[ ] Todas as referências em plugin.json existem no disco
+[ ] README.md atualizado (tabela de skills/commands se necessário)
+[ ] CHANGELOG.md atualizado na seção [Unreleased]
+[ ] Commit segue as convenções abaixo
 ```
 
-## Referências
+---
 
-- Formato detalhado de skills: `docs/skill-anatomy.md`
-- Policies existentes: `policies/`
-- Perfis de hooks: `hooks/config.json`
+## Convenções de commit
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Tipo | Quando usar |
+|------|-------------|
+| `feat:` | Nova skill, command, hook ou feature |
+| `fix:` | Correção de bug em skill, script ou config |
+| `docs:` | Mudança em README, guias, CHANGELOG |
+| `refactor:` | Reorganização sem mudança de comportamento |
+| `chore:` | Manutenção (deps, CI, scripts de build) |
+
+**Exemplos:**
+```
+feat: add skill 33-design-tokens
+fix: corrigir stall detection no auto-loop.mjs
+docs: adicionar guia de context engineering
+```
+
+---
+
+## Dúvidas?
+
+Abra uma [issue](https://github.com/felvieira/claude-skills-fv/issues) descrevendo o que quer adicionar ou corrigir.
