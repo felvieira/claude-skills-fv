@@ -42,6 +42,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - `CONTRIBUTING.md`: seção "Adicionando subagent"
 - `mcp-server/README.md`: seção `### Session Intelligence (4)` + header `## Tools (36)`
 - `scripts/check-consistency.mjs`: soma seção Session Intelligence ao total de tools
+- **`.claude/commands/worktree.md`** — slash command `/worktree [branch|--list|--clean]`: cria git worktree isolado, copia `.env*`, instala deps e roda lint/typecheck em background, relatório final com path e branch ativo
+- **`hooks/scripts/verify-integrity.mjs`** — verifica SHA-256 dos hook scripts contra manifesto `.bot/hooks/.integrity.json`; modos: `--write` (gera manifesto), check (padrão, sai 0/1/2), `--silent` (sem output em sucesso)
+- `setup/install.sh`: chama `verify-integrity.mjs --write` após copiar hooks — manifesto gerado automaticamente em cada `devkit-install-fv`
+- `plugin.json`: comando `/worktree` registrado no array `commands`
+- `README.md`, `AGENTS.md`, `docs/skill-guides/skill-discovery.md`: `/worktree` adicionado às tabelas de slash commands e decision tree
 
 ### Fixed
 - README.md: MCP tool count corrigido de 31 para 32 em todas as ocorrências (badge, tabela, header, tree)

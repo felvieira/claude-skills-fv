@@ -262,6 +262,13 @@ if [[ -d "$SCRIPT_DIR/hooks" ]]; then
   ok "Copied hooks/ to .bot/hooks/"
 fi
 
+# Write integrity manifest for installed hooks
+if [[ -f "$BOT_DIR/hooks/scripts/verify-integrity.mjs" ]]; then
+  node "$BOT_DIR/hooks/scripts/verify-integrity.mjs" --write \
+    && ok "Hook integrity manifest written (.bot/hooks/.integrity.json)" \
+    || warn "Failed to write integrity manifest (non-critical)"
+fi
+
 mkdir -p "$BOT_DIR/learned-skills"
 ok "Created .bot/learned-skills/ (project-specific skill memory)"
 

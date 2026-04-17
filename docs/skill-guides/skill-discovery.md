@@ -19,6 +19,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Release formal** | Reviewer (11) → Observability (20) → Release Manager (24) → Deploy (07) |
 | **Task autônoma** (sem intervenção, via prompt) | `/auto` — loop completo com circuit breaker no contexto atual |
 | **Task autônoma** (sem intervenção, via subprocess) | `/loop` — `node scripts/auto-loop.mjs "task"` — ralph-identical |
+| **Branch isolado / feature paralela** | `/worktree [branch]` — cria worktree, copia `.env*`, lint/typecheck em background |
 | **Review de código / PR** | `Task code-reviewer` — subagent isolado, não implementa |
 | **Auditoria de segurança** | `Task security-auditor` — pensa como atacante, PoC obrigatório para 🔴 |
 | **Escrever / completar testes** | `Task test-engineer` — pode editar arquivos de teste |
@@ -40,6 +41,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | `/best` | Auditoria de boas práticas, arquitetura, clean code e DRY |
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
 | `/loop` | Loop subprocess idêntico ao ralph-starter — invoca `auto-loop.mjs` externamente |
+| `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
 
 ## 6 Core Operating Behaviors
 

@@ -343,6 +343,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/best` | Auditoria de boas práticas, clean code e DRY | Reviewer (11) + Security (06) + QA (05) |
 | `/auto` | Agente autônomo — executa task completa sem intervenção | Todas as necessárias + circuit breaker |
 | `/loop` | Loop autônomo via subprocess (Ralph-identical) — documenta como invocar `auto-loop.mjs` | `scripts/auto-loop.mjs` |
+| `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background | — |
 
 ### `/loop` — Autonomous Loop (Ralph-identical)
 

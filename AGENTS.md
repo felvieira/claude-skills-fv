@@ -50,6 +50,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/best` | Auditoria de boas práticas, clean code e DRY |
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
 | `/loop` | Loop subprocess idêntico ao ralph-starter (`node scripts/auto-loop.mjs "task"`) |
+| `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 
