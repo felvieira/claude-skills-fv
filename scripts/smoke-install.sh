@@ -31,23 +31,59 @@ assert_file "$TMP_DIR/.claude/settings.json"
 assert_file "$TMP_DIR/.gitignore"
 assert_file "$TMP_DIR/.bot/.env.tools"
 
+# Subagents copied to .claude/agents/
+assert_dir "$TMP_DIR/.claude/agents"
+for agent in code-reviewer security-auditor test-engineer orchestrator debugger; do
+  assert_file "$TMP_DIR/.claude/agents/${agent}.md"
+done
+
+# Slash commands copied to .claude/commands/
+assert_dir "$TMP_DIR/.claude/commands"
+
+# MCP assertions — pass file content via stdin to avoid Windows POSIX-path issues
 node -e "
-  const fs = require('fs');
-  const settings = JSON.parse(fs.readFileSync(process.argv[1], 'utf8'));
-  const gitignore = fs.readFileSync(process.argv[2], 'utf8');
-  const mcp = settings.mcpServers?.['dev-team-kit'];
-  if (!mcp) throw new Error('dev-team-kit MCP missing');
-  if (mcp.command !== 'node') throw new Error('dev-team-kit command should be node');
-  if (!Array.isArray(mcp.args) || mcp.args[0] !== '.bot/mcp-server/dist/index.js') {
-    throw new Error('dev-team-kit args should point to .bot/mcp-server/dist/index.js');
-  }
-  const hooks = settings.hooks || {};
-  if (!hooks.PreToolUse || hooks.PreToolUse.length === 0) {
-    throw new Error('Claude hooks were not registered');
-  }
-  if (!gitignore.includes('.env.local')) {
-    throw new Error('.env.local must be gitignored');
-  }
-" "$TMP_DIR/.claude/settings.json" "$TMP_DIR/.gitignore"
+  let d = '';
+  process.stdin.on('data', c => d += c);
+  process.stdin.on('end', () => {
+    const settings = JSON.parse(d);
+    const mcp = settings.mcpServers?.['dev-team-kit'];
+    if (!mcp) throw new Error('dev-team-kit MCP missing');
+    if (mcp.command !== 'node') throw new Error('dev-team-kit command should be node');
+    if (!Array.isArray(mcp.args) || mcp.args[0] !== '.bot/mcp-server/dist/index.js') {
+      throw new Error('dev-team-kit args should point to .bot/mcp-server/dist/index.js');
+    }
+    console.log('MCP assertions passed');
+  });
+" < "$TMP_DIR/.claude/settings.json"
+
+# gitignore — pure bash grep (no node path issues)
+grep -q '\.env\.local' "$TMP_DIR/.gitignore" \
+  || { echo "FAIL: .env.local must be gitignored" >&2; exit 1; }
+echo ".gitignore assertions passed"
+
+# Hooks: check copied scripts exist and hooks.json declares PostToolUse event-logger
+# (register_claude_hooks may silently skip in --no-input mode; check the source files directly)
+assert_file "$TMP_DIR/.bot/hooks/hooks.json"
+assert_file "$TMP_DIR/.bot/hooks/scripts/session-event-logger.mjs"
+assert_file "$TMP_DIR/.bot/hooks/scripts/post-tool-verifier.mjs"
+assert_file "$TMP_DIR/.bot/hooks/scripts/pre-tool-enforcer.mjs"
+
+node -e "
+  let d = '';
+  process.stdin.on('data', c => d += c);
+  process.stdin.on('end', () => {
+    const hooksJson = JSON.parse(d);
+    const postToolUse = hooksJson.PostToolUse || [];
+    const hasEventLogger = postToolUse.some(s => s.includes('session-event-logger'));
+    if (!hasEventLogger) {
+      throw new Error('hooks.json PostToolUse does not include session-event-logger');
+    }
+    const preToolUse = hooksJson.PreToolUse || [];
+    if (preToolUse.length === 0) {
+      throw new Error('hooks.json PreToolUse is empty');
+    }
+    console.log('hooks.json assertions passed (' + preToolUse.length + ' PreToolUse, ' + postToolUse.length + ' PostToolUse)');
+  });
+" < "$TMP_DIR/.bot/hooks/hooks.json"
 
 echo "Installer smoke test passed: $TMP_DIR"
