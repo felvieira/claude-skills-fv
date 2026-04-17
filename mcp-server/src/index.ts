@@ -1212,6 +1212,75 @@ server.registerTool(
       });
     }
 
+    // ── Event-log analysis (events.jsonl) ─────────────────────────────────────
+    try {
+      const { querySeenFiles, querySeenErrors, querySessionEvents } = await import("./lib/event-log.js");
+
+      const seenFiles  = querySeenFiles(base);
+      const seenErrors = querySeenErrors(base);
+      const allEvents  = querySessionEvents(base, { limit: 500 });
+
+      // Heuristic 1: reads in src/auth/ but no edits in tests/auth/ → suggest test-engineer
+      const authReads = seenFiles.filter(f => /src[/\\]auth/i.test(f.path) && !f.modified);
+      const testAuthEdits = seenFiles.filter(f => /tests?[/\\]auth/i.test(f.path) && f.modified);
+      if (authReads.length >= 2 && testAuthEdits.length === 0) {
+        suggestions.push({
+          action: "Dispatch test-engineer subagent to write auth tests",
+          skill_number: "agent",
+          skill_name: "test-engineer",
+          reason: `Read ${authReads.length} auth file(s) but no test edits detected. Use: Task test-engineer`,
+          priority: "high",
+        });
+      }
+
+      // Heuristic 2: repeated errors of the same type → suggest debugger
+      const repeatedErrors = seenErrors.filter(e => e.count >= 2);
+      if (repeatedErrors.length > 0) {
+        suggestions.push({
+          action: `Dispatch debugger subagent — ${repeatedErrors[0].count}× repeated error: "${repeatedErrors[0].sample.slice(0, 80)}"`,
+          skill_number: "agent",
+          skill_name: "debugger",
+          reason: `${repeatedErrors.length} repeated error pattern(s) detected in session. Use: Task debugger`,
+          priority: "high",
+        });
+      }
+
+      // Heuristic 3: many Bash git commands but no commit event → suggest /ship
+      const gitBash = allEvents.events.filter(e =>
+        e.tool === "Bash" && typeof e.args?.command === "string" &&
+        (e.args.command as string).startsWith("git") &&
+        !(e.args.command as string).includes("commit")
+      );
+      const commitBash = allEvents.events.filter(e =>
+        e.tool === "Bash" && typeof e.args?.command === "string" &&
+        (e.args.command as string).includes("commit")
+      );
+      if (gitBash.length >= 3 && commitBash.length === 0) {
+        suggestions.push({
+          action: "Run /ship to commit, tag and deploy your changes",
+          skill_number: "07",
+          skill_name: "deploy-docker",
+          reason: `${gitBash.length} git commands run this session but no commit detected.`,
+          priority: "medium",
+        });
+      }
+
+      // Heuristic 4: .md files being edited → suggest documenter
+      const mdEdits = seenFiles.filter(f => f.path.endsWith(".md") && f.modified);
+      if (mdEdits.length >= 2) {
+        suggestions.push({
+          action: "Run Documenter skill to keep docs consistent and complete",
+          skill_number: "10",
+          skill_name: "documenter",
+          reason: `${mdEdits.length} .md files modified this session. Documenter ensures structure and completeness.`,
+          priority: "low",
+        });
+      }
+    } catch {
+      // events.jsonl unavailable — skip event-based suggestions silently
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+
     // Default: suggest orchestrator if we have fewer than 3 suggestions
     if (suggestions.length < 3) {
       suggestions.push({
@@ -1394,26 +1463,66 @@ server.registerTool(
   "devkit_context_guard",
   {
     title: "Context Guard",
-    description: "Checks context usage and advises whether to compact before stopping. Call before ending long sessions.",
+    description: "Checks context usage and advises whether to compact before stopping. input_tokens is optional — if omitted, reads from .auto/session.json written by session-start hook. Returns suggested_action for automated decision-making.",
     inputSchema: {
-      input_tokens: z.number().describe("Current input token count"),
-      context_window: z.number().describe("Model context window size"),
+      input_tokens:   z.number().optional().describe("Current input token count (optional — auto-read from .auto/session.json if omitted)"),
+      context_window: z.number().optional().describe("Model context window size (default: 200000)"),
+      project_path:   z.string().optional().describe("Project root path (default: cwd)"),
     },
     annotations: { readOnlyHint: true },
   },
-  async ({ input_tokens, context_window }) => {
-    const usage = input_tokens / context_window;
+  async ({ input_tokens, context_window = 200000, project_path }) => {
+    const base = resolveConsumerProjectRoot(project_path);
+
+    // If input_tokens not provided, try reading from .auto/session.json
+    let resolvedTokens = input_tokens ?? 0;
+    let tokenSource: "provided" | "session_json" | "unknown" = "provided";
+
+    if (input_tokens === undefined) {
+      try {
+        const sessionPath = path.join(base, ".auto", "session.json");
+        const raw = await fs.promises.readFile(sessionPath, "utf-8");
+        const session = JSON.parse(raw) as { estimated_tokens?: number };
+        if (typeof session.estimated_tokens === "number" && session.estimated_tokens > 0) {
+          resolvedTokens = session.estimated_tokens;
+          tokenSource = "session_json";
+        } else {
+          tokenSource = "unknown";
+        }
+      } catch {
+        tokenSource = "unknown";
+      }
+    }
+
+    const usage = resolvedTokens / context_window;
     const usagePercent = Math.round(usage * 100);
     const should_compact = usage > 0.60;
     const should_block_stop = usage > 0.75;
 
-    let message = `Context usage: ${usagePercent}%.`;
+    // suggested_action: actionable string for automated pipelines
+    let suggested_action: string;
     if (should_block_stop) {
-      message += ` HIGH — run /compact before stopping to preserve session state.`;
+      suggested_action = "compact_now";
     } else if (should_compact) {
-      message += ` WARN — consider running /compact soon.`;
+      suggested_action = "save_context";
+    } else if (usage > 0.40) {
+      suggested_action = "spawn_subagent_for_heavy_work";
     } else {
-      message += ` OK — safe to continue or stop.`;
+      suggested_action = "continue";
+    }
+
+    let message = tokenSource === "unknown"
+      ? `Context usage: unknown (no token data). Safe to continue.`
+      : `Context usage: ${usagePercent}% (${tokenSource}).`;
+
+    if (tokenSource !== "unknown") {
+      if (should_block_stop) {
+        message += ` HIGH — run /compact before stopping to preserve session state.`;
+      } else if (should_compact) {
+        message += ` WARN — consider running /compact soon.`;
+      } else {
+        message += ` OK — safe to continue or stop.`;
+      }
     }
 
     return {
@@ -1421,6 +1530,8 @@ server.registerTool(
         usage_percent: usagePercent,
         should_compact,
         should_block_stop,
+        suggested_action,
+        token_source: tokenSource,
         message,
       }, null, 2) }],
     };

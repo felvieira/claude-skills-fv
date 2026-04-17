@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { isHookDisabled, readHookConfig, resolveBotPath } from './utils.mjs';
 
 const BOOTSTRAP_DEFAULTS = {
@@ -47,6 +47,18 @@ process.stdin.on('end', () => {
         break;
       }
     }
+  }
+
+  // --- Write .auto/session.json for context_guard + smart_suggestions ---
+  try {
+    mkdirSync('.auto', { recursive: true });
+    writeFileSync('.auto/session.json', JSON.stringify({
+      session_start: new Date().toISOString(),
+      estimated_tokens: 0,
+      tool_calls: 0,
+    }, null, 2), 'utf-8');
+  } catch {
+    // silent — never block session start
   }
 
   const additionalContext = parts.length > 0
