@@ -241,7 +241,34 @@ O hook `context-guard-stop` opera em dois níveis:
 
 ---
 
-## MCP Server — 32 Tools para Qualquer Cliente MCP
+## Subagents — Especialistas Despacháveis via `Task` Tool
+
+O kit inclui 5 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
+
+| Subagent | Quando usar | Tools |
+|---|---|---|
+| `code-reviewer` | Review de PR, feature concluída ou qualquer código antes de merge | Read, Grep, Glob, Bash |
+| `security-auditor` | Auth flows, input handling, deps, CORS, headers, pré-deploy | Read, Grep, Glob, Bash |
+| `test-engineer` | Escrever testes, preencher gaps de cobertura, validar regressão | Read, Grep, Glob, Bash, Edit, Write |
+| `orchestrator` | Classificar task complexa, montar pipeline, resolver overlap de skills | todas |
+| `debugger` | Bug, comportamento inesperado, falha que você não consegue explicar | Read, Grep, Glob, Bash, Edit |
+
+**Exemplo de invocação:**
+
+```
+Despache o subagent code-reviewer para revisar as mudanças em src/auth/login.ts
+```
+
+```
+Use o subagent debugger para investigar o crash em TypeError: Cannot read properties of undefined em api/users.ts
+```
+
+Os subagents são copiados para `.claude/agents/` do repo consumidor pelo `install.sh`.
+Ver `docs/skill-guides/subagents.md` para guia completo de quando usar cada um.
+
+---
+
+## MCP Server — 36 Tools para Qualquer Cliente MCP
 
 ```json
 {
@@ -266,6 +293,7 @@ Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP.
 | **Knowledge** | 14 | classifica task, monta pipeline, resume diff, monta context pack |
 | **Execution** | 6 | busca concorrentes (Brave), scraping (Playwright/Firecrawl), gera imagens (fal.ai) |
 | **Persistence** | 12 | salva contexto, working set, custo, learned skills e guardrails de sessão |
+| **Session Intelligence** | 4 | comprime output verboso, lê log JSONL da sessão, lista arquivos/erros vistos |
 
 Ver `mcp-server/README.md` para documentação completa das tools.
 
@@ -422,6 +450,8 @@ repo-consumidor/
 ├── CLAUDE.md
 ├── GEMINI.md
 ├── .claude/settings.json         ← hooks + MCP registrados
+├── .claude/commands/             ← slash commands (/spec, /plan, /build, /loop, ...)
+├── .claude/agents/               ← subagents despacháveis via Task tool
 ├── .github/copilot-instructions.md
 ├── .windsurf/rules/dev-team-kit.md
 ├── .windsurf/mcp.json

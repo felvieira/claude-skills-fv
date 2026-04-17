@@ -70,3 +70,54 @@ jobs:
             exit 1
           fi
           echo "✅ All hook scripts pass syntax check"
+
+      - name: Validate agents array in plugin.json
+        run: |
+          node -e "
+            const fs = require('fs');
+            const plugin = JSON.parse(fs.readFileSync('.claude-plugin/plugin.json', 'utf-8'));
+            const agents = plugin.agents || [];
+            let missing = 0;
+            for (const agentPath of agents) {
+              if (!fs.existsSync(agentPath)) {
+                console.error('❌ Missing agent file: ' + agentPath);
+                missing++;
+              } else {
+                console.log('✅ ' + agentPath);
+              }
+            }
+            if (missing > 0) {
+              console.error(missing + ' agent file(s) missing');
+              process.exit(1);
+            }
+            console.log('✅ All ' + agents.length + ' agent files exist');
+          "
+
+      - name: Validate agent frontmatter
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const agentDir = '.claude/agents';
+            if (!fs.existsSync(agentDir)) {
+              console.log('⚠️ No .claude/agents/ directory found — skipping');
+              process.exit(0);
+            }
+            const files = fs.readdirSync(agentDir).filter(f => f.endsWith('.md'));
+            let errors = 0;
+            for (const file of files) {
+              const content = fs.readFileSync(path.join(agentDir, file), 'utf-8');
+              const hasFrontmatter = content.startsWith('---');
+              const hasName = /^name:\s+\S/m.test(content);
+              const hasDescription = /^description:\s+\S/m.test(content);
+              const hasTools = /^tools:\s+\S/m.test(content);
+              if (!hasFrontmatter || !hasName || !hasDescription || !hasTools) {
+                console.error('❌ ' + file + ' missing required frontmatter (name, description, tools)');
+                errors++;
+              } else {
+                console.log('✅ ' + file);
+              }
+            }
+            if (errors > 0) process.exit(1);
+            console.log('✅ All agent frontmatter valid');
+          "

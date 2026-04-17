@@ -19,6 +19,11 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Release formal** | Reviewer (11) → Observability (20) → Release Manager (24) → Deploy (07) |
 | **Task autônoma** (sem intervenção, via prompt) | `/auto` — loop completo com circuit breaker no contexto atual |
 | **Task autônoma** (sem intervenção, via subprocess) | `/loop` — `node scripts/auto-loop.mjs "task"` — ralph-identical |
+| **Review de código / PR** | `Task code-reviewer` — subagent isolado, não implementa |
+| **Auditoria de segurança** | `Task security-auditor` — pensa como atacante, PoC obrigatório para 🔴 |
+| **Escrever / completar testes** | `Task test-engineer` — pode editar arquivos de teste |
+| **Classificar task complexa ou pipeline incerto** | `Task orchestrator` — define pipeline mínimo suficiente |
+| **Bug sem causa óbvia** | `Task debugger` — 7 passos: hipótese → evidência → root cause → fix |
 
 ## Slash Commands — Atalhos Rápidos
 

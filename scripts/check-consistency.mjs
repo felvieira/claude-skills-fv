@@ -22,6 +22,15 @@ async function main() {
   const skillEntries = await fs.readdir(path.join(root, "skills"), { withFileTypes: true });
   const skillCount = skillEntries.filter((entry) => entry.isDirectory()).length;
 
+  const agentDir = path.join(root, ".claude", "agents");
+  let agentCount = 0;
+  try {
+    const agentEntries = await fs.readdir(agentDir, { withFileTypes: true });
+    agentCount = agentEntries.filter((e) => e.isFile() && e.name.endsWith(".md")).length;
+  } catch {
+    // .claude/agents/ not found — agentCount stays 0
+  }
+
   const [
     rootReadme,
     setupReadme,
@@ -102,6 +111,19 @@ async function main() {
     expect(devTeamKit.disabled === false, "dev-team-kit MCP should be enabled by default");
   }
 
+  // Agent assertions
+  expect(agentCount === 5, `Expected 5 subagents in .claude/agents/, found ${agentCount}`);
+
+  // Validate plugin.json has agents array with all 5 entries
+  try {
+    const pluginRaw = await read(".claude-plugin/plugin.json");
+    const plugin = JSON.parse(pluginRaw);
+    const pluginAgents = plugin.agents || [];
+    expect(pluginAgents.length === 5, `plugin.json agents array should have 5 entries, found ${pluginAgents.length}`);
+  } catch {
+    expect(false, "Could not read or parse .claude-plugin/plugin.json");
+  }
+
   if (failures.length > 0) {
     console.error("Consistency check failed:");
     for (const failure of failures) {
@@ -110,7 +132,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`Consistency check passed (${skillCount} skills, ${toolCount} tools).`);
+  console.log(`Consistency check passed (${skillCount} skills, ${toolCount} tools, ${agentCount} agents).`);
 }
 
 main().catch((error) => {
