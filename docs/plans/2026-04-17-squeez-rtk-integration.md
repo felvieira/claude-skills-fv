@@ -1,7 +1,7 @@
 # Plano: Integração de padrões squeez + rtk
 
 **Criado:** 2026-04-17
-**Status:** ready-to-implement
+**Status:** complete
 **Escopo:** Trazer para o Dev Team Kit os padrões mais valiosos de [squeez](https://github.com/claudioemmanuel/squeez) e [rtk](https://github.com/rtk-ai/rtk) sem reimplementar compressor Rust.
 
 ---
@@ -333,15 +333,15 @@ Dia 3: Fase 5 (testes)                                       [2h]
 
 ## Métricas de sucesso
 
-- [ ] 5 subagents invocáveis via `Task` tool no Claude Code
-- [ ] `.auto/events.jsonl` gerado automaticamente em cada sessão
-- [ ] `devkit_compress_output` reduz output de `npm install` em ≥ 70%
-- [ ] `devkit_seen_files` retorna lista correta após 10+ reads
-- [ ] `devkit_seen_errors` agrupa erros iguais com dedup MD5
-- [ ] CI valida estrutura de agents
-- [ ] `check-consistency.mjs` passa com 35 tools + 5 agents
-- [ ] Smoke install copia agents corretamente
-- [ ] README documenta cada subagent com caso de uso
+- [x] 5 subagents invocáveis via `Task` tool no Claude Code
+- [x] `.auto/events.jsonl` gerado automaticamente em cada sessão
+- [x] `devkit_compress_output` reduz output de `npm install` em ≥ 70%
+- [x] `devkit_seen_files` retorna lista correta após 10+ reads
+- [x] `devkit_seen_errors` agrupa erros iguais com dedup MD5
+- [x] CI valida estrutura de agents
+- [x] `check-consistency.mjs` passa com 36 tools + 5 agents (36 > 35 previsto — 4 tools vs 3 pois context_guard e smart_suggestions também foram atualizados)
+- [x] Smoke install copia agents corretamente
+- [x] README documenta cada subagent com caso de uso
 
 ---
 
