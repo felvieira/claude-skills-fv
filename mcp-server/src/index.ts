@@ -21,6 +21,8 @@ import {
   loadWorkingSet,
   saveWorkingSet,
 } from "./lib/project-intel.js";
+import { compressOutput } from "./lib/output-compressor.js";
+import { querySessionEvents, querySeenFiles, querySeenErrors } from "./lib/event-log.js";
 
 // Load .env.local fallback
 import fs from "fs";
@@ -1421,6 +1423,94 @@ server.registerTool(
         should_block_stop,
         message,
       }, null, 2) }],
+    };
+  },
+);
+
+// ============================================================================
+// SESSION INTELLIGENCE BLOCK
+// ============================================================================
+
+server.registerTool(
+  "devkit_compress_output",
+  {
+    title: "Compress Output",
+    description: "Compresses verbose bash/tool output before passing it to the model. Strips ANSI codes, deduplicates adjacent lines, collapses directory listings, and truncates by strategy. Use before pasting large command outputs into context.",
+    inputSchema: {
+      text:      z.string().describe("Raw text output to compress (bash output, logs, etc.)"),
+      hint:      z.enum(["generic", "git log", "npm install", "test"]).optional().describe("Output type hint for smarter filtering (default: generic)"),
+      max_lines: z.number().optional().describe("Maximum output lines to keep (default: 40)"),
+      strategy:  z.enum(["head", "tail", "head_tail"]).optional().describe("Truncation strategy: head = first N lines, tail = last N lines, head_tail = N/2 from top + N/2 from bottom (default: head_tail)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ text, hint, max_lines, strategy }) => {
+    const result = compressOutput({
+      text,
+      hint:      hint as "generic" | "git log" | "npm install" | "test" | undefined,
+      max_lines,
+      strategy:  strategy as "head" | "tail" | "head_tail" | undefined,
+    });
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_session_events",
+  {
+    title: "Session Events",
+    description: "Reads and filters the JSONL event log (.auto/events.jsonl) recording every tool call in the current session. Use to audit tool usage, diagnose patterns, or answer 'what tools did I use?'",
+    inputSchema: {
+      project_path: z.string().optional().describe("Absolute path to the project root (default: cwd)"),
+      tool:         z.string().optional().describe("Filter by tool name (e.g. 'Read', 'Bash')"),
+      status:       z.enum(["ok", "error"]).optional().describe("Filter by status"),
+      since:        z.string().optional().describe("ISO timestamp — only return events after this time"),
+      limit:        z.number().optional().describe("Maximum events to return (default: 50)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path, tool, status, since, limit }) => {
+    const result = querySessionEvents(project_path, { tool, status, since, limit });
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_seen_files",
+  {
+    title: "Seen Files",
+    description: "Lists all files accessed (Read, Edit, Write, Glob) in the current session, deduplicated by path. Returns access count, first/last seen timestamps, and whether the file was modified.",
+    inputSchema: {
+      project_path: z.string().optional().describe("Absolute path to the project root (default: cwd)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path }) => {
+    const files = querySeenFiles(project_path);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ files, total: files.length }, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_seen_errors",
+  {
+    title: "Seen Errors",
+    description: "Lists all errors encountered in the current session, grouped by normalized error hash. Shows error count, affected tools, and timestamps. Useful for diagnosing repeated failures.",
+    inputSchema: {
+      project_path: z.string().optional().describe("Absolute path to the project root (default: cwd)"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  async ({ project_path }) => {
+    const errors = querySeenErrors(project_path);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ errors, total: errors.length }, null, 2) }],
     };
   },
 );

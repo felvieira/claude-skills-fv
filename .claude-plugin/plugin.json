@@ -45,6 +45,13 @@
   "hooks": [
     "hooks/hooks.json"
   ],
+  "agents": [
+    ".claude/agents/code-reviewer.md",
+    ".claude/agents/security-auditor.md",
+    ".claude/agents/test-engineer.md",
+    ".claude/agents/orchestrator.md",
+    ".claude/agents/debugger.md"
+  ],
   "commands": [
     "commands/audit-repo.md",
     "commands/devkit-install-fv.md",

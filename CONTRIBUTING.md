@@ -94,6 +94,40 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
 
 ---
 
+## Adicionando um subagent
+
+Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude Code.
+
+1. **Crie `.claude/agents/nome.md`** com o frontmatter obrigatório:
+   ```markdown
+   ---
+   name: nome-do-agent
+   description: Descrição clara do que o agent faz e quando deve ser invocado
+   tools: Read, Grep, Glob, Bash   ← somente tools necessárias
+   model: sonnet                    ← sonnet | opus | haiku
+   ---
+
+   # Nome do Agent
+
+   [Prompt do agent aqui — seja específico sobre processo e output]
+   ```
+
+2. **Registre no `plugin.json`**:
+   ```json
+   ".claude/agents/nome.md"
+   ```
+
+3. **Documente em `AGENTS.md`** — adicione uma linha na tabela de subagents.
+
+4. **Rode o check de consistência** e adicione entrada no `CHANGELOG.md`.
+
+**Boas práticas:**
+- Mantenha o prompt sob 2.000 chars — referencie `personas/` ou `skills/` por link em vez de duplicar
+- Defina `tools:` com mínimo privilégio — test-engineer precisa de Edit/Write, code-reviewer não
+- Use `model: opus` apenas para orchestrator — o custo é alto
+
+---
+
 ## Editando hooks
 
 Os hooks ficam em `hooks/scripts/`. Cada arquivo `.mjs` é um hook Node.js.

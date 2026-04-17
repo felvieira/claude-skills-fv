@@ -20,7 +20,7 @@ O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qua
 - **QA, Security e Reviewer obrigatórios** — nenhuma entrega sai sem validação
 - **Model routing automático** — haiku para boilerplate, sonnet para implementação, opus para arquitetura
 - **Lifecycle hooks** — o agente detecta contexto vago, re-lê arquivos antes de editar, monitora custo de tokens
-- **MCP server próprio** — 32 tools expostas para qualquer cliente MCP
+- **MCP server próprio** — 36 tools expostas para qualquer cliente MCP
 - **Memória persistente** — working set, context pack, learned skills com confidence scoring acumuladas por projeto
 - **Instalação multi-plataforma** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI e mais
 
@@ -67,8 +67,8 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 32 tools apoiadas pelas 31 skills.
-O MCP expoe 32 tools apoiadas pelas skills instaladas.
+Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 31 skills.
+O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
@@ -78,7 +78,7 @@ O MCP expoe 32 tools apoiadas pelas skills instaladas.
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
-| MCP server (32 tools) | ❌ | ✅ | ✅ |
+| MCP server (36 tools) | ❌ | ✅ | ✅ |
 | Templates de handoff | ❌ | ✅ | ✅ |
 | Docs + repo-audit | ❌ | ✅ | ✅ |
 | Configs multi-plataforma | ❌ | ✅ | ✅ |
@@ -399,7 +399,7 @@ node scripts/auto-loop.mjs "task" --max-iterations 20 --validate --verbose --no-
 │   ├── hooks.json
 │   ├── config.json
 │   └── scripts/
-├── mcp-server/           ← MCP server com 32 tools
+├── mcp-server/           ← MCP server com 36 tools
 ├── patterns/ai-integration/
 ├── personas/             ← agent personas (code-reviewer, security-auditor, test-engineer)
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals

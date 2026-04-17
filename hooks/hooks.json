@@ -17,6 +17,7 @@
   ],
   "PostToolUse": [
     "hooks/scripts/post-tool-verifier.mjs",
-    "hooks/scripts/simplify-ignore.mjs"
+    "hooks/scripts/simplify-ignore.mjs",
+    "hooks/scripts/session-event-logger.mjs"
   ]
 }

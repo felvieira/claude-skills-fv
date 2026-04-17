@@ -25,6 +25,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - **README.md**: seção `/loop` com tabela de 10 padrões e exemplos de uso
 - **README.md**: `.claude/` tree atualizado para incluir `/loop`
 
+- **5 subagents Claude Code** em `.claude/agents/`: `code-reviewer`, `security-auditor`, `test-engineer`, `orchestrator`, `debugger` — despacháveis via `Task` tool
+- **`hooks/scripts/session-event-logger.mjs`** — PostToolUse hook: registra cada tool call como JSONL em `.auto/events.jsonl` (rotação em 10 MB, async, fallback silencioso)
+- **`mcp-server/src/lib/output-compressor.ts`** — compressor de output: 4 estágios (ANSI strip, dedup [×N], colapso de diretórios, truncação por estratégia), hints para git log/npm install/test
+- **`mcp-server/src/lib/event-log.ts`** — queries sobre `.auto/events.jsonl`: session_events, seen_files, seen_errors com dedup por MD5 normalizado
+- **`devkit_compress_output`** — nova MCP tool: comprime output verboso antes de passar ao modelo
+- **`devkit_session_events`** — nova MCP tool: lê e filtra log JSONL da sessão
+- **`devkit_seen_files`** — nova MCP tool: lista arquivos acessados na sessão (Read/Edit/Write/Glob)
+- **`devkit_seen_errors`** — nova MCP tool: lista erros agrupados por hash normalizado
+- MCP tool count: 32 → **36 tools**
+- `setup/install.sh`: copia `.claude/agents/` para repo consumidor
+- `plugin.json`: campo `agents` com 5 subagents registrados
+- `hooks/hooks.json`: `session-event-logger.mjs` registrado em PostToolUse
+- `hooks/config.json`: `session-event-logger` adicionado ao perfil `minimal.disabled`
+- `AGENTS.md`: tabela de subagents + como invocar
+- `CONTRIBUTING.md`: seção "Adicionando subagent"
+- `mcp-server/README.md`: seção `### Session Intelligence (4)` + header `## Tools (36)`
+- `scripts/check-consistency.mjs`: soma seção Session Intelligence ao total de tools
+
 ### Fixed
 - README.md: MCP tool count corrigido de 31 para 32 em todas as ocorrências (badge, tabela, header, tree)
 - README.md: Persistence block corrigido de 11 para 12 na tabela do MCP

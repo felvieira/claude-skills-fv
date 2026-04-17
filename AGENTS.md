@@ -65,3 +65,23 @@ Navegação de skills: `docs/skill-guides/skill-discovery.md`
 - `docs/setup-bot-folder.md` = modo recomendado de instalacao em `.bot/`
 - `patterns/ai-integration/` = padroes reutilizaveis para integrar IA em apps
 - `.claude/commands/` = slash commands por fase de desenvolvimento
+- `.claude/agents/` = subagents despachaveis via Task tool
+
+## Subagents (`.claude/agents/`)
+
+Subagents são agentes especializados que podem ser despachados via `Task` tool no Claude Code.
+Copiados para o repo consumidor pelo `install.sh`.
+
+| Subagent | Especialidade | Tools |
+|----------|---------------|-------|
+| `code-reviewer` | Review senior: correctness, design, readability, performance, security | Read, Grep, Glob, Bash |
+| `security-auditor` | Audit de segurança: OWASP, auth, injeção, CORS, deps | Read, Grep, Glob, Bash |
+| `test-engineer` | QA Prove-It: happy path, error, edge case, regression, performance | Read, Grep, Glob, Bash, Edit, Write |
+| `orchestrator` | Tech Lead: classifica task, define pipeline mínimo, coordena skills | todas |
+| `debugger` | Root cause sistemático: hipótese → evidência → fix mínimo | Read, Grep, Glob, Bash, Edit |
+
+**Como invocar** (via `Task` tool ou prompt Claude Code):
+
+```
+Despache o subagent code-reviewer para revisar as mudanças em src/auth/
+```

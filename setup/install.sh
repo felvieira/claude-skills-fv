@@ -235,6 +235,16 @@ if [[ -d "$SCRIPT_DIR/.claude/commands" ]]; then
   ok "Copied slash commands to .claude/commands/"
 fi
 
+# Copy .claude/agents/ to consumer repo's .claude/agents/
+if [[ -d "$SCRIPT_DIR/.claude/agents" ]]; then
+  mkdir -p "$TARGET_DIR/.claude/agents"
+  for agent_file in "$SCRIPT_DIR"/.claude/agents/*.md; do
+    [[ -f "$agent_file" ]] || continue
+    safe_copy_file "$agent_file" "$TARGET_DIR/.claude/agents/$(basename "$agent_file")"
+  done
+  ok "Copied subagents to .claude/agents/"
+fi
+
 if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]; then
   info "Building MCP server (npm install + tsc)..."
   (cd "$BOT_DIR/mcp-server" && npm install --silent && npm run build --silent) \

@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe 32 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 36 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -65,7 +65,7 @@ Mesmo formato acima.
 
 Prioridade de leitura: env vars > .env.local > .env
 
-## Tools (32)
+## Tools (36)
 
 ### Knowledge (14)
 
@@ -74,7 +74,7 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_route_task` | Classifica pedido e retorna pipeline com skills |
 | `devkit_get_skill` | Retorna SKILL.md + guide + template |
 | `devkit_next_step` | Proxima skill no pipeline |
-| `devkit_list_skills` | Lista 32 skills |
+| `devkit_list_skills` | Lista 31 skills |
 | `devkit_get_governance` | GLOBAL.md + policies |
 | `devkit_get_template` | Template especifico |
 | `devkit_get_patterns` | Patterns de AI integration |
@@ -113,6 +113,15 @@ Prioridade de leitura: env vars > .env.local > .env
 | `devkit_ambiguity_score` | Mede ambiguidade antes de executar uma task |
 | `devkit_suggest_trailers` | Sugere trailers de commit a partir do diff |
 | `devkit_context_guard` | Avalia uso de contexto antes de encerrar |
+
+### Session Intelligence (4)
+
+| Tool | O que faz |
+|------|-----------|
+| `devkit_compress_output` | Comprime output verboso de bash (ANSI strip, dedup, truncação) antes de passar ao modelo |
+| `devkit_session_events` | Lê e filtra o log JSONL de eventos da sessão (.auto/events.jsonl) |
+| `devkit_seen_files` | Lista todos os arquivos acessados na sessão, dedupados por path |
+| `devkit_seen_errors` | Lista erros da sessão agrupados por hash normalizado |
 
 ## Desenvolvimento
 

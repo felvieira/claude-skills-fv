@@ -75,10 +75,11 @@ async function main() {
   const knowledgeMatch = mcpReadme.match(/### Knowledge \((\d+)\)/);
   const executionMatch = mcpReadme.match(/### Execution \((\d+)\)/);
   const persistenceMatch = mcpReadme.match(/### Persistence \((\d+)\)/);
+  const sessionMatch = mcpReadme.match(/### Session Intelligence \((\d+)\)/);
   expect(Boolean(knowledgeMatch && executionMatch && persistenceMatch), "mcp-server/README.md should declare section counts");
   if (knowledgeMatch && executionMatch && persistenceMatch) {
     const documentedCount =
-      Number(knowledgeMatch[1]) + Number(executionMatch[1]) + Number(persistenceMatch[1]);
+      Number(knowledgeMatch[1]) + Number(executionMatch[1]) + Number(persistenceMatch[1]) + Number(sessionMatch?.[1] ?? 0);
     expect(documentedCount === toolCount, `mcp-server/README.md section counts should sum to ${toolCount}`);
   }
 
