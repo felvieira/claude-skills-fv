@@ -17,6 +17,20 @@ Inspirado no padrão rtk: isolamento total sem perder contexto de ferramentas.
 /worktree --clean [nome-do-branch]
 ```
 
+### Atalho executável
+
+Equivalente via script (mesmo comportamento, sem precisar do agente):
+
+```bash
+node scripts/worktree.mjs feature/nova-auth
+node scripts/worktree.mjs --list
+node scripts/worktree.mjs --clean feature/nova-auth
+# em repos consumidores com .bot/ instalado:
+node .bot/scripts/worktree.mjs feature/nova-auth
+```
+
+Flags: `--existing` (branch já existe), `--no-install`, `--no-validate`.
+
 ## O que o comando faz
 
 ### Criação (`/worktree [branch]`)

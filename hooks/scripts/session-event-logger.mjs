@@ -15,6 +15,7 @@ import path from 'path';
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MAX_BYTES       = 10 * 1024 * 1024;   // 10 MB rotation threshold
 const MAX_STR_LEN     = 200;                 // truncate long string values
+const RETENTION_DAYS  = 14;                  // prune rotated events older than this
 const SENSITIVE_KEYS  = new Set(['password', 'secret', 'token', 'key', 'api_key', 'authorization']);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -83,6 +84,28 @@ function maybeRotate(eventsPath) {
   }
 }
 
+/** Prune rotated events.*.jsonl files older than RETENTION_DAYS */
+function maybePrune(autoDir) {
+  try {
+    // Throttle: only prune ~1 in 200 writes to avoid overhead per tool call
+    if (Math.random() > 0.005) return;
+    const cutoff = Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    for (const name of fs.readdirSync(autoDir)) {
+      // Matches events.YYYY-MM-DD.jsonl and events.YYYY-MM-DD-<ts>.jsonl
+      if (!/^events\.[0-9]{4}-[0-9]{2}-[0-9]{2}.*\.jsonl$/.test(name)) continue;
+      const full = path.join(autoDir, name);
+      try {
+        const stat = fs.statSync(full);
+        if (stat.mtimeMs < cutoff) fs.unlinkSync(full);
+      } catch {
+        // per-file failure is fine
+      }
+    }
+  } catch {
+    // directory unreadable — nothing to prune
+  }
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -142,6 +165,7 @@ async function main() {
   try {
     fs.mkdirSync(autoDir, { recursive: true });
     maybeRotate(eventsPath);
+    maybePrune(autoDir);
     fs.appendFileSync(eventsPath, JSON.stringify(event) + '\n', 'utf8');
   } catch {
     // Silent failure — never block Claude Code execution

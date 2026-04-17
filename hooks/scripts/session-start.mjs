@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { spawn } from 'child_process';
 import { isHookDisabled, readHookConfig, resolveBotPath } from './utils.mjs';
 
 const BOOTSTRAP_DEFAULTS = {
@@ -59,6 +60,26 @@ process.stdin.on('end', () => {
     }, null, 2), 'utf-8');
   } catch {
     // silent — never block session start
+  }
+
+  // --- Async hook integrity check (silent, non-blocking) ---
+  // Uses spawn + detached/unref so it cannot delay session start.
+  try {
+    const verifierCandidates = [
+      resolveBotPath('hooks/scripts/verify-integrity.mjs'),
+      'hooks/scripts/verify-integrity.mjs',
+    ];
+    const verifier = verifierCandidates.find(p => existsSync(p));
+    if (verifier) {
+      const child = spawn(process.execPath, [verifier, '--silent'], {
+        stdio: 'ignore',
+        detached: true,
+      });
+      child.unref();
+      child.on('error', () => { /* silent */ });
+    }
+  } catch {
+    // silent — integrity check is advisory, never blocks
   }
 
   const additionalContext = parts.length > 0

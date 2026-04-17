@@ -45,6 +45,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - **`.claude/commands/worktree.md`** — slash command `/worktree [branch|--list|--clean]`: cria git worktree isolado, copia `.env*`, instala deps e roda lint/typecheck em background, relatório final com path e branch ativo
 - **`hooks/scripts/verify-integrity.mjs`** — verifica SHA-256 dos hook scripts contra manifesto `.bot/hooks/.integrity.json`; modos: `--write` (gera manifesto), check (padrão, sai 0/1/2), `--silent` (sem output em sucesso)
 - `setup/install.sh`: chama `verify-integrity.mjs --write` após copiar hooks — manifesto gerado automaticamente em cada `devkit-install-fv`
+- `hooks/scripts/session-start.mjs`: spawn detached de `verify-integrity.mjs --silent` a cada SessionStart — drift de hooks é detectado sem bloquear start
+- `hooks/scripts/session-event-logger.mjs`: prune automático de arquivos `events.YYYY-MM-DD*.jsonl` mais antigos que 14 dias (throttled: ~1 em 200 writes)
+- **`scripts/worktree.mjs`** — companion executável do `/worktree`: mesma semântica (create/list/clean) invocável diretamente, sem precisar do agente; flags `--existing`, `--no-install`, `--no-validate`
+- **`mcp-server/src/lib/suggestions-engine.ts`** — lógica de `devkit_smart_suggestions` extraída de `index.ts` em módulo testável com 6 heurísticas puras (repo-audit, CLAUDE.md, tests, UI context, git log, event-log)
+- **`scripts/test-suggestions-engine.mjs`** — 8 testes unitários para `buildSuggestions()` (empty project, UI context, errors, md edits, cap)
+- `.github/workflows/validate-plugin.yml`: roda `scripts/test-*.mjs` e `check-consistency.mjs` no CI — tests de compressor, event-log, seen-queries e suggestions-engine agora são parte do validate pipeline
 - `plugin.json`: comando `/worktree` registrado no array `commands`
 - `README.md`, `AGENTS.md`, `docs/skill-guides/skill-discovery.md`: `/worktree` adicionado às tabelas de slash commands e decision tree
 

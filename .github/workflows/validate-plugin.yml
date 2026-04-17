@@ -93,6 +93,36 @@ jobs:
             console.log('✅ All ' + agents.length + ' agent files exist');
           "
 
+      - name: Build MCP server (for test scripts)
+        working-directory: mcp-server
+        run: |
+          if [ -f package.json ]; then
+            npm install --no-audit --no-fund
+            npm run build --if-present
+          fi
+
+      - name: Run test scripts
+        run: |
+          errors=0
+          for test in scripts/test-*.mjs; do
+            [ -f "$test" ] || continue
+            echo "▶ $test"
+            if node "$test"; then
+              echo "✅ $test"
+            else
+              echo "❌ $test failed"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            echo "$errors test script(s) failed"
+            exit 1
+          fi
+          echo "✅ All test scripts passed"
+
+      - name: Run consistency check
+        run: node scripts/check-consistency.mjs
+
       - name: Validate agent frontmatter
         run: |
           node -e "
