@@ -436,6 +436,11 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 - Each run writes `.auto/runs/<runId>/status.json` with `{iterations, commits, exitCode, worktreePath, ...}` for parallel parents and external tooling to consume.
 - Opt-in real-LLM smoke: `node scripts/tests/auto-loop/smoke-real.mjs` (manual, costs tokens).
 
+**What changed 2026-04-30 → 2026-05-01:**
+- Initial v2 release on 04-30: multi-agent (claude + codex), integrated worktree, parallel mode, polishing pass, gnhf-inspired flags (`--max-tokens`, `--stop-when`, prevent-sleep, JSONL log, classified backoff, 2-stage Ctrl+C, robust resume), bilingual docs.
+- Gap fixes shipped 05-01: codex E2E test with fake CLI shim (zero tokens), polish skill-path verification + retry path test, runner+worktree integration test, status.json wired into parallel summary (was showing `-` placeholders), Windows portability fixes (`gitDiffSinceBaseline` no longer POSIX-only; adapters resolve `.cmd`/`.bat` launchers).
+- Tests: 17 → 21, all passing. Commands and exit codes unchanged.
+
 ---
 
 ## Global Governance
