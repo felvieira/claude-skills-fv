@@ -428,7 +428,13 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 
 **Circuit breaker:** same error 3x, stall (3 iterations without `git diff`), budget exhausted, or task blocked — stops automatically.
 
-**Exit codes:** `0` ok / `2` permanent error / `3` retryable exhausted / `4` breaker tripped / `5` stall.
+**Exit codes:** `0` ok / `1` usage / `2` permanent error / `3` retryable exhausted / `4` breaker tripped / `5` stall / `6` token cap / `7` polish incomplete / `130` interrupted / `99` fatal.
+
+**Production-ready:**
+- 21 smoke tests under `scripts/tests/auto-loop/`, all green. Run: `node scripts/tests/auto-loop/run-all.mjs`.
+- Cross-platform (macOS, Linux, **Windows**) — adapters spawn through the shell on Windows so `npm`-installed `.cmd` launchers resolve.
+- Each run writes `.auto/runs/<runId>/status.json` with `{iterations, commits, exitCode, worktreePath, ...}` for parallel parents and external tooling to consume.
+- Opt-in real-LLM smoke: `node scripts/tests/auto-loop/smoke-real.mjs` (manual, costs tokens).
 
 ---
 
