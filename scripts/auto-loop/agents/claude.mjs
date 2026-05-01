@@ -58,7 +58,32 @@ function extractTokens(output) {
   return null;
 }
 
+// Quote a single argv element for Windows cmd.exe — needed because spawnSync
+// with shell:true joins args with spaces, breaking on prompts that contain
+// whitespace, quotes, or shell metacharacters. Implements the cmd.exe rules
+// for double-quoted strings: escape `"` as `""`.
+function quoteWinArg(s) {
+  if (s == null) return '""';
+  const str = String(s);
+  if (!/[\s"&<>|^]/.test(str)) return str; // safe as-is
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
 function spawnClaude(args, { timeout, maxBuffer }) {
+  // Windows: shell:true is required so the launcher resolves `claude.cmd` /
+  // `claude.bat` (npm-installed CLIs ship as .cmd shims; Node's spawn won't
+  // find them without shell). With shell:true the args are joined and
+  // re-parsed by cmd.exe, so we must quote each one ourselves.
+  if (process.platform === 'win32') {
+    const quoted = args.map(quoteWinArg).join(' ');
+    return spawnSync('claude ' + quoted, {
+      encoding: 'utf-8',
+      maxBuffer,
+      timeout,
+      stdio: ['pipe', 'pipe', 'pipe'],
+      shell: true,
+    });
+  }
   return spawnSync('claude', args, {
     encoding: 'utf-8',
     maxBuffer,

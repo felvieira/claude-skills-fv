@@ -183,9 +183,25 @@ Layout em disco quando `--worktree --parallel N`:
 - **`/auto`** — Claude executa autonomamente no contexto atual da conversa.
 - **`/loop`** — processo externo real que roda agente como subprocess, multi-task em paralelo, polish pass, resume entre invocações.
 
+## Limpeza
+
+Após uma run com `--worktree`, se você mergear a branch e quiser remover o worktree:
+
+```bash
+# Remover worktree (path foi impresso pelo runner ao final)
+git worktree remove "<path>" --force
+
+# Após delete manual ou merge, prune refs órfãos
+git worktree prune
+
+# Branch local merged em main mas remote ainda não sabe — force delete:
+git branch -D auto/<slug>
+```
+
 ## Referências
 
 - Design: [`docs/plans/2026-04-30-auto-loop-v2-design.md`](../../docs/plans/2026-04-30-auto-loop-v2-design.md)
 - Implementação: [`docs/plans/2026-04-30-auto-loop-v2-implementation.md`](../../docs/plans/2026-04-30-auto-loop-v2-implementation.md)
+- Gap fixes: [`docs/plans/2026-04-30-auto-loop-v2-gap-fixes.md`](../../docs/plans/2026-04-30-auto-loop-v2-gap-fixes.md)
 - Fonte das flags: [`scripts/auto-loop/args.mjs`](../../scripts/auto-loop/args.mjs)
 - Inspiração externa: [gnhf](https://github.com/kunchenguid/gnhf)

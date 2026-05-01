@@ -67,12 +67,35 @@ const adapter = {
     const t = typeof timeout === 'number' ? timeout : DEFAULT_TIMEOUT_MS;
     const maxBuffer = DEFAULT_MAX_BUFFER;
 
-    const result = spawnSync('codex', ['exec', '--full-auto', prompt], {
-      encoding: 'utf-8',
-      maxBuffer,
-      timeout: t,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
+    // Windows: shell:true is required to resolve `codex.cmd` / `codex.bat`
+    // launchers. With shell:true the args are joined and re-parsed by
+    // cmd.exe, so we must quote each one ourselves to preserve whitespace
+    // and metacharacters in the prompt.
+    const args = ['exec', '--full-auto', prompt];
+    let result;
+    if (process.platform === 'win32') {
+      const quoteWinArg = (s) => {
+        if (s == null) return '""';
+        const str = String(s);
+        if (!/[\s"&<>|^]/.test(str)) return str;
+        return `"${str.replace(/"/g, '""')}"`;
+      };
+      const quoted = args.map(quoteWinArg).join(' ');
+      result = spawnSync('codex ' + quoted, {
+        encoding: 'utf-8',
+        maxBuffer,
+        timeout: t,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        shell: true,
+      });
+    } else {
+      result = spawnSync('codex', args, {
+        encoding: 'utf-8',
+        maxBuffer,
+        timeout: t,
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+    }
 
     const output = result.stdout || '';
     let error = result.stderr || '';

@@ -5,7 +5,7 @@
  */
 
 import { createHash } from 'crypto';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 
 export function normalizeError(err) {
   return String(err)
@@ -24,14 +24,16 @@ export function hashError(err) {
 }
 
 function gitDiffSinceBaseline() {
-  try {
-    return execSync(
-      'git diff HEAD --name-only 2>/dev/null; git diff --name-only 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null',
-      { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
-    ).trim();
-  } catch {
-    return '';
+  // Cross-platform: separate spawnSync calls — no shell, no `;`/redirection.
+  function git(args) {
+    const r = spawnSync('git', args, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    return r.status === 0 ? (r.stdout || '') : '';
   }
+  return [
+    git(['diff', 'HEAD', '--name-only']),
+    git(['diff', '--name-only']),
+    git(['ls-files', '--others', '--exclude-standard']),
+  ].join('').trim();
 }
 
 export class CircuitBreaker {

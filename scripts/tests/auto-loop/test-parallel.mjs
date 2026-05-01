@@ -194,6 +194,77 @@ console.log('\nTest 6: runParallel() rejects empty tasks');
   assert('threw on empty tasks', threw);
 }
 
+// ─── Test 7: runParallel — populates iterations/commits/path from status.json ─
+console.log('\nTest 7: runParallel() reads status.json from each child worktree');
+{
+  // We need a real filesystem: create a temp baseRepo + the worktree layout
+  // the parallel runner expects, and drop a status.json the parent will read.
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = await import('fs');
+  const { tmpdir } = await import('os');
+  const { join, resolve } = await import('path');
+
+  const tmp = mkdtempSync(join(tmpdir(), 'al-par-status-'));
+  const baseRepo = resolve(tmp, 'repo');
+  const wtBase = resolve(tmp, 'repo-auto-worktrees');
+  mkdirSync(baseRepo, { recursive: true });
+
+  // Match the slug runParallel will compute via slugify(task).
+  const slug = 'feature-x-with-status';
+  const wtPath = resolve(wtBase, slug);
+  const runId = '2026-04-30T10-00-00-000Z-abc1';
+  const runDir = resolve(wtPath, '.auto', 'runs', runId);
+  mkdirSync(runDir, { recursive: true });
+
+  writeFileSync(resolve(runDir, 'status.json'), JSON.stringify({
+    runId,
+    task: 'feature x with status',
+    iterations: 4,
+    commits: 1,
+    commitHash: 'abc1234',
+    taskDone: true,
+    worktreePath: wtPath,
+    exitCode: 0,
+  }));
+
+  // Mock spawner closes immediately so the parent reads the prepared file.
+  function mockSpawnStatus(_node, _args) {
+    const child = new EventEmitter();
+    child.stdout = makeStreamLocal();
+    child.stderr = makeStreamLocal();
+    setImmediate(() => child.emit('close', 0));
+    return child;
+  }
+  function makeStreamLocal() {
+    const s = new EventEmitter();
+    s.setEncoding = () => {};
+    return s;
+  }
+
+  const stdoutBuf = [];
+  const stderrBuf = [];
+  const { results } = await runParallel({
+    tasks: ['feature x with status'],
+    parallel: 1,
+    worktree: true,
+    agent: 'claude',
+    model: 'claude-sonnet-4-5',
+    polish: 'standard',
+    preventSleep: true,
+    cwd: baseRepo, // <-- parallel.mjs uses opts.cwd to compute worktree base
+    _spawn: mockSpawnStatus,
+    _stdout: { write: (s) => stdoutBuf.push(s) },
+    _stderr: { write: (s) => stderrBuf.push(s) },
+  });
+
+  assert('result exists', results.length === 1);
+  assert(`iterations populated (got ${results[0].iterations})`, results[0].iterations === 4);
+  assert(`commits populated (got ${results[0].commits})`, results[0].commits === 1);
+  assert(`path populated (got ${results[0].path})`, results[0].path === wtPath);
+
+  // Cleanup best-effort.
+  try { rmSync(tmp, { recursive: true, force: true, maxRetries: 3 }); } catch {}
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${'─'.repeat(50)}`);
 console.log(`Results: ${passed} passed, ${failed} failed`);

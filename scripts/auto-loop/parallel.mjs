@@ -10,8 +10,9 @@
  */
 
 import { spawn as realSpawn } from 'child_process';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, basename } from 'path';
 
 import { slugify } from './worktree.mjs';
 
@@ -149,18 +150,45 @@ function runOne({ task, slug, opts, spawnFn, stdout, stderr }) {
     });
 
     child.on('close', (code) => {
+      const status = readChildStatus(slug, opts);
       resolvePromise({
         slug,
         task,
         exitCode: code ?? 0,
-        // Path / iterations / commits are not yet wired back from runner.mjs;
-        // populated as '-' in the summary until that integration lands.
-        path: null,
-        iterations: null,
-        commits: null,
+        path: status?.worktreePath ?? null,
+        iterations: status?.iterations ?? null,
+        commits: status?.commits ?? null,
       });
     });
   });
+}
+
+/**
+ * After a child runner exits, read its `.auto/runs/<runId>/status.json`
+ * (most recent) so the parallel summary can show real iters/commits/path
+ * instead of `-` placeholders.
+ *
+ * Returns null if anything is missing — callers must tolerate that.
+ */
+function readChildStatus(slug, opts) {
+  try {
+    // Worktree layout: <baseRepo>-auto-worktrees/<slug>
+    const baseRepo = resolve(opts.cwd || process.cwd());
+    const wtBase = resolve(dirname(baseRepo), `${basename(baseRepo)}-auto-worktrees`);
+    const wtPath = resolve(wtBase, slug);
+    const runsDir = resolve(wtPath, '.auto', 'runs');
+    if (!existsSync(runsDir)) return null;
+    const dirs = readdirSync(runsDir).sort().reverse();
+    for (const d of dirs) {
+      const sp = resolve(runsDir, d, 'status.json');
+      if (existsSync(sp)) {
+        return JSON.parse(readFileSync(sp, 'utf-8'));
+      }
+    }
+  } catch {
+    // best-effort — null tolerated by formatSummary
+  }
+  return null;
 }
 
 function writePrefixed(stream, prefix, chunk) {

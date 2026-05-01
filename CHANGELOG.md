@@ -21,6 +21,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 ### Migration
 - Existing `node scripts/auto-loop.mjs "task"` commands continue to work unchanged.
 - New flags are opt-in. Default behavior matches v1 except `--polish=standard` is now applied by default (use `--polish=none` to disable).
+- After merging an auto-loop branch locally, git may refuse `branch -d` because remote-tracking is unaware of the merge. Use `git branch -D <branch>` once you've confirmed it's merged to main (`git log main --oneline | grep <branch>`).
+- Worktrees created by `--worktree` are preserved if they have commits. Cleanup with the printed `git worktree remove ...` command, or `git worktree prune` to drop stale references after manual deletion.
+
+### Gap fixes (post-merge follow-up)
+- Cross-platform: `gitDiffSinceBaseline` in `runner.mjs` and `circuit-breaker.mjs` now uses separate `spawnSync` calls instead of POSIX-only shell syntax (`;`, `2>/dev/null`).
+- Windows: `claude.mjs` and `codex.mjs` adapters now use `shell: true` with manual arg quoting on Windows so `.cmd`/`.bat` launchers (npm-installed CLIs) resolve correctly.
+- Runner now writes `.auto/runs/<runId>/status.json` at end of every run; `parallel.mjs` reads it to populate the summary table with real iterations/commits/path.
+- New tests: codex adapter E2E with fake CLI shim, polish skill-path resolution, polish retry path, runner+worktree integration, parallel status-json read.
 
 ---
 

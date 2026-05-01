@@ -74,14 +74,17 @@ function gitDiffStat() {
 }
 
 function gitDiffSinceBaseline() {
-  try {
-    return execSync(
-      'git diff HEAD --name-only 2>/dev/null; git diff --name-only 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null',
-      { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
-    ).trim();
-  } catch {
-    return '';
+  // Cross-platform: invoke each git command separately via spawnSync so we
+  // don't depend on POSIX shell features (`;`, `2>/dev/null`).
+  function git(args) {
+    const r = spawnSync('git', args, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    return r.status === 0 ? (r.stdout || '') : '';
   }
+  return [
+    git(['diff', 'HEAD', '--name-only']),
+    git(['diff', '--name-only']),
+    git(['ls-files', '--others', '--exclude-standard']),
+  ].join('').trim();
 }
 
 function writeEnvFile(tools, taskDesc) {
@@ -563,18 +566,54 @@ Run ID:     ${runId}
     commitHash,
   });
 
-  cleanup();
+  // Compute final exit code (used by status.json and the runner return).
+  // Order of precedence matches the original runner logic.
+  const finalCode = userInterrupted
+    ? EXIT_CODES.INTERRUPTED
+    : permanentError
+      ? EXIT_CODES.PERMANENT_ERROR
+      : retryExhausted
+        ? EXIT_CODES.RETRY_EXHAUSTED
+        : tokenCapReached
+          ? EXIT_CODES.TOKEN_CAP
+          : blockedByBreaker || taskBlocked
+            ? EXIT_CODES.SAME_ERROR_REPEATED
+            : blockedByStall
+              ? EXIT_CODES.STALL
+              : polishIncomplete
+                ? EXIT_CODES.POLISH_INCOMPLETE
+                : taskDone
+                  ? EXIT_CODES.OK
+                  : EXIT_CODES.STALL; // budget-exhausted fallback
 
-  // Decide exit code.
-  if (userInterrupted) return EXIT_CODES.INTERRUPTED;
-  if (permanentError) return EXIT_CODES.PERMANENT_ERROR;
-  if (retryExhausted) return EXIT_CODES.RETRY_EXHAUSTED;
-  if (tokenCapReached) return EXIT_CODES.TOKEN_CAP;
-  if (blockedByBreaker) return EXIT_CODES.SAME_ERROR_REPEATED;
-  if (blockedByStall) return EXIT_CODES.STALL;
-  if (taskBlocked) return EXIT_CODES.SAME_ERROR_REPEATED;
-  if (polishIncomplete) return EXIT_CODES.POLISH_INCOMPLETE;
-  if (taskDone) return EXIT_CODES.OK;
-  // Budget exhausted with no clear failure → treat as stall-ish.
-  return EXIT_CODES.STALL;
+  // Write structured status for parallel parent / external tooling to consume.
+  // Lives in the SAME .auto/runs/<runId>/ dir as the JSONL debug log.
+  try {
+    const statusPath = join(AUTO_DIR, 'runs', runId, 'status.json');
+    writeFileSync(statusPath, JSON.stringify({
+      runId,
+      task: opts.task,
+      agent: opts.agent,
+      iterations: iteration,
+      commits: commitHash ? 1 : 0,
+      commitHash,
+      taskDone,
+      taskBlocked,
+      tokenCapReached,
+      userInterrupted,
+      permanentError,
+      retryExhausted,
+      polishIncomplete,
+      cumulativeTokens,
+      exitCode: finalCode,
+      worktreePath,
+      endedAt: new Date().toISOString(),
+    }, null, 2));
+    logEvent('status.written', { path: statusPath });
+  } catch (err) {
+    logEvent('status.error', { reason: err.message });
+  }
+
+  cleanup();
+  return finalCode;
 }
