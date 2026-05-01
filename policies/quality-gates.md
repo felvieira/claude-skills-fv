@@ -43,3 +43,16 @@ Aplicar `templates/commit-trailers.md`:
 - `Scope-risk:` quando mudanca pode impactar outros modulos
 
 Nao aplicar em commits triviais (typo, rename, lint, docs simples).
+
+## Polish levels (auto-loop v2)
+
+The auto-loop runner runs a configurable quality pass before commit, controlled by `--polish`:
+
+| Level    | Skills run                                       | Retries on blocking issues |
+|----------|--------------------------------------------------|----------------------------|
+| `none`   | (none)                                           | 0                          |
+| `light`  | `simplify`                                       | 0                          |
+| `standard` (default) | `simplify` + `review`                | 1                          |
+| `full`   | `simplify` + `review` + `security-review` + `test` | 3                        |
+
+The polish pass runs **after** lint/typecheck/test/build pass and **before** commit. Blocking issues retry up to the configured budget; non-blocking issues are logged but don't block commit. If retries exhaust with blocking issues remaining, the run commits anyway and marks `polish_incomplete: true` in `.auto/session.json`.

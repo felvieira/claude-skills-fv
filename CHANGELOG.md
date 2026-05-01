@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.0.0-auto-loop] - 2026-04-30
+
+### Added
+- Auto-loop v2: multi-agent (claude + codex), integrated worktree, parallel mode (`--worktree --parallel N`).
+- Polishing pass configurable via `--polish=none|light|standard|full` (default `standard`).
+- gnhf-inspired: `--max-tokens`, `--stop-when "<condition>"`, prevent-sleep cross-OS, JSONL debug log with `error.cause`, exponential backoff classified by error kind (permanent / retryable / transient), graceful interrupt 2-stage (Ctrl+C 1x = graceful stop, 2x = force).
+- Robust resume with prompt-conflict detection.
+- Bilingual docs: `README.md` (English, canonical) + `README.pt-BR.md`.
+
+### Changed
+- `scripts/auto-loop.mjs` is now a shim → `scripts/auto-loop/index.mjs`.
+- Code split into 17 modules under `scripts/auto-loop/` (legacy single file kept as `_legacy.mjs` for reference).
+
+### Migration
+- Existing `node scripts/auto-loop.mjs "task"` commands continue to work unchanged.
+- New flags are opt-in. Default behavior matches v1 except `--polish=standard` is now applied by default (use `--polish=none` to disable).
+
+---
+
 ## [Unreleased]
 
 ### Added
