@@ -1,3 +1,5 @@
+> 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
+
 # Dev Team Kit — 31 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
@@ -5,311 +7,311 @@
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
-> Um time completo de especialistas de software dentro do seu agente de código.  
-> Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
+> A complete team of software specialists inside your coding agent.  
+> Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
 ---
 
-## Por Que Isso Importa (Para Qualquer Pessoa)
+## Why It Matters (For Anyone)
 
-Se você usa IA pra construir produto — seja um dev experiente, um indie hacker fazendo SaaS, ou alguém que só sabe descrever o que quer — esse kit muda o jogo. Em linguagem simples, o que ele faz:
+If you use AI to build product — whether you're an experienced dev, an indie hacker shipping SaaS, or someone who only knows how to describe what they want — this kit changes the game. In plain language, here's what it does:
 
-### 💰 Economiza sua conta de API (até 70%)
-A IA adora ler tudo: o output inteiro de um `npm install`, stack traces repetidos, listas enormes de arquivos. Tudo isso vira token, que vira dinheiro. O kit **comprime automaticamente** esse ruído antes de mandar pro modelo — você paga só pelo que importa.
+### 💰 Saves your API bill (up to 70%)
+AI loves to read everything: the entire output of an `npm install`, repeated stack traces, huge file lists. All of that turns into tokens, which turn into money. The kit **automatically compresses** that noise before sending it to the model — you only pay for what matters.
 
-### 🧠 Entende o que você quer antes de sair fazendo
-Em vez de um agente genérico que "chuta" a implementação, o kit tem um **orquestrador** que lê seu pedido, classifica a complexidade, e monta o pipeline mínimo necessário. Se você for vago, ele pergunta. Se for claro, ele executa. Nunca sai inventando.
+### 🧠 Understands what you want before it starts coding
+Instead of a generic agent that "guesses" the implementation, the kit has an **orchestrator** that reads your request, classifies the complexity, and assembles the minimum sufficient pipeline. If you're vague, it asks. If you're clear, it runs. It never makes things up.
 
-### 🗂️ Memória persistente entre sessões
-A maioria dos agentes esquecem tudo quando você fecha a janela. Esse aqui **lembra**: o que você decidiu, quais arquivos são importantes, que padrões o seu projeto segue, que bugs apareceram antes. Resultado: menos retrabalho, menos token gasto recontextualizando, e respostas muito mais assertivas a cada sessão.
+### 🗂️ Persistent memory across sessions
+Most agents forget everything when you close the window. This one **remembers**: what you decided, which files matter, the patterns your project follows, the bugs that came up before. Result: less rework, fewer tokens spent re-contextualizing, and far sharper answers each session.
 
-### 🤖 Modo autônomo — manda e esquece
-Dá uma task complexa com `/auto` ou `/loop` e vai tomar um café. O agente executa, testa, corrige, valida e **só para quando está pronto, funcional e testado**. Tem circuito de segurança: se travar no mesmo erro 3x, detecta e avisa — não fica queimando API à toa.
+### 🤖 Autonomous mode — fire and forget
+Hand off a complex task with `/auto` or `/loop` and go grab a coffee. The agent runs, tests, fixes, validates and **only stops when it's ready, working and tested**. There's a safety circuit: if it gets stuck on the same error 3 times, it detects and warns — no burning API for nothing.
 
-### 🖼️ Geração de imagem profissional, sem placeholder
-Landing page com caixinha cinza "imagem aqui"? Nunca mais. O kit integra **fal.ai** com prompts escritos por um especialista em IA generativa — você descreve a cena, o sistema traduz em prompt técnico, e entrega imagens prontas pra produção. Ilustrações, hero images, ícones, mockups, todos consistentes com a sua marca.
+### 🖼️ Professional image generation, no placeholders
+Landing page with a gray "image here" box? Never again. The kit integrates **fal.ai** with prompts written by a generative-AI specialist — you describe the scene, the system translates it into a technical prompt, and delivers production-ready images. Illustrations, hero images, icons, mockups, all consistent with your brand.
 
-### 🔒 Segurança antes do deploy, não depois do vazamento
-Um **auditor de segurança** pensa como atacante e revisa o código antes dele chegar em produção. Findings críticos vêm com prova de conceito. Nada de descobrir vulnerabilidade na conta do cliente.
+### 🔒 Security before deploy, not after the leak
+A **security auditor** thinks like an attacker and reviews the code before it reaches production. Critical findings come with a proof of concept. No more discovering vulnerabilities on the customer's account.
 
-### 🧪 Testes que realmente provam que funciona
-Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que funciona, me prove com um teste. Nada de "parece ok". Cobre cenários de sucesso, falha, edge cases e regressão.
+### 🧪 Tests that actually prove it works
+A **QA engineer** that follows the "prove-it" principle: if you say it works, prove it with a test. No "looks ok". Covers happy path, failure paths, edge cases and regressions.
 
-### 🎨 Design e copy que vendem
-- **Designer** com análise competitiva: olha os concorrentes e recomenda o que converte
-- **Copywriter** especialista em marketing: texto pronto pra landing, email, anúncio
-- **SEO** que otimiza antes do Google indexar — seu site nasce achável
+### 🎨 Design and copy that sell
+- **Designer** with competitive analysis: looks at competitors and recommends what converts
+- **Copywriter** specialized in marketing: ready-to-ship copy for landing pages, email, ads
+- **SEO** that optimizes before Google indexes — your site is born findable
 
-### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **31 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+### 🚀 From zero to deploy without hiring 5 freelancers
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **31 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
-### 🔌 Funciona em tudo que você já usa
-Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
+### 🔌 Works with everything you already use
+Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
 
-### 🆓 Tudo grátis, MIT, open source
-Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra sempre — inclusive em projeto comercial.
-
----
-
-## O Que É
-
-O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
-
-**O que você ganha:**
-
-- **Pipeline estruturado** — cada task passa pelas etapas certas, na ordem certa, sem improvisar
-- **QA, Security e Reviewer obrigatórios** — nenhuma entrega sai sem validação
-- **Model routing automático** — haiku para boilerplate, sonnet para implementação, opus para arquitetura
-- **Lifecycle hooks** — o agente detecta contexto vago, re-lê arquivos antes de editar, monitora custo de tokens
-- **MCP server próprio** — 36 tools expostas para qualquer cliente MCP
-- **Memória persistente** — working set, context pack, learned skills com confidence scoring acumuladas por projeto
-- **Instalação multi-plataforma** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI e mais
+### 🆓 All free, MIT, open source
+No subscription. No trial. No hidden premium tier. Clone it, install it, use it forever — including in commercial projects.
 
 ---
 
-## Instalação Rápida
+## What It Is
 
-### Modo 1 — Plugin Global (Claude Code)
+The **Dev Team Kit** is a set of 31 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
 
-Instala as 31 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+**What you get:**
+
+- **Structured pipeline** — every task goes through the right steps, in the right order, no improvising
+- **QA, Security and Reviewer mandatory** — no delivery ships without validation
+- **Automatic model routing** — haiku for boilerplate, sonnet for implementation, opus for architecture
+- **Lifecycle hooks** — the agent detects vague context, re-reads files before editing, monitors token cost
+- **Built-in MCP server** — 36 tools exposed for any MCP client
+- **Persistent memory** — working set, context pack, learned skills with confidence scoring accumulated per project
+- **Multi-platform install** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI and more
+
+---
+
+## Quick Install
+
+### Mode 1 — Global Plugin (Claude Code)
+
+Installs the 31 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-O que é instalado globalmente: skills, hooks, commands (`/audit-repo`, `/devkit-install-fv`, `/plan-feature`, `/review-release`, `/inventory-assets`).
+What gets installed globally: skills, hooks, commands (`/audit-repo`, `/devkit-install-fv`, `/plan-feature`, `/review-release`, `/inventory-assets`).
 
-### Modo 2 — Kit Completo por Repo (via comando)
+### Mode 2 — Full Kit Per Repo (via command)
 
-Com o plugin instalado, rode dentro do repo que quer configurar:
+With the plugin installed, run inside the repo you want to configure:
 
 ```
 /devkit-install-fv
 ```
 
-Isso instala `.bot/` completo: MCP server, policies, templates, docs, hooks, learned-skills e configs multi-plataforma.
+This installs the full `.bot/`: MCP server, policies, templates, docs, hooks, learned-skills and multi-platform configs.
 
-### Modo 3 — Bash Direto
+### Mode 3 — Direct Bash
 
 ```bash
 git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
-bash /tmp/dev-team-kit/setup/install.sh /caminho/do/projeto
+bash /tmp/dev-team-kit/setup/install.sh /path/to/project
 ```
 
-Se o kit já estiver em `.bot/`, você também pode rodar diretamente do repo instalado:
+If the kit is already in `.bot/`, you can also run directly from the installed repo:
 
 ```bash
 bash .bot/setup/install.sh
 ```
 
-O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta flags de perfil não-interativo:
-- `--profile lean` — instala sem MCP e sem scripts pesados
-- `--no-input` — sem prompts, usa defaults
-- `--yes` — aceita tudo automaticamente
+The installer ships `setup/` and every kit directory under `.bot/`. Supports non-interactive profile flags:
+- `--profile lean` — installs without MCP and heavy scripts
+- `--no-input` — no prompts, uses defaults
+- `--yes` — accepts everything automatically
 
-Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 31 skills.
-O MCP expoe 36 tools apoiadas pelas skills instaladas.
+In the table below, treat `dev-team-kit` as 36 tools backed by the 31 skills.
+The MCP exposes 36 tools backed by the installed skills.
 
-### Comparativo dos Modos
+### Install Modes Compared
 
-| O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
+| What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
 | 31 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
 | MCP server (36 tools) | ❌ | ✅ | ✅ |
-| Templates de handoff | ❌ | ✅ | ✅ |
+| Handoff templates | ❌ | ✅ | ✅ |
 | Docs + repo-audit | ❌ | ✅ | ✅ |
-| Configs multi-plataforma | ❌ | ✅ | ✅ |
-| Learned skills por projeto | ❌ | ✅ | ✅ |
+| Multi-platform configs | ❌ | ✅ | ✅ |
+| Learned skills per project | ❌ | ✅ | ✅ |
 
 ---
 
-## Plataformas Compatíveis
+## Supported Platforms
 
-| Plataforma | Skills | Hooks | MCP | Slash Commands | Notas |
+| Platform | Skills | Hooks | MCP | Slash Commands | Notes |
 |---|:---:|:---:|:---:|:---:|---|
-| **Claude Code** | ✅ | ✅ | ✅ | ✅ | suporte completo — plugin nativo |
+| **Claude Code** | ✅ | ✅ | ✅ | ✅ | full support — native plugin |
 | **Cursor** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md, MCP via config |
 | **Windsurf** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via rules, MCP via `.windsurf/mcp.json` |
 | **GitHub Copilot** | ✅ via `.bot/` | ❌ | ❌ | ❌ | skills via `.github/copilot-instructions.md` |
 | **Gemini CLI** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via GEMINI.md, MCP via `.gemini/settings.json` |
 | **OpenCode** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md |
-| **Antigravity** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via config local |
+| **Antigravity** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via local config |
 
-> Para plataformas sem hooks nativos, as mesmas regras estão em `policies/hooks.md` — o agente as aplica manualmente.
-
----
-
-## Os 31 Especialistas
-
-### Gestao e Coordenacao
-
-| # | Skill | O que faz |
-|---|---|---|
-| 08 | **Context Manager** | rastreia foco, tasks abertas, arquivos quentes e handoffs entre sessões |
-| 09 | **Orchestrator** | define o pipeline mínimo suficiente, delega para specialists, adapta em caso de rejeição |
-| 10 | **Documenter** | registra decisões, contratos de API, operações e impactos em docs vivos |
-| 11 | **Reviewer** | valida o delta final antes de liberar — qualidade, escopo e risco |
-| 17 | **Image Generator** | gera e adapta assets visuais via fal.ai com suporte a t2i, i2i, rembg e ícones Tauri |
-| 18 | **Repo Auditor** | fotografia completa do repo — stack, convenções, riscos, entry points e dívida técnica |
-| 19 | **Asset Librarian** | inventaria logos, ícones, fontes, tokens visuais e assets reutilizáveis |
-| 20 | **Observability SRE** | define logs estruturados, métricas, tracing, alertas e plano de rollback |
-| 21 | **Data Analytics** | define eventos de tracking, naming, funis e KPIs de produto |
-| 22 | **Accessibility Specialist** | revisa WCAG 2.2, navegação por teclado, semântica HTML e motion reduction |
-| 23 | **Migration & Refactor Specialist** | conduz migrações incrementais, feature flags e rollback seguro |
-| 24 | **Release Manager** | organiza changelog, release notes, versionamento e rollout gradual |
-| 25 | **AI Integration Architect** | projeta adapters de IA, gateways, streaming, fallbacks e custo de inferência |
-| 26 | **Prompt Engineer** | cria e itera prompts, templates reutilizáveis e estratégias de few-shot |
-| 27 | **Video Integration Specialist** | integra vídeo generativo com foco em UX, latência e formatos de output |
-| 28 | **CLAUDE.md Generator** | gera `CLAUDE.md` inteligente para projetos consumidores do kit |
-| 30 | **Cost Tracker** | rastreia custo de tokens e API calls por sessão, por skill e por tier de modelo |
-| 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
-| 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
-
-### Produto e Design
-
-| # | Skill | O que faz |
-|---|---|---|
-| 01 | **PO** | escreve spec, histórias de usuário, critérios de aceitação e define prioridade |
-| 02 | **UI/UX Designer** | define layout, sistema de tokens, responsividade e heurísticas de uso |
-| 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
-
-### Desenvolvimento
-
-| # | Skill | O que faz |
-|---|---|---|
-| 03 | **Backend Engineer** | APIs REST/GraphQL, contratos, auth, validação, banco de dados e integrações |
-| 04 | **Frontend Engineer** | React/Next.js, estado, chamadas de API, performance e experiência do app |
-| 12 | **Motion Designer** | animações, transições, micro-interações e comportamento visual coeso |
-| 15 | **Mobile / Tauri** | extensão opcional para apps desktop e mobile com Tauri + React Native |
-
-### Conteudo e Descoberta
-
-| # | Skill | O que faz |
-|---|---|---|
-| 13 | **Marketing Copy** | copy de produto, CTAs, landing pages, brand voice e mensagens de conversão |
-| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap e discoverability |
-
-### Qualidade e Entrega
-
-| # | Skill | O que faz |
-|---|---|---|
-| 05 | **QA Engineer** | testes unitários, integração, E2E, cobertura e edge cases críticos |
-| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injeção e exposição de dados |
-| 07 | **Deploy Engineer** | containerização, CI/CD, rollout blue-green, rollback e infra como código |
+> For platforms without native hooks, the same rules live in `policies/hooks.md` — the agent applies them manually.
 
 ---
 
-## Pipeline Principal
+## The 31 Specialists
+
+### Management and Coordination
+
+| # | Skill | What it does |
+|---|---|---|
+| 08 | **Context Manager** | tracks focus, open tasks, hot files and handoffs across sessions |
+| 09 | **Orchestrator** | defines the minimum sufficient pipeline, delegates to specialists, adapts on rejection |
+| 10 | **Documenter** | records decisions, API contracts, operations and impacts in living docs |
+| 11 | **Reviewer** | validates the final delta before release — quality, scope and risk |
+| 17 | **Image Generator** | generates and adapts visual assets via fal.ai with t2i, i2i, rembg and Tauri icons support |
+| 18 | **Repo Auditor** | full snapshot of the repo — stack, conventions, risks, entry points and tech debt |
+| 19 | **Asset Librarian** | catalogs logos, icons, fonts, visual tokens and reusable assets |
+| 20 | **Observability SRE** | defines structured logs, metrics, tracing, alerts and rollback plan |
+| 21 | **Data Analytics** | defines tracking events, naming, funnels and product KPIs |
+| 22 | **Accessibility Specialist** | reviews WCAG 2.2, keyboard navigation, HTML semantics and motion reduction |
+| 23 | **Migration & Refactor Specialist** | runs incremental migrations, feature flags and safe rollback |
+| 24 | **Release Manager** | organizes changelog, release notes, versioning and gradual rollout |
+| 25 | **AI Integration Architect** | designs AI adapters, gateways, streaming, fallbacks and inference cost |
+| 26 | **Prompt Engineer** | writes and iterates prompts, reusable templates and few-shot strategies |
+| 27 | **Video Integration Specialist** | integrates generative video with focus on UX, latency and output formats |
+| 28 | **CLAUDE.md Generator** | generates a smart `CLAUDE.md` for projects consuming the kit |
+| 30 | **Cost Tracker** | tracks token cost and API calls per session, per skill and per model tier |
+| 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
+| 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
+
+### Product and Design
+
+| # | Skill | What it does |
+|---|---|---|
+| 01 | **PO** | writes spec, user stories, acceptance criteria and sets priority |
+| 02 | **UI/UX Designer** | defines layout, token system, responsiveness and usage heuristics |
+| 29 | **Design Intelligence** | researches competitors, captures screenshots, analyzes visual trends and ships a strategic dossier for UI/UX |
+
+### Development
+
+| # | Skill | What it does |
+|---|---|---|
+| 03 | **Backend Engineer** | REST/GraphQL APIs, contracts, auth, validation, database and integrations |
+| 04 | **Frontend Engineer** | React/Next.js, state, API calls, performance and app experience |
+| 12 | **Motion Designer** | animations, transitions, micro-interactions and coherent visual behavior |
+| 15 | **Mobile / Tauri** | optional extension for desktop and mobile apps with Tauri + React Native |
+
+### Content and Discovery
+
+| # | Skill | What it does |
+|---|---|---|
+| 13 | **Marketing Copy** | product copy, CTAs, landing pages, brand voice and conversion messaging |
+| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap and discoverability |
+
+### Quality and Delivery
+
+| # | Skill | What it does |
+|---|---|---|
+| 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
+| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
+| 07 | **Deploy Engineer** | containerization, CI/CD, blue-green rollout, rollback and infra as code |
+
+---
+
+## Main Pipeline
 
 ```mermaid
 flowchart LR
     A[Task] --> B[Orchestrator 09]
     B --> C[Context Manager 08]
-    B --> D[Pipeline mínimo suficiente]
+    B --> D[Minimum sufficient pipeline]
     D --> E[Specialists 01–32]
     E --> F[QA 05 + Security 06 + Reviewer 11]
-    F --> G[Deploy 07 ou Release 24]
-    B --> H[Model Routing por etapa]
+    F --> G[Deploy 07 or Release 24]
+    B --> H[Model routing per step]
 ```
 
-### Pipelines Comuns
+### Common Pipelines
 
-| Tipo de tarefa | Pipeline |
+| Task type | Pipeline |
 |---|---|
-| Feature completa | `PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Security → Reviewer → Deploy` |
+| Full feature | `PO → UI/UX → Backend → Frontend → Motion → Copy → SEO → QA → Security → Reviewer → Deploy` |
 | Bug fix | `Backend → QA → Security → Reviewer → Deploy` |
-| Hotfix crítico | `Backend → Security → Reviewer → Deploy` |
-| Melhoria de UI | `UI/UX → Frontend → Motion → QA → Security → Reviewer → Deploy` |
+| Critical hotfix | `Backend → Security → Reviewer → Deploy` |
+| UI improvement | `UI/UX → Frontend → Motion → QA → Security → Reviewer → Deploy` |
 | Landing page | `Copy → Design Intelligence → UI/UX → Frontend → SEO → QA → Reviewer` |
-| Integração de IA | `Repo Auditor → AI Architect → Prompt Engineer → Backend → Observability → QA → Security → Reviewer` |
-| Release formal | `Reviewer → Observability SRE → Release Manager → Deploy` |
+| AI integration | `Repo Auditor → AI Architect → Prompt Engineer → Backend → Observability → QA → Security → Reviewer` |
+| Formal release | `Reviewer → Observability SRE → Release Manager → Deploy` |
 
 ---
 
-## Model Routing — Modelo Certo para Cada Etapa
+## Model Routing — Right Model for Each Step
 
-| Tier | Modelo | Quando usar |
+| Tier | Model | When to use |
 |---|---|---|
-| Fast | haiku | boilerplate, rename, microcopy, templates, formatação |
-| Balanced | sonnet | implementação, testes, debug, integração, design |
-| Deep | opus | arquitetura, security review, orquestração, decisões críticas |
+| Fast | haiku | boilerplate, rename, microcopy, templates, formatting |
+| Balanced | sonnet | implementation, tests, debug, integration, design |
+| Deep | opus | architecture, security review, orchestration, critical decisions |
 
-**Enforcement automático (Claude Code):**
-- `EnterPlanMode` → hook sugere `/model opus`
-- `ExitPlanMode` → hook sugere `/model sonnet`
-- Subagent sem `model` explícito → hook alerta e sugere tier por keywords
+**Automatic enforcement (Claude Code):**
+- `EnterPlanMode` → hook suggests `/model opus`
+- `ExitPlanMode` → hook suggests `/model sonnet`
+- Subagent without explicit `model` → hook warns and suggests tier by keywords
 
-**Em outros ambientes:** seguir `policies/model-routing.md` manualmente.
+**On other environments:** follow `policies/model-routing.md` manually.
 
 ---
 
-## Hook System — Inteligência em Lifecycle Events
+## Hook System — Intelligence on Lifecycle Events
 
-| Hook | Evento | O que faz | Perfil |
-|------|--------|-----------|--------|
-| `pre-execution-gate` | UserPromptSubmit | detecta prompt vago e confirma antes de agir | standard, strict |
-| `keyword-detector` | UserPromptSubmit | injeta skill ou learned skill relevante automaticamente | standard, strict |
-| `context-guard-stop` | Stop | avisa em 50% (não-bloqueante) e bloqueia em 75% com resumo inteligente | todos |
-| `persistent-mode` | Stop | bloqueia stop quando pipeline está ativo | todos |
-| `pre-tool-enforcer` | PreToolUse | re-lê antes de editar, sugere code intelligence tools | todos |
-| `session-start` | SessionStart | restaura estado da sessão anterior e injeta skill-discovery | standard, strict |
-| `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill | standard, strict |
-| `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns | standard, strict |
-| `simplify-ignore` | PreToolUse + PostToolUse | Protege blocos `simplify-ignore-start/end` de simplificação automática | standard, strict |
+| Hook | Event | What it does | Profile |
+|------|-------|--------------|---------|
+| `pre-execution-gate` | UserPromptSubmit | detects vague prompt and confirms before acting | standard, strict |
+| `keyword-detector` | UserPromptSubmit | injects relevant skill or learned skill automatically | standard, strict |
+| `context-guard-stop` | Stop | warns at 50% (non-blocking) and blocks at 75% with smart summary | all |
+| `persistent-mode` | Stop | blocks stop while a pipeline is active | all |
+| `pre-tool-enforcer` | PreToolUse | re-reads before editing, suggests code intelligence tools | all |
+| `session-start` | SessionStart | restores state from previous session and injects skill-discovery | standard, strict |
+| `post-tool-verifier` | PostToolUse | detects debugging patterns, suggests extracting a learned skill | standard, strict |
+| `model-routing-hook` | PreToolUse | suggests model swap on plan mode and validates subagent spawns | standard, strict |
+| `simplify-ignore` | PreToolUse + PostToolUse | protects `simplify-ignore-start/end` blocks from auto-simplification | standard, strict |
 
-### Perfis de Hook
+### Hook Profiles
 
-Controlados pela variável de ambiente `DEVKIT_HOOK_PROFILE` (padrão: `standard`):
+Controlled by the env variable `DEVKIT_HOOK_PROFILE` (default: `standard`):
 
-| Perfil | Hooks ativos |
-|--------|-------------|
+| Profile | Active hooks |
+|---------|--------------|
 | `minimal` | `context-guard-stop`, `persistent-mode`, `pre-tool-enforcer` |
-| `standard` | todos |
-| `strict` | todos |
+| `standard` | all |
+| `strict` | all |
 
-- **`DEVKIT_HOOK_PROFILE`** — define o perfil ativo (`minimal`, `standard` ou `strict`)
-- **`DEVKIT_DISABLED_HOOKS`** — lista separada por vírgula de hookIds a desativar independente do perfil
+- **`DEVKIT_HOOK_PROFILE`** — sets the active profile (`minimal`, `standard` or `strict`)
+- **`DEVKIT_DISABLED_HOOKS`** — comma-separated list of hookIds to disable regardless of profile
 
 ### Context Guard — Strategic Compact
 
-O hook `context-guard-stop` opera em dois níveis:
-- **50%** — aviso não-bloqueante: sugere `/compact` enquanto ainda há margem
-- **75%** — bloqueio inteligente: exibe hint da task atual, arquivos editados na sessão e decisões do working set antes de bloquear
+The `context-guard-stop` hook operates on two levels:
+- **50%** — non-blocking warning: suggests `/compact` while there's still margin
+- **75%** — smart block: shows current task hint, files edited in the session and decisions from the working set before blocking
 
 ---
 
-## Subagents — Especialistas Despacháveis via `Task` Tool
+## Subagents — Specialists Dispatchable via the `Task` Tool
 
-O kit inclui 5 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
+The kit ships 5 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
 
-| Subagent | Quando usar | Tools |
+| Subagent | When to use | Tools |
 |---|---|---|
-| `code-reviewer` | Review de PR, feature concluída ou qualquer código antes de merge | Read, Grep, Glob, Bash |
-| `security-auditor` | Auth flows, input handling, deps, CORS, headers, pré-deploy | Read, Grep, Glob, Bash |
-| `test-engineer` | Escrever testes, preencher gaps de cobertura, validar regressão | Read, Grep, Glob, Bash, Edit, Write |
-| `orchestrator` | Classificar task complexa, montar pipeline, resolver overlap de skills | todas |
-| `debugger` | Bug, comportamento inesperado, falha que você não consegue explicar | Read, Grep, Glob, Bash, Edit |
+| `code-reviewer` | PR review, finished feature or any code before merge | Read, Grep, Glob, Bash |
+| `security-auditor` | Auth flows, input handling, deps, CORS, headers, pre-deploy | Read, Grep, Glob, Bash |
+| `test-engineer` | Write tests, fill coverage gaps, validate regressions | Read, Grep, Glob, Bash, Edit, Write |
+| `orchestrator` | Classify a complex task, build pipeline, resolve skill overlap | all |
+| `debugger` | Bug, unexpected behavior, failure you can't explain | Read, Grep, Glob, Bash, Edit |
 
-**Exemplo de invocação:**
-
-```
-Despache o subagent code-reviewer para revisar as mudanças em src/auth/login.ts
-```
+**Invocation example:**
 
 ```
-Use o subagent debugger para investigar o crash em TypeError: Cannot read properties of undefined em api/users.ts
+Dispatch the code-reviewer subagent to review changes in src/auth/login.ts
 ```
 
-Os subagents são copiados para `.claude/agents/` do repo consumidor pelo `install.sh`.
-Ver `docs/skill-guides/subagents.md` para guia completo de quando usar cada um.
+```
+Use the debugger subagent to investigate the crash TypeError: Cannot read properties of undefined in api/users.ts
+```
+
+Subagents are copied to the consuming repo's `.claude/agents/` by `install.sh`.
+See `docs/skill-guides/subagents.md` for the full guide on when to use each.
 
 ---
 
-## MCP Server — 36 Tools para Qualquer Cliente MCP
+## MCP Server — 36 Tools for Any MCP Client
 
 ```json
 {
@@ -327,115 +329,125 @@ Ver `docs/skill-guides/subagents.md` para guia completo de quando usar cada um.
 }
 ```
 
-Funciona no Claude Code, Windsurf, Gemini CLI, Cursor e qualquer cliente MCP.
+Works in Claude Code, Windsurf, Gemini CLI, Cursor and any MCP client.
 
-| Bloco | Tools | Exemplos |
+| Block | Tools | Examples |
 |-------|-------|----------|
-| **Knowledge** | 14 | classifica task, monta pipeline, resume diff, monta context pack |
-| **Execution** | 6 | busca concorrentes (Brave), scraping (Playwright/Firecrawl), gera imagens (fal.ai) |
-| **Persistence** | 12 | salva contexto, working set, custo, learned skills e guardrails de sessão |
-| **Session Intelligence** | 4 | comprime output verboso, lê log JSONL da sessão, lista arquivos/erros vistos |
+| **Knowledge** | 14 | classify task, build pipeline, summarize diff, build context pack |
+| **Execution** | 6 | competitor search (Brave), scraping (Playwright/Firecrawl), image generation (fal.ai) |
+| **Persistence** | 12 | save context, working set, cost, learned skills and session guardrails |
+| **Session Intelligence** | 4 | compress verbose output, read session JSONL log, list seen files/errors |
 
-Ver `mcp-server/README.md` para documentação completa das tools.
-
----
-
-## API Keys Necessárias
-
-| Key | Para que serve | Onde obter |
-|-----|---------------|-----------|
-| `FAL_KEY` | geração de imagens (skill 17, MCP moodboards) | fal.ai/dashboard/keys |
-| `BRAVE_SEARCH_KEY` | pesquisa de concorrentes (skill 29, MCP) | brave.com/search/api |
-| `FIRECRAWL_KEY` | scraping avançado (opcional) | firecrawl.dev |
-
-O instalador solicita cada key e salva em `.env.local` do projeto.
+See `mcp-server/README.md` for full tool documentation.
 
 ---
 
-## Ergonomia Diaria
+## API Keys Required
 
-- leia `docs/quickstart.md` para entrar rápido no fluxo
-- reutilize `docs/repo-audit/current.md` antes de explorar o repo
-- use `devkit_context_pack` para iniciar task sem reler metade do repo
-- use `devkit_diff_brief` para retomar trabalho ou preparar review
-- use `devkit_working_set` para persistir arquivos quentes e próximos passos
-- use `commands/` como atalhos operacionais
-- consulte `docs/skill-call-matrix.md` quando houver overlap entre skills
-- consulte `docs/skill-guides/` apenas sob demanda
-- consulte `docs/skill-guides/ideation-frameworks.md` — SCAMPER, HMW, First Principles, JTBD para fase de ideação
-- consulte `docs/skill-guides/skill-discovery.md` — decision tree para escolher skill certa por tipo de task
-- consulte `docs/skill-guides/context-engineering.md` — hierarquia de contexto, trust levels e packing strategies
-- consulte `docs/skill-guides/autonomous-loop.md` — protocolo do `/auto` para execução autônoma
+| Key | What it's for | Where to get it |
+|-----|---------------|-----------------|
+| `FAL_KEY` | image generation (skill 17, MCP moodboards) | fal.ai/dashboard/keys |
+| `BRAVE_SEARCH_KEY` | competitor research (skill 29, MCP) | brave.com/search/api |
+| `FIRECRAWL_KEY` | advanced scraping (optional) | firecrawl.dev |
+
+The installer prompts for each key and saves them in the project's `.env.local`.
 
 ---
 
-## Slash Commands — Atalhos por Fase de Desenvolvimento
+## Daily Ergonomics
 
-| Command | O que faz | Skills ativadas |
-|---------|-----------|-----------------|
-| `/spec` | Especificar feature com critérios de aceitação | PO (01) |
-| `/plan` | Classificar task e montar pipeline | Orchestrator (09) |
-| `/build` | Implementar com stack do projeto | Backend (03) + Frontend (04) |
-| `/test` | Escrever e rodar testes | QA (05) |
-| `/review` | Review final + security audit | Reviewer (11) + Security (06) |
-| `/simplify` | Simplificar e refatorar código | Migration & Refactor (23) |
-| `/ship` | Release e deploy | Release Manager (24) + Deploy (07) |
-| `/pipeline` | Pipeline completo end-to-end | Orchestrator (09) → todas |
-| `/best` | Auditoria de boas práticas, clean code e DRY | Reviewer (11) + Security (06) + QA (05) |
-| `/auto` | Agente autônomo — executa task completa sem intervenção | Todas as necessárias + circuit breaker |
-| `/loop` | Loop autônomo via subprocess (Ralph-identical) — documenta como invocar `auto-loop.mjs` | `scripts/auto-loop.mjs` |
-| `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background | — |
+- read `docs/quickstart.md` to get into the flow fast
+- reuse `docs/repo-audit/current.md` before exploring the repo
+- use `devkit_context_pack` to start a task without re-reading half the repo
+- use `devkit_diff_brief` to resume work or prep a review
+- use `devkit_working_set` to persist hot files and next steps
+- use `commands/` as operational shortcuts
+- consult `docs/skill-call-matrix.md` when there's overlap between skills
+- consult `docs/skill-guides/` only on demand
+- consult `docs/skill-guides/ideation-frameworks.md` — SCAMPER, HMW, First Principles, JTBD for the ideation phase
+- consult `docs/skill-guides/skill-discovery.md` — decision tree to pick the right skill per task type
+- consult `docs/skill-guides/context-engineering.md` — context hierarchy, trust levels and packing strategies
+- consult `docs/skill-guides/autonomous-loop.md` — `/auto` protocol for autonomous execution
 
-### `/loop` — Autonomous Loop (Ralph-identical)
+---
 
-`scripts/auto-loop.mjs` implementa o mesmo padrão do [ralph-starter](https://github.com/multivmlabs/ralph-starter): roda `claude --print` em subprocess Node.js, iterando até a task estar pronta, funcional e testada.
+## Slash Commands — Shortcuts by Development Phase
+
+| Command | What it does | Skills activated |
+|---------|--------------|------------------|
+| `/spec` | Spec a feature with acceptance criteria | PO (01) |
+| `/plan` | Classify task and build pipeline | Orchestrator (09) |
+| `/build` | Implement with the project stack | Backend (03) + Frontend (04) |
+| `/test` | Write and run tests | QA (05) |
+| `/review` | Final review + security audit | Reviewer (11) + Security (06) |
+| `/simplify` | Simplify and refactor code | Migration & Refactor (23) |
+| `/ship` | Release and deploy | Release Manager (24) + Deploy (07) |
+| `/pipeline` | Full end-to-end pipeline | Orchestrator (09) → all |
+| `/best` | Best practices, clean code and DRY audit | Reviewer (11) + Security (06) + QA (05) |
+| `/auto` | Autonomous agent — runs full task without intervention | All needed + circuit breaker |
+| `/loop` | Multi-agent autonomous orchestrator (auto-loop v2) — claude + codex, parallel via worktree, polishing pass | `scripts/auto-loop/` |
+| `/worktree` | Creates isolated git worktree, copies `.env*`, validates env in background | — |
+
+### `/loop` — Auto-Loop v2 (Multi-Agent Orchestrator)
+
+`scripts/auto-loop/` is an autonomous orchestrator that ships tasks **ready, working, polished and tested**. Run it overnight, wake up to a PR ready to merge.
 
 ```bash
-# Uso básico
-node scripts/auto-loop.mjs "sua task aqui"
+# Basic usage (single run, claude agent)
+node scripts/auto-loop "your task here"
 
-# Em repos consumidores (instalado em .bot/)
-node .bot/scripts/auto-loop.mjs "sua task aqui"
+# Pick the agent
+node scripts/auto-loop "task" --agent codex
+node scripts/auto-loop "task" --agent claude
 
-# Opções
-node scripts/auto-loop.mjs "task" --max-iterations 20 --validate --verbose --no-commit
+# Isolated worktree + parallel (3 tasks in 3 worktrees)
+node scripts/auto-loop --worktree --parallel 3 -- "task A" -- "task B" -- "task C"
+
+# Configurable polishing pass (default: standard)
+node scripts/auto-loop "task" --polish=full
+
+# Fine-grained control
+node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the new endpoint"
 ```
 
-**10 padrões de produção implementados:**
+**v2 features:**
 
-| Padrão | Implementação |
-|--------|--------------|
-| Progress tracking | Checkboxes em `.auto/plan.md` |
-| Inter-iteration memory | `.auto/progress.md` append-only |
-| Context narrowing | 3 níveis progressivos por iteração |
-| Tiered validation | lint → typecheck → build |
-| Error deduplication | MD5 hash de erro normalizado |
-| Completion override | Re-lê plan antes de parar |
-| Dynamic budget | 8 / 12 / 15 iterações por complexidade |
-| Validation feedback loop | Erro vira contexto da próxima iteração |
-| Stall detection | 3 iter sem `git diff` = stuck |
-| Build-fix extension | +2 iterações uma vez se build falha |
+| Feature | Detail |
+|---------|--------|
+| Multi-agent | adapters for `claude --print` and `codex exec`, common interface, swap via `--agent` |
+| Integrated worktree | creates `<repo>-auto-worktrees/<slug>/` on branch `auto/<slug>`, preserved if committed |
+| Parallel mode | `--worktree --parallel N` runs N isolated runners, aggregates logs by run-id |
+| Polishing pass | `--polish=none\|light\|standard\|full` — `simplify` + `review` (+ `security-review` + `test` on `full`) before commit |
+| Cross-OS prevent-sleep | macOS `caffeinate`, Linux `systemd-inhibit`, Windows `SetThreadExecutionState` |
+| JSONL debug log | `.auto/runs/<run-id>/debug.jsonl` with full `error.cause` chain |
+| Classified backoff | `permanent` aborts, `retryable` exponential (60s→600s, 5x), `agent-reported` retries immediately |
+| Graceful interrupt | 1× Ctrl+C = finish iteration and exit clean, 2× = SIGKILL with rollback |
+| Robust resume | `session.json` with prompt/model/agent/branch — rerun asks update/new branch/quit |
+| Token cap | `--max-tokens N` aborts mid-run with clean commit if valid |
+| Stop-when | `--stop-when "<condition>"` — agent reports `STOP_WHEN_MET: true|false` per iteration |
 
-**Circuit breaker:** para automaticamente se mesmo erro 3x, stall detectado, budget estourado ou task bloqueada.
+**Circuit breaker:** same error 3x, stall (3 iterations without `git diff`), budget exhausted, or task blocked — stops automatically.
+
+**Exit codes:** `0` ok / `2` permanent error / `3` retryable exhausted / `4` breaker tripped / `5` stall.
 
 ---
 
-## Governanca Global
+## Global Governance
 
-- `GLOBAL.md` é a camada mais alta de instrução
-- `policies/` padroniza execução, risco, persistência, qualidade e avaliação
-- `templates/` reduz variação de handoff, plano, review e rejeição
-- `policies/tool-safety.md` — uso seguro de escrita, rede, MCP e ações externas
-- `policies/model-routing.md` — tiers de modelo, enforcement e integração com cost-tracker
-- `policies/evals.md` — evidência mínima para mudanças estruturais no kit
-- `policies/search-first.md` — pesquisa obrigatória antes de implementar (feature, bugfix, integração, refactor)
-- `policies/iterative-retrieval.md` — retrieval progressivo em 3 rounds para subagents e skills delegadas
-- `policies/anti-rationalization.md` — tabelas de racionalizações comuns + rebuttals por skill crítica
-- `policies/source-driven.md` — hierarquia de fontes obrigatória para decisões de framework/lib
-- `policies/confusion-management.md` — protocolo STOP-NAME-OPTIONS-WAIT para confusão detectada
-- `policies/context-engineering.md` — hierarquia de contexto em 5 níveis e 3 trust levels
+- `GLOBAL.md` is the highest instruction layer
+- `policies/` standardize execution, risk, persistence, quality and evaluation
+- `templates/` reduce variation in handoff, plan, review and rejection
+- `policies/tool-safety.md` — safe usage of write, network, MCP and external actions
+- `policies/model-routing.md` — model tiers, enforcement and integration with cost-tracker
+- `policies/evals.md` — minimum evidence for structural changes to the kit
+- `policies/search-first.md` — research mandatory before implementing (feature, bugfix, integration, refactor)
+- `policies/iterative-retrieval.md` — progressive retrieval in 3 rounds for delegated subagents and skills
+- `policies/anti-rationalization.md` — common rationalization tables + rebuttals per critical skill
+- `policies/source-driven.md` — mandatory source hierarchy for framework/lib decisions
+- `policies/confusion-management.md` — STOP-NAME-OPTIONS-WAIT protocol for detected confusion
+- `policies/context-engineering.md` — 5-level context hierarchy and 3 trust levels
 
-### Hierarquia de Instrucoes
+### Instruction Hierarchy
 
 1. `GLOBAL.md`
 2. `policies/*.md`
@@ -444,13 +456,13 @@ node scripts/auto-loop.mjs "task" --max-iterations 20 --validate --verbose --no-
 
 ---
 
-## Estrutura Real Deste Repo
+## Real Repo Structure
 
 ```text
 .
 ├── .claude/              ← slash commands (/spec, /plan, /build, /test, /review, /simplify, /ship, /pipeline, /best, /auto, /loop)
 │   └── commands/
-├── .claude-plugin/       ← manifesto do plugin Claude Code
+├── .claude-plugin/       ← Claude Code plugin manifest
 │   └── plugin.json
 ├── .github/              ← CI workflows (validate-plugin, validate)
 │   └── workflows/
@@ -465,47 +477,47 @@ node scripts/auto-loop.mjs "task" --max-iterations 20 --validate --verbose --no-
 │   ├── skill-guides/
 │   └── skill-call-matrix.md
 ├── evals/
-├── hooks/                ← lifecycle hooks para Claude Code
+├── hooks/                ← lifecycle hooks for Claude Code
 │   ├── hooks.json
 │   ├── config.json
 │   └── scripts/
-├── mcp-server/           ← MCP server com 36 tools
+├── mcp-server/           ← MCP server with 36 tools
 ├── patterns/ai-integration/
 ├── personas/             ← agent personas (code-reviewer, security-auditor, test-engineer)
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
-├── scripts/              ← generate-image.py e utilitários
-├── setup/                ← install.sh multi-plataforma
+├── scripts/              ← generate-image.py and utilities
+├── setup/                ← multi-platform install.sh
 ├── skills/               ← 31 specialists (*/SKILL.md)
-├── src/                  ← hooks, stores, components e middleware reutilizáveis
-└── templates/            ← handoff, plano, review, rejeição
+├── src/                  ← reusable hooks, stores, components and middleware
+└── templates/            ← handoff, plan, review, rejection
 ```
 
 ---
 
-## Estrutura Instalada no Repo Consumidor
+## Installed Structure in the Consumer Repo
 
-Quando instalado via `/devkit-install-fv` ou `setup/install.sh`:
+When installed via `/devkit-install-fv` or `setup/install.sh`:
 
 ```text
-repo-consumidor/
+consumer-repo/
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── GEMINI.md
-├── .claude/settings.json         ← hooks + MCP registrados
+├── .claude/settings.json         ← hooks + MCP registered
 ├── .claude/commands/             ← slash commands (/spec, /plan, /build, /loop, ...)
-├── .claude/agents/               ← subagents despacháveis via Task tool
+├── .claude/agents/               ← subagents dispatchable via Task tool
 ├── .github/copilot-instructions.md
 ├── .windsurf/rules/dev-team-kit.md
 ├── .windsurf/mcp.json
 ├── .gemini/settings.json
 └── .bot/
     ├── GLOBAL.md
-    ├── commands/                 ← comandos operacionais (/audit-repo, /devkit-install-fv, ...)
+    ├── commands/                 ← operational commands (/audit-repo, /devkit-install-fv, ...)
     ├── docs/                     ← skill-guides, repo-audit, quickstart
     ├── evals/
     ├── hooks/                    ← lifecycle hooks
-    ├── learned-skills/           ← conhecimento acumulado do projeto (score 0-1, decay semanal, auto-arquivado em .archive/ abaixo de 0.3)
-    ├── mcp-server/               ← compilado e pronto
+    ├── learned-skills/           ← project-accumulated knowledge (score 0-1, weekly decay, auto-archived in .archive/ below 0.3)
+    ├── mcp-server/               ← compiled and ready
     ├── patterns/ai-integration/
     ├── personas/                 ← code-reviewer, security-auditor, test-engineer
     ├── policies/
@@ -515,12 +527,12 @@ repo-consumidor/
     └── templates/
 ```
 
-O repo consumidor também recebe `.claude/commands/` (10 slash commands) na raiz, instalado pelo `setup/install.sh`.
+The consumer repo also receives `.claude/commands/` (10 slash commands) at the root, installed by `setup/install.sh`.
 
 
 ---
 
-## Validacao Rapida
+## Quick Validation
 
 ```bash
 pytest scripts/tests -q
@@ -531,15 +543,15 @@ bash scripts/smoke-install.sh
 
 ---
 
-## Contribuindo
+## Contributing
 
-Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia completo em **[CONTRIBUTING.md](./CONTRIBUTING.md)**.
+Want to add a skill, fix a bug or propose an improvement? See the full guide in **[CONTRIBUTING.md](./CONTRIBUTING.md)**.
 
-**Resumo rápido:**
-1. Crie a skill em `skills/NN-nome/SKILL.md` e registre no `plugin.json`
-2. Para slash commands, adicione em `.claude/commands/` e registre no `plugin.json`
-3. Rode `node scripts/check-consistency.mjs` antes de commitar
-4. Abra um PR com entry no `CHANGELOG.md`
+**Quick summary:**
+1. Create the skill in `skills/NN-name/SKILL.md` and register it in `plugin.json`
+2. For slash commands, add them to `.claude/commands/` and register in `plugin.json`
+3. Run `node scripts/check-consistency.mjs` before committing
+4. Open a PR with an entry in `CHANGELOG.md`
 
 ---
 
@@ -547,33 +559,37 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 
 ### 2026-04-04
 
-- alinhado o setup para instalação em `.bot/`, hooks automáticos, MCP local `dev-team-kit` e smoke test do instalador
-- corrigidos hooks para ler config no modo instalado e reduzir injeção de contexto de learned skills
-- implementados `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` e telemetria expandida em `devkit_track_cost`
-- adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo não interativo
-- atualizadas docs principais, README do MCP, quickstart e guias de operação com foco em economia de token
+- aligned setup for installation in `.bot/`, automatic hooks, local MCP `dev-team-kit` and installer smoke test
+- fixed hooks to read config in installed mode and reduce learned skills context injection
+- implemented `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` and expanded telemetry in `devkit_track_cost`
+- added setup profiles `lean`, `daily-dev` and `research`, with non-interactive mode
+- updated main docs, MCP README, quickstart and operations guides with token economy focus
 
 ### 2026-04-08
 
-- unificado model routing em policy única (`policies/model-routing.md`), absorvendo skill 16 (llm-selector)
-- adicionado hook `model-routing-hook.mjs` para enforcement em plan mode e subagent spawns
-- atualizadas referências em cost-tracker, cost-optimization, orchestrator, design-intelligence e hooks policy
+- unified model routing into a single policy (`policies/model-routing.md`), absorbing skill 16 (llm-selector)
+- added `model-routing-hook.mjs` hook for enforcement on plan mode and subagent spawns
+- updated references in cost-tracker, cost-optimization, orchestrator, design-intelligence and hooks policy
 
 ### 2026-04-09
 
-- adicionado manifesto de plugin Claude Code (`.claude-plugin/plugin.json`) com 31 skills, hooks e commands
-- adicionado slash command `/devkit-install-fv` para instalação full `.bot/` a partir do plugin global
-- README redesenhado com hero section, tabela de especialistas com descrição por skill, comparativo de modos de instalação e tabela de compatibilidade multi-plataforma
+- added Claude Code plugin manifest (`.claude-plugin/plugin.json`) with 31 skills, hooks and commands
+- added `/devkit-install-fv` slash command for full `.bot/` install from the global plugin
+- README redesigned with hero section, specialists table with per-skill description, install modes comparison and multi-platform compatibility table
 
 ### 2026-04-11
 
-- adicionados Hook Profiles (`minimal`/`standard`/`strict`) com env vars `DEVKIT_HOOK_PROFILE` e `DEVKIT_DISABLED_HOOKS`
-- implementado Confidence Scoring em learned skills: score 0-1, decay semanal, boost por uso, auto-arquivo abaixo de 0.3
-- adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
-- adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
-- `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+- added Hook Profiles (`minimal`/`standard`/`strict`) with env vars `DEVKIT_HOOK_PROFILE` and `DEVKIT_DISABLED_HOOKS`
+- implemented Confidence Scoring on learned skills: score 0-1, weekly decay, usage boost, auto-archive below 0.3
+- added `search-first.md` policy: mandatory research before implementing
+- added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
+- `context-guard-stop` improved with proactive 50% warning and smart 75% block message
 
 ### 2026-04-13
 
-- **Agent Intelligence v2:** anti-rationalization tables em 5 skills críticas (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy com hierarquia de fontes e integração no orchestrator, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook que protege blocos críticos de simplificação automática via PreToolUse/PostToolUse.
-- **Agent Intelligence v3:** 10 slash commands mapeando fases de desenvolvimento a skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`, `/auto`), meta-skill de descoberta com decision tree e 6 core operating behaviors, session-start bootstrap com injeção automática do skill-discovery, 3 agent personas com output estruturado (code-reviewer, security-auditor, test-engineer) referenciadas por skills 11/06/05, context engineering policy com hierarquia de 5 níveis e 3 trust levels, plugin validation CI com GitHub Actions. Comando `/auto` para execução autônoma completa com 10 patterns adaptados de loops de produção: progress tracking via checkboxes em `.auto/plan.md`, inter-iteration memory em `.auto/progress.md`, context narrowing progressivo (3 níveis), tiered validation (lint→typecheck→build com timeouts), error deduplication (normaliza line numbers/timestamps antes de comparar), completion override (reler plan antes de commit), dynamic iteration budget, validation feedback loop (erro vira contexto da próxima tentativa), stall detection (3 iterações sem git diff = stop), build-fix extension (+2 iterações). Integração v3 cross-vertical: plugin.json com 10 commands, install.sh copia personas/ e .claude/commands/, AGENTS.md/GLOBAL.md/templates/platform configs todos atualizados, minimal profile desabilita session-start.
+- **Agent Intelligence v2:** anti-rationalization tables in 5 critical skills (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy with source hierarchy and orchestrator integration, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook protecting critical blocks from automatic simplification via PreToolUse/PostToolUse.
+- **Agent Intelligence v3:** 10 slash commands mapping development phases to skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`, `/auto`), discovery meta-skill with decision tree and 6 core operating behaviors, session-start bootstrap with automatic skill-discovery injection, 3 agent personas with structured output (code-reviewer, security-auditor, test-engineer) referenced by skills 11/06/05, context engineering policy with 5-level hierarchy and 3 trust levels, plugin validation CI with GitHub Actions. `/auto` command for full autonomous execution with 10 patterns adapted from production loops: progress tracking via checkboxes in `.auto/plan.md`, inter-iteration memory in `.auto/progress.md`, progressive context narrowing (3 levels), tiered validation (lint→typecheck→build with timeouts), error deduplication (normalizes line numbers/timestamps before comparing), completion override (re-read plan before commit), dynamic iteration budget, validation feedback loop (error becomes context for next attempt), stall detection (3 iterations without git diff = stop), build-fix extension (+2 iterations). v3 cross-vertical integration: plugin.json with 10 commands, install.sh copies personas/ and .claude/commands/, AGENTS.md/GLOBAL.md/templates/platform configs all updated, minimal profile disables session-start.
+
+---
+
+> 🇧🇷 [Leia em Português](README.pt-BR.md)

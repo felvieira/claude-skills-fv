@@ -49,10 +49,19 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/pipeline` | Pipeline completo end-to-end |
 | `/best` | Auditoria de boas práticas, clean code e DRY |
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
-| `/loop` | Loop subprocess idêntico ao ralph-starter (`node scripts/auto-loop.mjs "task"`) |
+| `/loop` | Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass (`node scripts/auto-loop.mjs "task"`) |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
+
+## Modos de execução autônomos
+
+- `/auto` — prompt-based, executa no contexto atual da conversa
+- `/loop` — process-based (auto-loop v2), roda o agente como subprocess com:
+  - **multi-agente** via `--agent claude|codex`
+  - **worktree integrado** via `--worktree` (paralelo via `--parallel N`, até 8)
+  - **polishing pass** configurável via `--polish none|light|standard|full`
+  - exit codes determinísticos para uso em CI (ver `.claude/commands/loop.md`)
 
 ## Artefatos Principais
 - `GLOBAL.md` = regras universais
