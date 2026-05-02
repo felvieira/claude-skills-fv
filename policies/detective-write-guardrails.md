@@ -123,7 +123,7 @@ Esta policy **complementa** `policies/tool-safety.md`. Em caso de conflito, prev
 ## Evidencia de Conformidade
 
 Ao concluir, Detetive entrega:
-- output das **duas** checagens da secao "Verificacao" (untracked filtrado + `git diff --name-only HEAD`), ambos vazios
+- output das **duas** checagens da secao "Verificacao" (untracked filtrado + `git diff --name-only --diff-filter=MDARCT HEAD`), ambos vazios
 - `.detective/logs/violations.log` (vazio em caso de sucesso)
 - declaracao explicita no handoff: "Nenhum arquivo do projeto legado foi modificado."
 
@@ -132,5 +132,5 @@ Ao concluir, Detetive entrega:
 Por que tao restritivo:
 1. **Spec valida exige baseline imutavel.** Se codigo muda durante analise, spec descreve estado intermediario.
 2. **Confianca do usuario.** Sistema legado costuma ter regras invisiveis — modificar pode quebrar producao silenciosamente.
-3. **Auditabilidade.** `git status` limpo prova que investigacao foi nao-invasiva.
+3. **Auditabilidade.** Verificacao dupla limpa (`git status --porcelain` filtrado + `git diff --name-only --diff-filter=MDARCT HEAD`) prova que investigacao foi nao-invasiva.
 4. **Reversibilidade total.** Usuario pode deletar `.detective/` e `_detective_sdd/` para reverter 100% da operacao.
