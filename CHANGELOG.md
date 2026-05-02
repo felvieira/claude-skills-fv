@@ -40,7 +40,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - **Skill 36 — Web Asset Generator** (`skills/36-web-asset-generator/SKILL.md`): favicons (multi-size), PWA icons (incl. maskable), Open Graph/Twitter card images, web manifest, browserconfig and ready-to-paste HTML snippet — derived from logo or brand text. Three tooling options: realfavicongenerator CLI, ImageMagick, Sharp.
 - **`policies/writing-clarity.md`**: 10 Strunk rules adapted for agent output (commits, error messages, handoffs, slash command output, generated docs). Lists banned filler words, output patterns per type, and 5-test conformance checklist.
 - **`.claude/agents/debugger.md` upgraded**: explicit Evidence Ledger table, 10-row anti-rationalization table, heuristics by bug class (race condition, memory leak, perf regression, auth/permission, off-by-one, encoding), confidence scoring, escalation rules.
-- README.md/README.pt-BR.md/AGENTS.md/plugin.json updated to reflect 35 skills (was 32). Plugin description and badges bumped.
+- README.md/README.pt-BR.md/plugin.json updated to reflect 35 skills (was 32). Plugin description and badges bumped. AGENTS.md unchanged (none of the new skills introduces a new slash command).
 
 ### Added
 - **Skill 33 — Detective Spec** (`skills/33-detective-spec/SKILL.md`): engenharia reversa de specs para sistemas legados, inspirada no [Reversa](https://github.com/sandeco/reversa) e adaptada ao kit (Graphify + repo-audit + memória persistente).

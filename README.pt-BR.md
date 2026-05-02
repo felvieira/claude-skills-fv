@@ -172,7 +172,6 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 | 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
 | 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 35 especialistas |
-| 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph e Twitter card images, manifest e snippets de meta tags — derivados de logo ou texto da marca |
 
 ### Produto e Design
 
@@ -181,6 +180,7 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 | 01 | **PO** | escreve spec, histórias de usuário, critérios de aceitação e define prioridade |
 | 02 | **UI/UX Designer** | define layout, sistema de tokens, responsividade e heurísticas de uso |
 | 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
+| 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph e Twitter card images, manifest e snippets de meta tags — derivados de logo ou texto da marca |
 
 ### Desenvolvimento
 

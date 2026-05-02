@@ -17,7 +17,7 @@ Cria e mantem as outras skills com qualidade. Sem esta skill, o kit cresce por c
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/evals.md`, `policies/handoffs.md`, `policies/writing-clarity.md`, `policies/source-driven.md`.
 
-Inspirado em `anthropic-skills:skill-creator` mas adaptado as convencoes deste kit (numeracao sequencial, frontmatter YAML, governance section, integracao com pipeline).
+Inspirado no padrao "skill-creator" da Anthropic (skill meta de criacao/avaliacao de skills disponivel no plugin oficial `anthropic-skills`), adaptado as convencoes deste kit: numeracao sequencial, frontmatter YAML, secao "Governanca Global", integracao com pipeline (orchestrator, context manager, documenter, reviewer). Esta skill nao depende do plugin Anthropic — e implementacao propria com convencoes do dev-team-kit.
 
 ## Quando Usar
 
@@ -175,12 +175,12 @@ Usar o template acima. Validar:
 
 ### Fase 4: Registrar
 
-4 lugares para atualizar:
+5 lugares para atualizar (item 4 e condicional):
 
 1. `.claude-plugin/plugin.json` — adicionar caminho na lista `skills`
 2. `README.md` — adicionar linha na tabela "The N Specialists" + bump no contador (badge, hero, instalacao)
 3. `README.pt-BR.md` — espelhar
-4. `AGENTS.md` — se introduzir slash command novo, adicionar na tabela
+4. `AGENTS.md` — **somente se** a skill introduzir slash command novo (adicionar na tabela de comandos). Se for skill so com trigger natural ou subagent, pular.
 5. `CHANGELOG.md` — entrada `## [Unreleased]` ou data atual
 
 Se a skill tiver subagent dispatchavel (`.claude/agents/X.md`):
@@ -279,7 +279,7 @@ Indica falta de modularizacao. Mover exemplos para `docs/skill-guides/`. Quebrar
 
 (Criacao)
 - `skills/NN-nome/SKILL.md` criado
-- registrada nos 4-5 lugares (plugin.json, README pt+en, AGENTS, CHANGELOG)
+- registrada nos 5 lugares (plugin.json, README.md, README.pt-BR.md, AGENTS.md se houver slash command, CHANGELOG.md)
 - score eval >= 22
 - review aprovado
 

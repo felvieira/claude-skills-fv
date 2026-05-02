@@ -96,6 +96,22 @@ public/
 <meta name="twitter:image" content="https://<base-url>/twitter-card.png">
 ```
 
+## Responsabilidades / Protocolo
+
+1. **Validar input**: logo source quadrado >= 512x512 (PNG/SVG transparente preferivel) **OU** texto + cor de fundo
+2. **Coletar metadados**: brand name, brand color (hex), base URL absoluta, output dir
+3. **Gerar favicons**: ICO multi-size + PNG 16/32/96
+4. **Gerar PWA icons**: 192/512 + maskable 512 (com 80% safe area)
+5. **Gerar Apple touch icon**: 180x180 (fundo solido, sem transparencia)
+6. **Gerar OG image**: 1200x630 PNG (assunto centralizado, alto contraste)
+7. **Gerar Twitter card**: 1200x675 PNG
+8. **Gerar manifest.webmanifest** + browserconfig.xml
+9. **Gerar snippet HTML** com todas as meta tags (URLs absolutas)
+10. **Validar output**: Lighthouse PWA + Facebook debugger + Twitter validator
+11. **Handoff** para skill 04 (Frontend) integrar no template HTML
+
+Detalhes nas sub-secoes a seguir.
+
 ## Especificacoes Por Plataforma
 
 | Asset | Tamanho | Formato | Para |
@@ -262,6 +278,8 @@ curl -I https://meusite.com/favicon.ico  # deve retornar 200
 # 4. PWA installability
 # Chrome DevTools > Application > Manifest
 ```
+
+<!-- anti-rationalization: N/A — skill e mecanica (gera assets a partir de input bem-definido), sem judgment calls que justifiquem tabela de vies -->
 
 ## Anti-Padroes
 

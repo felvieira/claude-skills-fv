@@ -48,6 +48,20 @@ Consultar `docs/skill-guides/static-analysis.md` para rulesets avancados, custom
 - handoff para skill 06 (Security Review) com top findings
 - handoff para debugger se finding tiver root cause nao trivial
 
+## Responsabilidades / Protocolo
+
+1. **Detectar linguagens** do repositorio
+2. **Selecionar rulesets** apropriados (default: `--config=auto` + ruleset OWASP)
+3. **Executar scan** (Semgrep primeiro; CodeQL se padrao envolve fluxo)
+4. **Gerar SARIF** + relatorio markdown
+5. **Triagem** — classificar TP/FP/needs-investigation
+6. **Suprimir FPs** com comentario justificando
+7. **Handoff** para skill 06 com sumario
+8. **Variant analysis** se padrao recorrer (custom rule)
+9. **CI integration** quando aplicavel
+
+Detalhes operacionais nas sub-secoes a seguir.
+
 ## Ferramentas
 
 ### Semgrep (default — comecar por aqui)
@@ -106,20 +120,24 @@ codeql query run --database=db my-query.ql
 - bug que so aparece em condicoes de chamada especificas
 - variant analysis sofisticada apos achar bug inicial
 
-### Subagents auxiliares
+### Subagents auxiliares (planejados — ainda nao implementados neste kit)
 
-Se kit estiver instalado completo, despachar via Task tool:
-- `static-analysis:semgrep-scanner` — executa scans em paralelo por categoria de linguagem
+Estes subagents seriam o ideal para escala. **Nao existem em `.claude/agents/` deste kit hoje** — listados aqui como roadmap. Por enquanto, esta skill executa todo o pipeline inline (chamadas diretas a `semgrep` e `codeql` via Bash).
+
+Roadmap:
+- `static-analysis:semgrep-scanner` — executar scans em paralelo por categoria de linguagem
 - `static-analysis:semgrep-triager` — triagem TP/FP de findings
-- `static-analysis:codeql` — orquestra build de database + queries
+- `static-analysis:codeql-runner` — orquestrar build de database + queries
 - `static-analysis:sarif-parsing` — parse, dedup, agregacao de SARIF
 - `variant-analysis:variant-analysis` — busca de bugs similares apos encontrar inicial
+
+Se forem implementados, criar via skill 35 (Skill Author) e despachar via Task tool. Ate la, seguir o pipeline inline abaixo.
 
 ## Pipeline Recomendado
 
 ```
 1. Semgrep --config=auto    (5-30s, cobertura ampla)
-   → triage (semgrep-triager)
+   → triage manual ou (futuro) `semgrep-triager` subagent
    → fix critical/high
 2. Se finding for bug de fluxo: CodeQL com query especifica
    → variant analysis para achar similares
@@ -153,6 +171,23 @@ Nao suprimir sem comentario explicando porque.
 | Medium | Validacao fraca, missing rate limit, dep com CVE medium | fix no proximo sprint |
 | Low | Code smell, deprecated API, missing header opcional | backlog |
 | Info | Sugestao de hardening | opcional |
+
+## Anti-Rationalization Table (Triagem de Findings)
+
+Triagem de findings tem viesses recorrentes. Pensamentos que significam STOP:
+
+| Pensamento | Realidade |
+|---|---|
+| "Isso parece falso positivo" | Validacao em outro arquivo nao garante. Verificar fluxo real. |
+| "Eu sei que esse codigo e seguro" | Sem evidencia (validacao explicita ou teste), e suposicao. |
+| "Esse modulo e legado, nao toca" | Legado e onde CVE mora. Tratar igual. |
+| "Suprimir e mais rapido" | FP nao validado vira buraco de seguranca em 6 meses. |
+| "A regra e generica, nao se aplica" | Genericas pegam padroes reais. Investigar antes de descartar. |
+| "Tem outros bugs maiores agora" | Critical/High nao espera. Triagem e pre-deploy gate. |
+| "Funcionava antes do scan" | Bug existia antes — scan so revelou. |
+| "Vamos abrir issue e seguir" | Critical aberto = no merge. Issue nao substitui fix. |
+
+Toda supressao precisa de comentario explicando **por que** o codigo e seguro naquele contexto.
 
 ## Quando Criar Custom Rules
 
