@@ -51,6 +51,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/auto` | Agente autônomo — executa task completa sem intervenção |
 | `/loop` | Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass (`node scripts/auto-loop.mjs "task"`) |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
+| `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem tocar no código (skill 33) |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 
@@ -89,6 +90,10 @@ Copiados para o repo consumidor pelo `install.sh`.
 | `test-engineer` | QA Prove-It: happy path, error, edge case, regression, performance | Read, Grep, Glob, Bash, Edit, Write |
 | `orchestrator` | Tech Lead: classifica task, define pipeline mínimo, coordena skills | todas |
 | `debugger` | Root cause sistemático: hipótese → evidência → fix mínimo | Read, Grep, Glob, Bash, Edit |
+| `detective-contracts` | Detetive de contratos de módulo (legado) — read-only | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Detetive de regras de negócio escondidas (legado) — read-only | Read, Grep, Glob, Bash |
+| `detective-flows` | Detetive de fluxos end-to-end (legado) — read-only | Read, Grep, Glob, Bash |
+| `detective-adrs` | Detetive de decisões arquiteturais retroativas (legado) — read-only | Read, Grep, Glob, Bash |
 
 **Como invocar** (via `Task` tool ou prompt Claude Code):
 

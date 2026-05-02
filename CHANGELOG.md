@@ -35,6 +35,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- **Skill 33 — Detective Spec** (`skills/33-detective-spec/SKILL.md`): engenharia reversa de specs para sistemas legados, inspirada no [Reversa](https://github.com/sandeco/reversa) e adaptada ao kit (Graphify + repo-audit + memória persistente).
+  - Pipeline de 5 fases (reconhecimento → módulos → regras → fluxos → ADRs) com checkpoint/resume em `.detective/state.json`
+  - Output em `_detective_sdd/` (overview, contratos de módulo, regras de negócio, fluxos end-to-end, ADRs retroativos, traceability)
+  - Toda spec rastreável até `file:line` ou `commit-sha` com confidence scoring (high/medium/low)
+- **4 personas detetives** (`personas/detective-*.md`): contracts, business-rules, flows, adrs — todas read-only
+- **`policies/detective-write-guardrails.md`**: hard guardrail para writes restritos a `.detective/` e `_detective_sdd/` (zero modificação no projeto legado)
+- **`/detective-spec`** slash command (`commands/detective-spec.md`) com suporte a escopo (`--module=`, `--feature=`), fase única (`--phase=N`) e resume
+- Integração com Graphify (god nodes viram módulos prioritários) e repo-auditor (splits alimentam fases)
+
+### Added
 - **`scripts/auto-loop.mjs`** — loop autônomo idêntico ao ralph-starter: roda `claude --print` em subprocess Node.js com todos os 10 padrões de produção:
   - Progress tracking via checkboxes em `.auto/plan.md`
   - Inter-iteration memory em `.auto/progress.md` (append-only)
