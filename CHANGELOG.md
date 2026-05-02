@@ -34,6 +34,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Top 5 skills batch (2026-05-02 afternoon)
+- **Skill 34 — Static Analysis** (`skills/34-static-analysis/SKILL.md`): Semgrep + CodeQL automated scan with SARIF output, severity triage, FP suppression and CI integration. Feeds findings into skill 06 (Security Review).
+- **Skill 35 — Skill Author** (`skills/35-skill-author/SKILL.md`): meta-skill defining the kit's own SKILL.md template, eval scorecard (10 criteria, threshold 22/30), and pipelines for create/edit/eval/optimize. Sustains kit consistency as it grows.
+- **Skill 36 — Web Asset Generator** (`skills/36-web-asset-generator/SKILL.md`): favicons (multi-size), PWA icons (incl. maskable), Open Graph/Twitter card images, web manifest, browserconfig and ready-to-paste HTML snippet — derived from logo or brand text. Three tooling options: realfavicongenerator CLI, ImageMagick, Sharp.
+- **`policies/writing-clarity.md`**: 10 Strunk rules adapted for agent output (commits, error messages, handoffs, slash command output, generated docs). Lists banned filler words, output patterns per type, and 5-test conformance checklist.
+- **`.claude/agents/debugger.md` upgraded**: explicit Evidence Ledger table, 10-row anti-rationalization table, heuristics by bug class (race condition, memory leak, perf regression, auth/permission, off-by-one, encoding), confidence scoring, escalation rules.
+- README.md/README.pt-BR.md/AGENTS.md/plugin.json updated to reflect 35 skills (was 32). Plugin description and badges bumped.
+
 ### Added
 - **Skill 33 — Detective Spec** (`skills/33-detective-spec/SKILL.md`): engenharia reversa de specs para sistemas legados, inspirada no [Reversa](https://github.com/sandeco/reversa) e adaptada ao kit (Graphify + repo-audit + memória persistente).
   - Pipeline de 5 fases (reconhecimento → módulos → regras → fluxos → ADRs) com checkpoint/resume em `.detective/state.json`

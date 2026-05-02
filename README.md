@@ -1,9 +1,9 @@
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 32 Specialist Skills for Coding Agents
+# Dev Team Kit — 35 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-32-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-35-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
@@ -43,7 +43,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **32 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **35 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -55,7 +55,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 32 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
+The **Dev Team Kit** is a set of 35 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
 
 **What you get:**
 
@@ -73,7 +73,7 @@ The **Dev Team Kit** is a set of 32 specialized skills that turns any compatible
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 32 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 35 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -110,14 +110,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 36 tools backed by the 32 skills.
+In the table below, treat `dev-team-kit` as 36 tools backed by the 35 skills.
 The MCP exposes 36 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 32 skills | ✅ | ✅ | ✅ |
+| 35 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -145,7 +145,7 @@ The MCP exposes 36 tools backed by the installed skills.
 
 ---
 
-## The 32 Specialists
+## The 35 Specialists
 
 ### Management and Coordination
 
@@ -171,6 +171,8 @@ The MCP exposes 36 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 35 specialists |
+| 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph and Twitter card images, manifest and meta tag snippets — derived from a logo or brand text |
 
 ### Product and Design
 
@@ -202,6 +204,7 @@ The MCP exposes 36 tools backed by the installed skills.
 |---|---|---|
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
+| 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |
 | 07 | **Deploy Engineer** | containerization, CI/CD, blue-green rollout, rollback and infra as code |
 
 ---
@@ -504,7 +507,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 32 specialists (*/SKILL.md)
+├── skills/               ← 35 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```
@@ -601,6 +604,14 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `search-first.md` policy: mandatory research before implementing
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
+
+### 2026-05-02 (afternoon — Top 5 skills batch)
+
+- **Skill 34 — Static Analysis:** automated security and bug scan via Semgrep (default, broad coverage) + CodeQL (interprocedural taint tracking). SARIF output, severity triage (Critical/High/Medium/Low/Info), FP suppression with justification, custom rules in `tools/semgrep/`, CI integration via `--error --severity=ERROR`. Recommended rulesets per language. Feeds findings to skill 06 (Security Review) and triggers variant analysis when bug patterns recur.
+- **Skill 35 — Skill Author:** meta-skill for creating, editing, evaluating and optimizing the kit's own skills. Defines obligatory SKILL.md template (frontmatter + 11 standard sections), description optimization for triggering, allowed-tools minimization, eval scorecard (10 criteria × 0-3 scale, threshold 22/30 for merge), pipelines for create/edit/eval/optimize. Sustains kit consistency as it grows past 35 specialists.
+- **Skill 36 — Web Asset Generator:** generates favicons (multi-size ICO + PNG), PWA icons (incl. maskable with 80% safe area), Open Graph (1200x630) and Twitter card (1200x675) images, web manifest, browserconfig.xml, and ready-to-paste HTML snippet with all meta tags. Three tooling options: realfavicongenerator CLI, ImageMagick, or programmatic Sharp. Anti-patterns covered: stock OG images, blurred 16px favicons, transparent Apple icons, missing maskable, relative URLs in OG tags.
+- **`policies/writing-clarity.md`:** 10 timeless Strunk rules adapted for agent output — omit needless words, active voice, affirmative form, definite language, concrete over abstract, banned filler words, technical terms in English. Applies to commits, error messages, handoffs, slash command output and generated docs across all skills.
+- **`.claude/agents/debugger.md` upgraded:** added explicit Evidence Ledger (hypothesis → evidence → status table), 10-row anti-rationalization table covering the most common debugger fallacies, heuristics by bug class (race condition, memory leak, perf regression, auth/permission, off-by-one, encoding), confidence scoring, and rules for when to escalate to other skills.
 
 ### 2026-05-02
 

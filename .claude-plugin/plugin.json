@@ -1,6 +1,6 @@
 {
   "name": "dev-team-kit-fv",
-  "description": "32 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec (reverse engineering for legacy) and more. Includes model routing policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
+  "description": "35 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec (reverse engineering for legacy), static-analysis (semgrep+codeql), skill-author (meta-skill with eval), web-asset-generator (favicons/OG/PWA) and more. Includes model routing policy, writing-clarity policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
   "version": "1.0.0",
   "author": {
     "name": "felvieira"
@@ -41,7 +41,10 @@
     "skills/30-cost-tracker/SKILL.md",
     "skills/31-session-summary/SKILL.md",
     "skills/32-smart-suggestions/SKILL.md",
-    "skills/33-detective-spec/SKILL.md"
+    "skills/33-detective-spec/SKILL.md",
+    "skills/34-static-analysis/SKILL.md",
+    "skills/35-skill-author/SKILL.md",
+    "skills/36-web-asset-generator/SKILL.md"
   ],
   "hooks": [
     "hooks/hooks.json"
