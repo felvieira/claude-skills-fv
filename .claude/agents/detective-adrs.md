@@ -86,4 +86,6 @@ Ao concluir a síntese:
 3. Top 5 regras de negócio críticas
 4. Lista de items `low confidence` para validação humana
 5. Sugestão de próxima skill: `/spec` para nova feature usando esses contratos como base
-6. Verificação dupla (untracked filtrado + `git diff --name-only HEAD`) — ambos vazios — confirmando que apenas `.detective/` e `_detective_sdd/` foram tocados (ver `policies/detective-write-guardrails.md` seção "Verificacao")
+6. Verificação dupla de imutabilidade (ver `policies/detective-write-guardrails.md` seção "Verificacao"):
+   - `git status --porcelain | awk '$1=="??"{print $2}' | grep -Ev '^(\.detective/|_detective_sdd/)'` → vazio
+   - `git diff --name-only --diff-filter=MDARCT HEAD` → vazio

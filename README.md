@@ -606,7 +606,7 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 
 - **Skill 33 — Detective Spec:** reverse-engineering pipeline for legacy systems inspired by [Reversa](https://github.com/sandeco/reversa), adapted to the kit. 5-phase pipeline (recon → modules → business rules → flows → retroactive ADRs) with checkpoint/resume in `.detective/state.json`, output in `_detective_sdd/` (overview, module contracts, extracted business rules, end-to-end flows, retroactive ADRs, traceability map). Every spec is traceable to `file:line` or `commit-sha` with confidence scoring (high/medium/low).
 - **4 detective subagents** dispatchable via Task tool: `detective-contracts`, `detective-business-rules`, `detective-flows`, `detective-adrs` — all read-only.
-- **Hard-guardrail policy** (`policies/detective-write-guardrails.md`): writes restricted to `.detective/` and `_detective_sdd/`, zero modification to legacy code, verifiable via `git status --porcelain`.
+- **Hard-guardrail policy** (`policies/detective-write-guardrails.md`): writes restricted to `.detective/` and `_detective_sdd/`, zero modification to legacy code, verifiable via two complementary checks (filtered `git status --porcelain` for untracked + `git diff --name-only --diff-filter=MDARCT HEAD` for tracked) — single-check would silently miss modifications to tracked files.
 - **`/detective-spec` slash command** with scope (`--module=`, `--feature=`), single-phase (`--phase=N`) and resume support.
 - **Graphify integration:** god nodes become priority modules; community detection groups `01-modules/`; bridges identify inter-module contracts.
 

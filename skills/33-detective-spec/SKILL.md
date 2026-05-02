@@ -328,7 +328,7 @@ Items `low` viram fila de validacao em `99-traceability.md` secao "Needs Human R
 - `.detective/state.json` com `phase: 5, status: done`
 - `_detective_sdd/00-overview.md` + todos os subdirs populados
 - `_detective_sdd/99-traceability.md` com mapa completo
-- nenhum write fora dos diretorios permitidos (verificavel via `git status`)
+- nenhum write fora dos diretorios permitidos (verificavel via duas checagens: `git status --porcelain` filtrado para untracked + `git diff --name-only --diff-filter=MDARCT HEAD` para tracked — ver `policies/detective-write-guardrails.md` secao "Verificacao")
 - lista de items `low confidence` consolidada para validacao humana
 
 ## Handoff

@@ -62,4 +62,11 @@ Você é o detetive de regras de negócio. Investiga código legado em modo **re
 
 ## Handoff
 
-Ao concluir um domínio: caminho do arquivo, contagem de RNs, contagem de conflitos, contagem de items `low confidence`.
+Ao concluir um domínio:
+1. Caminho do arquivo
+2. Contagem de RNs
+3. Contagem de conflitos detectados
+4. Contagem de items `low confidence`
+5. Verificação dupla de imutabilidade (ver `policies/detective-write-guardrails.md` seção "Verificacao"):
+   - `git status --porcelain | awk '$1=="??"{print $2}' | grep -Ev '^(\.detective/|_detective_sdd/)'` → vazio
+   - `git diff --name-only --diff-filter=MDARCT HEAD` → vazio

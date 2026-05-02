@@ -606,7 +606,7 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 
 - **Skill 33 — Detective Spec:** pipeline de engenharia reversa de specs para sistemas legados, inspirado no [Reversa](https://github.com/sandeco/reversa) e adaptado ao kit. Pipeline de 5 fases (reconhecimento → módulos → regras de negócio → fluxos → ADRs retroativos) com checkpoint/resume em `.detective/state.json`, output em `_detective_sdd/` (overview, contratos de módulo, regras de negócio extraídas, fluxos end-to-end, ADRs retroativos, mapa de traceability). Cada spec é rastreável até `file:line` ou `commit-sha` com confidence scoring (high/medium/low).
 - **4 subagents detetives** dispatcháveis via Task tool: `detective-contracts`, `detective-business-rules`, `detective-flows`, `detective-adrs` — todos read-only.
-- **Policy de hard-guardrail** (`policies/detective-write-guardrails.md`): writes restritos a `.detective/` e `_detective_sdd/`, zero modificação no código legado, verificável via `git status --porcelain`.
+- **Policy de hard-guardrail** (`policies/detective-write-guardrails.md`): writes restritos a `.detective/` e `_detective_sdd/`, zero modificação no código legado, verificável via duas checagens complementares (`git status --porcelain` filtrado para untracked + `git diff --name-only --diff-filter=MDARCT HEAD` para tracked) — checagem única deixaria modificações em arquivos tracked passarem em silêncio.
 - **Slash command `/detective-spec`** com escopo (`--module=`, `--feature=`), fase única (`--phase=N`) e suporte a resume.
 - **Integração com Graphify:** god nodes viram módulos prioritários; comunidades agrupam `01-modules/`; bridges identificam contratos inter-módulo.
 

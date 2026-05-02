@@ -77,4 +77,11 @@ Se fluxo tiver >5 steps, gerar `sequenceDiagram` no topo do arquivo.
 
 ## Handoff
 
-Ao concluir um fluxo: caminho do arquivo, contagem de edge cases, contagem de side effects, inconsistências detectadas.
+Ao concluir um fluxo:
+1. Caminho do arquivo
+2. Contagem de edge cases
+3. Contagem de side effects
+4. Inconsistências detectadas
+5. Verificação dupla de imutabilidade (ver `policies/detective-write-guardrails.md` seção "Verificacao"):
+   - `git status --porcelain | awk '$1=="??"{print $2}' | grep -Ev '^(\.detective/|_detective_sdd/)'` → vazio
+   - `git diff --name-only --diff-filter=MDARCT HEAD` → vazio
