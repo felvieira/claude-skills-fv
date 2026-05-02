@@ -1,9 +1,9 @@
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 31 Specialist Skills for Coding Agents
+# Dev Team Kit — 32 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-31-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-32-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
@@ -43,7 +43,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **31 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **32 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -55,7 +55,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 31 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
+The **Dev Team Kit** is a set of 32 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
 
 **What you get:**
 
@@ -73,7 +73,7 @@ The **Dev Team Kit** is a set of 31 specialized skills that turns any compatible
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 31 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 32 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -110,14 +110,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 36 tools backed by the 31 skills.
+In the table below, treat `dev-team-kit` as 36 tools backed by the 32 skills.
 The MCP exposes 36 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 31 skills | ✅ | ✅ | ✅ |
+| 32 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -145,7 +145,7 @@ The MCP exposes 36 tools backed by the installed skills.
 
 ---
 
-## The 31 Specialists
+## The 32 Specialists
 
 ### Management and Coordination
 
@@ -170,6 +170,7 @@ The MCP exposes 36 tools backed by the installed skills.
 | 30 | **Cost Tracker** | tracks token cost and API calls per session, per skill and per model tier |
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
+| 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
 
 ### Product and Design
 
@@ -387,6 +388,7 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/auto` | Autonomous agent — runs full task without intervention | All needed + circuit breaker |
 | `/loop` | Multi-agent autonomous orchestrator (auto-loop v2) — claude + codex, parallel via worktree, polishing pass | `scripts/auto-loop/` |
 | `/worktree` | Creates isolated git worktree, copies `.env*`, validates env in background | — |
+| `/detective-spec` | Reverse-engineer specs from a legacy codebase — extracts contracts without touching the code | Detective Spec (33) |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agent Orchestrator)
 
@@ -498,7 +500,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 31 specialists (*/SKILL.md)
+├── skills/               ← 32 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```
@@ -595,6 +597,14 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `search-first.md` policy: mandatory research before implementing
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
+
+### 2026-05-02
+
+- **Skill 33 — Detective Spec:** reverse-engineering pipeline for legacy systems inspired by [Reversa](https://github.com/sandeco/reversa), adapted to the kit. 5-phase pipeline (recon → modules → business rules → flows → retroactive ADRs) with checkpoint/resume in `.detective/state.json`, output in `_detective_sdd/` (overview, module contracts, extracted business rules, end-to-end flows, retroactive ADRs, traceability map). Every spec is traceable to `file:line` or `commit-sha` with confidence scoring (high/medium/low).
+- **4 detective subagents** dispatchable via Task tool: `detective-contracts`, `detective-business-rules`, `detective-flows`, `detective-adrs` — all read-only.
+- **Hard-guardrail policy** (`policies/detective-write-guardrails.md`): writes restricted to `.detective/` and `_detective_sdd/`, zero modification to legacy code, verifiable via `git status --porcelain`.
+- **`/detective-spec` slash command** with scope (`--module=`, `--feature=`), single-phase (`--phase=N`) and resume support.
+- **Graphify integration:** god nodes become priority modules; community detection groups `01-modules/`; bridges identify inter-module contracts.
 
 ### 2026-04-13
 

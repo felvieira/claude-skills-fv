@@ -1,6 +1,6 @@
 {
   "name": "dev-team-kit-fv",
-  "description": "31 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy and more. Includes model routing policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
+  "description": "32 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec (reverse engineering for legacy) and more. Includes model routing policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
   "version": "1.0.0",
   "author": {
     "name": "felvieira"
@@ -40,7 +40,8 @@
     "skills/29-design-intelligence/SKILL.md",
     "skills/30-cost-tracker/SKILL.md",
     "skills/31-session-summary/SKILL.md",
-    "skills/32-smart-suggestions/SKILL.md"
+    "skills/32-smart-suggestions/SKILL.md",
+    "skills/33-detective-spec/SKILL.md"
   ],
   "hooks": [
     "hooks/hooks.json"
@@ -50,7 +51,11 @@
     ".claude/agents/security-auditor.md",
     ".claude/agents/test-engineer.md",
     ".claude/agents/orchestrator.md",
-    ".claude/agents/debugger.md"
+    ".claude/agents/debugger.md",
+    ".claude/agents/detective-contracts.md",
+    ".claude/agents/detective-business-rules.md",
+    ".claude/agents/detective-flows.md",
+    ".claude/agents/detective-adrs.md"
   ],
   "commands": [
     "commands/audit-repo.md",
@@ -69,6 +74,7 @@
     ".claude/commands/best.md",
     ".claude/commands/auto.md",
     ".claude/commands/loop.md",
-    ".claude/commands/worktree.md"
+    ".claude/commands/worktree.md",
+    ".claude/commands/detective-spec.md"
   ]
 }

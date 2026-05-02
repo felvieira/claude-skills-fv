@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 31 Specialist Skills for Coding Agents
+# Dev Team Kit — 32 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-31-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-32-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
@@ -43,7 +43,7 @@ Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que fu
 - **SEO** que otimiza antes do Google indexar — seu site nasce achável
 
 ### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **31 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **32 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
 
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
@@ -55,7 +55,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 32 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -73,7 +73,7 @@ O **Dev Team Kit** é um conjunto de 31 skills especializadas que transforma qua
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 31 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 32 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -110,14 +110,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 31 skills.
+Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 32 skills.
 O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 31 skills | ✅ | ✅ | ✅ |
+| 32 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -145,7 +145,7 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 31 Especialistas
+## Os 32 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -170,6 +170,7 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 | 30 | **Cost Tracker** | rastreia custo de tokens e API calls por sessão, por skill e por tier de modelo |
 | 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
+| 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
 
 ### Produto e Design
 
@@ -387,6 +388,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/auto` | Agente autônomo — executa task completa sem intervenção | Todas as necessárias + circuit breaker |
 | `/loop` | Orquestrador autônomo multi-agente (auto-loop v2) — claude + codex, paralelo via worktree, polishing pass | `scripts/auto-loop/` |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background | — |
+| `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem modificar o código | Detective Spec (33) |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agente Orquestrador)
 
@@ -595,6 +597,14 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+
+### 2026-05-02
+
+- **Skill 33 — Detective Spec:** pipeline de engenharia reversa de specs para sistemas legados, inspirado no [Reversa](https://github.com/sandeco/reversa) e adaptado ao kit. Pipeline de 5 fases (reconhecimento → módulos → regras de negócio → fluxos → ADRs retroativos) com checkpoint/resume em `.detective/state.json`, output em `_detective_sdd/` (overview, contratos de módulo, regras de negócio extraídas, fluxos end-to-end, ADRs retroativos, mapa de traceability). Cada spec é rastreável até `file:line` ou `commit-sha` com confidence scoring (high/medium/low).
+- **4 subagents detetives** dispatcháveis via Task tool: `detective-contracts`, `detective-business-rules`, `detective-flows`, `detective-adrs` — todos read-only.
+- **Policy de hard-guardrail** (`policies/detective-write-guardrails.md`): writes restritos a `.detective/` e `_detective_sdd/`, zero modificação no código legado, verificável via `git status --porcelain`.
+- **Slash command `/detective-spec`** com escopo (`--module=`, `--feature=`), fase única (`--phase=N`) e suporte a resume.
+- **Integração com Graphify:** god nodes viram módulos prioritários; comunidades agrupam `01-modules/`; bridges identificam contratos inter-módulo.
 
 ### 2026-04-13
 
