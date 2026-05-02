@@ -49,7 +49,7 @@ Engenharia reversa de specs para sistemas legados. Roda o Detetive que extrai co
 
 - projeto novo → use `/spec`
 - bug fix localizado → use `/build` ou debugger
-- so quer mapa estrutural → use `repo-auditor`
+- so quer mapa estrutural → use `/audit-repo`
 
 ## Exemplos
 

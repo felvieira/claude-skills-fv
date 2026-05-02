@@ -287,7 +287,7 @@ O hook `context-guard-stop` opera em dois níveis:
 
 ## Subagents — Especialistas Despacháveis via `Task` Tool
 
-O kit inclui 5 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
+O kit inclui 9 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
 
 | Subagent | Quando usar | Tools |
 |---|---|---|
@@ -296,6 +296,10 @@ O kit inclui 5 subagents Claude Code em `.claude/agents/`, prontos para despacha
 | `test-engineer` | Escrever testes, preencher gaps de cobertura, validar regressão | Read, Grep, Glob, Bash, Edit, Write |
 | `orchestrator` | Classificar task complexa, montar pipeline, resolver overlap de skills | todas |
 | `debugger` | Bug, comportamento inesperado, falha que você não consegue explicar | Read, Grep, Glob, Bash, Edit |
+| `detective-contracts` | Fase 2 do `/detective-spec`: extrai contratos de módulo (API, deps, invariantes, consumidores) de código legado — read-only | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Fase 3 do `/detective-spec`: extrai regras de negócio escondidas em validações, constantes mágicas, transições de estado, testes — read-only | Read, Grep, Glob, Bash |
+| `detective-flows` | Fase 4 do `/detective-spec`: reconstrói fluxos end-to-end (entry → side effects) com edge cases e estado mutado — read-only | Read, Grep, Glob, Bash |
+| `detective-adrs` | Fase 5 do `/detective-spec`: infere ADRs retroativos e sintetiza overview + traceability — read-only | Read, Grep, Glob, Bash |
 
 **Exemplo de invocação:**
 

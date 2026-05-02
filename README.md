@@ -287,7 +287,7 @@ The `context-guard-stop` hook operates on two levels:
 
 ## Subagents — Specialists Dispatchable via the `Task` Tool
 
-The kit ships 5 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
+The kit ships 9 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
 
 | Subagent | When to use | Tools |
 |---|---|---|
@@ -296,6 +296,10 @@ The kit ships 5 Claude Code subagents in `.claude/agents/`, ready to dispatch wi
 | `test-engineer` | Write tests, fill coverage gaps, validate regressions | Read, Grep, Glob, Bash, Edit, Write |
 | `orchestrator` | Classify a complex task, build pipeline, resolve skill overlap | all |
 | `debugger` | Bug, unexpected behavior, failure you can't explain | Read, Grep, Glob, Bash, Edit |
+| `detective-contracts` | Phase 2 of `/detective-spec`: extract module contracts (API, deps, invariants, consumers) from legacy code — read-only | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Phase 3 of `/detective-spec`: extract hidden business rules from validations, magic constants, state transitions, tests — read-only | Read, Grep, Glob, Bash |
+| `detective-flows` | Phase 4 of `/detective-spec`: reconstruct end-to-end flows (entry → side effects) with edge cases and mutated state — read-only | Read, Grep, Glob, Bash |
+| `detective-adrs` | Phase 5 of `/detective-spec`: infer retroactive ADRs and synthesize overview + traceability — read-only | Read, Grep, Glob, Bash |
 
 **Invocation example:**
 

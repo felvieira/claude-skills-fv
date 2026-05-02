@@ -65,13 +65,23 @@ Esses dirs devem estar em `.gitignore` do projeto legado por padrao (a menos que
 
 ## Verificacao
 
-Antes de finalizar, Detetive valida via:
+Antes de finalizar, Detetive valida via duas checagens **complementares** (untracked + tracked):
 
 ```bash
-git status --porcelain | grep -v '^?? \.detective/' | grep -v '^?? _detective_sdd/'
+# 1. Untracked: novos arquivos fora de paths permitidos
+git status --porcelain | awk '$1=="??"{print $2}' | grep -Ev '^(\.detective/|_detective_sdd/)'
+
+# 2. Tracked: modificacoes/exclusoes em qualquer arquivo ja versionado
+git diff --name-only --diff-filter=MDARCT HEAD
 ```
 
-Output deve ser **vazio**. Se qualquer arquivo modificado/criado fora dos dirs permitidos aparecer, abortar entrega e investigar.
+**Ambos os outputs devem ser vazios.** Se qualquer linha aparecer:
+- output 1 nao-vazio → arquivo novo criado fora dos dirs permitidos
+- output 2 nao-vazio → arquivo tracked do projeto foi modificado/renomeado/deletado (violacao critica)
+
+Em qualquer dos casos: abortar entrega imediatamente e investigar.
+
+> **Por que duas checagens:** `git status --porcelain` usa codigos de 2 caracteres (`??`, ` M`, `M `, `MM`, ` D`, etc.) — filtrar so por `^?? ` deixa passar modificacoes em arquivos tracked. `git diff --name-only HEAD` cobre exatamente esse caso.
 
 ## Tratamento de Violacao
 
@@ -113,7 +123,7 @@ Esta policy **complementa** `policies/tool-safety.md`. Em caso de conflito, prev
 ## Evidencia de Conformidade
 
 Ao concluir, Detetive entrega:
-- output de `git status --porcelain` mostrando que apenas `.detective/` e `_detective_sdd/` foram tocados
+- output das **duas** checagens da secao "Verificacao" (untracked filtrado + `git diff --name-only HEAD`), ambos vazios
 - `.detective/logs/violations.log` (vazio em caso de sucesso)
 - declaracao explicita no handoff: "Nenhum arquivo do projeto legado foi modificado."
 

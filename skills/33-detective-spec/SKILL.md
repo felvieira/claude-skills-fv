@@ -41,7 +41,7 @@ Para exemplos longos e templates completos, consultar `docs/skill-guides/detecti
 - projeto novo (use `/spec` direto)
 - codebase ja tem spec valida e atualizada
 - task localizada de bug fix em arquivo conhecido (use `/build` ou debugger)
-- so quer auditoria estrutural sem extrair regras (use `repo-auditor`)
+- so quer auditoria estrutural sem extrair regras (use `/audit-repo`)
 
 ## Entradas Esperadas
 
