@@ -58,7 +58,12 @@
     ".claude/agents/detective-contracts.md",
     ".claude/agents/detective-business-rules.md",
     ".claude/agents/detective-flows.md",
-    ".claude/agents/detective-adrs.md"
+    ".claude/agents/detective-adrs.md",
+    ".claude/agents/semgrep-scanner.md",
+    ".claude/agents/semgrep-triager.md",
+    ".claude/agents/codeql-runner.md",
+    ".claude/agents/sarif-parsing.md",
+    ".claude/agents/variant-analysis.md"
   ],
   "commands": [
     "commands/audit-repo.md",

@@ -120,24 +120,23 @@ codeql query run --database=db my-query.ql
 - bug que so aparece em condicoes de chamada especificas
 - variant analysis sofisticada apos achar bug inicial
 
-### Subagents auxiliares (planejados — ainda nao implementados neste kit)
+### Subagents auxiliares (despachaveis via Task tool)
 
-Estes subagents seriam o ideal para escala. **Nao existem em `.claude/agents/` deste kit hoje** — listados aqui como roadmap. Por enquanto, esta skill executa todo o pipeline inline (chamadas diretas a `semgrep` e `codeql` via Bash).
+Para escala (multi-linguagem, >20 findings, variant analysis), despachar via Task:
 
-Roadmap:
-- `static-analysis:semgrep-scanner` — executar scans em paralelo por categoria de linguagem
-- `static-analysis:semgrep-triager` — triagem TP/FP de findings
-- `static-analysis:codeql-runner` — orquestrar build de database + queries
-- `static-analysis:sarif-parsing` — parse, dedup, agregacao de SARIF
-- `variant-analysis:variant-analysis` — busca de bugs similares apos encontrar inicial
+- **`semgrep-scanner`** — executa scans em paralelo por categoria de linguagem, agrega SARIF. Use quando repo tem 2+ linguagens primarias.
+- **`semgrep-triager`** — classifica findings em TP/FP/needs-investigation lendo contexto fonte. Use quando ha >20 findings.
+- **`codeql-runner`** — orquestra build de database CodeQL + queries com taint tracking interprocedural. Use quando bug envolve data flow entre arquivos/funcoes.
+- **`sarif-parsing`** — parse, dedup, agregacao de SARIF de multiplas fontes. Use quando consolidar Semgrep + CodeQL ou multiplos scans.
+- **`variant-analysis`** — caca variantes do mesmo padrao apos achar bug inicial, gera custom rule reusavel. Use apos confirmar bug que pertence a classe (SQLi, XSS, missing auth, etc).
 
-Se forem implementados, criar via skill 35 (Skill Author) e despachar via Task tool. Ate la, seguir o pipeline inline abaixo.
+Cada subagent tem definicao em `.claude/agents/<name>.md` com protocolo, inputs, outputs e guardrails proprios. Para uso simples (1 linguagem, scan rapido, poucos findings), rodar inline conforme blocos abaixo.
 
 ## Pipeline Recomendado
 
 ```
 1. Semgrep --config=auto    (5-30s, cobertura ampla)
-   → triage manual ou (futuro) `semgrep-triager` subagent
+   → triage via `semgrep-triager` subagent (ou inline se <20 findings)
    → fix critical/high
 2. Se finding for bug de fluxo: CodeQL com query especifica
    → variant analysis para achar similares
