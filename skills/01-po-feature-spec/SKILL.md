@@ -55,8 +55,31 @@ Toda nova feature deve cobrir, no minimo:
 - regras de negocio e dependencias
 - escopo `IN` e `OUT`
 - prioridade e metricas de sucesso
+- **vertical slices** (se feature multi-camada — ver abaixo)
 
 Para spec completa e exemplos extensos, consultar `docs/skill-guides/po-feature-spec.md`.
+
+## Vertical Slices em Specs Multi-Camada
+
+Se a feature envolve >1 camada (front + back + DB ou similar), a spec **deve** organizar user stories como **vertical slices** demo-able. Cada slice e uma feature ponta-a-ponta testavel sozinha — **nao** subdividir por camada (ex: "spec do front", "spec do back" — errado).
+
+**Exemplo bom (vertical):**
+- Slice 1 — Login com email/senha (DB user table + endpoint /login + tela + e2e)
+- Slice 2 — Cadastro (mesma table + endpoint /register + tela + e2e)
+- Slice 3 — Esqueci senha (depende de Slice 1, adiciona endpoint + email service + tela + e2e)
+
+**Exemplo ruim (layered):**
+- Story 1 — UI de auth (login + cadastro + esqueci senha juntos)
+- Story 2 — Backend de auth (login + cadastro + esqueci senha juntos)
+- Story 3 — DB schema de auth
+
+Cada slice deve:
+- ter criterio de aceitacao testavel ponta-a-ponta (DADO/QUANDO/ENTAO atravessa camadas)
+- caber em 1-3 dias de trabalho
+- ser demo-able (usuario clica e ve resultado)
+- declarar dependencia de outros slices se houver
+
+Detalhes em `policies/vertical-slices.md`.
 
 ## Critérios de Aceitação - Boas Práticas
 

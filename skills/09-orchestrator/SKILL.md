@@ -22,6 +22,7 @@ Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 - `policies/stack-flexibility.md`
 - `policies/tool-safety.md`
 - `policies/evals.md`
+- `policies/vertical-slices.md` ← **regra obrigatoria** para toda feature multi-camada
 
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
 
@@ -62,11 +63,39 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 5. Garantir que nenhuma etapa critica seja pulada sem justificativa explicita
 6. Manter visao geral do progresso e status de cada etapa
 
+## Vertical Slicing (regra obrigatoria para feature multi-camada)
+
+Antes de invocar Backend/Frontend/DB para uma feature multi-camada, o Orquestrador **deve** quebrar a entrega em **vertical slices**: cada slice e uma feature ponta-a-ponta (DB + back + front + teste e2e) testavel sozinha.
+
+**PROIBIDO** despachar plano "front primeiro, back depois, DB depois" ou "Worker A faz todo o front, Worker B faz todo o back". Isso e layer-first paralelizado e quebra integracao.
+
+Para feature multi-camada, primeiro produzir e apresentar a **tabela de slices**:
+
+```markdown
+## Plano (Vertical Slices)
+
+### Slice 1 — <feature menor/independente>
+**Worker:** A (worktree feature/<nome>)
+**Inclui:** spec, DB migration, back endpoint, front componente, teste e2e
+**Independente de:** todos os outros / apenas Slice X
+
+### Slice 2 — <feature seguinte>
+[...]
+```
+
+Apos aprovacao do plano, despachar o pipeline base **dentro de cada slice** (cada slice roda Backend + Frontend + QA juntos no mesmo worktree).
+
+Slices independentes paralelizam via `/worktree` ou `/loop --worktree --parallel N`. Slices dependentes sequencializam pela dependencia.
+
+Detalhes em `policies/vertical-slices.md` (anti-padroes, heuristicas de tamanho, evidencia de conformidade).
+
 ## Pipeline Base
 
-Fluxo padrao de feature nova:
+Fluxo padrao **dentro de UM slice vertical** (uma feature ponta-a-ponta):
 
 `Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy -> [Session Summary + Cost Tracker]`
+
+Para spec inicial de varias features, **primeiro** rodar PO + Design Intelligence para producir lista de slices, **depois** rodar o restante por slice.
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
 - `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator

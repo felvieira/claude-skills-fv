@@ -10,17 +10,19 @@ description: Pipeline completo end-to-end (skill 09 — Orchestrator)
 
 **Fluxo:**
 1. `/spec` — especificar com critérios de aceitação
-2. `/plan` — classificar e montar pipeline
-3. `/build` — implementar backend e/ou frontend
-4. `/test` — escrever e rodar testes
-5. `/review` — review final + security
-6. `/ship` — release e deploy
+2. `/plan` — classificar e **quebrar em vertical slices** se for feature multi-camada
+3. **Para cada slice (paralelo se independentes):**
+   - `/build` — DB + backend + frontend juntos no mesmo worktree
+   - `/test` — teste e2e cobrindo a feature ponta-a-ponta
+   - `/review` — review final + security do slice
+4. `/ship` — release e deploy (após todos os slices mergeados)
 
-**Input esperado:** Descrição completa da feature ou requisito.
+**Input esperado:** Descrição completa da feature ou requisito (idealmente uma feature por vez; epic vira lista de slices).
 
-**Output esperado:** Feature entregue end-to-end com evidências de cada etapa.
+**Output esperado:** Cada slice mergeado independentemente, demo-able. Feature completa quando todos os slices mergeados.
 
 **Policies relevantes:**
+- `policies/vertical-slices.md` — **obrigatória** para feature multi-camada (impede plano layer-first)
 - Todas as policies do kit são aplicáveis conforme a etapa
 - `policies/model-routing.md` — modelo certo por fase
 
