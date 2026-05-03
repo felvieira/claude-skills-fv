@@ -34,6 +34,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Items 2-3-4 batch (2026-05-03)
+- **5 new dispatchable subagents** for skill 34 (Static Analysis) pipeline:
+  - `semgrep-scanner` — parallel Semgrep scans by language category, SARIF aggregation
+  - `semgrep-triager` — TP/FP/needs-investigation classification reading source context
+  - `codeql-runner` — CodeQL database build + queries with interprocedural taint tracking
+  - `sarif-parsing` — multi-tool SARIF dedup and aggregation
+  - `variant-analysis` — bug variant hunting + reusable custom rule generation
+- Skill 34 updated: removed "planejados" notice, integrated subagents into pipeline
+- Naming convention change: subagents now use bare names (`semgrep-scanner`) instead of the namespaced form (`static-analysis:semgrep-scanner`) used in the original roadmap text. Namespaces only apply to Anthropic-published skill packages, not local kit subagents
+- `.claude-plugin/plugin.json`: 9 → 14 dispatchable subagents
+- `README.md`/`README.pt-BR.md`: subagent table reorganized into 3 categories (Core, Detective Spec, Static Analysis)
+- `AGENTS.md`: subagent table updated with the 5 new ones
+- `evals/skill-audit-2026-05-03.md`: complete audit of skills 01-32 against the scorecard from skill 35. Result: 22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE. Top weakness: 75% of skills miss `allowed-tools` field. Tier-1 rewrite priority: skills 21, 22, 24, 27.
+- Cleanup: removed merged worktrees (`busy-tesla-e51016`, `cool-pascal-f3482a`, `top5-skills`) and their branches. Worktrees `items-2-3-4` (active) and 1 leftover dir kept.
+
 ### Added — Top 5 skills batch (2026-05-02 afternoon)
 - **Skill 34 — Static Analysis** (`skills/34-static-analysis/SKILL.md`): Semgrep + CodeQL automated scan with SARIF output, severity triage, FP suppression and CI integration. Feeds findings into skill 06 (Security Review).
 - **Skill 35 — Skill Author** (`skills/35-skill-author/SKILL.md`): meta-skill defining the kit's own SKILL.md template, eval scorecard (10 criteria, threshold 22/30), and pipelines for create/edit/eval/optimize. Sustains kit consistency as it grows.

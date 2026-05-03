@@ -290,19 +290,33 @@ O hook `context-guard-stop` opera em dois níveis:
 
 ## Subagents — Especialistas Despacháveis via `Task` Tool
 
-O kit inclui 9 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
+O kit inclui 14 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
 
+### Core (5)
 | Subagent | Quando usar | Tools |
 |---|---|---|
 | `code-reviewer` | Review de PR, feature concluída ou qualquer código antes de merge | Read, Grep, Glob, Bash |
 | `security-auditor` | Auth flows, input handling, deps, CORS, headers, pré-deploy | Read, Grep, Glob, Bash |
 | `test-engineer` | Escrever testes, preencher gaps de cobertura, validar regressão | Read, Grep, Glob, Bash, Edit, Write |
 | `orchestrator` | Classificar task complexa, montar pipeline, resolver overlap de skills | todas |
-| `debugger` | Bug, comportamento inesperado, falha que você não consegue explicar | Read, Grep, Glob, Bash, Edit |
-| `detective-contracts` | Fase 2 do `/detective-spec`: extrai contratos de módulo (API, deps, invariantes, consumidores) de código legado — read-only | Read, Grep, Glob, Bash |
-| `detective-business-rules` | Fase 3 do `/detective-spec`: extrai regras de negócio escondidas em validações, constantes mágicas, transições de estado, testes — read-only | Read, Grep, Glob, Bash |
-| `detective-flows` | Fase 4 do `/detective-spec`: reconstrói fluxos end-to-end (entry → side effects) com edge cases e estado mutado — read-only | Read, Grep, Glob, Bash |
-| `detective-adrs` | Fase 5 do `/detective-spec`: infere ADRs retroativos e sintetiza overview + traceability — read-only | Read, Grep, Glob, Bash |
+| `debugger` | Bug, comportamento inesperado, falha que você não consegue explicar — usa Evidence Ledger + tabela anti-rationalization | Read, Grep, Glob, Bash, Edit |
+
+### Detective Spec (4) — fases do `/detective-spec`
+| Subagent | Quando usar | Tools |
+|---|---|---|
+| `detective-contracts` | Fase 2: extrai contratos de módulo (API, deps, invariantes, consumidores) de código legado — read-only | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Fase 3: extrai regras de negócio escondidas em validações, constantes mágicas, transições de estado, testes — read-only | Read, Grep, Glob, Bash |
+| `detective-flows` | Fase 4: reconstrói fluxos end-to-end (entry → side effects) com edge cases e estado mutado — read-only | Read, Grep, Glob, Bash |
+| `detective-adrs` | Fase 5: infere ADRs retroativos e sintetiza overview + traceability — read-only | Read, Grep, Glob, Bash |
+
+### Static Analysis (5) — pipeline da skill 34
+| Subagent | Quando usar | Tools |
+|---|---|---|
+| `semgrep-scanner` | Repo multi-linguagem: scans Semgrep em paralelo por categoria de linguagem, agrega SARIF | Read, Grep, Glob, Bash |
+| `semgrep-triager` | Batch >20 findings: classifica TP/FP/needs-investigation lendo contexto fonte, propõe fixes | Read, Grep, Glob, Write |
+| `codeql-runner` | Bug precisa taint tracking interprocedural: orquestra build de database CodeQL + queries | Read, Grep, Glob, Bash |
+| `sarif-parsing` | Múltiplas fontes SARIF: parse, dedup, agrega em relatório único (Semgrep + CodeQL + outros) | Read, Glob, Bash, Write |
+| `variant-analysis` | Bug confirmado → caça variantes do mesmo padrão, gera custom rule reusável para CI | Read, Grep, Glob, Bash, Write |
 
 **Exemplo de invocação:**
 
@@ -604,6 +618,14 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+
+### 2026-05-03 (batch Items 2-3-4 — manutenção do kit)
+
+- **5 novos subagents dispatcháveis** para o pipeline da skill 34 Static Analysis: `semgrep-scanner` (scans paralelos por linguagem), `semgrep-triager` (classificação TP/FP), `codeql-runner` (taint tracking interprocedural), `sarif-parsing` (dedup multi-tool), `variant-analysis` (caça de variantes + geração de rule reusável). Skill 34 atualizada: removido stub "planejados", instruções de dispatch integradas no pipeline.
+- **Contagem de subagents: 9 → 14** registrados no `plugin.json`. Tabela de subagents do README reorganizada em 3 categorias: Core (5), Detective Spec (4), Static Analysis (5).
+- **`evals/skill-audit-2026-05-03.md`**: auditoria completa das skills 01-32 contra o scorecard da skill 35. Resultado: 22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE. Maior gap cross-cutting: 75% das skills sem `allowed-tools` no frontmatter (fix mecânico). Prioridade Tier-1 para próximo batch de rewrite: skills 21 (data-analytics), 22 (accessibility), 24 (release-manager), 27 (video-integration).
+- **Cleanup**: removidos git worktrees mergeados (`busy-tesla-e51016`, `cool-pascal-f3482a`, `top5-skills`) e suas branches.
+- **Verificada preocupação pré-existente**: README menciona "36 MCP tools" — confirmado correto (`mcp-server/src/index.ts` tem 36 chamadas `registerTool`). MCP tools são ortogonais ao número de skills, então 32→35 skills não muda contagem de tools. Falso alarme do review cycle-1 do batch Top-5.
 
 ### 2026-05-02 (tarde — batch Top 5 skills)
 

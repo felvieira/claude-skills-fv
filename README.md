@@ -290,19 +290,33 @@ The `context-guard-stop` hook operates on two levels:
 
 ## Subagents — Specialists Dispatchable via the `Task` Tool
 
-The kit ships 9 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
+The kit ships 14 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
 
+### Core (5)
 | Subagent | When to use | Tools |
 |---|---|---|
 | `code-reviewer` | PR review, finished feature or any code before merge | Read, Grep, Glob, Bash |
 | `security-auditor` | Auth flows, input handling, deps, CORS, headers, pre-deploy | Read, Grep, Glob, Bash |
 | `test-engineer` | Write tests, fill coverage gaps, validate regressions | Read, Grep, Glob, Bash, Edit, Write |
 | `orchestrator` | Classify a complex task, build pipeline, resolve skill overlap | all |
-| `debugger` | Bug, unexpected behavior, failure you can't explain | Read, Grep, Glob, Bash, Edit |
-| `detective-contracts` | Phase 2 of `/detective-spec`: extract module contracts (API, deps, invariants, consumers) from legacy code — read-only | Read, Grep, Glob, Bash |
-| `detective-business-rules` | Phase 3 of `/detective-spec`: extract hidden business rules from validations, magic constants, state transitions, tests — read-only | Read, Grep, Glob, Bash |
-| `detective-flows` | Phase 4 of `/detective-spec`: reconstruct end-to-end flows (entry → side effects) with edge cases and mutated state — read-only | Read, Grep, Glob, Bash |
-| `detective-adrs` | Phase 5 of `/detective-spec`: infer retroactive ADRs and synthesize overview + traceability — read-only | Read, Grep, Glob, Bash |
+| `debugger` | Bug, unexpected behavior, failure you can't explain — uses Evidence Ledger + anti-rationalization table | Read, Grep, Glob, Bash, Edit |
+
+### Detective Spec (4) — phases of `/detective-spec`
+| Subagent | When to use | Tools |
+|---|---|---|
+| `detective-contracts` | Phase 2: extract module contracts (API, deps, invariants, consumers) from legacy code — read-only | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Phase 3: extract hidden business rules from validations, magic constants, state transitions, tests — read-only | Read, Grep, Glob, Bash |
+| `detective-flows` | Phase 4: reconstruct end-to-end flows (entry → side effects) with edge cases and mutated state — read-only | Read, Grep, Glob, Bash |
+| `detective-adrs` | Phase 5: infer retroactive ADRs and synthesize overview + traceability — read-only | Read, Grep, Glob, Bash |
+
+### Static Analysis (5) — pipeline of skill 34
+| Subagent | When to use | Tools |
+|---|---|---|
+| `semgrep-scanner` | Multi-language repo: parallel Semgrep scans by language category, aggregate SARIF | Read, Grep, Glob, Bash |
+| `semgrep-triager` | >20 findings batch: classify TP/FP/needs-investigation reading source context, propose fixes | Read, Grep, Glob, Write |
+| `codeql-runner` | Bug needs interprocedural taint tracking: orchestrate CodeQL database build + queries | Read, Grep, Glob, Bash |
+| `sarif-parsing` | Multiple SARIF sources: parse, dedup, aggregate into single report (Semgrep + CodeQL + others) | Read, Glob, Bash, Write |
+| `variant-analysis` | Confirmed bug → hunt variants of same pattern, generate reusable custom rule for CI | Read, Grep, Glob, Bash, Write |
 
 **Invocation example:**
 
@@ -604,6 +618,14 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `search-first.md` policy: mandatory research before implementing
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
+
+### 2026-05-03 (Items 2-3-4 batch — kit maintenance)
+
+- **5 new dispatchable subagents** for skill 34 Static Analysis pipeline: `semgrep-scanner` (parallel scans by language), `semgrep-triager` (TP/FP classification), `codeql-runner` (interprocedural taint tracking), `sarif-parsing` (multi-tool dedup), `variant-analysis` (bug variant hunting + reusable rule generation). Skill 34 updated: removed "planejados" stub, integrated dispatch instructions in pipeline.
+- **Subagent count: 9 → 14** registered in `plugin.json`. README subagent table reorganized into 3 categories: Core (5), Detective Spec (4), Static Analysis (5).
+- **`evals/skill-audit-2026-05-03.md`**: full audit of skills 01-32 against the scorecard from skill 35. Result: 22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE. Top cross-cutting gap: 75% of skills miss `allowed-tools` frontmatter (mechanical fix). Tier-1 rewrite priority for next batch: skills 21 (data-analytics), 22 (accessibility), 24 (release-manager), 27 (video-integration).
+- **Cleanup**: removed merged git worktrees (`busy-tesla-e51016`, `cool-pascal-f3482a`, `top5-skills`) and their branches.
+- **Verified pre-existing concern**: README mentions "36 MCP tools" — confirmed accurate (`mcp-server/src/index.ts` has 36 `registerTool` calls). MCP tools are orthogonal to skill count, so 32→35 skills doesn't change tool count. False alarm from cycle-1 review of top-5 batch.
 
 ### 2026-05-02 (afternoon — Top 5 skills batch)
 
