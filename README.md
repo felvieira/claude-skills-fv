@@ -67,6 +67,8 @@ The **Dev Team Kit** is a set of 35 specialized skills that turns any compatible
 - **Persistent memory** — working set, context pack, learned skills with confidence scoring accumulated per project
 - **Multi-platform install** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI and more
 
+> **5-min tour:** [`docs/SKILLS-OVERVIEW.md`](docs/SKILLS-OVERVIEW.md) — every skill, mode, subagent and policy in one navigable page (aihero.dev format).
+
 ---
 
 ## Quick Install

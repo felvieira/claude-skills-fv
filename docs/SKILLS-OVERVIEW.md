@@ -1,0 +1,345 @@
+# Dev Team Kit — Skills, Modos & Subagents
+
+Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
+
+> **Versão:** 35 skills, 14 subagents, 18 slash commands, 20 policies
+> **Última atualização:** 2026-05-03
+> **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
+
+---
+
+## Índice rápido
+
+- [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
+- [Skills por categoria](#skills-por-categoria) — 35 especialistas
+- [Subagents dispatcháveis](#subagents-dispatcháveis) — 14 agentes via Task tool
+- [Policies que governam tudo](#policies-que-governam-tudo) — 20 regras compartilhadas
+- [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
+
+---
+
+## Modos de uso (slash commands)
+
+São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho, ele roteia.
+
+### `/spec` — Especificar feature
+
+**O que faz:** PO escreve user stories, critérios de aceitação testáveis, prioridade, riscos.
+**Quando usar:** ideia nova ou requisito vago precisa virar spec acionável.
+**Problema que resolve:** evita "build sem entender o pedido", reduz retrabalho.
+**Exemplo:** `/spec adicionar dark mode com persistência por usuário`
+**Takeaway:** **toda feature começa aqui.** Pular spec custa 3-5x mais em rework.
+
+### `/plan` — Montar pipeline
+
+**O que faz:** orchestrator classifica complexidade da task e define o pipeline mínimo (quais skills chamar, em que ordem).
+**Quando usar:** task grande, não sabe por onde começar; quer um roadmap antes de codar.
+**Problema que resolve:** evita rodar pipeline cheio quando bug fix simples basta.
+**Exemplo:** `/plan migrar autenticação para OAuth2`
+**Takeaway:** **pipeline é mínimo necessário.** Skills caras (security, deploy) só entram quando a task pede.
+
+### `/build` — Implementar
+
+**O que faz:** Backend (skill 03) + Frontend (skill 04) com a stack real do projeto (lê `docs/repo-audit/current.md` antes).
+**Quando usar:** spec pronta, implementar é o próximo passo.
+**Problema que resolve:** consistência com convenções existentes em vez de "agente inventando estilo novo".
+**Exemplo:** `/build implementar endpoint POST /api/orders conforme spec`
+**Takeaway:** **stack vem da auditoria, não do treinamento.** Auditar repo primeiro evita mismatch.
+
+### `/test` — Escrever e rodar testes
+
+**O que faz:** QA (skill 05) seguindo "prove-it" — happy path + error + edge case + regression.
+**Quando usar:** após implementar, ou para preencher gap de cobertura, ou para validar fix.
+**Problema que resolve:** "funciona local" sem teste = bug em produção esperando.
+**Exemplo:** `/test cobrir orderService incluindo desconto VIP e estoque insuficiente`
+**Takeaway:** **se diz que funciona, prova com teste.** Falar não conta.
+
+### `/review` — Review final + security
+
+**O que faz:** Reviewer (skill 11) + Security (skill 06) validam o delta antes do merge.
+**Quando usar:** PR pronto, antes de pedir review humano ou mergear.
+**Problema que resolve:** pega bug óbvio, vulnerabilidade comum, débito antes de virar dívida.
+**Exemplo:** `/review` (no contexto de PR aberto)
+**Takeaway:** **Critical/High aberto = no merge.** Reviewer é gate, não sugestão.
+
+### `/best` — Auditoria de boas práticas
+
+**O que faz:** Reviewer + Security + QA juntos auditam clean code, DRY, SOLID, OWASP.
+**Quando usar:** antes de release, código herdado, ou sentindo "isso aqui tá feio".
+**Problema que resolve:** débito técnico que ninguém quer abrir issue para tratar.
+**Exemplo:** `/best src/services/billing/`
+**Takeaway:** **rode antes de pedir refactor.** O relatório justifica o trabalho.
+
+### `/simplify` — Refatorar
+
+**O que faz:** Migration & Refactor (skill 23) propõe simplificação preservando comportamento.
+**Quando usar:** código funciona mas tá complicado; antes de adicionar feature em módulo god.
+**Problema que resolve:** refactor "vamos limpar" sem critério vira novo bug.
+**Exemplo:** `/simplify src/auth/middleware.ts (god function 200 linhas)`
+**Takeaway:** **refactor com plano e teste de regressão.** Sem rede, vira regressão.
+
+### `/ship` — Release e deploy
+
+**O que faz:** Release Manager (skill 24) + Deploy (skill 07) — changelog, versionamento, rollout, rollback plan.
+**Quando usar:** feature pronta + testada + revisada, hora de subir.
+**Problema que resolve:** deploy "no susto", rollback improvisado, changelog vazio.
+**Exemplo:** `/ship v2.4.0 com migration de schema`
+**Takeaway:** **toda release tem changelog e rollback plan.** Sem ambos, não é release, é desespero.
+
+### `/pipeline` — End-to-end completo
+
+**O que faz:** orchestrator roda spec → plan → build → test → review → ship em sequência.
+**Quando usar:** feature mediana/grande que merece todo o protocolo.
+**Problema que resolve:** pular fases por preguiça gera retrabalho 3x maior depois.
+**Exemplo:** `/pipeline criar página de configurações de usuário`
+**Takeaway:** **pipeline completo é desperdício para bug fix, vital para feature.**
+
+### `/auto` — Agente autônomo (1 sessão)
+
+**O que faz:** executa task completa sem intervenção, com circuit breaker (3 erros iguais = para).
+**Quando usar:** task definida, sair pra tomar café, voltar com PR.
+**Problema que resolve:** ficar "babysitting" o agente em task longa.
+**Exemplo:** `/auto implementar feature spec em docs/specs/dark-mode.md`
+**Takeaway:** **defina escopo concreto.** Auto sem spec vira auto sem rumo.
+
+### `/loop` — Loop autônomo v2
+
+**O que faz:** auto-loop multi-agente (claude + codex), worktree paralelo, polishing pass automático. `node scripts/auto-loop.mjs "task"`.
+**Quando usar:** task overnight, várias features em paralelo, ou quer redundância (claude + codex).
+**Problema que resolve:** maximizar throughput aproveitando paralelismo de worktree.
+**Exemplo:** `node scripts/auto-loop.mjs "fix all eslint warnings" --worktree --parallel 4`
+**Takeaway:** **paralelo via worktree, não thread.** Isolamento real previne corrupção de estado.
+
+### `/worktree` — Worktree isolado
+
+**O que faz:** cria git worktree separado, copia `.env*`, valida ambiente em background.
+**Quando usar:** trabalhar em feature sem afetar branch atual; antes de `/auto` ou `/loop`.
+**Problema que resolve:** stash/checkout cansativo, conflito de env entre features.
+**Exemplo:** `/worktree feature/dark-mode`
+**Takeaway:** **worktree > branch checkout.** Disco é barato, contexto perdido não.
+
+### `/detective-spec` — Engenharia reversa de spec em legado
+
+**O que faz:** extrai contratos executáveis de código legado sem modificar nada (5 fases: recon → módulos → regras → fluxos → ADRs).
+**Quando usar:** legado sem doc, vibe-coded, antes de evoluir feature em módulo desconhecido, onboarding em codebase grande.
+**Problema que resolve:** agente quebra produção em legado por não saber regras invisíveis.
+**Exemplo:** `/detective-spec --module=src/billing`
+**Takeaway:** **zero writes no projeto legado.** Spec gerada em `_detective_sdd/` é contrato operacional, não doc decorativa.
+
+---
+
+## Skills por categoria
+
+### Management & Coordination
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 08 | **Context Manager** | rastrear focus, tasks abertas, hot files entre sessões |
+| 09 | **Orchestrator** | classificar complexidade da task e definir pipeline mínimo |
+| 10 | **Documenter** | registrar decisões, contratos de API, ADRs em docs vivos |
+| 11 | **Reviewer** | validar delta final antes de release |
+| 17 | **Image Generator** | gerar imagens originais via fal.ai (hero, ícones, ilustrações) |
+| 18 | **Repo Auditor** | mapear stack real, convenções, riscos antes de qualquer task grande |
+| 19 | **Asset Librarian** | catalogar logos, fontes, tokens visuais |
+| 20 | **Observability SRE** | logs estruturados, métricas, tracing, alerts, rollback plan |
+| 21 | **Data Analytics** | tracking events, funnels, KPIs |
+| 22 | **Accessibility** | WCAG 2.2, navegação por teclado, motion reduction |
+| 23 | **Migration & Refactor** | refactor incremental com feature flags + rollback |
+| 24 | **Release Manager** | changelog, versionamento, gradual rollout |
+| 25 | **AI Integration Architect** | adapters, gateways, streaming, fallbacks de inferência |
+| 26 | **Prompt Engineer** | escrever, testar e iterar prompts reutilizáveis |
+| 27 | **Video Integration** | generative video — UX, latência, formato |
+| 28 | **CLAUDE.md Generator** | gerar `CLAUDE.md` inteligente para repo consumidor |
+| 30 | **Cost Tracker** | custo de tokens por sessão, skill, model tier |
+| 31 | **Session Summary** | consolidar sessão para handoff entre conversas longas |
+| 32 | **Smart Suggestions** | sugerir próxima ação mais impactante baseado no estado real |
+| 35 | **Skill Author** | meta-skill para criar/editar/avaliar skills do próprio kit |
+
+### Product & Design
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 01 | **PO** | spec, user stories, critérios de aceitação, prioridade |
+| 02 | **UI/UX Designer** | layout, design tokens, responsividade, heurísticas |
+| 29 | **Design Intelligence** | benchmark competitivo, screenshots, dossier estratégico |
+| 36 | **Web Asset Generator** | favicons, PWA icons, OG images, manifest, snippet HTML |
+
+### Development
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 03 | **Backend Engineer** | API REST/GraphQL, contratos, auth, validação, DB |
+| 04 | **Frontend Engineer** | React/Next.js, estado, performance, integração com API |
+| 12 | **Motion Designer** | animações, transições, micro-interações |
+| 15 | **Mobile / Tauri** | apps desktop e mobile com Tauri + React Native |
+
+### Content & Discovery
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 13 | **Marketing Copy** | copy de landing, CTAs, brand voice |
+| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap |
+
+### Quality & Delivery
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 05 | **QA Engineer** | unit, integration, E2E, edge cases críticos |
+| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS |
+| 07 | **Deploy Engineer** | containerização, CI/CD, blue-green, rollback |
+| 33 | **Detective Spec** | engenharia reversa de spec em legado (zero writes no projeto) |
+| 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF |
+
+---
+
+## Subagents dispatcháveis
+
+Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devolve resultado focado. Útil para revisar/auditar/triagiar sem poluir contexto principal.
+
+### Core (5)
+
+| Subagent | Quando despachar |
+|---|---|
+| `code-reviewer` | review de PR, feature concluída, código antes de merge |
+| `security-auditor` | auth flows, input handling, deps, CORS, headers, pré-deploy |
+| `test-engineer` | escrever testes, preencher gaps de cobertura, validar regressão |
+| `orchestrator` | classificar task complexa, montar pipeline |
+| `debugger` | bug com Evidence Ledger + tabela anti-rationalization (10 falácias comuns) |
+
+### Detective Spec (4) — fases do `/detective-spec`
+
+| Subagent | Fase |
+|---|---|
+| `detective-contracts` | Fase 2: extrai contratos de módulo (API, deps, invariantes, consumidores) |
+| `detective-business-rules` | Fase 3: extrai regras de negócio escondidas em validações, constantes mágicas, testes |
+| `detective-flows` | Fase 4: reconstrói fluxos end-to-end com edge cases e estado mutado |
+| `detective-adrs` | Fase 5: infere ADRs retroativos e sintetiza overview + traceability |
+
+### Static Analysis (5) — pipeline da skill 34
+
+| Subagent | Quando despachar |
+|---|---|
+| `semgrep-scanner` | repo multi-linguagem, scans paralelos por categoria |
+| `semgrep-triager` | batch >20 findings, classificação TP/FP/needs-investigation com gate de aprovação para `nosemgrep:` |
+| `codeql-runner` | bug precisa taint tracking interprocedural, com cache de database |
+| `sarif-parsing` | múltiplas fontes SARIF, parse + dedup com consensus check |
+| `variant-analysis` | bug confirmado → caça variantes, gera custom rule reusável (gate de aprovação para `git add`) |
+
+---
+
+## Policies que governam tudo
+
+20 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+
+### `tool-safety.md`
+Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.
+
+### `writing-clarity.md`
+10 regras Strunk para output (commits, error messages, handoffs). Lista de palavras-tampão banidas. Aplica-se a TODA skill.
+
+### `source-driven.md`
+Toda afirmação ancorada em evidência (`file:line`, commit-sha, doc oficial). Sem evidência = hipótese, marcar `confidence: low`.
+
+### `model-routing.md`
+Roteamento automático por tier: Haiku (boilerplate), Sonnet (implementação), Opus (arquitetura). Você não paga Opus para gerar boilerplate.
+
+### `detective-write-guardrails.md`
+Hard guardrail do `/detective-spec`: writes restritos a `.detective/` e `_detective_sdd/`. Verificação dupla via `git status --porcelain` filtrado + `git diff --name-only --diff-filter=MDARCT HEAD`.
+
+Demais policies em `policies/`: `execution.md`, `handoffs.md`, `token-efficiency.md`, `quality-gates.md`, `evals.md`, `persistence.md`, `confusion-management.md`, `anti-rationalization.md`, `hooks.md`, `cost-optimization.md`, `code-exploration.md`, `iterative-retrieval.md`, `search-first.md`, `documentation-i18n.md`, `stack-flexibility.md`, `context-engineering.md`.
+
+---
+
+## Quando usar o quê: árvore de decisão
+
+```
+Você quer:
+├── Adicionar feature nova
+│   ├── ideia vaga → /spec
+│   ├── spec pronta, complexa → /pipeline
+│   └── spec pronta, pequena → /build → /test
+│
+├── Corrigir bug
+│   ├── reproduz e arquivo conhecido → debugger subagent
+│   ├── não reproduz → debugger subagent (Step 1: Reproduzir bloqueia)
+│   └── parece variante de outro bug → variant-analysis subagent
+│
+├── Refatorar código
+│   ├── auditar primeiro → /best
+│   ├── plano pronto → /simplify
+│   └── deep modules check → improve-codebase-architecture (futuro, ver gaps abaixo)
+│
+├── Trabalhar em legado
+│   ├── extrair specs sem modificar nada → /detective-spec
+│   ├── auditar estrutura antes → /audit-repo (skill 18)
+│   └── grafo do código → graphify update . + ler graphify-out/GRAPH_REPORT.md
+│
+├── Validar segurança
+│   ├── scan automatizado pré-release → semgrep-scanner + semgrep-triager
+│   ├── taint tracking interprocedural → codeql-runner
+│   ├── review manual de auth/input → security-auditor subagent
+│   └── auditoria deep multi-tool → /best
+│
+├── Subir / fazer release
+│   ├── feature pronta + testada → /ship
+│   ├── /ship + scan obrigatório → /pipeline
+│   └── deploy a quente, rollback prep → skill 07 (Deploy Engineer)
+│
+├── Trabalhar em paralelo
+│   ├── feature isolada → /worktree
+│   ├── várias tasks pequenas overnight → /loop --worktree --parallel N
+│   └── 1 task autônoma simples → /auto
+│
+├── Documentar
+│   ├── CLAUDE.md do projeto → skill 28 (CLAUDE.md Generator)
+│   ├── ADR ou contrato de API → skill 10 (Documenter)
+│   ├── changelog de release → skill 24 (Release Manager)
+│   └── visão geral pro time → este arquivo
+│
+└── Criar/editar/avaliar skill do próprio kit
+    └── skill 35 (Skill Author) — meta-skill com scorecard de 10 critérios
+```
+
+---
+
+## O que ainda falta (roadmap honesto)
+
+Comparando com [aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day) e outras coleções de skills, identificamos 3 gaps reais:
+
+| Gap | Por que vale | Status |
+|---|---|---|
+| `/grill-me` (interrogatório de spec) | nosso PO só ativa Deep Interview se ambiguity > 0.7 — falta versão sempre-ativa para pegar "unknown unknowns" cedo | candidato p/ próximo batch |
+| `/to-prd` (conversa → GitHub issue formatado) | hoje produzimos spec markdown mas não em formato issue/Agile | candidato p/ próximo batch |
+| `/to-issues` (PRD → vertical slices Kanban) | orchestrator monta pipeline mas não quebra em issues independentes paralelizáveis | candidato p/ próximo batch |
+| `/tdd` (red-green-refactor enforced) | skill 05 escreve teste mas sem TDD obrigatório | candidato p/ próximo batch |
+| Audit das skills 21, 22, 24, 27 | classificadas NEEDS-REWRITE no `evals/skill-audit-2026-05-03.md` | priorizar antes de adicionar mais skills |
+| Tier 3 cleanup: adicionar `allowed-tools` em skills 01-15 | 75% das skills antigas miss esse field, fix mecânico | quick-win para próxima sessão |
+
+Detalhes do audit: [`evals/skill-audit-2026-05-03.md`](../evals/skill-audit-2026-05-03.md).
+
+---
+
+## Como contribuir
+
+1. Skill nova → use `/skill-author --action=create` ou siga template em `skills/35-skill-author/SKILL.md`
+2. Eval scorecard: 10 critérios × 0-3, threshold 22/30 para merge
+3. Toda mudança passa por review cycle (cycle 1 sempre pega bug; cycle 2-3 polem)
+4. Ver `CONTRIBUTING.md` para fluxo completo
+
+---
+
+## Onde buscar mais detalhe
+
+- **Visão geral do kit:** [`README.md`](../README.md) (EN) ou [`README.pt-BR.md`](../README.pt-BR.md)
+- **Cada skill em detalhe:** `skills/NN-nome/SKILL.md`
+- **Cada subagent em detalhe:** `.claude/agents/<name>.md`
+- **Policies:** `policies/*.md`
+- **Templates de output:** `templates/`
+- **Auditoria de qualidade:** `evals/skill-audit-2026-05-03.md`
+- **Setup em repo consumidor:** `docs/setup-bot-folder.md`
+- **Skill discovery (decision tree completa):** `docs/skill-guides/skill-discovery.md`
+
+---
+
+> **Princípio do kit:** **task certa → skill certa → modelo certo → custo certo.**
+> Você não paga Opus para gerar boilerplate. Você não pula QA para "ir mais rápido". Você não inventa convenção quando o repo já tem uma.
