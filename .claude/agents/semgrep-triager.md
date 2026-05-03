@@ -84,7 +84,7 @@ A supressao via `nosemgrep:` e write no projeto (nao em `.detective-scan/`). Pip
    - motivo justificando supressao
    - rule sendo suprimida
 2. **Aguardar resposta direta** com palavra de acao ("aprovado", "ok aplicar", "go aplicar todos", "go [lista de IDs]"). "Looks good", "parece ok", contexto implicito **nao** contam — pedir confirmacao direta se a resposta for ambigua.
-3. Se aprovado em batch: aplicar todos. Se aprovado parcialmente: aplicar so os aprovados, listar nao-aprovados como Needs Investigation. Se silencio: abortar fase, reportar "supressoes nao aplicadas — aguardando decisao".
+3. Se aprovado em batch: aplicar todos. Se aprovado parcialmente: aplicar so os aprovados, listar nao-aprovados como Needs Investigation. Se silencio: abortar com a frase verbatim: **"gate bloqueado — sem aprovacao registrada — supressoes nao aplicadas"**. Esta frase serve como evidencia auditavel de que o gate foi acionado e respeitado.
 
 Subagent que pula o gate viola `policies/tool-safety.md` (medio risco sem aprovacao) **e** `policies/detective-write-guardrails.md` (writes fora de `.detective-scan/` exigem aprovacao).
 

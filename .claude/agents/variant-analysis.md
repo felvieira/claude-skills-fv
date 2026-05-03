@@ -114,7 +114,7 @@ Pipeline:
    - conteudo completo da rule
    - resultado da validacao (Step 5: 0 hits no codigo correto, FP rate <5%)
    - lista de variantes encontradas (do Step 4)
-2. **Aguardar resposta explicita.** Se ambigua, perguntar de novo. Se nenhuma resposta apos 1 turno, abortar e reportar "rule nao aplicada — aguardando decisao".
+2. **Aguardar resposta explicita.** Se ambigua, perguntar de novo. Se nenhuma resposta apos 1 turno, abortar com a frase verbatim: **"gate bloqueado — sem aprovacao registrada — rule nao aplicada"**. Esta frase serve como evidencia auditavel de que o gate foi acionado e respeitado.
 3. Apenas apos aprovacao inequivoca, executar:
    ```bash
    git add tools/semgrep/<bug-name>.yml

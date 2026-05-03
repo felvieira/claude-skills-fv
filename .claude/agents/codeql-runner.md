@@ -54,7 +54,11 @@ DB_DIR=".detective-scan/codeql-db/$LANG"
 CURRENT_HASH=$(git rev-parse HEAD)
 CACHED_HASH=$(cat "$DB_DIR/.commit-hash" 2>/dev/null || echo "")
 
-if [ "$CURRENT_HASH" = "$CACHED_HASH" ] && [ -f "$DB_DIR/codeql-database.yml" ]; then
+if [ "$CURRENT_HASH" = "$CACHED_HASH" ] \
+   && [ -f "$DB_DIR/codeql-database.yml" ] \
+   && [ -d "$DB_DIR/db-$LANG" ]; then
+  # Belt-and-suspenders: manifest yml + per-language db dir. Catches
+  # partial-write corruption from a prior crashed `codeql database create`.
   echo "Reusing cached CodeQL database (commit $CURRENT_HASH)"
 else
   mkdir -p "$DB_DIR"
