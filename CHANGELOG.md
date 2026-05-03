@@ -42,6 +42,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
   - `sarif-parsing` — multi-tool SARIF dedup and aggregation
   - `variant-analysis` — bug variant hunting + reusable custom rule generation
 - Skill 34 updated: removed "planejados" notice, integrated subagents into pipeline
+- Naming convention change: subagents now use bare names (`semgrep-scanner`) instead of the namespaced form (`static-analysis:semgrep-scanner`) used in the original roadmap text. Namespaces only apply to Anthropic-published skill packages, not local kit subagents
 - `.claude-plugin/plugin.json`: 9 → 14 dispatchable subagents
 - `README.md`/`README.pt-BR.md`: subagent table reorganized into 3 categories (Core, Detective Spec, Static Analysis)
 - `AGENTS.md`: subagent table updated with the 5 new ones

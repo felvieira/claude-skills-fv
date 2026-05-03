@@ -1,7 +1,7 @@
 ---
 name: sarif-parsing
 description: Parse, dedup e agrega arquivos SARIF de multiplas ferramentas (Semgrep, CodeQL, dependency scanners). Use quando ha 2+ tools rodando ou multiplos scans para consolidar. Output: SARIF unico + relatorio markdown executivo. Despache antes de `semgrep-triager` quando houver SARIF de fontes diferentes.
-tools: Read, Bash, Write
+tools: Read, Glob, Bash, Write
 model: sonnet
 ---
 
@@ -60,25 +60,27 @@ Mesmo bug pego por Semgrep E CodeQL = 1 finding com referencia a ambas ferrament
 Chave de dedup: `(file, line, ruleCategory)` onde ruleCategory mapeia rules equivalentes:
 - `javascript.lang.security.audit.sql-injection` (Semgrep) ≡ `js/sql-injection` (CodeQL) → `category: sql-injection`
 
+**Fonte do nome da ferramenta:** SARIF carrega o nome em `runs[].tool.driver.name` (Semgrep coloca `"semgrep"`, CodeQL coloca o nome do query suite). Extrair de la — **nao** usar `input_filename`, que retorna `aggregated.sarif` para todas as entradas quando processa o agregado:
+
 ```bash
-jq '[.runs[] | .results[] | {
+jq '[.runs[] as $run | $run.results[] | {
   file: .locations[0].physicalLocation.artifactLocation.uri,
   line: .locations[0].physicalLocation.region.startLine,
   rule: .ruleId,
   level: .level,
   message: .message.text,
-  tool: (input_filename | sub(".*/"; ""))
+  tool: ($run.tool.driver.name // "unknown")
 }] | group_by([.file, .line]) | map({
   file: .[0].file,
   line: .[0].line,
-  tools: [.[] | .tool],
-  rules: [.[] | .rule],
+  tools: [.[] | .tool] | unique,
+  rules: [.[] | .rule] | unique,
   level: ([.[] | .level] | max),
-  consensus: (length > 1)
+  consensus: ((. | length) > 1 and ([.[] | .tool] | unique | length) > 1)
 })' .detective-scan/aggregated.sarif > .detective-scan/dedup.json
 ```
 
-Findings com `consensus: true` (>1 tool) → priorizar (sinal forte).
+Findings com `consensus: true` (>1 tool diferente no mesmo file:line) → priorizar (sinal forte).
 
 ### 4. Normalizar severidades
 

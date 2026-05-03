@@ -315,7 +315,7 @@ The kit ships 14 Claude Code subagents in `.claude/agents/`, ready to dispatch w
 | `semgrep-scanner` | Multi-language repo: parallel Semgrep scans by language category, aggregate SARIF | Read, Grep, Glob, Bash |
 | `semgrep-triager` | >20 findings batch: classify TP/FP/needs-investigation reading source context, propose fixes | Read, Grep, Glob, Write |
 | `codeql-runner` | Bug needs interprocedural taint tracking: orchestrate CodeQL database build + queries | Read, Grep, Glob, Bash |
-| `sarif-parsing` | Multiple SARIF sources: parse, dedup, aggregate into single report (Semgrep + CodeQL + others) | Read, Bash, Write |
+| `sarif-parsing` | Multiple SARIF sources: parse, dedup, aggregate into single report (Semgrep + CodeQL + others) | Read, Glob, Bash, Write |
 | `variant-analysis` | Confirmed bug → hunt variants of same pattern, generate reusable custom rule for CI | Read, Grep, Glob, Bash, Write |
 
 **Invocation example:**

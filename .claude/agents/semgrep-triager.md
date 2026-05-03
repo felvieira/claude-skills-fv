@@ -65,13 +65,28 @@ Para cada TP listar:
 - **Owner** (skill responsavel: 03 backend, 04 frontend, 06 security)
 - **Effort** (S/M/L)
 
-### 4. Para FPs, propor supressao
+### 4. Para FPs, **propor** supressao (nao executar)
+
+Para cada FP, gerar a proposta de supressao no formato:
 
 ```javascript
 // nosemgrep: <rule-id>  // motivo: <evidencia direta>
 ```
 
 Sem motivo concreto = **nao** suprimir, mover para Needs Investigation.
+
+**STOP — gate obrigatorio antes de qualquer write em codigo fonte.**
+
+A supressao via `nosemgrep:` e write no projeto (nao em `.detective-scan/`). Antes de aplicar:
+
+1. Apresentar ao usuario a lista completa de FPs propostos:
+   - file:line de cada um
+   - motivo justificando supressao
+   - rule sendo suprimida
+2. **Aguardar aprovacao explicita** ("ok", "go", "aprovado"). Sem aprovacao = nao escrever no codigo, manter so no relatorio (Step 5) como "FPs propostos para supressao".
+3. Se aprovado em batch: aplicar todos. Se aprovado parcialmente: aplicar so os aprovados, listar nao-aprovados como Needs Investigation.
+
+Nao usar `Write` tool para `nosemgrep:` antes desse gate. **Subagent que pula o gate viola `policies/tool-safety.md` (medio risco sem aprovacao).**
 
 ### 5. Output relatorio
 
@@ -110,7 +125,7 @@ Sem motivo concreto = **nao** suprimir, mover para Needs Investigation.
 1. **Toda classificacao tem evidencia file:line.** Sem evidencia = Needs Investigation.
 2. **Suprimir FP sem comentario justificando = proibido.**
 3. **Critical/High nunca vira FP "porque acho que e".** Critical/High suspeito = NI, escalar para skill 06.
-4. **Writes apenas em `.detective-scan/triage-report.md`** e nas linhas com `nosemgrep:` no codigo (estes ultimos exigem aprovacao explicita do usuario antes — supressao e write no projeto).
+4. **Writes default apenas em `.detective-scan/triage-report.md`.** Supressoes `nosemgrep:` no codigo fonte sao **propostas** no relatorio — nunca aplicadas direto. Aplicacao exige gate de aprovacao explicita do usuario (ver Step 4). Subagent que escreve `nosemgrep:` sem aprovacao = violacao critica.
 
 ## Handoff
 

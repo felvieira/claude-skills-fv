@@ -97,7 +97,7 @@ Copiados para o repo consumidor pelo `install.sh`.
 | `semgrep-scanner` | Pipeline da skill 34: scans Semgrep em paralelo por linguagem, agrega SARIF | Read, Grep, Glob, Bash |
 | `semgrep-triager` | Pipeline da skill 34: triagem TP/FP/needs-investigation lendo contexto fonte | Read, Grep, Glob, Write |
 | `codeql-runner` | Pipeline da skill 34: orquestra build de database CodeQL + queries (taint tracking interprocedural) | Read, Grep, Glob, Bash |
-| `sarif-parsing` | Pipeline da skill 34: parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | Read, Bash, Write |
+| `sarif-parsing` | Pipeline da skill 34: parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | Read, Glob, Bash, Write |
 | `variant-analysis` | Pipeline da skill 34: caça variantes de bug confirmado e gera custom rule reusável | Read, Grep, Glob, Bash, Write |
 
 **Como invocar** (via `Task` tool ou prompt Claude Code):

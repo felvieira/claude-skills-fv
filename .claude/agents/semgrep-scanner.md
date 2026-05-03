@@ -35,15 +35,22 @@ Segue `policies/tool-safety.md` (read-only por default), `policies/writing-clari
 
 ### 1. Detectar linguagens
 
-```bash
-# Heuristica rapida via Glob counts
-find . -name "*.ts" -o -name "*.tsx" | head -1   # TS
-find . -name "*.py" | head -1                    # Python
-find . -name "*.go" | head -1                    # Go
-find . -name "*.java" | head -1                  # Java
+Preferir o **Glob tool** do Claude Code (rapido, retorna ja sortido):
+
+```
+Glob: "**/*.ts" → tem TS se >0 matches
+Glob: "**/*.py" → tem Python se >0 matches
+Glob: "**/*.go", "**/*.java", etc.
 ```
 
-Ou ler `package.json`, `requirements.txt`, `go.mod`, `pom.xml` para confirmar.
+Para confirmar, ler manifestos via Read: `package.json`, `requirements.txt`, `go.mod`, `pom.xml`.
+
+Fallback shell se Glob nao for suficiente (ex: precisar do count exato):
+
+```bash
+ls **/*.ts **/*.tsx 2>/dev/null | head -1   # TS
+ls **/*.py 2>/dev/null | head -1            # Python
+```
 
 ### 2. Mapear ruleset por linguagem
 

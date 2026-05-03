@@ -103,19 +103,26 @@ semgrep --config=tools/semgrep/<bug-name>.yml --sarif --output=.detective-scan/v
 
 Se rule disparar em >50% de FPs, refinar (mais especifica) antes de comitar.
 
-### 6. Commitar rule no repo
+### 6. Apresentar rule ao usuario e aguardar aprovacao
 
-```bash
-git add tools/semgrep/<bug-name>.yml
-```
+**STOP — gate obrigatorio.** A rule custom e write em `tools/semgrep/` (commitavel, nao gitignored). Antes de qualquer `git add`:
 
-E adicionar ao CI:
+1. Apresentar ao usuario:
+   - caminho da rule (`tools/semgrep/<bug-name>.yml`)
+   - conteudo completo da rule
+   - resultado da validacao (Step 5: 0 hits no codigo correto, FP rate <5%)
+   - lista de variantes encontradas (do Step 4)
+2. **Aguardar resposta explicita** ("ok", "go", "aprovado", "commit"). Sem aprovacao = nao prosseguir.
+3. Apenas apos aprovacao, executar:
+   ```bash
+   git add tools/semgrep/<bug-name>.yml
+   ```
+4. Sugerir adicao ao CI (mas nao editar arquivos de CI sem aprovacao separada):
+   ```yaml
+   - run: semgrep --config=tools/semgrep/ --error --severity=ERROR
+   ```
 
-```yaml
-- run: semgrep --config=tools/semgrep/ --error --severity=ERROR
-```
-
-CI agora previne **toda variante futura**, nao so o bug original.
+CI com a rule previne **toda variante futura**, nao so o bug original — mas a decisao de subir e do humano.
 
 ### 7. Output
 
@@ -163,6 +170,8 @@ db.query('SELECT * FROM logs WHERE user = $1', [req.body.user])
 2. **Variantes em codigo legado:** classificar separadamente, nao misturar com fix da release atual (escala diferente, owners diferentes).
 3. **Nao escrever rule custom se rule oficial cobre.** Verificar `semgrep --config=auto` primeiro — talvez bug original ja teria sido pego com ruleset mais amplo.
 4. **Rule custom em `tools/semgrep/`** (commitavel, versionada) — nao `.detective-scan/` (gitignored, efemero).
+5. **Aprovacao humana obrigatoria antes de write em `tools/semgrep/` e antes de `git add`** (ver Step 6). Subagent nao pode commitar rule sozinho — proposta apresentada, decisao do usuario.
+6. **Nao editar arquivos de CI** (`.github/workflows/`, `.gitlab-ci.yml`, etc) sem aprovacao separada. Sugerir snippet, deixar humano integrar.
 
 ## Handoff
 

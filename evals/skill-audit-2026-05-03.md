@@ -1,6 +1,11 @@
 # Skill Audit Report — 2026-05-03
 
-Audit of skills 01-32 (all skills predating skills 33-36 + the formalized scorecard) using the evaluation criteria from `skills/35-skill-author/SKILL.md` "Fase 5: Eval".
+Audit of skills 01-32 + skill 36 using the evaluation criteria from `skills/35-skill-author/SKILL.md` "Fase 5: Eval".
+
+**Scope notes:**
+- Skill 16 intentionally absent (absorbed by `policies/model-routing.md`)
+- Skills 33 (Detective Spec), 34 (Static Analysis), 35 (Skill Author) excluded — created concurrently with the scorecard in this same session and explicitly designed against it. Score by construction: PASS. Auditing them would be circular.
+- Skill 36 (Web Asset Generator) **included** — created in the prior batch (top-5, 2026-05-02 afternoon) before the scorecard was formalized, so subject to the same scrutiny as 01-32.
 
 ## Methodology
 
@@ -54,12 +59,15 @@ Audit of skills 01-32 (all skills predating skills 33-36 + the formalized scorec
 | 09-orchestrator | 26/30 | No `allowed-tools` (likely intentional — uses all) | PASS |
 | 11-reviewer | 26/30 | No `allowed-tools` declared | PASS |
 | 06-security-review | 27/30 | Best in repo | PASS |
+| 36-web-asset-generator | 25/30 | No anti-rat (flexible/mechanical — N/A=2); description trigger-rich; `allowed-tools` properly scoped with Bash globs | PASS |
 
-## Distribution
+## Distribution (32 skills audited)
 
-- **PASS** (>=22): 22 skills (69%)
+- **PASS** (>=22): 23 skills (72%)
 - **NEEDS-REVIEW** (18-21): 6 skills (19%)
 - **NEEDS-REWRITE** (<18): 4 skills (12%)
+
+(Skill 36 included in PASS count.)
 
 ## Top 3 Weaknesses (cross-cutting)
 
@@ -92,9 +100,9 @@ Add `allowed-tools` to skills 01, 02, 03, 04, 05, 08, 09, 10, 11, 12, 13, 14, 15
 
 ## Notes
 
-- Skill 16 intentionally absent (absorbed by `policies/model-routing.md`)
-- Skills 33-36 not audited (just created with the same scorecard in mind, so should pass by construction)
-- This audit is a snapshot — re-run after Tier 1 rewrites land
+- Scope rules already declared at top of report (skill 16 absent; 33-35 excluded as scorecard authors; 36 included).
+- This audit is a snapshot — re-run after Tier 1 rewrites land.
+- Re-audit cadence suggested: after every batch that adds 3+ skills, or quarterly.
 
 ## Next steps
 

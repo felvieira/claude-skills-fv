@@ -43,32 +43,48 @@ command -v codeql >/dev/null || {
 }
 ```
 
-### 2. Build database
+### 2. Build database (com cache check)
 
-**Caro — 5-30min dependendo do repo.** Cachear em `.detective-scan/codeql-db/<lang>/`.
+**Caro — 5-30min dependendo do repo.** Cachear em `.detective-scan/codeql-db/<lang>/`. Sempre rodar o pre-check abaixo antes de `codeql database create` — sem ele, o `--overwrite` reconstroi mesmo quando o codigo nao mudou.
 
 ```bash
-# JS/TS
-codeql database create .detective-scan/codeql-db/js \
-  --language=javascript \
-  --source-root=. \
-  --overwrite
+# Cache pre-check (SEMPRE rodar antes de qualquer codeql database create)
+LANG=javascript                        # ou python, java, go, etc
+DB_DIR=".detective-scan/codeql-db/$LANG"
+CURRENT_HASH=$(git rev-parse HEAD)
+CACHED_HASH=$(cat "$DB_DIR/.commit-hash" 2>/dev/null || echo "")
 
+if [ "$CURRENT_HASH" = "$CACHED_HASH" ] && [ -d "$DB_DIR/db-$LANG" ]; then
+  echo "Reusing cached CodeQL database (commit $CURRENT_HASH)"
+else
+  mkdir -p "$DB_DIR"
+  # exemplo JS/TS — adaptar --command para Java/C/etc:
+  codeql database create "$DB_DIR" \
+    --language="$LANG" \
+    --source-root=. \
+    --overwrite
+  # Persistir hash apenas apos build bem-sucedido
+  echo "$CURRENT_HASH" > "$DB_DIR/.commit-hash"
+fi
+```
+
+**Variantes por linguagem** (so o flag `--language` e `--command` mudam):
+
+```bash
 # Python
-codeql database create .detective-scan/codeql-db/py \
-  --language=python --source-root=. --overwrite
+codeql database create "$DB_DIR" --language=python --source-root=. --overwrite
 
 # Java (precisa build command)
-codeql database create .detective-scan/codeql-db/java \
+codeql database create "$DB_DIR" \
   --language=java \
   --command='mvn clean install -DskipTests' \
   --source-root=. --overwrite
+
+# Go
+codeql database create "$DB_DIR" --language=go --source-root=. --overwrite
 ```
 
-Reusar database existente se commit nao mudou:
-```bash
-git rev-parse HEAD > .detective-scan/codeql-db/<lang>/.commit-hash
-```
+Em todos os casos, o pre-check do bloco anterior decide se chama `codeql database create` ou pula direto para `codeql database analyze`.
 
 ### 3. Selecionar query suite
 
