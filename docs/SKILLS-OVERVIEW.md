@@ -2,7 +2,7 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 35 skills, 14 subagents, 18 slash commands, 20 policies
+> **Versão:** 35 skills, 14 subagents, 18 slash commands, 21 policies
 > **Última atualização:** 2026-05-03
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -15,6 +15,32 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 14 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 20 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
+
+---
+
+## Princípio fundamental: Vertical Slicing
+
+> **Toda feature multi-camada é entregue como uma fatia vertical (DB + back + front + teste e2e), nunca como camadas horizontais paralelas.**
+
+Errado (layered, paraleliza mas integra mal):
+```
+Worker A: faz todo o front (login + cadastro + recuperar senha)
+Worker B: faz todo o back (login + cadastro + recuperar senha)
+Worker C: faz todo o DB (login + cadastro + recuperar senha)
+→ ninguém pode testar até os 3 acabarem; integração revela 80% dos bugs
+```
+
+Certo (vertical, paraleliza E integra ponta-a-ponta):
+```
+Worker A: feature de login (DB + back + front + teste e2e) → mergeável sozinho
+Worker B: feature de cadastro (DB + back + front + teste e2e) → mergeável sozinho
+Worker C: feature de recuperar senha (DB + back + front + teste e2e) → mergeável sozinho
+→ cada worker entrega feature testável e demo-able
+```
+
+**Quem força isso:** orchestrator (skill 09) recusa plano layer-first. PO (skill 01) escreve user stories já como slices. `/plan` produz tabela de slices antes do build. `policies/vertical-slices.md` tem anti-padrões e heurísticas de tamanho.
+
+**Quando NÃO aplicar:** task single-layer (só front OU só back), bug fix localizado, refactor cross-cutting, chore.
 
 ---
 
@@ -246,6 +272,9 @@ Roteamento automático por tier: Haiku (boilerplate), Sonnet (implementação), 
 ### `detective-write-guardrails.md`
 Hard guardrail do `/detective-spec`: writes restritos a `.detective/` e `_detective_sdd/`. Verificação dupla via `git status --porcelain` filtrado + `git diff --name-only --diff-filter=MDARCT HEAD`.
 
+### `vertical-slices.md`
+**Obrigatória para toda feature multi-camada.** Quebra a entrega em fatias verticais (DB + back + front + teste e2e por feature) em vez de horizontal (todo o front, depois todo o back). Habilita paralelização real entre features independentes via `/worktree` ou `/loop --parallel N`. Anti-padrão número 1 do kit: "front primeiro, back depois" — proibido para feature multi-camada. Orchestrator (skill 09) recusa plano layer-first.
+
 Demais policies em `policies/`: `execution.md`, `handoffs.md`, `token-efficiency.md`, `quality-gates.md`, `evals.md`, `persistence.md`, `confusion-management.md`, `anti-rationalization.md`, `hooks.md`, `cost-optimization.md`, `code-exploration.md`, `iterative-retrieval.md`, `search-first.md`, `documentation-i18n.md`, `stack-flexibility.md`, `context-engineering.md`.
 
 ---
@@ -255,9 +284,10 @@ Demais policies em `policies/`: `execution.md`, `handoffs.md`, `token-efficiency
 ```
 Você quer:
 ├── Adicionar feature nova
-│   ├── ideia vaga → /spec
-│   ├── spec pronta, complexa → /pipeline
-│   └── spec pronta, pequena → /build → /test
+│   ├── ideia vaga → /spec (PO escreve já como vertical slices)
+│   ├── spec multi-camada → /plan (orchestrator quebra em slices) → /pipeline por slice (paralelo se independentes)
+│   ├── spec pronta, single-layer (só front OU só back) → /build → /test
+│   └── várias features independentes overnight → /loop --worktree --parallel N
 │
 ├── Corrigir bug
 │   ├── reproduz e arquivo conhecido → debugger subagent
@@ -285,11 +315,12 @@ Você quer:
 │   ├── /ship + scan obrigatório → /pipeline
 │   └── deploy a quente, rollback prep → skill 07 (Deploy Engineer)
 │
-├── Trabalhar em paralelo
-│   ├── feature isolada → /worktree
-│   ├── várias tasks pequenas overnight → /loop --worktree --parallel N
+├── Trabalhar em paralelo (sempre por feature vertical, nunca por camada)
+│   ├── 1 feature isolada → /worktree
+│   ├── N features independentes (cada uma DB+back+front+teste) → /loop --worktree --parallel N
 │   └── 1 task autônoma simples → /auto
 │
+
 ├── Documentar
 │   ├── CLAUDE.md do projeto → skill 28 (CLAUDE.md Generator)
 │   ├── ADR ou contrato de API → skill 10 (Documenter)

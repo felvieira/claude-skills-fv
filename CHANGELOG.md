@@ -34,6 +34,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Vertical Slicing policy (2026-05-03)
+- **`policies/vertical-slices.md`** — regra obrigatória para toda feature multi-camada: entrega por fatia vertical (DB + back + front + teste e2e por feature), nunca por camada horizontal. Anti-padrão "front primeiro, back depois" agora explicitamente proibido. Inclui heurísticas de tamanho (1-3 dias, <10 arquivos, demo-able), 5 anti-padrões nomeados, evidência de conformidade (tabela de slices obrigatória).
+- **Orchestrator (skill 09) atualizado:** seção "Vertical Slicing" inserida antes da Pipeline Base. Pipeline base agora descrito como "fluxo padrão **dentro de UM slice vertical**". Recusa de plano layer-first é explícita.
+- **PO (skill 01) atualizado:** specs multi-camada devem organizar user stories como vertical slices, com exemplos bom/ruim.
+- **`/plan` e `/pipeline` atualizados:** output esperado agora inclui tabela de slices para feature multi-camada; pipeline base roda dentro de cada slice (paralelo se independentes).
+- **`docs/SKILLS-OVERVIEW.md` atualizado:** nova seção "Princípio fundamental: Vertical Slicing" no topo + decision tree atualizada + nova policy nas top 5.
+
 ### Added — Items 2-3-4 batch (2026-05-03)
 - **5 new dispatchable subagents** for skill 34 (Static Analysis) pipeline:
   - `semgrep-scanner` — parallel Semgrep scans by language category, SARIF aggregation
