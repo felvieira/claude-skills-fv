@@ -54,7 +54,7 @@ DB_DIR=".detective-scan/codeql-db/$LANG"
 CURRENT_HASH=$(git rev-parse HEAD)
 CACHED_HASH=$(cat "$DB_DIR/.commit-hash" 2>/dev/null || echo "")
 
-if [ "$CURRENT_HASH" = "$CACHED_HASH" ] && [ -d "$DB_DIR/db-$LANG" ]; then
+if [ "$CURRENT_HASH" = "$CACHED_HASH" ] && [ -f "$DB_DIR/codeql-database.yml" ]; then
   echo "Reusing cached CodeQL database (commit $CURRENT_HASH)"
 else
   mkdir -p "$DB_DIR"

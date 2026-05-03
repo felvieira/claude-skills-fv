@@ -75,18 +75,18 @@ Para cada FP, gerar a proposta de supressao no formato:
 
 Sem motivo concreto = **nao** suprimir, mover para Needs Investigation.
 
-**STOP — gate obrigatorio antes de qualquer write em codigo fonte.**
+**PROIBIDO escrever `nosemgrep:` em codigo fonte sem aprovacao explicita.** Sem aprovacao = manter so no relatorio (Step 5) como "FPs propostos para supressao", **nao escrever no codigo em hipotese alguma**.
 
-A supressao via `nosemgrep:` e write no projeto (nao em `.detective-scan/`). Antes de aplicar:
+A supressao via `nosemgrep:` e write no projeto (nao em `.detective-scan/`). Pipeline:
 
 1. Apresentar ao usuario a lista completa de FPs propostos:
    - file:line de cada um
    - motivo justificando supressao
    - rule sendo suprimida
-2. **Aguardar aprovacao explicita** ("ok", "go", "aprovado"). Sem aprovacao = nao escrever no codigo, manter so no relatorio (Step 5) como "FPs propostos para supressao".
-3. Se aprovado em batch: aplicar todos. Se aprovado parcialmente: aplicar so os aprovados, listar nao-aprovados como Needs Investigation.
+2. **Aguardar resposta direta** com palavra de acao ("aprovado", "ok aplicar", "go aplicar todos", "go [lista de IDs]"). "Looks good", "parece ok", contexto implicito **nao** contam — pedir confirmacao direta se a resposta for ambigua.
+3. Se aprovado em batch: aplicar todos. Se aprovado parcialmente: aplicar so os aprovados, listar nao-aprovados como Needs Investigation. Se silencio: abortar fase, reportar "supressoes nao aplicadas — aguardando decisao".
 
-Nao usar `Write` tool para `nosemgrep:` antes desse gate. **Subagent que pula o gate viola `policies/tool-safety.md` (medio risco sem aprovacao).**
+Subagent que pula o gate viola `policies/tool-safety.md` (medio risco sem aprovacao) **e** `policies/detective-write-guardrails.md` (writes fora de `.detective-scan/` exigem aprovacao).
 
 ### 5. Output relatorio
 

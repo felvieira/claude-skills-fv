@@ -105,15 +105,17 @@ Se rule disparar em >50% de FPs, refinar (mais especifica) antes de comitar.
 
 ### 6. Apresentar rule ao usuario e aguardar aprovacao
 
-**STOP — gate obrigatorio.** A rule custom e write em `tools/semgrep/` (commitavel, nao gitignored). Antes de qualquer `git add`:
+**PROIBIDO escrever em `tools/semgrep/` ou rodar `git add` sem aprovacao explicita.** Sem aprovacao = abortar a fase, **nao prosseguir em hipotese alguma**. "Looks good", "parece ok", silencio prolongado e contexto implicito **nao** contam como aprovacao — exigir resposta direta com palavra de acao ("aprovado", "ok aplicar", "go", "commit").
+
+Pipeline:
 
 1. Apresentar ao usuario:
    - caminho da rule (`tools/semgrep/<bug-name>.yml`)
    - conteudo completo da rule
    - resultado da validacao (Step 5: 0 hits no codigo correto, FP rate <5%)
    - lista de variantes encontradas (do Step 4)
-2. **Aguardar resposta explicita** ("ok", "go", "aprovado", "commit"). Sem aprovacao = nao prosseguir.
-3. Apenas apos aprovacao, executar:
+2. **Aguardar resposta explicita.** Se ambigua, perguntar de novo. Se nenhuma resposta apos 1 turno, abortar e reportar "rule nao aplicada — aguardando decisao".
+3. Apenas apos aprovacao inequivoca, executar:
    ```bash
    git add tools/semgrep/<bug-name>.yml
    ```
