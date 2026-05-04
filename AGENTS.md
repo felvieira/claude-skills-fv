@@ -11,9 +11,10 @@ Este repositorio define um kit de skills e governanca para agentes de coding em 
 ## Ordem de Leitura
 1. `GLOBAL.md`
 2. `policies/`
-3. `README.md`
-4. `skills/*/SKILL.md`
-5. `docs/skill-guides/` somente quando a tarefa exigir exemplos extensos
+3. `docs/WIKI.md` — visao panoramica de todo o kit (todas as skills, subagents, commands, policies)
+4. `README.md`
+5. `skills/*/SKILL.md` — skill especifica conforme task
+6. `docs/skill-guides/` somente quando a tarefa exigir exemplos extensos
 
 ## Defaults Operacionais
 - responder curto por padrao

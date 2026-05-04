@@ -1,5 +1,11 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 37 skills + 14 subagents + 23 commands + 22 policies + plugin + MCP**, formato aihero, com exemplos.
+>
+> Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
+
+---
+
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
 > **Versão:** 37 skills, 14 subagents, 23 slash commands, 22 policies
