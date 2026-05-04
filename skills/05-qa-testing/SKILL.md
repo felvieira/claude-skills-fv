@@ -115,6 +115,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - **Orquestrador (skill 09):** define quando QA entra e se precisa reexecucao
 - **Context Manager (skill 08):** registra estado da validacao
 - **Documentador (skill 10):** registra evidencias quando necessario
+- **TDD Engineer (skill 37):** quando ativo, escreve **behavior tests** (red-green-refactor) primeiro. QA (esta skill) **complementa** com edge cases nao cobertos pelo TDD: cenarios raros, falhas de infra, performance, regressao cross-feature. **Nao duplicar** o que TDD ja cobriu — o relatorio do TDD lista comportamentos cobertos; comecar dai.
 
 ## Anti-Rationalization
 

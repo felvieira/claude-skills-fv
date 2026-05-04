@@ -15,7 +15,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Architecture Deepener — Refactors que Importam
 
-Sobressair friccao arquitetural e propor **deepening opportunities** — refactors que transformam modulos shallow em deep. Objetivo: testabilidade + AI-navigability (codebase que agente consegue evoluir sem quebrar coisas).
+Identificar friccao arquitetural e propor **deepening opportunities** — refactors que transformam modulos shallow em deep. Objetivo: testabilidade + AI-navigability (codebase que agente consegue evoluir sem quebrar coisas).
 
 Adaptado de [mattpocock/skills/engineering/improve-codebase-architecture](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) e integrado ao kit (skill 23 Migration & Refactor + skill 33 Detective Spec + `policies/vertical-slices.md`).
 
@@ -59,6 +59,24 @@ Nao deslizar para "component", "service", "API", "boundary". Definicoes:
 - spike exploratorio
 - task que ja tem ADR proibindo refactor naquela area
 - codebase muito novo (deixar arquitetura emergir antes de "consertar")
+
+## Entradas Esperadas
+
+- caminho do escopo (repo inteiro, subdir, ou modulo especifico)
+- glossario de dominio do projeto (`CONTEXT.md` ou `docs/glossary.md`)
+- ADRs em `docs/adr/` se existirem
+- (opcional) `graphify-out/graph.json` — god nodes priorizados
+- (opcional) `_detective_sdd/` — Detective Spec ja mapeou
+- (opcional) max-candidates (default: 5-7)
+
+## Saidas Esperadas
+
+- lista priorizada de **deepening candidates** em formato markdown (template `## Architecture Deepening Candidates` mais abaixo)
+- caminho de saida: `_architecture_review/YYYY-MM-DD-candidates.md` (criar dir se nao existir, gitignored por default)
+- (se conversa de grilling produziu termos novos) entradas inseridas em `CONTEXT.md`
+- (se usuario rejeitou candidato com motivo load-bearing) ADR proposto em `docs/adr/`
+- handoff para skill 23 (Migration & Refactor) com plano de deepening do candidato escolhido
+- nenhum codigo do projeto modificado (Deepener so propoe; skill 23 executa)
 
 ## Pre-requisitos
 

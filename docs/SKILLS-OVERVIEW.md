@@ -24,7 +24,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 
 O kit oferece **dois pipelines** para feature nova. Coexistem — escolha por contexto.
 
-### Fluxo A — `/pipeline` (clássico)
+### Modo A — `/pipeline` (clássico)
 
 ```
 /spec → /plan → /build → /test → /review → /ship
@@ -36,7 +36,7 @@ O kit oferece **dois pipelines** para feature nova. Coexistem — escolha por co
 - não precisa publicar PRD/issues no GitHub/Linear/Jira
 - TDD opcional
 
-### Fluxo B — `/pipeline-discovery` (novo, com discovery + TDD)
+### Modo B — `/pipeline-discovery` (novo, com discovery + TDD)
 
 ```
 /grill-me → /to-prd → /to-issues → /loop --worktree --parallel N → /ship

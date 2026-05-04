@@ -41,16 +41,20 @@ Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills) e [aihero.
 - **Skill 37 — TDD Engineer** (`skills/37-tdd-engineer/SKILL.md`): red-green-refactor enforced, anti horizontal-slicing, 1 teste → 1 impl → repete. Tabela anti-rationalization com 9 falácias comuns. Pareia com skill 38 (Architecture Deepener) para identificar deep modules antes do RED.
 - **Skill 38 — Architecture Deepener** (`skills/38-architecture-deepener/SKILL.md`): glossário arquitetural (Module/Interface/Implementation/Depth/Seam/Adapter/Leverage/Locality), deletion test, deepening opportunities. Não modifica código — propõe candidatos. Skill 23 (Migration & Refactor) executa.
 
-**Novos commands:**
-- **`/grill-me`** (`.claude/commands/grill-me.md`): interrogatório relentless, uma pergunta + resposta sugerida por turno. Sempre-ativo.
+**Novos commands (4 totais):**
+
+3 commands de fase do fluxo de discovery:
+- **`/grill-me`** (`.claude/commands/grill-me.md`): interrogatório relentless, uma pergunta + resposta sugerida por turno.
 - **`/to-prd`** (`.claude/commands/to-prd.md`): conversa → PRD publicado no issue tracker (label `needs-triage`). Sintetiza, não entrevista.
 - **`/to-issues`** (`.claude/commands/to-issues.md`): PRD → N issues independentes (vertical slices/tracer bullets). HITL/AFK por slice. Publica em ordem de dependência.
-- **`/pipeline-discovery`** (`.claude/commands/pipeline-discovery.md`): fluxo COMPLETO `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para feature grande/nova/ambígua, paralelização 2+ workers, código crítico.
+
+1 command orquestrador top-level:
+- **`/pipeline-discovery`** (`.claude/commands/pipeline-discovery.md`): orquestra os 3 acima em sequência: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para feature grande/nova/ambígua, paralelização 2+ workers, código crítico.
 
 **Wiring:**
 - Orchestrator (skill 09): nova seção "Dois Fluxos de Pipeline" — escolher entre Modo A (`/pipeline` clássico) e Modo B (`/pipeline-discovery`) por contexto.
 - `/pipeline` clarificado como variante "clássico" + ponteiro para `/pipeline-discovery`.
-- `docs/SKILLS-OVERVIEW.md`: nova seção "Os 2 fluxos: clássico vs discovery" no topo + comparativo + 3 novos commands no formato aihero.
+- `docs/SKILLS-OVERVIEW.md`: nova seção "Os 2 fluxos: clássico vs discovery" no topo + comparativo + 4 novos commands no formato aihero.
 - README.md/README.pt-BR.md: skills 37/38 nas tabelas, 4 novos commands na slash command table, log entry detalhado.
 - AGENTS.md: 4 novos commands na tabela.
 - plugin.json: 35 → 37 skills, 18 → 22 commands, description atualizada.

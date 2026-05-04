@@ -17,7 +17,7 @@ description: Interroga o usuário relentlessly sobre um plano até atingir enten
 - bug fix localizado
 - task mecânica (rename, format, lint fix)
 
-**Skill ativada:** PO (skill 01) em modo Deep Interview, **sempre ativo** (sem ambiguity threshold).
+**Skill ativada:** PO (skill 01) em modo Deep Interview ativado **explicitamente pelo comando** — supera o ambiguity threshold normal da skill 01 (que só dispara Deep Interview se score > 0.7). Aqui o usuário declarou que quer o interrogatório, então o threshold não se aplica.
 
 **Inputs:** descrição inicial vaga ou plano em rascunho.
 

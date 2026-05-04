@@ -45,6 +45,25 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/quality-gates.m
 - bug trivial em area amplamente coberta (basta adicionar teste de regressao)
 - UI puramente visual (snapshot test pode bastar)
 
+## Entradas Esperadas
+
+- spec ou criterio de aceitacao da feature (skill 01 PO ou issue do tracker)
+- modulo alvo (path) ou descricao do comportamento
+- (opcional) lista de comportamentos prioritarios fornecida pelo usuario
+- (opcional) plano de deepening da skill 38 (Architecture Deepener)
+- glossario de dominio do projeto (`CONTEXT.md` ou `docs/glossary.md`)
+- ADRs relevantes (`docs/adr/`)
+
+## Saidas Esperadas
+
+- todos os comportamentos priorizados em verde
+- N novos arquivos de teste em `tests/` ou `__tests__/` (path conforme convencao do projeto)
+- relatorio curto: comportamentos cobertos, comportamentos NAO cobertos (escalados para skill 05 QA)
+- nenhum teste mocka colaborador interno
+- nenhum teste verifica metodo privado
+- testes leem como spec ("user can X when Y")
+- (se houver refactor pos-GREEN) lista de modulos deepened para skill 38 validar
+
 ## Anti-Padrao: Horizontal Slicing
 
 **NAO escrever todos os testes primeiro, depois toda a implementacao.** Isso e horizontal slicing — tratar RED como "escrever todos os testes" e GREEN como "escrever todo o codigo".

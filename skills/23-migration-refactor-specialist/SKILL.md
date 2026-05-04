@@ -53,3 +53,9 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/migration-plan.md`.
+
+## Integracao com Pipeline
+
+- **skill 38 (Architecture Deepener):** roda **antes** desta skill em modulos candidatos a deepening — esta skill recebe o plano de deepening (modulos, interfaces propostas, deletion-test passing) e executa o refactor incremental com feature flags. Skill 38 propoe; esta skill executa.
+- **skill 37 (TDD Engineer):** roda **junto** quando o refactor afeta comportamento testavel — TDD garante que comportamento nao muda durante a migracao (testes verdes antes e depois).
+- **skill 11 (Reviewer):** valida o resultado final do refactor antes do merge.

@@ -72,8 +72,33 @@ Notas adicionais.
 
 **Publicação:**
 - GitHub Issues: usar `gh issue create --title ... --body ... --label needs-triage`
-- Outros trackers: adaptar comando equivalente
 - Sempre aplicar label `needs-triage` para entrar no fluxo normal de triagem
+
+### Trackers alternativos (se não usar GitHub + gh CLI)
+
+**Linear** (via API):
+```bash
+curl -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"query\":\"mutation { issueCreate(input: {teamId: \\\"$TEAM_ID\\\", title: \\\"$TITLE\\\", description: \\\"$BODY\\\", labelIds: [\\\"$NEEDS_TRIAGE_LABEL_ID\\\"]}) { issue { id url } } }\"}"
+```
+
+**Jira** (via Atlassian CLI ou REST):
+```bash
+acli create issue --project PROJ --type Story --summary "$TITLE" --description "$BODY" --labels needs-triage
+```
+
+**Sem CLI / sem API key — fallback local:**
+Salvar PRD como `docs/prd/YYYY-MM-DD-<slug>.md` e abrir issue manualmente depois. Output do comando inclui:
+- caminho do arquivo
+- comando `gh issue create` pré-preenchido (copiar/colar quando estiver autenticado)
+- aviso explícito: "PRD salvo localmente — falta publicar no tracker"
+
+**Detecção automática:**
+- `gh auth status` → usa GitHub
+- `LINEAR_API_KEY` env var presente → oferece Linear
+- senão → fallback local com aviso
 
 **Inputs:**
 - contexto da conversa atual

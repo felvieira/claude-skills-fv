@@ -90,13 +90,41 @@ Ou "None - can start immediately" se sem blockers.
 
 **NÃO** fechar nem modificar issue pai.
 
-**Comando GitHub:**
+**Publicação por tracker:**
+
+Auto-detectar tracker antes de tentar publicar:
+- `gh auth status` OK → GitHub Issues
+- `LINEAR_API_KEY` env presente → Linear
+- senão → fallback local
+
+**GitHub** (via `gh`):
 ```bash
 gh issue create \
   --title "feat: <slice title>" \
   --body "<template above>" \
   --label needs-triage
 ```
+
+**Linear** (via API):
+```bash
+curl -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"query\":\"mutation { issueCreate(input: {teamId: \\\"$TEAM_ID\\\", title: \\\"feat: <slice title>\\\", description: \\\"$BODY\\\", labelIds: [\\\"$NEEDS_TRIAGE_LABEL_ID\\\"]}) { issue { id url } } }\"}"
+```
+
+**Jira** (via `acli`):
+```bash
+acli create issue --project PROJ --type Story --summary "feat: <slice title>" --description "$BODY" --labels needs-triage
+```
+
+**Fallback local (sem CLI/API):**
+Salvar cada slice como `docs/issues/YYYY-MM-DD-slice-NN-<slug>.md`. Output inclui:
+- N caminhos de arquivo
+- N comandos `gh issue create` prontos para copiar/colar quando autenticado
+- aviso: "N slices salvas localmente — falta publicar no tracker"
+
+Em todos os trackers: aplicar label `needs-triage` (ou equivalente do projeto). Publicar em **ordem de dependência** para referenciar IDs reais no campo "Blocked by".
 
 **Inputs:**
 - PRD existente (URL, path, ou contexto)

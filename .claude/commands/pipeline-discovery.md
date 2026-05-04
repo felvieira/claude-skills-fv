@@ -1,5 +1,5 @@
 ---
-description: Pipeline COMPLETO discovery → PRD → issues → TDD → ship (novo fluxo, paraleliza por vertical slice)
+description: Pipeline COMPLETO discovery → PRD → issues → TDD → ship — composição original do kit que orquestra os 3 commands adaptados de mattpocock/skills (grill-me, to-prd, to-issues) + skill 37 TDD
 ---
 
 # /pipeline-discovery — Fluxo Discovery + Vertical Slicing + TDD
@@ -27,17 +27,19 @@ Variante "premium" do `/pipeline`. Use para feature grande/nova/ambígua. Para f
 
 Orchestrator (skill 09) coordena 6 fases sequenciais.
 
-## Fluxo
+## Fluxo (com gates de aprovação humana obrigatórios)
 
 ```
 1. /grill-me              → entendimento mútuo via interrogatório
-2. /to-prd                → PRD publicado no issue tracker (label needs-triage)
-3. /to-issues             → PRD quebrado em N vertical slices (1 issue por slice)
-   ↓
+   ↓ STOP: convergência detectada → confirmar com usuário antes de prosseguir
+2. /to-prd                → rascunho do PRD montado a partir do contexto
+   ↓ STOP: apresentar rascunho do PRD → AGUARDAR aprovação explícita antes de publicar no issue tracker
+3. /to-issues             → propor quebra em N vertical slices
+   ↓ STOP: apresentar tabela de slices (título, HITL/AFK, blocked-by) → AGUARDAR aprovação antes de publicar issues
 4. (Opcional) skill 38    → Architecture Deepener avalia se precisa refactor antes
-   ↓
+   ↓ STOP se candidato for proposto: aguardar aprovação antes de despachar skill 23
 5. /loop --worktree       → N workers em paralelo, cada um pega 1 slice
-   --parallel N
+   --parallel N             (cria N worktrees + commits — gate humano OBRIGATÓRIO antes de disparar)
    ↓
    Por slice:
    - /build               → DB + back + front juntos (vertical, nunca layered)
@@ -47,7 +49,21 @@ Orchestrator (skill 09) coordena 6 fases sequenciais.
    - merge se Critical/High zerado
    ↓
 6. /ship                  → release final quando todos os slices mergeados
+   ↓ STOP: apresentar changelog → AGUARDAR aprovação antes de tag/deploy
 ```
+
+### Gates obrigatórios (resumo)
+
+| Gate | Antes de | Razão |
+|---|---|---|
+| 1 | publicar PRD no tracker (fase 2) | PRD é write externo — visível para terceiros |
+| 2 | publicar issues no tracker (fase 3) | N issues criadas = N notificações para a equipe |
+| 3 | despachar `/loop --worktree --parallel N` (fase 5) | cria N worktrees + N commits paralelos |
+| 4 | tag de release + deploy (fase 6) | mudança em produção |
+
+**Modo AFK não pula gates.** Se o usuário rodar `/pipeline-discovery` sem estar presente, o agente pausa em cada gate e reporta "aguardando aprovação humana — fluxo pausado em fase X".
+
+**Aprovação válida:** palavra de ação direta ("aprovado", "ok", "go", "publica", "deploy"). "Looks good", "parece ok" sem confirmação direta = pedir confirmação. Silêncio = pausar, não prosseguir.
 
 ## Diferenças vs `/pipeline` clássico
 
