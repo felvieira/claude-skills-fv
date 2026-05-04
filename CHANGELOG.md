@@ -34,6 +34,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Changed — Skill 17 (Image Generator) — modelos fal.ai concretos (2026-05-04)
+- **`skills/17-image-generator/SKILL.md`:** seção "Selecao de Modelo" passou de descrição abstrata ("modelo barato", "modelo equilibrado") para **tabela concreta com 5 modelos fal.ai** (gpt-image-1-mini, Gemini 2.5 Flash, Gemini 3 Pro, gpt-image-1.5, Grok Imagine) com preço, quando usar e endpoints. Preserva princípio vendor-agnostic: tabela é "implementação recomendada", não obrigação. Adiciona árvore de decisão rápida + pipeline multi-modelo (iteração → validação → final).
+- **`skills/17-image-generator/SKILL.md`:** tabela "Tipos de Asset" agora declara explicitamente quais tipos vão para skill 36 (Web Asset Generator): favicon, social-card (OG/Twitter), pwa-icon. Skill 17 fica para assets criativos (hero, mascote, illustration, background, layout, icon). Skill 36 para derivações operacionais a partir de logo.
+- **`skills/17-image-generator/SKILL.md`:** seção "Integração com Outras Skills" agora menciona handoff direto para skill 36 (logo → favicons/PWA/OG) e skill 30 (Cost Tracker — registrar custo por modelo+asset).
+- **`docs/skill-guides/image-generator-models.md` (NOVO, 350+ linhas):** schemas completos de input/output de cada modelo (campos, defaults, ranges), exemplos cURL/Python/JS por modelo, tabela comparativa cross-modelo (preço/velocidade/tipografia/composição), padrões de prompt por modelo, troubleshooting de erros comuns (`quality: auto` cobrança alta, `input_fidelity: high` triplica custo, default JPEG do Grok perde transparência, etc.).
+
 ### Added — Aihero skills batch (2026-05-03)
 Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills) e [aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day) — integrado ao workflow do kit.
 

@@ -627,6 +627,13 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
 
+### 2026-05-04 (skill 17 — modelos fal.ai concretos)
+
+- **`skills/17-image-generator/SKILL.md`:** "Selecao de Modelo" abstrata → tabela com 5 modelos fal.ai concretos (gpt-image-1-mini $0.005-$0.052, Gemini 2.5 Flash $0.039 fixo, Gemini 3 Pro $0.15, gpt-image-1.5 fidelidade máxima, Grok Imagine $0.02 estético). Inclui árvore de decisão rápida e pipeline multi-modelo (iteração → validação → final, custo total $0.10-$0.50 por hero).
+- **Cross-reference com skill 36 (Web Asset Generator)** explícita: skill 17 cobre assets criativos (hero, mascote, illustration, background, layout, icon); skill 36 cobre derivações web operacionais (favicon multi-tamanho, PWA icons, Open Graph, Twitter card). Handoff: skill 17 cria logo → skill 36 deriva tudo dele.
+- **`docs/skill-guides/image-generator-models.md` (novo, 350+ linhas):** catálogo completo dos modelos fal.ai com schemas de input/output, exemplos cURL+Python+JS por modelo, tabela comparativa, padrões de prompt por modelo, troubleshooting de erros comuns (cobrança alta com `quality: auto`, `input_fidelity: high` triplica custo, etc.).
+- Princípio vendor-agnostic preservado: tabela é "implementação recomendada"; alternativas (Replicate, OpenAI direto, Stability, self-hosted) listadas como opções legítimas.
+
 ### 2026-05-03 (batch aihero-skills — fluxo de discovery)
 
 - **2 novas skills** adaptadas de [mattpocock/skills](https://github.com/mattpocock/skills) e integradas ao kit:

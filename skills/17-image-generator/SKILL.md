@@ -83,16 +83,19 @@ Antes de gerar qualquer imagem, verificar nesta ordem:
 
 ## Tipos de Asset
 
-| Tipo | Quando usar |
-|------|-------------|
-| `layout` | imagem compondo secao ou tela inteira |
-| `hero` | imagem principal acima da dobra |
-| `icon` | icone de funcionalidade ou servico |
-| `favicon` | favicon multi-tamanho e apple-touch-icon |
-| `mascote` | personagem da marca em nova situacao |
-| `background` | textura ou fundo de secao |
-| `illustration` | ilustracao explicativa de conceito |
-| `social-card` | imagem para Open Graph, Twitter ou compartilhamento |
+| Tipo | Quando usar | Skill responsavel |
+|------|-------------|-------------------|
+| `hero` | imagem principal acima da dobra | **17 (esta skill)** |
+| `mascote` | personagem da marca em nova situacao | **17 (esta skill)** |
+| `illustration` | ilustracao explicativa de conceito | **17 (esta skill)** |
+| `background` | textura ou fundo de secao | **17 (esta skill)** |
+| `layout` | imagem compondo secao ou tela inteira | **17 (esta skill)** |
+| `icon` | icone de funcionalidade ou servico | **17 (esta skill)** |
+| `favicon` | favicon multi-tamanho + apple-touch-icon + PWA icons | **36 (Web Asset Generator)** — dedicada |
+| `social-card` (OG / Twitter) | Open Graph, Twitter card, share image | **36 (Web Asset Generator)** — dedicada |
+| `pwa-icon` | maskable icon, manifest, browserconfig | **36 (Web Asset Generator)** — dedicada |
+
+**Divisao clara:** skill 17 e para assets criativos (geracao do zero ou derivacao). Skill 36 e para assets web operacionais derivados de logo existente (favicon, OG, PWA — pipeline mecanico, nao criativo). Se logo ainda nao existe, skill 17 cria primeiro; depois skill 36 deriva os formatos.
 
 ## Regras de Prompt
 
@@ -104,12 +107,50 @@ Antes de gerar qualquer imagem, verificar nesta ordem:
 
 ## Selecao de Modelo
 
-Escolher modelo conforme necessidade do ambiente:
+Esta skill e **vendor-agnostic por design** (`policies/stack-flexibility.md`). A tabela abaixo cobre fal.ai como **implementacao recomendada** — substitua por Replicate, Stability, OpenAI direto ou self-hosted se a stack do projeto ja usa outro provider.
 
-- variacoes rapidas e testes: modelo mais barato e rapido
-- hero, background e ilustracao padrao: modelo equilibrado
-- tipografia ou prompt mais dificil: modelo mais forte quando necessario
-- acabamento final: modelo com melhor fidelidade visual disponivel
+### Modelos fal.ai (atualizado 2026-05)
+
+| Modelo | Preco | Quando usar | Endpoints |
+|---|---|---|---|
+| **gpt-image-1-mini** | $0.005-$0.052 (varia por qualidade/tamanho) | **Volume alto, custo baixo.** Variacoes rapidas, testes, scaffolding. | `fal-ai/gpt-image-1-mini`, `.../edit` |
+| **Gemini 2.5 Flash** | $0.039/img (fixo) | **Producao em escala com custo previsivel.** Hero, ilustracao, background padrao. | `fal-ai/gemini-25-flash-image`, `.../edit` |
+| **Gemini 3 Pro** (Nano Banana Pro) | $0.15/img (4K = $0.30) | **Prompt dificil, tipografia, composicao complexa.** Quando o pedido cita texto na imagem ou layout especifico. | `fal-ai/gemini-3-pro-image-preview`, `.../edit` |
+| **gpt-image-1.5** | $0.009-$0.20 (varia) | **Acabamento final.** Alta fidelidade, aderencia forte ao prompt, preserva composicao/iluminacao. Use no fim do pipeline. | `fal-ai/gpt-image-1.5`, `.../edit` |
+| **Grok Imagine** | $0.02 (gen) / $0.022 (edit) | **Criativos esteticos baratos e simples de precificar.** Estilo "aesthetic-first". | `xai/grok-imagine-image`, `.../edit` |
+
+### Decisao rapida (arvore)
+
+```
+precisa de muita imagem barata?           → gpt-image-1-mini
+custo fixo previsivel + producao escala?  → Gemini 2.5 Flash
+prompt dificil / tipografia / composicao? → Gemini 3 Pro
+fidelidade visual maxima + aderencia?     → gpt-image-1.5
+estetico bonito e barato?                 → Grok Imagine
+```
+
+### Pipeline recomendado (multi-modelo)
+
+Para feature visual importante:
+1. **Iteracao** — gpt-image-1-mini ou Grok Imagine (5-10 variacoes baratas para escolher direcao)
+2. **Validacao** — Gemini 2.5 Flash (1-2 versoes mais polidas para feedback humano)
+3. **Final** — gpt-image-1.5 ou Gemini 3 Pro (asset que vai pra producao)
+
+Custo total tipico: **$0.10-$0.50 por hero finalizado**, dependendo de quantas iteracoes.
+
+### Schemas, endpoints completos e exemplos cURL/Python/JS
+
+Ver `docs/skill-guides/image-generator-models.md` (carregado sob demanda) — schema completo de cada modelo, exemplos por SDK (Python `fal-client`, JS `@fal-ai/client`, cURL), parametros (`aspect_ratio`, `quality`, `num_images`, `image_size`, `output_format`, `safety_tolerance`, `input_fidelity`).
+
+### Quando usar provider que nao seja fal.ai
+
+A skill nao impoe vendor. Alternativas:
+- **Replicate:** modelos similares (FLUX, SDXL) com API parecida
+- **OpenAI direto:** GPT Image sem markup do fal.ai
+- **Stability:** SD3, mais controle de parametros
+- **Self-hosted:** ComfyUI / Automatic1111 para controle total
+
+Se mudar provider depois do projeto ter assets, registrar em ADR (`docs/adr/`) — mudanca de modelo provoca drift de estilo nos novos assets vs antigos.
 
 ## Execucao
 
@@ -126,12 +167,14 @@ Preferencia de destino:
 
 ## Integracao com Outras Skills
 
-- `UI/UX`: confirma encaixe visual e composicao
-- `Asset Librarian`: fornece inventario de assets, logos, fontes e tokens visuais existentes
-- `Frontend`: confirma uso real do asset e dimensoes
-- `SEO`: confirma necessidades de Open Graph, alt text e imagem publica
-- `Mobile Tauri`: confirma formatos e tamanhos para icones nativos
-- `Orchestrator`: decide momento certo da geracao no pipeline
+- `UI/UX (skill 02)`: confirma encaixe visual e composicao
+- `Asset Librarian (skill 19)`: fornece inventario de assets, logos, fontes e tokens visuais existentes
+- `Frontend (skill 04)`: confirma uso real do asset e dimensoes
+- `SEO (skill 14)`: confirma necessidades de alt text e imagem publica
+- `Mobile Tauri (skill 15)`: confirma formatos e tamanhos para icones nativos
+- `Web Asset Generator (skill 36)`: pega logo gerado por esta skill e deriva favicon multi-tamanho, PWA icons (maskable), Open Graph e Twitter card automaticamente. **Handoff direto:** quando esta skill cria logo, despachar skill 36 para gerar todos os assets web a partir dele.
+- `Orchestrator (skill 09)`: decide momento certo da geracao no pipeline
+- `Cost Tracker (skill 30)`: registra custo por modelo + asset para evitar surpresa na fatura fal.ai
 
 ## Evidencia de Conclusao
 

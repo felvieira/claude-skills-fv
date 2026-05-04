@@ -627,6 +627,13 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
 
+### 2026-05-04 (skill 17 — concrete fal.ai models)
+
+- **`skills/17-image-generator/SKILL.md`:** abstract "Model Selection" → concrete table with 5 fal.ai models (gpt-image-1-mini $0.005-$0.052, Gemini 2.5 Flash $0.039 fixed, Gemini 3 Pro $0.15, gpt-image-1.5 max fidelity, Grok Imagine $0.02 aesthetic). Includes quick decision tree and multi-model pipeline (iteration → validation → final, total cost $0.10-$0.50 per hero).
+- **Explicit cross-reference with skill 36 (Web Asset Generator):** skill 17 covers creative assets (hero, mascot, illustration, background, layout, icon); skill 36 covers operational web derivatives (multi-size favicons, PWA icons, Open Graph, Twitter card). Handoff: skill 17 creates logo → skill 36 derives everything from it.
+- **`docs/skill-guides/image-generator-models.md` (new, 350+ lines):** complete fal.ai model catalog with input/output schemas, cURL+Python+JS examples per model, cross-model comparison table, prompt patterns per model, troubleshooting common errors (high cost from `quality: auto`, `input_fidelity: high` triples cost, etc.).
+- Vendor-agnostic principle preserved: table is "recommended implementation"; alternatives (Replicate, OpenAI direct, Stability, self-hosted) listed as legitimate options.
+
 ### 2026-05-03 (aihero-skills batch — discovery flow)
 
 - **2 new skills** adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and integrated into the kit:
