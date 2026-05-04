@@ -10,6 +10,8 @@
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
 
+> 📖 **Primeira vez aqui?** → [`docs/WIKI.md`](docs/WIKI.md) é a **wiki completa** explicando cada skill, subagent, command, policy, plugin e MCP tool — no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). Ponto de partida recomendado.
+
 ---
 
 ## Por Que Isso Importa (Para Qualquer Pessoa)
@@ -626,6 +628,13 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+
+### 2026-05-04 (WIKI completa adicionada)
+
+- **`docs/WIKI.md` (novo, ~700 linhas):** wiki abrangente do kit no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). 11 seções cobrindo cada skill (37), subagent (14), command (23), policy (22), plugin (3 modos de instalação), MCP server (36 tools) + árvore de decisão + atribuições.
+- README.md + README.pt-BR.md: callout no topo apontando para WIKI como ponto de partida recomendado.
+- SKILLS-OVERVIEW.md: header agora aponta para WIKI ("procurando wiki completa? → WIKI.md"). SKILLS-OVERVIEW continua sendo resumo de 5min; WIKI é o detalhe item-por-item.
+- AGENTS.md: ordem de leitura inclui WIKI como item 3 (entre policies e README).
 
 ### 2026-05-04 (skill 17 — modelos fal.ai concretos)
 

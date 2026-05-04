@@ -10,6 +10,8 @@
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
+> 📖 **New here?** → [`docs/WIKI.md`](docs/WIKI.md) is the **full wiki** explaining every skill, subagent, command, policy, plugin and MCP tool — in the format of [aihero.dev's "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). Recommended starting point.
+
 ---
 
 ## Why It Matters (For Anyone)
@@ -626,6 +628,13 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `search-first.md` policy: mandatory research before implementing
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
+
+### 2026-05-04 (full WIKI added)
+
+- **`docs/WIKI.md` (new, ~700 lines):** comprehensive wiki of the entire kit in the format of [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). 11 sections covering every skill (37), subagent (14), command (23), policy (22), plugin (3 install modes), MCP server (36 tools) + decision tree + attributions.
+- README.md + README.pt-BR.md: top callout pointing to WIKI as recommended starting point.
+- SKILLS-OVERVIEW.md: header now points to WIKI ("looking for full wiki? → WIKI.md"). SKILLS-OVERVIEW remains the 5-min summary; WIKI is the per-item deep dive.
+- AGENTS.md: reading order includes WIKI as item 3 (between policies and README).
 
 ### 2026-05-04 (skill 17 — concrete fal.ai models)
 

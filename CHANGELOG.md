@@ -34,6 +34,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Wiki completa (2026-05-04)
+- **`docs/WIKI.md` (NOVO, ~700 linhas):** wiki única do kit no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). Cobertura completa: 11 seções com **todos** os 37 skills + 14 subagents + 23 commands + 22 policies + plugin (3 modos de instalação) + MCP server (36 tools) + árvore de decisão "quando usar o quê" + atribuições. Cada item segue formato consistente: nome, o que faz, quando usar, problema que resolve, exemplo concreto, takeaway.
+- Diferença vs `docs/SKILLS-OVERVIEW.md`: overview é resumo de 5min (top items por categoria); WIKI é o detalhe item-por-item.
+- README.md + README.pt-BR.md: callout no topo apontando para WIKI como "ponto de partida recomendado".
+- `docs/SKILLS-OVERVIEW.md`: header agora aponta para WIKI ("procurando wiki completa? → WIKI.md").
+- AGENTS.md: ordem de leitura inclui WIKI como item 3 (entre policies e README).
+
 ### Changed — Skill 17 (Image Generator) — modelos fal.ai concretos (2026-05-04)
 - **`skills/17-image-generator/SKILL.md`:** seção "Selecao de Modelo" passou de descrição abstrata ("modelo barato", "modelo equilibrado") para **tabela concreta com 5 modelos fal.ai** (gpt-image-1-mini, Gemini 2.5 Flash, Gemini 3 Pro, gpt-image-1.5, Grok Imagine) com preço, quando usar e endpoints. Preserva princípio vendor-agnostic: tabela é "implementação recomendada", não obrigação. Adiciona árvore de decisão rápida + pipeline multi-modelo (iteração → validação → final).
 - **`skills/17-image-generator/SKILL.md`:** tabela "Tipos de Asset" agora declara explicitamente quais tipos vão para skill 36 (Web Asset Generator): favicon, social-card (OG/Twitter), pwa-icon. Skill 17 fica para assets criativos (hero, mascote, illustration, background, layout, icon). Skill 36 para derivações operacionais a partir de logo.
