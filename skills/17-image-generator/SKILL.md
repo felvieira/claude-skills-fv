@@ -111,11 +111,13 @@ Esta skill e **vendor-agnostic por design** (`policies/stack-flexibility.md`). A
 
 ### Modelos fal.ai (atualizado 2026-05)
 
+> **Precos podem mudar sem aviso.** Fonte canonica: [fal.ai/pricing](https://fal.ai/pricing) (verificar antes de batch grande). Esta tabela e snapshot — `docs/skill-guides/image-generator-models.md` tem detalhes mais granulares e link por modelo.
+
 | Modelo | Preco | Quando usar | Endpoints |
 |---|---|---|---|
 | **gpt-image-1-mini** | $0.005-$0.052 (varia por qualidade/tamanho) | **Volume alto, custo baixo.** Variacoes rapidas, testes, scaffolding. | `fal-ai/gpt-image-1-mini`, `.../edit` |
 | **Gemini 2.5 Flash** | $0.039/img (fixo) | **Producao em escala com custo previsivel.** Hero, ilustracao, background padrao. | `fal-ai/gemini-25-flash-image`, `.../edit` |
-| **Gemini 3 Pro** (Nano Banana Pro) | $0.15/img (4K = $0.30) | **Prompt dificil, tipografia, composicao complexa.** Quando o pedido cita texto na imagem ou layout especifico. | `fal-ai/gemini-3-pro-image-preview`, `.../edit` |
+| **Gemini 3 Pro** (Nano Banana Pro) ⚠ preview | $0.15/img (4K = $0.30) | **Prompt dificil, tipografia, composicao complexa.** Quando o pedido cita texto na imagem ou layout especifico. **Endpoint preview — pode mudar / preco pode subir sem aviso.** | `fal-ai/gemini-3-pro-image-preview`, `.../edit` |
 | **gpt-image-1.5** | $0.009-$0.20 (varia) | **Acabamento final.** Alta fidelidade, aderencia forte ao prompt, preserva composicao/iluminacao. Use no fim do pipeline. | `fal-ai/gpt-image-1.5`, `.../edit` |
 | **Grok Imagine** | $0.02 (gen) / $0.022 (edit) | **Criativos esteticos baratos e simples de precificar.** Estilo "aesthetic-first". | `xai/grok-imagine-image`, `.../edit` |
 

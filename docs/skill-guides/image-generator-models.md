@@ -2,6 +2,11 @@
 
 Anexo da skill 17 (`skills/17-image-generator/SKILL.md`). Carregar sob demanda quando precisar de schema completo, exemplos por SDK, ou parametros especificos de cada modelo.
 
+> **Precos snapshot 2026-05.** Verificar fonte canonica antes de batch grande:
+> - [fal.ai/pricing](https://fal.ai/pricing) — visao geral
+> - Por modelo: `https://fal.ai/models/<model-id>` (ex: `fal.ai/models/fal-ai/gemini-3-pro-image-preview`)
+> - Endpoints `*-preview` (ex: Gemini 3 Pro) podem ser depreciados ou ter preco alterado a qualquer momento.
+
 ## Sumario
 
 - [Setup comum (variaveis e SDKs)](#setup-comum)
@@ -369,8 +374,10 @@ curl -X POST https://fal.run/xai/grok-imagine-image \
 
 ## Erros comuns e troubleshooting
 
-### `quality: auto` retorna preco alto
-gpt-image-1-mini e gpt-image-1.5 com `quality: auto` podem subir para `high` automaticamente, gerando cobranca de $0.13-$0.20. Para previsibilidade, sempre setar `quality: low` ou `medium` em batch grande.
+### `quality: auto` retorna preco alto (so gpt-image-1-mini)
+**Apenas gpt-image-1-mini e gpt-image-1 (legacy) suportam `quality: auto`.** Esses dois com `auto` podem subir para `high` automaticamente, gerando cobranca de $0.036-$0.052/img (mini) ou $0.167-$0.25/img (legacy). Para previsibilidade, sempre setar `quality: low` ou `medium` em batch grande.
+
+**gpt-image-1.5 nao tem `auto`** — o default ja e `high` ($0.133-$0.20/img). Setar explicitamente `low` ou `medium` se custo importar.
 
 ### `input_fidelity: high` no edit triplicou o custo
 gpt-image-1.5 com `input_fidelity: high` cobra 3050 input image tokens (vs 135 em low) por imagem 1024x1024. Use so para preservar detalhes finos quando precisar.
