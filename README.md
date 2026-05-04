@@ -632,14 +632,14 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - **2 new skills** adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and integrated into the kit:
   - **Skill 37 — TDD Engineer:** red-green-refactor enforced. Combats horizontal slicing anti-pattern (writing all tests before all impl). 1 test → 1 impl → repeat. Anti-rationalization table with 9 common TDD fallacies.
   - **Skill 38 — Architecture Deepener:** finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary. Pairs with skill 23 (Migration & Refactor) for execution. Uses `CONTEXT.md` and ADRs.
-- **3 new slash commands** for the discovery flow:
+- **4 new slash commands** (3 phase + 1 orchestrator):
   - `/grill-me` — relentless interrogation, one question + suggested answer per turn
   - `/to-prd` — conversation → PRD published in issue tracker
   - `/to-issues` — PRD → N issues (vertical slices) published in tracker
 - **`/pipeline-discovery`** — new top-level command running the full flow: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexists with classic `/pipeline`. Use for large/ambiguous features needing parallel execution + tracker publication + TDD by slice.
 - **Orchestrator (skill 09) updated:** new "Dois Fluxos de Pipeline" section explaining when to choose `/pipeline` (classic) vs `/pipeline-discovery` (with discovery + slicing + TDD).
 - **`/pipeline` command updated** to clarify it's the "classic" flow and point to `/pipeline-discovery` for advanced cases.
-- **`docs/SKILLS-OVERVIEW.md` updated** with new "Os 2 fluxos: clássico vs discovery" section + comparativo table + skills 37/38 added + 3 new commands documented in aihero format.
+- **`docs/SKILLS-OVERVIEW.md` updated** with new "Os 2 fluxos: clássico vs discovery" section + comparativo table + skills 37/38 added + 4 new commands documented in aihero format.
 - Counts: 35 → 37 skills, 18 → 22 commands, 20 → 21 policies (vertical-slices added in prior batch).
 
 ### 2026-05-03 (Items 2-3-4 batch — kit maintenance)

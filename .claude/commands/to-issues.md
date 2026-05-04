@@ -92,10 +92,22 @@ Ou "None - can start immediately" se sem blockers.
 
 **Publicação por tracker:**
 
-Auto-detectar tracker antes de tentar publicar:
-- `gh auth status` OK → GitHub Issues
-- `LINEAR_API_KEY` env presente → Linear
-- senão → fallback local
+Auto-detecção (bash executável — rodar antes do loop de publicação):
+
+```bash
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  TRACKER="github"
+elif [ -n "$LINEAR_API_KEY" ]; then
+  TRACKER="linear"
+elif command -v acli >/dev/null 2>&1; then
+  TRACKER="jira"
+else
+  TRACKER="local"
+fi
+echo "Tracker: $TRACKER"
+```
+
+Despois iterar pelas slices em ordem de dependência, chamando o comando do tracker apropriado por slice:
 
 **GitHub** (via `gh`):
 ```bash

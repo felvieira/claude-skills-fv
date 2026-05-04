@@ -95,10 +95,43 @@ Salvar PRD como `docs/prd/YYYY-MM-DD-<slug>.md` e abrir issue manualmente depois
 - comando `gh issue create` pré-preenchido (copiar/colar quando estiver autenticado)
 - aviso explícito: "PRD salvo localmente — falta publicar no tracker"
 
-**Detecção automática:**
-- `gh auth status` → usa GitHub
-- `LINEAR_API_KEY` env var presente → oferece Linear
-- senão → fallback local com aviso
+**Detecção automática (bash executável):**
+
+```bash
+# Auto-detect tracker — rodar este bloco antes de tentar publicar
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  TRACKER="github"
+  echo "Tracker detectado: GitHub Issues (gh CLI autenticado)"
+elif [ -n "$LINEAR_API_KEY" ]; then
+  TRACKER="linear"
+  echo "Tracker detectado: Linear (LINEAR_API_KEY presente)"
+elif command -v acli >/dev/null 2>&1; then
+  TRACKER="jira"
+  echo "Tracker detectado: Jira (acli disponível)"
+else
+  TRACKER="local"
+  echo "Nenhum tracker disponível — fallback local em docs/prd/"
+fi
+
+# Decisão por TRACKER:
+case "$TRACKER" in
+  github) gh issue create --title "$TITLE" --body "$BODY" --label needs-triage ;;
+  linear) curl -X POST https://api.linear.app/graphql \
+    -H "Authorization: $LINEAR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"query\":\"mutation { issueCreate(input: {teamId: \\\"$TEAM_ID\\\", title: \\\"$TITLE\\\", description: \\\"$BODY\\\", labelIds: [\\\"$NEEDS_TRIAGE_LABEL_ID\\\"]}) { issue { id url } } }\"}" ;;
+  jira)   acli create issue --project "$PROJECT" --type Story --summary "$TITLE" --description "$BODY" --labels needs-triage ;;
+  local)  mkdir -p docs/prd && echo "$BODY" > "docs/prd/$(date +%Y-%m-%d)-$SLUG.md"
+          echo "PRD salvo localmente. Para publicar quando tracker disponível, rode: gh issue create --title \"$TITLE\" --body-file docs/prd/$(date +%Y-%m-%d)-$SLUG.md --label needs-triage" ;;
+esac
+```
+
+Variáveis esperadas no environment:
+- `$TITLE` — título do PRD
+- `$BODY` — corpo do PRD
+- `$SLUG` — slug do título para o filename
+- `$TEAM_ID`, `$NEEDS_TRIAGE_LABEL_ID` — só Linear
+- `$PROJECT` — só Jira
 
 **Inputs:**
 - contexto da conversa atual

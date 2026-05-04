@@ -632,14 +632,14 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - **2 novas skills** adaptadas de [mattpocock/skills](https://github.com/mattpocock/skills) e integradas ao kit:
   - **Skill 37 — TDD Engineer:** red-green-refactor enforced. Combate o anti-padrão horizontal slicing (escrever todos os testes antes de toda impl). 1 teste → 1 impl → repete. Tabela anti-rationalization com 9 falácias comuns de TDD.
   - **Skill 38 — Architecture Deepener:** encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural. Pareia com skill 23 (Migration & Refactor) para execução. Usa `CONTEXT.md` e ADRs.
-- **3 novos slash commands** para o fluxo de discovery:
+- **4 novos slash commands** (3 de fase + 1 orquestrador):
   - `/grill-me` — interrogatório relentless, uma pergunta + resposta sugerida por turno
   - `/to-prd` — conversa → PRD publicado no issue tracker
   - `/to-issues` — PRD → N issues (vertical slices) publicadas no tracker
 - **`/pipeline-discovery`** — novo command top-level rodando o fluxo completo: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para features grandes/ambíguas que precisam de execução paralela + tracker + TDD por slice.
 - **Orchestrator (skill 09) atualizado:** nova seção "Dois Fluxos de Pipeline" explicando quando escolher `/pipeline` (clássico) vs `/pipeline-discovery` (com discovery + slicing + TDD).
 - **Comando `/pipeline` atualizado** para esclarecer que é o fluxo "clássico" e apontar para `/pipeline-discovery` em casos avançados.
-- **`docs/SKILLS-OVERVIEW.md` atualizado** com nova seção "Os 2 fluxos: clássico vs discovery" + tabela comparativa + skills 37/38 adicionadas + 3 novos commands documentados no formato aihero.
+- **`docs/SKILLS-OVERVIEW.md` atualizado** com nova seção "Os 2 fluxos: clássico vs discovery" + tabela comparativa + skills 37/38 adicionadas + 4 novos commands documentados no formato aihero.
 - Contadores: 35 → 37 skills, 18 → 22 commands, 20 → 21 policies (vertical-slices adicionada no batch anterior).
 
 ### 2026-05-03 (batch Items 2-3-4 — manutenção do kit)
