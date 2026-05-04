@@ -63,6 +63,53 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 5. Garantir que nenhuma etapa critica seja pulada sem justificativa explicita
 6. Manter visao geral do progresso e status de cada etapa
 
+## Dois Fluxos de Pipeline (escolher por contexto)
+
+O Orquestrador opera em dois modos. Escolher antes de iniciar:
+
+### Modo A — `/pipeline` Classico
+
+Para feature pequena/media, equipe conhece o terreno, spec ja clara.
+
+```
+/spec -> /plan -> /build -> /test -> /review -> /ship
+```
+
+- spec markdown interna em `docs/specs/`
+- pipeline minimo classificado pelo orchestrator
+- vertical slicing aplica se feature for multi-camada (regra abaixo)
+
+### Modo B — `/pipeline-discovery` (com Discovery + Issues + TDD)
+
+Para feature grande/nova/ambigua, equipe nova com a area, vai paralelizar com 2+ workers, ou precisa publicar PRD/issues no tracker.
+
+```
+/grill-me -> /to-prd -> /to-issues -> [skill 38 opcional] -> /loop --worktree --parallel N -> /ship
+                                                              \-> por slice: /build + skill 37 (TDD) + /review
+```
+
+- discovery formal via interrogatorio (`/grill-me`)
+- PRD publicado no issue tracker (GitHub Issues, Linear, Jira) com label `needs-triage`
+- N issues filhas (vertical slices) explicitamente criadas
+- N workers em paralelo via `/loop --worktree --parallel N`
+- TDD enforced por slice (skill 37)
+- (opcional) skill 38 (Architecture Deepener) entre `/to-issues` e `/loop` se codebase precisa refactor antes
+
+### Quando escolher cada um
+
+| Sinal | Modo |
+|---|---|
+| feature pequena, briefing claro | A |
+| bug fix, refactor localizado | A |
+| feature grande, briefing vago | B |
+| equipe nova com a area | B |
+| precisa tracking em issue tracker | B |
+| 2+ workers em paralelo | B |
+| codigo critico que merece TDD | B |
+| spike/POC throwaway | nem A nem B — `/auto` direto |
+
+Modos coexistem. Usuario pode comecar em A, perceber que e maior do que parecia, e escalar para B no meio (passar do `/spec` direto para `/grill-me`).
+
 ## Vertical Slicing (regra obrigatoria para feature multi-camada)
 
 Antes de invocar Backend/Frontend/DB para uma feature multi-camada, o Orquestrador **deve** quebrar a entrega em **vertical slices**: cada slice e uma feature ponta-a-ponta (DB + back + front + teste e2e) testavel sozinha.

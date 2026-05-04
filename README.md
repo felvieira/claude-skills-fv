@@ -1,9 +1,9 @@
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 35 Specialist Skills for Coding Agents
+# Dev Team Kit — 37 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-35-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
@@ -43,7 +43,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **35 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **37 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -55,7 +55,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 35 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
+The **Dev Team Kit** is a set of 37 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability and more.
 
 **What you get:**
 
@@ -75,7 +75,7 @@ The **Dev Team Kit** is a set of 35 specialized skills that turns any compatible
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 35 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 37 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -112,14 +112,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 36 tools backed by the 35 skills.
+In the table below, treat `dev-team-kit` as 36 tools backed by the 37 skills.
 The MCP exposes 36 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 35 skills | ✅ | ✅ | ✅ |
+| 37 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -147,7 +147,7 @@ The MCP exposes 36 tools backed by the installed skills.
 
 ---
 
-## The 35 Specialists
+## The 37 Specialists
 
 ### Management and Coordination
 
@@ -173,7 +173,8 @@ The MCP exposes 36 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 35 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 37 specialists |
+| 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
 
 ### Product and Design
 
@@ -207,6 +208,7 @@ The MCP exposes 36 tools backed by the installed skills.
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
 | 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |
+| 37 | **TDD Engineer** | red-green-refactor enforced; combats horizontal slicing anti-pattern (writing all tests before all impl); 1 test → 1 impl → repeat. Pairs with skill 38 for deep module identification |
 | 07 | **Deploy Engineer** | containerization, CI/CD, blue-green rollout, rollback and infra as code |
 
 ---
@@ -412,6 +414,10 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/loop` | Multi-agent autonomous orchestrator (auto-loop v2) — claude + codex, parallel via worktree, polishing pass | `scripts/auto-loop/` |
 | `/worktree` | Creates isolated git worktree, copies `.env*`, validates env in background | — |
 | `/detective-spec` | Reverse-engineer specs from a legacy codebase — extracts contracts without touching the code | Detective Spec (33) |
+| `/grill-me` | Relentless interrogation of an idea/plan — one question + suggested answer per turn | PO (01) Deep Interview |
+| `/to-prd` | Convert current conversation into a PRD published in the issue tracker (label `needs-triage`) | PO (01) PRD mode |
+| `/to-issues` | Break PRD into N independent issues (vertical slices) and publish to tracker | Orchestrator (09) + vertical-slices |
+| `/pipeline-discovery` | FULL discovery flow: grill-me → to-prd → to-issues → loop+TDD → ship | Orchestrator (09) coordinated, all skills |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agent Orchestrator)
 
@@ -523,7 +529,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 35 specialists (*/SKILL.md)
+├── skills/               ← 37 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```
@@ -620,6 +626,21 @@ Want to add a skill, fix a bug or propose an improvement? See the full guide in 
 - added `search-first.md` policy: mandatory research before implementing
 - added `iterative-retrieval.md` policy: progressive retrieval in 3 rounds for subagents
 - `context-guard-stop` improved with proactive 50% warning and smart 75% block message
+
+### 2026-05-03 (aihero-skills batch — discovery flow)
+
+- **2 new skills** adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and integrated into the kit:
+  - **Skill 37 — TDD Engineer:** red-green-refactor enforced. Combats horizontal slicing anti-pattern (writing all tests before all impl). 1 test → 1 impl → repeat. Anti-rationalization table with 9 common TDD fallacies.
+  - **Skill 38 — Architecture Deepener:** finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary. Pairs with skill 23 (Migration & Refactor) for execution. Uses `CONTEXT.md` and ADRs.
+- **4 new slash commands** (3 phase + 1 orchestrator):
+  - `/grill-me` — relentless interrogation, one question + suggested answer per turn
+  - `/to-prd` — conversation → PRD published in issue tracker
+  - `/to-issues` — PRD → N issues (vertical slices) published in tracker
+- **`/pipeline-discovery`** — new top-level command running the full flow: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexists with classic `/pipeline`. Use for large/ambiguous features needing parallel execution + tracker publication + TDD by slice.
+- **Orchestrator (skill 09) updated:** new "Dois Fluxos de Pipeline" section explaining when to choose `/pipeline` (classic) vs `/pipeline-discovery` (with discovery + slicing + TDD).
+- **`/pipeline` command updated** to clarify it's the "classic" flow and point to `/pipeline-discovery` for advanced cases.
+- **`docs/SKILLS-OVERVIEW.md` updated** with new "Os 2 fluxos: clássico vs discovery" section + comparativo table + skills 37/38 added + 4 new commands documented in aihero format.
+- Counts: 35 → 37 skills, 18 → 22 commands, 20 → 21 policies (vertical-slices added in prior batch).
 
 ### 2026-05-03 (Items 2-3-4 batch — kit maintenance)
 

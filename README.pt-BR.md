@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 35 Specialist Skills for Coding Agents
+# Dev Team Kit — 37 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-35-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
 
@@ -43,7 +43,7 @@ Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que fu
 - **SEO** que otimiza antes do Google indexar — seu site nasce achável
 
 ### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **35 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **37 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
 
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
@@ -55,7 +55,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 35 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 37 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -75,7 +75,7 @@ O **Dev Team Kit** é um conjunto de 35 skills especializadas que transforma qua
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 35 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 37 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -112,14 +112,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 35 skills.
+Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 37 skills.
 O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 35 skills | ✅ | ✅ | ✅ |
+| 37 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -147,7 +147,7 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 35 Especialistas
+## Os 37 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -173,7 +173,8 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 | 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 | 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 35 especialistas |
+| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 37 especialistas |
+| 38 | **Architecture Deepener** | encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural; pareia com skill 23 (Migration & Refactor) para execução |
 
 ### Produto e Design
 
@@ -207,6 +208,7 @@ O MCP expoe 36 tools apoiadas pelas skills instaladas.
 | 05 | **QA Engineer** | testes unitários, integração, E2E, cobertura e edge cases críticos |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injeção e exposição de dados |
 | 34 | **Static Analysis** | scan automatizado de segurança e bugs via Semgrep + CodeQL com output SARIF, triagem de severidade e integração CI — alimenta findings na skill 06 |
+| 37 | **TDD Engineer** | red-green-refactor enforced; combate anti-padrão horizontal slicing (escrever todos os testes antes de toda impl); 1 teste → 1 impl → repete. Pareia com skill 38 para deep modules |
 | 07 | **Deploy Engineer** | containerização, CI/CD, rollout blue-green, rollback e infra como código |
 
 ---
@@ -412,6 +414,10 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/loop` | Orquestrador autônomo multi-agente (auto-loop v2) — claude + codex, paralelo via worktree, polishing pass | `scripts/auto-loop/` |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background | — |
 | `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem modificar o código | Detective Spec (33) |
+| `/grill-me` | Interrogatório relentless de uma ideia/plano — uma pergunta + resposta sugerida por turno | PO (01) Deep Interview |
+| `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) | PO (01) modo PRD |
+| `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker | Orchestrator (09) + vertical-slices |
+| `/pipeline-discovery` | Fluxo COMPLETO de discovery: grill-me → to-prd → to-issues → loop+TDD → ship | Orchestrator (09) coordenando, todas as skills |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agente Orquestrador)
 
@@ -620,6 +626,21 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 - adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
 - adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
 - `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
+
+### 2026-05-03 (batch aihero-skills — fluxo de discovery)
+
+- **2 novas skills** adaptadas de [mattpocock/skills](https://github.com/mattpocock/skills) e integradas ao kit:
+  - **Skill 37 — TDD Engineer:** red-green-refactor enforced. Combate o anti-padrão horizontal slicing (escrever todos os testes antes de toda impl). 1 teste → 1 impl → repete. Tabela anti-rationalization com 9 falácias comuns de TDD.
+  - **Skill 38 — Architecture Deepener:** encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural. Pareia com skill 23 (Migration & Refactor) para execução. Usa `CONTEXT.md` e ADRs.
+- **4 novos slash commands** (3 de fase + 1 orquestrador):
+  - `/grill-me` — interrogatório relentless, uma pergunta + resposta sugerida por turno
+  - `/to-prd` — conversa → PRD publicado no issue tracker
+  - `/to-issues` — PRD → N issues (vertical slices) publicadas no tracker
+- **`/pipeline-discovery`** — novo command top-level rodando o fluxo completo: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para features grandes/ambíguas que precisam de execução paralela + tracker + TDD por slice.
+- **Orchestrator (skill 09) atualizado:** nova seção "Dois Fluxos de Pipeline" explicando quando escolher `/pipeline` (clássico) vs `/pipeline-discovery` (com discovery + slicing + TDD).
+- **Comando `/pipeline` atualizado** para esclarecer que é o fluxo "clássico" e apontar para `/pipeline-discovery` em casos avançados.
+- **`docs/SKILLS-OVERVIEW.md` atualizado** com nova seção "Os 2 fluxos: clássico vs discovery" + tabela comparativa + skills 37/38 adicionadas + 4 novos commands documentados no formato aihero.
+- Contadores: 35 → 37 skills, 18 → 22 commands, 20 → 21 policies (vertical-slices adicionada no batch anterior).
 
 ### 2026-05-03 (batch Items 2-3-4 — manutenção do kit)
 
