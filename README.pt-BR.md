@@ -10,7 +10,16 @@
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
 
-> 📖 **Primeira vez aqui?** → [`docs/WIKI.md`](docs/WIKI.md) é a **wiki completa** explicando cada skill, subagent, command, policy, plugin e MCP tool — no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). Ponto de partida recomendado.
+---
+
+### 📖 Wiki Completa — ponto de partida recomendado
+
+| Idioma | Link |
+|---|---|
+| 🇧🇷 **Português** | [`docs/WIKI.pt-BR.md`](docs/WIKI.pt-BR.md) |
+| 🌎 **English** | [`docs/WIKI.md`](docs/WIKI.md) |
+
+Cada skill, subagent, command, policy, plugin e MCP tool documentado — no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day).
 
 ---
 

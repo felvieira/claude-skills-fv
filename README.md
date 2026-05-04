@@ -10,7 +10,16 @@
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
-> 📖 **New here?** → [`docs/WIKI.md`](docs/WIKI.md) is the **full wiki** explaining every skill, subagent, command, policy, plugin and MCP tool — in the format of [aihero.dev's "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). Recommended starting point.
+---
+
+### 📖 Full Wiki — recommended starting point
+
+| Language | Link |
+|---|---|
+| 🌎 **English** | [`docs/WIKI.md`](docs/WIKI.md) |
+| 🇧🇷 **Português** | [`docs/WIKI.pt-BR.md`](docs/WIKI.pt-BR.md) |
+
+Every skill, subagent, command, policy, plugin and MCP tool documented — in the format of [aihero.dev's "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day).
 
 ---
 

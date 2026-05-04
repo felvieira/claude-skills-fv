@@ -1,692 +1,690 @@
-# Dev Team Kit — Wiki Completa
+# Dev Team Kit — Full Wiki
 
-> **Versão:** 37 skills · 14 subagents · 23 slash commands · 22 policies
-> **Última atualização:** 2026-05-04
+> **Version:** 37 skills · 14 subagents · 23 slash commands · 22 policies
+> **Last updated:** 2026-05-04
 > **Repo:** https://github.com/felvieira/claude-skills-fv
-> **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
+> **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
-Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day) — **nome, o que faz, quando usar, problema que resolve, exemplo concreto, takeaway** —, mas aqui temos **tudo** (skills + subagents + commands + policies + plugin).
+> 🇧🇷 **Versão em Português:** [`docs/WIKI.pt-BR.md`](./WIKI.pt-BR.md)
 
----
-
-## Sumário
-
-1. [Como o kit funciona em 60 segundos](#1-como-o-kit-funciona-em-60-segundos)
-2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
-3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
-4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (37) — especialistas por categoria](#5-skills-37)
-6. [Subagents (14) — despacháveis via Task tool](#6-subagents-14)
-7. [Policies (22) — regras compartilhadas](#7-policies-22)
-8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
-9. [MCP server: 36 tools por trás dos panos](#9-mcp-server-36-tools-por-trás-dos-panos)
-10. [Quando usar o quê: árvore de decisão](#10-quando-usar-o-quê-árvore-de-decisão)
-11. [Inspirações e atribuições](#11-inspirações-e-atribuições)
+Single-page wiki of the entire kit. Every item follows the format from [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day) — **name, what it does, when to use, problem it solves, concrete example, takeaway** — but here we cover **everything**: skills + subagents + commands + policies + plugin.
 
 ---
 
-## 1. Como o kit funciona em 60 segundos
+## Table of Contents
 
-Você instala o kit num projeto. A partir daí, qualquer agente compatível (Claude Code, Cursor, Windsurf, Copilot, Gemini CLI) ganha **um time inteiro**: PO, designer, backend, frontend, QA, security, deploy, docs, observability, accessibility, etc.
+1. [How the kit works in 60 seconds](#1-how-the-kit-works-in-60-seconds)
+2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
+3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
+4. [Slash commands (23) — shortcuts by phase](#4-slash-commands-23)
+5. [Skills (37) — specialists by category](#5-skills-37)
+6. [Subagents (14) — dispatchable via Task tool](#6-subagents-14)
+7. [Policies (22) — shared rules](#7-policies-22)
+8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
+9. [MCP server: 36 tools under the hood](#9-mcp-server-36-tools-under-the-hood)
+10. [When to use what: decision tree](#10-when-to-use-what-decision-tree)
+11. [Inspiration and attribution](#11-inspiration-and-attribution)
 
-Fluxo típico de uma feature nova:
+---
+
+## 1. How the kit works in 60 seconds
+
+You install the kit into a project. From that point on, any compatible agent (Claude Code, Cursor, Windsurf, Copilot, Gemini CLI) gains **an entire team**: PO, designer, backend, frontend, QA, security, deploy, docs, observability, accessibility, etc.
+
+Typical flow for a new feature:
 
 ```
-você descreve a feature
+you describe the feature
   ↓
-/spec ou /grill-me              ← PO entende e formaliza
+/spec or /grill-me              ← PO understands and formalizes
   ↓
-/plan                           ← orchestrator quebra em vertical slices
+/plan                           ← orchestrator breaks into vertical slices
   ↓
-/build (por slice, paralelo)    ← back+front+DB juntos
+/build (per slice, parallel)    ← back + front + DB together
   ↓
-/test                           ← QA prova que funciona
+/test                           ← QA proves it works
   ↓
-/review                         ← Reviewer + Security validam
+/review                         ← Reviewer + Security validate
   ↓
 /ship                           ← Release Manager + Deploy
 ```
 
-Tudo guiado por **policies** (regras compartilhadas) e **model routing automático** (haiku para boilerplate, sonnet para implementação, opus para arquitetura — você não paga Opus pra gerar import statement).
+Everything guided by **policies** (shared rules) and **automatic model routing** (haiku for boilerplate, sonnet for implementation, opus for architecture — you don't pay Opus to generate an import statement).
 
 ---
 
-## 2. Os 2 fluxos: clássico vs discovery
+## 2. The 2 flows: classic vs discovery
 
-O kit tem **dois pipelines** para feature nova. Coexistem. Escolha por contexto.
+The kit has **two pipelines** for new features. They coexist. Choose by context.
 
-### Modo A — `/pipeline` (clássico)
+### Mode A — `/pipeline` (classic)
 
 ```
 /spec → /plan → /build → /test → /review → /ship
 ```
 
-**Use quando:** feature pequena/média (<1 sprint), spec já clara, equipe conhece o terreno, não precisa publicar PRD/issues no GitHub/Linear/Jira, TDD opcional.
+**Use when:** small/medium feature (<1 sprint), spec already clear, team knows the codebase, no need to publish PRD/issues to GitHub/Linear/Jira, TDD optional.
 
-### Modo B — `/pipeline-discovery` (com discovery + TDD)
+### Mode B — `/pipeline-discovery` (with discovery + TDD)
 
 ```
 /grill-me → /to-prd → /to-issues → /loop --worktree --parallel N → /ship
                        ↓                ↓
-                       N issues        por slice: /build + skill 37 (TDD) + /review
-                       no tracker
+                       N issues        per slice: /build + skill 37 (TDD) + /review
+                       in tracker
 ```
 
-**Use quando:** feature grande/nova/ambígua, briefing vago, equipe nova, vai paralelizar com 2+ workers, precisa publicar PRD + issues no tracker, código crítico que merece TDD enforced.
+**Use when:** large/new/ambiguous feature, vague briefing, team is new to the area, will parallelize with 2+ workers, need to publish PRD + issues to tracker, critical code requiring TDD.
 
-### Comparativo
+### Comparison
 
-| Aspecto | Modo A clássico | Modo B discovery |
+| Aspect | Mode A classic | Mode B discovery |
 |---|---|---|
-| Discovery formal | não | **`/grill-me` obrigatório** |
-| Output da spec | `docs/specs/X.md` (interno) | PRD em **issue tracker** |
-| Quebra em slices | implícita (PO escreve) | **explícita** (`/to-issues` cria 1 issue por slice) |
-| Paralelização | manual | **estrutural** (N workers, 1 slice cada) |
-| TDD | opcional | **obrigatório por slice** |
-| Skill 38 (Architecture Deepener) | não chamado | opcional entre `/to-issues` e `/loop` |
+| Formal discovery | no | **`/grill-me` required** |
+| Spec output | `docs/specs/X.md` (internal) | PRD in **issue tracker** |
+| Slice breakdown | implicit (PO writes) | **explicit** (`/to-issues` creates 1 issue per slice) |
+| Parallelization | manual | **structural** (N workers, 1 slice each) |
+| TDD | optional | **mandatory per slice** |
+| Skill 38 (Architecture Deepener) | not called | optional between `/to-issues` and `/loop` |
 
-Os 2 fluxos respeitam **`policies/vertical-slices.md`**. Diferença é nível de formalismo e publicação em tracker.
+Both flows respect **`policies/vertical-slices.md`**. The difference is the level of formalism in discovery and tracker publication.
 
-**Takeaway:** **escolha o fluxo errado uma vez** — não a feature errada — e você sente onde dói.
+**Takeaway:** **choose the wrong flow once** — not the wrong feature — and you feel where it hurts.
 
 ---
 
-## 3. Princípio fundamental: Vertical Slicing
+## 3. Core principle: Vertical Slicing
 
-> **Toda feature multi-camada é entregue como uma fatia vertical (DB + back + front + teste e2e), nunca como camadas horizontais paralelas.**
+> **Every multi-layer feature is delivered as a vertical slice (DB + back + front + e2e test), never as horizontal layers in parallel.**
 
-### Errado (layered, paraleliza mas integra mal)
-
-```
-Worker A: faz todo o front (login + cadastro + recuperar senha)
-Worker B: faz todo o back (login + cadastro + recuperar senha)
-Worker C: faz todo o DB (login + cadastro + recuperar senha)
-→ ninguém pode testar até os 3 acabarem
-→ integração revela 80% dos bugs no fim
-```
-
-### Certo (vertical, paraleliza E integra ponta-a-ponta)
+### Wrong (layered, parallelizes but integrates badly)
 
 ```
-Worker A: feature de login (DB + back + front + teste e2e) → mergeável sozinho
-Worker B: feature de cadastro (DB + back + front + teste e2e) → mergeável sozinho
-Worker C: feature de recuperar senha (DB + back + front + teste e2e) → mergeável sozinho
-→ cada worker entrega feature testável e demo-able
+Worker A: all front (login + signup + password reset)
+Worker B: all back (login + signup + password reset)
+Worker C: all DB (login + signup + password reset)
+→ nobody can test until all 3 finish
+→ integration reveals 80% of bugs at the end
 ```
 
-**Quem força isso:** orchestrator (skill 09) recusa plano layer-first. PO (skill 01) escreve user stories já como slices. `/plan` produz tabela de slices antes do build. `policies/vertical-slices.md` tem anti-padrões e heurísticas de tamanho.
+### Right (vertical, parallelizes AND integrates end-to-end)
 
-**Quando NÃO aplicar:** task single-layer (só front OU só back), bug fix localizado, refactor cross-cutting, chore.
+```
+Worker A: login feature (DB + back + front + e2e test) → mergeable on its own
+Worker B: signup feature (DB + back + front + e2e test) → mergeable on its own
+Worker C: password reset (DB + back + front + e2e test) → mergeable on its own
+→ each worker delivers a testable, demo-able feature
+```
 
-**Takeaway:** **paralelismo é diferente de coordenação.** Layered slicing paraleliza tarefas mas adia integração — é falsa eficiência.
+**Who enforces this:** orchestrator (skill 09) refuses layer-first plans. PO (skill 01) writes user stories already as slices. `/plan` produces a slice table before building. `policies/vertical-slices.md` has anti-patterns and size heuristics.
+
+**When NOT to apply:** single-layer task (only front OR only back), localized bug fix, cross-cutting refactor, chore.
+
+**Takeaway:** **parallelism is not the same as coordination.** Layered slicing parallelizes tasks but delays integration — that's false efficiency.
 
 ---
 
 ## 4. Slash commands (23)
 
-São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, ele roteia.
+These are phase shortcuts. No need to memorize skill names — call the shortcut, it routes.
 
-### Comandos de fase (modo A — clássico)
+### Phase commands (Mode A — classic)
 
-#### `/spec` — Especificar feature
+#### `/spec` — Specify a feature
 
-**O que faz:** PO escreve user stories, critérios de aceitação testáveis, prioridade, riscos.
-**Quando usar:** ideia nova ou requisito vago precisa virar spec acionável.
-**Problema que resolve:** evita "build sem entender o pedido", reduz retrabalho.
-**Exemplo:** `/spec adicionar dark mode com persistência por usuário`
-**Takeaway:** **toda feature começa aqui.** Pular spec custa 3-5x mais em rework.
+**What it does:** PO writes user stories, testable acceptance criteria, priority, risks.
+**When to use:** new idea or vague requirement needs to become an actionable spec.
+**Problem it solves:** avoids "building without understanding the request", reduces rework.
+**Example:** `/spec add dark mode with per-user persistence`
+**Takeaway:** **every feature starts here.** Skipping spec costs 3-5x more in rework.
 
-#### `/plan` — Montar pipeline
+#### `/plan` — Build the pipeline
 
-**O que faz:** orchestrator classifica complexidade da task e define o pipeline mínimo (quais skills chamar, em que ordem). Quebra em vertical slices se for multi-camada.
-**Quando usar:** task grande, não sabe por onde começar; quer um roadmap antes de codar.
-**Problema que resolve:** evita rodar pipeline cheio quando bug fix simples basta.
-**Exemplo:** `/plan migrar autenticação para OAuth2`
-**Takeaway:** **pipeline é mínimo necessário.** Skills caras (security, deploy) só entram quando a task pede.
+**What it does:** orchestrator classifies task complexity and defines the minimum pipeline (which skills to call, in what order). Breaks into vertical slices if multi-layer.
+**When to use:** large task, not sure where to start; want a roadmap before coding.
+**Problem it solves:** avoids running the full pipeline when a simple bug fix suffices.
+**Example:** `/plan migrate authentication to OAuth2`
+**Takeaway:** **pipeline is minimum necessary.** Expensive skills (security, deploy) only enter when the task demands.
 
-#### `/build` — Implementar
+#### `/build` — Implement
 
-**O que faz:** Backend (skill 03) + Frontend (skill 04) com a stack real do projeto (lê `docs/repo-audit/current.md` antes).
-**Quando usar:** spec pronta, implementar é o próximo passo.
-**Problema que resolve:** consistência com convenções existentes em vez de "agente inventando estilo novo".
-**Exemplo:** `/build implementar endpoint POST /api/orders conforme spec`
-**Takeaway:** **stack vem da auditoria, não do treinamento.** Auditar repo primeiro evita mismatch.
+**What it does:** Backend (skill 03) + Frontend (skill 04) with the project's real stack (reads `docs/repo-audit/current.md` first).
+**When to use:** spec ready, implementing is the next step.
+**Problem it solves:** consistency with existing conventions instead of "agent inventing a new style".
+**Example:** `/build implement endpoint POST /api/orders per spec`
+**Takeaway:** **stack comes from the audit, not from training.** Auditing the repo first prevents mismatch.
 
-#### `/test` — Escrever e rodar testes
+#### `/test` — Write and run tests
 
-**O que faz:** QA (skill 05) seguindo "prove-it" — happy path + error + edge case + regression.
-**Quando usar:** após implementar, ou para preencher gap de cobertura, ou para validar fix.
-**Problema que resolve:** "funciona local" sem teste = bug em produção esperando.
-**Exemplo:** `/test cobrir orderService incluindo desconto VIP e estoque insuficiente`
-**Takeaway:** **se diz que funciona, prova com teste.** Falar não conta.
+**What it does:** QA (skill 05) following "prove-it" — happy path + error + edge case + regression.
+**When to use:** after implementing, or to fill coverage gaps, or to validate a fix.
+**Problem it solves:** "works locally" without tests = bug in production waiting to happen.
+**Example:** `/test cover orderService including VIP discount and out-of-stock`
+**Takeaway:** **saying it works doesn't count. A test proves it.**
 
-#### `/review` — Review final + security
+#### `/review` — Final review + security
 
-**O que faz:** Reviewer (skill 11) + Security (skill 06) validam o delta antes do merge.
-**Quando usar:** PR pronto, antes de pedir review humano ou mergear.
-**Problema que resolve:** pega bug óbvio, vulnerabilidade comum, débito antes de virar dívida.
-**Exemplo:** `/review` (no contexto de PR aberto)
-**Takeaway:** **Critical/High aberto = no merge.** Reviewer é gate, não sugestão.
+**What it does:** Reviewer (skill 11) + Security (skill 06) validate the delta before merge.
+**When to use:** PR ready, before requesting human review or merging.
+**Problem it solves:** catches obvious bugs, common vulnerabilities, debt before it becomes a problem.
+**Example:** `/review` (in the context of an open PR)
+**Takeaway:** **Critical/High open = no merge.** Reviewer is a gate, not a suggestion.
 
-#### `/best` — Auditoria de boas práticas
+#### `/best` — Best practices audit
 
-**O que faz:** Reviewer + Security + QA juntos auditam clean code, DRY, SOLID, OWASP.
-**Quando usar:** antes de release, código herdado, ou sentindo "isso aqui tá feio".
-**Problema que resolve:** débito técnico que ninguém quer abrir issue para tratar.
-**Exemplo:** `/best src/services/billing/`
-**Takeaway:** **rode antes de pedir refactor.** O relatório justifica o trabalho.
+**What it does:** Reviewer + Security + QA together audit clean code, DRY, SOLID, OWASP.
+**When to use:** before release, inherited code, or when you sense "this feels wrong".
+**Problem it solves:** technical debt nobody wants to open an issue for.
+**Example:** `/best src/services/billing/`
+**Takeaway:** **run before requesting a refactor.** The report justifies the work.
 
-#### `/simplify` — Refatorar
+#### `/simplify` — Refactor
 
-**O que faz:** Migration & Refactor (skill 23) propõe simplificação preservando comportamento.
-**Quando usar:** código funciona mas tá complicado; antes de adicionar feature em módulo god.
-**Problema que resolve:** refactor "vamos limpar" sem critério vira novo bug.
-**Exemplo:** `/simplify src/auth/middleware.ts (god function 200 linhas)`
-**Takeaway:** **refactor com plano e teste de regressão.** Sem rede, vira regressão.
+**What it does:** Migration & Refactor (skill 23) proposes simplification preserving behavior.
+**When to use:** code works but it's messy; before adding a feature to a god module.
+**Problem it solves:** "let's clean up" refactors without a plan become new bugs.
+**Example:** `/simplify src/auth/middleware.ts (god function 200 lines)`
+**Takeaway:** **refactor with a plan and a regression test.** Without a safety net, it becomes a regression.
 
-#### `/ship` — Release e deploy
+#### `/ship` — Release and deploy
 
-**O que faz:** Release Manager (skill 24) + Deploy (skill 07) — changelog, versionamento, rollout, rollback plan.
-**Quando usar:** feature pronta + testada + revisada, hora de subir.
-**Problema que resolve:** deploy "no susto", rollback improvisado, changelog vazio.
-**Exemplo:** `/ship v2.4.0 com migration de schema`
-**Takeaway:** **deploy é evento documentado.** Rollback ensaiado vale mais que confiança cega.
+**What it does:** Release Manager (skill 24) + Deploy (skill 07) — changelog, versioning, rollout, rollback plan.
+**When to use:** feature ready + tested + reviewed, time to ship.
+**Problem it solves:** "surprise" deploys, improvised rollbacks, empty changelogs.
+**Example:** `/ship v2.4.0 with schema migration`
+**Takeaway:** **deploy is a documented event.** A rehearsed rollback beats blind confidence.
 
-#### `/pipeline` — End-to-end clássico
+#### `/pipeline` — Classic end-to-end
 
-**O que faz:** orchestrator roda spec → plan → build → test → review → ship em sequência.
-**Quando usar:** feature pequena/média, equipe conhece o terreno, sem necessidade de issue tracker.
-**Problema que resolve:** pular fases por preguiça gera retrabalho 3x maior depois.
-**Exemplo:** `/pipeline criar página de configurações de usuário`
-**Takeaway:** **pipeline completo é desperdício para bug fix, vital para feature.**
+**What it does:** orchestrator runs spec → plan → build → test → review → ship in sequence.
+**When to use:** small/medium feature, team knows the terrain, no tracker publication needed.
+**Problem it solves:** skipping phases out of laziness generates 3x more rework later.
+**Example:** `/pipeline create user settings page`
+**Takeaway:** **full pipeline is overkill for a bug fix, vital for a feature.**
 
-### Comandos do fluxo discovery (modo B)
+### Discovery flow commands (Mode B)
 
-#### `/grill-me` — Interrogatório de plano
+#### `/grill-me` — Plan interrogation
 
-**O que faz:** PO em modo Deep Interview sempre-ativo. Faz **uma pergunta por vez**, recomenda resposta, caminha pela árvore de decisão até convergir.
-**Quando usar:** ideia ainda vaga, antes de `/spec` ou `/to-prd`.
-**Problema que resolve:** spec produzida com "unknown unknowns" silenciosos.
-**Exemplo:** `/grill-me quero refazer o checkout para reduzir abandono`
-**Takeaway:** **uma pergunta por turno + resposta sugerida.** Lista de 20 perguntas mata fluxo. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/grill-me).
+**What it does:** PO in always-on Deep Interview mode. Asks **one question at a time**, recommends an answer, walks the decision tree until convergence.
+**When to use:** idea still vague, before `/spec` or `/to-prd`.
+**Problem it solves:** specs produced with silent "unknown unknowns".
+**Example:** `/grill-me I want to redesign checkout to reduce abandonment`
+**Takeaway:** **one question per turn + suggested answer.** A list of 20 questions kills flow. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/grill-me).
 
-#### `/to-prd` — Conversa → PRD em issue tracker
+#### `/to-prd` — Conversation → PRD in issue tracker
 
-**O que faz:** pega contexto da conversa atual e publica PRD no GitHub/Linear/Jira (label `needs-triage`). Não entrevista — sintetiza. Detecta tracker automaticamente (`gh auth status`, `LINEAR_API_KEY` env, `acli`); se nada disponível, salva em `docs/prd/`.
-**Quando usar:** após `/grill-me` convergir, antes de `/to-issues`.
-**Problema que resolve:** PRDs vivem em conversas perdidas; precisam de tracker para virar trabalho.
-**Exemplo:** `/to-prd` (no contexto pós-grill-me)
-**Takeaway:** **PRD vai pro tracker com label needs-triage.** Spec interna usa `/spec` em `docs/specs/`. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd).
+**What it does:** takes the current conversation context and publishes a PRD to GitHub/Linear/Jira (label `needs-triage`). Doesn't interview — synthesizes. Auto-detects tracker (`gh auth status`, `LINEAR_API_KEY` env, `acli`); if nothing available, saves to `docs/prd/`.
+**When to use:** after `/grill-me` converges, before `/to-issues`.
+**Problem it solves:** PRDs live in lost conversations; they need a tracker to become work.
+**Example:** `/to-prd` (in post-grill-me context)
+**Takeaway:** **PRD goes to the tracker with label needs-triage.** Internal spec uses `/spec` in `docs/specs/`. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd).
 
-#### `/to-issues` — PRD → vertical slices no tracker
+#### `/to-issues` — PRD → vertical slices in tracker
 
-**O que faz:** quebra PRD em N issues independentes (vertical slices/tracer bullets). Cada issue é HITL ou AFK. Publica todas com label `needs-triage`, em ordem de dependência.
-**Quando usar:** após `/to-prd`, antes de `/loop --worktree --parallel N`.
-**Problema que resolve:** workers paralelos sem issues atribuíveis = caos; layered slicing disfarçado de vertical.
-**Exemplo:** `/to-issues #142` (referência ao PRD)
-**Takeaway:** **cada issue corta TODAS as camadas.** Layered slicing é proibido (`policies/vertical-slices.md`). Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-issues).
+**What it does:** breaks PRD into N independent issues (vertical slices/tracer bullets). Each issue is HITL or AFK. Publishes all with label `needs-triage`, in dependency order.
+**When to use:** after `/to-prd`, before `/loop --worktree --parallel N`.
+**Problem it solves:** parallel workers without assignable issues = chaos; layered slicing disguised as vertical.
+**Example:** `/to-issues #142` (reference to the PRD)
+**Takeaway:** **each issue cuts through ALL layers.** Layered slicing is prohibited (`policies/vertical-slices.md`). Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-issues).
 
 #### `/pipeline-discovery` — Discovery + slicing + TDD
 
-**O que faz:** orquestrador top-level. Roda fluxo completo `grill-me → to-prd → to-issues → loop+TDD → ship`. Publica PRD + N issues, paraleliza por slice, TDD por slice. **4 gates de aprovação humana obrigatórios** (PRD, issues, dispatch workers, deploy).
-**Quando usar:** feature grande/nova/ambígua, equipe nova, vai paralelizar 2+ workers, código crítico.
-**Problema que resolve:** spec rasa virando integration mess; trabalho não tracked; integração só no fim.
-**Exemplo:** `/pipeline-discovery quero adicionar autenticação social (Google + GitHub)`
-**Takeaway:** **discovery formal + issues no tracker + TDD por slice = qualidade alta com paralelização real.**
+**What it does:** top-level orchestrator. Runs full flow `grill-me → to-prd → to-issues → loop+TDD → ship`. Publishes PRD + N issues, parallelizes by slice, TDD per slice. **4 mandatory human approval gates** (PRD, issues, dispatch workers, deploy).
+**When to use:** large/new/ambiguous feature, new team, will parallelize 2+ workers, critical code.
+**Problem it solves:** shallow spec becoming integration mess; work not tracked; integration only at the end.
+**Example:** `/pipeline-discovery I want to add social auth (Google + GitHub)`
+**Takeaway:** **formal discovery + issues in tracker + TDD per slice = high quality with real parallelization.**
 
-### Comandos autônomos / utilitários
+### Autonomous / utility commands
 
-#### `/auto` — Agente autônomo (1 sessão)
+#### `/auto` — Autonomous agent (1 session)
 
-**O que faz:** executa task completa sem intervenção. 10 padrões de produção: progress tracking via checkboxes, inter-iteration memory, context narrowing progressivo, tiered validation (lint→typecheck→build), error deduplication, completion override, dynamic budget, validation feedback loop, stall detection, build-fix extension.
-**Quando usar:** task complexa que você quer entregar overnight; quer ir tomar café e voltar com PR pronto.
-**Problema que resolve:** agente ficar travado no mesmo erro 3x sem detectar.
-**Exemplo:** `/auto refatorar todo módulo billing para usar nova lib de pagamentos`
-**Takeaway:** **fire and forget — mas com circuit breaker.** Stall detection economiza centenas de iterações.
+**What it does:** runs full task without intervention. 10 production patterns: progress tracking via checkboxes, inter-iteration memory, progressive context narrowing, tiered validation (lint→typecheck→build), error deduplication, completion override, dynamic budget, validation feedback loop, stall detection, build-fix extension.
+**When to use:** complex task you want delivered overnight; want to grab coffee and come back to a ready PR.
+**Problem it solves:** agent stuck on the same error 3x without detecting it.
+**Example:** `/auto refactor entire billing module to use new payment lib`
+**Takeaway:** **fire and forget — but with a circuit breaker.** Stall detection saves hundreds of iterations.
 
-#### `/loop` — Auto-loop v2 (multi-agente, paralelo)
+#### `/loop` — Auto-loop v2 (multi-agent, parallel)
 
-**O que faz:** loop autônomo v2. Multi-agente (claude + codex), worktree integrado, paralelização real (`--worktree --parallel N`), polishing pass configurável (`none|light|standard|full`).
-**Quando usar:** várias features independentes overnight; quer 4 PRs prontos amanhã de manhã.
-**Problema que resolve:** orquestrar workers paralelos manualmente é caro e propenso a conflito.
-**Exemplo:** `node scripts/auto-loop.mjs "task" --worktree --parallel 4 --polish standard`
-**Takeaway:** **paralelismo real exige worktrees.** Sem isso, 2 workers no mesmo repo = chaos.
+**What it does:** autonomous loop v2. Multi-agent (claude + codex), integrated worktree, real parallelization (`--worktree --parallel N`), configurable polishing pass (`none|light|standard|full`).
+**When to use:** several independent features overnight; want 4 PRs ready tomorrow morning.
+**Problem it solves:** manually orchestrating parallel workers is expensive and error-prone.
+**Example:** `node scripts/auto-loop.mjs "task" --worktree --parallel 4 --polish standard`
+**Takeaway:** **real parallelism requires worktrees.** Without them, 2 workers on the same repo = chaos.
 
-#### `/worktree` — Worktree isolado
+#### `/worktree` — Isolated worktree
 
-**O que faz:** cria git worktree isolado, copia `.env*`, valida ambiente em background.
-**Quando usar:** trabalhar em paralelo sem afetar branch atual; antes de executar plano grande.
-**Problema que resolve:** stash + checkout = perde estado mental e arquivos não-commitados.
-**Exemplo:** `/worktree feat/payments`
-**Takeaway:** **branch ≠ worktree.** Worktree dá diretório físico isolado.
+**What it does:** creates an isolated git worktree, copies `.env*`, validates environment in background.
+**When to use:** work in parallel without affecting current branch; before executing a large plan.
+**Problem it solves:** stash + checkout = losing mental state and uncommitted files.
+**Example:** `/worktree feat/payments`
+**Takeaway:** **branch ≠ worktree.** Worktree gives a physically isolated directory.
 
-#### `/detective-spec` — Engenharia reversa de spec em legado
+#### `/detective-spec` — Legacy reverse-engineering
 
-**O que faz:** entra em codebase legado, extrai contratos executáveis (módulos, regras de negócio, fluxos, ADRs retroativos) sem modificar 1 linha. Pipeline de 5 fases com checkpoint/resume em `.detective/state.json`. Output em `_detective_sdd/`. Inspirado em [Reversa](https://github.com/sandeco/reversa).
-**Quando usar:** legado sem doc, vibe coded, antes de evoluir feature em módulo desconhecido, migração, onboarding.
-**Problema que resolve:** time herda monolito de 5 anos sem doc — agente não sabe o que pode quebrar.
-**Exemplo:** `/detective-spec --module=src/billing`
-**Takeaway:** **zero writes no projeto legado.** Verificável via `git status`. Spec gerada vira contrato operacional consumível por outro agente.
+**What it does:** enters a legacy codebase, extracts executable contracts (modules, business rules, flows, retroactive ADRs) without modifying a single line. 5-phase pipeline with checkpoint/resume in `.detective/state.json`. Output in `_detective_sdd/`. Inspired by [Reversa](https://github.com/sandeco/reversa).
+**When to use:** legacy without docs, vibe coded, before evolving a feature in an unknown module, migration, onboarding.
+**Problem it solves:** team inherits a 5-year monolith without docs — agent doesn't know what it can break.
+**Example:** `/detective-spec --module=src/billing`
+**Takeaway:** **zero writes on the legacy project.** Verifiable via `git status`. Generated spec becomes an operational contract consumable by another agent.
 
-### Comandos de instalação / utilitários do kit
+### Kit installation / utility commands
 
-#### `/devkit-install-fv` — Instalar kit em `.bot/` no repo consumidor
+#### `/devkit-install-fv` — Install kit in `.bot/`
 
-**O que faz:** instala o kit completo (skills + policies + templates + MCP + hooks + multi-platform configs) em `.bot/` do repo onde foi rodado.
-**Quando usar:** primeira vez que vai usar o kit em um projeto.
-**Problema que resolve:** instalação manual envolveria copiar 100+ arquivos.
-**Exemplo:** `/devkit-install-fv`
+**What it does:** installs the full kit (skills + policies + templates + MCP + hooks + multi-platform configs) in `.bot/` of the current repo.
+**When to use:** first time using the kit in a project.
 
-#### `/audit-repo` — Auditoria do repositório
+#### `/audit-repo` — Repository audit
 
-**O que faz:** Repo Auditor (skill 18) faz fotografia operacional do projeto (stack, convenções, riscos, entry points, tech debt) e persiste em `docs/repo-audit/current.md`.
-**Quando usar:** primeiro contato com um repo; antes de feature grande.
-**Problema que resolve:** agente lê `package.json` 50 vezes em vez de cachear o conhecimento.
-**Exemplo:** `/audit-repo`
-**Takeaway:** **auditoria persistida = economia de tokens.** Splits opcionais por tipo (`routes.md`, `schema.md`, `components.md`, etc).
+**What it does:** Repo Auditor (skill 18) creates an operational snapshot of the project (stack, conventions, risks, entry points, tech debt) and persists it in `docs/repo-audit/current.md`.
+**When to use:** first contact with a repo; before a large feature.
+**Takeaway:** **persisted audit = token savings.** Splits available by type (`routes.md`, `schema.md`, `components.md`, etc).
 
-#### `/inventory-assets` — Inventário de assets
+#### `/inventory-assets` — Asset inventory
 
-**O que faz:** Asset Librarian (skill 19) cataloga logos, ícones, fontes, tokens visuais.
-**Quando usar:** antes de gerar imagem nova (skill 17) — evita reinventar identidade visual.
+**What it does:** Asset Librarian (skill 19) catalogs logos, icons, fonts, visual tokens.
+**When to use:** before generating a new image (skill 17) — avoids reinventing visual identity.
 
-#### `/plan-feature` — Planejamento de feature
+#### `/plan-feature` — Feature planning
 
-**O que faz:** atalho legado para iniciar planejamento de feature. Hoje, prefira `/plan` ou `/pipeline-discovery`.
+**What it does:** legacy shortcut for feature planning. Today prefer `/plan` or `/pipeline-discovery`.
 
-#### `/review-release` — Review pré-release
+#### `/review-release` — Pre-release review
 
-**O que faz:** auditoria conjunta antes de release final. Hoje, `/review` + `/best` cobrem.
+**What it does:** joint audit before final release. Today `/review` + `/best` cover this.
 
 ---
 
 ## 5. Skills (37)
 
-Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente vago (absorvida pela `policies/model-routing.md`).
+Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent (absorbed by `policies/model-routing.md`).
 
-### Categoria: Management & Coordination
+### Category: Management & Coordination
 
 #### Skill 08 — Context Manager
 
-**O que faz:** rastreia foco, tasks abertas, hot files e handoffs entre sessões longas.
-**Quando ativar:** sessão longa com várias features paralelas; risco de perder contexto.
-**Problema que resolve:** agente esquece o que estava fazendo após compactação automática.
+**What it does:** tracks focus, open tasks, hot files and handoffs across long sessions.
+**When to activate:** long session with several parallel features; risk of losing context.
+**Problem it solves:** agent forgets what it was doing after automatic compaction.
 
 #### Skill 09 — Orchestrator
 
-**O que faz:** Tech Lead. Classifica complexidade da task, define pipeline mínimo, delega para skills, adapta em caso de rejeição. Conhece os 2 fluxos (clássico vs discovery) e escolhe.
-**Quando ativar:** task complexa, várias skills candidatas, precisa de roteamento.
-**Problema que resolve:** rodar pipeline cheio para bug fix simples queima tokens à toa.
-**Takeaway:** **orchestrator é o cérebro do kit.** Sem ele, você roteia manualmente.
+**What it does:** Tech Lead. Classifies task complexity, defines minimum pipeline, delegates to skills, adapts on rejection. Knows the 2 flows (classic vs discovery) and chooses.
+**When to activate:** complex task, several candidate skills, needs routing.
+**Problem it solves:** running the full pipeline for a simple bug fix burns tokens for nothing.
+**Takeaway:** **orchestrator is the kit's brain.** Without it, you route manually.
 
 #### Skill 10 — Documenter
 
-**O que faz:** registra decisões, contratos de API, operações e impactos em docs vivos. Atua transversal — toda mudança relevante de regra/contrato passa por aqui.
-**Quando ativar:** feature ou refactor que muda comportamento documentado.
+**What it does:** records decisions, API contracts, operations and impacts in living docs. Acts transversally — every relevant change in rule/contract goes through here.
+**When to activate:** feature or refactor that changes documented behavior.
 
 #### Skill 11 — Reviewer
 
-**O que faz:** valida o delta final antes do release — qualidade, escopo, risco. 5 eixos: correctness, design, readability, performance, security.
-**Quando ativar:** sempre antes de merge ou release.
-**Problema que resolve:** "achei que tava bom" sem critério vira bug em produção.
-**Takeaway:** **Reviewer é gate, não opinião.** Critical aberto = no merge.
+**What it does:** validates the final delta before release — quality, scope, risk. 5 axes: correctness, design, readability, performance, security.
+**When to activate:** always before merge or release.
+**Problem it solves:** "I thought it was fine" without a criterion becomes a production bug.
+**Takeaway:** **Reviewer is a gate, not an opinion.** Critical open = no merge.
 
 #### Skill 17 — Image Generator
 
-**O que faz:** gera ou adapta assets visuais (hero, mascote, illustration, background, layout, icon) via fal.ai (5 modelos: gpt-image-1-mini, Gemini 2.5 Flash, Gemini 3 Pro, gpt-image-1.5, Grok Imagine). Vendor-agnostic — alternativas (Replicate, OpenAI direto, Stability) suportadas.
-**Quando ativar:** projeto precisa de imagem nova ou derivada.
-**Problema que resolve:** "imagem aqui" placeholder em landing page.
-**Takeaway:** **decisão por modelo é por custo + qualidade.** Pipeline multi-modelo (iterar barato → validar médio → final premium) custa $0.10-$0.50 por hero. Detalhes em `docs/skill-guides/image-generator-models.md`.
+**What it does:** generates or adapts visual assets (hero, mascot, illustration, background, layout, icon) via fal.ai (5 models: gpt-image-1-mini, Gemini 2.5 Flash, Gemini 3 Pro, gpt-image-1.5, Grok Imagine). Vendor-agnostic — alternatives (Replicate, OpenAI direct, Stability) supported.
+**When to activate:** project needs a new or derived image.
+**Problem it solves:** "image here" placeholder on a landing page.
+**Takeaway:** **model choice is by cost + quality.** Multi-model pipeline (iterate cheap → validate medium → final premium) costs $0.10-$0.50 per hero. Details in `docs/skill-guides/image-generator-models.md`.
 
 #### Skill 18 — Repo Auditor
 
-**O que faz:** snapshot operacional do repo (stack, convenções, assets, testes, deploy, observability, riscos). Persiste em `docs/repo-audit/current.md` + splits por tipo (`routes.md`, `schema.md`, `components.md`, `services.md`, `infra.md`).
-**Quando ativar:** primeiro contato com repo; mudança grande de stack; antes de feature grande.
-**Problema que resolve:** agente reler 200 arquivos toda vez = $$$.
-**Takeaway:** **auditoria é cache.** Atualizar só quando muda.
+**What it does:** operational snapshot of the repo (stack, conventions, assets, tests, deploy, observability, risks). Persists in `docs/repo-audit/current.md` + type splits (`routes.md`, `schema.md`, `components.md`, `services.md`, `infra.md`).
+**When to activate:** first contact with repo; large stack change; before a large feature.
+**Problem it solves:** agent re-reads 200 files every time = $$$.
+**Takeaway:** **audit is a cache.** Update only when things change.
 
 #### Skill 19 — Asset Librarian
 
-**O que faz:** cataloga logos, ícones, fontes, tokens visuais e assets reutilizáveis em `docs/repo-audit/assets.md`.
-**Quando ativar:** projeto com identidade visual estabelecida; antes de skill 17 ou 36.
-**Problema que resolve:** Image Generator inventa estilo novo ignorando o que já existe.
+**What it does:** catalogs logos, icons, fonts, visual tokens and reusable assets in `docs/repo-audit/assets.md`.
+**When to activate:** project with established visual identity; before skill 17 or 36.
+**Problem it solves:** Image Generator invents a new style ignoring what already exists.
 
 #### Skill 20 — Observability SRE
 
-**O que faz:** define logs estruturados, métricas, tracing, alertas e plano de rollback.
-**Quando ativar:** antes de subir feature crítica em produção.
-**Problema que resolve:** "não sabemos por que caiu" porque ninguém colocou log.
+**What it does:** defines structured logs, metrics, tracing, alerts and rollback plan.
+**When to activate:** before shipping a critical feature to production.
+**Problem it solves:** "we don't know why it went down" because nobody added logging.
 
 #### Skill 21 — Data Analytics
 
-**O que faz:** define eventos de tracking, naming, funnels, KPIs do produto.
-**Quando ativar:** feature nova com impacto de produto que precisa medir.
+**What it does:** defines tracking events, naming, funnels, product KPIs.
+**When to activate:** new feature with product impact that needs measuring.
 
 #### Skill 22 — Accessibility Specialist
 
-**O que faz:** revisa WCAG 2.2, navegação por teclado, semântica HTML, motion reduction.
-**Quando ativar:** antes de release de feature com UI; auditoria periódica.
+**What it does:** reviews WCAG 2.2, keyboard navigation, HTML semantics, motion reduction.
+**When to activate:** before releasing a UI feature; periodic audit.
 
 #### Skill 23 — Migration & Refactor Specialist
 
-**O que faz:** roda migrations incrementais, feature flags e rollback seguro. **Recebe plano de deepening da skill 38** e executa o refactor com TDD (skill 37).
-**Quando ativar:** refactor grande, migração de stack, mudança que precisa de feature flag.
-**Problema que resolve:** "vamos limpar" sem plano = regressão garantida.
+**What it does:** runs incremental migrations, feature flags and safe rollback. **Receives deepening plan from skill 38** and executes the refactor with TDD (skill 37).
+**When to activate:** large refactor, stack migration, change that needs a feature flag.
+**Problem it solves:** "let's clean up" without a plan = guaranteed regression.
 
 #### Skill 24 — Release Manager
 
-**O que faz:** organiza changelog, release notes, versionamento, gradual rollout.
-**Quando ativar:** ciclo de release.
+**What it does:** organizes changelog, release notes, versioning, gradual rollout.
+**When to activate:** release cycle.
 
 #### Skill 25 — AI Integration Architect
 
-**O que faz:** desenha adapters de IA, gateways, streaming, fallbacks, custo de inferência.
-**Quando ativar:** integração nova com LLM em produto.
-**Problema que resolve:** acoplar produto a 1 vendor = lock-in caro depois.
+**What it does:** designs AI adapters, gateways, streaming, fallbacks, inference cost.
+**When to activate:** new LLM integration in a product.
+**Problem it solves:** coupling a product to 1 vendor = expensive lock-in later.
 
 #### Skill 26 — Prompt Engineer
 
-**O que faz:** escreve e itera prompts, templates reutilizáveis, estratégias few-shot.
-**Quando ativar:** prompt do produto precisa de iteração + eval sistemático.
+**What it does:** writes and iterates prompts, reusable templates, few-shot strategies.
+**When to activate:** product prompt needs systematic iteration + eval.
 
 #### Skill 27 — Video Integration Specialist
 
-**O que faz:** integra video generativo com foco em UX, latência e formato.
+**What it does:** integrates generative video with focus on UX, latency and format.
 
 #### Skill 28 — CLAUDE.md Generator
 
-**O que faz:** gera `CLAUDE.md` inteligente para projetos consumidores do kit.
-**Quando ativar:** primeira vez instalando o kit em um projeto.
+**What it does:** generates a smart `CLAUDE.md` for consumer projects of the kit.
+**When to activate:** first time installing the kit in a project.
 
 #### Skill 30 — Cost Tracker
 
-**O que faz:** rastreia custo de tokens e API calls por sessão, skill e tier de modelo.
-**Quando ativar:** sempre — passivo, registra em background.
-**Takeaway:** **se você não mede, você não otimiza.** Cost Tracker virou prática default.
+**What it does:** tracks token cost and API calls per session, skill and model tier.
+**When to activate:** always — passive, records in background.
+**Takeaway:** **if you don't measure, you don't optimize.** Cost Tracker became default practice.
 
 #### Skill 31 — Session Summary
 
-**O que faz:** consolida resumo de sessão para handoff limpo entre sessões longas.
-**Quando ativar:** fim de sessão grande; antes de fechar IDE.
+**What it does:** consolidates a session summary for clean handoff between long sessions.
+**When to activate:** end of a large session; before closing the IDE.
 
 #### Skill 32 — Smart Suggestions
 
-**O que faz:** sugere a próxima ação mais impactante baseado no estado real do projeto.
-**Quando ativar:** "e agora, o que?" depois de mergear feature.
+**What it does:** suggests the next most impactful action based on the project's real state.
+**When to activate:** "what now?" after merging a feature.
 
 #### Skill 33 — Detective Spec
 
-**O que faz:** engenharia reversa de spec em legado — extrai módulos, regras de negócio, fluxos, ADRs retroativos. **Zero writes** no projeto (verificável via `git status --porcelain`). Pipeline de 5 fases com checkpoint/resume.
-**Quando ativar:** legado sem doc; vibe coded; onboarding em codebase grande.
-**Problema que resolve:** agente não consegue evoluir o que não entende.
-**Takeaway:** **spec gerada vira contrato operacional**, não doc para humano ler.
+**What it does:** reverse-engineering of specs in legacy — extracts modules, business rules, flows, retroactive ADRs. **Zero writes** on the project (verifiable via `git status --porcelain`). 5-phase pipeline with checkpoint/resume.
+**When to activate:** legacy without docs; vibe coded; onboarding in large codebase.
+**Problem it solves:** agent can't evolve what it doesn't understand.
+**Takeaway:** **generated spec becomes an operational contract**, not a document for humans to read.
 
 #### Skill 34 — Static Analysis
 
-**O que faz:** scan automatizado via Semgrep + CodeQL com SARIF output, triagem de severidade (Critical/High/Medium/Low/Info), supressão de FP justificada, custom rules em `tools/semgrep/`. Despacha 5 subagents auxiliares para escala.
-**Quando ativar:** pré-release, PR grande, auditoria periódica, variant analysis após bug.
-**Problema que resolve:** review manual de segurança não pega tudo.
+**What it does:** automated scan via Semgrep + CodeQL with SARIF output, severity triage (Critical/High/Medium/Low/Info), justified FP suppression, custom rules in `tools/semgrep/`. Dispatches 5 auxiliary subagents for scale.
+**When to activate:** pre-release, large PR, periodic audit, variant analysis after a bug.
+**Problem it solves:** manual security review doesn't catch everything.
 
 #### Skill 35 — Skill Author
 
-**O que faz:** **meta-skill.** Cria, edita, avalia e otimiza as próprias skills do kit. Define template obrigatório de SKILL.md, eval scorecard (10 critérios × 0-3, threshold 22/30 para merge), pipelines para create/edit/eval/optimize.
-**Quando ativar:** adicionar skill nova; refatorar skill existente; avaliar qualidade do kit.
-**Problema que resolve:** kit cresce por copy-paste, cada skill diverge das convenções.
-**Takeaway:** **skill que governa as outras skills.** Sustentabilidade do próprio kit.
+**What it does:** **meta-skill.** Creates, edits, evaluates and optimizes the kit's own skills. Defines mandatory SKILL.md template, eval scorecard (10 criteria × 0-3, threshold 22/30 for merge), pipelines for create/edit/eval/optimize.
+**When to activate:** adding a new skill; refactoring an existing skill; evaluating kit quality.
+**Problem it solves:** kit grows by copy-paste, each skill diverges from conventions.
+**Takeaway:** **the skill that governs the other skills.** Sustainability of the kit itself.
 
 #### Skill 36 — Web Asset Generator
 
-**O que faz:** deriva assets web operacionais a partir de logo: favicons multi-tamanho, PWA icons (incl. maskable com 80% safe area), Open Graph (1200x630), Twitter card (1200x675), manifest, browserconfig, snippet HTML completo. 3 opções de tooling (realfavicongenerator CLI, ImageMagick, Sharp).
-**Quando ativar:** antes do primeiro deploy; rebrand; adicionar suporte PWA; preparar landing.
-**Problema que resolve:** deploy sem favicon, OG image em branco no WhatsApp, PWA sem maskable.
-**Takeaway:** **handoff direto da skill 17** — skill 17 cria criativo, skill 36 deriva pacote operacional.
+**What it does:** derives operational web assets from a logo: multi-size favicons, PWA icons (incl. maskable with 80% safe area), Open Graph (1200x630), Twitter card (1200x675), manifest, browserconfig, complete HTML snippet. 3 tooling options (realfavicongenerator CLI, ImageMagick, Sharp).
+**When to activate:** before first deploy; rebrand; adding PWA support; preparing a landing page.
+**Problem it solves:** deploy without favicon, blank OG image on WhatsApp, PWA without maskable icon.
+**Takeaway:** **direct handoff from skill 17** — skill 17 creates the creative, skill 36 derives the operational pack.
 
-### Categoria: Product and Design
+### Category: Product and Design
 
 #### Skill 01 — PO (Feature Spec)
 
-**O que faz:** escreve user stories, critérios de aceitação testáveis, prioridade, riscos. Tem **Deep Interview** (ambiguity > 0.7) e **Enrich Mode** (ambiguity 0.4-0.7) com inferência do repo-audit.
-**Quando ativar:** toda feature começa aqui.
-**Problema que resolve:** "build sem entender o pedido" → 3x rework.
-**Takeaway:** **PO é o guardião do valor de negócio.** User stories já como vertical slices.
+**What it does:** writes user stories, testable acceptance criteria, priority, risks. Has **Deep Interview** (ambiguity > 0.7) and **Enrich Mode** (ambiguity 0.4-0.7) with repo-audit inference.
+**When to activate:** every feature starts here.
+**Problem it solves:** "building without understanding the request" → 3x rework.
+**Takeaway:** **PO is the guardian of business value.** User stories already as vertical slices.
 
 #### Skill 02 — UI/UX Designer
 
-**O que faz:** define layout, sistema de tokens, responsividade, heurísticas de uso.
-**Quando ativar:** feature com interface; rebranding; design system novo.
-**Problema que resolve:** UI inventada por agente sem critério vira inconsistente.
+**What it does:** defines layout, token system, responsiveness, usage heuristics.
+**When to activate:** feature with interface; rebranding; new design system.
+**Problem it solves:** UI invented by an agent without criteria becomes inconsistent.
 
 #### Skill 29 — Design Intelligence
 
-**O que faz:** pesquisa concorrentes, captura screenshots, analisa tendências visuais, entrega dossier estratégico para UI/UX.
-**Quando ativar:** feature inovadora ou rebranding — antes de UI/UX começar.
-**Problema que resolve:** design "do nada" sem benchmark de mercado.
+**What it does:** researches competitors, captures screenshots, analyzes visual trends, delivers strategic dossier for UI/UX.
+**When to activate:** innovative feature or rebranding — before UI/UX starts.
+**Problem it solves:** design "from nothing" without market benchmark.
 
-### Categoria: Development
+### Category: Development
 
 #### Skill 03 — Backend Engineer
 
-**O que faz:** APIs REST/GraphQL, contratos, auth, validação, banco, integrações.
-**Quando ativar:** implementação backend.
-**Problema que resolve:** API inventada sem ler convenções do projeto.
+**What it does:** REST/GraphQL APIs, contracts, auth, validation, database, integrations.
+**When to activate:** backend implementation.
+**Problem it solves:** API invented without reading project conventions.
 
 #### Skill 04 — Frontend Engineer
 
-**O que faz:** React/Next.js, estado, chamadas API, performance, experiência.
-**Quando ativar:** implementação frontend.
+**What it does:** React/Next.js, state, API calls, performance, experience.
+**When to activate:** frontend implementation.
 
 #### Skill 12 — Motion Designer
 
-**O que faz:** animações, transições, micro-interações, comportamento visual coeso.
-**Quando ativar:** feature precisa de motion (modal, toast, skeleton, scroll, hover).
+**What it does:** animations, transitions, micro-interactions, coherent visual behavior.
+**When to activate:** feature needs motion (modal, toast, skeleton, scroll, hover).
 
 #### Skill 15 — Mobile / Tauri
 
-**O que faz:** extensão para apps desktop e mobile com Tauri + React Native.
-**Quando ativar:** projeto vai além de web.
+**What it does:** extension for desktop and mobile apps with Tauri + React Native.
+**When to activate:** project goes beyond web.
 
-### Categoria: Content and Discovery
+### Category: Content and Discovery
 
 #### Skill 13 — Marketing Copy
 
-**O que faz:** copy de produto, CTAs, landing pages, brand voice, mensagens de conversão.
-**Quando ativar:** landing page, anúncio, email marketing.
+**What it does:** product copy, CTAs, landing pages, brand voice, conversion messaging.
+**When to activate:** landing page, ad, email marketing.
 
 #### Skill 14 — SEO Specialist
 
-**O que faz:** metadata, schema.org, Core Web Vitals, sitemap, discoverability.
-**Quando ativar:** site público; antes de Google indexar.
+**What it does:** metadata, schema.org, Core Web Vitals, sitemap, discoverability.
+**When to activate:** public site; before Google indexes.
 
-### Categoria: Quality and Delivery
+### Category: Quality and Delivery
 
 #### Skill 05 — QA Engineer
 
-**O que faz:** testes unitários, integração, E2E, cobertura, edge cases críticos. Filosofia "prove-it" — se diz que funciona, prova com teste. **Complementa skill 37 (TDD)** com edge cases não cobertos.
-**Quando ativar:** pós-implementação; preencher gap; validar fix.
-**Takeaway:** **falar não conta. Teste prova.**
+**What it does:** unit, integration, E2E tests, coverage, critical edge cases. "Prove-it" philosophy — if you say it works, prove it with a test. **Complements skill 37 (TDD)** with edge cases not covered.
+**When to activate:** post-implementation; fill gaps; validate a fix.
+**Takeaway:** **saying it works doesn't count. A test proves it.**
 
 #### Skill 06 — Security Reviewer
 
-**O que faz:** OWASP Top 10, headers, CORS, CSRF, XSS, injection, exposição de dados. Pensa como atacante. Critical findings vêm com PoC.
-**Quando ativar:** antes de deploy de feature crítica; toda PR que toca auth/input handling.
-**Problema que resolve:** descobrir vulnerabilidade na conta do cliente é tarde demais.
+**What it does:** OWASP Top 10, headers, CORS, CSRF, XSS, injection, data exposure. Thinks like an attacker. Critical findings come with PoC.
+**When to activate:** before deploying a critical feature; every PR touching auth/input handling.
+**Problem it solves:** discovering a vulnerability in the customer's account is too late.
 
 #### Skill 07 — Deploy Engineer
 
-**O que faz:** containerização, CI/CD, blue-green rollout, rollback, infra as code.
-**Quando ativar:** deploy novo; mudança de infra.
+**What it does:** containerization, CI/CD, blue-green rollout, rollback, infra as code.
+**When to activate:** new deploy; infra change.
 
 #### Skill 37 — TDD Engineer
 
-**O que faz:** **red-green-refactor enforced.** 1 teste → 1 implementação → repete. Combate "horizontal slicing" no nível de teste (escrever todos os testes antes de toda implementação produz testes ruins). Tabela anti-rationalization com 9 falácias comuns. Pareia com skill 38 para identificar deep modules antes do RED.
-**Quando ativar:** feature complexa; bug fix em código crítico; refactor; design de módulo novo.
-**Problema que resolve:** testes em massa testam shape em vez de behavior; quebram em refactor sem motivo.
-**Takeaway:** **testes verificam comportamento via interface pública, não detalhes de implementação.** Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd).
+**What it does:** **red-green-refactor enforced.** 1 test → 1 implementation → repeat. Combats "horizontal slicing" at the test level (writing all tests before all implementation produces bad tests). Anti-rationalization table with 9 common fallacies. Pairs with skill 38 to identify deep modules before RED.
+**When to activate:** complex feature; bug fix in critical code; refactor; new module design.
+**Problem it solves:** bulk tests test shape instead of behavior; break during refactors for no reason.
+**Takeaway:** **tests verify behavior via public interface, not implementation details.** Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd).
 
 #### Skill 38 — Architecture Deepener
 
-**O que faz:** encontra **deepening opportunities** (deletion test, deep modules, seams). Glossário arquitetural rigoroso (Module/Interface/Implementation/Depth/Seam/Adapter/Leverage/Locality). **Não modifica código** — propõe candidatos. Skill 23 (Migration & Refactor) executa.
-**Quando ativar:** semanalmente; antes de delegar manutenção a agente em módulo complexo; pós-Detective em legado; review de PR que adiciona módulo.
-**Problema que resolve:** módulos shallow (interface tão complexa quanto implementação) que viram god files e bloqueiam evolução.
-**Takeaway:** **deletion test é o coração.** Se deletar concentra complexidade, módulo estava ganhando seu lugar. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture).
+**What it does:** finds **deepening opportunities** (deletion test, deep modules, seams). Strict architectural vocabulary (Module/Interface/Implementation/Depth/Seam/Adapter/Leverage/Locality). **Does not modify code** — proposes candidates. Skill 23 (Migration & Refactor) executes.
+**When to activate:** weekly; before delegating maintenance to an agent in a complex module; post-Detective in legacy; PR review adding a new module.
+**Problem it solves:** shallow modules (interface as complex as implementation) that become god files and block evolution.
+**Takeaway:** **deletion test is the core.** If deleting concentrates complexity, the module was earning its place. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture).
 
 ---
 
 ## 6. Subagents (14)
 
-Subagents são especialistas dispatcháveis via `Task` tool. Diferente de skills (que são markdown carregado pelo orchestrator), subagents rodam em sessão isolada com contexto próprio. Ideal para tarefas com escopo bem definido que se beneficiam de fresh context.
+Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
 
 ### Core (5)
 
 #### `code-reviewer`
-Senior code reviewer focado em clean code, DRY, SOLID, correctness, performance e security. **Quando usar:** PR review, feature concluída, qualquer código antes de merge. **Tools:** Read, Grep, Glob, Bash.
+Senior code reviewer focused on clean code, DRY, SOLID, correctness, performance and security. **When to use:** PR review, completed feature, any code before merge. **Tools:** Read, Grep, Glob, Bash.
 
 #### `security-auditor`
-Auditor de segurança especializado em web. Pensa como atacante, reporta como defensor. **Quando usar:** auth flows, input handling, deps, CORS, headers, pré-deploy. **Tools:** Read, Grep, Glob, Bash.
+Specialized web security auditor. Thinks like an attacker, reports like a defender. **When to use:** auth flows, input handling, deps, CORS, headers, pre-deploy. **Tools:** Read, Grep, Glob, Bash.
 
 #### `test-engineer`
-QA "Prove-It". Happy path, error, edge case, regression, performance. **Quando usar:** escrever testes, preencher cobertura, validar regressões. **Tools:** Read, Grep, Glob, Bash, Edit, Write.
+"Prove-It" QA. Happy path, error, edge case, regression, performance. **When to use:** write tests, fill coverage, validate regressions. **Tools:** Read, Grep, Glob, Bash, Edit, Write.
 
 #### `orchestrator`
-Tech Lead. Classifica task, define pipeline mínimo, coordena skills. **Quando usar:** task complexa, várias skills candidatas. **Tools:** todas.
+Tech Lead. Classifies task, defines minimum pipeline, coordinates skills. **When to use:** complex task, several candidate skills. **Tools:** all.
 
 #### `debugger`
-Root cause sistemático: hipótese → evidência → fix mínimo. **Evidence Ledger** explícito + **anti-rationalization table** com 10 falácias comuns. Heurísticas por classe de bug (race, leak, perf, auth, off-by-one, encoding). **Quando usar:** bug, comportamento inesperado, falha que não consegue explicar. **Tools:** Read, Grep, Glob, Bash, Edit.
+Systematic root cause: hypothesis → evidence → minimum fix. Explicit **Evidence Ledger** + **anti-rationalization table** with 10 common fallacies. Heuristics by bug class (race, leak, perf, auth, off-by-one, encoding). **When to use:** bug, unexpected behavior, failure you can't explain. **Tools:** Read, Grep, Glob, Bash, Edit.
 
-### Detective Spec (4) — fases do `/detective-spec`
+### Detective Spec (4) — phases of `/detective-spec`
 
 #### `detective-contracts`
-Fase 2: extrai contratos de módulo (API pública, dependências, invariantes, consumidores) de código legado. Read-only. **Tools:** Read, Grep, Glob, Bash.
+Phase 2: extracts module contracts (public API, dependencies, invariants, consumers) from legacy code. Read-only. **Tools:** Read, Grep, Glob, Bash.
 
 #### `detective-business-rules`
-Fase 3: extrai regras de negócio escondidas em validações, constantes mágicas, transições de estado, mensagens de erro, testes. Read-only. **Tools:** Read, Grep, Glob, Bash.
+Phase 3: extracts business rules hidden in validations, magic constants, state transitions, error messages, tests. Read-only. **Tools:** Read, Grep, Glob, Bash.
 
 #### `detective-flows`
-Fase 4: reconstrói fluxos end-to-end (entry → side effects) com edge cases, estado mutado, falhas. Read-only. **Tools:** Read, Grep, Glob, Bash.
+Phase 4: reconstructs end-to-end flows (entry → side effects) with edge cases, mutated state, failures. Read-only. **Tools:** Read, Grep, Glob, Bash.
 
 #### `detective-adrs`
-Fase 5: infere ADRs retroativos + sintetiza overview + traceability. Read-only. **Tools:** Read, Grep, Glob, Bash.
+Phase 5: infers retroactive ADRs + synthesizes overview + traceability. Read-only. **Tools:** Read, Grep, Glob, Bash.
 
-### Static Analysis (5) — pipeline da skill 34
+### Static Analysis (5) — pipeline of skill 34
 
 #### `semgrep-scanner`
-Repo multi-linguagem: scans Semgrep em paralelo por categoria de linguagem, agrega SARIF. **Tools:** Read, Grep, Glob, Bash.
+Multi-language repo: parallel Semgrep scans by language category, SARIF aggregation. **Tools:** Read, Grep, Glob, Bash.
 
 #### `semgrep-triager`
-Batch >20 findings: classifica TP/FP/needs-investigation lendo contexto fonte, propõe fixes. **Approval gate obrigatório** antes de aplicar `nosemgrep:` no código. **Tools:** Read, Grep, Glob, Write.
+Batch >20 findings: classifies TP/FP/needs-investigation reading source context, proposes fixes. **Mandatory approval gate** before applying `nosemgrep:` in code. **Tools:** Read, Grep, Glob, Write.
 
 #### `codeql-runner`
-Bug precisa taint tracking interprocedural: orquestra build de database CodeQL + queries. Cache por commit hash em `.detective-scan/codeql-db/<lang>/`. **Tools:** Read, Grep, Glob, Bash.
+Bug needs interprocedural taint tracking: orchestrates CodeQL database build + queries. Cache by commit hash in `.detective-scan/codeql-db/<lang>/`. **Tools:** Read, Grep, Glob, Bash.
 
 #### `sarif-parsing`
-Múltiplas fontes SARIF: parse, dedup, agrega em relatório único. Diff vs baseline. Extrai tool name de `runs[].tool.driver.name`, não de `input_filename`. **Tools:** Read, Glob, Bash, Write.
+Multiple SARIF sources: parse, dedup, aggregate into single report. Baseline diff. Extracts tool name from `runs[].tool.driver.name`, not from `input_filename`. **Tools:** Read, Glob, Bash, Write.
 
 #### `variant-analysis`
-Bug confirmado → caça variantes do mesmo padrão, gera custom rule reusável para CI. **Approval gate obrigatório** antes de `git add tools/semgrep/<rule>.yml`. **Tools:** Read, Grep, Glob, Bash, Write.
+Confirmed bug → hunts variants of the same pattern, generates reusable custom rule for CI. **Mandatory approval gate** before `git add tools/semgrep/<rule>.yml`. **Tools:** Read, Grep, Glob, Bash, Write.
 
 ---
 
 ## 7. Policies (22)
 
-Policies são regras compartilhadas que governam comportamento das skills. Toda skill cita as policies que segue. **Top 5 mais importantes:**
+Policies are shared rules that govern skill behavior. Every skill cites the policies it follows. **Top 5 most important:**
 
 #### `tool-safety.md`
-Tools com mínimo privilégio. Classes de risco (baixo/médio/alto). Aprovação obrigatória para alto risco. **Por que importa:** agente rodando comando destrutivo sem confirmar = problema.
+Minimum-privilege tools. Risk classes (low/medium/high). Mandatory approval for high risk. **Why it matters:** an agent running a destructive command without confirming = problem.
 
 #### `vertical-slices.md`
-Toda feature multi-camada entregue como vertical slice (DB+back+front+e2e), nunca layered. **Por que importa:** layered slicing paraleliza tarefas mas adia integração.
+Every multi-layer feature delivered as a vertical slice (DB+back+front+e2e), never layered. **Why it matters:** layered slicing parallelizes tasks but delays integration.
 
 #### `quality-gates.md`
-Critical/High aberto = no merge. Reviewer + QA + Security são gates, não sugestões. **Por que importa:** gate enforçado é o que diferencia código pro de código indie.
+Critical/High open = no merge. Reviewer + QA + Security are gates, not suggestions. **Why it matters:** an enforced gate is what separates production code from hobby code.
 
 #### `model-routing.md`
-Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Absorveu skill 16 (llm-selector). **Por que importa:** Opus para gerar `import x from 'y'` queima dinheiro.
+Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Absorbed skill 16 (llm-selector). **Why it matters:** Opus to generate `import x from 'y'` burns money.
 
 #### `writing-clarity.md`
-10 regras de Strunk adaptadas para output de agente. Voz ativa, sem palavras-tampão, frases curtas. Aplica a commits, error messages, handoffs, slash command output, docs. **Por que importa:** prosa LLM-style fluffy queima tokens e tempo de leitura.
+10 Strunk rules adapted for agent output. Active voice, no filler words, short sentences. Applies to commits, error messages, handoffs, slash command output, docs. **Why it matters:** LLM-style fluffy prose burns tokens and reading time.
 
-### Demais policies
+### Remaining policies
 
-| Policy | O que faz |
+| Policy | What it does |
 |---|---|
-| `anti-rationalization.md` | Combate vieses cognitivos do agente ("isso parece ok") |
-| `code-exploration.md` | Como explorar codebase de forma eficiente em tokens |
-| `confusion-management.md` | STOP-NAME-OPTIONS-WAIT quando requisito é ambíguo |
-| `context-engineering.md` | Hierarquia de 5 níveis + 3 trust levels para gerenciar contexto |
-| `cost-optimization.md` | Práticas para reduzir custo de API |
-| `detective-write-guardrails.md` | Hard guardrail: writes só em `.detective/` e `_detective_sdd/` |
-| `documentation-i18n.md` | Convenções para docs multi-idioma |
-| `evals.md` | Framework de avaliação para skills, prompts, tools |
-| `execution.md` | Princípios de execução: agir primeiro com default seguro |
-| `handoffs.md` | Formato consistente de handoff entre skills |
-| `hooks.md` | Lifecycle hooks em settings.json |
-| `iterative-retrieval.md` | Retrieval progressivo em 3 rodadas para subagents |
-| `persistence.md` | Quando e como persistir contexto |
-| `search-first.md` | Pesquisa obrigatória antes de implementar |
-| `source-driven.md` | Toda afirmação ancorada em fonte (file:line, ADR, commit) |
-| `stack-flexibility.md` | Skills não acoplam a vendor único |
-| `token-efficiency.md` | Compressão de output para economizar tokens |
+| `anti-rationalization.md` | Combats agent cognitive biases ("this looks ok") |
+| `code-exploration.md` | How to explore codebase efficiently in tokens |
+| `confusion-management.md` | STOP-NAME-OPTIONS-WAIT when requirement is ambiguous |
+| `context-engineering.md` | 5-level hierarchy + 3 trust levels for context management |
+| `cost-optimization.md` | Practices to reduce API cost |
+| `detective-write-guardrails.md` | Hard guardrail: writes only in `.detective/` and `_detective_sdd/` |
+| `documentation-i18n.md` | Conventions for multi-language docs |
+| `evals.md` | Evaluation framework for skills, prompts, tools |
+| `execution.md` | Execution principles: act first with safe defaults |
+| `handoffs.md` | Consistent handoff format between skills |
+| `hooks.md` | Lifecycle hooks in settings.json |
+| `iterative-retrieval.md` | Progressive retrieval in 3 rounds for subagents |
+| `persistence.md` | When and how to persist context |
+| `search-first.md` | Research required before implementing |
+| `source-driven.md` | Every claim anchored in a source (file:line, ADR, commit) |
+| `stack-flexibility.md` | Skills don't couple to a single vendor |
+| `token-efficiency.md` | Output compression to save tokens |
 
 ---
 
-## 8. Plugin: como o kit é distribuído
+## 8. Plugin: how the kit is distributed
 
-### Manifesto: `.claude-plugin/plugin.json`
+### Manifest: `.claude-plugin/plugin.json`
 
-Schema oficial do Claude Code. Lista:
-- **37 skills** em `skills/NN-nome/SKILL.md`
-- **14 agents** em `.claude/agents/<name>.md`
-- **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
-- **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
+Official Claude Code schema. Lists:
+- **37 skills** in `skills/NN-name/SKILL.md`
+- **14 agents** in `.claude/agents/<name>.md`
+- **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
+- **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
 
-### Modos de instalação (3 opções)
+### Install modes (3 options)
 
-#### Modo 1 — Plugin global (Claude Code)
+#### Mode 1 — Global plugin (Claude Code)
 
 ```bash
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 37 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Installs globally: 37 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
-#### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
+#### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
-Com plugin instalado, dentro do repo alvo:
+With plugin installed, inside the target repo:
 
 ```
 /devkit-install-fv
 ```
 
-Instala `.bot/` completo: MCP server (36 tools), policies, templates, docs, hooks, learned-skills, configs multi-plataforma (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
+Installs complete `.bot/`: MCP server (36 tools), policies, templates, docs, hooks, learned-skills, multi-platform configs (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
 
-#### Modo 3 — Bash direto
+#### Mode 3 — Direct Bash
 
 ```bash
 git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
-bash /tmp/dev-team-kit/setup/install.sh /caminho/projeto
+bash /tmp/dev-team-kit/setup/install.sh /path/to/project
 ```
 
-Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
+Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
-### Comparativo dos modos
+### Mode comparison
 
-| O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
+| What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
 | 37 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
 | MCP server (36 tools) | ✗ | ✓ | ✓ |
-| Templates de handoff | ✗ | ✓ | ✓ |
+| Handoff templates | ✗ | ✓ | ✓ |
 | Docs + repo-audit | ✗ | ✓ | ✓ |
-| Configs multi-plataforma | ✗ | ✓ | ✓ |
-| Learned skills por projeto | ✗ | ✓ | ✓ |
+| Multi-platform configs | ✗ | ✓ | ✓ |
+| Learned skills per project | ✗ | ✓ | ✓ |
 
-### Plataformas compatíveis
+### Supported platforms
 
-| Plataforma | Skills | Hooks | MCP | Slash Commands |
+| Platform | Skills | Hooks | MCP | Slash Commands |
 |---|:---:|:---:|:---:|:---:|
-| **Claude Code** | ✓ nativo | ✓ | ✓ | ✓ |
+| **Claude Code** | ✓ native | ✓ | ✓ | ✓ |
 | **Cursor** | ✓ via `.bot/` | ✗ | ✓ | ✗ |
 | **Windsurf** | ✓ via `.bot/` | ✗ | ✓ | ✗ |
 | **GitHub Copilot** | ✓ via `.bot/` | ✗ | ✗ | ✗ |
@@ -696,11 +694,11 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 ---
 
-## 9. MCP server: 36 tools por trás dos panos
+## 9. MCP server: 36 tools under the hood
 
-O kit inclui um **MCP server próprio** (`mcp-server/src/index.ts`) com **36 tools** expostas para qualquer cliente MCP (Cursor, Windsurf, Gemini CLI, etc).
+The kit includes its own **MCP server** (`mcp-server/src/index.ts`) with **36 tools** exposed for any MCP client (Cursor, Windsurf, Gemini CLI, etc).
 
-Tools são ortogonais às skills — implementam capacidades de baixo nível que as skills consomem:
+Tools are orthogonal to skills — they implement low-level capabilities that skills consume:
 
 - **Skill loading:** `devkit_load_skill`, `devkit_list_skills`
 - **Pipeline:** `devkit_classify_task`, `devkit_get_pipeline`
@@ -708,110 +706,110 @@ Tools são ortogonais às skills — implementam capacidades de baixo nível que
 - **Cost tracking:** `devkit_track_cost`, `devkit_get_cost_summary`
 - **Templates:** `devkit_get_template`
 - **Learned skills:** `devkit_save_learned_skill`, `devkit_get_learned_skills`
-- **Project intel:** auditoria, asset inventory, tech stack detection
-- **Suggestions:** `devkit_get_suggestions` (próxima ação mais impactante)
-- **Output compression:** `devkit_compress_output` (reduz noise de logs/stack traces)
+- **Project intel:** audit, asset inventory, tech stack detection
+- **Suggestions:** `devkit_get_suggestions` (next most impactful action)
+- **Output compression:** `devkit_compress_output` (reduces noise from logs/stack traces)
 
-### Quando o MCP server é útil
+### When the MCP server is useful
 
-- Você quer usar o kit em **outro IDE** que não Claude Code (Cursor, Windsurf, Gemini CLI)
-- Você quer **integrar o kit a um pipeline próprio** (CI, custom CLI)
-- Você quer **rastreabilidade de custo** estruturada por sessão/skill/modelo
+- You want to use the kit in **another IDE** that's not Claude Code (Cursor, Windsurf, Gemini CLI)
+- You want to **integrate the kit into your own pipeline** (CI, custom CLI)
+- You want **structured cost traceability** per session/skill/model
 
-### Quando NÃO precisa
+### When you DON'T need it
 
-- Você só usa Claude Code com plugin global (skills carregam direto, sem MCP)
-- Bug fix simples — overhead não compensa
+- You only use Claude Code with the global plugin (skills load directly, no MCP)
+- Simple bug fix — overhead doesn't pay off
 
 ---
 
-## 10. Quando usar o quê: árvore de decisão
+## 10. When to use what: decision tree
 
 ```
-o que você quer fazer?
+what do you want to do?
 │
-├── Adicionar feature nova
-│   ├── ideia vaga, briefing curto                 → /grill-me primeiro
-│   ├── feature pequena/média, spec já clara       → /spec → /pipeline (clássico)
-│   ├── feature grande/nova/ambígua, paralelizar   → /pipeline-discovery
-│   ├── PRD pronto em conversa, falta tracker      → /to-prd
-│   ├── PRD publicado, falta quebrar em issues     → /to-issues
-│   ├── spec pronta, single-layer (só front/back)  → /build → /test
-│   └── várias features overnight                  → /loop --worktree --parallel N
+├── Add a new feature
+│   ├── vague idea, short briefing                → /grill-me first
+│   ├── small/medium, spec already clear          → /spec → /pipeline (classic)
+│   ├── large/new/ambiguous, will parallelize     → /pipeline-discovery
+│   ├── PRD ready in conversation, needs tracker  → /to-prd
+│   ├── PRD published, needs breakdown            → /to-issues
+│   ├── spec ready, single-layer (only front/back)→ /build → /test
+│   └── several features overnight               → /loop --worktree --parallel N
 │
-├── Corrigir bug
-│   ├── reproduzível, fix óbvio    → /build (com teste de regressão)
-│   ├── não consegue explicar      → debugger subagent
-│   └── achou padrão recorrente    → variant-analysis subagent
+├── Fix a bug
+│   ├── reproducible, obvious fix    → /build (with regression test)
+│   ├── can't explain it             → debugger subagent
+│   └── found recurring pattern      → variant-analysis subagent
 │
-├── Refatorar
-│   ├── código complicado          → /simplify
-│   ├── identificar shallow modules → skill 38 (Architecture Deepener)
-│   └── arquitetura antiga         → /detective-spec primeiro, depois skill 23
+├── Refactor
+│   ├── messy code                   → /simplify
+│   ├── identify shallow modules     → skill 38 (Architecture Deepener)
+│   └── old architecture             → /detective-spec first, then skill 23
 │
-├── Validar antes de release
-│   ├── review final               → /review
-│   ├── auditoria boas práticas    → /best
-│   ├── security scan automatizado → skill 34 (Static Analysis)
-│   └── auditoria do repo          → /audit-repo
+├── Validate before release
+│   ├── final review                 → /review
+│   ├── best practices audit         → /best
+│   ├── automated security scan      → skill 34 (Static Analysis)
+│   └── repo audit                   → /audit-repo
 │
-├── Trabalhar com legado
-│   ├── extrair spec               → /detective-spec
-│   ├── identificar refactors      → skill 38 (Architecture Deepener)
-│   └── migration grande           → skill 23 (Migration & Refactor)
+├── Work with legacy
+│   ├── extract spec                 → /detective-spec
+│   ├── identify refactors           → skill 38 (Architecture Deepener)
+│   └── large migration              → skill 23 (Migration & Refactor)
 │
-├── Gerar assets visuais
-│   ├── hero, mascote, illustration → skill 17 (fal.ai)
-│   ├── favicon/PWA/OG da landing   → skill 36 (Web Asset Generator)
-│   └── inventariar o que já tem    → /inventory-assets
+├── Generate visual assets
+│   ├── hero, mascot, illustration   → skill 17 (fal.ai)
+│   ├── favicon/PWA/OG for landing   → skill 36 (Web Asset Generator)
+│   └── inventory what already exists→ /inventory-assets
 │
-├── Setup inicial em um projeto
-│   ├── primeiro contato            → /audit-repo
-│   ├── instalar kit no .bot/       → /devkit-install-fv
-│   └── gerar CLAUDE.md             → skill 28
+├── Initial setup in a project
+│   ├── first contact                → /audit-repo
+│   ├── install kit in .bot/         → /devkit-install-fv
+│   └── generate CLAUDE.md           → skill 28
 │
-├── Manutenção do próprio kit
-│   ├── adicionar skill nova        → skill 35 (Skill Author)
-│   ├── auditar qualidade das skills → skill 35 com scorecard
-│   └── revisar policies antigas    → skill 35 + revisão manual
+├── Kit maintenance
+│   ├── add new skill                → skill 35 (Skill Author)
+│   ├── audit skill quality          → skill 35 with scorecard
+│   └── review old policies          → skill 35 + manual review
 │
 └── Deploy / release
-    ├── release patch/minor         → /ship
-    ├── changelog ausente           → skill 24 (Release Manager)
-    └── plano de rollback           → skill 20 (Observability) + 7 (Deploy)
+    ├── patch/minor release          → /ship
+    ├── missing changelog            → skill 24 (Release Manager)
+    └── rollback plan                → skill 20 (Observability) + 07 (Deploy)
 ```
 
 ---
 
-## 11. Inspirações e atribuições
+## 11. Inspiration and attribution
 
-O kit não nasceu do zero. Foi composto a partir de:
+The kit wasn't built from scratch. It was composed from:
 
-### Adaptações diretas
+### Direct adaptations
 
-- **[mattpocock/skills](https://github.com/mattpocock/skills)** ([AI Hero post](https://www.aihero.dev/5-agent-skills-i-use-every-day)) — `/grill-me`, `/to-prd`, `/to-issues`, skill 37 (TDD Engineer), skill 38 (Architecture Deepener). Adaptados ao kit (frontmatter, integração com policies, gates de aprovação).
-- **[Reversa](https://github.com/sandeco/reversa)** — skill 33 (Detective Spec). Adaptado para integrar com Graphify + repo-audit + memória persistente.
-- **Strunk & White — Elements of Style** — `policies/writing-clarity.md`. 10 regras adaptadas para output de agente.
+- **[mattpocock/skills](https://github.com/mattpocock/skills)** ([AI Hero post](https://www.aihero.dev/5-agent-skills-i-use-every-day)) — `/grill-me`, `/to-prd`, `/to-issues`, skill 37 (TDD Engineer), skill 38 (Architecture Deepener). Adapted for the kit (frontmatter, policy integration, approval gates).
+- **[Reversa](https://github.com/sandeco/reversa)** — skill 33 (Detective Spec). Adapted to integrate with Graphify + repo-audit + persistent memory.
+- **Strunk & White — Elements of Style** — `policies/writing-clarity.md`. 10 rules adapted for agent output.
 
-### Inspirações conceituais
+### Conceptual inspirations
 
-- **[Anthropic skills ecosystem](https://docs.claude.com/en/docs/claude-code/skills)** — formato de SKILL.md, frontmatter, descrição com triggers.
-- **[Cursor / Windsurf rules pattern](https://docs.cursor.com/context/rules)** — convenções de regras compartilhadas.
-- **[OpenAI gpt-5.4 prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)** — patterns para Codex/GPT integration.
+- **[Anthropic skills ecosystem](https://docs.claude.com/en/docs/claude-code/skills)** — SKILL.md format, frontmatter, description with triggers.
+- **[Cursor / Windsurf rules pattern](https://docs.cursor.com/context/rules)** — shared rules conventions.
+- **[OpenAI gpt-5.4 prompting guide](https://platform.openai.com/docs/guides/prompt-engineering)** — patterns for Codex/GPT integration.
 
-### Filosofia
+### Philosophy
 
-- **Vertical slicing** — clássico XP/Lean (Kent Beck, "Tracer Bullets" do Hunt & Thomas).
+- **Vertical slicing** — classic XP/Lean (Kent Beck, "Tracer Bullets" from Hunt & Thomas).
 - **Deep modules** — John Ousterhout, *A Philosophy of Software Design*.
-- **Anti-rationalization tables** — viés cognitivo aplicado a debugging (Daniel Kahneman style).
+- **Anti-rationalization tables** — cognitive bias applied to debugging (Daniel Kahneman style).
 
 ---
 
-## Próximos passos
+## Next steps
 
-- Quer testar? Instale: `claude plugin install https://github.com/felvieira/claude-skills-fv`
-- Quer estender? Use skill 35 (Skill Author) para adicionar skill nova respeitando o template.
-- Quer entender mais? Leia `AGENTS.md` (regras universais) e `policies/` (regras compartilhadas).
-- Encontrou bug? Abra issue: https://github.com/felvieira/claude-skills-fv/issues
+- Want to try it? Install: `claude plugin install https://github.com/felvieira/claude-skills-fv`
+- Want to extend it? Use skill 35 (Skill Author) to add a new skill following the template.
+- Want to understand more? Read `AGENTS.md` (universal rules) and `policies/` (shared rules).
+- Found a bug? Open an issue: https://github.com/felvieira/claude-skills-fv/issues
 
-**Última auditoria de consistência:** `evals/skill-audit-2026-05-03.md` (22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE).
+**Last consistency audit:** `evals/skill-audit-2026-05-03.md` (22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE).
