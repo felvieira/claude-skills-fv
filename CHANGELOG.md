@@ -34,6 +34,29 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Aihero skills batch (2026-05-03)
+Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills) e [aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day) — integrado ao workflow do kit.
+
+**Novas skills:**
+- **Skill 37 — TDD Engineer** (`skills/37-tdd-engineer/SKILL.md`): red-green-refactor enforced, anti horizontal-slicing, 1 teste → 1 impl → repete. Tabela anti-rationalization com 9 falácias comuns. Pareia com skill 38 (Architecture Deepener) para identificar deep modules antes do RED.
+- **Skill 38 — Architecture Deepener** (`skills/38-architecture-deepener/SKILL.md`): glossário arquitetural (Module/Interface/Implementation/Depth/Seam/Adapter/Leverage/Locality), deletion test, deepening opportunities. Não modifica código — propõe candidatos. Skill 23 (Migration & Refactor) executa.
+
+**Novos commands:**
+- **`/grill-me`** (`.claude/commands/grill-me.md`): interrogatório relentless, uma pergunta + resposta sugerida por turno. Sempre-ativo.
+- **`/to-prd`** (`.claude/commands/to-prd.md`): conversa → PRD publicado no issue tracker (label `needs-triage`). Sintetiza, não entrevista.
+- **`/to-issues`** (`.claude/commands/to-issues.md`): PRD → N issues independentes (vertical slices/tracer bullets). HITL/AFK por slice. Publica em ordem de dependência.
+- **`/pipeline-discovery`** (`.claude/commands/pipeline-discovery.md`): fluxo COMPLETO `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para feature grande/nova/ambígua, paralelização 2+ workers, código crítico.
+
+**Wiring:**
+- Orchestrator (skill 09): nova seção "Dois Fluxos de Pipeline" — escolher entre Modo A (`/pipeline` clássico) e Modo B (`/pipeline-discovery`) por contexto.
+- `/pipeline` clarificado como variante "clássico" + ponteiro para `/pipeline-discovery`.
+- `docs/SKILLS-OVERVIEW.md`: nova seção "Os 2 fluxos: clássico vs discovery" no topo + comparativo + 3 novos commands no formato aihero.
+- README.md/README.pt-BR.md: skills 37/38 nas tabelas, 4 novos commands na slash command table, log entry detalhado.
+- AGENTS.md: 4 novos commands na tabela.
+- plugin.json: 35 → 37 skills, 18 → 22 commands, description atualizada.
+
+**Decisão de design:** os 2 fluxos coexistem. `/pipeline` clássico mantido para compatibilidade e simplicidade; `/pipeline-discovery` introduzido para casos avançados sem forçar mudança de hábito.
+
 ### Added — Vertical Slicing policy (2026-05-03)
 - **`policies/vertical-slices.md`** — regra obrigatória para toda feature multi-camada: entrega por fatia vertical (DB + back + front + teste e2e por feature), nunca por camada horizontal. Anti-padrão "front primeiro, back depois" agora explicitamente proibido. Inclui heurísticas de tamanho (1-3 dias, <10 arquivos, demo-able), 5 anti-padrões nomeados, evidência de conformidade (tabela de slices obrigatória).
 - **Orchestrator (skill 09) atualizado:** seção "Vertical Slicing" inserida antes da Pipeline Base. Pipeline base agora descrito como "fluxo padrão **dentro de UM slice vertical**". Recusa de plano layer-first é explícita.

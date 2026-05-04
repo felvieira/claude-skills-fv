@@ -52,6 +52,10 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/loop` | Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass (`node scripts/auto-loop.mjs "task"`) |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
 | `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem tocar no código (skill 33) |
+| `/grill-me` | Interrogatório relentless de plano até convergência (uma pergunta + resposta sugerida por turno) |
+| `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) |
+| `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker |
+| `/pipeline-discovery` | Pipeline COMPLETO discovery: grill-me → to-prd → to-issues → loop+TDD → ship |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

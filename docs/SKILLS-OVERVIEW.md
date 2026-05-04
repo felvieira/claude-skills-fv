@@ -2,7 +2,7 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 35 skills, 14 subagents, 18 slash commands, 21 policies
+> **Versão:** 37 skills, 14 subagents, 22 slash commands, 21 policies
 > **Última atualização:** 2026-05-03
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -10,11 +10,60 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 
 ## Índice rápido
 
+- [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
+- [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 35 especialistas
+- [Skills por categoria](#skills-por-categoria) — 37 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 14 agentes via Task tool
-- [Policies que governam tudo](#policies-que-governam-tudo) — 20 regras compartilhadas
+- [Policies que governam tudo](#policies-que-governam-tudo) — 21 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
+
+---
+
+## Os 2 fluxos: clássico vs discovery
+
+O kit oferece **dois pipelines** para feature nova. Coexistem — escolha por contexto.
+
+### Fluxo A — `/pipeline` (clássico)
+
+```
+/spec → /plan → /build → /test → /review → /ship
+```
+
+**Use quando:**
+- feature pequena/média (<1 sprint)
+- spec já clara, equipe conhece o terreno
+- não precisa publicar PRD/issues no GitHub/Linear/Jira
+- TDD opcional
+
+### Fluxo B — `/pipeline-discovery` (novo, com discovery + TDD)
+
+```
+/grill-me → /to-prd → /to-issues → /loop --worktree --parallel N → /ship
+                       ↓                ↓
+                       N issues        por slice: /build + skill 37 (TDD) + /review
+                       no tracker
+```
+
+**Use quando:**
+- feature grande/nova/ambígua, briefing vago
+- equipe nova com a área
+- vai paralelizar com 2+ workers
+- precisa publicar PRD + issues no issue tracker (GitHub/Linear/Jira)
+- código crítico que merece TDD enforced
+
+### Comparativo rápido
+
+| Aspecto | `/pipeline` clássico | `/pipeline-discovery` |
+|---|---|---|
+| Discovery formal | não | **`/grill-me`** |
+| Output da spec | `docs/specs/X.md` (interno) | PRD em **issue tracker** |
+| Quebra em slices | implícita (PO escreve) | **explícita** (`/to-issues` cria 1 issue por slice) |
+| Paralelização | manual | **estrutural** (N workers, 1 slice cada) |
+| TDD | opcional | **obrigatório por slice** |
+| Skill 38 (Architecture) | não chamado | opcional entre `/to-issues` e `/loop` |
+
+Os 2 fluxos respeitam **`policies/vertical-slices.md`** (próxima seção). A diferença é o nível de formalismo da fase de discovery e a publicação em issue tracker.
 
 ---
 
@@ -112,13 +161,45 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/ship v2.4.0 com migration de schema`
 **Takeaway:** **toda release tem changelog e rollback plan.** Sem ambos, não é release, é desespero.
 
-### `/pipeline` — End-to-end completo
+### `/pipeline` — End-to-end clássico
 
 **O que faz:** orchestrator roda spec → plan → build → test → review → ship em sequência.
-**Quando usar:** feature mediana/grande que merece todo o protocolo.
+**Quando usar:** feature pequena/média, equipe conhece o terreno, não precisa de issue tracker.
 **Problema que resolve:** pular fases por preguiça gera retrabalho 3x maior depois.
 **Exemplo:** `/pipeline criar página de configurações de usuário`
-**Takeaway:** **pipeline completo é desperdício para bug fix, vital para feature.**
+**Takeaway:** **pipeline completo é desperdício para bug fix, vital para feature pequena/média.**
+
+### `/pipeline-discovery` — Discovery + slicing + TDD (novo)
+
+**O que faz:** roda fluxo completo `grill-me → to-prd → to-issues → loop+TDD → ship`. Publica PRD + N issues no tracker, paraleliza por slice, TDD por slice.
+**Quando usar:** feature grande/nova/ambígua, equipe nova, vai paralelizar com 2+ workers, código crítico.
+**Problema que resolve:** spec rasa virando integration mess; trabalho não tracked no tracker; integração só no fim.
+**Exemplo:** `/pipeline-discovery quero adicionar autenticação social (Google + GitHub)`
+**Takeaway:** **discovery formal + issues no tracker + TDD por slice = qualidade alta com paralelização real.**
+
+### `/grill-me` — Interrogatório de plano
+
+**O que faz:** PO em modo Deep Interview sempre-ativo. Faz uma pergunta por vez, recomenda resposta, caminha pela árvore de decisão até convergir.
+**Quando usar:** ideia ainda vaga, antes de `/spec` ou `/to-prd`.
+**Problema que resolve:** spec produzida com "unknown unknowns" silenciosos.
+**Exemplo:** `/grill-me quero refazer o checkout para reduzir abandono`
+**Takeaway:** **uma pergunta por turno + resposta sugerida.** Lista de 20 perguntas mata fluxo.
+
+### `/to-prd` — Conversa → PRD em issue tracker
+
+**O que faz:** pega contexto da conversa atual e publica PRD no GitHub Issues (label `needs-triage`). Não entrevista — sintetiza.
+**Quando usar:** após `/grill-me` convergir, antes de `/to-issues`.
+**Problema que resolve:** PRDs vivem em conversas perdidas; precisam de tracker para virar trabalho.
+**Exemplo:** `/to-prd` (no contexto pós-grill-me)
+**Takeaway:** **PRD vai pro tracker com label needs-triage.** Spec interna usa `/spec` em `docs/specs/`.
+
+### `/to-issues` — PRD → vertical slices no tracker
+
+**O que faz:** quebra PRD em N issues independentes (vertical slices/tracer bullets). Cada issue é HITL ou AFK. Publica todas com label `needs-triage`, em ordem de dependência.
+**Quando usar:** após `/to-prd`, antes de `/loop --worktree --parallel N`.
+**Problema que resolve:** workers paralelos sem issues atribuíveis = caos; layered slicing disfarçado de vertical.
+**Exemplo:** `/to-issues #142` (referência ao PRD)
+**Takeaway:** **cada issue corta TODAS as camadas.** Layered slicing é proibido (`policies/vertical-slices.md`).
 
 ### `/auto` — Agente autônomo (1 sessão)
 
@@ -180,6 +261,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 31 | **Session Summary** | consolidar sessão para handoff entre conversas longas |
 | 32 | **Smart Suggestions** | sugerir próxima ação mais impactante baseado no estado real |
 | 35 | **Skill Author** | meta-skill para criar/editar/avaliar skills do próprio kit |
+| 38 | **Architecture Deepener** | encontra deep modules opportunities (deletion test, deepening), prep para refactor com testabilidade |
 
 ### Product & Design
 
@@ -215,6 +297,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 07 | **Deploy Engineer** | containerização, CI/CD, blue-green, rollback |
 | 33 | **Detective Spec** | engenharia reversa de spec em legado (zero writes no projeto) |
 | 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF |
+| 37 | **TDD Engineer** | red-green-refactor enforced, anti horizontal slicing (1 teste → 1 impl → repete) |
 
 ---
 
@@ -284,8 +367,11 @@ Demais policies em `policies/`: `execution.md`, `handoffs.md`, `token-efficiency
 ```
 Você quer:
 ├── Adicionar feature nova
-│   ├── ideia vaga → /spec (PO escreve já como vertical slices)
-│   ├── spec multi-camada → /plan (orchestrator quebra em slices) → /pipeline por slice (paralelo se independentes)
+│   ├── ideia vaga, briefing curto → /grill-me primeiro (interrogatório)
+│   ├── feature pequena/média, spec já clara → /spec → /pipeline (clássico)
+│   ├── feature grande/nova/ambígua, paralelizar com 2+ workers → /pipeline-discovery (grill-me → to-prd → to-issues → loop+TDD → ship)
+│   ├── PRD pronto em conversa, falta publicar no tracker → /to-prd
+│   ├── PRD publicado, falta quebrar em issues → /to-issues
 │   ├── spec pronta, single-layer (só front OU só back) → /build → /test
 │   └── várias features independentes overnight → /loop --worktree --parallel N
 │
