@@ -529,7 +529,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py e utilitários
 ├── setup/                ← install.sh multi-plataforma
-├── skills/               ← 31 specialists (*/SKILL.md)
+├── skills/               ← 37 specialists (*/SKILL.md)
 ├── src/                  ← hooks, stores, components e middleware reutilizáveis
 └── templates/            ← handoff, plano, review, rejeição
 ```

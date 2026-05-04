@@ -69,6 +69,7 @@
   ],
   "commands": [
     "commands/audit-repo.md",
+    "commands/detective-spec.md",
     "commands/devkit-install-fv.md",
     "commands/inventory-assets.md",
     "commands/plan-feature.md",

@@ -2,8 +2,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 37 skills, 14 subagents, 22 slash commands, 21 policies
-> **Última atualização:** 2026-05-03
+> **Versão:** 37 skills, 14 subagents, 23 slash commands, 22 policies
+> **Última atualização:** 2026-05-04
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -15,7 +15,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
 - [Skills por categoria](#skills-por-categoria) — 37 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 14 agentes via Task tool
-- [Policies que governam tudo](#policies-que-governam-tudo) — 21 regras compartilhadas
+- [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
 
 ---
@@ -338,7 +338,7 @@ Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devol
 
 ## Policies que governam tudo
 
-20 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+22 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
 
 ### `tool-safety.md`
 Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.
