@@ -76,3 +76,38 @@ Resumir por nível: "Rules dizem X, spec pede Y, código atual faz Z."
 - **cost-optimization** → Selective Include economiza tokens sem perder trust
 - **source-driven** → Exige fonte Trusted (docs oficiais, changelog) para decisões de framework
 - **confusion-management** → Confusão é sinal de que o agente está operando com contexto insuficiente
+
+## Protocol Shells and Programs
+
+Context engineering in this kit now includes two new formal layers:
+
+### Protocol Shells (`templates/protocol-shell.md`)
+
+Typed I/O contracts added to subagents. Format:
+- `intent:` — one sentence describing purpose
+- `input:` — YAML fields with types (`path`, `string`, `list<string>`, `enum(a|b|c)`, `integer`, `boolean`)
+- `process:` — Pareto-lang operation sequence (`/operation.name{param='value'}`)
+- `output:` — typed output fields, always includes `confidence: high|medium|low`
+- `meta:` — version, skill_ref, allowed_tools
+
+See `policies/protocol-shells.md` for when to add a shell.
+See `docs/skill-guides/protocol-shells.md` for worked examples.
+
+### Programs (`programs/`)
+
+Declarative definitions of multi-step pipelines:
+- `programs/pipeline-discovery.md` — discovery → PRD → issues → TDD loop → ship
+- `programs/detective-spec.md` — legacy reverse-engineering pipeline
+- `programs/loop-polishing.md` — auto-loop with quality scoring
+
+The orchestrator (skill 09) uses `programs/` as the canonical source for pipeline composition.
+
+### Relation to Kimai's taxonomy
+
+| Kimai concept | Kit equivalent |
+|---|---|
+| Cognitive tool | Individual skill or subagent |
+| Cognitive program | `programs/*.md` |
+| Cognitive schema | `schemas/skill-io/*.json` |
+| Protocol shell | `templates/protocol-shell.md` format applied per subagent |
+| Neural field | Emergent behavior from orchestrated programs via `/pipeline-discovery` or `/loop` |
