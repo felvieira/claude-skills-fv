@@ -5,6 +5,33 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.1.0-context-engineering] - 2026-05-09
+
+### Added
+- **Protocol Shells (Pareto-lang):** `templates/protocol-shell.md` + `policies/protocol-shells.md` — formal typed I/O format for subagents, inspired by [davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering). Authoring guide at `docs/skill-guides/protocol-shells.md`.
+- **Skill I/O Schemas:** `schemas/skill-io/` with JSON Schema draft-07 definitions for `detective-contracts`, `semgrep-triager`, `code-reviewer`. Zero-dep validator: `scripts/validate-schema.mjs`.
+- **Pilot subagents migrated:** `detective-contracts`, `semgrep-triager`, `code-reviewer` — protocol shell prepended (existing instructions preserved), I/O schema created.
+- **Iteration Scoring:** `scripts/auto-loop/scoring.mjs` — `iterationScore()` + `shouldStall()` wired into circuit breaker as complementary signal alongside existing stall detection. 5 unit tests in `scripts/tests/auto-loop/scoring.test.mjs`.
+- **Programs Layer:** `programs/` with declarative cognitive program definitions for `pipeline-discovery`, `detective-spec`, `loop-polishing`. Orchestrator (skill 09) updated to reference `programs/` as canonical pipeline source.
+- **Eval golden cases:** `evals/protocol-shells/` with golden.json per piloted subagent (8 cases total).
+- **Context Engineering Stack docs:** `docs/WIKI.md`, `docs/skill-guides/context-engineering.md`, `README.md`, `README.pt-BR.md` — atom→field taxonomy mapping and Kimai reference added.
+- **Baseline audit:** `docs/context-engineering-adoption/baseline.md` — full handoff audit of all 14 subagents before migration.
+
+### Changed
+- `scripts/auto-loop/circuit-breaker.mjs`: scoring integrated as complementary signal (AND with existing stall; graceful degradation when `iterResult` absent).
+- `skills/09-orchestrator/SKILL.md`: references `programs/` as canonical source for multi-step pipeline composition.
+- `.github/workflows/validate.yml`: added `node scripts/validate-schema.mjs --all schemas/skill-io/` step.
+- `mcp-server/package.json`: corrected skill count from 31 → 37.
+- `scripts/check-consistency.mjs`: stale string assertions corrected; agent count check made dynamic.
+- `.claude/agents/semgrep-triager.md`: YAML frontmatter moved to file top (was misplaced after protocol shell block).
+
+### Tests
+- 5 new scoring tests: `scripts/tests/auto-loop/scoring.test.mjs`.
+- 8 new eval golden cases: `evals/protocol-shells/`.
+- Total auto-loop smoke tests: 21 → 26. All passing.
+
+---
+
 ## [2.0.0-auto-loop] - 2026-04-30
 
 ### Added
