@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "detective-contracts I/O",
+  "description": "Validates input/output envelope for the detective-contracts subagent",
+  "type": "object",
+  "required": ["input", "output"],
+  "properties": {
+    "input": {
+      "type": "object",
+      "required": ["module_path"],
+      "properties": {
+        "module_path": {
+          "type": "string",
+          "description": "Directory or file path to analyze"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["file", "dir", "pkg"],
+          "default": "dir",
+          "description": "Analysis granularity"
+        },
+        "depth": {
+          "type": "string",
+          "enum": ["shallow", "deep"],
+          "default": "shallow",
+          "description": "shallow=API only, deep=internals"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["contract_path", "confidence"],
+      "properties": {
+        "contract_path": {
+          "type": "string",
+          "description": "Path to written contract doc in _detective_sdd/01-modules/"
+        },
+        "public_api": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exported symbols"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Direct imports"
+        },
+        "invariants": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Identified constraints"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        }
+      }
+    }
+  }
+}
