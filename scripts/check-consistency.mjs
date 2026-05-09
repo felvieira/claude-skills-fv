@@ -59,11 +59,11 @@ async function main() {
   const mcpPackage = JSON.parse(mcpPackageRaw);
   const claudeSettings = JSON.parse(claudeSettingsRaw);
 
-  expect(rootReadme.includes(`com ${toolCount} tools`), `README.md should mention ${toolCount} tools`);
-  expect(rootReadme.includes(`expoe ${toolCount} tools`) || rootReadme.includes(`expoe ${toolCount} tools apoiadas`), `README.md should describe the MCP as exposing ${toolCount} tools`);
-  expect(rootReadme.includes(`Na tabela abaixo, considere o \`dev-team-kit\` como ${toolCount} tools apoiadas pelas ${skillCount} skills.`), "README.md should clarify the dev-team-kit MCP table entry");
+  expect(rootReadme.includes(`${toolCount} tools exposed`), `README.md should mention ${toolCount} tools`);
+  expect(rootReadme.includes(`The MCP exposes ${toolCount} tools`), `README.md should describe the MCP as exposing ${toolCount} tools`);
+  expect(rootReadme.includes(`treat \`dev-team-kit\` as ${toolCount} tools backed by the ${skillCount} skills`), "README.md should clarify the dev-team-kit MCP table entry");
   expect(rootReadme.includes("bash .bot/setup/install.sh"), "README.md should document running .bot/setup/install.sh");
-  expect(rootReadme.includes("inclui `setup/`"), "README.md should state that setup/ is copied into .bot/");
+  expect(rootReadme.includes("The installer ships `setup/`"), "README.md should state that setup/ is copied into .bot/");
   expect(rootReadme.includes("--profile lean") && rootReadme.includes("--no-input"), "README.md should document non-interactive setup profiles");
 
   expect(setupReadme.includes("bash .bot/setup/install.sh"), "setup/README.md should document running .bot/setup/install.sh");
@@ -112,14 +112,14 @@ async function main() {
   }
 
   // Agent assertions
-  expect(agentCount === 5, `Expected 5 subagents in .claude/agents/, found ${agentCount}`);
+  // Agent count is dynamic — just verify plugin.json matches the directory
 
-  // Validate plugin.json has agents array with all 5 entries
+  // Validate plugin.json agents array matches .claude/agents/ directory count
   try {
     const pluginRaw = await read(".claude-plugin/plugin.json");
     const plugin = JSON.parse(pluginRaw);
     const pluginAgents = plugin.agents || [];
-    expect(pluginAgents.length === 5, `plugin.json agents array should have 5 entries, found ${pluginAgents.length}`);
+    expect(pluginAgents.length === agentCount, `plugin.json agents array should match .claude/agents/ count (${agentCount}), found ${pluginAgents.length}`);
   } catch {
     expect(false, "Could not read or parse .claude-plugin/plugin.json");
   }
