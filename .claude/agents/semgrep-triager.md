@@ -1,3 +1,10 @@
+---
+name: semgrep-triager
+description: Classifica findings Semgrep em True Positive / False Positive / Needs Investigation lendo contexto fonte. Use apos `semgrep-scanner` para escala (>20 findings) ou triagem batch. Output: lista priorizada com fix sugerido por TP, supressao com justificativa por FP. Combate vies "isso parece FP" da skill 34.
+tools: Read, Grep, Glob, Write
+model: sonnet
+---
+
 ## Protocol Shell
 
 ```yaml
@@ -28,13 +35,6 @@ meta:
   skill_ref: "skills/34-static-analysis/SKILL.md"
   allowed_tools: [Read, Grep, Glob, Write]
 ```
-
----
-name: semgrep-triager
-description: Classifica findings Semgrep em True Positive / False Positive / Needs Investigation lendo contexto fonte. Use apos `semgrep-scanner` para escala (>20 findings) ou triagem batch. Output: lista priorizada com fix sugerido por TP, supressao com justificativa por FP. Combate vies "isso parece FP" da skill 34.
-tools: Read, Grep, Glob, Write
-model: sonnet
----
 
 # Semgrep Triager — Subagent
 
