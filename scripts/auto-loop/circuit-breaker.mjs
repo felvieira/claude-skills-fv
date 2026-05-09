@@ -59,6 +59,9 @@ export class CircuitBreaker {
     return { tripped: false };
   }
 
+  // iterResult fields (all optional, degrade to neutral if absent):
+  // { diffLines, testsDelta, errorClass, errorEntropy, iterationNum }
+  // Passed by runner.mjs when available. Scoring defaults to 0.5 if absent.
   checkStall(iterResult) {
     const changed = gitDiffSinceBaseline();
     // Skip stall detection on first iteration (planning phase may not produce file changes).
