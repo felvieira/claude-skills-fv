@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "code-reviewer I/O",
+  "description": "Validates input/output envelope for the code-reviewer subagent",
+  "type": "object",
+  "required": ["input", "output"],
+  "properties": {
+    "input": {
+      "type": "object",
+      "required": ["target"],
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "File or directory path to review"
+        },
+        "focus": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["correctness", "design", "readability", "performance", "security"]
+          },
+          "description": "Review focus areas"
+        },
+        "context": {
+          "type": "string",
+          "description": "Optional PR description or task summary"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["verdict", "confidence"],
+      "properties": {
+        "issues": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "List of findings with severity, category, location, description, suggestion"
+        },
+        "summary": {
+          "type": "string",
+          "description": "One-paragraph review summary"
+        },
+        "verdict": {
+          "type": "string",
+          "enum": ["approve", "request-changes", "needs-discussion"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        }
+      }
+    }
+  }
+}
