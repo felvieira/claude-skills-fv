@@ -1,0 +1,32 @@
+{
+  "subagent": "semgrep-triager",
+  "schema": "schemas/skill-io/semgrep-triager.json",
+  "cases": [
+    {
+      "id": "st-001",
+      "description": "Triage a SARIF file with mixed TP/FP findings",
+      "input": {
+        "sarif_path": "scan-results/semgrep.sarif",
+        "batch_limit": 20,
+        "codebase_root": "."
+      },
+      "expected_output_shape": {
+        "true_positives": { "type": "array" },
+        "false_positives": { "type": "array" },
+        "needs_investigation": { "type": "array" },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    {
+      "id": "st-002",
+      "description": "Triage with default batch_limit (omitted)",
+      "input": {
+        "sarif_path": "scan-results/semgrep.sarif",
+        "codebase_root": "src/"
+      },
+      "expected_output_shape": {
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    }
+  ]
+}

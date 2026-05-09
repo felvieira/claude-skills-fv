@@ -35,6 +35,9 @@ jobs:
       - name: Run consistency check
         run: node scripts/check-consistency.mjs
 
+      - name: Validate skill I/O schemas
+        run: node scripts/validate-schema.mjs --all schemas/skill-io/
+
       - name: Run installer smoke test
         run: bash scripts/smoke-install.sh
 

@@ -1,0 +1,45 @@
+{
+  "subagent": "code-reviewer",
+  "schema": "schemas/skill-io/code-reviewer.json",
+  "cases": [
+    {
+      "id": "cr-001",
+      "description": "Full review of an auth module",
+      "input": {
+        "target": "src/auth/",
+        "focus": ["correctness", "security"],
+        "context": "PR: add OAuth2 login flow"
+      },
+      "expected_output_shape": {
+        "issues": { "type": "array" },
+        "summary": { "type": "string" },
+        "verdict": { "enum": ["approve", "request-changes", "needs-discussion"] },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    {
+      "id": "cr-002",
+      "description": "Quick review with no context",
+      "input": {
+        "target": "src/utils/format.ts"
+      },
+      "expected_output_shape": {
+        "verdict": { "enum": ["approve", "request-changes", "needs-discussion"] },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    {
+      "id": "cr-003",
+      "description": "Design-focused review",
+      "input": {
+        "target": "src/",
+        "focus": ["design", "readability"]
+      },
+      "expected_output_shape": {
+        "issues": { "type": "array" },
+        "verdict": { "enum": ["approve", "request-changes", "needs-discussion"] },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    }
+  ]
+}
