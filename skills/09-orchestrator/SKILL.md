@@ -110,6 +110,18 @@ Para feature grande/nova/ambigua, equipe nova com a area, vai paralelizar com 2+
 
 Modos coexistem. Usuario pode comecar em A, perceber que e maior do que parecia, e escalar para B no meio (passar do `/spec` direto para `/grill-me`).
 
+### Canonical Program Definitions
+
+For multi-step pipelines, consult `programs/` for declarative definitions:
+
+| Program | When to use |
+|---|---|
+| `programs/pipeline-discovery.md` | Large/ambiguous features needing discovery + TDD by slice |
+| `programs/detective-spec.md` | Legacy codebase reverse-engineering |
+| `programs/loop-polishing.md` | Autonomous loop with quality scoring |
+
+Use programs as the **canonical source** when composing pipelines — they define abort conditions, protocol refs, and input contracts that complement the orchestrator's routing logic.
+
 ## Vertical Slicing (regra obrigatoria para feature multi-camada)
 
 Antes de invocar Backend/Frontend/DB para uma feature multi-camada, o Orquestrador **deve** quebrar a entrega em **vertical slices**: cada slice e uma feature ponta-a-ponta (DB + back + front + teste e2e) testavel sozinha.
