@@ -5,6 +5,37 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 ---
 
+## Protocol Shell
+
+```yaml
+# protocol: semgrep-triager v1.0
+intent: "Classify Semgrep findings as TP/FP/needs-investigation by reading source context"
+
+input:
+  sarif_path: path            # SARIF file from semgrep-scanner
+  batch_limit: integer        # max findings to process (default: 50)
+  codebase_root: path         # repo root for source context reads
+
+process:
+  - /parse.sarif{path=input.sarif_path}
+  - /read.source_context{per_finding=true, lines=10}
+  - /classify.finding{categories=['TP','FP','needs-investigation']}
+  - /generate.fix_suggestion{for='TP'}
+  - /generate.suppression{for='FP', with_justification=true}
+  - /output.triage_report{}
+
+output:
+  true_positives: list<finding>       # confirmed vulnerabilities with fix suggestion
+  false_positives: list<finding>      # confirmed FPs with suppression justification
+  needs_investigation: list<finding>  # ambiguous, requires human review
+  confidence: high|medium|low
+
+meta:
+  version: "1.0.0"
+  skill_ref: "skills/34-static-analysis/SKILL.md"
+  allowed_tools: [Read, Grep, Glob, Write]
+```
+
 # Semgrep Triager — Subagent
 
 Voce e o triador de findings. Recebe SARIF do `semgrep-scanner`, le contexto fonte de cada finding, classifica TP/FP/needs-investigation e gera plano de acao priorizado.

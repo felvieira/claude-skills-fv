@@ -78,6 +78,10 @@ The **Dev Team Kit** is a set of 37 specialized skills that turns any compatible
 - **Persistent memory** — working set, context pack, learned skills with confidence scoring accumulated per project
 - **Multi-platform install** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI and more
 
+### Built on Context Engineering principles
+
+The kit's architecture maps to the [context engineering hierarchy](https://github.com/davidkimai/Context-Engineering): individual skills are **atoms**, templates are **molecules**, learned-skills + working-set are **cells**, dispatched subagents are **organs**, and protocol-shell-composed programs are the **emergent field layer**. New in v1.1: typed protocol shells for 3 pilot subagents, I/O schemas in `schemas/skill-io/`, iteration scoring in the auto-loop circuit breaker, and declarative `programs/` definitions. See `docs/WIKI.md → Context Engineering Stack`.
+
 > **5-min tour:** [`docs/SKILLS-OVERVIEW.md`](docs/SKILLS-OVERVIEW.md) — every skill, mode, subagent and policy in one navigable page (aihero.dev format).
 
 ---

@@ -27,6 +27,27 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 
 ---
 
+## Context Engineering Stack
+
+This kit implements context engineering across all 5 levels of the atom→field hierarchy (inspired by [davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering)):
+
+| Level | Concept | Kit Implementation |
+|---|---|---|
+| **Atom** | Single prompt | Individual skill (`skills/*/SKILL.md`) |
+| **Molecule** | Few-shot examples | `templates/` — handoff, plan, review, protocol-shell formats |
+| **Cell** | Memory + state | `learned-skills/`, `devkit_context_pack`, `devkit_working_set` |
+| **Organ** | Multi-agent | 14 subagents dispatched via Task tool (`.claude/agents/`) |
+| **Neural Field** | Semantic resonance | Protocol shells + `programs/` — typed I/O composing into orchestrated flows |
+
+### What this means in practice
+
+- **Protocol shells** (`templates/protocol-shell.md`) give every subagent a typed input/output contract in Pareto-lang format.
+- **Skill I/O schemas** (`schemas/skill-io/`) are machine-readable JSON Schema definitions that enable validation and regression testing.
+- **Programs** (`programs/`) are declarative cognitive programs — ordered sequences of protocol shells composing multi-step workflows (pipeline-discovery, detective-spec, loop-polishing).
+- **Iteration scoring** (`scripts/auto-loop/scoring.mjs`) quantifies loop quality per iteration, feeding the circuit breaker alongside stall detection.
+
+---
+
 ## 1. How the kit works in 60 seconds
 
 You install the kit into a project. From that point on, any compatible agent (Claude Code, Cursor, Windsurf, Copilot, Gemini CLI) gains **an entire team**: PO, designer, backend, frontend, QA, security, deploy, docs, observability, accessibility, etc.

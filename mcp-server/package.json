@@ -1,7 +1,7 @@
 {
   "name": "@felvieira/dev-team-kit-mcp",
   "version": "1.0.0",
-  "description": "MCP server for the Dev Team Kit - 36 tools backed by 31 skills, routing, context packs, working sets, image generation, scraping and session intelligence",
+  "description": "MCP server for the Dev Team Kit - 36 tools backed by 37 skills, routing, context packs, working sets, image generation, scraping and session intelligence",
   "main": "dist/index.js",
   "bin": {
     "dev-team-kit-mcp": "dist/index.js"
@@ -13,7 +13,14 @@
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "ai", "agents", "dev-team", "skills", "design-intelligence"],
+  "keywords": [
+    "mcp",
+    "ai",
+    "agents",
+    "dev-team",
+    "skills",
+    "design-intelligence"
+  ],
   "author": "felvieira",
   "license": "MIT",
   "dependencies": {

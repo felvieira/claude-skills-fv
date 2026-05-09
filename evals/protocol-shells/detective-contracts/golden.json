@@ -1,0 +1,47 @@
+{
+  "subagent": "detective-contracts",
+  "schema": "schemas/skill-io/detective-contracts.json",
+  "cases": [
+    {
+      "id": "dc-001",
+      "description": "Shallow scan of a single TypeScript file",
+      "input": {
+        "module_path": "src/auth/login.ts",
+        "scope": "file",
+        "depth": "shallow"
+      },
+      "expected_output_shape": {
+        "contract_path": { "type": "string", "pattern": "_detective_sdd/01-modules/" },
+        "public_api": { "type": "array" },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    {
+      "id": "dc-002",
+      "description": "Deep scan of a directory package",
+      "input": {
+        "module_path": "src/payments/",
+        "scope": "dir",
+        "depth": "deep"
+      },
+      "expected_output_shape": {
+        "contract_path": { "type": "string" },
+        "public_api": { "type": "array" },
+        "dependencies": { "type": "array" },
+        "invariants": { "type": "array" },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    {
+      "id": "dc-003",
+      "description": "Minimal input — only module_path provided",
+      "input": {
+        "module_path": "lib/utils.js"
+      },
+      "expected_output_shape": {
+        "contract_path": { "type": "string" },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@
 
 import { createHash } from 'crypto';
 import { spawnSync } from 'child_process';
+import { iterationScore, shouldStall } from './scoring.mjs';
 
 export function normalizeError(err) {
   return String(err)
@@ -43,6 +44,7 @@ export class CircuitBreaker {
     this.errorCounts = {};
     this.stallCount = 0;
     this.lastChangedFiles = null;
+    this.scoreHistory = [];
   }
 
   recordError(error) {
@@ -57,7 +59,10 @@ export class CircuitBreaker {
     return { tripped: false };
   }
 
-  checkStall() {
+  // iterResult fields (all optional, degrade to neutral if absent):
+  // { diffLines, testsDelta, errorClass, errorEntropy, iterationNum }
+  // Passed by runner.mjs when available. Scoring defaults to 0.5 if absent.
+  checkStall(iterResult) {
     const changed = gitDiffSinceBaseline();
     // Skip stall detection on first iteration (planning phase may not produce file changes).
     if (this.lastChangedFiles === null) {
@@ -76,10 +81,28 @@ export class CircuitBreaker {
       this.stallCount = 0;
       this.lastChangedFiles = changed;
     }
+
+    // Quality-based stall detection (complementary signal — ANDed with file-change check).
+    const score = iterationScore({
+      diffLines: iterResult?.diffLines ?? 0,
+      testsDelta: iterResult?.testsDelta ?? 0,
+      errorClass: iterResult?.errorClass ?? null,
+      errorEntropy: iterResult?.errorEntropy ?? 0,
+      iterationNum: iterResult?.iterationNum ?? 0,
+    });
+    this.scoreHistory.push(score);
+    if (shouldStall(this.scoreHistory)) {
+      return {
+        tripped: true,
+        reason: `quality-stall (recent scores: ${this.scoreHistory.slice(-3).map(s => s.toFixed(2)).join(', ')})`,
+      };
+    }
+
     return { tripped: false };
   }
 
   reset() {
     this.stallCount = 0;
+    this.scoreHistory = [];
   }
 }
