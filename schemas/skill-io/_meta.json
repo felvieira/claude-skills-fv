@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dev Team Kit — Skill I/O Schema Meta",
+  "description": "All schemas in this directory validate subagent input/output envelopes.",
+  "dialect": "json-schema-draft-07",
+  "version": "1.0.0"
+}

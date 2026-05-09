@@ -124,6 +124,21 @@ async function main() {
     expect(false, "Could not read or parse .claude-plugin/plugin.json");
   }
 
+  // Check: schemas/skill-io/ files are valid JSON
+  const schemaDir = path.join(root, "schemas", "skill-io");
+  try {
+    const schemaFiles = (await fs.readdir(schemaDir)).filter(f => f.endsWith(".json") && !f.startsWith("_"));
+    for (const f of schemaFiles) {
+      try {
+        JSON.parse(await fs.readFile(path.join(schemaDir, f), "utf8"));
+      } catch (e) {
+        expect(false, `schemas/skill-io/${f}: invalid JSON — ${e.message}`);
+      }
+    }
+  } catch {
+    // schemas/skill-io/ doesn't exist yet — skip
+  }
+
   if (failures.length > 0) {
     console.error("Consistency check failed:");
     for (const failure of failures) {
