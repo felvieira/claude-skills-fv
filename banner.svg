@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#060d10"/>
+      <stop offset="50%" style="stop-color:#091a1f"/>
+      <stop offset="100%" style="stop-color:#0a1628"/>
+    </linearGradient>
+
+    <!-- Teal glow radial -->
+    <radialGradient id="glow-teal" cx="50%" cy="42%" r="40%">
+      <stop offset="0%" style="stop-color:#0f766e;stop-opacity:0.22"/>
+      <stop offset="100%" style="stop-color:#0f766e;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Blue glow radial -->
+    <radialGradient id="glow-blue" cx="50%" cy="55%" r="35%">
+      <stop offset="0%" style="stop-color:#1d4ed8;stop-opacity:0.14"/>
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Title gradient gold-teal -->
+    <linearGradient id="title-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5eead4"/>
+      <stop offset="40%" style="stop-color:#99f6e4"/>
+      <stop offset="75%" style="stop-color:#67e8f9"/>
+      <stop offset="100%" style="stop-color:#38bdf8"/>
+    </linearGradient>
+
+    <!-- Subtitle gradient -->
+    <linearGradient id="sub-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7986cb"/>
+      <stop offset="100%" style="stop-color:#5c6bc0"/>
+    </linearGradient>
+
+    <!-- Icon gradient -->
+    <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f766e"/>
+      <stop offset="100%" style="stop-color:#0e7490"/>
+    </linearGradient>
+
+    <!-- Grid fade mask -->
+    <radialGradient id="grid-mask" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:white;stop-opacity:0.07"/>
+      <stop offset="70%" style="stop-color:white;stop-opacity:0.03"/>
+      <stop offset="100%" style="stop-color:white;stop-opacity:0"/>
+    </radialGradient>
+    <mask id="grid-fade">
+      <rect width="1280" height="640" fill="url(#grid-mask)"/>
+    </mask>
+
+    <!-- Stat number gradient -->
+    <linearGradient id="stat-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5eead4"/>
+      <stop offset="100%" style="stop-color:#0d9488"/>
+    </linearGradient>
+
+    <!-- Glow filter for icon -->
+    <filter id="icon-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Soft shadow for title -->
+    <filter id="text-glow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#bg)"/>
+
+  <!-- Atmospheric glows -->
+  <rect width="1280" height="640" fill="url(#glow-teal)"/>
+  <rect width="1280" height="640" fill="url(#glow-blue)"/>
+
+  <!-- Dot grid pattern -->
+  <g mask="url(#grid-fade)">
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1" fill="#4dd0e1" opacity="0.35"/>
+    </pattern>
+    <rect width="1280" height="640" fill="url(#dots)"/>
+  </g>
+
+  <!-- Concentric rings - decorative -->
+  <circle cx="640" cy="260" r="180" fill="none" stroke="#0f766e" stroke-width="0.6" opacity="0.18"/>
+  <circle cx="640" cy="260" r="230" fill="none" stroke="#0f766e" stroke-width="0.4" opacity="0.10"/>
+  <circle cx="640" cy="260" r="290" fill="none" stroke="#1d4ed8" stroke-width="0.3" opacity="0.08"/>
+
+  <!-- Central icon — abstract agent/team nodes -->
+  <g filter="url(#icon-glow)" opacity="0.92">
+    <!-- Outer orbit ring -->
+    <circle cx="640" cy="195" r="72" fill="none" stroke="#0f766e" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.5"/>
+
+    <!-- Center node -->
+    <circle cx="640" cy="195" r="22" fill="url(#icon-grad)" opacity="0.9"/>
+    <circle cx="640" cy="195" r="22" fill="none" stroke="#5eead4" stroke-width="1.2" opacity="0.7"/>
+    <!-- Center icon - simplified agent symbol -->
+    <text x="640" y="201" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" font-weight="700" fill="#e0fdfa" opacity="0.95">⬡</text>
+
+    <!-- Orbiting specialist nodes -->
+    <!-- Top -->
+    <circle cx="640" cy="123" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="640" cy="123" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+    <!-- Top-right -->
+    <circle cx="702" cy="159" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="702" cy="159" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+    <!-- Bottom-right -->
+    <circle cx="702" cy="231" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="702" cy="231" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+    <!-- Bottom -->
+    <circle cx="640" cy="267" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="640" cy="267" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+    <!-- Bottom-left -->
+    <circle cx="578" cy="231" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="578" cy="231" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+    <!-- Top-left -->
+    <circle cx="578" cy="159" r="10" fill="#0e7490" opacity="0.85"/>
+    <circle cx="578" cy="159" r="10" fill="none" stroke="#67e8f9" stroke-width="0.9" opacity="0.6"/>
+
+    <!-- Connection lines from center to nodes -->
+    <line x1="640" y1="173" x2="640" y2="133" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+    <line x1="656" y1="182" x2="693" y2="163" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+    <line x1="656" y1="208" x2="693" y2="227" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+    <line x1="640" y1="217" x2="640" y2="257" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+    <line x1="624" y1="208" x2="587" y2="227" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+    <line x1="624" y1="182" x2="587" y2="163" stroke="#5eead4" stroke-width="0.8" opacity="0.3"/>
+  </g>
+
+  <!-- Main title -->
+  <text x="640" y="342" text-anchor="middle"
+        font-family="Helvetica Neue, Arial, sans-serif"
+        font-size="76" font-weight="800" letter-spacing="-1"
+        fill="url(#title-grad)"
+        filter="url(#text-glow)">Dev Team Kit</text>
+
+  <!-- Tagline -->
+  <text x="640" y="382" text-anchor="middle"
+        font-family="Helvetica Neue, Arial, sans-serif"
+        font-size="19" font-weight="300"
+        font-style="italic"
+        fill="#7986cb" opacity="0.85">37 specialist skills inside your coding agent — every task to the right expert</text>
+
+  <!-- Divider line -->
+  <line x1="490" y1="408" x2="790" y2="408" stroke="#0f766e" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- Stats row -->
+  <!-- Stat 1: Skills -->
+  <g transform="translate(255, 440)">
+    <text text-anchor="middle" font-family="'Courier New', Courier, monospace"
+          font-size="38" font-weight="700" fill="url(#stat-grad)">37</text>
+    <text y="24" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="12" font-weight="400" fill="#5c6bc0" letter-spacing="2">SPECIALISTS</text>
+  </g>
+
+  <!-- Stat 2: Subagents -->
+  <g transform="translate(427, 440)">
+    <text text-anchor="middle" font-family="'Courier New', Courier, monospace"
+          font-size="38" font-weight="700" fill="url(#stat-grad)">14</text>
+    <text y="24" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="12" font-weight="400" fill="#5c6bc0" letter-spacing="2">SUBAGENTS</text>
+  </g>
+
+  <!-- Stat 3: MCP tools -->
+  <g transform="translate(640, 440)">
+    <text text-anchor="middle" font-family="'Courier New', Courier, monospace"
+          font-size="38" font-weight="700" fill="url(#stat-grad)">36</text>
+    <text y="24" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="12" font-weight="400" fill="#5c6bc0" letter-spacing="2">MCP TOOLS</text>
+  </g>
+
+  <!-- Stat 4: Platforms -->
+  <g transform="translate(853, 440)">
+    <text text-anchor="middle" font-family="'Courier New', Courier, monospace"
+          font-size="38" font-weight="700" fill="url(#stat-grad)">7</text>
+    <text y="24" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="12" font-weight="400" fill="#5c6bc0" letter-spacing="2">PLATFORMS</text>
+  </g>
+
+  <!-- Stat 5: MIT -->
+  <g transform="translate(1025, 440)">
+    <text text-anchor="middle" font-family="'Courier New', Courier, monospace"
+          font-size="38" font-weight="700" fill="url(#stat-grad)">MIT</text>
+    <text y="24" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="12" font-weight="400" fill="#5c6bc0" letter-spacing="2">LICENSE</text>
+  </g>
+
+  <!-- Subtle vertical separators between stats -->
+  <line x1="340" y1="433" x2="340" y2="470" stroke="#0f766e" stroke-width="0.5" opacity="0.25"/>
+  <line x1="530" y1="433" x2="530" y2="470" stroke="#0f766e" stroke-width="0.5" opacity="0.25"/>
+  <line x1="750" y1="433" x2="750" y2="470" stroke="#0f766e" stroke-width="0.5" opacity="0.25"/>
+  <line x1="940" y1="433" x2="940" y2="470" stroke="#0f766e" stroke-width="0.5" opacity="0.25"/>
+
+  <!-- Bottom URL -->
+  <text x="640" y="520" text-anchor="middle"
+        font-family="Helvetica Neue, Arial, sans-serif"
+        font-size="12" font-weight="400"
+        fill="#2a3160" letter-spacing="1">github.com/felvieira/claude-skills-fv</text>
+
+  <!-- Subtle corner accents -->
+  <path d="M 40 40 L 40 70 M 40 40 L 70 40" stroke="#0f766e" stroke-width="1.2" fill="none" opacity="0.25"/>
+  <path d="M 1240 40 L 1240 70 M 1240 40 L 1210 40" stroke="#0f766e" stroke-width="1.2" fill="none" opacity="0.25"/>
+  <path d="M 40 600 L 40 570 M 40 600 L 70 600" stroke="#0f766e" stroke-width="1.2" fill="none" opacity="0.25"/>
+  <path d="M 1240 600 L 1240 570 M 1240 600 L 1210 600" stroke="#0f766e" stroke-width="1.2" fill="none" opacity="0.25"/>
+</svg>

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="banner.svg" alt="Dev Team Kit"/>
+</p>
+
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
