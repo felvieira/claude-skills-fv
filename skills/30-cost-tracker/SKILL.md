@@ -60,6 +60,16 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 | Tempo de execucao | Timestamps inicio/fim | 14min 32s |
 | Modelo usado | Model Routing policy | claude-sonnet-4-20250514 |
 
+## Memory Tiers e Decay
+
+O Cost Tracker também monitora a saúde dos tiers de memória ao final de cada sessão:
+
+- **Learned-skills com score baixo** (< 0.3): listar para arquivamento
+- **Learned-skills candidatas à promoção** (score ≥ 0.8): sinalizar para skill 35
+- **Tamanho do devkit_context_pack**: alertar se exceder 500 tokens por entrada
+
+Ver `policies/memory-tiers.md` para a lógica completa de score e decay.
+
 ## Formato do Relatorio
 
 ```markdown
