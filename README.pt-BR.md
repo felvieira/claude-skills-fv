@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.0.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.2.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -612,93 +612,15 @@ Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia co
 
 ---
 
-## Timestamp Log
+## Changelog
 
-### 2026-04-04
+Histórico completo em **[CHANGELOG.md](./CHANGELOG.md)**.
 
-- alinhado o setup para instalação em `.bot/`, hooks automáticos, MCP local `dev-team-kit` e smoke test do instalador
-- corrigidos hooks para ler config no modo instalado e reduzir injeção de contexto de learned skills
-- implementados `devkit_context_pack`, `devkit_diff_brief`, `devkit_working_set` e telemetria expandida em `devkit_track_cost`
-- adicionados perfis de setup `lean`, `daily-dev` e `research`, com modo não interativo
-- atualizadas docs principais, README do MCP, quickstart e guias de operação com foco em economia de token
-
-### 2026-04-08
-
-- unificado model routing em policy única (`policies/model-routing.md`), absorvendo skill 16 (llm-selector)
-- adicionado hook `model-routing-hook.mjs` para enforcement em plan mode e subagent spawns
-- atualizadas referências em cost-tracker, cost-optimization, orchestrator, design-intelligence e hooks policy
-
-### 2026-04-09
-
-- adicionado manifesto de plugin Claude Code (`.claude-plugin/plugin.json`) com 31 skills, hooks e commands
-- adicionado slash command `/devkit-install-fv` para instalação full `.bot/` a partir do plugin global
-- README redesenhado com hero section, tabela de especialistas com descrição por skill, comparativo de modos de instalação e tabela de compatibilidade multi-plataforma
-
-### 2026-04-11
-
-- adicionados Hook Profiles (`minimal`/`standard`/`strict`) com env vars `DEVKIT_HOOK_PROFILE` e `DEVKIT_DISABLED_HOOKS`
-- implementado Confidence Scoring em learned skills: score 0-1, decay semanal, boost por uso, auto-arquivo abaixo de 0.3
-- adicionada policy `search-first.md`: pesquisa obrigatória antes de implementar
-- adicionada policy `iterative-retrieval.md`: retrieval progressivo em 3 rounds para subagents
-- `context-guard-stop` aprimorado com aviso proativo em 50% e mensagem inteligente de bloqueio em 75%
-
-### 2026-05-04 (WIKI completa adicionada)
-
-- **`docs/WIKI.md` (novo, ~700 linhas):** wiki abrangente do kit no formato do post [aihero.dev "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day). 11 seções cobrindo cada skill (37), subagent (14), command (23), policy (22), plugin (3 modos de instalação), MCP server (36 tools) + árvore de decisão + atribuições.
-- README.md + README.pt-BR.md: callout no topo apontando para WIKI como ponto de partida recomendado.
-- SKILLS-OVERVIEW.md: header agora aponta para WIKI ("procurando wiki completa? → WIKI.md"). SKILLS-OVERVIEW continua sendo resumo de 5min; WIKI é o detalhe item-por-item.
-- AGENTS.md: ordem de leitura inclui WIKI como item 3 (entre policies e README).
-
-### 2026-05-04 (skill 17 — modelos fal.ai concretos)
-
-- **`skills/17-image-generator/SKILL.md`:** "Selecao de Modelo" abstrata → tabela com 5 modelos fal.ai concretos (gpt-image-1-mini $0.005-$0.052, Gemini 2.5 Flash $0.039 fixo, Gemini 3 Pro $0.15, gpt-image-1.5 fidelidade máxima, Grok Imagine $0.02 estético). Inclui árvore de decisão rápida e pipeline multi-modelo (iteração → validação → final, custo total $0.10-$0.50 por hero).
-- **Cross-reference com skill 36 (Web Asset Generator)** explícita: skill 17 cobre assets criativos (hero, mascote, illustration, background, layout, icon); skill 36 cobre derivações web operacionais (favicon multi-tamanho, PWA icons, Open Graph, Twitter card). Handoff: skill 17 cria logo → skill 36 deriva tudo dele.
-- **`docs/skill-guides/image-generator-models.md` (novo, 350+ linhas):** catálogo completo dos modelos fal.ai com schemas de input/output, exemplos cURL+Python+JS por modelo, tabela comparativa, padrões de prompt por modelo, troubleshooting de erros comuns (cobrança alta com `quality: auto`, `input_fidelity: high` triplica custo, etc.).
-- Princípio vendor-agnostic preservado: tabela é "implementação recomendada"; alternativas (Replicate, OpenAI direto, Stability, self-hosted) listadas como opções legítimas.
-
-### 2026-05-03 (batch aihero-skills — fluxo de discovery)
-
-- **2 novas skills** adaptadas de [mattpocock/skills](https://github.com/mattpocock/skills) e integradas ao kit:
-  - **Skill 37 — TDD Engineer:** red-green-refactor enforced. Combate o anti-padrão horizontal slicing (escrever todos os testes antes de toda impl). 1 teste → 1 impl → repete. Tabela anti-rationalization com 9 falácias comuns de TDD.
-  - **Skill 38 — Architecture Deepener:** encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural. Pareia com skill 23 (Migration & Refactor) para execução. Usa `CONTEXT.md` e ADRs.
-- **4 novos slash commands** (3 de fase + 1 orquestrador):
-  - `/grill-me` — interrogatório relentless, uma pergunta + resposta sugerida por turno
-  - `/to-prd` — conversa → PRD publicado no issue tracker
-  - `/to-issues` — PRD → N issues (vertical slices) publicadas no tracker
-- **`/pipeline-discovery`** — novo command top-level rodando o fluxo completo: `grill-me → to-prd → to-issues → loop+TDD → ship`. Coexiste com `/pipeline` clássico. Use para features grandes/ambíguas que precisam de execução paralela + tracker + TDD por slice.
-- **Orchestrator (skill 09) atualizado:** nova seção "Dois Fluxos de Pipeline" explicando quando escolher `/pipeline` (clássico) vs `/pipeline-discovery` (com discovery + slicing + TDD).
-- **Comando `/pipeline` atualizado** para esclarecer que é o fluxo "clássico" e apontar para `/pipeline-discovery` em casos avançados.
-- **`docs/SKILLS-OVERVIEW.md` atualizado** com nova seção "Os 2 fluxos: clássico vs discovery" + tabela comparativa + skills 37/38 adicionadas + 4 novos commands documentados no formato aihero.
-- Contadores: 35 → 37 skills, 18 → 22 commands, 20 → 21 policies (vertical-slices adicionada no batch anterior).
-
-### 2026-05-03 (batch Items 2-3-4 — manutenção do kit)
-
-- **5 novos subagents dispatcháveis** para o pipeline da skill 34 Static Analysis: `semgrep-scanner` (scans paralelos por linguagem), `semgrep-triager` (classificação TP/FP), `codeql-runner` (taint tracking interprocedural), `sarif-parsing` (dedup multi-tool), `variant-analysis` (caça de variantes + geração de rule reusável). Skill 34 atualizada: removido stub "planejados", instruções de dispatch integradas no pipeline.
-- **Contagem de subagents: 9 → 14** registrados no `plugin.json`. Tabela de subagents do README reorganizada em 3 categorias: Core (5), Detective Spec (4), Static Analysis (5).
-- **`evals/skill-audit-2026-05-03.md`**: auditoria completa das skills 01-32 contra o scorecard da skill 35. Resultado: 22 PASS, 6 NEEDS-REVIEW, 4 NEEDS-REWRITE. Maior gap cross-cutting: 75% das skills sem `allowed-tools` no frontmatter (fix mecânico). Prioridade Tier-1 para próximo batch de rewrite: skills 21 (data-analytics), 22 (accessibility), 24 (release-manager), 27 (video-integration).
-- **Cleanup**: removidos git worktrees mergeados (`busy-tesla-e51016`, `cool-pascal-f3482a`, `top5-skills`) e suas branches.
-- **Verificada preocupação pré-existente**: README menciona "36 MCP tools" — confirmado correto (`mcp-server/src/index.ts` tem 36 chamadas `registerTool`). MCP tools são ortogonais ao número de skills, então 32→35 skills não muda contagem de tools. Falso alarme do review cycle-1 do batch Top-5.
-
-### 2026-05-02 (tarde — batch Top 5 skills)
-
-- **Skill 34 — Static Analysis:** scan automatizado de segurança e bugs via Semgrep (default, cobertura ampla) + CodeQL (taint tracking interprocedural). Output SARIF, triagem de severidade (Critical/High/Medium/Low/Info), supressão de FP com justificativa, custom rules em `tools/semgrep/`, integração CI via `--error --severity=ERROR`. Rulesets recomendados por linguagem. Alimenta findings na skill 06 (Security Review) e dispara variant analysis quando padrão se repete.
-- **Skill 35 — Skill Author:** meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit. Define template obrigatório de SKILL.md (frontmatter + 11 seções padrão), otimização de description para triggering, minimização de allowed-tools, scorecard de eval (10 critérios × 0-3, threshold 22/30 para merge), pipelines para create/edit/eval/optimize. Sustenta consistência do kit conforme cresce além de 35 especialistas.
-- **Skill 36 — Web Asset Generator:** gera favicons (multi-size ICO + PNG), PWA icons (incl. maskable com safe area de 80%), Open Graph (1200x630) e Twitter card (1200x675), web manifest, browserconfig.xml, e snippet HTML pronto pra colar com todas as meta tags. Três opções de tooling: realfavicongenerator CLI, ImageMagick, ou Sharp programático. Anti-padrões cobertos: OG images stock, favicons 16px borrados, Apple icons transparentes, ausência de maskable, URLs relativas em OG tags.
-- **`policies/writing-clarity.md`:** 10 regras atemporais de Strunk adaptadas para output de agente — corte palavras desnecessárias, voz ativa, forma afirmativa, linguagem definitiva, concreto sobre abstrato, palavras-tampão banidas, termos técnicos em inglês. Aplica-se a commits, mensagens de erro, handoffs, output de slash commands e docs gerados em todas as skills.
-- **`.claude/agents/debugger.md` aprimorado:** adicionado Evidence Ledger explícito (tabela hipótese → evidência → status), tabela anti-rationalization de 10 linhas cobrindo as falácias mais comuns de debug, heurísticas por classe de bug (race condition, memory leak, regressão de perf, auth/permission, off-by-one, encoding), confidence scoring, e regras de quando escalar para outras skills.
-
-### 2026-05-02
-
-- **Skill 33 — Detective Spec:** pipeline de engenharia reversa de specs para sistemas legados, inspirado no [Reversa](https://github.com/sandeco/reversa) e adaptado ao kit. Pipeline de 5 fases (reconhecimento → módulos → regras de negócio → fluxos → ADRs retroativos) com checkpoint/resume em `.detective/state.json`, output em `_detective_sdd/` (overview, contratos de módulo, regras de negócio extraídas, fluxos end-to-end, ADRs retroativos, mapa de traceability). Cada spec é rastreável até `file:line` ou `commit-sha` com confidence scoring (high/medium/low).
-- **4 subagents detetives** dispatcháveis via Task tool: `detective-contracts`, `detective-business-rules`, `detective-flows`, `detective-adrs` — todos read-only.
-- **Policy de hard-guardrail** (`policies/detective-write-guardrails.md`): writes restritos a `.detective/` e `_detective_sdd/`, zero modificação no código legado, verificável via duas checagens complementares (`git status --porcelain` filtrado para untracked + `git diff --name-only --diff-filter=MDARCT HEAD` para tracked) — checagem única deixaria modificações em arquivos tracked passarem em silêncio.
-- **Slash command `/detective-spec`** com escopo (`--module=`, `--feature=`), fase única (`--phase=N`) e suporte a resume.
-- **Integração com Graphify:** god nodes viram módulos prioritários; comunidades agrupam `01-modules/`; bridges identificam contratos inter-módulo.
-
-### 2026-04-13
-
-- **Agent Intelligence v2:** anti-rationalization tables em 5 skills críticas (orchestrator, QA, reviewer, security, backend), confusion management protocol (STOP-NAME-OPTIONS-WAIT), source-driven development policy com hierarquia de fontes e integração no orchestrator, ideation frameworks guide (SCAMPER, HMW, First Principles, JTBD), simplify-ignore hook que protege blocos críticos de simplificação automática via PreToolUse/PostToolUse.
-- **Agent Intelligence v3:** 10 slash commands mapeando fases de desenvolvimento a skills (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/simplify`, `/ship`, `/pipeline`, `/best`, `/auto`), meta-skill de descoberta com decision tree e 6 core operating behaviors, session-start bootstrap com injeção automática do skill-discovery, 3 agent personas com output estruturado (code-reviewer, security-auditor, test-engineer) referenciadas por skills 11/06/05, context engineering policy com hierarquia de 5 níveis e 3 trust levels, plugin validation CI com GitHub Actions. Comando `/auto` para execução autônoma completa com 10 patterns adaptados de loops de produção: progress tracking via checkboxes em `.auto/plan.md`, inter-iteration memory em `.auto/progress.md`, context narrowing progressivo (3 níveis), tiered validation (lint→typecheck→build com timeouts), error deduplication (normaliza line numbers/timestamps antes de comparar), completion override (reler plan antes de commit), dynamic iteration budget, validation feedback loop (erro vira contexto da próxima tentativa), stall detection (3 iterações sem git diff = stop), build-fix extension (+2 iterações). Integração v3 cross-vertical: plugin.json com 10 commands, install.sh copia personas/ e .claude/commands/, AGENTS.md/GLOBAL.md/templates/platform configs todos atualizados, minimal profile desabilita session-start.
+| Versão | Data | Destaques |
+|---|---|---|
+| **v1.2.0** | 2026-05-13 | Padrões de agent prompting (layering A→B→C, template agent-spec, policy no-drift), modelo 4-tier de memória, token budget no hook SessionStart |
+| **v1.1.0** | 2026-05-09 | Adoção Context Engineering: protocol shells (Pareto-lang), schemas I/O de skills, scoring de iteração, camada programs/, 3 subagents piloto migrados |
+| **v1.0.0** | 2026-04-30 | Auto-loop v2: multi-agente (claude + codex), worktrees paralelos, polishing pass, circuit breaker, 21 smoke tests |
 
 ---
 
