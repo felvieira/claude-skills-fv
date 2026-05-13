@@ -82,6 +82,21 @@ process.stdin.on('end', () => {
     // silent — integrity check is advisory, never blocks
   }
 
+  // --- Token budget guard ---
+  // Estimate tokens (rough: 1 token ≈ 4 chars). Trim low-value parts if over budget.
+  const budgetTokens = parseInt(process.env.DEVKIT_SESSION_INJECT_TOKENS || '2000', 10);
+  const estimateTokens = (s) => Math.ceil(s.length / 4);
+  const totalChars = parts.reduce((sum, p) => sum + p.length, 0);
+  const estimatedTokens = estimateTokens(totalChars);
+  if (estimatedTokens > budgetTokens) {
+    // Trim from the end (lowest priority parts added last) until under budget
+    let current = estimatedTokens;
+    while (parts.length > 1 && current > budgetTokens) {
+      const removed = parts.pop();
+      current -= estimateTokens(removed);
+    }
+  }
+
   const additionalContext = parts.length > 0
     ? `[DevTeamKit] Session started. ${parts.join('\n\n')} Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.`
     : '[DevTeamKit] Session started. Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.';
