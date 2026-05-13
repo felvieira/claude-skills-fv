@@ -5,6 +5,26 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.2.0-agent-prompting] - 2026-05-13
+
+### Added
+- **`templates/agent-spec.md`** (new) — standalone spec-drafting template for new agents/subagents. Covers Job, Inputs/Outputs tables, Constraints (min 3), Fallback rules, Layering A→B→C, multi-shot example, YAML output schema, skill/protocol-shell refs. Inspired by ClickUp Agent Prompting Guide Five Building Block framework.
+- **`policies/memory-tiers.md`** (new) — complete 4-tier memory hierarchy (Working → Episodic → Semantic → Procedural), promotion rules, score/decay table, privacy guardrails, per-tier token budgets. Inspired by rohitg00/agentmemory 4-tier consolidation model.
+
+### Changed
+- **`templates/prompt-spec.md`**: expanded from 6 flat fields to structured template with `Constraints` (reliability guardrails), `Fallback` (default text for missing input), `Examples (multi-shot)` Input/Output slots, and `Notas de iteração`.
+- **`policies/protocol-shells.md`**: added `## No structural drift` — prohibits adding/renaming/reordering output fields without semver bump. "Stability is a contract."
+- **`skills/26-prompt-engineer/SKILL.md`**: added `## Layering — Construção Incremental de Prompts` — mandatory A (core) → B (structure) → C (advanced logic) build order with test gate between each layer.
+- **`policies/persistence.md`**: added `Segurança` (what never to persist: API keys, PII, secrets), `Memory Tiers` (4-tier table + promotion rules + score decay), `Token Budget` (2000 token default, `DEVKIT_SESSION_INJECT_TOKENS` override, trim priority order).
+- **`hooks/scripts/session-start.mjs`**: added token budget guard — trims low-priority inject parts when estimated tokens exceed `DEVKIT_SESSION_INJECT_TOKENS` (default 2000). `current-focus` is never trimmed.
+- **`skills/30-cost-tracker/SKILL.md`**: added `Memory Tiers e Decay` section — monitors learned-skills for archival candidates (score < 0.3) and promotion candidates (score ≥ 0.8).
+
+### Sources
+- [ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/) — Five Building Block framework, layering A→B→C, constraints-as-infrastructure, schema no-drift
+- [rohitg00/agentmemory](https://github.com/rohitg00/agentmemory) — 4-tier memory consolidation, token budget injection, privacy filter, confidence decay
+
+---
+
 ## [1.1.0-context-engineering] - 2026-05-09
 
 ### Added
