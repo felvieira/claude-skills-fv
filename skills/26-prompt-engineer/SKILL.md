@@ -40,6 +40,33 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/token-efficienc
 
 Consultar `patterns/ai-integration/prompt-patterns.md` antes de propor o template final.
 
+## Layering — Construção Incremental de Prompts
+
+Todo prompt de produção deve ser construído em 3 camadas progressivas. Não pular camadas.
+
+### Camada A — Core behavior (mínimo funcional)
+Apenas: job em uma frase, campos de input, campos de output.
+Sem exemplos, sem lógica avançada, sem constraints complexas.
+**Testar aqui antes de avançar.**
+
+### Camada B — Estrutura
+Adicionar:
+- seções organizadas e context de domínio
+- regras de formato de saída
+- constraints básicas (não inventar dados, defaultar campos ambíguos)
+
+**Testar aqui antes de avançar.**
+
+### Camada C — Lógica avançada
+Adicionar:
+- multi-shot examples (1–3 pares input→output)
+- detecção de informação faltante + fallback rules
+- recomendações e lógica de borda
+
+**Evidência de conclusão: prompt funciona em Camada A antes de receber B e C.**
+
+Ver `templates/agent-spec.md` para o template completo com as 3 camadas.
+
 ## Evidencia de Conclusao
 
 - prompt final com objetivo claro

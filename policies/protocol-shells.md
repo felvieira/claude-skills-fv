@@ -35,6 +35,18 @@ This is the canonical signal for callers to decide whether to propagate the resu
 - Bump **minor** (e.g. `1.0.0` → `1.1.0`) when adding a new optional output field.
 - Bump **major** (e.g. `1.0.0` → `2.0.0`) when changing required fields or breaking output shape.
 
+## No structural drift
+
+Once a protocol shell's output schema is defined, callers depend on it.
+
+Rules:
+- **Never add output sections** not defined in the shell without bumping `meta.version` minor.
+- **Never rename output fields** without bumping major.
+- **Never reorder required fields** in a way that breaks existing consumers.
+- If you need to extend: add optional fields (minor bump) rather than modifying existing ones.
+
+This mirrors the principle "Do not add sections. Do not modify section titles" — stability is a contract.
+
 ## Placement in subagent files
 
 Insert the protocol shell as a `## Protocol Shell` section **before** the existing instructions in the subagent `.md` file.
