@@ -23,11 +23,28 @@ description: Converte conversa atual em PRD formatado para issue tracker (GitHub
 - glossário de domínio do projeto (`CONTEXT.md` ou `docs/glossary.md`)
 - ADRs do projeto (`docs/adr/`) — respeitar decisões registradas
 
-**Processo (adaptado de mattpocock/skills/engineering/to-prd):**
+**Processo (adaptado de mattpocock/skills/engineering/to-prd + preflight/validação de [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster)):**
+
+0. **Preflight — detectar PRD existente.** Antes de gerar, checar se já existe PRD relacionado:
+   - `docs/prd/` (fallback local do kit)
+   - `.taskmaster/docs/prd.md` (se projeto usa Taskmaster)
+   - issue aberta com label `prd` ou `needs-triage` no tracker (`gh issue list --label prd`)
+
+   Se encontrar, usar `AskUserQuestion` para oferecer:
+   - **Execute** — pular geração, ir direto para `/to-issues`
+   - **Update** — editar o existente (preservar histórico, fazer diff)
+   - **Replace** — backup do antigo (renomear com sufixo `.bak-YYYY-MM-DD`), gerar novo
+   - **Review** — exibir resumo + score de validação, depois sair
 
 1. **Explorar repo** se ainda não explorado. Usar vocabulário do glossário em todo o PRD. Respeitar ADRs.
 2. **Esboçar módulos** principais que serão construídos/modificados. Buscar oportunidades de **deep modules** (interface pequena, implementação rica, testável isoladamente). Confirmar com usuário quais módulos batem com expectativa e quais devem ter testes escritos.
-3. **Escrever PRD** no template abaixo + publicar no issue tracker com label `needs-triage`.
+3. **Escrever PRD** no template abaixo.
+4. **Validar PRD** contra `policies/prd-validation.md` (13 checks, score 0–60):
+   - `EXCELLENT` (≥55) → publicar direto
+   - `GOOD` (50–54) → publicar + listar warnings
+   - `ACCEPTABLE` (45–49) → oferecer auto-fix antes de publicar
+   - `NEEDS_WORK` (<45) → bloquear; sugerir voltar para `/grill-me`
+5. **Publicar** no issue tracker com label `needs-triage`.
 
 **Template do PRD:**
 
@@ -143,6 +160,7 @@ Variáveis esperadas no environment:
 - handoff para `/to-issues`
 
 **Policies relevantes:**
+- `policies/prd-validation.md` — 13 checks de qualidade aplicados no passo 4
 - `policies/vertical-slices.md` — User Stories devem ser organizáveis em slices verticais
 - `policies/source-driven.md` — decisões ancoradas em ADRs e codebase
 - `policies/writing-clarity.md` — PRD legível, sem fluff
