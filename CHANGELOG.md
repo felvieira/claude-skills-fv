@@ -5,6 +5,20 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.2.1-prd-validation] - 2026-05-13
+
+### Added
+- **`policies/prd-validation.md`** (new) — 13-check PRD quality checklist (structure, testability, language, technical) with EXCELLENT/GOOD/ACCEPTABLE/NEEDS_WORK grading and 3-option auto-fix flow. Inspired by [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster) `script.py validate-prd`, decoupled from Taskmaster.
+
+### Changed
+- **`.claude/commands/grill-me.md`**: added "Checklist de cobertura mínima (13 áreas)" — essential (5) + technical (4) + scope/execution (3) + open (1). Convergence criterion reinforced: 2 turns without new branching **AND** all 13 areas covered.
+- **`.claude/commands/to-prd.md`**: added step 0 (preflight — detects existing PRD in `docs/prd/`, `.taskmaster/docs/prd.md`, or tracker; offers Execute/Update/Replace/Review via `AskUserQuestion`) and step 4 (validation against `policies/prd-validation.md` before publishing; blocks if NEEDS_WORK).
+
+### Sources
+- [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster) — 13-check validation, preflight pattern, discovery question structure (Taskmaster dependency intentionally not adopted)
+
+---
+
 ## [1.2.0-agent-prompting] - 2026-05-13
 
 ### Added
