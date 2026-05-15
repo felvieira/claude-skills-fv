@@ -22,6 +22,7 @@ Dar ao agente uma base reutilizavel para integrar texto, imagem e video sem rein
 - `video-generation.md` = padrao para features de video
 - `prompt-patterns.md` = boas praticas de prompt para texto, imagem e video
 - `cost-efficiency.md` = estrategias de custo, caching e contexto minimo
+- `inference-time-compute.md` = padroes multi-agente / multi-sample (MoA, Self-Consistency, BoN, SPL) inspirados em optillm
 - `security.md` = secrets, backend-only e safety de integracao
 - `examples/` = exemplos reais de adapters e hooks
 - `docs/ai-integration-playbook.md` = visao unica e fluxo recomendado
