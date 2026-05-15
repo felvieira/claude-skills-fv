@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 37 skills, 14 subagents, 23 slash commands, 22 policies
-> **Última atualização:** 2026-05-04
+> **Versão:** 37 skills, 14 subagents, 26 slash commands, 24 policies
+> **Última atualização:** 2026-05-15 (v1.4.0)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -206,6 +206,30 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Problema que resolve:** workers paralelos sem issues atribuíveis = caos; layered slicing disfarçado de vertical.
 **Exemplo:** `/to-issues #142` (referência ao PRD)
 **Takeaway:** **cada issue corta TODAS as camadas.** Layered slicing é proibido (`policies/vertical-slices.md`).
+
+### `/constitution` — Princípios governantes (Spec-Driven Development)
+
+**O que faz:** cria/atualiza `memory/constitution.md` com 5 eixos (Code Quality, Testing, UX, Performance, Security). Autoridade hierárquica sobre PRD/plan/ADRs.
+**Quando usar:** bootstrap de projeto, mudança organizacional, onboarding do kit em projeto sem princípios formais.
+**Problema que resolve:** princípios só vivem nas cabeças; specs/plans/reviews sem rubric objetivo.
+**Exemplo:** `/constitution`
+**Takeaway:** **princípios são não-negociáveis.** Mudança requer commit `chore(constitution)` dedicado. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
+
+### `/checklist` — "Unit tests for English"
+
+**O que faz:** gera checklist **contextual por feature** (Completeness, Clarity, Consistency, Coverage, Edge Cases). Cruza com a constituição.
+**Quando usar:** após `/spec` ou `/to-prd`, antes de `/plan`.
+**Problema que resolve:** ambiguidades da spec que só aparecem em `/build` (retrabalho).
+**Exemplo:** `/checklist docs/specs/dark-mode.md`
+**Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
+
+### `/analyze` — Cross-artifact consistency check
+
+**O que faz:** auditoria read-only entre constituição → specs → plan → issues. Findings CRITICAL/HIGH/MEDIUM/LOW; matriz de rastreabilidade.
+**Quando usar:** após `/to-issues` e antes de `/build`; antes de `/ship` major; após mudança grande na constituição.
+**Problema que resolve:** pipeline sem gate validando coerência entre artefatos; updates de constituição invalidando specs silenciosamente.
+**Exemplo:** `/analyze --feature dark-mode --strict`
+**Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
 ### `/auto` — Agente autônomo (1 sessão)
 

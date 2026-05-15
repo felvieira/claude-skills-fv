@@ -5,6 +5,33 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.4.0-release-hygiene] - 2026-05-15
+
+### Added
+- **`hooks/scripts/constitution-watcher.mjs`** (new) — PostToolUse hook that detects edits to `memory/constitution.md` and emits advisory recommending `/analyze --strict` to find invalidated artifacts. Registered in `hooks/hooks.json`.
+- **`evals/commands/README.md`** (new) — schema and conventions for command-level golden cases (separate from `evals/protocol-shells/` which is for subagents).
+- **`mcp-server/README.md`** — `## Design decision: slash commands vs MCP tools` section explaining why the 3 spec-driven commands are NOT exposed as MCP tools.
+- **`README.md`** + **`README.pt-BR.md`** — `## Acknowledgements` section crediting all external repos that contributed ideas (spec-kit, optillm, prd-taskmaster, mattpocock/skills, Context-Engineering, agentmemory, ClickUp, reversa, aihero).
+
+### Changed
+- **`docs/SKILLS-OVERVIEW.md`** — added entries for `/constitution`, `/checklist`, `/analyze`; bumped header to "26 slash commands, 24 policies" and version 1.4.0.
+- **`AGENTS.md`** — added 3 new commands to the Slash Commands table.
+- **`CONTRIBUTING.md`** — expanded "Adicionando slash commands" with 8-step checklist covering plugin.json, all docs (README/AGENTS/WIKI/SKILLS-OVERVIEW), programs/, handoffs.md, evals, consistency check, semver, and git tags + GitHub Releases.
+- **`policies/quality-gates.md`** — constitution conformance added as obligatory gate; mapping table from constitution axes to concrete release gates.
+- **`skills/35-skill-author/SKILL.md`** — Fase 4 (Registrar) expanded with full 7-point doc registration checklist, evals coverage, consistency check, semver bumps, and release hygiene (tags + GitHub Releases).
+
+### Migrated
+- **`evals/protocol-shells/{constitution,analyze,checklist}/`** → **`evals/commands/{constitution,analyze,checklist}/`** — commands aren't subagents with protocol shells; correct directory.
+
+### Release hygiene
+- Created retroactive git tags for v1.2.1, v1.3.0, v1.3.1, v1.3.2, v1.4.0
+- Created GitHub Releases for all tagged versions with release notes derived from CHANGELOG
+
+### Why
+Closes all remaining gaps from the spec-driven development series (1.3.0–1.3.2): documentation alignment, contribution checklist, release tags/notes, evals layout, hook for constitution changes, and credit where due. No silent gaps remain.
+
+---
+
 ## [1.3.2-spec-kit-polish] - 2026-05-15
 
 ### Added

@@ -9,6 +9,23 @@ Definir o que realmente bloqueia uma entrega.
 - risco relevante explicitado
 - validacao minima realizada ou impossibilidade explicada
 - handoff claro quando houver proxima etapa
+- **conformidade com `memory/constitution.md`** quando ela existir no projeto consumidor (ver abaixo)
+
+## Constituicao como gate
+
+Quando `memory/constitution.md` existe no repo consumidor, ela tem **autoridade hierarquica** — ver `policies/constitution.md`. Gates derivados, por eixo:
+
+| Eixo | Gate concreto |
+|---|---|
+| Code Quality | linter/formatter passa; complexidade dentro do limite declarado |
+| Testing | coverage minimo atingido; zero flaky test; tipos de teste exigidos presentes |
+| UX | WCAG no nivel declarado; locales obrigatorios cobertos; perf percebida dentro dos budgets |
+| Performance | p50/p95/p99 dentro dos alvos; custo IA/infra dentro do budget mensal |
+| Security | SAST + dependency scan + secrets scan executados e limpos; compliance framework satisfeito |
+
+**Bloqueio:** qualquer principio CRITICAL nao satisfeito = nao entregar. Exception requer ADR dedicado com aprovacao dos owners.
+
+Recomendar rodar `/analyze --strict` antes de release para detectar violacoes cross-artifact.
 
 ## Guideline, nao Gate Absoluto
 - tamanho de funcao

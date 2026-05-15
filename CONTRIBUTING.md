@@ -88,9 +88,35 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
    ".claude/commands/nome.md"
    ```
 
-3. **Adicione à tabela de slash commands** no `README.md`, `AGENTS.md` e `docs/skill-guides/skill-discovery.md`
+3. **Adicione à tabela de slash commands** em **TODOS** os pontos canônicos:
+   - `README.md` + `README.pt-BR.md` (tabela na seção de commands)
+   - `AGENTS.md` (tabela "Slash Commands")
+   - `docs/WIKI.md` + `docs/WIKI.pt-BR.md` (entrada completa formato aihero: what / when / problem / example / takeaway)
+   - `docs/SKILLS-OVERVIEW.md` (entrada curta no índice de commands)
 
-4. **Rode o check de consistência** e adicione entrada no `CHANGELOG.md`
+4. **Se o command introduz pipeline novo:**
+   - criar declarativo em `programs/<nome>.md` e registrar em `programs/README.md`
+   - atualizar `policies/handoffs.md` com a cadeia canônica
+   - se o command tem autoridade sobre outras decisões (tipo `/constitution`): atualizar skills relevantes (`skills/NN-*/SKILL.md`) para consultá-lo
+
+5. **Cobertura de evals:**
+   - criar `evals/commands/<nome>/golden.json` com 3-4 casos cobrindo happy path, edge cases, anti-padrões
+   - se o command é apoiado por subagent: também `evals/protocol-shells/<subagent>/`
+
+6. **Consistency check:**
+   - adicionar asserção em `scripts/check-consistency.mjs` validando que o command está registrado em `plugin.json`
+   - rodar `node scripts/check-consistency.mjs` antes de commitar — deve passar
+
+7. **Bumps semver:**
+   - `MAJOR` se removeu/renomeou command existente
+   - `MINOR` se é command novo
+   - `PATCH` se é só atualização de doc
+   - bump em `README.md` (badge), `README.pt-BR.md` (badge), `.claude-plugin/plugin.json`, `mcp-server/package.json`, `docs/SKILLS-OVERVIEW.md` (header)
+   - adicionar entrada no `CHANGELOG.md` com seções Added/Changed/Sources
+
+8. **Tag git + GitHub Release** ao mergear em main:
+   - `git tag vX.Y.Z -m "..."`
+   - `gh release create vX.Y.Z --title "..." --notes-from-tag`
 
 ---
 

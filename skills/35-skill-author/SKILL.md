@@ -175,21 +175,37 @@ Usar o template acima. Validar:
 
 ### Fase 4: Registrar
 
-5 lugares para atualizar (item 4 e condicional):
-
+**Skill nova:**
 1. `.claude-plugin/plugin.json` — adicionar caminho na lista `skills`
-2. `README.md` — adicionar linha na tabela "The N Specialists" + bump no contador (badge, hero, instalacao)
+2. `README.md` — linha na tabela "The N Specialists" + bump nos contadores (badge, hero, install)
 3. `README.pt-BR.md` — espelhar
-4. `AGENTS.md` — **somente se** a skill introduzir slash command novo (adicionar na tabela de comandos). Se for skill so com trigger natural ou subagent, pular.
-5. `CHANGELOG.md` — entrada `## [Unreleased]` ou data atual
+4. `AGENTS.md` — **somente se** a skill introduzir slash command novo (tabela de comandos)
+5. `docs/WIKI.md` + `docs/WIKI.pt-BR.md` — entrada completa formato aihero
+6. `docs/SKILLS-OVERVIEW.md` — entrada curta no índice
+7. `CHANGELOG.md` — entrada Added/Changed
 
-Se a skill tiver subagent dispatchavel (`.claude/agents/X.md`):
+**Se a skill tiver subagent dispatchavel (`.claude/agents/X.md`):**
 - adicionar ao `agents` em `plugin.json`
-- listar na tabela de Subagents do README (ambos idiomas)
+- listar na tabela de Subagents do README (ambos idiomas) + WIKI
 
-Se a skill tiver slash command (`.claude/commands/X.md`):
+**Se a skill tiver slash command (`.claude/commands/X.md`):**
 - adicionar ao `commands` em `plugin.json`
-- listar na tabela de comandos do README + AGENTS
+- tabela de commands em README (ambos) + AGENTS.md + WIKI (ambos) + SKILLS-OVERVIEW
+- se introduz pipeline novo: criar `programs/<nome>.md` e registrar no `programs/README.md`
+- se exerce autoridade sobre outras skills (tipo `/constitution`): atualizar skills relevantes para consulta-lo
+- atualizar `policies/handoffs.md` se afeta a cadeia canonica
+
+**Eval coverage:**
+- `evals/commands/<nome>/golden.json` (3-4 casos: happy path, edge, anti-padroes)
+- se apoiado por subagent com protocol shell: tambem `evals/protocol-shells/<subagent>/`
+
+**Consistency check:**
+- adicionar assercao em `scripts/check-consistency.mjs` (command registrado em plugin.json + skills criticas referenciam se aplicavel)
+- rodar `node scripts/check-consistency.mjs` — deve passar antes de commit
+
+**Release hygiene (em main):**
+- bump semver em README badges, plugin.json, mcp-server/package.json, SKILLS-OVERVIEW header
+- `git tag vX.Y.Z -m "..."` + `gh release create vX.Y.Z`
 
 ### Fase 5: Eval
 

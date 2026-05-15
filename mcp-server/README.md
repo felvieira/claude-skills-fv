@@ -65,6 +65,17 @@ Mesmo formato acima.
 
 Prioridade de leitura: env vars > .env.local > .env
 
+## Design decision: slash commands vs MCP tools
+
+The 26 slash commands (including `/constitution`, `/analyze`, `/checklist`) are **NOT** exposed as MCP tools. Rationale:
+
+- **Slash commands** are interactive workflows that take freeform input, ask follow-up questions, and produce artifacts (files in the consumer repo). They belong in the agent's slash-command interface, not in the tool-use loop.
+- **MCP tools** are programmatic, single-call functions with structured I/O. They are invoked transparently as part of agent reasoning, not as explicit user-driven workflows.
+
+The 36 tools below are infrastructure (routing, context packs, image generation, scraping, session intelligence) — building blocks used by skills and commands. Adding `/constitution` as a tool would break the user-facing interaction model (the agent calling it without user intent).
+
+If a slash command needs programmatic access from another tool, expose a **dedicated helper tool** (not the whole command). Currently none of the spec-driven commands need this.
+
 ## Tools (36)
 
 ### Knowledge (14)

@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.3.2-0f766e)
+![Version](https://img.shields.io/badge/version-1.4.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -628,9 +628,27 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
-| **v1.2.0** | 2026-05-13 | Agent prompting patterns (layering A→B→C, agent-spec template, no-drift policy), 4-tier memory model, token budget in SessionStart hook |
+| **v1.4.0** | 2026-05-15 | Polish & release hygiene: SKILLS-OVERVIEW + AGENTS + CONTRIBUTING aligned with spec-driven commands; Acknowledgements section; quality-gates updated; hook detector for constitution changes; evals migrated to `evals/commands/`; git tags + GitHub Releases for all prior versions |
+| **v1.3.x** | 2026-05-15 | **Spec-driven development**: `/constitution` (governing principles, 5 axes), `/checklist` (unit tests for English), `/analyze` (cross-artifact consistency); 4 critical skills consult constitution; canonical pipeline in handoffs.md; `programs/spec-driven-development.md`; inference-time-compute patterns from optillm |
+| **v1.2.x** | 2026-05-13 | 13-check PRD validation (decoupled from Taskmaster); agent prompting patterns (layering A→B→C, agent-spec template, no-drift policy); 4-tier memory model; token budget in SessionStart hook |
 | **v1.1.0** | 2026-05-09 | Context Engineering adoption: protocol shells (Pareto-lang), skill I/O schemas, iteration scoring, programs/ layer, 3 pilot subagents migrated |
 | **v1.0.0** | 2026-04-30 | Auto-loop v2: multi-agent (claude + codex), parallel worktrees, polishing pass, circuit breaker, 21 smoke tests |
+
+---
+
+## Acknowledgements
+
+This kit absorbs ideas from several open-source projects, decoupled from their original infrastructure and adapted to our skill kit model:
+
+- **[github/spec-kit](https://github.com/github/spec-kit)** — `/constitution`, `/analyze`, `/checklist` commands and spec-driven development workflow (v1.3.0+). We do not adopt their CLI Python or `.specify/` directory; ideas are wired into our `memory/`, `docs/`, and slash command system.
+- **[anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster)** — 13-check PRD quality validation (v1.2.1). We do not adopt the Taskmaster AI dependency or `script.py` layer; only the validation taxonomy and discovery question structure.
+- **[algorithmicsuperintelligence/optillm](https://github.com/algorithmicsuperintelligence/optillm)** — inference-time compute patterns (MoA, Self-Consistency, BoN, PlanSearch, SPL, RTO) in `patterns/ai-integration/inference-time-compute.md` (v1.3.0). We do not adopt the proxy infrastructure or techniques requiring logit access.
+- **[mattpocock/skills](https://github.com/mattpocock/skills)** — `/grill-me`, `/to-prd`, `/to-issues` commands.
+- **[davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering)** — protocol shells (Pareto-lang), atom→field taxonomy, programs layer (v1.1.0).
+- **[rohitg00/agentmemory](https://github.com/rohitg00/agentmemory)** — 4-tier memory consolidation model and privacy filter (v1.2.0).
+- **[ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/)** — Five Building Block framework, layering A→B→C (v1.2.0).
+- **[sandeco/reversa](https://github.com/sandeco/reversa)** — Detective Spec pipeline for legacy reverse-engineering (skill 33).
+- **[aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day)** — documentation format for `docs/WIKI.md` and `docs/SKILLS-OVERVIEW.md`.
 
 ---
 

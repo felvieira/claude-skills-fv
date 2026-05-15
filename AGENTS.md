@@ -57,6 +57,9 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) |
 | `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker |
 | `/pipeline-discovery` | Pipeline COMPLETO discovery: grill-me → to-prd → to-issues → loop+TDD → ship |
+| `/constitution` | Bootstrap/update `memory/constitution.md` com princípios governantes (Code Quality, Testing, UX, Performance, Security) |
+| `/checklist` | Checklist contextual por feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases |
+| `/analyze` | Cross-artifact consistency check (read-only) entre constituição → spec → plan → issues. CRITICAL bloqueia `/build` |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 
