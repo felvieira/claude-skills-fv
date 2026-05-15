@@ -1,0 +1,82 @@
+{
+  "command": "/humanize",
+  "source": "blader/humanizer + Wikipedia Signs of AI Writing",
+  "cases": [
+    {
+      "id": "hum-001",
+      "description": "Full prose with multiple AI patterns — vocabulary, significance inflation, signposting, generic conclusion",
+      "input": {
+        "text": "Additionally, it's crucial to highlight the intricate interplay of these pivotal factors. The platform serves as a testament to innovation, showcasing the evolving landscape of technology. Let's dive in. The future looks bright as we continue this journey toward excellence.",
+        "depth": "full"
+      },
+      "expected_output_shape": {
+        "draft": { "type": "string" },
+        "audit_bullets": { "type": "array", "minItems": 1 },
+        "final": { "type": "string" }
+      },
+      "expected_patterns_removed": [
+        "AI vocabulary (crucial, intricate, pivotal, showcasing)",
+        "copula avoidance (serves as)",
+        "significance inflation (testament to innovation, evolving landscape)",
+        "signposting (Let's dive in)",
+        "generic conclusion (future looks bright, journey toward excellence)"
+      ],
+      "expected_final_not_contain": ["let's dive", "serves as a testament", "evolving landscape", "future looks bright", "pivotal", "intricate"]
+    },
+    {
+      "id": "hum-002",
+      "description": "File path input — reads file, rewrites, offers to write back",
+      "input": {
+        "file_path": "docs/specs/example.md",
+        "depth": "full"
+      },
+      "expected_output_shape": {
+        "draft": { "type": "string" },
+        "final": { "type": "string" },
+        "offer_write_back": true
+      }
+    },
+    {
+      "id": "hum-003",
+      "description": "Voice calibration — matches style from sample",
+      "input": {
+        "text": "The system serves as a robust foundation, fostering collaboration and enhancing productivity. Additionally, it highlights the crucial importance of alignment.",
+        "sample": "Short sentences. Get to the point. I use 'I' when I mean it. No fluff.",
+        "depth": "full"
+      },
+      "expected_validations": {
+        "final_matches_sample_rhythm": "shorter sentences preferred",
+        "first_person_allowed": true,
+        "copula_avoidance_removed": true
+      }
+    },
+    {
+      "id": "hum-004",
+      "description": "Quick depth — only high-recall patterns (7, 10, 13, 20, 28)",
+      "input": {
+        "text": "Let's explore the key insights. The system boasts vibrant capabilities. Additionally, it's important to note the intricate details.",
+        "depth": "quick"
+      },
+      "expected_output_shape": {
+        "draft": { "type": "string" },
+        "final": { "type": "string" }
+      },
+      "expected_patterns_removed": ["signposting (let's explore)", "AI vocabulary (vibrant, intricate)", "filler (it's important to note)"],
+      "note": "quick mode skips lower-recall patterns like title case, curly quotes, hyphenation"
+    },
+    {
+      "id": "hum-005",
+      "description": "Clean-but-soulless — technically clean but still AI-feeling",
+      "input": {
+        "text": "The feature works correctly. All requirements are met. Performance is acceptable. Users can complete the flow without errors.",
+        "depth": "full"
+      },
+      "expected_validations": {
+        "audit_identifies_soullessness": true,
+        "final_has_opinion_or_specificity": true,
+        "final_varies_sentence_rhythm": true
+      },
+      "note": "this case tests the personality + soul pass, not pattern removal"
+    }
+  ]
+}

@@ -199,6 +199,9 @@ Usar o template acima. Validar:
 - `evals/commands/<nome>/golden.json` (3-4 casos: happy path, edge, anti-padroes)
 - se apoiado por subagent com protocol shell: tambem `evals/protocol-shells/<subagent>/`
 
+**Prosa gerada pela skill:**
+- Se a skill produz qualquer prosa que humanos vão ler (docs, summarys, PRDs, copy), referenciar `policies/anti-ai-writing.md` na seção de governança e oferecer `/humanize` como passe final.
+
 **Consistency check:**
 - adicionar assercao em `scripts/check-consistency.mjs` (command registrado em plugin.json + skills criticas referenciam se aplicavel)
 - rodar `node scripts/check-consistency.mjs` — deve passar antes de commit

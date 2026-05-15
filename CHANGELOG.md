@@ -5,6 +5,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.4.2-humanize-gaps] - 2026-05-15
+
+### Added
+- **`evals/commands/humanize/golden.json`** — 5 golden cases: full AI pattern removal, file path input, voice calibration, quick depth, clean-but-soulless detection.
+
+### Changed
+- **`scripts/check-consistency.mjs`** — added `humanize` to the commands array assertion.
+- **`policies/quality-gates.md`** — added "Gate de prosa" section: any human-readable prose must pass `policies/anti-ai-writing.md` before delivery.
+- **`skills/35-skill-author/SKILL.md`** — added note: if skill produces prose, reference `anti-ai-writing.md` and offer `/humanize` as final pass.
+
+---
+
 ## [1.4.1-humanizer] - 2026-05-15
 
 ### Added

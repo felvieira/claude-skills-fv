@@ -34,6 +34,12 @@ Recomendar rodar `/analyze --strict` antes de release para detectar violacoes cr
 - stack preferida
 - estilo idealizado de arquitetura
 
+## Gate de prosa (docs, PRDs, copy)
+
+Qualquer entrega que inclua prosa que humanos vão ler (docs de usuário, PRDs, copy, release notes, changelogs narrativos) deve passar por `policies/anti-ai-writing.md` antes de finalizar.
+
+Rodar `/humanize` ou checar manualmente os 29 padrões. Prosa com tells de IA visíveis não sai — afeta credibilidade e, em conteúdo publicado, E-E-A-T do Google.
+
 ## Rejeitar quando
 - existe contradicao funcional
 - ha regressao relevante nao tratada
