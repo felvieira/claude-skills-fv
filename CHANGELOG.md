@@ -5,6 +5,27 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.4.1-humanizer] - 2026-05-15
+
+### Added
+- **`policies/anti-ai-writing.md`** (new) — catálogo de 29 padrões de AI-generated writing organizados em 5 categorias (Content, Language/Grammar, Style, Communication, Filler), cada um com example Before/After e palavras-gatilho. Inclui checklist final anti-IA e seção "personalidade e alma".
+- **`.claude/commands/humanize.md`** (new) — `/humanize` slash command. Detecta input (file path ou inline), suporta voice calibration por amostra, aplica os 29 padrões, executa auto-auditoria ("O que ainda parece IA?") e entrega versão final revisada.
+- **`hooks/scripts/ai-writing-detector.mjs`** (new) — PostToolUse hook opt-in (desabilitado por default, ativar via `"ai_writing_detector": {"enabled": true}`). Monitora Write/Edit em paths de prosa (`docs/specs/`, `docs/prd/`, `README*.md`, etc.) e emite advisory com padrões AI detectados + sugestão de `/humanize`.
+
+### Changed
+- **`skills/10-documenter/SKILL.md`** — referencia `policies/anti-ai-writing.md` como gate antes de finalizar docs de usuário.
+- **`skills/13-marketing-copy/SKILL.md`** — referencia `policies/anti-ai-writing.md` como gate obrigatório antes de publicar copy.
+- **`skills/14-seo-specialist/SKILL.md`** — referencia `policies/anti-ai-writing.md`; nota que tells AI em conteúdo publicado afetam E-E-A-T.
+- **`hooks/hooks.json`** — `ai-writing-detector.mjs` registrado em PostToolUse.
+- **`.claude-plugin/plugin.json`** — `/humanize` registrado; version 1.4.1.
+- **`AGENTS.md`**, **`docs/WIKI.md`**, **`docs/WIKI.pt-BR.md`**, **`docs/SKILLS-OVERVIEW.md`**, **`README.md`**, **`README.pt-BR.md`** — `/humanize` adicionado em todos os pontos canônicos.
+
+### Sources
+- [blader/humanizer](https://github.com/blader/humanizer) (18.9k stars) — taxonomia dos 29 padrões, estrutura do processo (draft → auditoria → final), voice calibration, concept "personality & soul"
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) — fonte primária dos padrões (WikiProject AI Cleanup)
+
+---
+
 ## [1.4.0-release-hygiene] - 2026-05-15
 
 ### Added

@@ -223,6 +223,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/checklist docs/specs/dark-mode.md`
 **Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
+### `/humanize` — Remove AI writing patterns
+
+**O que faz:** reescreve prosa removendo 29 padrões AI (vocabulário de alta frequência, copula avoidance, signposting, conclusões genéricas, artefatos de chatbot, hedging excessivo...). Inclui auto-auditoria antes da versão final.
+**Quando usar:** antes de publicar qualquer PRD, doc, copy ou artigo gerado com assistência de IA.
+**Problema que resolve:** texto AI tem tells reconhecíveis que minam credibilidade.
+**Exemplo:** `/humanize docs/specs/dark-mode.md`
+**Takeaway:** **limpo-mas-sem-alma ainda parece IA.** O passo de personalidade é tão importante quanto remover os padrões. Adaptado de [blader/humanizer](https://github.com/blader/humanizer).
+
 ### `/analyze` — Cross-artifact consistency check
 
 **O que faz:** auditoria read-only entre constituição → specs → plan → issues. Findings CRITICAL/HIGH/MEDIUM/LOW; matriz de rastreabilidade.

@@ -19,6 +19,7 @@
     "hooks/scripts/post-tool-verifier.mjs",
     "hooks/scripts/simplify-ignore.mjs",
     "hooks/scripts/session-event-logger.mjs",
-    "hooks/scripts/constitution-watcher.mjs"
+    "hooks/scripts/constitution-watcher.mjs",
+    "hooks/scripts/ai-writing-detector.mjs"
   ]
 }

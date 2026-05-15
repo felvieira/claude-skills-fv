@@ -19,6 +19,8 @@ Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 - `policies/handoffs.md`
 - `policies/persistence.md`
 - `policies/token-efficiency.md`
+- `policies/writing-clarity.md`
+- `policies/anti-ai-writing.md` ← **antes de finalizar qualquer doc que humanos vão ler**
 - `policies/evals.md`
 
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.

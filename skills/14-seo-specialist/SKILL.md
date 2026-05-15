@@ -14,7 +14,9 @@ O Especialista SEO é responsável por garantir que o sistema e landing pages se
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/tool-safety.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md`, `policies/tool-safety.md` e `policies/anti-ai-writing.md`.
+
+**Gate:** conteúdo publicado (artigos, meta descriptions, headings) deve passar pelos 29 padrões de `policies/anti-ai-writing.md` antes de finalizar. Conteúdo com tells de IA penaliza percepção de autenticidade e pode afetar E-E-A-T.
 
 Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-guides/seo-specialist.md` apenas quando necessario.
 

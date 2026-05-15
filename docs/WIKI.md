@@ -289,6 +289,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/humanize` — Remove AI writing patterns
+
+**What it does:** rewrites any prose (docs, PRDs, copy, changelogs, release notes) removing the 29 AI writing patterns catalogued in `policies/anti-ai-writing.md`: significance inflation, promotional language, copula avoidance, signposting, generic conclusions, chatbot artifacts, and more. Includes a self-audit step ("What still sounds AI-generated?") before delivering the final version.
+**When to use:** before publishing any PRD to the tracker, after generating docs with skill 10, before publishing copy (skill 13) or articles (skill 14). Also useful as a final pass on any AI-assisted prose.
+**Problem it solves:** AI-generated text has recognizable patterns that undermine credibility. Humans notice even if they can't name them.
+**Example:** `/humanize docs/specs/dark-mode.md` or inline text
+**Takeaway:** **don't just remove bad patterns — inject actual personality.** Clean-but-soulless is still obviously AI. Adapted from [blader/humanizer](https://github.com/blader/humanizer) (18.9k stars) + [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
+
 #### `/to-issues` — PRD → vertical slices in tracker
 
 **What it does:** breaks PRD into N independent issues (vertical slices/tracer bullets). Each issue is HITL or AFK. Publishes all with label `needs-triage`, in dependency order.
