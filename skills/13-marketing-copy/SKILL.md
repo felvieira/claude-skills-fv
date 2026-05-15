@@ -13,7 +13,9 @@ O Copywriter é responsável por todo texto que o usuário lê. Da headline ao t
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/evals.md`, `policies/writing-clarity.md` e `policies/anti-ai-writing.md`.
+
+**Gate:** antes de entregar qualquer copy, rodar mentalmente os 29 padrões de `policies/anti-ai-writing.md`. Copy com padrões AI visíveis não sai.
 
 Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-guides/marketing-copy.md` apenas quando necessario.
 

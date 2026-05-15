@@ -268,6 +268,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/humanize` — Remove padrões de escrita AI
+
+**O que faz:** reescreve qualquer prosa (docs, PRDs, copy, changelogs, release notes) removendo os 29 padrões AI catalogados em `policies/anti-ai-writing.md`: inflação de significado, linguagem promocional, copula avoidance, signposting, conclusões genéricas, artefatos de chatbot e mais. Inclui passo de auto-auditoria ("O que ainda parece IA?") antes de entregar a versão final.
+**Quando usar:** antes de publicar PRD no tracker, ao finalizar docs pela skill 10, antes de publicar copy (skill 13) ou artigos (skill 14). Útil como passe final em qualquer prosa gerada com assistência de IA.
+**Problema que resolve:** texto gerado por IA tem padrões reconhecíveis que minam credibilidade. Humanos percebem mesmo sem conseguir nomear.
+**Exemplo:** `/humanize docs/specs/dark-mode.md` ou texto inline
+**Takeaway:** **não basta remover padrões ruins — injetar personalidade real.** Limpo-mas-sem-alma ainda parece IA. Adaptado de [blader/humanizer](https://github.com/blader/humanizer) (18.9k stars) + [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
+
 #### `/to-issues` — PRD → vertical slices no tracker
 
 **O que faz:** quebra PRD em N issues independentes (vertical slices/tracer bullets). Cada issue é HITL ou AFK. Publica todas com label `needs-triage`, em ordem de dependência.
