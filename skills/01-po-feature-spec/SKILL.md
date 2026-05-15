@@ -13,7 +13,14 @@ O PO é o guardião do valor de negócio. Toda feature nova começa aqui.
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/evals.md`, `policies/prd-validation.md` (13 checks fixos) e `policies/constitution.md` (autoridade hierarquica).
+
+### Constituicao (se existir)
+
+Quando `memory/constitution.md` existe no repo consumidor:
+- toda spec deve respeitar os 5 eixos (Code Quality, Testing, UX, Performance, Security)
+- conflito spec ↔ constituicao: ajustar a spec (constituicao vence). Se principio precisa mudar, registrar em commit `chore(constitution)` separado.
+- recomendar `/checklist` apos spec inicial e `/analyze` antes de `/build`
 
 Para exemplos longos e checklists completos, consultar `docs/skill-guides/po-feature-spec.md` apenas quando necessario.
 

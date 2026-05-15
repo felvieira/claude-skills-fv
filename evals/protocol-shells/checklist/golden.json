@@ -1,0 +1,62 @@
+{
+  "command": "/checklist",
+  "cases": [
+    {
+      "id": "chk-001",
+      "description": "Generate contextual checklist for a UI feature spec",
+      "input": {
+        "spec_path": "docs/specs/dark-mode.md",
+        "spec_content_hints": ["toggle button", "persists across sessions", "respects system preference"],
+        "constitution_present": true
+      },
+      "expected_output_shape": {
+        "categories": {
+          "completeness": { "checks": { "min": 3 } },
+          "clarity": { "checks": { "min": 3 } },
+          "consistency": { "checks": { "min": 2 } },
+          "coverage": { "checks": { "min": 3 } },
+          "edge_cases": { "checks": { "min": 3 } },
+          "constitution": { "checks": { "min": 1 } }
+        },
+        "total_checks": { "min": 15, "max": 30 }
+      },
+      "expected_artifacts": ["docs/checklists/YYYY-MM-DD-dark-mode.md"]
+    },
+    {
+      "id": "chk-002",
+      "description": "Reject generic boilerplate checks",
+      "input": {
+        "spec_path": "docs/specs/dark-mode.md",
+        "evaluation_target": "checks must mention concrete elements from spec"
+      },
+      "expected_validations": {
+        "no_check_is_generic": "every check references concrete element (button, persistence, system pref)",
+        "no_check_is_implementation_test": "no 'verify the function returns X' style"
+      }
+    },
+    {
+      "id": "chk-003",
+      "description": "Quick depth (under 15 checks)",
+      "input": {
+        "spec_path": "docs/specs/simple-feature.md",
+        "depth": "quick"
+      },
+      "expected_output_shape": {
+        "total_checks": { "max": 15 }
+      }
+    },
+    {
+      "id": "chk-004",
+      "description": "No constitution available — skip constitution category",
+      "input": {
+        "spec_path": "docs/specs/dark-mode.md",
+        "constitution_present": false
+      },
+      "expected_output_shape": {
+        "categories": {
+          "constitution": { "absent": true }
+        }
+      }
+    }
+  ]
+}

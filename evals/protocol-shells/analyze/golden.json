@@ -1,0 +1,68 @@
+{
+  "command": "/analyze",
+  "cases": [
+    {
+      "id": "ana-001",
+      "description": "Clean cross-artifact (constitution + spec + plan + issues all coherent)",
+      "input": {
+        "constitution": "memory/constitution.md (v1.0, security gate Semgrep)",
+        "spec": "docs/specs/dark-mode.md (3 user stories with AC)",
+        "plan": "docs/plan/dark-mode.md (covers Semgrep gate in CI)",
+        "issues": ["#42", "#43", "#44"]
+      },
+      "expected_output_shape": {
+        "score": { "enum": ["ship-it"] },
+        "findings": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0
+        },
+        "traceability_matrix": { "type": "table" }
+      },
+      "expected_exit_code": 0
+    },
+    {
+      "id": "ana-002",
+      "description": "CRITICAL — plan ignores a constitution principle",
+      "input": {
+        "constitution": "P5.1 requires Semgrep in CI",
+        "plan": "deploy section has no SAST gate"
+      },
+      "expected_output_shape": {
+        "score": { "enum": ["blocking"] },
+        "findings": {
+          "critical": { "min": 1 }
+        }
+      },
+      "expected_exit_code": 2
+    },
+    {
+      "id": "ana-003",
+      "description": "HIGH — semantic duplication between 2 user stories",
+      "input": {
+        "spec": "US-001 'user can toggle dark mode' + US-005 'app supports dark theme switch'"
+      },
+      "expected_output_shape": {
+        "findings": {
+          "high": { "min": 1 }
+        }
+      },
+      "expected_exit_code": 1
+    },
+    {
+      "id": "ana-004",
+      "description": "Orphan issue — exists in tracker without matching user story",
+      "input": {
+        "issues": ["#99 — 'add gradient backgrounds'"],
+        "spec_user_stories": ["US-001", "US-002"]
+      },
+      "expected_output_shape": {
+        "findings": {
+          "medium": { "min": 1 }
+        },
+        "traceability_matrix_marks_orphan": true
+      }
+    }
+  ]
+}

@@ -15,6 +15,8 @@ O Orquestrador classifica a task, define o pipeline minimo suficiente e coordena
 
 Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 
+- `policies/constitution.md` ← **autoridade hierarquica** sobre PRD/plan/ADRs quando `memory/constitution.md` existir
+- `policies/constitution.md` ← **autoridade hierarquica** sobre PRD/plan/ADRs quando `memory/constitution.md` existir
 - `policies/execution.md`
 - `policies/handoffs.md`
 - `policies/quality-gates.md`
@@ -23,6 +25,20 @@ Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 - `policies/tool-safety.md`
 - `policies/evals.md`
 - `policies/vertical-slices.md` ← **regra obrigatoria** para toda feature multi-camada
+
+### Constituicao (se existir)
+
+Antes de montar pipeline, checar `memory/constitution.md` do repo consumidor:
+- conflito com algum principio → ajustar pipeline (ex: constituicao manda TDD → forcar skill 37 antes de skill 03/04)
+- ausencia de constituicao em projeto que ja tem PRD/ADRs → sugerir `/constitution` antes de prosseguir
+- pipeline deve incluir `/analyze` antes de `/build` quando ha 3+ artefatos (spec + plan + issues)
+
+### Constituicao (se existir)
+
+Antes de montar pipeline, checar `memory/constitution.md` do repo consumidor:
+- conflito com algum principio → ajustar pipeline (ex: constituicao manda TDD → forcar skill 37 antes de skill 03/04)
+- ausencia de constituicao em projeto que ja tem PRD/ADRs → sugerir `/constitution` antes de prosseguir
+- pipeline deve incluir `/analyze` antes de `/build` quando ha 3+ artefatos (spec + plan + issues)
 
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
 

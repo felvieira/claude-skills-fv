@@ -1,0 +1,58 @@
+{
+  "command": "/constitution",
+  "cases": [
+    {
+      "id": "const-001",
+      "description": "Bootstrap a new constitution from scratch on a TypeScript+React project",
+      "input": {
+        "mode": "bootstrap",
+        "repo_audit_present": true,
+        "stack_detected": "typescript+react+postgres",
+        "answers": {
+          "code_quality": { "linter": "eslint", "formatter": "prettier", "max_complexity": 10 },
+          "testing": { "tdd": "optional", "coverage_min": 80 },
+          "ux": { "wcag": "AA", "design_system": "shadcn/ui" },
+          "performance": { "p95_api_ms": 300, "monthly_ai_budget_usd": 200 },
+          "security": { "sast": "semgrep", "compliance": "soc2" }
+        }
+      },
+      "expected_artifacts": [
+        "memory/constitution.md (version: 0.1.0, all 5 axes populated)"
+      ],
+      "expected_console": {
+        "report_includes": ["5 axes filled", "0 TBD"],
+        "git_commit_suggested": "chore(constitution): bootstrap v0.1.0"
+      }
+    },
+    {
+      "id": "const-002",
+      "description": "Update existing constitution — add new security gate",
+      "input": {
+        "mode": "update",
+        "existing_constitution": true,
+        "current_version": "1.2.0",
+        "change_request": "add SAST gate (Semgrep) to security axis"
+      },
+      "expected_artifacts": [
+        "memory/constitution.md (version bumped to 1.3.0, axis 5 modified)"
+      ],
+      "expected_console": {
+        "report_includes": ["MINOR bump (added principle)", "diff shown"]
+      }
+    },
+    {
+      "id": "const-003",
+      "description": "Reject vague principle without verifiable criterion",
+      "input": {
+        "mode": "bootstrap",
+        "answers": {
+          "code_quality": { "principle": "code must be clean" }
+        }
+      },
+      "expected_console": {
+        "rejects": ["vague principle without verifiable criterion"],
+        "asks_user_for": "concrete metric (max complexity, max file size, ...)"
+      }
+    }
+  ]
+}

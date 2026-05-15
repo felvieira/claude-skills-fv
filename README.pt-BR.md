@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.3.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.3.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -433,6 +433,12 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) | PO (01) modo PRD |
 | `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker | Orchestrator (09) + vertical-slices |
 | `/pipeline-discovery` | Fluxo COMPLETO de discovery: grill-me → to-prd → to-issues → loop+TDD → ship | Orchestrator (09) coordenando, todas as skills |
+| `/constitution` | Bootstrap/update de `memory/constitution.md` com princípios governantes (Code Quality, Testing, UX, Performance, Security) — autoridade hierárquica sobre PRD/plan/ADRs | PO (01) modo governance |
+| `/checklist` | Gera checklist contextual por feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
+| `/analyze` | Cross-artifact consistency check (read-only) — constituição → specs → plan → issues. Findings classificados CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) modo auditoria |
+| `/constitution` | Bootstrap/update de `memory/constitution.md` com princípios governantes (Code Quality, Testing, UX, Performance, Security) — autoridade hierárquica sobre PRD/plan/ADRs | PO (01) modo governance |
+| `/checklist` | Gera checklist contextual por feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
+| `/analyze` | Cross-artifact consistency check (read-only) — constituição → specs → plan → issues. Findings classificados CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) modo auditoria |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agente Orquestrador)
 

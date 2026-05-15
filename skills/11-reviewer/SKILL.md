@@ -16,11 +16,31 @@ O Reviewer é o portão final antes do deploy. Valida TUDO. Não documenta — v
 
 Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 
+- `policies/constitution.md` ← **rubric primario** quando `memory/constitution.md` existir
+- `policies/constitution.md` ← **rubric primario** quando `memory/constitution.md` existir
 - `policies/execution.md`
 - `policies/handoffs.md`
 - `policies/quality-gates.md`
 - `policies/token-efficiency.md`
 - `policies/evals.md`
+
+### Constituicao como rubric primario
+
+Quando o repo consumidor tem `memory/constitution.md`:
+- usar os 5 eixos (Code Quality, Testing, UX, Performance, Security) como criterio primario de review
+- conflito implementacao ↔ constituicao = **rejeicao automatica** (constituicao e nao-negociavel)
+- se review encontra principio precisando mudar, NAO diluir aqui — abrir item para `/constitution` em commit dedicado
+
+Considerar rodar `/analyze` antes deste review quando ha spec + plan + issues — pega inconsistencias antes do reviewer humano.
+
+### Constituicao como rubric primario
+
+Quando o repo consumidor tem `memory/constitution.md`:
+- usar os 5 eixos (Code Quality, Testing, UX, Performance, Security) como criterio primario de review
+- conflito implementacao ↔ constituicao = **rejeicao automatica** (constituicao e nao-negociavel)
+- se review encontra principio precisando mudar, NAO diluir aqui — abrir item para `/constitution` em commit dedicado
+
+Considerar rodar `/analyze` antes deste review quando ha spec + plan + issues — pega inconsistencias antes do reviewer humano.
 
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
 

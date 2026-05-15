@@ -11,7 +11,17 @@ O Release Manager profissionaliza a ponta final do fluxo: o que vai sair, como v
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md` e `policies/constitution.md`.
+
+### Gate de release contra constituicao
+
+Quando `memory/constitution.md` existe:
+- validar gates obrigatorios do eixo Security (SAST, dependency scan, secrets scan executados)
+- validar budgets do eixo Performance (latencia p95, custo IA dentro do limite)
+- validar coverage minimo do eixo Testing
+- recomendar `/analyze` final como gate adicional antes de `/ship`
+
+Bloqueio: se qualquer principio CRITICAL nao satisfeito, **nao prosseguir**. Registrar exception em ADR antes (raramente justificavel).
 
 ## Quando Usar
 

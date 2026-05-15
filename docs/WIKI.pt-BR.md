@@ -220,6 +220,54 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/to-prd` (no contexto pós-grill-me)
 **Takeaway:** **PRD vai pro tracker com label needs-triage.** Spec interna usa `/spec` em `docs/specs/`. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd).
 
+#### `/constitution` — Princípios governantes do projeto
+
+**O que faz:** cria/atualiza `memory/constitution.md` no repo consumidor via 5 mini-entrevistas (Code Quality, Testing, UX, Performance, Security). A constituição tem **autoridade hierárquica** sobre PRD/plan/ADRs — conflito: constituição vence.
+**Quando usar:** bootstrap de projeto, mudança organizacional (novo compliance, novo budget), onboarding do kit em projeto sem princípios formais.
+**Problema que resolve:** princípios só vivem nas cabeças ou em ADRs espalhados; specs/plans/reviews não têm rubric objetivo para ancorar decisões.
+**Exemplo:** `/constitution` (ou `/constitution focus: security`)
+**Takeaway:** **princípios são não-negociáveis.** Para mudar: commit dedicado `chore(constitution)`, nunca diluição silenciosa em PR de feature. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/checklist` — Unit tests for English
+
+**O que faz:** gera **checklist contextual por feature** (não fixa) cobrindo Completeness, Clarity, Consistency, Coverage, Edge Cases. Cruza com a constituição. Complementa (não substitui) os 13 checks fixos de `policies/prd-validation.md`.
+**Quando usar:** após `/spec` ou `/to-prd`, antes de `/plan`. Ou para auditar PR que muda spec existente.
+**Problema que resolve:** ambiguidades da spec que só aparecem em `/build` (retrabalho). Checklist fixa (13 checks) não pega problemas de domínio específico.
+**Exemplo:** `/checklist docs/specs/dark-mode.md`
+**Takeaway:** **a spec é "código em português"; esta checklist é a suíte de testes unitários dela.** Adaptado de [github/spec-kit](https://github.com/github/spec-kit) (conceito de Den Delimarsky).
+
+#### `/analyze` — Cross-artifact consistency check
+
+**O que faz:** auditoria **read-only** entre `memory/constitution.md` → `docs/specs/*.md` → `docs/plan/*.md` (ou ADRs) → issues do tracker. Detecta findings CRITICAL/HIGH/MEDIUM/LOW (conflitos com constituição, duplicação semântica, ambiguidade, gaps de cobertura, higiene). Gera matriz de rastreabilidade.
+**Quando usar:** depois de `/to-issues` e antes de `/build`. Antes de `/ship` em release major. Após mudança grande na constituição.
+**Problema que resolve:** o pipeline `/spec → /plan → /to-issues → /build` não tem gate validando se tasks ainda batem com a spec. Updates na constituição podem invalidar artefatos silenciosamente.
+**Exemplo:** `/analyze --feature dark-mode --strict`
+**Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/constitution` — Princípios governantes do projeto
+
+**O que faz:** cria/atualiza `memory/constitution.md` no repo consumidor via 5 mini-entrevistas (Code Quality, Testing, UX, Performance, Security). A constituição tem **autoridade hierárquica** sobre PRD/plan/ADRs — conflito: constituição vence.
+**Quando usar:** bootstrap de projeto, mudança organizacional (novo compliance, novo budget), onboarding do kit em projeto sem princípios formais.
+**Problema que resolve:** princípios só vivem nas cabeças ou em ADRs espalhados; specs/plans/reviews não têm rubric objetivo para ancorar decisões.
+**Exemplo:** `/constitution` (ou `/constitution focus: security`)
+**Takeaway:** **princípios são não-negociáveis.** Para mudar: commit dedicado `chore(constitution)`, nunca diluição silenciosa em PR de feature. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/checklist` — Unit tests for English
+
+**O que faz:** gera **checklist contextual por feature** (não fixa) cobrindo Completeness, Clarity, Consistency, Coverage, Edge Cases. Cruza com a constituição. Complementa (não substitui) os 13 checks fixos de `policies/prd-validation.md`.
+**Quando usar:** após `/spec` ou `/to-prd`, antes de `/plan`. Ou para auditar PR que muda spec existente.
+**Problema que resolve:** ambiguidades da spec que só aparecem em `/build` (retrabalho). Checklist fixa (13 checks) não pega problemas de domínio específico.
+**Exemplo:** `/checklist docs/specs/dark-mode.md`
+**Takeaway:** **a spec é "código em português"; esta checklist é a suíte de testes unitários dela.** Adaptado de [github/spec-kit](https://github.com/github/spec-kit) (conceito de Den Delimarsky).
+
+#### `/analyze` — Cross-artifact consistency check
+
+**O que faz:** auditoria **read-only** entre `memory/constitution.md` → `docs/specs/*.md` → `docs/plan/*.md` (ou ADRs) → issues do tracker. Detecta findings CRITICAL/HIGH/MEDIUM/LOW (conflitos com constituição, duplicação semântica, ambiguidade, gaps de cobertura, higiene). Gera matriz de rastreabilidade.
+**Quando usar:** depois de `/to-issues` e antes de `/build`. Antes de `/ship` em release major. Após mudança grande na constituição.
+**Problema que resolve:** o pipeline `/spec → /plan → /to-issues → /build` não tem gate validando se tasks ainda batem com a spec. Updates na constituição podem invalidar artefatos silenciosamente.
+**Exemplo:** `/analyze --feature dark-mode --strict`
+**Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
+
 #### `/to-issues` — PRD → vertical slices no tracker
 
 **O que faz:** quebra PRD em N issues independentes (vertical slices/tracer bullets). Cada issue é HITL ou AFK. Publica todas com label `needs-triage`, em ordem de dependência.

@@ -5,6 +5,29 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.3.1-spec-kit-integration] - 2026-05-15
+
+### Changed
+- **`skills/09-orchestrator/SKILL.md`** — added `policies/constitution.md` as hierarchical authority and explicit guidance: pipeline must include `/analyze` before `/build` when there are 3+ artifacts (spec + plan + issues).
+- **`skills/11-reviewer/SKILL.md`** — constitution is **primary rubric** for review. Implementation ↔ constitution conflict triggers automatic rejection. Recommend `/analyze` before human review.
+- **`skills/01-po-feature-spec/SKILL.md`** — every spec must respect the 5 constitution axes. Recommend `/checklist` after spec, `/analyze` before `/build`.
+- **`skills/24-release-manager/SKILL.md`** — ship gate validates security/performance/testing axes of constitution. CRITICAL principle unsatisfied = no release (exception requires ADR).
+- **`policies/handoffs.md`** — added "Pipeline Canônico (Spec-Driven Development)" section with full chain (constitution → grill-me → spec → checklist → plan → to-issues → analyze → build → ship) and skip rules.
+- **`docs/WIKI.md`** + **`docs/WIKI.pt-BR.md`** — registered `/constitution`, `/checklist`, `/analyze` commands with full "what does / when / problem / example / takeaway" entries.
+- **`README.md`** + **`README.pt-BR.md`** — added 3 new commands to the commands table; version badge 1.3.1.
+- **`.claude-plugin/plugin.json`** — registered 3 new commands; version 1.3.1.
+- **`mcp-server/package.json`** — bumped to 1.3.1; description mentions new commands.
+
+### Added (evals)
+- **`evals/protocol-shells/constitution/golden.json`** — 3 golden cases (bootstrap, update with version bump, reject vague principle).
+- **`evals/protocol-shells/analyze/golden.json`** — 4 golden cases (clean, CRITICAL constitution conflict, HIGH duplication, MEDIUM orphan issue).
+- **`evals/protocol-shells/checklist/golden.json`** — 4 golden cases (UI feature, reject generic checks, quick depth, no constitution).
+
+### Why
+This patch closes integration gaps from 1.3.0: the new commands existed but skills didn't reference them, WIKI didn't list them, plugin didn't register them, no eval coverage. Now they are first-class citizens of the pipeline.
+
+---
+
 ## [1.3.0-spec-kit-ideas] - 2026-05-15
 
 ### Added

@@ -241,6 +241,54 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/to-prd` (in post-grill-me context)
 **Takeaway:** **PRD goes to the tracker with label needs-triage.** Internal spec uses `/spec` in `docs/specs/`. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd).
 
+#### `/constitution` — Governing principles for the project
+
+**What it does:** creates/updates `memory/constitution.md` in the consumer repo via 5 mini-interviews (Code Quality, Testing, UX, Performance, Security). The constitution has **hierarchical authority** over PRD/plan/ADRs — conflict resolution: constitution wins.
+**When to use:** project bootstrap, organizational change (new compliance framework, new cost budget), onboarding kit skills into an existing project without formal principles.
+**Problem it solves:** principles only live in heads or scattered ADRs; specs/plans/reviews don't have an objective rubric to anchor decisions.
+**Example:** `/constitution` (or `/constitution focus: security`)
+**Takeaway:** **principles are non-negotiable.** To change a principle: dedicated `chore(constitution)` commit, never silent dilution in feature PR. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/checklist` — Unit tests for English
+
+**What it does:** generates a **contextual checklist per feature** (not fixed) covering Completeness, Clarity, Consistency, Coverage, Edge Cases. Cross-references the constitution. Complements (does not replace) the 13 fixed checks in `policies/prd-validation.md`.
+**When to use:** after `/spec` or `/to-prd`, before `/plan`. Or to audit a PR that changes an existing spec.
+**Problem it solves:** spec ambiguities that only surface during `/build` (rework). Fixed checklist (13 checks) doesn't catch domain-specific issues.
+**Example:** `/checklist docs/specs/dark-mode.md`
+**Takeaway:** **the spec is "code in English"; this checklist is its unit test suite.** Adapted from [github/spec-kit](https://github.com/github/spec-kit) (concept by Den Delimarsky).
+
+#### `/analyze` — Cross-artifact consistency check
+
+**What it does:** **read-only** audit between `memory/constitution.md` → `docs/specs/*.md` → `docs/plan/*.md` (or ADRs) → tracker issues. Detects CRITICAL/HIGH/MEDIUM/LOW findings (constitution conflicts, semantic duplication, ambiguity, coverage gaps, hygiene). Produces traceability matrix.
+**When to use:** after `/to-issues` and before `/build`. Before `/ship` of a major release. After a big change to the constitution.
+**Problem it solves:** the pipeline `/spec → /plan → /to-issues → /build` has no gate validating tasks still match spec. Constitution updates can silently invalidate existing artifacts.
+**Example:** `/analyze --feature dark-mode --strict`
+**Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/constitution` — Governing principles for the project
+
+**What it does:** creates/updates `memory/constitution.md` in the consumer repo via 5 mini-interviews (Code Quality, Testing, UX, Performance, Security). The constitution has **hierarchical authority** over PRD/plan/ADRs — conflict resolution: constitution wins.
+**When to use:** project bootstrap, organizational change (new compliance framework, new cost budget), onboarding kit skills into an existing project without formal principles.
+**Problem it solves:** principles only live in heads or scattered ADRs; specs/plans/reviews don't have an objective rubric to anchor decisions.
+**Example:** `/constitution` (or `/constitution focus: security`)
+**Takeaway:** **principles are non-negotiable.** To change a principle: dedicated `chore(constitution)` commit, never silent dilution in feature PR. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
+
+#### `/checklist` — Unit tests for English
+
+**What it does:** generates a **contextual checklist per feature** (not fixed) covering Completeness, Clarity, Consistency, Coverage, Edge Cases. Cross-references the constitution. Complements (does not replace) the 13 fixed checks in `policies/prd-validation.md`.
+**When to use:** after `/spec` or `/to-prd`, before `/plan`. Or to audit a PR that changes an existing spec.
+**Problem it solves:** spec ambiguities that only surface during `/build` (rework). Fixed checklist (13 checks) doesn't catch domain-specific issues.
+**Example:** `/checklist docs/specs/dark-mode.md`
+**Takeaway:** **the spec is "code in English"; this checklist is its unit test suite.** Adapted from [github/spec-kit](https://github.com/github/spec-kit) (concept by Den Delimarsky).
+
+#### `/analyze` — Cross-artifact consistency check
+
+**What it does:** **read-only** audit between `memory/constitution.md` → `docs/specs/*.md` → `docs/plan/*.md` (or ADRs) → tracker issues. Detects CRITICAL/HIGH/MEDIUM/LOW findings (constitution conflicts, semantic duplication, ambiguity, coverage gaps, hygiene). Produces traceability matrix.
+**When to use:** after `/to-issues` and before `/build`. Before `/ship` of a major release. After a big change to the constitution.
+**Problem it solves:** the pipeline `/spec → /plan → /to-issues → /build` has no gate validating tasks still match spec. Constitution updates can silently invalidate existing artifacts.
+**Example:** `/analyze --feature dark-mode --strict`
+**Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
+
 #### `/to-issues` — PRD → vertical slices in tracker
 
 **What it does:** breaks PRD into N independent issues (vertical slices/tracer bullets). Each issue is HITL or AFK. Publishes all with label `needs-triage`, in dependency order.

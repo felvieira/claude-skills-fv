@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.3.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.3.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -437,6 +437,12 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/to-prd` | Convert current conversation into a PRD published in the issue tracker (label `needs-triage`) | PO (01) PRD mode |
 | `/to-issues` | Break PRD into N independent issues (vertical slices) and publish to tracker | Orchestrator (09) + vertical-slices |
 | `/pipeline-discovery` | FULL discovery flow: grill-me → to-prd → to-issues → loop+TDD → ship | Orchestrator (09) coordinated, all skills |
+| `/constitution` | Bootstrap/update `memory/constitution.md` with governing principles (Code Quality, Testing, UX, Performance, Security) — hierarchical authority over PRD/plan/ADRs | PO (01) governance mode |
+| `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
+| `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |
+| `/constitution` | Bootstrap/update `memory/constitution.md` with governing principles (Code Quality, Testing, UX, Performance, Security) — hierarchical authority over PRD/plan/ADRs | PO (01) governance mode |
+| `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
+| `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agent Orchestrator)
 
