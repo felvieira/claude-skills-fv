@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.3.0-spec-kit-ideas] - 2026-05-15
+
+### Added
+- **`policies/constitution.md`** (new) — project governing principles (Code Quality, Testing, UX, Performance, Security) with hierarchical authority over PRD/plan/ADRs. Conflict resolution: constitution wins.
+- **`templates/constitution-template.md`** (new) — 5-axis template with semver, owners, history log.
+- **`.claude/commands/constitution.md`** (new) — `/constitution` slash command. Bootstraps or updates `memory/constitution.md` via 5 mini-interviews. Validates anti-patterns (vague principles, missing owners, contradictions).
+- **`.claude/commands/analyze.md`** (new) — `/analyze` slash command. **Cross-artifact consistency check** (read-only) between constitution → specs → plan/ADRs → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW; produces traceability matrix; saves report to `docs/analysis/`.
+- **`.claude/commands/checklist.md`** (new) — `/checklist` slash command. Generates **contextual checklist per feature** ("unit tests for English") covering Completeness, Clarity, Consistency, Coverage, Edge Cases. Cross-references constitution. Complements (does not replace) the fixed 13-check `prd-validation.md`.
+- **`patterns/ai-integration/inference-time-compute.md`** (new) — multi-agent / multi-sample patterns (MoA, Self-Consistency, BoN, PlanSearch, SPL, RTO) with cost/ROI guidance, integration map per skill, and rationale for what NOT to adopt from optillm.
+
+### Changed
+- **`patterns/ai-integration/README.md`** — registered new `inference-time-compute.md` block.
+
+### Sources
+- [github/spec-kit](https://github.com/github/spec-kit) — constitution / analyze / checklist patterns (no CLI Python adoption, no `.specify/` dir; integrated into our `memory/`, `docs/`, slash commands)
+- [algorithmicsuperintelligence/optillm](https://github.com/algorithmicsuperintelligence/optillm) — inference-time compute taxonomy (proxy infra intentionally not adopted; patterns reused in skill-orchestration model)
+
+---
+
 ## [1.2.1-prd-validation] - 2026-05-13
 
 ### Added
