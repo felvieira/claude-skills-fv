@@ -18,6 +18,18 @@ Gera um CLAUDE.md especifico e acionavel para o projeto consumidor, baseado na a
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/handoffs.md`, `policies/quality-gates.md` e `policies/evals.md`.
 
+### Referencia a constituicao
+
+Se `memory/constitution.md` existir no projeto consumidor, o CLAUDE.md gerado **deve** incluir bloco curto referenciando-a como fonte canonica de principios:
+
+```markdown
+## Governanca
+- Principios governantes: ver `memory/constitution.md` (autoridade hierarquica sobre PRD/plan/ADRs)
+- Pipeline canonico: `/constitution → /spec → /checklist → /plan → /to-issues → /analyze → /build → /ship`
+```
+
+Se nao existir mas o projeto for maduro (tem ADRs / PRDs / >6 meses), sugerir rodar `/constitution` no fim da geracao.
+
 ## Quando Usar
 
 - apos o Repo Auditor (18) ter gerado `docs/repo-audit/current.md`

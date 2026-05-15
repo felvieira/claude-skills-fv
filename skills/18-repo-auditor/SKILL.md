@@ -16,6 +16,15 @@ O Repo Auditor cria uma fotografia operacional do repositorio para que o restant
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/handoffs.md`, `policies/tool-safety.md` e `policies/evals.md`.
 
+### Deteccao de governanca
+
+Durante a auditoria, registrar em `docs/repo-audit/current.md` na secao "Governanca":
+- `memory/constitution.md` existe? (Se nao e o projeto e maduro/tem ADRs/PRDs: **sugerir `/constitution` como acao recomendada** no relatorio)
+- ADRs em `docs/adr/`? Quantos e status (accepted/proposed/superseded)
+- `policies/` customizadas no projeto consumidor
+
+Isso permite que as proximas skills saibam se podem ancorar decisoes em principios formais.
+
 Para auditorias mais completas e revisoes incrementais, consultar `docs/skill-guides/repo-auditor.md` apenas quando necessario.
 
 ## Quando Usar

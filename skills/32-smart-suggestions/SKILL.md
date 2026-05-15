@@ -37,6 +37,20 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 - git log recente
 - session summaries anteriores (em `docs/context/`)
 - pendencias registradas
+- `memory/constitution.md` (se existir — usar para sugerir gates faltantes)
+
+## Heuristicas de sugestao (Spec-Driven Development)
+
+Detectar oportunidades de aplicar os novos commands quando contexto bate:
+
+| Contexto detectado | Sugestao prioritaria |
+|---|---|
+| Projeto maduro sem `memory/constitution.md` | `/constitution` (bootstrap governance) |
+| Spec recente sem checks marcados | `/checklist <spec_path>` antes de `/plan` |
+| Spec + plan + issues mas nenhum `docs/analysis/` recente | `/analyze` antes de `/build` |
+| `/build` em andamento sem TDD e constituicao exige | rodar skill 37 antes de continuar |
+| Constituicao atualizada (commit recente em `memory/`) | `/analyze` para detectar artefatos invalidados |
+| `docs/specs/*.md` ou `docs/prd/*.md` sem AC quantitativos | revisitar com `/checklist` |
 
 ## Saidas Esperadas
 

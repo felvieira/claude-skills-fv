@@ -5,6 +5,29 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.3.2-spec-kit-polish] - 2026-05-15
+
+### Added
+- **`programs/spec-driven-development.md`** (new) — declarative pipeline program with constitution authority + `/checklist` + `/analyze` gates. Documents differences vs `pipeline-discovery`. Registered in `programs/README.md` index.
+
+### Changed
+- **`scripts/check-consistency.mjs`** — added checks that plugin.json registers constitution/analyze/checklist commands and that orchestrator + reviewer skills reference `constitution`.
+- **`.claude/commands/spec.md`** — references `policies/prd-validation.md` + `policies/constitution.md`; recommends `/checklist` after spec and `/analyze` before `/build`.
+- **`.claude/commands/plan.md`** — references constitution as architectural anchor; recommends `/analyze` before `/build` when 3+ artifacts exist.
+- **`.claude/commands/ship.md`** — constitution gate (Security/Performance/Testing axes). CRITICAL unsatisfied = block; exception requires ADR.
+- **`skills/18-repo-auditor/SKILL.md`** — detects `memory/constitution.md` absence in mature projects and suggests `/constitution`.
+- **`skills/28-claude-md-generator/SKILL.md`** — generated CLAUDE.md includes Governance block referencing constitution + canonical pipeline; suggests `/constitution` if absent in mature project.
+- **`skills/32-smart-suggestions/SKILL.md`** — new heuristics table mapping context patterns to spec-driven suggestions (`/constitution`, `/checklist`, `/analyze`).
+
+### Verified
+- `setup/install.sh` already copies the new files (loops over `policies/`, `.claude/commands/*.md`, `patterns/`, `templates/`) — no change needed.
+- `node scripts/check-consistency.mjs` passes with new assertions.
+
+### Why
+Closes polish gaps from 1.3.1: spec-kit ideas now wired into the **internal kit commands** (spec/plan/ship), advisory skills (repo-auditor, claude-md-generator, smart-suggestions), and declarative `programs/` layer. End-to-end coverage of the spec-driven pipeline.
+
+---
+
 ## [1.3.1-spec-kit-integration] - 2026-05-15
 
 ### Changed

@@ -124,6 +124,31 @@ async function main() {
     expect(false, "Could not read or parse .claude-plugin/plugin.json");
   }
 
+  // Check: spec-driven commands (constitution / analyze / checklist) wired everywhere
+  try {
+    const pluginRaw = await read(".claude-plugin/plugin.json");
+    const plugin = JSON.parse(pluginRaw);
+    const commands = plugin.commands || [];
+    for (const cmd of ["constitution", "analyze", "checklist"]) {
+      expect(
+        commands.some((c) => c.endsWith(`/${cmd}.md`)),
+        `plugin.json commands array should include .claude/commands/${cmd}.md`,
+      );
+    }
+  } catch {
+    // plugin.json error already reported above
+  }
+
+  // Constitution must be referenced by orchestrator + reviewer (primary anchors)
+  try {
+    const orchestrator = await read("skills/09-orchestrator/SKILL.md");
+    const reviewer = await read("skills/11-reviewer/SKILL.md");
+    expect(orchestrator.includes("constitution"), "skills/09-orchestrator should reference constitution");
+    expect(reviewer.includes("constitution"), "skills/11-reviewer should reference constitution");
+  } catch {
+    expect(false, "Could not read orchestrator/reviewer skill files");
+  }
+
   // Check: schemas/skill-io/ files are valid JSON
   const schemaDir = path.join(root, "schemas", "skill-io");
   try {

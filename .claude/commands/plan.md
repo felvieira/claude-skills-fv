@@ -20,5 +20,14 @@ description: Classificar task e montar pipeline mínimo suficiente (skill 09 —
 - `policies/model-routing.md` — tier certo por etapa
 - `policies/search-first.md` — pesquisa antes de planejar
 - `policies/source-driven.md` — decisões baseadas em fontes
+- `policies/constitution.md` — escolhas de arquitetura ancoradas em princípios (se `memory/constitution.md` existir)
+
+**Pré-requisitos recomendados:**
+- spec passou por `/checklist` (todos os checks marcados)
+- constituição consultada se existir — conflito com princípio → ajustar plan
+
+**Handoff recomendado:**
+- plan + issues prontos → `/analyze` antes de `/build` quando há 3+ artefatos (spec + plan + issues)
+- `/analyze` retorna CRITICAL → resolver antes de prosseguir
 
 **Uso:** `/plan [descrição da task ou referência à spec]`

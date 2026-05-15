@@ -15,5 +15,12 @@ description: Especificar feature com critérios de aceitação (skill 01 — PO)
 **Policies relevantes:**
 - `policies/execution.md` — escopo e qualidade
 - `policies/confusion-management.md` — STOP-NAME-OPTIONS-WAIT se requisito ambíguo
+- `policies/prd-validation.md` — 13 checks fixos sobre qualidade da spec
+- `policies/constitution.md` — se `memory/constitution.md` existir, spec deve respeitar os 5 eixos
+
+**Handoff recomendado:**
+- spec pronta → `/checklist <spec_path>` para gerar checklist contextual ("unit tests for English")
+- só após checklist resolvido → `/plan`
+- antes de `/build` (se já houver issues): rodar `/analyze` para cross-artifact consistency
 
 **Uso:** `/spec [descrição da feature ou contexto]`

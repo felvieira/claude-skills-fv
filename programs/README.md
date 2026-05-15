@@ -44,5 +44,6 @@ One sentence describing the goal.
 | Program | Intent |
 |---|---|
 | [pipeline-discovery](pipeline-discovery.md) | Full discovery: interrogation → PRD → issues → TDD loop → ship |
+| [spec-driven-development](spec-driven-development.md) | Constitution-anchored pipeline with /checklist + /analyze gates between artifacts |
 | [detective-spec](detective-spec.md) | Reverse-engineer specs from legacy: recon → modules → rules → flows → ADRs |
 | [loop-polishing](loop-polishing.md) | Auto-loop with quality polishing pass before commit |
