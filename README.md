@@ -629,7 +629,9 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
-| **v1.4.0** | 2026-05-15 | Polish & release hygiene: SKILLS-OVERVIEW + AGENTS + CONTRIBUTING aligned with spec-driven commands; Acknowledgements section; quality-gates updated; hook detector for constitution changes; evals migrated to `evals/commands/`; git tags + GitHub Releases for all prior versions |
+| **v1.4.2** | 2026-05-15 | Humanize gaps: evals for `/humanize`, consistency check assert, quality-gate prose section, skill-author note |
+| **v1.4.1** | 2026-05-15 | `/humanize` command + `policies/anti-ai-writing.md` (29 patterns) + opt-in hook; gates in skills 10/13/14. From [blader/humanizer](https://github.com/blader/humanizer) |
+| **v1.4.0** | 2026-05-15 | Release hygiene: docs aligned, Acknowledgements, quality-gates, constitution-watcher hook, evals migrated, tags + releases |
 | **v1.3.x** | 2026-05-15 | **Spec-driven development**: `/constitution` (governing principles, 5 axes), `/checklist` (unit tests for English), `/analyze` (cross-artifact consistency); 4 critical skills consult constitution; canonical pipeline in handoffs.md; `programs/spec-driven-development.md`; inference-time-compute patterns from optillm |
 | **v1.2.x** | 2026-05-13 | 13-check PRD validation (decoupled from Taskmaster); agent prompting patterns (layering A→B→C, agent-spec template, no-drift policy); 4-tier memory model; token budget in SessionStart hook |
 | **v1.1.0** | 2026-05-09 | Context Engineering adoption: protocol shells (Pareto-lang), skill I/O schemas, iteration scoring, programs/ layer, 3 pilot subagents migrated |
