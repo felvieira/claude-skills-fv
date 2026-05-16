@@ -219,26 +219,26 @@ for item in GLOBAL.md README.md VERSION; do
   [[ -f "$SCRIPT_DIR/$item" ]] && safe_copy_file "$SCRIPT_DIR/$item" "$BOT_DIR/$item"
 done
 
-for dir in policies templates skills patterns scripts docs commands evals setup mcp-server personas; do
+for dir in policies templates skills patterns scripts docs commands agents hooks evals setup mcp-server personas; do
   if [[ -d "$SCRIPT_DIR/$dir" ]]; then
     safe_copy_dir "$SCRIPT_DIR/$dir" "$BOT_DIR/$dir"
   fi
 done
 
-# Copy .claude/commands/ to consumer repo's .claude/commands/
-if [[ -d "$SCRIPT_DIR/.claude/commands" ]]; then
+# Copy commands/ to consumer repo's .claude/commands/ (so they appear as /slash commands)
+if [[ -d "$SCRIPT_DIR/commands" ]]; then
   mkdir -p "$TARGET_DIR/.claude/commands"
-  for cmd_file in "$SCRIPT_DIR"/.claude/commands/*.md; do
+  for cmd_file in "$SCRIPT_DIR"/commands/*.md; do
     [[ -f "$cmd_file" ]] || continue
     safe_copy_file "$cmd_file" "$TARGET_DIR/.claude/commands/$(basename "$cmd_file")"
   done
   ok "Copied slash commands to .claude/commands/"
 fi
 
-# Copy .claude/agents/ to consumer repo's .claude/agents/
-if [[ -d "$SCRIPT_DIR/.claude/agents" ]]; then
+# Copy agents/ to consumer repo's .claude/agents/ (so they appear as Task-dispatchable subagents)
+if [[ -d "$SCRIPT_DIR/agents" ]]; then
   mkdir -p "$TARGET_DIR/.claude/agents"
-  for agent_file in "$SCRIPT_DIR"/.claude/agents/*.md; do
+  for agent_file in "$SCRIPT_DIR"/agents/*.md; do
     [[ -f "$agent_file" ]] || continue
     safe_copy_file "$agent_file" "$TARGET_DIR/.claude/agents/$(basename "$agent_file")"
   done

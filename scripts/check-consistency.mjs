@@ -22,13 +22,14 @@ async function main() {
   const skillEntries = await fs.readdir(path.join(root, "skills"), { withFileTypes: true });
   const skillCount = skillEntries.filter((entry) => entry.isDirectory()).length;
 
-  const agentDir = path.join(root, ".claude", "agents");
+  // Agents live in agents/ (plugin autodiscovery) since v1.5.2
+  const agentDir = path.join(root, "agents");
   let agentCount = 0;
   try {
     const agentEntries = await fs.readdir(agentDir, { withFileTypes: true });
     agentCount = agentEntries.filter((e) => e.isFile() && e.name.endsWith(".md")).length;
   } catch {
-    // .claude/agents/ not found — agentCount stays 0
+    // agents/ not found — agentCount stays 0
   }
 
   const [
@@ -111,32 +112,39 @@ async function main() {
     expect(devTeamKit.disabled === false, "dev-team-kit MCP should be enabled by default");
   }
 
-  // Agent assertions
-  // Agent count is dynamic — just verify plugin.json matches the directory
-
-  // Validate plugin.json agents array matches .claude/agents/ directory count
+  // Plugin uses Claude Code 2.x autodiscovery — verify expected dirs exist
   try {
     const pluginRaw = await read(".claude-plugin/plugin.json");
-    const plugin = JSON.parse(pluginRaw);
-    const pluginAgents = plugin.agents || [];
-    expect(pluginAgents.length === agentCount, `plugin.json agents array should match .claude/agents/ count (${agentCount}), found ${pluginAgents.length}`);
+    JSON.parse(pluginRaw); // valid JSON
   } catch {
     expect(false, "Could not read or parse .claude-plugin/plugin.json");
   }
 
-  // Check: spec-driven commands (constitution / analyze / checklist) wired everywhere
+  // marketplace.json exists for `claude plugin marketplace add felvieira/claude-skills-fv`
   try {
-    const pluginRaw = await read(".claude-plugin/plugin.json");
-    const plugin = JSON.parse(pluginRaw);
-    const commands = plugin.commands || [];
-    for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory"]) {
-      expect(
-        commands.some((c) => c.endsWith(`/${cmd}.md`)),
-        `plugin.json commands array should include .claude/commands/${cmd}.md`,
-      );
-    }
+    const mpRaw = await read(".claude-plugin/marketplace.json");
+    const mp = JSON.parse(mpRaw);
+    expect(Array.isArray(mp.plugins) && mp.plugins.length >= 1, "marketplace.json should declare plugins[]");
   } catch {
-    // plugin.json error already reported above
+    expect(false, "Could not read or parse .claude-plugin/marketplace.json");
+  }
+
+  // hooks/hooks.json must be in Claude Code 2.x format (wrapped in { hooks: {...} })
+  try {
+    const hooksRaw = await read("hooks/hooks.json");
+    const hooksJson = JSON.parse(hooksRaw);
+    expect(Boolean(hooksJson.hooks), "hooks/hooks.json must wrap events under a 'hooks' key (Claude Code 2.x format)");
+  } catch {
+    // optional
+  }
+
+  // Check: spec-driven commands exist as files in commands/ (where plugin autodiscovers them)
+  for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory"]) {
+    try {
+      await fs.access(path.join(root, "commands", `${cmd}.md`));
+    } catch {
+      expect(false, `commands/${cmd}.md must exist (autodiscovered by plugin)`);
+    }
   }
 
   // Constitution must be referenced by orchestrator + reviewer (primary anchors)

@@ -5,6 +5,27 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.5.2-plugin-layout] - 2026-05-16
+
+Reorganização de layout para que **Claude Code 2.x autodiscovery** detecte todos os componentes via `claude plugin install`.
+
+### Changed
+- **`.claude/commands/*.md` → `commands/`** — 22 slash commands movidos para o diretório autodescoberto pelo plugin loader. Conflito de nome (`detective-spec.md` duplicado entre `commands/` legacy e `.claude/commands/` novo) resolvido mantendo versão com frontmatter.
+- **`.claude/agents/*.md` → `agents/`** — 14 subagents movidos para autodiscovery.
+- **`hooks/hooks.json`** — convertido para formato Claude Code 2.x: estrutura `{ hooks: { Event: [{ hooks: [{ type, command }] }] } }` com `${CLAUDE_PLUGIN_ROOT}` em vez de paths relativos.
+- **`.mcp.json`** (new) — registra `dev-team-kit` MCP server para autodiscovery do plugin.
+- **`setup/install.sh`** — atualizado para copiar de `commands/` e `agents/` (root) para `.claude/commands/` e `.claude/agents/` do repo consumidor.
+- **`.claude-plugin/plugin.json`** — simplificado (removidos arrays manuais de skills/commands/agents/hooks — autodiscovery faz o trabalho).
+- **`scripts/check-consistency.mjs`** — asserts adaptados para layout 2.x (verifica diretórios + presença de `marketplace.json` + formato correto de `hooks/hooks.json`).
+
+### Fixed
+- Plugin instalável via `claude plugin marketplace add felvieira/claude-skills-fv` + `claude plugin install dev-team-kit-fv@claude-skills-fv` — agora detecta 37 skills + 27 slash commands + 14 subagents + hooks + MCP server.
+
+### Why
+v1.5.1 instalava parcialmente — só 43 skills detectadas, 0 agents/hooks/MCP. Causa: layout antigo (`.claude/commands/`, `.claude/agents/`, hooks.json formato legacy) não compatível com autodiscovery do Claude Code 2.x. Esta release reorganiza para layout canônico.
+
+---
+
 ## [1.5.1-absorb-gaps] - 2026-05-15
 
 ### Changed
