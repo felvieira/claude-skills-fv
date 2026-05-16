@@ -1,5 +1,6 @@
 {
   "name": "claude-skills-fv",
+  "description": "Dev Team Kit — 37 specialist skills + 27 slash commands for coding agents. Spec-driven development, anti-AI writing, memory consolidation, and more.",
   "owner": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"
@@ -7,7 +8,10 @@
   "plugins": [
     {
       "name": "dev-team-kit-fv",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "felvieira/claude-skills-fv"
+      },
       "description": "37 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), and more.",
       "version": "1.5.1",
       "category": "development",
