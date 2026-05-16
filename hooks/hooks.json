@@ -1,25 +1,86 @@
 {
-  "UserPromptSubmit": [
-    "hooks/scripts/pre-execution-gate.mjs",
-    "hooks/scripts/keyword-detector.mjs"
-  ],
-  "SessionStart": [
-    "hooks/scripts/session-start.mjs"
-  ],
-  "PreToolUse": [
-    "hooks/scripts/pre-tool-enforcer.mjs",
-    "hooks/scripts/model-routing-hook.mjs",
-    "hooks/scripts/simplify-ignore.mjs"
-  ],
-  "Stop": [
-    "hooks/scripts/context-guard-stop.mjs",
-    "hooks/scripts/persistent-mode.mjs"
-  ],
-  "PostToolUse": [
-    "hooks/scripts/post-tool-verifier.mjs",
-    "hooks/scripts/simplify-ignore.mjs",
-    "hooks/scripts/session-event-logger.mjs",
-    "hooks/scripts/constitution-watcher.mjs",
-    "hooks/scripts/ai-writing-detector.mjs"
-  ]
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-execution-gate.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/keyword-detector.mjs\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.mjs\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-tool-enforcer.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/model-routing-hook.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/simplify-ignore.mjs\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/context-guard-stop.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/persistent-mode.mjs\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/post-tool-verifier.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/simplify-ignore.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-event-logger.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/constitution-watcher.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ai-writing-detector.mjs\""
+          }
+        ]
+      }
+    ]
+  }
 }
