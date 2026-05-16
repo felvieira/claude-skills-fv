@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.svg" alt="Dev Team Kit"/>
+  <img src="banner.png" alt="Dev Team Kit"/>
 </p>
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
