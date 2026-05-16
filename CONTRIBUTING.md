@@ -120,6 +120,31 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
 
 ---
 
+## Adicionando uma nova policy
+
+Policies em `policies/*.md` são regras compartilhadas entre múltiplas skills.
+
+1. **Criar `policies/<nome>.md`** com seções:
+   - `## Objetivo` (1-2 linhas)
+   - `## Quando aplicar` (lista concreta de situações)
+   - `## Regras` ou `## Princípios` (corpo)
+   - `## Anti-padrões` (o que evitar)
+   - `## Integração` (skills/policies relacionadas)
+
+2. **Atualizar skills afetadas:** adicionar `policies/<nome>.md` na seção "Governanca Global" de cada skill que deve consultar.
+
+3. **Cross-references:** se a policy se relaciona com outras existentes (ex: `quality-gates.md`, `writing-clarity.md`), adicionar link bidirecional.
+
+4. **CHANGELOG:** entrada Added com source/inspiração se aplicável.
+
+5. **Bump semver:**
+   - `MINOR` se policy nova
+   - `PATCH` se update de policy existente
+
+Exemplos recentes (v1.5.0): `mcp-builder-patterns.md`, `verification-before-completion.md`, `receiving-code-review.md`, `memory-consolidation.md` — todos seguem essa estrutura.
+
+---
+
 ## Adicionando um subagent
 
 Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude Code.

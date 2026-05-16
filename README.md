@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.5.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.5.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -630,6 +630,7 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
+| **v1.5.0** | 2026-05-15 | Absorb 6 external skill patterns into the kit: MCP builder patterns, verification-before-completion, receiving-code-review, memory consolidation; `/consolidate-memory` command; skill 18 `--recommend-automation` mode; skill 28 `audit` mode |
 | **v1.4.2** | 2026-05-15 | Humanize gaps: evals for `/humanize`, consistency check assert, quality-gate prose section, skill-author note |
 | **v1.4.1** | 2026-05-15 | `/humanize` command + `policies/anti-ai-writing.md` (29 patterns) + opt-in hook; gates in skills 10/13/14. From [blader/humanizer](https://github.com/blader/humanizer) |
 | **v1.4.0** | 2026-05-15 | Release hygiene: docs aligned, Acknowledgements, quality-gates, constitution-watcher hook, evals migrated, tags + releases |
@@ -653,6 +654,11 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **[ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/)** — Five Building Block framework, layering A→B→C (v1.2.0).
 - **[sandeco/reversa](https://github.com/sandeco/reversa)** — Detective Spec pipeline for legacy reverse-engineering (skill 33).
 - **[aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day)** — documentation format for `docs/WIKI.md` and `docs/SKILLS-OVERVIEW.md`.
+- **Anthropic Skills (`anthropic-skills:*`)** — `policies/mcp-builder-patterns.md` and `policies/memory-consolidation.md` + `/consolidate-memory` command (v1.5.0). Patterns absorbed; no runtime dependency on the external skill.
+- **Superpowers (`superpowers:*`)** — `policies/verification-before-completion.md`, `policies/receiving-code-review.md`, parallelization section in `policies/execution.md` (v1.5.0). Patterns absorbed; no runtime dependency.
+- **Claude Code Setup (`claude-code-setup:claude-automation-recommender`)** — `--recommend-automation` mode in skill 18 (v1.5.0). Pattern absorbed.
+- **Claude MD Management (`claude-md-management:claude-md-improver`)** — `audit` mode in skill 28 (v1.5.0). Pattern absorbed.
+- **[blader/humanizer](https://github.com/blader/humanizer)** + **[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)** — 29 anti-AI writing patterns + `/humanize` command (v1.4.1).
 
 ---
 

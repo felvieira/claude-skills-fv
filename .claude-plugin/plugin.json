@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "37 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec (reverse engineering for legacy), static-analysis (semgrep+codeql), skill-author (meta-skill with eval), web-asset-generator (favicons/OG/PWA), tdd-engineer (red-green-refactor enforced), architecture-deepener (deep modules) and more. Two pipeline flows: /pipeline (classic) and /pipeline-discovery (with grill-me + PRD + issues + TDD). Includes model routing policy, vertical-slices policy, writing-clarity policy, lifecycle hooks, and full .bot/ install via /devkit-install-fv.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "author": {
     "name": "felvieira"
   },

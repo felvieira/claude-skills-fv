@@ -5,6 +5,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.5.1-absorb-gaps] - 2026-05-15
+
+### Changed
+- **`README.md`** + **`README.pt-BR.md`** — version table updated with v1.5.0 entry; Acknowledgements section updated with 5 new sources (Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management, blader/humanizer).
+- **`CONTRIBUTING.md`** — added "Adicionando uma nova policy" section (5-step checklist with example references to v1.5.0 policies).
+
+---
+
 ## [1.5.0-absorb-skills] - 2026-05-15
 
 Absorve 6 padrões valiosos de skills externas (Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management) **integrando ao kit** — não citando.
