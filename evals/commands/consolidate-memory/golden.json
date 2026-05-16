@@ -1,0 +1,82 @@
+{
+  "command": "/consolidate-memory",
+  "cases": [
+    {
+      "id": "cm-001",
+      "description": "Dry-run em vault sem mudanças necessárias",
+      "input": {
+        "vault": "D:/claude-memory",
+        "mode": "dry-run",
+        "vault_state": { "files": 50, "stale_logs": 0, "duplicates": 0 }
+      },
+      "expected_output_shape": {
+        "snapshot_taken": true,
+        "candidates": { "count": 0 },
+        "report": { "type": "string" }
+      },
+      "expected_exit_code": 0
+    },
+    {
+      "id": "cm-002",
+      "description": "Vault com 5 duplicatas + 3 stale + 2 promote candidates",
+      "input": {
+        "vault": "D:/claude-memory",
+        "mode": "dry-run",
+        "vault_state": {
+          "duplicate_logs": 5,
+          "stale_logs_over_90d": 3,
+          "learned_skills_high_score": 2
+        }
+      },
+      "expected_output_shape": {
+        "candidates": {
+          "merge": 5,
+          "archive": 3,
+          "promote": 2
+        }
+      }
+    },
+    {
+      "id": "cm-003",
+      "description": "Apply após confirmação seletiva",
+      "input": {
+        "vault": "D:/claude-memory",
+        "mode": "apply",
+        "selected": ["merge:0", "merge:1", "archive:0"]
+      },
+      "expected_validations": {
+        "snapshot_present_before_apply": true,
+        "applied_only_selected": true,
+        "verify_step_ran": true,
+        "report_lists_changes": true
+      }
+    },
+    {
+      "id": "cm-004",
+      "description": "Bloquear apply sem snapshot recente",
+      "input": {
+        "vault": "/some/path/no-git-no-backup",
+        "mode": "apply",
+        "snapshot_available": false
+      },
+      "expected_console": {
+        "blocks": true,
+        "reason": "no snapshot available"
+      },
+      "expected_exit_code": 2
+    },
+    {
+      "id": "cm-005",
+      "description": "Auto-yes refusado sem snapshot recente (< 24h)",
+      "input": {
+        "vault": "D:/claude-memory",
+        "mode": "auto-yes",
+        "last_snapshot_age_hours": 48
+      },
+      "expected_console": {
+        "warns": true,
+        "asks_user_to_snapshot_first": true
+      }
+    }
+  ]
+}

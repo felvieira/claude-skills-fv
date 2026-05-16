@@ -268,6 +268,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/consolidate-memory` — Manutenção do vault de memória
+
+**O que faz:** janitor periódico para `D:\claude-memory\` (ou path do vault) — merge de logs duplicados, archive de decisões stale, prune de backlinks quebrados, promote/demote de learned skills por score, normaliza tags inconsistentes. Workflow seguro: snapshot → dry-run → confirmação → apply → verify → report.
+**Quando usar:** cron semanal, após uso intenso (50+ sessions), antes de release major do projeto consumidor, vault crescer além de 500 arquivos.
+**Problema que resolve:** vault de memória acumula duplicatas, fatos stale e referências quebradas que erodem valor com o tempo. Sem limpeza periódica, busca semântica degrada e ocorre context rot.
+**Exemplo:** `/consolidate-memory --dry-run` (auditoria) ou `/consolidate-memory --vault D:/claude-memory`
+**Takeaway:** **nunca delete sem snapshot.** Workflow sempre faz backup primeiro. Complementa `policies/memory-tiers.md` (modelo 4-tier) com disciplina de manutenção.
+
 #### `/humanize` — Remove padrões de escrita AI
 
 **O que faz:** reescreve qualquer prosa (docs, PRDs, copy, changelogs, release notes) removendo os 29 padrões AI catalogados em `policies/anti-ai-writing.md`: inflação de significado, linguagem promocional, copula avoidance, signposting, conclusões genéricas, artefatos de chatbot e mais. Inclui passo de auto-auditoria ("O que ainda parece IA?") antes de entregar a versão final.

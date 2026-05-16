@@ -61,6 +61,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/checklist` | Checklist contextual por feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases |
 | `/analyze` | Cross-artifact consistency check (read-only) entre constituição → spec → plan → issues. CRITICAL bloqueia `/build` |
 | `/humanize` | Remove os 29 padrões de AI-generated writing de qualquer prosa (docs, PRDs, copy, changelogs) |
+| `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

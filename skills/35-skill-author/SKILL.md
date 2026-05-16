@@ -15,7 +15,7 @@ Cria e mantem as outras skills com qualidade. Sem esta skill, o kit cresce por c
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/evals.md`, `policies/handoffs.md`, `policies/writing-clarity.md`, `policies/source-driven.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/evals.md`, `policies/handoffs.md`, `policies/writing-clarity.md`, `policies/source-driven.md`, `policies/verification-before-completion.md` e `policies/mcp-builder-patterns.md` (quando skill criada expõe MCP tool).
 
 Inspirado no padrao "skill-creator" da Anthropic (skill meta de criacao/avaliacao de skills disponivel no plugin oficial `anthropic-skills`), adaptado as convencoes deste kit: numeracao sequencial, frontmatter YAML, secao "Governanca Global", integracao com pipeline (orchestrator, context manager, documenter, reviewer). Esta skill nao depende do plugin Anthropic — e implementacao propria com convencoes do dev-team-kit.
 

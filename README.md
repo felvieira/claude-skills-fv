@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.4.2-0f766e)
+![Version](https://img.shields.io/badge/version-1.5.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -441,6 +441,7 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
 | `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |
 | `/humanize` | Remove 29 AI writing patterns from any prose (docs, PRDs, copy, changelogs). Self-audits before final version. | Documenter (10) editor mode |
+| `/consolidate-memory` | Memory vault janitor — merge duplicates, archive stale, prune index. Snapshot-first safe workflow. | Context Manager (08) janitor mode |
 | `/constitution` | Bootstrap/update `memory/constitution.md` with governing principles (Code Quality, Testing, UX, Performance, Security) — hierarchical authority over PRD/plan/ADRs | PO (01) governance mode |
 | `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
 | `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |

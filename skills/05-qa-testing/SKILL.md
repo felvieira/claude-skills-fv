@@ -13,7 +13,7 @@ O QA garante que o comportamento entregue continua correto antes de avancar no p
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md` e `policies/verification-before-completion.md` (gate obrigatório — toda claim "tests pass" precisa output verificável).
 
 Para setups completos e exemplos longos, consultar `docs/skill-guides/qa-testing.md` apenas quando necessario.
 

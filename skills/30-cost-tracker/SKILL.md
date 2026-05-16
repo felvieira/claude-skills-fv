@@ -14,7 +14,7 @@ O Cost Tracker monitora e consolida os custos de cada sessao de trabalho. Rastre
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/handoffs.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/handoffs.md`, `policies/evals.md`, `policies/memory-tiers.md` e `policies/memory-consolidation.md` (sugerir `/consolidate-memory` quando vault crescer demais).
 
 ## Quando Usar
 
