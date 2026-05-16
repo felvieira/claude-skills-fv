@@ -183,6 +183,8 @@ Mitigacao: declarar confidence (high/medium/low). Sem evidencia, marcar como hip
 - **`source-driven.md`** — toda afirmacao precisa de evidencia. Esta policy e sobre **como** apresentar.
 - **`token-efficiency.md`** — economiza tokens. Clareza tambem economiza (palavra cortada = token cortado).
 - **`handoffs.md`** — define o que entregar. Esta policy define o estilo da entrega.
+- **`anti-ai-writing.md`** — 29 padroes especificos de AI-generated writing (vocabulario, signposting, copula avoidance). Esta policy e principios; aquela e catalogo de tells.
+- **`verification-before-completion.md`** — clareza inclui nao afirmar "feito" sem evidencia. Toda claim de estado precisa output verificavel.
 
 ## Evidencia de Conformidade
 

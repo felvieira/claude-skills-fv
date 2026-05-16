@@ -59,6 +59,67 @@ Para auditorias mais completas e revisoes incrementais, consultar `docs/skill-gu
 4. Persistir um resumo operacional reutilizavel para reduzir releitura futura
 5. Atualizar a auditoria apenas quando houver mudanca relevante no repositorio
 6. Encaminhar para `Asset Librarian` quando o inventario visual precisar de organizacao dedicada
+7. **Recomendar automacoes Claude Code** apropriadas ao codebase (modo `--recommend-automation`)
+
+## Modo Recommend-Automation
+
+Quando rodado com flag `--recommend-automation` (ou usuario pede explicitamente "recomendar automacoes"), apos a auditoria padrao gerar secao `## Automacoes Recomendadas` no relatorio com:
+
+### Hooks recomendados (analisar o que o codebase pede)
+
+| Detectado no repo | Hook sugerido | Why |
+|---|---|---|
+| Testes em CI demorando > 5min | `PostToolUse` rodando subset de tests afetados | Feedback rapido |
+| `.env*` files com secrets | `PreToolUse` block em commits que tocam `.env*` | Prevent leaks |
+| Migrations SQL na raiz | `PreToolUse` warning ao editar migration ja aplicada | Safety |
+| `package.json` com 50+ deps | `SessionStart` mostrando audit/outdated | Awareness |
+| Monorepo (turborepo/nx) | `SessionStart` listando workspaces ativos | Context |
+
+### Subagents recomendados
+
+| Detectado | Subagent sugerido |
+|---|---|
+| Codebase grande (> 100 files) | `code-reviewer` para PRs |
+| Codigo de seguranca (auth, payments, crypto) | `security-auditor` antes de release |
+| Suite de testes complexa | `test-engineer` para gerar/revisar |
+| Bug recorrente em log de issues | `debugger` para diagnostico sistematico |
+
+### Skills do kit recomendadas
+
+Apontar quais das 37 skills se aplicam ao projeto:
+- Frontend? → skills 02, 04, 22 (a11y), 36 (web-assets)
+- Backend? → skills 03, 06 (security), 20 (observability)
+- Mobile? → skill 15 (mobile-tauri)
+- IA features? → skills 25, 26, 27 + patterns/ai-integration/
+
+### MCP servers recomendados
+
+Se o projeto usa serviços externos sem MCP server:
+- GitHub heavy → MCP server do GitHub
+- Banco frequente → MCP server do Postgres/Mongo
+- Design system → Figma MCP
+
+### Slash commands relevantes
+
+Sugerir 3-5 commands do kit que se aplicam ao workflow detectado.
+
+### Output format do recommend-automation
+
+```markdown
+## Automacoes Recomendadas (skill 18 — modo recommend)
+
+### Alta prioridade
+- [ ] Instalar hook `pre-execution-gate.mjs` — detectado: testes em CI demoram 8min
+- [ ] Adicionar subagent `security-auditor` — detectado: 23 files em src/auth/
+- [ ] `/constitution` — projeto maduro (> 6m, 12 ADRs) sem governanca formal
+
+### Media prioridade
+- [ ] Skills 02/22/36 — projeto e frontend-heavy sem cobertura a11y
+- [ ] MCP server do GitHub — 230 issues abertas, gh CLI usado em 14 scripts
+
+### Baixa prioridade
+- [ ] /consolidate-memory weekly schedule — vault tem 320 logs
+```
 
 ## Arquivo de Persistencia
 

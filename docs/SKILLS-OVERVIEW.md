@@ -223,6 +223,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/checklist docs/specs/dark-mode.md`
 **Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
+### `/consolidate-memory` — Manutenção do vault
+
+**O que faz:** janitor periódico do vault de memória (`D:\claude-memory\`). Merge duplicatas, archive stale, prune backlinks. Workflow seguro com snapshot.
+**Quando usar:** semanalmente; após 50+ sessions; antes de release major.
+**Problema que resolve:** vault degrada com duplicatas e stale facts; busca semântica perde precisão.
+**Exemplo:** `/consolidate-memory --dry-run`
+**Takeaway:** **snapshot antes de qualquer mudança.**
+
 ### `/humanize` — Remove AI writing patterns
 
 **O que faz:** reescreve prosa removendo 29 padrões AI (vocabulário de alta frequência, copula avoidance, signposting, conclusões genéricas, artefatos de chatbot, hedging excessivo...). Inclui auto-auditoria antes da versão final.

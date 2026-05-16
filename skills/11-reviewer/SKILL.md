@@ -17,10 +17,11 @@ O Reviewer é o portão final antes do deploy. Valida TUDO. Não documenta — v
 Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 
 - `policies/constitution.md` ← **rubric primario** quando `memory/constitution.md` existir
-- `policies/constitution.md` ← **rubric primario** quando `memory/constitution.md` existir
 - `policies/execution.md`
 - `policies/handoffs.md`
 - `policies/quality-gates.md`
+- `policies/verification-before-completion.md` ← **gate** antes de aprovar PR
+- `policies/receiving-code-review.md` ← informa quem recebe feedback desta skill
 - `policies/token-efficiency.md`
 - `policies/evals.md`
 

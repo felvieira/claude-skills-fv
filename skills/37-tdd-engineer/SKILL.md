@@ -19,7 +19,7 @@ Adaptado de [mattpocock/skills/engineering/tdd](https://github.com/mattpocock/sk
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/quality-gates.md`, `policies/vertical-slices.md`, `policies/source-driven.md`, `policies/writing-clarity.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/quality-gates.md`, `policies/vertical-slices.md`, `policies/source-driven.md`, `policies/writing-clarity.md` e `policies/verification-before-completion.md` (cada passo red→green→refactor exige output verificável da mudança de estado).
 
 ## Filosofia
 

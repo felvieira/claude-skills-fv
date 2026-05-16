@@ -30,12 +30,70 @@ Se `memory/constitution.md` existir no projeto consumidor, o CLAUDE.md gerado **
 
 Se nao existir mas o projeto for maduro (tem ADRs / PRDs / >6 meses), sugerir rodar `/constitution` no fim da geracao.
 
+## Modos de operacao
+
+A skill opera em 2 modos:
+
+### Modo `generate` (default)
+- CLAUDE.md inexistente ou totalmente desatualizado → reescrever do zero baseado em repo audit + entrevista
+
+### Modo `audit`
+- CLAUDE.md existe mas pode estar stale, generico, ou faltando informacao recente → audit + sugestao incremental sem reescrever
+
+**Detectar automaticamente:**
+- Se `CLAUDE.md` nao existe → modo generate
+- Se existe e idade < 30d → modo audit (rapido)
+- Se existe e idade > 90d ou stack mudou → modo audit profundo (sugerir regen)
+- Forcar com `--mode generate` ou `--mode audit`
+
+### Audit checklist (modo audit)
+
+Comparar CLAUDE.md existente com `docs/repo-audit/current.md`:
+
+| Check | Acao se falhar |
+|---|---|
+| Stack declarada bate com a real? | Flag inconsistencia, sugerir update da secao |
+| Comandos listados ainda funcionam? (`npm test`, etc) | Verificar `package.json scripts`; sugerir update |
+| Paths mencionados ainda existem? | Listar paths quebrados; sugerir update |
+| Convencoes batem com codigo recente? (linter, naming) | Comparar com codigo dos ultimos 30d |
+| Referencia a `memory/constitution.md` se existir? | Adicionar bloco se faltar |
+| Referencia ao kit (`.bot/`) se instalado? | Adicionar bloco se faltar |
+| Tem informacao stale (libs deprecated, padroes antigos)? | Flag para review |
+
+### Output do modo audit
+
+Em vez de sobrescrever CLAUDE.md, gera relatorio:
+
+```markdown
+# CLAUDE.md audit — <data>
+
+## Estado atual
+- Idade: 45 dias (criado 2026-04-01, modificado 2026-04-12)
+- Tamanho: 142 linhas
+
+## Inconsistencias detectadas (3)
+- [ ] Linha 23: declara "Next.js 14" mas package.json mostra 15.2
+- [ ] Linha 45: comando `npm run dev` nao existe em scripts
+- [ ] Linha 78: path `src/legacy/` foi removido em commit abc123
+
+## Faltando (2)
+- [ ] Bloco "Governanca" referenciando memory/constitution.md (existe desde 2026-05-01)
+- [ ] Bloco ".bot/" referenciando kit instalado
+
+## Sugerido (1)
+- [ ] Linhas 12-15 (filosofia geral) podem ser concisas
+
+## Acoes
+- Apply patches sugeridos? (yes/selected/no)
+- Regenerar do zero? (recomendado se > 5 inconsistencias)
+```
+
 ## Quando Usar
 
 - apos o Repo Auditor (18) ter gerado `docs/repo-audit/current.md`
-- quando o projeto consumidor nao tem CLAUDE.md
-- quando o CLAUDE.md existente esta generico ou desatualizado
-- quando um novo dev precisa de onboarding rapido
+- quando o projeto consumidor nao tem CLAUDE.md (modo generate)
+- quando o CLAUDE.md existente pode estar stale (modo audit)
+- quando um novo dev precisa de onboarding rapido (modo generate)
 
 ## Quando Nao Usar
 

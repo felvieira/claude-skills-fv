@@ -5,6 +5,48 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.5.0-absorb-skills] - 2026-05-15
+
+Absorve 6 padrões valiosos de skills externas (Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management) **integrando ao kit** — não citando.
+
+### Added
+- **`policies/mcp-builder-patterns.md`** (new) — padrões para criar MCP servers de qualidade (Python FastMCP / Node MCP SDK): naming, descriptions, schemas, idempotência, auth, tests, distribution, anti-padrões. Absorvido de `anthropic-skills:mcp-builder` + `document-skills:mcp-builder`.
+- **`policies/verification-before-completion.md`** (new) — princípio "evidence before assertions". Tabela de claims → evidência exigida; workflow padrão; commit message pattern; integração com skills 05/11/24/37. Absorvido de `superpowers:verification-before-completion`.
+- **`policies/receiving-code-review.md`** (new) — rigor técnico vs concordância performativa ao receber feedback. Workflow categorize → verify → push back ou aceitar. Combate sycofância em reviews. Absorvido de `superpowers:receiving-code-review`.
+- **`policies/memory-consolidation.md`** (new) — rotina periódica de manutenção do vault: merge duplicatas, archive stale, prune índice. Workflow seguro snapshot-first. Absorvido de `anthropic-skills:consolidate-memory`.
+- **`.claude/commands/consolidate-memory.md`** (new) — `/consolidate-memory` slash command implementando o workflow da policy. Snapshot → dry-run → confirmação seletiva → apply → verify → report.
+- **`evals/commands/consolidate-memory/golden.json`** (new) — 5 golden cases (clean vault, multi-categoria, apply seletivo, blocking sem snapshot, auto-yes refusado).
+
+### Changed
+- **`skills/18-repo-auditor`** — adicionado modo `--recommend-automation`: após auditoria, sugere hooks, subagents, skills do kit, MCP servers e slash commands relevantes ao codebase. Absorvido de `claude-code-setup:claude-automation-recommender`.
+- **`skills/28-claude-md-generator`** — adicionado modo `audit` (vs `generate`): em vez de regenerar do zero, audita CLAUDE.md existente contra repo audit + sugere patches incrementais. Absorvido de `claude-md-management:claude-md-improver`.
+- **`skills/05-qa-testing`** — referencia `verification-before-completion.md` como gate.
+- **`skills/11-reviewer`** — referencia `verification-before-completion.md` + `receiving-code-review.md` (informa quem recebe feedback). Removida duplicata da linha de `constitution.md`.
+- **`skills/24-release-manager`** — referencia `verification-before-completion.md` (claims de "deployed/passing" precisam output).
+- **`skills/25-ai-integration-architect`** — referencia `mcp-builder-patterns.md` quando recomendar/criar MCP server.
+- **`skills/30-cost-tracker`** — referencia `memory-consolidation.md`; sugere `/consolidate-memory` quando vault crescer demais.
+- **`skills/35-skill-author`** — referencia `verification-before-completion.md` + `mcp-builder-patterns.md`.
+- **`skills/37-tdd-engineer`** — referencia `verification-before-completion.md` (cada passo red→green→refactor).
+- **`policies/execution.md`** — nova seção "Paralelização" (dispatching-parallel-agents pattern) + nota sobre verificação. Absorvido de `superpowers:dispatching-parallel-agents`.
+- **`policies/writing-clarity.md`** — integração cruzada com `anti-ai-writing.md` e `verification-before-completion.md`.
+- **`.claude-plugin/plugin.json`**, **`AGENTS.md`**, **`docs/WIKI.md`**, **`docs/WIKI.pt-BR.md`**, **`docs/SKILLS-OVERVIEW.md`**, **`README.md`**, **`README.pt-BR.md`** — `/consolidate-memory` registrado em todos os pontos canônicos.
+- **`scripts/check-consistency.mjs`** — assert para `consolidate-memory` no plugin commands.
+
+### Sources
+Padrões absorvidos das seguintes skills externas (integradas ao kit, não dependem de instalação):
+- `anthropic-skills:mcp-builder` — MCP server design patterns
+- `anthropic-skills:consolidate-memory` — vault maintenance
+- `superpowers:verification-before-completion` — evidence before assertions
+- `superpowers:receiving-code-review` — technical rigor on feedback
+- `superpowers:dispatching-parallel-agents` — parallel dispatch pattern
+- `claude-code-setup:claude-automation-recommender` — automation recommendations from codebase
+- `claude-md-management:claude-md-improver` — CLAUDE.md audit mode
+
+### Why
+O usuário está consolidando o stack de skills no nosso pacote — vai remover skills externas e usar só o nosso. Esta release absorve os padrões de valor que essas skills traziam, integrando como policies/skills do kit.
+
+---
+
 ## [1.4.2-humanize-gaps] - 2026-05-15
 
 ### Added

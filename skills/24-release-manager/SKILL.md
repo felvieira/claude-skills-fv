@@ -11,7 +11,7 @@ O Release Manager profissionaliza a ponta final do fluxo: o que vai sair, como v
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md` e `policies/constitution.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md`, `policies/constitution.md` e `policies/verification-before-completion.md` (toda claim de "deployed/passing" precisa output verificável).
 
 ### Gate de release contra constituicao
 

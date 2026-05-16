@@ -11,7 +11,7 @@ O AI Integration Architect usa os patterns de `patterns/ai-integration/` para im
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md` e `policies/stack-flexibility.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/evals.md`, `policies/stack-flexibility.md` e `policies/mcp-builder-patterns.md` (quando recomendar/criar MCP server para integrar serviço externo).
 
 ## Quando Usar
 

@@ -289,6 +289,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/consolidate-memory` — Memory vault maintenance
+
+**What it does:** periodic janitor for `D:\claude-memory\` (or any vault path) — merges duplicate logs, archives stale architecture decisions, prunes broken backlinks, promotes/demotes learned skills based on score, normalizes inconsistent tags. Safe workflow: snapshot → dry-run → confirmation → apply → verify → report.
+**When to use:** weekly cron, after intense usage (50+ sessions), before major release of consumer project, when vault grows beyond 500 files.
+**Problem it solves:** memory vault accumulates duplicates, stale facts, and broken references that erode value over time. Without periodic cleanup, semantic search degrades and context rot sets in.
+**Example:** `/consolidate-memory --dry-run` (audit) or `/consolidate-memory --vault D:/claude-memory`
+**Takeaway:** **never delete without snapshot.** Workflow always backs up first. Complements `policies/memory-tiers.md` (4-tier model) with maintenance discipline.
+
 #### `/humanize` — Remove AI writing patterns
 
 **What it does:** rewrites any prose (docs, PRDs, copy, changelogs, release notes) removing the 29 AI writing patterns catalogued in `policies/anti-ai-writing.md`: significance inflation, promotional language, copula avoidance, signposting, generic conclusions, chatbot artifacts, and more. Includes a self-audit step ("What still sounds AI-generated?") before delivering the final version.

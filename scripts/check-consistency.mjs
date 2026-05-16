@@ -129,7 +129,7 @@ async function main() {
     const pluginRaw = await read(".claude-plugin/plugin.json");
     const plugin = JSON.parse(pluginRaw);
     const commands = plugin.commands || [];
-    for (const cmd of ["constitution", "analyze", "checklist", "humanize"]) {
+    for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory"]) {
       expect(
         commands.some((c) => c.endsWith(`/${cmd}.md`)),
         `plugin.json commands array should include .claude/commands/${cmd}.md`,

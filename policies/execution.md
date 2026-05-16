@@ -34,3 +34,21 @@ Escalar para outra skill quando:
 - a natureza da tarefa muda
 - ha dependencia clara de outra especialidade
 - a etapa atual ja produziu tudo que podia produzir
+
+## Paralelizacao
+
+Para 2+ tasks independentes (sem shared state, sem dependencia sequencial):
+- **dispatch paralelo** via `Task` em uma unica mensagem com multiplas tool calls
+- exemplos: rodar `code-reviewer` + `security-auditor` + `test-engineer` ao mesmo tempo no mesmo PR
+- ganho: latencia total = max(tasks), nao sum(tasks)
+
+Para tasks com dependencia (output de A vira input de B):
+- **dispatch sequencial** — esperar resultado antes de iniciar proximo
+- nunca placeholder de resultado nao recebido
+
+Anti-padrao: despachar paralelo quando ha dependencia → race condition + retrabalho.
+
+## Verificacao antes de declarar conclusao
+
+Antes de afirmar "feito", "passando", "fixed": rodar comando que prova e mostrar output.
+Ver `policies/verification-before-completion.md` para regras completas.
