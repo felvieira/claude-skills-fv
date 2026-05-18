@@ -1,0 +1,123 @@
+schema_version: "1.0"
+
+program:
+  id: spec-driven-development
+  name: "Spec-Driven Development (constitution-anchored)"
+  version: "1.0.0"
+  description: "Pipeline canonico com constituicao governante + cross-artifact consistency gates"
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.6.0"
+  commands: [constitution, spec, checklist, plan, to-issues, analyze, build, review, security-review, ship]
+  policies: [policies/constitution.md, policies/prd-validation.md]
+
+inputs:
+  feature_description:
+    type: string
+    required: true
+    prompt: "Descricao da feature"
+
+  analyze_mode:
+    type: enum
+    enum: [default, strict]
+    default: default
+    prompt: "Modo /analyze (strict trata MEDIUM como bloqueio)"
+
+  skip_constitution:
+    type: boolean
+    default: false
+    prompt: "Pular bootstrap de constituicao? (so se ja existe)"
+
+steps:
+  # ---- Phase 1: Governance ----
+  - id: constitution-check
+    type: conditional
+    if: inputs.skip_constitution == false
+    then:
+      - id: constitution
+        type: command
+        command: /constitution
+        args: "mode=bootstrap-or-update"
+
+  # ---- Phase 2: Spec ----
+  - id: grill
+    type: command
+    command: /grill-me
+    args: "${inputs.feature_description}"
+
+  - id: spec
+    type: command
+    command: /spec
+    args: "${inputs.feature_description}"
+    capture: spec_path
+
+  - id: checklist
+    type: command
+    command: /checklist
+    args: "${steps.spec.capture.spec_path} --depth=standard --cross-constitution"
+
+  - id: gate-checklist
+    type: gate
+    message: "Checklist completa? Todos os checks marcados antes de /plan?"
+    options: [approve, edit-spec, reject]
+    on_reject: run:spec
+
+  # ---- Phase 3: Plan + Issues ----
+  - id: plan
+    type: command
+    command: /plan
+    args: "${steps.spec.capture.spec_path}"
+
+  - id: issues
+    type: command
+    command: /to-issues
+    args: "from-prd ${steps.spec.capture.spec_path}"
+
+  # ---- Phase 4: Cross-artifact consistency ----
+  - id: analyze
+    type: command
+    command: /analyze
+    args: "--mode=${inputs.analyze_mode}"
+
+  - id: gate-analyze
+    type: gate
+    message: "/analyze passou? Findings CRITICAL bloqueiam /build."
+    options: [approve, fix-and-rerun, reject]
+    on_reject: run:analyze
+
+  # ---- Phase 5: Implementation ----
+  - id: build
+    type: command
+    command: /build
+
+  # ---- Phase 6: Quality gates (parallel) ----
+  - id: quality-gates
+    type: parallel
+    parallel:
+      - id: tests
+        type: command
+        command: /test
+      - id: review
+        type: command
+        command: /review
+      - id: security
+        type: command
+        command: /security-review
+
+  - id: gate-quality
+    type: gate
+    message: "Todos os gates passaram? Quality conforme constituicao?"
+    options: [approve, fix, reject]
+    on_reject: run:build
+
+  # ---- Phase 7: Ship ----
+  - id: final-analyze
+    type: command
+    command: /analyze
+    args: "--strict"
+
+  - id: ship
+    type: command
+    command: /ship
+    when: steps.final-analyze.exit_code == 0

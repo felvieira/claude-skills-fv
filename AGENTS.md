@@ -62,6 +62,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/analyze` | Cross-artifact consistency check (read-only) entre constituição → spec → plan → issues. CRITICAL bloqueia `/build` |
 | `/humanize` | Remove os 29 padrões de AI-generated writing de qualquer prosa (docs, PRDs, copy, changelogs) |
 | `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
+| `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com gates humanos, parallel/conditional steps, variable substitution |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

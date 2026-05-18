@@ -268,6 +268,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/run-program` — Executa pipeline YAML declarativo
+
+**O que faz:** parseia e executa `programs/<nome>.yml` como pipeline declarativo. Steps podem ser slash commands, gates humanos, blocos paralelos, ou conditionals. Variable substitution via `${inputs.X}` e `${steps.X.output}`. Valida schema, resolve inputs, roda em ordem, pausa nos gates.
+**Quando usar:** pipelines repetidos que precisam consistência (spec-driven, pipeline-discovery, loop-polishing, detective-spec); fluxos com múltiplos review gates; equipes que precisam mesmo pipeline executado igual por agentes diferentes.
+**Problema que resolve:** `programs/*.md` descreve o fluxo mas não é executável. Formato YAML é executável — máquina parseia, agente roda cada step, pausa em gates humanos, captura outputs pro próximo step.
+**Exemplo:** `/run-program spec-driven-development` ou `/run-program loop-polishing --dry-run`
+**Takeaway:** **pipeline declarativo + gates humanos = execução consistente entre agentes e sessões.** Inspirado em [github/spec-kit `workflows/`](https://github.com/github/spec-kit/tree/main/workflows) com extensões nossas (when/parallel/conditional/vars).
+
 #### `/consolidate-memory` — Manutenção do vault de memória
 
 **O que faz:** janitor periódico para `D:\claude-memory\` (ou path do vault) — merge de logs duplicados, archive de decisões stale, prune de backlinks quebrados, promote/demote de learned skills por score, normaliza tags inconsistentes. Workflow seguro: snapshot → dry-run → confirmação → apply → verify → report.

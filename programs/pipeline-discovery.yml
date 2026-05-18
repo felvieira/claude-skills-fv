@@ -1,0 +1,85 @@
+schema_version: "1.0"
+
+program:
+  id: pipeline-discovery
+  name: "Discovery Pipeline"
+  version: "1.0.0"
+  description: "Discovery: interrogation → PRD → vertical slices → TDD loop → ship"
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.6.0"
+  commands: [grill-me, to-prd, to-issues, loop, ship]
+
+inputs:
+  feature_description:
+    type: string
+    required: true
+    prompt: "Descreva a feature (pode ser vaga)"
+
+  tracker:
+    type: enum
+    enum: [github, linear, jira, local]
+    default: github
+    prompt: "Tracker para publicar issues"
+
+  tdd:
+    type: boolean
+    default: true
+    prompt: "Aplicar TDD por slice?"
+
+  parallel_workers:
+    type: number
+    default: 3
+    prompt: "Quantos workers paralelos no /loop"
+
+steps:
+  - id: discovery
+    type: command
+    command: /grill-me
+    args: "${inputs.feature_description}"
+    capture: requirements
+
+  - id: gate-discovery
+    type: gate
+    message: "Discovery convergiu? Próximo: gerar PRD."
+    options: [approve, reject, retry]
+    on_reject: abort
+
+  - id: prd
+    type: command
+    command: /to-prd
+    args: "--tracker=${inputs.tracker}"
+
+  - id: gate-prd
+    type: gate
+    message: "PRD aprovado para publicar e quebrar em issues?"
+    options: [approve, edit, reject]
+    on_reject: run:prd
+
+  - id: issues
+    type: command
+    command: /to-issues
+    args: "--tracker=${inputs.tracker}"
+
+  - id: gate-dispatch
+    type: gate
+    message: "Issues criadas. Despachar workers em paralelo via /loop?"
+    options: [approve, reject]
+    on_reject: abort
+
+  - id: implement
+    type: command
+    command: /loop
+    args: "--worktree --parallel ${inputs.parallel_workers}"
+    when: inputs.tdd == true
+
+  - id: implement-no-tdd
+    type: command
+    command: /loop
+    args: "--worktree --parallel ${inputs.parallel_workers} --no-tdd"
+    when: inputs.tdd == false
+
+  - id: ship
+    type: command
+    command: /ship

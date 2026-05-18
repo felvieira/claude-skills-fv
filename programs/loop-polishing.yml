@@ -1,0 +1,65 @@
+schema_version: "1.0"
+
+program:
+  id: loop-polishing
+  name: "Auto-loop with quality polishing pass"
+  version: "1.0.0"
+  description: "Auto-loop autonomo + polishing pass (simplify + review + security + test) antes do commit"
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.6.0"
+  commands: [loop, simplify, review, security-review, test]
+
+inputs:
+  task:
+    type: string
+    required: true
+    prompt: "Task autonoma a executar"
+
+  polish_level:
+    type: enum
+    enum: [none, light, standard, full]
+    default: standard
+    prompt: "Nivel de polishing (none=skip, full=simplify+review+security+test)"
+
+  max_iterations:
+    type: number
+    default: 10
+    prompt: "Maximo de iteracoes antes de abort"
+
+steps:
+  - id: implement
+    type: command
+    command: /loop
+    args: "${inputs.task} --max-iterations=${inputs.max_iterations}"
+
+  - id: polish-light
+    type: command
+    command: /simplify
+    when: inputs.polish_level != "none"
+
+  - id: polish-standard
+    type: parallel
+    when: inputs.polish_level == "standard" or inputs.polish_level == "full"
+    parallel:
+      - id: review
+        type: command
+        command: /review
+
+  - id: polish-full
+    type: parallel
+    when: inputs.polish_level == "full"
+    parallel:
+      - id: security
+        type: command
+        command: /security-review
+      - id: tests
+        type: command
+        command: /test
+
+  - id: gate-final
+    type: gate
+    message: "Polishing concluido. Aprovar commit?"
+    options: [approve, fix, abort]
+    on_reject: abort

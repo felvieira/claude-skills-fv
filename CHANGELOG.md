@@ -5,6 +5,43 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.6.0-executable-programs] - 2026-05-18
+
+### Added — Executable YAML pipeline programs
+- **`policies/programs-schema.md`** (new) — schema canônico do formato declarativo `programs/*.yml`. Define inputs, steps (command/gate/parallel/conditional), variable substitution (`${inputs.X}`, `${steps.X.output}`, `${date}`, `${env.X}`), conditional expressions (subset seguro: `==`, `!=`, `contains`, `file_exists`, `and`, `or`, `not`), validador, executor, anti-padrões.
+- **`programs/pipeline-discovery.yml`** (new) — 9 steps com gates entre discovery/PRD/dispatch.
+- **`programs/spec-driven-development.yml`** (new) — 14 steps constitution-anchored com gates de checklist + analyze, paralelo de quality gates (tests + review + security), final-analyze antes de ship.
+- **`programs/loop-polishing.yml`** (new) — auto-loop + polishing pass condicional por `polish_level`.
+- **`programs/detective-spec.yml`** (new) — 5 fases reverse-engineering com `resume_from_phase` para retomar.
+- **`commands/run-program.md`** (new) — `/run-program` slash command com flags `--list`, `--describe`, `--dry-run`, `--auto-yes`, `--from`, `--input`.
+- **`scripts/run-program.mjs`** (new) — parser YAML + resolver de variables + planner. Devolve plano estruturado JSON pro agente executar via Task/AskUserQuestion.
+- **`scripts/validate-program.mjs`** (new) — valida `programs/*.yml` contra schema: campos obrigatórios, IDs únicos, referências `${steps.X}` apontam pra step existente, conditional expressions parseáveis.
+- **`evals/commands/run-program/golden.json`** (new) — 7 golden cases (list/describe/dry-run/missing input/invalid program/duplicate ids/non-existent step ref).
+
+### Changed
+- **`programs/README.md`** — documenta coexistência `.md` (descritivo) + `.yml` (executável). Index links para ambos.
+- **`docs/WIKI.md`** + **`docs/WIKI.pt-BR.md`** — entrada `/run-program` no formato aihero.
+- **`docs/SKILLS-OVERVIEW.md`** — entrada `/run-program`.
+- **`AGENTS.md`** — comando registrado na tabela.
+- **`README.md`** + **`README.pt-BR.md`** — tabela de commands + bump badge 1.6.0.
+- **`scripts/check-consistency.mjs`** — assert `/run-program` registrado + `programs/*.yml` válidos + cada `.yml` tem `.md` correspondente.
+
+### Extensions sobre spec-kit original
+Nosso schema estende o `workflows/speckit/workflow.yml` do github/spec-kit com:
+- **`when:`** — conditional execution por step (não tinha no original)
+- **`parallel:`** — dispatch paralelo via Task tool (não tinha)
+- **`type: conditional`** com `if/then/else` — branching condicional declarativo
+- **Variable substitution** com `${steps.X.capture.Y}` para captura explícita de output
+- **`from:`** — retomar execução após falha em step específico
+
+### Sources
+- [github/spec-kit `workflows/`](https://github.com/github/spec-kit/tree/main/workflows) — formato YAML declarativo com review gates entre steps; extensões nossas conforme acima
+
+### Why
+`programs/*.md` eram **descritivos** — explicavam o pipeline mas precisavam o agente executar de cabeça (inconsistente entre sessões/agentes). Formato `.yml` é **executável** — máquina parseia, agente segue o plano, gates pausam pra humano. Mesmo pipeline rodado igual por agentes diferentes = consistência operacional.
+
+---
+
 ## [1.5.2-plugin-layout] - 2026-05-16
 
 Reorganização de layout para que **Claude Code 2.x autodiscovery** detecte todos os componentes via `claude plugin install`.
