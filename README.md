@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.6.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.6.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -631,6 +631,9 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
+| **v1.6.0** | 2026-05-18 | Executable YAML pipeline programs: `/run-program` slash command + 4 programs (`pipeline-discovery`, `spec-driven-development`, `loop-polishing`, `detective-spec`); schema with gates/parallel/conditional/vars; validator + planner scripts. From [github/spec-kit workflows/](https://github.com/github/spec-kit/tree/main/workflows) extended |
+| **v1.5.2** | 2026-05-16 | Plugin layout for Claude Code 2.x autodiscovery: `.claude/commands/` → `commands/`, `.claude/agents/` → `agents/`, hooks/hooks.json converted, `.mcp.json` added |
+| **v1.5.1** | 2026-05-15 | v1.5.0 doc gaps: version table, Acknowledgements (5 new sources), CONTRIBUTING policy checklist |
 | **v1.5.0** | 2026-05-15 | Absorb 6 external skill patterns into the kit: MCP builder patterns, verification-before-completion, receiving-code-review, memory consolidation; `/consolidate-memory` command; skill 18 `--recommend-automation` mode; skill 28 `audit` mode |
 | **v1.4.2** | 2026-05-15 | Humanize gaps: evals for `/humanize`, consistency check assert, quality-gate prose section, skill-author note |
 | **v1.4.1** | 2026-05-15 | `/humanize` command + `policies/anti-ai-writing.md` (29 patterns) + opt-in hook; gates in skills 10/13/14. From [blader/humanizer](https://github.com/blader/humanizer) |

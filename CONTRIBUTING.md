@@ -145,6 +145,41 @@ Exemplos recentes (v1.5.0): `mcp-builder-patterns.md`, `verification-before-comp
 
 ---
 
+## Adicionando um program (pipeline declarativo YAML)
+
+Programs em `programs/*.yml` são pipelines executáveis pelo `/run-program`. Formato canônico em `policies/programs-schema.md`.
+
+1. **Criar `programs/<nome>.yml`** seguindo o schema:
+   - `schema_version: "1.0"`
+   - `program: { id, name, version, description, authors }`
+   - `requires:` (opcional — kit_version, commands, skills, policies)
+   - `inputs:` (parâmetros pedidos via AskUserQuestion)
+   - `steps:` (array de command/gate/parallel/conditional)
+
+2. **Validar:**
+   ```bash
+   node scripts/validate-program.mjs programs/<nome>.yml
+   ```
+   Deve retornar `✓` antes de commitar.
+
+3. **Criar `programs/<nome>.md`** (descritivo) explicando:
+   - When to use / When NOT to use
+   - Design decisions (por que esses gates, esse parallel, esse conditional)
+   - Difference vs other programs
+   - Notes / handoff
+
+4. **Registrar em `programs/README.md`** na tabela Index com links pros 2 arquivos.
+
+5. **Eval coverage opcional** em `evals/programs/<nome>/golden.json` (3+ cases cobrindo happy path, gate rejection, missing input).
+
+6. **CHANGELOG + bump semver:**
+   - `MINOR` se program novo
+   - `PATCH` se ajuste em program existente
+
+Exemplos (v1.6.0): `pipeline-discovery.yml`, `spec-driven-development.yml`, `loop-polishing.yml`, `detective-spec.yml`.
+
+---
+
 ## Adicionando um subagent
 
 Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude Code.

@@ -5,6 +5,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.6.1-programs-gaps] - 2026-05-18
+
+### Changed
+- **`README.md`** + **`README.pt-BR.md`** — tabela de versões atualizada com v1.5.1, v1.5.2, v1.6.0 (estavam parando em v1.5.0).
+- **`CONTRIBUTING.md`** — nova seção "Adicionando um program (pipeline declarativo YAML)" com 6-step checklist + validador + eval coverage opcional.
+- **`.claude-plugin/plugin.json`** — description atualizada: "27 slash commands" → "28 slash commands" + menção a `/run-program` e executable YAML pipelines.
+
+---
+
 ## [1.6.0-executable-programs] - 2026-05-18
 
 ### Added — Executable YAML pipeline programs
