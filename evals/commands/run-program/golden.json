@@ -1,0 +1,76 @@
+{
+  "command": "/run-program",
+  "cases": [
+    {
+      "id": "rp-001",
+      "description": "List all programs",
+      "input": { "args": "--list" },
+      "expected_output_shape": {
+        "action": "list",
+        "programs": { "type": "array", "minItems": 4 }
+      }
+    },
+    {
+      "id": "rp-002",
+      "description": "Describe a specific program",
+      "input": { "args": "--describe loop-polishing" },
+      "expected_output_shape": {
+        "action": "describe",
+        "program": { "id": "loop-polishing" },
+        "inputs": { "type": "object" },
+        "steps": { "type": "array" }
+      }
+    },
+    {
+      "id": "rp-003",
+      "description": "Dry-run com inputs explícitos resolve variables",
+      "input": {
+        "args": "loop-polishing --input task=\"fix auth bug\" --dry-run"
+      },
+      "expected_output_shape": {
+        "action": "dry-run",
+        "resolved_inputs": {
+          "task": "fix auth bug",
+          "polish_level": "standard"
+        },
+        "missing_inputs": { "length": 0 }
+      },
+      "expected_validations": {
+        "args_substituted": "step 'implement' args contains 'fix auth bug'",
+        "defaults_applied": "polish_level=standard from default"
+      }
+    },
+    {
+      "id": "rp-004",
+      "description": "Missing required input → reportar",
+      "input": {
+        "args": "pipeline-discovery --dry-run"
+      },
+      "expected_output_shape": {
+        "missing_inputs": { "minItems": 1 }
+      },
+      "expected_console_includes": "feature_description"
+    },
+    {
+      "id": "rp-005",
+      "description": "Invalid program file → erro de validação",
+      "input": {
+        "args": "non-existent --dry-run"
+      },
+      "expected_exit_code": 1,
+      "expected_console_includes": "ENOENT"
+    },
+    {
+      "id": "rp-006",
+      "description": "Schema enforced — duplicate step ids bloqueiam",
+      "input": { "program_yaml": "schema_version: \"1.0\"\nprogram:\n  id: bad\n  name: Bad\n  version: \"1.0.0\"\n  description: dup\nsteps:\n  - id: a\n    command: /foo\n  - id: a\n    command: /bar\n" },
+      "expected_validation_errors": ["duplicate step id: a"]
+    },
+    {
+      "id": "rp-007",
+      "description": "Reference to non-existent step → validation error",
+      "input": { "program_yaml": "schema_version: \"1.0\"\nprogram:\n  id: bad\n  name: Bad\n  version: \"1.0.0\"\n  description: ref\nsteps:\n  - id: real\n    command: /foo\n  - id: uses\n    command: /bar\n    args: \"${steps.fake.output}\"\n" },
+      "expected_validation_errors": ["reference to non-existent step: ${steps.fake}"]
+    }
+  ]
+}

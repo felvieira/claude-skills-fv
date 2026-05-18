@@ -1,0 +1,81 @@
+schema_version: "1.0"
+
+program:
+  id: detective-spec
+  name: "Detective Spec — reverse-engineer specs from legacy"
+  version: "1.0.0"
+  description: "Pipeline de 5 fases: reconhecimento → modulos → regras → fluxos → ADRs retroativos. Read-only no projeto legado."
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.6.0"
+  skills: ["33-detective-spec"]
+  policies: [policies/detective-write-guardrails.md]
+
+inputs:
+  target_path:
+    type: string
+    required: true
+    prompt: "Path do projeto legado (read-only)"
+
+  output_dir:
+    type: string
+    default: "_detective_sdd"
+    prompt: "Diretorio de output (default: _detective_sdd/)"
+
+  resume_from_phase:
+    type: number
+    default: 1
+    prompt: "Retomar a partir de qual fase? (1-5)"
+
+steps:
+  # ---- Phase 1: Reconnaissance ----
+  - id: recon
+    type: command
+    command: /detective-spec
+    args: "--phase=1 --target=${inputs.target_path} --output=${inputs.output_dir}"
+    when: inputs.resume_from_phase == 1
+
+  - id: gate-recon
+    type: gate
+    message: "Reconhecimento OK? Modulos identificados corretamente?"
+    options: [approve, expand-recon, reject]
+    on_reject: run:recon
+    when: inputs.resume_from_phase == 1
+
+  # ---- Phase 2: Modules (parallel — 4 detectives independentes) ----
+  - id: extract-contracts
+    type: parallel
+    when: inputs.resume_from_phase <= 2
+    parallel:
+      - id: detective-contracts
+        type: command
+        command: /detective-spec
+        args: "--phase=2 --extract=contracts"
+
+  # ---- Phase 3: Business rules ----
+  - id: extract-rules
+    type: command
+    command: /detective-spec
+    args: "--phase=3 --extract=business-rules"
+    when: inputs.resume_from_phase <= 3
+
+  # ---- Phase 4: Flows ----
+  - id: extract-flows
+    type: command
+    command: /detective-spec
+    args: "--phase=4 --extract=flows"
+    when: inputs.resume_from_phase <= 4
+
+  # ---- Phase 5: ADRs retroativos ----
+  - id: extract-adrs
+    type: command
+    command: /detective-spec
+    args: "--phase=5 --extract=adrs"
+    when: inputs.resume_from_phase <= 5
+
+  - id: gate-final
+    type: gate
+    message: "5 fases completas em ${inputs.output_dir}. Aprovar arquivamento?"
+    options: [approve, review-manually, reject]
+    on_reject: abort

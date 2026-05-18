@@ -139,11 +139,31 @@ async function main() {
   }
 
   // Check: spec-driven commands exist as files in commands/ (where plugin autodiscovers them)
-  for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory"]) {
+  for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory", "run-program"]) {
     try {
       await fs.access(path.join(root, "commands", `${cmd}.md`));
     } catch {
       expect(false, `commands/${cmd}.md must exist (autodiscovered by plugin)`);
+    }
+  }
+
+  // Check: programs/*.yml are valid (since v1.6.0)
+  try {
+    const programsDir = path.join(root, "programs");
+    const ymlFiles = (await fs.readdir(programsDir)).filter(f => f.endsWith(".yml"));
+    expect(ymlFiles.length >= 1, "programs/ must contain at least one .yml program");
+    // Each .yml should have a corresponding .md descriptive file
+    for (const yml of ymlFiles) {
+      const mdPath = yml.replace(/\.yml$/, ".md");
+      try {
+        await fs.access(path.join(programsDir, mdPath));
+      } catch {
+        expect(false, `programs/${yml} should have a matching descriptive ${mdPath}`);
+      }
+    }
+  } catch (e) {
+    if (e.message && !e.message.includes("expect")) {
+      // programs/ may not exist in some setups — skip silently
     }
   }
 

@@ -223,6 +223,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/checklist docs/specs/dark-mode.md`
 **Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
+### `/run-program` — Executable YAML pipelines
+
+**O que faz:** executa `programs/<nome>.yml` como pipeline declarativo com gates humanos, parallel blocks, conditional steps e variable substitution.
+**Quando usar:** pipelines repetidos que precisam consistência.
+**Problema que resolve:** programs descritivos (`.md`) não são executáveis; YAML é.
+**Exemplo:** `/run-program spec-driven-development`
+**Takeaway:** **mesmo pipeline executado igual por agentes diferentes.**
+
 ### `/consolidate-memory` — Manutenção do vault
 
 **O que faz:** janitor periódico do vault de memória (`D:\claude-memory\`). Merge duplicatas, archive stale, prune backlinks. Workflow seguro com snapshot.

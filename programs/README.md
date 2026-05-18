@@ -4,6 +4,19 @@ Declarative cognitive program definitions for the Dev Team Kit.
 
 A **program** is an ordered sequence of protocol shells (or slash commands) composing a multi-step workflow. Programs make pipelines auditable, composable, and easy to reference from the orchestrator.
 
+## Two formats coexist (since v1.6.0)
+
+| Format | Purpose | Read by |
+|---|---|---|
+| `programs/<name>.md` | **Descriptive** — explains the flow, when/why/handoff, design decisions | Humans |
+| `programs/<name>.yml` | **Executable** — machine-parseable pipeline with gates, conditionals, parallel, variable substitution | `/run-program` + `scripts/run-program.mjs` |
+
+Both coexist. The `.md` is the conceptual source of truth; the `.yml` is the mechanical implementation.
+
+Schema reference: [`policies/programs-schema.md`](../policies/programs-schema.md).
+Validator: `node scripts/validate-program.mjs`.
+Executor: `/run-program <name>`.
+
 ## What belongs here
 
 - Multi-step pipelines that involve 3+ protocol shells or slash commands in sequence
@@ -43,7 +56,7 @@ One sentence describing the goal.
 
 | Program | Intent |
 |---|---|
-| [pipeline-discovery](pipeline-discovery.md) | Full discovery: interrogation → PRD → issues → TDD loop → ship |
-| [spec-driven-development](spec-driven-development.md) | Constitution-anchored pipeline with /checklist + /analyze gates between artifacts |
-| [detective-spec](detective-spec.md) | Reverse-engineer specs from legacy: recon → modules → rules → flows → ADRs |
-| [loop-polishing](loop-polishing.md) | Auto-loop with quality polishing pass before commit |
+| [pipeline-discovery](pipeline-discovery.md) · [yml](pipeline-discovery.yml) | Full discovery: interrogation → PRD → issues → TDD loop → ship |
+| [spec-driven-development](spec-driven-development.md) · [yml](spec-driven-development.yml) | Constitution-anchored pipeline with /checklist + /analyze gates between artifacts |
+| [detective-spec](detective-spec.md) · [yml](detective-spec.yml) | Reverse-engineer specs from legacy: recon → modules → rules → flows → ADRs |
+| [loop-polishing](loop-polishing.md) · [yml](loop-polishing.yml) | Auto-loop with quality polishing pass before commit |

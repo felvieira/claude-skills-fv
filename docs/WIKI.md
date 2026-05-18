@@ -289,6 +289,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/run-program` — Execute YAML pipeline programs
+
+**What it does:** parses and executes `programs/<name>.yml` as a declarative pipeline. Steps can be slash commands, human gates, parallel blocks, or conditionals. Variable substitution via `${inputs.X}` and `${steps.X.output}`. Validates schema, resolves inputs, runs in order, pauses at gates.
+**When to use:** repeated pipelines that need consistency (spec-driven, pipeline-discovery, loop-polishing, detective-spec); flows with multiple review gates; teams that need the same pipeline executed identically by different agents.
+**Problem it solves:** `programs/*.md` describes the flow but isn't executable. YAML format is executable — machine parses, agent runs each step, pauses at human gates, captures outputs for next step.
+**Example:** `/run-program spec-driven-development` or `/run-program loop-polishing --dry-run`
+**Takeaway:** **declarative pipeline + human gates = consistent execution across agents and sessions.** Inspired by [github/spec-kit `workflows/`](https://github.com/github/spec-kit/tree/main/workflows) with our extensions (when/parallel/conditional/vars).
+
 #### `/consolidate-memory` — Memory vault maintenance
 
 **What it does:** periodic janitor for `D:\claude-memory\` (or any vault path) — merges duplicate logs, archives stale architecture decisions, prunes broken backlinks, promotes/demotes learned skills based on score, normalizes inconsistent tags. Safe workflow: snapshot → dry-run → confirmation → apply → verify → report.
