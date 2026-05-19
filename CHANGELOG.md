@@ -5,6 +5,19 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.1.1-refactor-safely-docs] - 2026-05-20
+
+### Changed
+- **`programs/README.md`** — `refactor-safely` adicionado na tabela Index (estava faltando).
+- **`docs/WIKI.md` + `docs/WIKI.pt-BR.md`** — entrada `/run-program` atualizada: "6 programs" → "7 programs", menção explícita a `refactor-safely`.
+- **`docs/SKILLS-OVERVIEW.md`** — nova entrada `refactor-safely (program v2.1.0)` + entrada `Use Cases reference (v2.1.0)` apontando pra `docs/USE-CASES.md`.
+- **`AGENTS.md`** — `refactor-safely` e `USE-CASES.md` adicionados na tabela.
+
+### Why
+Patch fechando gaps de documentação do v2.1.0. O program `refactor-safely` foi criado mas faltou registrar em 4 lugares canônicos (programs index, WIKI EN+PT, SKILLS-OVERVIEW, AGENTS).
+
+---
+
 ## [2.1.0-smart-routing] - 2026-05-20
 
 Fecha gaps reais identificados na auditoria dos modos autônomos. Hook intent-classifier v2: opcional LLM, regex fallback ampliado pra cobrir 9 categorias de intent.

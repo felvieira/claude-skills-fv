@@ -65,6 +65,8 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com **7 step types** (command/prompt/bash/gate/loop/parallel/conditional), `context: fresh` per step, `provider`/`model` routing, `trigger_rule` para parallel. 6 programs: pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN), **comprehensive-review** (5-agent parallel) |
 | _(auto)_ | **Auto-orchestration** (v1.8.0): hook `intent-classifier` sugere program adequado baseado em intent do prompt. Skill 39 (program-router) confirma. 4 níveis de autonomia em `policies/auto-orchestration.md` |
 | `/swarm` | **TOTAL AUTONOMY** (v2.0.0): do prompt ao PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous (Nível 3), o hook auto-roteia features pra `/swarm`. Inspirado em Ralph/fix-issue/comprehensive-review do archon. |
+| _(via /run-program)_ | **`refactor-safely`** (v2.1.0): pipeline com behavior preservation — baseline tests + analyze read-only + atomic plan + execute com type-check hooks + verify + PR. Use pra refactor de módulos grandes. |
+| _(doc)_ | **`docs/USE-CASES.md`** (v2.1.0): mapeia 17 cenários de dev no dia-a-dia → comando apropriado. Hook intent-classifier v2 roteia auto baseado nesses cenários. |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

@@ -62,3 +62,4 @@ One sentence describing the goal.
 | [loop-polishing](loop-polishing.md) · [yml](loop-polishing.yml) | Auto-loop with quality polishing pass before commit |
 | [adversarial-dev](adversarial-dev.md) · [yml](adversarial-dev.yml) | GAN-inspired: planner + generator/evaluator loop with adversarial scoring (5 criteria, threshold per sprint) |
 | [comprehensive-review](comprehensive-review.md) · [yml](comprehensive-review.yml) | 5-agent parallel PR review (code/errors/tests/comments/docs) + security + synthesize + auto-fix CRITICAL/HIGH |
+| [refactor-safely](refactor-safely.md) · [yml](refactor-safely.yml) | Refactor with behavior preservation: baseline tests + analyze read-only + atomic plan + execute with type-check + verify behavior + PR |

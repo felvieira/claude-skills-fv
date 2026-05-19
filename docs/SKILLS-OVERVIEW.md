@@ -231,6 +231,18 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/swarm "implementar auth"` ou `/swarm fix #42`
 **Takeaway:** **autonomia real.** Hook em modo Autonomous roteia features pra cá.
 
+### `refactor-safely` (program v2.1.0)
+
+**O que faz:** pipeline de refactor com **behavior preservation garantida** — baseline tests + analyze read-only + atomic plan + execute com type-check hooks + verify behavior + PR.
+**Quando:** refactor de módulo grande (>500 linhas), extrair classes, split god classes.
+**Diff vs `/simplify`:** simplify é local, sem garantias; refactor-safely tem baseline snapshot + verification + 3 gates humanos.
+**Exemplo:** `/run-program refactor-safely --input target=src/auth/`
+**Takeaway:** **único pipeline que garante que refactor não muda comportamento.** Use quando seguranca > velocidade.
+
+### Use Cases reference (v2.1.0)
+
+[`docs/USE-CASES.md`](./USE-CASES.md) mapeia **17 cenários reais de dev no dia-a-dia** → comando apropriado. Tabela de decisão rápida + categorias A/B/C/D/E. Hook intent-classifier v2 usa esse catálogo pra roteamento automático.
+
 ### Auto-orchestration (v1.8.0)
 
 **O que faz:** hook `intent-classifier` detecta intent do prompt e sugere program adequado. Skill 39 (program-router) confirma com usuário.
