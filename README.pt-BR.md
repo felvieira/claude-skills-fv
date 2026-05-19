@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.9.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.9.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -691,9 +691,11 @@ A diferença real é se **gates humanos durante a execução continuam ativos**.
 
 Edite `~/.claude/settings.json` (Windows: `C:\Users\<user>\.claude\settings.json`), salve, e **restarte o Claude Code**.
 
-### Configurar Nível 3 (Autonomous) — só CI/cron
+### Configurar Nível 3 (Autonomous) — só sua máquina (user-wide)
 
 ⚠ **Zero confirmações humanas.** Use só em contextos não-interativos (CI, scheduled tasks).
+**Recomendado:** coloque isso no user-wide config para o default do repo continuar Active (mais seguro). Arquivo: `~/.claude/dev-team-kit-config.json`
+
 
 ```jsonc
 {
