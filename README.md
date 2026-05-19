@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.8.0-0f766e)
+![Version](https://img.shields.io/badge/version-1.8.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -644,6 +644,68 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 | **v1.2.x** | 2026-05-13 | 13-check PRD validation (decoupled from Taskmaster); agent prompting patterns (layering A→B→C, agent-spec template, no-drift policy); 4-tier memory model; token budget in SessionStart hook |
 | **v1.1.0** | 2026-05-09 | Context Engineering adoption: protocol shells (Pareto-lang), skill I/O schemas, iteration scoring, programs/ layer, 3 pilot subagents migrated |
 | **v1.0.0** | 2026-04-30 | Auto-loop v2: multi-agent (claude + codex), parallel worktrees, polishing pass, circuit breaker, 21 smoke tests |
+
+---
+
+## Auto-Orchestration (v1.8.0+)
+
+The kit detects intent from your prompt and **suggests the appropriate program automatically** — you don't have to remember to invoke `/run-program` manually.
+
+```
+You say: "I need to add social auth to the app"
+   ↓
+[intent-classifier hook]
+   → detects feature pattern → emits: /run-program spec-driven-development
+   ↓
+[Claude] invokes skill 39 (program-router)
+   → asks via AskUserQuestion: dry-run / direto / ad-hoc / cancelar
+   ↓
+You choose → program executes with human gates where defined
+```
+
+### 4 autonomy levels
+
+| Level | Behavior | When to use |
+|---|---|---|
+| **0 — Manual** | Hook disabled. You invoke `/run-program <name>` manually. | Full control, exploration |
+| **1 — Passive (DEFAULT)** | Hook suggests. Claude shows it and waits. Nothing auto-executes. | Safe default for interactive dev |
+| **2 — Active** | Hook suggests + Claude auto-runs `--dry-run` (shows plan). **Gates inside the program still pause.** | You trust the workflow, want to skip "run dry-run?" prompt |
+| **3 — Autonomous** | Hook suggests + Claude auto-runs with `--auto-yes` (gates auto-approve). | **CI / cron only.** High risk if program has destructive `bash:`. |
+
+**Active vs Autonomous — the key difference:**
+- **Active** = "show me the plan automatically, but pause at gates so I can approve them during execution"
+- **Autonomous** = "execute everything without asking me anything"
+
+The real difference is whether **human gates during execution stay active**.
+
+### Configure your level
+
+```jsonc
+// hook config (via /update-config or settings.json)
+{
+  "intent_classifier": {
+    "enabled": true,         // false = Level 0 (manual)
+    "auto_dry_run": false,   // true = Level 2 (active)
+    "autonomous": false,     // true = Level 3 (autonomous, CI only)
+    "suppress": []           // program ids to never suggest
+  }
+}
+```
+
+Full reference: [`policies/auto-orchestration.md`](policies/auto-orchestration.md).
+
+### 6 intent patterns detected
+
+| Your prompt mentions... | Suggested program |
+|---|---|
+| "criar feature", "spec-driven", "constitution" | `spec-driven-development` |
+| "ideia vaga", "discovery", "preciso de PRD" | `pipeline-discovery` |
+| "review crítico", "5-agent", "comprehensive review" | `comprehensive-review` |
+| "from scratch", "greenfield", "do zero" | `adversarial-dev` |
+| "legacy", "legado", "reverse engineering" | `detective-spec` |
+| "auto-loop", "autônomo", "fire and forget" | `loop-polishing` |
+
+Skip auto: informational prompts ("o que é..."), trivial ("fix typo"), or already a `/slash` command.
 
 ---
 

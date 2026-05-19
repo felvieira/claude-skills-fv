@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.8.1-autonomy-docs] - 2026-05-20
+
+### Changed
+- **`README.md`** + **`README.pt-BR.md`** — nova seção dedicada "Auto-Orchestration (v1.8.0+)" com:
+  - Diagrama do flow completo (hook → skill 39 → execução)
+  - Tabela explicativa dos **4 níveis de autonomia** (Manual / Passive [DEFAULT] / Active / Autonomous)
+  - Diferença explícita **Active vs Autonomous**: Active = "auto dry-run mas gates pausam"; Autonomous = "executa tudo sem perguntar" (só CI)
+  - Configuração via hook config (JSON com `enabled`, `auto_dry_run`, `autonomous`, `suppress`)
+  - Tabela dos 6 intent patterns mapeados a programs
+  - Skip rules (informacional, trivial, slash)
+
+### Why
+v1.8.0 mencionou "4 níveis" mas a tabela completa só estava em `policies/auto-orchestration.md`. Usuário perguntou qual é o default e diff Active/Autonomous — agora tudo no README. Default = **Passive (Nível 1)** — sugere e espera você decidir.
+
+---
+
 ## [1.8.0-auto-orchestration] - 2026-05-20
 
 Fecha o loop: agora o kit **detecta intent** do prompt e **sugere program apropriado automaticamente** — sem usuário precisar invocar `/run-program` manualmente.
