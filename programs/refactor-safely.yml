@@ -1,0 +1,97 @@
+schema_version: "1.0"
+
+program:
+  id: refactor-safely
+  name: "Refactor Safely (behavior preservation)"
+  version: "1.0.0"
+  description: "Scan + baseline tests + analyze read-only + plan + execute atomic + behavior verification + PR"
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=2.0.0"
+  commands: [simplify, test]
+  policies: [policies/verification-before-completion.md]
+
+inputs:
+  target:
+    type: string
+    required: true
+    prompt: "Path or module to refactor (ex: src/auth/)"
+
+  preserve_api:
+    type: boolean
+    default: true
+    prompt: "Preserve public API?"
+
+  max_files_per_iter:
+    type: number
+    default: 3
+    prompt: "Max files modified per iteration (atomicity)"
+
+steps:
+  - id: scan-scope
+    type: bash
+    bash: "find ${inputs.target} -type f | head -50"
+
+  - id: baseline-tests
+    type: bash
+    bash: "mkdir -p $ARTIFACTS_DIR/baseline && (npm test 2>&1 || cargo test 2>&1 || pytest 2>&1) | tee $ARTIFACTS_DIR/baseline/tests.txt || true"
+
+  - id: gate-baseline
+    type: gate
+    message: "Baseline tests captured. If they failed BEFORE refactor abort."
+    options: [proceed, abort]
+    on_reject: abort
+
+  - id: analyze
+    type: prompt
+    context: fresh
+    provider: claude
+    model: sonnet
+    prompt: "READ-ONLY analyst. Analyze target. Produce analysis.md."
+    allowed_tools: [Read, Grep, Glob, Bash]
+
+  - id: plan
+    type: prompt
+    context: fresh
+    provider: claude
+    model: sonnet
+    prompt: "Create refactor-plan.md with atomic steps."
+    allowed_tools: [Read, Write, Grep, Glob]
+
+  - id: gate-plan
+    type: gate
+    message: "Refactor plan ready. Review."
+    options: [approve, abort]
+    on_reject: abort
+
+  - id: execute-loop
+    type: loop
+    loop:
+      prompt: "Implement next undone step. Type-check. Tests. Commit. Output ALL_STEPS_COMPLETE when done."
+      until: ALL_STEPS_COMPLETE
+      max_iterations: 30
+      fresh_context: true
+      on_max_reached: abort
+
+  - id: full-test-suite
+    type: bash
+    bash: "(npm test 2>&1 || cargo test 2>&1 || pytest 2>&1) | tee $ARTIFACTS_DIR/post-tests.txt"
+
+  - id: verify-behavior
+    type: prompt
+    context: fresh
+    provider: claude
+    model: sonnet
+    prompt: "READ-ONLY verifier. Compare baseline vs post tests. Output verification.md."
+    allowed_tools: [Read, Grep, Glob, Bash]
+
+  - id: gate-verify
+    type: gate
+    message: "Verification done. BROKEN means rollback."
+    options: [accept, abort]
+    on_reject: abort
+
+  - id: create-pr
+    type: bash
+    bash: "BRANCH=refactor/safely-$(date +%s) && git checkout -b $BRANCH && git push -u origin $BRANCH && gh pr create --title 'refactor' --body-file $ARTIFACTS_DIR/verification.md --label refactor-safely"

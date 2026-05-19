@@ -5,6 +5,73 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.1.0-smart-routing] - 2026-05-20
+
+Fecha gaps reais identificados na auditoria dos modos autônomos. Hook intent-classifier v2: opcional LLM, regex fallback ampliado pra cobrir 9 categorias de intent.
+
+### Added
+- **`docs/USE-CASES.md`** (new) — 17 cenários de dev no dia-a-dia mapeados pra comando apropriado. Tabela de decisão rápida. Serve como referência humana E prompt training pro LLM classifier.
+- **`programs/refactor-safely.{yml,md}`** (new) — pipeline com behavior preservation: scan → baseline tests → analyze read-only → plan → execute loop atomic → full suite → verify → PR. 11 phases. Fecha gap pra refactor seguro (inspirado em archon-refactor-safely).
+- **`hooks/scripts/llm-classifier.mjs`** (new) — módulo standalone que chama Claude Haiku CLI pra classificar prompts. Output JSON `{category, command, args, confidence, reasoning}`. Categorias A-E. Timeout configurável. Retorna `{error, fallback: true}` se CLI indisponível/timeout.
+
+### Changed
+- **`hooks/scripts/intent-classifier.mjs` v2** — arquitetura LLM-first com regex fallback:
+  - `use_llm: false` (default) pra latência zero; `true` ativa LLM (~$0.0001 + ~10s)
+  - 9 novos patterns regex cobrindo: bug fix → `/auto`, issue `fix #N` → `/swarm fix #N` (com extração de número), refactor → `refactor-safely`, criar tests → `/test`, investigar/performance → `/auto`, spike/PoC → `/auto --no-tdd`, assets visuais → `/web-assets`, agendado → `/schedule`
+  - 5 categorias: A (autônomo), B (pipeline), C (direto/leve), D (conversa, skip), E (agendado)
+  - Telemetry estruturada em `.swarm/classifier.jsonl` (cada classificação loga prompt, command, confidence, used_llm, reasoning)
+  - Threshold de confidence configurável (default 0.7)
+  - Skip automático em prompts informacionais, triviais, slash commands
+- **Output do hook** — mais descritivo, mostra "Smart routing v2", source (LLM/regex fallback), categoria, reasoning, confidence, ação esperada por nível.
+
+### How it works (v2.1.0 routing matrix)
+
+```
+Você diz: "fix bug do email vazio"
+   ↓ intent-classifier v2 (regex)
+   → Match: pattern "bug" → category C → /auto
+   → Reasoning: "Bug fix isolado merece /auto (não swarm)"
+   ↓
+Em Autonomous Nível 3: Claude executa /auto direto
+Em Active Nível 2: Claude executa /auto (sem dry-run pra task leve)
+Em Passive Nível 1: Claude sugere /auto, espera você
+```
+
+Outros exemplos:
+- "refatorar src/auth" → `/run-program refactor-safely`
+- "fix #142" → `/swarm fix #142` (autonomous) ou sugestão (outros níveis)
+- "criar testes pra módulo X" → `/test`
+- "investigar por que /users tá lento" → `/auto` + debugger
+- "spike pra ver se Stripe integra" → `/auto --no-tdd`
+- "rodar review semanal" → `/schedule`
+- "o que é constitution?" → skip (conversa)
+
+### Telemetry
+
+Cada classificação loga em `.swarm/classifier.jsonl`:
+```json
+{"ts":"...","prompt":"...","result":"suggested","used_llm":false,"category":"A","command":"/swarm fix #142","confidence":0.85,"level":3,"reasoning":"..."}
+```
+
+Use pra auditar/melhorar patterns.
+
+### Migration
+
+Backwards compat total. Hook v1.x continua funcionando — agora com mais patterns regex.
+
+Pra ativar LLM classifier (mais inteligente, mas ~10s latência):
+```jsonc
+// hooks/config.json ou ~/.claude/dev-team-kit-config.json
+{
+  "intent_classifier": { "use_llm": true }
+}
+```
+
+### Why
+Auditoria mostrou 5 gaps reais — hook v1.x não classificava bug/issue/refactor/test/investigation. v2 expande regex de 6 → 15 patterns + opcional LLM pra contexto complexo. `refactor-safely` fecha o único gap real de program faltante.
+
+---
+
 ## [2.0.0-swarm] - 2026-05-20
 
 **MAJOR.** Novo modo `/swarm` — total autonomy: do prompt ao PR mergeable sem intervenção humana.
