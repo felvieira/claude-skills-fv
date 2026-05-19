@@ -13,6 +13,7 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - Usar ferramentas reais do ambiente atual
 - Persistir decisoes, nao conversa excessiva
 - Seguir `policies/cost-optimization.md` para maximizar eficiencia de tokens, cache e API calls
+- Adaptar densidade da resposta ao tipo de pergunta — ver `policies/dense-output-mode.md`. Resposta default ≤300 tok salvo override. User pode forcar com `--brief` / `--verbose` / `--why` / `--raw` ou desligar com "para de comprimir"
 - Preferir ferramentas de code intelligence (graph, symbol, semantic) sobre Grep/Read bruto — ver `policies/code-exploration.md`
 - Definir `model` explicito ao spawnar subagents — ver `policies/model-routing.md`
 - Respeitar hierarquia de contexto (Rules > Specs > Source > Errors > Conversation) e trust levels — ver `policies/context-engineering.md`

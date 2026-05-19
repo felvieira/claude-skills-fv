@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 37 skills · 14 subagents · 23 slash commands · 22 policies
-> **Last updated:** 2026-05-04
+> **Version:** 37 skills · 14 subagents · 23 slash commands · 35 policies
+> **Last updated:** 2026-05-19
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -720,7 +720,8 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Absorbe
 | `code-exploration.md` | How to explore codebase efficiently in tokens |
 | `confusion-management.md` | STOP-NAME-OPTIONS-WAIT when requirement is ambiguous |
 | `context-engineering.md` | 5-level hierarchy + 3 trust levels for context management |
-| `cost-optimization.md` | Practices to reduce API cost |
+| `cost-optimization.md` | Practices to reduce API cost (+ shell commands compressed table) |
+| `dense-output-mode.md` | Response density proportional to question. DENSE/NORMAL/EXPANDED modes + 7 inline flags + off-switch |
 | `detective-write-guardrails.md` | Hard guardrail: writes only in `.detective/` and `_detective_sdd/` |
 | `documentation-i18n.md` | Conventions for multi-language docs |
 | `evals.md` | Evaluation framework for skills, prompts, tools |

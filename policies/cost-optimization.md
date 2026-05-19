@@ -20,6 +20,34 @@ Maximizar eficiencia de tokens, cache e API calls para reduzir custo real sem sa
 - Reutilizar `docs/repo-audit/current.md` antes de reexplorar o repo inteiro
 - Pedir resultados concisos quando possivel: "responda em 3 bullets"
 
+## Shell Commands Comprimidos
+
+Forms de comando que economizam tokens **de input** (output do shell que volta pro agente). Output e ~5x mais caro que input, mas input verboso ainda custa — e atrapalha leitura.
+
+| Em vez de | Use | Ganho |
+|-----------|-----|-------|
+| `git log` | `git log --oneline -10` | 80-95% |
+| `git status` | `git status --porcelain` (parsing) ou `git status -sb` (humano) | 40-60% |
+| `git diff` | `git diff --stat` (overview) ou `git diff -- <file>` (especifico) | 70-90% |
+| `npm install` | `npm install --silent` | 50-70% |
+| `cargo build` | `cargo build 2>&1 \| tail -50` (se esperando erro) | 60-90% |
+| `gh pr list` | `gh pr list --json number,title,state \| jq` | 40-60% |
+| `gh issue view N` | `gh issue view N --json title,body,state` | 30-50% |
+| `docker ps` | `docker ps --format "{{.Names}}\t{{.Status}}"` | 50-70% |
+| `kubectl get pods` | `kubectl get pods -o name` (so nomes) ou `-o wide` (completo) | 40-80% |
+| `find ...` | usar Glob (built-in) | nao chamar shell |
+| `grep ...` | usar Grep (built-in) com `-l` se so quer paths | nao chamar shell |
+| `cat file` | usar Read (built-in) | nao chamar shell |
+| `ls -la` | `ls -1` ou Glob | 60-80% |
+| Qualquer log verbose | `... 2>&1 \| tail -N` | depende |
+
+Regras gerais:
+- Prefer `--json` + `jq` em CLI tools que tem (gh, npm, cargo, docker, kubectl)
+- Use `head -N` / `tail -N` quando output pode passar de 50 linhas
+- `grep -l` quando so precisa saber **onde**, nao **o que**
+- `--porcelain` / `--format` quando precisar de parsing
+- Em comandos esperando muitas linhas, **sempre** pipe pra `head/tail` antes de chamar
+
 ## Rate Limit e Retry
 
 - Nao disparar muitos subagents simultaneos — cada um consome cota separada
@@ -51,6 +79,7 @@ Sinais de que o custo esta alto demais:
 
 ## Policies Complementares
 
+- `policies/dense-output-mode.md` — densidade de resposta proporcional a pergunta. Reduz tokens de output (5x mais caro que input) sem capar explicacao quando ela e pedida. 7 flags inline + off-switch
 - `policies/search-first.md` — pesquisar antes de implementar evita trabalho desperdicado: entender o que ja existe e o contexto real antes de gerar codigo reduz retrabalho e tokens gastos em correcoes
 - `policies/iterative-retrieval.md` — retrieval progressivo em 3 rounds evita carregar dumps completos de contexto: buscar apenas o que cada etapa precisa, incrementalmente
 
