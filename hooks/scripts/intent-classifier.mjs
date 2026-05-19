@@ -22,10 +22,11 @@
  *   - silenciar sugestões para keywords específicas: `intent_classifier.suppress: [keyword]`
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, appendFileSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { readHookConfig, isHookDisabled } from "./utils.mjs";
+import { classifyWithLLM, getTelemetryPath } from "./llm-classifier.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,8 +45,103 @@ const TRIVIAL = [
   /\bjust (a|one) (small|quick|simple|trivial)/i,
 ];
 
-// Mapeamento intent → program recomendado
+// Mapeamento intent → program/command recomendado (v2.1.0 expanded)
 const INTENT_PATTERNS = [
+  // Bug fix → /auto (C — leve)
+  {
+    program: null,
+    command: "/auto",
+    category: "C",
+    patterns: [
+      /\b(bug|crash|crasha|crashou|erro|broken|quebrou|nao funciona|não funciona|stopped working)\b/i,
+      /\bfix .* (bug|issue|problema)\b/i,
+    ],
+    confidence: "high",
+    why: "Bug fix isolado merece /auto (não swarm) — sem overhead de worktree+review pra task pequena",
+  },
+  // Issue do GitHub → /swarm fix #N (extrai número)
+  {
+    program: null,
+    command: "/swarm fix",  // será expandido com #N pelo extractor
+    category: "A",
+    extractIssueNumber: true,
+    patterns: [
+      /\b(fix|resolve|implementa|implement) #\d+/i,
+      /\bissue #?\d+/i,
+      /\b#\d+\b/,
+    ],
+    confidence: "high",
+    why: "Issue GitHub → swarm pega via gh issue view, implementa, abre PR linkado",
+  },
+  // Refactor seguro → refactor-safely (B)
+  {
+    program: "refactor-safely",
+    category: "B",
+    patterns: [
+      /\b(refator|refactor|extrair|extract|decompor|decompose|split|break up)\b/i,
+      /\b(modulariz|extract module|módulos? menores)\b/i,
+    ],
+    confidence: "high",
+    why: "Refactor merece pipeline com baseline tests + behavior verification",
+  },
+  // Criar testes → /test (C)
+  {
+    program: null,
+    command: "/test",
+    category: "C",
+    patterns: [
+      /\b(criar tests?|add tests?|adicionar tests?|cobertura|coverage|testar X|escrever tests?)\b/i,
+      /\b(unit tests?|integration tests?|e2e tests?) (pra|para|for)\b/i,
+    ],
+    confidence: "high",
+    why: "Skill 05 (qa-testing) cobre — sem overhead de program",
+  },
+  // Investigar/debug → /auto + debugger
+  {
+    program: null,
+    command: "/auto",
+    category: "C",
+    patterns: [
+      /\b(investigar|investigate|por que .* lento|por que .* travando|debug|diagnost)\b/i,
+      /\b(performance|profil|slow|lento|trav)\b.*\b(endpoint|api|módulo)\b/i,
+    ],
+    confidence: "medium",
+    why: "Investigação merece debugger subagent + /auto — não pipeline formal",
+  },
+  // Spike / PoC → /auto --no-tdd
+  {
+    program: null,
+    command: "/auto --no-tdd",
+    category: "C",
+    patterns: [
+      /\b(spike|poc|prova de conceito|proof of concept|ver se da|ver se dá|testar se|experimentar)\b/i,
+    ],
+    confidence: "medium",
+    why: "Spike é descartável — sem TDD, sem PR ceremony",
+  },
+  // Assets visuais → /web-assets
+  {
+    program: null,
+    command: "/web-assets",
+    category: "C",
+    patterns: [
+      /\b(hero image|favicon|og card|open graph|social card|asset visual|imagem .* landing)\b/i,
+    ],
+    confidence: "high",
+    why: "Skill 36 (web-asset-generator) gera direto",
+  },
+  // Agendado → /schedule
+  {
+    program: null,
+    command: "/schedule",
+    category: "E",
+    patterns: [
+      /\b(agendar|schedule|toda quarta|todo dia|semanal|mensal|cron|recurring)\b/i,
+      /\brodar .* (todo|toda|a cada)\b/i,
+    ],
+    confidence: "high",
+    why: "Tarefa recorrente — skill /schedule",
+  },
   {
     program: "spec-driven-development",
     patterns: [
@@ -133,22 +229,36 @@ function classify(text) {
   return matches[0];
 }
 
+function logTelemetry(record) {
+  try {
+    const path = getTelemetryPath();
+    mkdirSync(dirname(path), { recursive: true });
+    appendFileSync(path, JSON.stringify(record) + "\n");
+  } catch {
+    // telemetry opcional, nunca quebra hook
+  }
+}
+
 async function main() {
   if (isHookDisabled("intent-classifier")) {
     process.exit(0);
   }
-  // Defaults: Active mode (Nível 2) since v1.9.0
-  //   - enabled: true (sempre sugere)
-  //   - auto_dry_run: true (Claude auto-roda --dry-run pra mostrar plano)
-  //   - autonomous: false (gates humanos no program ainda pausam — não pula confirmações)
-  // Para mudar:
-  //   - Manual:     enabled: false
-  //   - Passive:    enabled: true, auto_dry_run: false
-  //   - Autonomous: enabled: true, autonomous: true   ⚠ CI only
+  // Defaults v2.1.0:
+  //   - enabled: true
+  //   - auto_dry_run: true (Level 2 Active default)
+  //   - autonomous: false (Level 3 user-wide opcional)
+  //   - use_llm: false (regex é rápido 0ms, LLM adiciona ~10s latência por prompt)
+  //   - llm_timeout_ms: 15000 (timeout do Claude CLI quando habilitado)
+  //   - llm_confidence_threshold: 0.7 (abaixo cai pro fallback)
+  // Para ativar LLM classifier (custo: ~$0.0001 + ~10s por prompt):
+  //   intent_classifier.use_llm = true
   const cfg = readHookConfig("intent_classifier", {
     enabled: true,
     auto_dry_run: true,
     autonomous: false,
+    use_llm: false,
+    llm_timeout_ms: 15000,
+    llm_confidence_threshold: 0.7,
     suppress: [],
   });
   if (!cfg.enabled) process.exit(0);
@@ -168,55 +278,167 @@ async function main() {
       process.exit(0);
     }
 
-    // Skip se usuário já invocou slash command explícito
     if (userPrompt.trim().startsWith("/")) process.exit(0);
 
-    const intent = classify(userPrompt);
-    if (!intent) process.exit(0);
+    // ===== Phase 1: try LLM classifier first =====
+    let llmResult = null;
+    let usedLLM = false;
+    if (cfg.use_llm) {
+      llmResult = classifyWithLLM(userPrompt, { timeoutMs: cfg.llm_timeout_ms || 15000 });
+      if (llmResult && !llmResult.error && llmResult.confidence >= cfg.llm_confidence_threshold) {
+        usedLLM = true;
+      } else if (llmResult && llmResult.error) {
+        // log fallback reason (non-blocking)
+        logTelemetry({
+          ts: new Date().toISOString(),
+          prompt: userPrompt.slice(0, 200),
+          llm_error: llmResult.error,
+          fallback: "regex",
+        });
+      }
+    }
 
-    // Skip se program está em suppress list
-    if (cfg.suppress && cfg.suppress.includes(intent.program)) process.exit(0);
+    // ===== Phase 2: fallback regex if LLM unavailable/low confidence =====
+    let category, command, args, confidence, reasoning, programName;
 
-    // Em modo Autonomous, intents de feature/issue/refactor roteiam pra /swarm (autonomia total)
-    // Em modos Active/Passive, mantém o program específico
+    if (usedLLM) {
+      category = llmResult.category;
+      command = llmResult.command;
+      args = llmResult.args;
+      confidence = llmResult.confidence;
+      reasoning = llmResult.reasoning;
+      programName = command && command.startsWith("/run-program ") ? command.split(" ")[1] : null;
+    } else {
+      // Fallback: regex-based classification (v1.x behavior expanded)
+      const intent = classify(userPrompt);
+      if (!intent) {
+        logTelemetry({
+          ts: new Date().toISOString(),
+          prompt: userPrompt.slice(0, 200),
+          result: "skip",
+          reason: "no-match",
+        });
+        process.exit(0);
+      }
+      programName = intent.program;
+      // intent pode ter command direto (ex: /auto) ou program (cai em /run-program X)
+      if (intent.command) {
+        command = intent.command;
+        // Extrai número de issue se aplicável
+        if (intent.extractIssueNumber) {
+          const m = userPrompt.match(/#?(\d+)/);
+          if (m) command = `${command} #${m[1]}`;
+        }
+      } else {
+        command = `/run-program ${intent.program}`;
+      }
+      confidence = intent.confidence === "high" ? 0.85 : 0.6;
+      reasoning = intent.why;
+      // Category vem do pattern, ou inferida do program
+      if (intent.category) {
+        category = intent.category;
+      } else if (["spec-driven-development", "pipeline-discovery"].includes(intent.program)) {
+        category = "A";
+      } else {
+        category = "B";
+      }
+    }
+
+    // Skip se program/command está em suppress list
+    if (cfg.suppress && (cfg.suppress.includes(programName) || cfg.suppress.includes(command))) {
+      logTelemetry({
+        ts: new Date().toISOString(),
+        prompt: userPrompt.slice(0, 200),
+        result: "suppressed",
+        suppressed: programName || command,
+        used_llm: usedLLM,
+      });
+      process.exit(0);
+    }
+
+    // Category D = conversa, sem sugestão
+    if (category === "D") {
+      logTelemetry({
+        ts: new Date().toISOString(),
+        prompt: userPrompt.slice(0, 200),
+        result: "skip",
+        reason: "conversational",
+        used_llm: usedLLM,
+      });
+      process.exit(0);
+    }
+
+    // ===== Phase 3: route based on category + autonomy level =====
     const SWARM_ELIGIBLE = ["spec-driven-development", "pipeline-discovery"];
-    const routeToSwarm = cfg.autonomous && SWARM_ELIGIBLE.includes(intent.program);
+    const routeToSwarm = cfg.autonomous && (
+      category === "A" ||
+      (category === "B" && programName && SWARM_ELIGIBLE.includes(programName))
+    );
 
-    // Determinar level efetivo
-    let level, levelLabel, action;
+    let level, levelLabel, action, suggestedCmd;
     if (cfg.autonomous) {
       level = 3;
       levelLabel = "Autonomous";
-      if (routeToSwarm) {
-        action = `**EXECUTE AGORA via /swarm** (modo autônomo total): \`/swarm "${userPrompt.replace(/"/g, '\\"').slice(0, 200)}"\` — cria worktree isolado, Ralph loop por story (fresh context), 4-agent paralelo review, self-fix CRITICAL/HIGH, auto PR. Zero gates humanos. ⚠ Termina em PR aberto pra você revisar.`;
+      if (routeToSwarm && category === "A") {
+        suggestedCmd = command && command.startsWith("/swarm") ? command : `/swarm "${userPrompt.replace(/"/g, '\\"').slice(0, 200)}"`;
+        action = `**EXECUTE AGORA via /swarm** (autônomo total): \`${suggestedCmd}\` — worktree, Ralph loop, 4-agent review, self-fix, auto PR. Zero gates humanos.`;
+      } else if (routeToSwarm) {
+        suggestedCmd = `/swarm "${userPrompt.replace(/"/g, '\\"').slice(0, 200)}"`;
+        action = `**EXECUTE AGORA via /swarm** (autônomo total): \`${suggestedCmd}\``;
+      } else if (category === "C") {
+        suggestedCmd = command;
+        action = `**EXECUTE AGORA** (autônomo): \`${suggestedCmd}\` — task leve, sem program overhead.`;
+      } else if (category === "E") {
+        suggestedCmd = command;
+        action = `**EXECUTE** (autônomo): \`${suggestedCmd}\` — agendamento.`;
       } else {
-        action = `**EXECUTE AGORA** (modo autônomo): \`/run-program ${intent.program} --auto-yes\` — gates pulam automaticamente. ⚠ Pause se program tem bash destrutivo.`;
+        suggestedCmd = `${command} --auto-yes`;
+        action = `**EXECUTE AGORA** (autônomo): \`${suggestedCmd}\` — gates pulam.`;
       }
     } else if (cfg.auto_dry_run) {
       level = 2;
       levelLabel = "Active";
-      action = `**EXECUTE AUTOMATICAMENTE DRY-RUN** (modo active): \`/run-program ${intent.program} --dry-run\` — mostra o plano resolvido. Depois pergunte ao usuário se aprova rodar de verdade. Gates humanos durante execução ainda pausam.`;
+      if (category === "C" || category === "E") {
+        suggestedCmd = command;
+        action = `**EXECUTE** (active): \`${suggestedCmd}\` — task leve, sem overhead de dry-run.`;
+      } else if (command && command.startsWith("/run-program ")) {
+        suggestedCmd = `${command} --dry-run`;
+        action = `**EXECUTE AUTOMATICAMENTE DRY-RUN** (active): \`${suggestedCmd}\` — mostra plano. Depois pergunte se aprova rodar de verdade. Gates humanos durante execução ainda pausam.`;
+      } else {
+        suggestedCmd = command;
+        action = `**EXECUTE** (active): \`${suggestedCmd}\``;
+      }
     } else {
       level = 1;
       levelLabel = "Passive";
-      action = `**SUGIRA AO USUÁRIO** (modo passive): apresente \`/run-program ${intent.program}\` como recomendação. Espere usuário confirmar antes de executar.`;
+      suggestedCmd = command;
+      action = `**SUGIRA AO USUÁRIO** (passive): apresente \`${suggestedCmd}\` como recomendação. Espere confirmar antes de executar.`;
     }
 
+    // ===== Phase 4: emit + telemetry =====
+    logTelemetry({
+      ts: new Date().toISOString(),
+      prompt: userPrompt.slice(0, 200),
+      result: "suggested",
+      used_llm: usedLLM,
+      category,
+      command: suggestedCmd,
+      confidence,
+      level,
+      reasoning: reasoning?.slice(0, 200),
+    });
+
     const suggestion = [
-      `💡 **Auto-orchestration suggestion** (intent-classifier hook — Level ${level} ${levelLabel}):`,
+      `💡 **Smart routing** (intent-classifier v2 — Level ${level} ${levelLabel}, ${usedLLM ? "LLM" : "regex fallback"}):`,
       ``,
-      `Este prompt parece pedir um workflow estruturado. Sugestão de program:`,
+      `**Category ${category}** — ${suggestedCmd}`,
       ``,
-      `\`/run-program ${intent.program}\``,
+      `**Reasoning:** ${reasoning || "(no reasoning provided)"}`,
+      `**Confidence:** ${confidence.toFixed(2)}`,
       ``,
-      `**Por quê:** ${intent.why}`,
-      `**Confidence:** ${intent.confidence}`,
-      ``,
-      `**Ação esperada (nível ${level} = ${levelLabel}):**`,
       action,
       ``,
-      `Suprimir sugestão pra esta keyword: \`intent_classifier.suppress: ["${intent.program}"]\` no hook config.`,
-      `Mudar nível: ver \`policies/auto-orchestration.md\`.`,
+      `Mudar nível: ver \`policies/auto-orchestration.md\`. Suprimir sugestão: \`intent_classifier.suppress: ["${programName || command}"]\`. Telemetry: \`.swarm/classifier.jsonl\`.`,
     ].join("\n");
 
     process.stdout.write(JSON.stringify({

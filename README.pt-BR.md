@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.0.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.1.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -628,6 +628,7 @@ Histórico completo em **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Versão | Data | Destaques |
 |---|---|---|
+| **v2.1.0** | 2026-05-20 | **Smart routing**: hook intent-classifier v2 (regex expandido + LLM Haiku opcional), 9 patterns novos (bug/issue/refactor/test/spike/etc), telemetry em .swarm/classifier.jsonl. Novo program `refactor-safely` com baseline tests + behavior preservation. `docs/USE-CASES.md` mapeia 17 cenarios |
 | **v2.0.0** | 2026-05-20 | **MAJOR: modo `/swarm`** — autonomia total: prompt → PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4 agentes paralelos de review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous, intent-classifier roteia prompts de feature pra /swarm. Inspirado em Ralph/fix-issue/comprehensive-review do coleam00/archon |
 | **v1.9.0** | 2026-05-20 | **Active mode agora é default**. Hook auto-roda `--dry-run` mostrando plano, gates dentro do program ainda pausam. Tutorial de setup do Nível 3 (Autonomous) adicionado ao README com checklist de segurança |
 | **v1.8.0** | 2026-05-20 | **Auto-orchestration** — hook `intent-classifier` sugere program adequado baseado em intent do prompt (sem usuário invocar slash); skill 39 nova (program-router); 4 níveis de autonomia configuráveis |
