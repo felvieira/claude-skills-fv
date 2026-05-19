@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "38 specialist skills + 28 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, program-router (auto-orchestration) + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), executable YAML pipelines (/run-program with 7 step types + context:fresh + provider/model routing). 6 programs incl. adversarial-dev (GAN-inspired) and comprehensive-review (5-agent parallel). v1.8.0: **auto-orchestration** via intent-classifier hook sugere program adequado baseado em intent do prompt — sem usuário invocar slash. Two pipeline flows: /pipeline (classic) and /pipeline-discovery. 14 dispatchable subagents. Lifecycle hooks. Full .bot/ install via /devkit-install-fv.",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"
