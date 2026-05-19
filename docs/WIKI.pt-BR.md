@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 37 skills · 14 subagents · 23 slash commands · 22 policies
-> **Última atualização:** 2026-05-04
+> **Versão:** 37 skills · 14 subagents · 23 slash commands · 35 policies
+> **Última atualização:** 2026-05-19
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -703,7 +703,8 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Abso
 | `code-exploration.md` | Como explorar codebase de forma eficiente em tokens |
 | `confusion-management.md` | STOP-NAME-OPTIONS-WAIT quando requisito é ambíguo |
 | `context-engineering.md` | Hierarquia de 5 níveis + 3 trust levels para gerenciar contexto |
-| `cost-optimization.md` | Práticas para reduzir custo de API |
+| `cost-optimization.md` | Práticas para reduzir custo de API (+ tabela de shell commands comprimidos) |
+| `dense-output-mode.md` | Densidade da resposta proporcional à pergunta. Modos DENSE/NORMAL/EXPANDED + 7 flags inline + off-switch |
 | `detective-write-guardrails.md` | Hard guardrail: writes só em `.detective/` e `_detective_sdd/` |
 | `documentation-i18n.md` | Convenções para docs multi-idioma |
 | `evals.md` | Framework de avaliação para skills, prompts, tools |
