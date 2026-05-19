@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.8.1-0f766e)
+![Version](https://img.shields.io/badge/version-1.9.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -627,6 +627,7 @@ Histórico completo em **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Versão | Data | Destaques |
 |---|---|---|
+| **v1.9.0** | 2026-05-20 | **Active mode agora é default**. Hook auto-roda `--dry-run` mostrando plano, gates dentro do program ainda pausam. Tutorial de setup do Nível 3 (Autonomous) adicionado ao README com checklist de segurança |
 | **v1.8.0** | 2026-05-20 | **Auto-orchestration** — hook `intent-classifier` sugere program adequado baseado em intent do prompt (sem usuário invocar slash); skill 39 nova (program-router); 4 níveis de autonomia configuráveis |
 | **v1.7.0** | 2026-05-20 | **Program Engine v2** — 6 primitives novos (`prompt`/`bash`/`loop`/`context: fresh`/`provider+model`/`trigger_rule`) + 2 programs avançados (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent paralelo). Absorvido de [coleam00/archon](https://github.com/coleam00/archon) |
 | **v1.6.0** | 2026-05-18 | Pipelines YAML executáveis: comando `/run-program` + 4 programs (`pipeline-discovery`, `spec-driven-development`, `loop-polishing`, `detective-spec`); schema com gates/parallel/conditional/vars; scripts validator + planner. Adaptado de [github/spec-kit workflows/](https://github.com/github/spec-kit/tree/main/workflows) com extensões |
@@ -664,8 +665,8 @@ Você escolhe → program executa com gates humanos onde definido
 | Nível | Comportamento | Quando usar |
 |---|---|---|
 | **0 — Manual** | Hook desabilitado. Você invoca `/run-program <nome>` manualmente. | Controle total, exploração |
-| **1 — Passive (DEFAULT)** | Hook sugere. Claude mostra e espera. Nada auto-executa. | Default seguro pra dev interativo |
-| **2 — Active** | Hook sugere + Claude auto-roda `--dry-run` (mostra plano). **Gates dentro do program ainda pausam.** | Você confia no workflow, quer pular pergunta "rodar dry-run?" |
+| **1 — Passive** | Hook sugere. Claude mostra e espera. Nada auto-executa. | Quer só sugestão, decide tudo manualmente |
+| **2 — Active (DEFAULT desde v1.9.0)** | Hook sugere + Claude auto-roda `--dry-run` (mostra plano). **Gates humanos no program ainda pausam.** | Default: menos fricção, segurança preservada via gates |
 | **3 — Autonomous** | Hook sugere + Claude auto-roda com `--auto-yes` (gates auto-aprovam). | **CI / cron only.** Risco alto se program tem `bash:` destrutivo. |
 
 **Active vs Autonomous — diferença chave:**
@@ -681,11 +682,59 @@ A diferença real é se **gates humanos durante a execução continuam ativos**.
 {
   "intent_classifier": {
     "enabled": true,         // false = Nível 0 (manual)
-    "auto_dry_run": false,   // true = Nível 2 (active)
+    "auto_dry_run": true,    // DEFAULT v1.9.0+ — Nível 2 Active
     "autonomous": false,     // true = Nível 3 (autonomous, só CI)
     "suppress": []           // ids de programs para nunca sugerir
   }
 }
+```
+
+Edite `~/.claude/settings.json` (Windows: `C:\Users\<user>\.claude\settings.json`), salve, e **restarte o Claude Code**.
+
+### Configurar Nível 3 (Autonomous) — só CI/cron
+
+⚠ **Zero confirmações humanas.** Use só em contextos não-interativos (CI, scheduled tasks).
+
+```jsonc
+{
+  "intent_classifier": {
+    "enabled": true,
+    "autonomous": true,
+    "suppress": [
+      "adversarial-dev",       // tem bash que mexe em $ARTIFACTS_DIR/app
+      "comprehensive-review"   // postaria em PR sem revisão humana
+    ]
+  }
+}
+```
+
+**Checklist pré-voo antes de ativar Autonomous:**
+- [ ] Backup do repo / working tree limpa
+- [ ] Programs perigosos no `suppress`
+- [ ] CI/cron tem timeout (ex: máx 30min)
+- [ ] Logs persistentes em `.run-program/*.log.json` acessíveis pra debug pós-mortem
+- [ ] `git push --force` proibido (ver `policies/tool-safety.md`)
+- [ ] Notification webhook em caso de falha
+
+### Configurar Nível 0 (Manual) — desabilitar completamente
+
+```jsonc
+{
+  "intent_classifier": {
+    "enabled": false
+  }
+}
+```
+
+### Override temporário via env var
+
+```bash
+# bash/zsh — uma sessão só
+export DEVKIT_INTENT_CLASSIFIER_AUTONOMOUS=true
+claude
+
+# powershell
+$env:DEVKIT_INTENT_CLASSIFIER_AUTONOMOUS="true"; claude
 ```
 
 Referência completa: [`policies/auto-orchestration.md`](policies/auto-orchestration.md).

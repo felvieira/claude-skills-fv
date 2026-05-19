@@ -20,43 +20,65 @@ intent_classifier:
   enabled: false
 ```
 
-### Nível 1 — Sugestão passiva (default do kit)
+### Nível 1 — Sugestão passiva
 - Hook `intent-classifier` analisa prompt
 - Detecta padrões → emite `additionalContext` sugerindo program
 - Claude **não executa automaticamente** — apresenta a sugestão ao usuário
 - Usuário decide: aceita / ignora / modifica
 
-Ativação (default):
-```yaml
-intent_classifier:
-  enabled: true
-  suppress: []     # programs a não sugerir nunca
+Ativação:
+```jsonc
+// ~/.claude/settings.json
+{
+  "intent_classifier": {
+    "enabled": true,
+    "auto_dry_run": false,
+    "autonomous": false,
+    "suppress": []
+  }
+}
 ```
 
-### Nível 2 — Sugestão ativa
+### Nível 2 — Sugestão ativa (DEFAULT do kit desde v1.9.0)
 - Hook sugere E Claude **auto-roda em modo `--dry-run`** sem perguntar
 - Apresenta o plano resolvido (variables substituídas, gates listados)
 - Usuário aprova plano antes da execução real
+- **Gates humanos dentro do program ainda pausam** — segurança preservada
 
-Ativação:
-```yaml
-intent_classifier:
-  enabled: true
-  auto_dry_run: true
+Ativação (default):
+```jsonc
+// ~/.claude/settings.json — não precisa configurar, é o padrão
+{
+  "intent_classifier": {
+    "enabled": true,
+    "auto_dry_run": true,
+    "autonomous": false,
+    "suppress": []
+  }
+}
 ```
+
+Por que default Active? Reduz fricção comum (usuário não precisa dizer "ok, mostre o plano" — Claude já mostra) sem sacrificar segurança (gates humanos ainda funcionam).
 
 ### Nível 3 — Autônomo
 - Hook sugere E Claude **auto-roda completo com `--auto-yes`**
-- Gates auto-aprovam
+- Gates auto-aprovam — **zero confirmação humana**
 - **Só para CI/cron, nunca interativo**
 - Risco alto: programs destrutivos podem rodar sem revisão
 
 Ativação:
-```yaml
-intent_classifier:
-  enabled: true
-  autonomous: true   # CUIDADO
+```jsonc
+// ~/.claude/settings.json
+{
+  "intent_classifier": {
+    "enabled": true,
+    "autonomous": true,
+    "suppress": ["adversarial-dev"]
+  }
+}
 ```
+
+⚠ **Recomendação:** sempre adicionar `suppress: ["adversarial-dev", "loop-polishing"]` ou outros programs com `bash:` destrutivo. Autonomous + destructive bash é receita de loss.
 
 ## Mapeamento intent → program
 
@@ -114,6 +136,84 @@ Usuário pode:
 - `policies/execution.md` — auto-orch respeita "perguntar quando ambíguo" (sugere mas não executa)
 - `policies/programs-schema.md` — programs disponíveis para sugestão
 - `policies/constitution.md` — constituição pode forçar pipeline (override autoriza skill 09)
+
+## Como mudar de nível (passo-a-passo)
+
+### Caminho 1 — Edit direto em `~/.claude/settings.json`
+
+1. Abrir `~/.claude/settings.json` (Windows: `C:\Users\<user>\.claude\settings.json`)
+2. Adicionar/editar a chave `intent_classifier`:
+   ```jsonc
+   {
+     "hooks": { /* ... mantém o que já tem ... */ },
+     "intent_classifier": {
+       "enabled": true,
+       "auto_dry_run": true,    // Active (default desde v1.9.0)
+       "autonomous": false,
+       "suppress": []
+     }
+   }
+   ```
+3. Salvar arquivo
+4. **Restartar Claude Code** (necessário pra hook reler config)
+5. Pronto
+
+### Caminho 2 — Via slash command `/update-config`
+
+```
+/update-config intent_classifier.autonomous = true
+/update-config intent_classifier.suppress = ["adversarial-dev"]
+```
+
+### Caminho 3 — Via env var (override temporário)
+
+```bash
+# bash/zsh
+export DEVKIT_INTENT_CLASSIFIER_AUTONOMOUS=true
+claude
+
+# powershell
+$env:DEVKIT_INTENT_CLASSIFIER_AUTONOMOUS="true"
+claude
+```
+
+Útil pra sessões one-off (ex: rodar `--autonomous` num CI sem mudar config permanente).
+
+### Setup Nível 3 (Autonomous) — modo CI/cron
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "intent_classifier": {
+    "enabled": true,
+    "autonomous": true,
+    "suppress": [
+      "adversarial-dev",      // tem bash que pode mexer em $ARTIFACTS_DIR/app
+      "comprehensive-review"  // postaria em PR sem revisão humana
+    ]
+  }
+}
+```
+
+**Checklist antes de ativar Autonomous:**
+- [ ] Backup do repo / working tree limpa
+- [ ] Programs perigosos no `suppress`
+- [ ] CI/cron tem timeout (ex: máx 30min)
+- [ ] Logs persistentes (`.run-program/*.log.json`) acessíveis pra debug pós-mortem
+- [ ] `git push --force` proibido por hook próprio (ver `policies/tool-safety.md`)
+- [ ] Notification webhook em caso de falha
+
+### Setup Nível 0 (Manual) — desabilitar completamente
+
+```jsonc
+{
+  "intent_classifier": {
+    "enabled": false
+  }
+}
+```
+
+Use quando: prefere controle total, exploração, prototipagem rápida, ou achou as sugestões irritantes.
 
 ## Verificação
 

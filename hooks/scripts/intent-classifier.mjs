@@ -137,7 +137,20 @@ async function main() {
   if (isHookDisabled("intent-classifier")) {
     process.exit(0);
   }
-  const cfg = readHookConfig("intent_classifier", { enabled: true, suppress: [] });
+  // Defaults: Active mode (Nível 2) since v1.9.0
+  //   - enabled: true (sempre sugere)
+  //   - auto_dry_run: true (Claude auto-roda --dry-run pra mostrar plano)
+  //   - autonomous: false (gates humanos no program ainda pausam — não pula confirmações)
+  // Para mudar:
+  //   - Manual:     enabled: false
+  //   - Passive:    enabled: true, auto_dry_run: false
+  //   - Autonomous: enabled: true, autonomous: true   ⚠ CI only
+  const cfg = readHookConfig("intent_classifier", {
+    enabled: true,
+    auto_dry_run: true,
+    autonomous: false,
+    suppress: [],
+  });
   if (!cfg.enabled) process.exit(0);
 
   let raw = "";
@@ -164,8 +177,24 @@ async function main() {
     // Skip se program está em suppress list
     if (cfg.suppress && cfg.suppress.includes(intent.program)) process.exit(0);
 
+    // Determinar level efetivo
+    let level, levelLabel, action;
+    if (cfg.autonomous) {
+      level = 3;
+      levelLabel = "Autonomous";
+      action = `**EXECUTE AGORA** (modo autônomo): \`/run-program ${intent.program} --auto-yes\` — gates pulam automaticamente. ⚠ Pause se program tem bash destrutivo.`;
+    } else if (cfg.auto_dry_run) {
+      level = 2;
+      levelLabel = "Active";
+      action = `**EXECUTE AUTOMATICAMENTE DRY-RUN** (modo active): \`/run-program ${intent.program} --dry-run\` — mostra o plano resolvido. Depois pergunte ao usuário se aprova rodar de verdade. Gates humanos durante execução ainda pausam.`;
+    } else {
+      level = 1;
+      levelLabel = "Passive";
+      action = `**SUGIRA AO USUÁRIO** (modo passive): apresente \`/run-program ${intent.program}\` como recomendação. Espere usuário confirmar antes de executar.`;
+    }
+
     const suggestion = [
-      `💡 **Auto-orchestration suggestion** (intent-classifier hook):`,
+      `💡 **Auto-orchestration suggestion** (intent-classifier hook — Level ${level} ${levelLabel}):`,
       ``,
       `Este prompt parece pedir um workflow estruturado. Sugestão de program:`,
       ``,
@@ -174,12 +203,11 @@ async function main() {
       `**Por quê:** ${intent.why}`,
       `**Confidence:** ${intent.confidence}`,
       ``,
-      `O agente pode:`,
-      `- **Seguir a sugestão** — rodar \`/run-program ${intent.program} --dry-run\` primeiro pra mostrar o plano, depois executar`,
-      `- **Ignorar** — se a task é simples demais ou o usuário tem fluxo próprio em mente`,
-      `- **Perguntar** — se faz sentido o pipeline antes de invocar`,
+      `**Ação esperada (nível ${level} = ${levelLabel}):**`,
+      action,
       ``,
-      `Desabilitar essa sugestão para esta keyword: \`intent_classifier.suppress: ["${intent.program}"]\` no hook config.`,
+      `Suprimir sugestão pra esta keyword: \`intent_classifier.suppress: ["${intent.program}"]\` no hook config.`,
+      `Mudar nível: ver \`policies/auto-orchestration.md\`.`,
     ].join("\n");
 
     process.stdout.write(JSON.stringify({

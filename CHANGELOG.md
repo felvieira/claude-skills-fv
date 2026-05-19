@@ -5,6 +5,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.9.0-active-default] - 2026-05-20
+
+**Breaking-ish:** Default mudou de Passive (Nível 1) → **Active (Nível 2)**. Gates humanos no program continuam pausando — segurança preservada. Quem quiser comportamento antigo deve setar `auto_dry_run: false`.
+
+### Changed
+- **`hooks/scripts/intent-classifier.mjs`** — defaults agora: `enabled: true, auto_dry_run: true, autonomous: false`. Output do hook adapta mensagem ao nível efetivo (Passive/Active/Autonomous) com ação esperada explícita.
+- **`policies/auto-orchestration.md`** — Nível 2 (Active) marcado como DEFAULT. Adicionado tutorial passo-a-passo "Como mudar de nível" com 3 caminhos (settings.json edit, /update-config, env var). Adicionado checklist pré-voo para Autonomous + recomendação de suppress list.
+- **`README.md`** + **`README.pt-BR.md`** — tabela atualizada (Active marcado como DEFAULT), config JSON com novo default, **bloco "Set up Level 3 (Autonomous) — CI/cron only"** completo com checklist + bloco "Level 0 (Manual)" + override via env var.
+
+### Why
+Usuário pediu Active como default. Faz sentido — reduz fricção (Claude já mostra plano sem você pedir) sem sacrificar segurança (gates humanos no program continuam pausando). Autonomous (Nível 3) continua opt-in pra CI/cron.
+
+### Migration
+Quem prefere o comportamento antigo (Passive — só sugere, espera você decidir tudo):
+```jsonc
+// ~/.claude/settings.json
+{
+  "intent_classifier": {
+    "auto_dry_run": false
+  }
+}
+```
+
+---
+
 ## [1.8.1-autonomy-docs] - 2026-05-20
 
 ### Changed
