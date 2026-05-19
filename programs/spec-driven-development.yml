@@ -94,16 +94,28 @@ steps:
   # ---- Phase 6: Quality gates (parallel) ----
   - id: quality-gates
     type: parallel
+    trigger_rule: all_success
     parallel:
       - id: tests
         type: command
         command: /test
+        context: fresh
       - id: review
         type: command
         command: /review
+        context: fresh
       - id: security
         type: command
         command: /security-review
+        context: fresh
+      - id: build-check
+        type: bash
+        bash: |
+          set -euo pipefail
+          # Verificacao deterministica de build
+          if [ -f package.json ]; then npm run build 2>&1 || exit 1; fi
+          if [ -f Cargo.toml ]; then cargo build 2>&1 || exit 1; fi
+          echo "build OK"
 
   - id: gate-quality
     type: gate

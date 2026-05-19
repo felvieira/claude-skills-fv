@@ -156,13 +156,36 @@ async function describeProgram(nameOrPath) {
     inputs: doc.inputs || {},
     steps: (doc.steps || []).map(s => ({
       id: s.id,
-      type: s.type || "command",
+      type: inferType(s),
       command: s.command,
+      prompt_preview: s.prompt ? (s.prompt.substring(0, 100) + (s.prompt.length > 100 ? "..." : "")) : undefined,
+      bash_preview: s.bash ? (s.bash.substring(0, 100) + (s.bash.length > 100 ? "..." : "")) : undefined,
       message: s.message,
       when: s.when,
+      context: s.context,
+      provider: s.provider,
+      model: s.model,
       parallel_count: Array.isArray(s.parallel) ? s.parallel.length : undefined,
+      trigger_rule: s.trigger_rule,
+      loop: s.loop ? {
+        until: s.loop.until,
+        max_iterations: s.loop.max_iterations,
+        fresh_context: s.loop.fresh_context,
+      } : undefined,
     })),
   };
+}
+
+function inferType(s) {
+  if (s.type) return s.type;
+  if (s.command) return "command";
+  if (s.prompt) return "prompt";
+  if (s.bash) return "bash";
+  if (s.message) return "gate";
+  if (s.loop) return "loop";
+  if (s.parallel) return "parallel";
+  if (s.if) return "conditional";
+  return "unknown";
 }
 
 async function dryRun(nameOrPath, inputs = {}) {
@@ -195,8 +218,11 @@ async function dryRun(nameOrPath, inputs = {}) {
   };
   const resolvedSteps = (doc.steps || []).map(s => ({
     ...s,
+    type: inferType(s),
     command: substitute(s.command),
     args: substitute(s.args),
+    prompt: substitute(s.prompt),
+    bash: substitute(s.bash),
     message: substitute(s.message),
     when: substitute(s.when),
     if: substitute(s.if),

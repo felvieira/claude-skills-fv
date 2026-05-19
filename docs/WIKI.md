@@ -291,7 +291,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 #### `/run-program` — Execute YAML pipeline programs
 
-**What it does:** parses and executes `programs/<name>.yml` as a declarative pipeline. Steps can be slash commands, human gates, parallel blocks, or conditionals. Variable substitution via `${inputs.X}` and `${steps.X.output}`. Validates schema, resolves inputs, runs in order, pauses at gates.
+**What it does:** parses and executes `programs/<name>.yml` as a declarative pipeline. Steps can be slash commands, **inline prompts**, **bash scripts**, human gates, **loops with `until:` token**, parallel blocks (with `trigger_rule: all_success|one_success|all_done`), or conditionals. Variable substitution via `${inputs.X}` and `${steps.X.output}`. Per-step **`context: fresh`** for isolation, **`provider:` / `model:`** for routing. v1.7.0: 6 step types (command, prompt, bash, gate, loop, parallel, conditional). 6 programs shipped including `adversarial-dev` (GAN-inspired) and `comprehensive-review` (5-agent parallel).
 **When to use:** repeated pipelines that need consistency (spec-driven, pipeline-discovery, loop-polishing, detective-spec); flows with multiple review gates; teams that need the same pipeline executed identically by different agents.
 **Problem it solves:** `programs/*.md` describes the flow but isn't executable. YAML format is executable — machine parses, agent runs each step, pauses at human gates, captures outputs for next step.
 **Example:** `/run-program spec-driven-development` or `/run-program loop-polishing --dry-run`

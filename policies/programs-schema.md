@@ -39,30 +39,76 @@ inputs:                         # opcional — parâmetros do program
 
 steps:                          # obrigatório, ≥ 1 step
   - id: <slug>                  # obrigatório, único no program
-    type: <command|gate|parallel|conditional>
+    type: <command|prompt|bash|gate|loop|parallel|conditional>
     when: <expr>                # opcional — só roda se condição true
     on_error: <abort|continue|retry>  # default: abort
+
+    # --- isolation & routing (v1.7.0+) ---
+    context: <inherit|fresh>    # default: inherit. fresh = sessão limpa, zero contexto anterior
+    provider: <claude|codex>    # default: inherit (skill 09 model-routing decide)
+    model: <haiku|sonnet|opus|opus[1m]|sonnet-4-6>  # opcional — override do model-routing
 
     # --- type: command ---
     command: <slash-command>    # ex: /spec
     args: <string>              # opcional, suporta ${vars}
     capture: <name>             # opcional — salva output em ${steps.<id>.<name>}
 
+    # --- type: prompt (v1.7.0) — step ad-hoc sem slash command ---
+    prompt: |
+      Multi-line prompt direto.
+      Suporta ${inputs.X} e ${steps.X.output}.
+      Variável especial $ARGUMENTS = inputs do program serializados.
+    allowed_tools: [Read, Write, Edit, Grep, Glob, Bash]   # opcional, default = all
+
+    # --- type: bash (v1.7.0) — deterministic shell, sem AI ---
+    bash: |
+      set -euo pipefail
+      bun run validate
+      echo "tests=passed" >> $GITHUB_OUTPUT
+    timeout: <seconds>          # default: 300
+    capture_output: <bool>      # default: true (acessível via ${steps.X.output})
+
     # --- type: gate ---
     message: <string>           # pergunta para o humano
     options: [<string>]         # default: [approve, reject]
     on_reject: <abort|continue|retry|run:<step_id>>
 
+    # --- type: loop (v1.7.0) — iterate até token/condição ---
+    loop:
+      prompt: <inline-prompt>          # prompt rodado a cada iteração
+      command: <slash-command>         # alternativa: rodar slash command em loop
+      until: <TOKEN>                   # string que indica completion (ex: COMPLETE, APPROVED)
+      max_iterations: <int>            # default: 10
+      fresh_context: <bool>            # default: false. true = cada iteração com sessão limpa (Ralph pattern)
+      interactive: <bool>              # default: false. true = pausa esperando humano antes de cada iter
+      on_max_reached: <abort|continue> # default: abort
+
     # --- type: parallel ---
     parallel:                   # lista de steps que rodam em paralelo
       - <step>
       - <step>
+    trigger_rule: <all_success|one_success|all_done>  # v1.7.0. default: all_success
+                                # all_success = espera todos OK (fail = abort)
+                                # one_success = segue assim que UM completar OK
+                                # all_done    = espera todos finalizarem (OK ou fail)
 
     # --- type: conditional ---
     if: <expr>
     then: [<steps>]
     else: [<steps>]             # opcional
 ```
+
+## Step types (v1.7.0 expanded)
+
+| Type | Purpose | When to use |
+|---|---|---|
+| `command` | Invoca slash command (`/spec`, `/plan`, etc) | Steps que já tem skill dedicada |
+| `prompt` | Prompt inline ad-hoc | Step único que não merece slash command próprio |
+| `bash` | Shell deterministic, sem AI | Build, test, git ops, validations |
+| `gate` | Pausa esperando aprovação humana | Checkpoint entre fases críticas |
+| `loop` | Itera até token / max | Iteração incremental (story-by-story, fix-until-pass) |
+| `parallel` | Despacha N steps em paralelo | Quality gates independentes |
+| `conditional` | Branching if/then/else | Fluxos divergentes por input |
 
 ## Variable substitution
 
@@ -71,8 +117,12 @@ Sintaxe `${...}`:
 - **`${inputs.<name>}`** — valor de input do programa
 - **`${steps.<step_id>.output}`** — stdout/result do step anterior
 - **`${steps.<step_id>.capture.<name>}`** — variável capturada explícita
+- **`${steps.<step_id>.exit_code}`** — exit code do step (0=success)
+- **`${steps.<step_id>.iterations}`** — número de iterações (só para `type: loop`)
 - **`${env.<NAME>}`** — variável de ambiente
 - **`${date}`**, **`${date:ISO}`**, **`${date:YYYY-MM-DD}`** — data atual
+- **`$ARGUMENTS`** — em `type: prompt`, todos os inputs serializados como texto (compat com Archon)
+- **`$ARTIFACTS_DIR`** — em `type: bash`/`prompt`, diretório para artifacts do program (default: `.run-program/<program-id>-<timestamp>/`)
 
 ## Conditional expressions (campo `when` ou `if`)
 
@@ -123,8 +173,112 @@ Parser implementado em `scripts/run-program.mjs`. Expressões inválidas = abort
 ```
 
 - Despacha via `Task` tool em uma mensagem (multiple tool uses)
-- Espera **todos** completarem antes do próximo step
-- Se `on_error: continue`, falha de um não bloqueia os outros
+- `trigger_rule`:
+  - `all_success` (default) — espera todos OK; falha de um aborta
+  - `one_success` — segue assim que UM completar OK; cancela os outros
+  - `all_done` — espera todos finalizarem (sucesso ou falha), agrega resultados
+- Se `on_error: continue` em step paralelo individual, falha dele não bloqueia o `trigger_rule` do parent
+
+## Bash steps (v1.7.0)
+
+```yaml
+- id: validate
+  type: bash
+  bash: |
+    set -euo pipefail
+    npm test
+    npm run lint
+  timeout: 600
+  capture_output: true
+```
+
+- **Deterministic** — não invoca AI, só roda comando shell
+- Útil pra: build, test, lint, git ops, validações pre-flight
+- Output capturado em `${steps.X.output}` se `capture_output: true` (default)
+- Exit code disponível em `${steps.X.exit_code}` (0 = success)
+- `timeout` em segundos (default 300, max 1800)
+- **Nunca** rodar comandos destrutivos (`rm -rf`, `git push --force`) em programs sem `gate` antes
+
+## Prompt steps (v1.7.0)
+
+```yaml
+- id: review
+  type: prompt
+  prompt: |
+    Review all changes against the plan in $ARTIFACTS_DIR/plan.md.
+    Focus on:
+    - Did all tasks get implemented?
+    - Are there security regressions?
+    Output a summary to $ARTIFACTS_DIR/review.md.
+  allowed_tools: [Read, Write, Edit, Grep, Glob]
+  context: fresh
+```
+
+- **Step ad-hoc** sem precisar criar slash command próprio
+- Útil pra: lógica específica do program que não vale skill nova
+- `$ARGUMENTS` = todos inputs serializados como texto
+- `allowed_tools` restringe ferramentas disponíveis (default: todas)
+- Combinar com `context: fresh` para isolamento forte
+
+## Loop primitive (v1.7.0)
+
+```yaml
+- id: implement-stories
+  type: loop
+  loop:
+    prompt: |
+      Read $ARTIFACTS_DIR/plan.md and find the next unimplemented story.
+      Implement it. Run tests. If passing, mark story as DONE.
+      When all stories are done, output: <result>COMPLETE</result>
+    until: COMPLETE
+    max_iterations: 20
+    fresh_context: true
+    on_max_reached: abort
+```
+
+- Roda `prompt` (ou `command`) repetidamente até output conter `until` token
+- `fresh_context: true` — cada iteração começa do zero (Ralph pattern)
+- `max_iterations` — hard limit; comportamento via `on_max_reached`
+- `interactive: true` — pausa antes de cada iteração esperando ack humano (cuidado: bloqueia em auto-yes)
+- `${steps.X.iterations}` disponível depois
+
+## Context isolation (v1.7.0)
+
+| Modo | Comportamento |
+|---|---|
+| `context: inherit` (default) | Step herda contexto da sessão atual — pode ver tudo da conversa |
+| `context: fresh` | Step roda como subagent zero — só vê inputs explícitos via args/prompt |
+
+Use `fresh` quando:
+- Quer evitar contaminação entre planning e implementation
+- Quer reduzir custo (subagent zero = contexto mínimo)
+- Step é avaliador/crítico (não deve "ver" o que foi gerado)
+
+Implementação: agente despacha via `Task` tool com prompt isolado.
+
+## Model routing per step (v1.7.0)
+
+```yaml
+- id: complex-architecture
+  type: prompt
+  prompt: "Design module boundaries for ..."
+  provider: claude
+  model: opus[1m]
+
+- id: simple-formatting
+  type: bash
+  bash: "prettier --write src/"
+  # provider/model irrelevantes para bash
+```
+
+- `provider` — força provider específico (`claude` ou `codex`)
+- `model` — força model específico, sobrescreve `policies/model-routing.md`
+- Sem declarar, segue heurística automática do orchestrator (skill 09)
+
+Use override quando:
+- Step crítico merece Opus extended thinking (`opus[1m]`)
+- Step massivo barato pode rodar Haiku (`haiku`)
+- Comparação A/B entre providers (gerar com Claude, revisar com Codex)
 
 ## Conditional execution
 
@@ -151,6 +305,12 @@ Parser implementado em `scripts/run-program.mjs`. Expressões inválidas = abort
 - **Variable não declarada** — referência a `${steps.X}` quando X não existe → abort
 - **Conditional sempre false** — step morto. Executor warning.
 - **Parallel com dependência interna** — race condition. Validador bloqueia se step interno referencia outro do mesmo bloco.
+- **`loop:` sem `max_iterations`** — risco de loop infinito + custo. Validador exige max_iterations explícito.
+- **`bash:` com comando destrutivo sem `gate` antes** — `rm -rf`, `git push --force`, etc. Validador flag warning; executor exige confirmação adicional.
+- **`prompt:` muito longo** (> 5k chars) — flag warning. Considere virar slash command.
+- **`context: fresh` em step que precisa de capture anterior** — quando step roda em sessão limpa, NÃO pode acessar `${steps.X.output}` por context inheritance. Tem que passar via `args` ou `prompt` explícitos.
+- **`provider: codex` em step com tool específico de Claude** — incompatível. Validador flag warning.
+- **`trigger_rule: one_success` em parallel onde TODOS são críticos** — perde validação. Use só quando first-wins é semanticamente correto (ex: failover).
 
 ## Validador
 

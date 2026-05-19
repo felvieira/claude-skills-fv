@@ -34,6 +34,15 @@ steps:
     command: /loop
     args: "${inputs.task} --max-iterations=${inputs.max_iterations}"
 
+  - id: pre-flight-tests
+    type: bash
+    bash: |
+      set -euo pipefail
+      # Roda tests deterministicamente antes de polish — early exit se broken
+      if [ -f package.json ]; then npm test 2>&1; fi
+      if [ -f Cargo.toml ]; then cargo test 2>&1; fi
+      echo "pre-flight tests OK"
+
   - id: polish-light
     type: command
     command: /simplify
@@ -42,21 +51,37 @@ steps:
   - id: polish-standard
     type: parallel
     when: inputs.polish_level == "standard" or inputs.polish_level == "full"
+    trigger_rule: all_success
     parallel:
       - id: review
         type: command
         command: /review
+        context: fresh
 
   - id: polish-full
     type: parallel
     when: inputs.polish_level == "full"
+    trigger_rule: all_done
     parallel:
       - id: security
         type: command
         command: /security-review
+        context: fresh
       - id: tests
         type: command
         command: /test
+        context: fresh
+      - id: anti-ai-pass
+        type: prompt
+        context: fresh
+        provider: claude
+        model: haiku
+        prompt: |
+          Revise diff atual (git diff HEAD~3..HEAD ou equivalente) caçando padroes de AI writing
+          em prosa nova (commit messages, comentarios, docs). Aplicar policies/anti-ai-writing.md.
+          Se encontrar tells (significance inflation, signposting, copula avoidance, etc), liste em
+          $ARTIFACTS_DIR/anti-ai-findings.md com sugestao de refraseio.
+        allowed_tools: [Read, Grep, Bash, Write]
 
   - id: gate-final
     type: gate
