@@ -64,6 +64,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
 | `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com **7 step types** (command/prompt/bash/gate/loop/parallel/conditional), `context: fresh` per step, `provider`/`model` routing, `trigger_rule` para parallel. 6 programs: pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN), **comprehensive-review** (5-agent parallel) |
 | _(auto)_ | **Auto-orchestration** (v1.8.0): hook `intent-classifier` sugere program adequado baseado em intent do prompt. Skill 39 (program-router) confirma. 4 níveis de autonomia em `policies/auto-orchestration.md` |
+| `/swarm` | **TOTAL AUTONOMY** (v2.0.0): do prompt ao PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous (Nível 3), o hook auto-roteia features pra `/swarm`. Inspirado em Ralph/fix-issue/comprehensive-review do archon. |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

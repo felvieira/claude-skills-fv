@@ -5,6 +5,59 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.0.0-swarm] - 2026-05-20
+
+**MAJOR.** Novo modo `/swarm` — total autonomy: do prompt ao PR mergeable sem intervenção humana.
+
+### Added — `/swarm` mode
+- **`commands/swarm.md`** (new) — slash command com docs completas, flags (`--dry-run`, `--auto-yes`, `--auto-merge`, `--skip-review`, `--skip-self-fix`, `--max-stories`, `--max-iter-per-story`, `--resume`, `--prd`), modos (manual, autonomous, com issue, com PRD).
+- **`scripts/swarm/index.mjs`** (new) — executor: preflight (worktree clean, gh auth) + setup (creates `.swarm/<run-id>/workspace` worktree) + buildPlan (7 phases com prompts/instruções para o agente executar via Task com `context: fresh`).
+- **`policies/swarm-protocol.md`** (new) — protocolo canônico: 7 princípios invioláveis, 7 phases detalhadas, anti-padrões, configuração user-wide, diff vs alternativas, roadmap, inspirações.
+- **`hooks/scripts/intent-classifier.mjs`** — em modo Autonomous (Nível 3), intent de "feature nova" / "ideia vaga" agora rota pra `/swarm` em vez de `/run-program <X> --auto-yes`. Programs eligíveis: `spec-driven-development`, `pipeline-discovery`. Outros intents (review/legacy/loop) continuam roteando pros programs específicos.
+- **`.gitignore`** — adicionado `.swarm/` (workspace e logs locais, não vão pro git).
+
+### Changed
+- **`docs/WIKI.md` + `docs/WIKI.pt-BR.md`** — entrada `/swarm` no formato aihero antes da seção Auto-orchestration.
+- **`docs/SKILLS-OVERVIEW.md`** — entrada curta `/swarm`.
+- **`AGENTS.md`** — linha `/swarm` na tabela de slash commands.
+- **`README.md` + `README.pt-BR.md`** — bloco dedicado `## /swarm — Total Autonomy` com tabela comparativa vs `/auto`/`/loop`/`/run-program`, inputs, autonomous+swarm flow, cleanup instructions. Linha `/swarm` na tabela principal de commands.
+- **`.claude-plugin/plugin.json`** — description atualizada: 28 → 29 slash commands, menção a v2.0.0 e /swarm.
+
+### Why
+Auditoria mostrou que dos 3 modos "autônomos" que tínhamos (`/auto`, `/loop`, intent-classifier Nível 3), **nenhum era 100% autônomo do prompt ao PR**:
+- `/auto`: prompt-based na sessão atual, sem worktree, sem PR
+- `/loop`: subprocess robusto mas sem fresh context per story, sem multi-agent review, sem PR
+- Intent-classifier Nível 3: sugeria programs mas programs paravam em gates
+
+`/swarm` é a peça que faltava — único caminho garantido prompt → PR sem intervenção. Combina Ralph loop + comprehensive review + self-fix + auto-PR num pipeline coerente.
+
+### Inspiração
+- Ralph loop pattern: [coleam00/archon `archon-ralph-dag.yaml`](https://github.com/coleam00/archon/blob/main/.archon/workflows/defaults/archon-ralph-dag.yaml)
+- Fix-github-issue + aggressive self-fix: [coleam00/archon `archon-fix-github-issue.yaml`](https://github.com/coleam00/archon/blob/main/.archon/workflows/defaults/archon-fix-github-issue.yaml)
+- Comprehensive review (5 agents): nosso program `comprehensive-review` (v1.7.0)
+- Worktree integration: nosso `/loop` v1.0.0
+- Circuit-breaker / backoff: nosso `scripts/auto-loop/` v1.0.0
+
+### Migration
+Não precisa — `/swarm` é additive. Outros commands seguem funcionando.
+
+Quem quiser autonomia total em modo Autonomous (Nível 3):
+```jsonc
+// ~/.claude/dev-team-kit-config.json
+{
+  "intent_classifier": { "autonomous": true, "suppress": ["adversarial-dev", "comprehensive-review"] }
+}
+```
+
+Hook agora vai sugerir `/swarm` (não programs separados) quando detectar intent de feature.
+
+### Backwards compat
+- ✅ Programs antigos continuam funcionando
+- ✅ Hook intent-classifier respeita o que estava antes em modos Passive/Active
+- ✅ Apenas em modo Autonomous Nível 3 + intent SWARM_ELIGIBLE há reroute pra /swarm
+
+---
+
 ## [1.9.1-user-config-override] - 2026-05-20
 
 ### Added

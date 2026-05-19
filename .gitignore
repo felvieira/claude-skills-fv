@@ -13,3 +13,4 @@ __pycache__/
 
 # Graphify knowledge graph (local only)
 graphify-out/
+.swarm/

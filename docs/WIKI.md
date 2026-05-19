@@ -289,6 +289,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/swarm` — Total Autonomy (v2.0.0)
+
+**What it does:** prompt → PR in one command. 7 phases: setup (isolated worktree) → PRD/stories → Ralph loop (fresh context PER story) → 4-agent parallel quality review → synthesize → self-fix CRITICAL/HIGH automatically → auto PR creation. Inspired by Ralph loop + fix-github-issue + comprehensive-review from [coleam00/archon](https://github.com/coleam00/archon).
+**When to use:** "manda e esquece" — feature complete, GitHub issue fix, refactor with PR. Wants to come back to a ready PR.
+**Problem it solves:** `/auto` and `/loop` aren't 100% autonomous — no worktree enforcement, no fresh context per story, no auto-PR. `/swarm` is the missing piece.
+**Example:** `/swarm "implement social auth with Google + GitHub"` or `/swarm fix #142` or `/swarm --prd docs/prd/foo.md`
+**Takeaway:** **only command that goes from prompt to mergeable PR without human intervention.** In Autonomous mode (Level 3), intent-classifier hook auto-routes feature prompts to `/swarm`. Worktree NEVER deleted automatically — you decide cleanup.
+
 #### Auto-orchestration (v1.8.0)
 
 **What it does:** kit detects intent of your prompt automatically and **suggests the appropriate program** without you having to invoke `/run-program` manually. Hook `intent-classifier` classifies the prompt (6 intent types) and emits `additionalContext` with suggestion. Skill 39 (program-router) confirms via `AskUserQuestion` with options (dry-run / direto / ad-hoc / cancelar).
