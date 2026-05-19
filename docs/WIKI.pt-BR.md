@@ -268,6 +268,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
 
+#### Auto-orchestration (v1.8.0)
+
+**O que faz:** kit detecta intent do seu prompt automaticamente e **sugere o program adequado** sem você precisar invocar `/run-program` manualmente. Hook `intent-classifier` classifica o prompt (6 tipos de intent) e emite `additionalContext` com sugestão. Skill 39 (program-router) confirma via `AskUserQuestion` com opções (dry-run / direto / ad-hoc / cancelar).
+**Quando dispara:** qualquer prompt > 15 chars que não seja informacional ("o que é"), trivial ("fix typo"), ou já comece com `/`.
+**Problema que resolve:** v1.7.0 deu engine; v1.8.0 fecha o loop — usuário não precisa lembrar quando rodar program vs pipeline informal.
+**Exemplo:** Você diz "criar feature de autenticação social" → hook sugere `/run-program spec-driven-development` → skill 39 pergunta como rodar → executa
+**Takeaway:** **4 níveis de autonomia** (manual / sugestão passiva / sugestão ativa / autônomo) configuráveis via hook config.
+
 #### `/run-program` — Executa pipeline YAML declarativo
 
 **O que faz:** parseia e executa `programs/<nome>.yml` como pipeline declarativo. Steps podem ser slash commands, **prompts inline**, **scripts bash**, gates humanos, **loops com `until:` token**, blocos paralelos (com `trigger_rule: all_success|one_success|all_done`), ou conditionals. Variable substitution via `${inputs.X}` e `${steps.X.output}`. **`context: fresh`** per-step para isolamento, **`provider:` / `model:`** para routing. v1.7.0: 6 tipos de step (command, prompt, bash, gate, loop, parallel, conditional). 6 programs incluindo `adversarial-dev` (GAN-inspired) e `comprehensive-review` (5-agent paralelo).

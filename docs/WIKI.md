@@ -289,6 +289,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Example:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = total blocker.** Constitution wins all conflicts. Report goes to `docs/analysis/`. Adapted from [github/spec-kit](https://github.com/github/spec-kit).
 
+#### Auto-orchestration (v1.8.0)
+
+**What it does:** kit detects intent of your prompt automatically and **suggests the appropriate program** without you having to invoke `/run-program` manually. Hook `intent-classifier` classifies the prompt (6 intent types) and emits `additionalContext` with suggestion. Skill 39 (program-router) confirms via `AskUserQuestion` with options (dry-run / direto / ad-hoc / cancelar).
+**When it triggers:** any prompt with > 15 chars that's not informational ("o que é"), trivial ("fix typo"), or already a slash command (`/...`).
+**Problem it solves:** v1.7.0 gave the engine; v1.8.0 closes the loop — user doesn't need to remember when to run program vs informal pipeline.
+**Example:** Você diz "criar feature de autenticação social" → hook sugere `/run-program spec-driven-development` → skill 39 pergunta como rodar → executa
+**Takeaway:** **4 autonomy levels** (manual / passive suggestion / active suggestion / autonomous) configuráveis via hook config.
+
 #### `/run-program` — Execute YAML pipeline programs
 
 **What it does:** parses and executes `programs/<name>.yml` as a declarative pipeline. Steps can be slash commands, **inline prompts**, **bash scripts**, human gates, **loops with `until:` token**, parallel blocks (with `trigger_rule: all_success|one_success|all_done`), or conditionals. Variable substitution via `${inputs.X}` and `${steps.X.output}`. Per-step **`context: fresh`** for isolation, **`provider:` / `model:`** for routing. v1.7.0: 6 step types (command, prompt, bash, gate, loop, parallel, conditional). 6 programs shipped including `adversarial-dev` (GAN-inspired) and `comprehensive-review` (5-agent parallel).

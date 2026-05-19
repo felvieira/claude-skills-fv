@@ -5,6 +5,51 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.8.0-auto-orchestration] - 2026-05-20
+
+Fecha o loop: agora o kit **detecta intent** do prompt e **sugere program apropriado automaticamente** — sem usuário precisar invocar `/run-program` manualmente.
+
+### Added
+- **`hooks/scripts/intent-classifier.mjs`** (new) — hook UserPromptSubmit que classifica intent do prompt e emite `additionalContext` sugerindo program. NÃO bloqueia execução. Detecta 6 intent types mapeados pra programs (spec-driven-development, pipeline-discovery, comprehensive-review, adversarial-dev, detective-spec, loop-polishing). Skip automático em prompts informacionais/triviais/slash commands.
+- **`policies/auto-orchestration.md`** (new) — define 4 níveis de autonomia (manual / sugestão passiva / sugestão ativa / autônomo), regras anti-padrão, mapeamento intent → program.
+- **`skills/39-program-router/SKILL.md`** (new) — Skill 39: decide qual program rodar (com `AskUserQuestion` para confirmar). Trabalha em par com hook intent-classifier (sugere) e skill 09 (monta pipeline ad-hoc quando nenhum program serve).
+
+### Changed
+- **`hooks/hooks.json`** — `intent-classifier.mjs` registrado em UserPromptSubmit (junto com pre-execution-gate e keyword-detector).
+- **`skills/09-orchestrator/SKILL.md`** — seção "Canonical Program Definitions" expandida (6 programs com referência `.yml + .md`), nova seção "Auto-orchestration (v1.8.0)" descrevendo as 3 camadas (hook + skill 39 + skill 09).
+- **`.claude-plugin/plugin.json`** — description menciona auto-orchestration e program-router; skill count 37 → 38.
+
+### How it works (v1.8.0 flow)
+
+```
+Você diz: "preciso criar feature de auth social"
+              ↓
+[hook intent-classifier]
+  → detecta "criar feature" + "auth"
+  → match: spec-driven-development (high confidence)
+  → emite additionalContext: "💡 Sugestão: /run-program spec-driven-development"
+              ↓
+[Claude lê additionalContext + seu prompt]
+  → invoca skill 39 (program-router)
+  → skill 39 confirma com AskUserQuestion: dry-run / direto / ad-hoc / cancelar
+              ↓
+Você escolhe → program executa (com gates humanos onde definido)
+```
+
+### Níveis de autonomia (configuráveis)
+
+| Nível | Comportamento | Hook config |
+|---|---|---|
+| **0 — Manual** | Hook desabilitado, só `/run-program` manual | `intent_classifier.enabled: false` |
+| **1 — Sugestão passiva** (default) | Hook sugere, Claude apresenta, usuário decide | `intent_classifier.enabled: true` |
+| **2 — Sugestão ativa** | Hook sugere + Claude auto-roda dry-run | `intent_classifier.auto_dry_run: true` |
+| **3 — Autônomo** | Auto-yes em gates (CI/cron only) | `intent_classifier.autonomous: true` |
+
+### Why
+v1.7.0 deu engine profissional de programs, mas usuário ainda precisava invocar `/run-program` manual. Sem `policy de auto-orchestration`, usuário tinha que **lembrar** quando rodar program vs pipeline informal. v1.8.0 fecha esse loop — o kit detecta e sugere, usuário confirma.
+
+---
+
 ## [1.7.1-engine-v2-docs] - 2026-05-20
 
 ### Changed
