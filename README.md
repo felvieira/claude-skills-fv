@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.9.1-0f766e)
+![Version](https://img.shields.io/badge/version-2.0.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -443,6 +443,7 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/humanize` | Remove 29 AI writing patterns from any prose (docs, PRDs, copy, changelogs). Self-audits before final version. | Documenter (10) editor mode |
 | `/consolidate-memory` | Memory vault janitor — merge duplicates, archive stale, prune index. Snapshot-first safe workflow. | Context Manager (08) janitor mode |
 | `/run-program` | Execute declarative YAML pipeline (programs/*.yml) with human gates, parallel/conditional steps, variable substitution | Orchestrator (09) executor mode |
+| `/swarm` | **TOTAL AUTONOMY**: prompt → PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. v2.0.0 | All skills coordinated |
 | `/constitution` | Bootstrap/update `memory/constitution.md` with governing principles (Code Quality, Testing, UX, Performance, Security) — hierarchical authority over PRD/plan/ADRs | PO (01) governance mode |
 | `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
 | `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |
@@ -631,6 +632,7 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
+| **v2.0.0** | 2026-05-20 | **MAJOR: `/swarm` mode** — total autonomy: prompt → PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. In Autonomous mode, intent-classifier routes feature prompts to /swarm. Inspired by Ralph/fix-issue/comprehensive-review from coleam00/archon |
 | **v1.9.0** | 2026-05-20 | **Active mode now default**. Hook auto-runs `--dry-run` to show plan, gates inside program still pause. Setup tutorial for Level 3 (Autonomous) added to README with safety checklist |
 | **v1.8.0** | 2026-05-20 | **Auto-orchestration** — hook `intent-classifier` sugere program apropriado baseado em intent do prompt (sem usuário invocar slash); nova skill 39 (program-router); 4 níveis de autonomia configuráveis |
 | **v1.7.0** | 2026-05-20 | **Program Engine v2** — 6 novos primitives (`prompt`/`bash`/`loop`/`context: fresh`/`provider+model`/`trigger_rule`) + 2 programs avançados (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). Absorvido de [coleam00/archon](https://github.com/coleam00/archon) |
@@ -645,6 +647,62 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 | **v1.2.x** | 2026-05-13 | 13-check PRD validation (decoupled from Taskmaster); agent prompting patterns (layering A→B→C, agent-spec template, no-drift policy); 4-tier memory model; token budget in SessionStart hook |
 | **v1.1.0** | 2026-05-09 | Context Engineering adoption: protocol shells (Pareto-lang), skill I/O schemas, iteration scoring, programs/ layer, 3 pilot subagents migrated |
 | **v1.0.0** | 2026-04-30 | Auto-loop v2: multi-agent (claude + codex), parallel worktrees, polishing pass, circuit breaker, 21 smoke tests |
+
+---
+
+## `/swarm` — Total Autonomy (v2.0.0+)
+
+The **only command that takes you from prompt → PR mergeable without human intervention.**
+
+```
+/swarm "implement social auth with Google + GitHub"
+```
+
+The kit:
+1. Creates isolated git worktree
+2. Generates PRD + breaks into stories
+3. **Ralph loop:** implements each story with fresh context (no contamination)
+4. **4 parallel review agents:** code + security + tests + anti-AI-writing
+5. **Synthesizes** findings with severity decision matrix
+6. **Self-fixes** CRITICAL/HIGH automatically
+7. **Creates PR** with synthesis as comment, rebased on main
+
+You come back to a PR ready for review.
+
+### When to use vs other commands
+
+| Command | Worktree | Fresh ctx per story | Multi-agent review | Self-fix | Auto-PR | Use case |
+|---|:-:|:-:|:-:|:-:|:-:|---|
+| `/auto` | optional | ❌ | ❌ | ❌ | ❌ | Small task, prompt-based |
+| `/loop` | optional | ❌ | ❌ | ❌ | ❌ | Medium task, subprocess |
+| `/run-program X` | depends | ❌ | depends | ❌ | ❌ | Declarative pipeline with gates |
+| **`/swarm`** | **always** | **✅** | **✅** | **✅** | **✅** | **Total autonomy: prompt → PR** |
+
+### Inputs
+
+```bash
+/swarm "implement feature X"           # free text
+/swarm fix #142                        # GitHub issue
+/swarm --prd docs/prd/auth.md          # existing PRD
+/swarm --resume <run-id>               # continue stopped run
+```
+
+### Autonomous + /swarm = manda e esquece
+
+In `~/.claude/dev-team-kit-config.json` set `intent_classifier.autonomous: true`:
+- Hook detects feature intent → auto-suggests `/swarm`
+- Claude auto-executes (no gates pause)
+- You come back to a PR ready
+
+### Cleanup
+
+Worktree NEVER deleted automatically. After PR merged:
+```bash
+git worktree remove .swarm/<run-id>/workspace
+rm -rf .swarm/<run-id>
+```
+
+Full protocol: [`policies/swarm-protocol.md`](policies/swarm-protocol.md).
 
 ---
 

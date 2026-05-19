@@ -268,6 +268,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Exemplo:** `/analyze --feature dark-mode --strict`
 **Takeaway:** **CRITICAL = bloqueio total.** Constituição vence todos os conflitos. Relatório vai pra `docs/analysis/`. Adaptado de [github/spec-kit](https://github.com/github/spec-kit).
 
+#### `/swarm` — Autonomia Total (v2.0.0)
+
+**O que faz:** do prompt ao PR em um único comando. 7 phases: setup (worktree isolado) → PRD/stories → Ralph loop (fresh context POR story) → 4 agentes paralelos de review → synthesize → self-fix CRITICAL/HIGH automático → auto PR. Inspirado em Ralph loop + fix-github-issue + comprehensive-review do [coleam00/archon](https://github.com/coleam00/archon).
+**Quando usar:** "manda e esquece" — feature completa, fix de issue GitHub, refactor com PR. Quer voltar pra PR pronto.
+**Problema que resolve:** `/auto` e `/loop` não são 100% autônomos — sem enforcement de worktree, sem fresh context por story, sem auto-PR. `/swarm` é a peça que faltava.
+**Exemplo:** `/swarm "implementar auth social com Google + GitHub"` ou `/swarm fix #142` ou `/swarm --prd docs/prd/foo.md`
+**Takeaway:** **único comando que vai do prompt ao PR mergeable sem intervenção humana.** Em modo Autonomous (Nível 3), hook intent-classifier auto-roteia prompts de feature pra `/swarm`. Worktree NUNCA é deletado automaticamente — você decide cleanup.
+
 #### Auto-orchestration (v1.8.0)
 
 **O que faz:** kit detecta intent do seu prompt automaticamente e **sugere o program adequado** sem você precisar invocar `/run-program` manualmente. Hook `intent-classifier` classifica o prompt (6 tipos de intent) e emite `additionalContext` com sugestão. Skill 39 (program-router) confirma via `AskUserQuestion` com opções (dry-run / direto / ad-hoc / cancelar).

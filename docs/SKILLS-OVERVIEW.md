@@ -223,6 +223,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/checklist docs/specs/dark-mode.md`
 **Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
+### `/swarm` — Total Autonomy (v2.0.0)
+
+**O que faz:** prompt → PR mergeable em um comando. 7 phases (setup/PRD/Ralph loop/parallel review/synthesize/self-fix/PR/report). Worktree isolado, fresh context per story.
+**Quando:** "manda e esquece" — feature, issue fix, refactor.
+**Diff vs alternativas:** `/auto` (sem worktree, sem PR) · `/loop` (sem multi-agent review, sem PR) · `/run-program X` (gates humanos) · **`/swarm` é o ÚNICO 100% autônomo do prompt ao PR.**
+**Exemplo:** `/swarm "implementar auth"` ou `/swarm fix #42`
+**Takeaway:** **autonomia real.** Hook em modo Autonomous roteia features pra cá.
+
 ### Auto-orchestration (v1.8.0)
 
 **O que faz:** hook `intent-classifier` detecta intent do prompt e sugere program adequado. Skill 39 (program-router) confirma com usuário.

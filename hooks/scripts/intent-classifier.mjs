@@ -177,12 +177,21 @@ async function main() {
     // Skip se program está em suppress list
     if (cfg.suppress && cfg.suppress.includes(intent.program)) process.exit(0);
 
+    // Em modo Autonomous, intents de feature/issue/refactor roteiam pra /swarm (autonomia total)
+    // Em modos Active/Passive, mantém o program específico
+    const SWARM_ELIGIBLE = ["spec-driven-development", "pipeline-discovery"];
+    const routeToSwarm = cfg.autonomous && SWARM_ELIGIBLE.includes(intent.program);
+
     // Determinar level efetivo
     let level, levelLabel, action;
     if (cfg.autonomous) {
       level = 3;
       levelLabel = "Autonomous";
-      action = `**EXECUTE AGORA** (modo autônomo): \`/run-program ${intent.program} --auto-yes\` — gates pulam automaticamente. ⚠ Pause se program tem bash destrutivo.`;
+      if (routeToSwarm) {
+        action = `**EXECUTE AGORA via /swarm** (modo autônomo total): \`/swarm "${userPrompt.replace(/"/g, '\\"').slice(0, 200)}"\` — cria worktree isolado, Ralph loop por story (fresh context), 4-agent paralelo review, self-fix CRITICAL/HIGH, auto PR. Zero gates humanos. ⚠ Termina em PR aberto pra você revisar.`;
+      } else {
+        action = `**EXECUTE AGORA** (modo autônomo): \`/run-program ${intent.program} --auto-yes\` — gates pulam automaticamente. ⚠ Pause se program tem bash destrutivo.`;
+      }
     } else if (cfg.auto_dry_run) {
       level = 2;
       levelLabel = "Active";
