@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.7.1-0f766e)
+![Version](https://img.shields.io/badge/version-1.8.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -90,7 +90,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 37 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 38 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -127,7 +127,7 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 37 skills.
+Na tabela abaixo, considere o `dev-team-kit` como 36 tools apoiadas pelas 38 skills.
 O MCP expoe 36 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
@@ -627,6 +627,7 @@ Histórico completo em **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Versão | Data | Destaques |
 |---|---|---|
+| **v1.8.0** | 2026-05-20 | **Auto-orchestration** — hook `intent-classifier` sugere program adequado baseado em intent do prompt (sem usuário invocar slash); skill 39 nova (program-router); 4 níveis de autonomia configuráveis |
 | **v1.7.0** | 2026-05-20 | **Program Engine v2** — 6 primitives novos (`prompt`/`bash`/`loop`/`context: fresh`/`provider+model`/`trigger_rule`) + 2 programs avançados (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent paralelo). Absorvido de [coleam00/archon](https://github.com/coleam00/archon) |
 | **v1.6.0** | 2026-05-18 | Pipelines YAML executáveis: comando `/run-program` + 4 programs (`pipeline-discovery`, `spec-driven-development`, `loop-polishing`, `detective-spec`); schema com gates/parallel/conditional/vars; scripts validator + planner. Adaptado de [github/spec-kit workflows/](https://github.com/github/spec-kit/tree/main/workflows) com extensões |
 | **v1.5.2** | 2026-05-16 | Layout do plugin pra autodiscovery do Claude Code 2.x: `.claude/commands/` → `commands/`, `.claude/agents/` → `agents/`, hooks/hooks.json convertido, `.mcp.json` adicionado |

@@ -223,6 +223,12 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Exemplo:** `/checklist docs/specs/dark-mode.md`
 **Takeaway:** **a spec é "código em português"; a checklist é a suíte de testes unitários dela.** Complementa (não substitui) os 13 checks fixos em `policies/prd-validation.md`. Inspirado em [github/spec-kit](https://github.com/github/spec-kit).
 
+### Auto-orchestration (v1.8.0)
+
+**O que faz:** hook `intent-classifier` detecta intent do prompt e sugere program adequado. Skill 39 (program-router) confirma com usuário.
+**Quando:** prompts > 15 chars que não são informacionais, triviais, ou já slash command.
+**Takeaway:** **sem precisar lembrar de `/run-program`**, kit sugere. 4 níveis de autonomia configuráveis.
+
 ### `/run-program` — Executable YAML pipelines
 
 **O que faz:** executa `programs/<nome>.yml` com **7 step types**: command, prompt (inline), bash (deterministic), gate (humano), loop (until: TOKEN com fresh_context), parallel (com `trigger_rule`), conditional. Suporta `context: fresh`, `provider`/`model` per step, variable substitution.

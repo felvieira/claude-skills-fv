@@ -128,15 +128,28 @@ Modos coexistem. Usuario pode comecar em A, perceber que e maior do que parecia,
 
 ### Canonical Program Definitions
 
-For multi-step pipelines, consult `programs/` for declarative definitions:
+For multi-step pipelines, consult `programs/` for declarative definitions (6 programs, executable via `/run-program`):
 
 | Program | When to use |
 |---|---|
-| `programs/pipeline-discovery.md` | Large/ambiguous features needing discovery + TDD by slice |
-| `programs/detective-spec.md` | Legacy codebase reverse-engineering |
-| `programs/loop-polishing.md` | Autonomous loop with quality scoring |
+| `programs/pipeline-discovery.{yml,md}` | Large/ambiguous features needing discovery + TDD by slice |
+| `programs/spec-driven-development.{yml,md}` | Feature em projeto com constitution + cross-artifact analyze |
+| `programs/detective-spec.{yml,md}` | Legacy codebase reverse-engineering |
+| `programs/loop-polishing.{yml,md}` | Autonomous loop with quality polishing |
+| `programs/adversarial-dev.{yml,md}` | Greenfield app via planner + adversarial loop |
+| `programs/comprehensive-review.{yml,md}` | 5-agent parallel PR review + synthesize + auto-fix |
 
 Use programs as the **canonical source** when composing pipelines — they define abort conditions, protocol refs, and input contracts that complement the orchestrator's routing logic.
+
+### Auto-orchestration (v1.8.0)
+
+A camada de auto-orquestração funciona em 3 níveis:
+
+1. **Hook `intent-classifier`** (UserPromptSubmit) — analisa prompt do usuário e emite `additionalContext` sugerindo program
+2. **Skill 39 (program-router)** — quando precisa decidir entre programs ou criar pipeline ad-hoc, confirma com usuário via `AskUserQuestion` (dry-run / direto / ad-hoc / cancelar)
+3. **Skill 09 (orchestrator, esta)** — última camada: monta pipeline informal quando nenhum program serve, ou força pipeline obrigatório quando constitution dita
+
+Ver `policies/auto-orchestration.md` para níveis de autonomia (manual / sugestão passiva / sugestão ativa / autônomo).
 
 ## Vertical Slicing (regra obrigatoria para feature multi-camada)
 
