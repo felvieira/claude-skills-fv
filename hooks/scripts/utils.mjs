@@ -1,9 +1,17 @@
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
+import { homedir } from "os";
 
 export function resolveHookConfigPath() {
   const candidates = [".bot/hooks/config.json", "hooks/config.json"];
   return candidates.find((candidate) => existsSync(candidate)) || null;
+}
+
+// User-level override — applies across all projects. Sobrescreve repo-level config.
+// Path: ~/.claude/dev-team-kit-config.json
+export function resolveUserConfigPath() {
+  const userPath = join(homedir(), ".claude", "dev-team-kit-config.json");
+  return existsSync(userPath) ? userPath : null;
 }
 
 // Module-level cache — hooks are short-lived processes, no staleness risk
@@ -11,15 +19,39 @@ let _configCache = null;
 
 function loadFullConfig() {
   if (_configCache !== null) return _configCache;
-  const configPath = resolveHookConfigPath();
-  if (!configPath) return (_configCache = {});
-  try {
-    _configCache = JSON.parse(readFileSync(configPath, "utf-8"));
-  } catch (err) {
-    process.stderr.write(`[utils] Failed to parse config at ${configPath}: ${err.message}\n`);
-    _configCache = {};
+
+  // 1. Carregar config base do repo/instalação
+  const repoConfigPath = resolveHookConfigPath();
+  let repoConfig = {};
+  if (repoConfigPath) {
+    try {
+      repoConfig = JSON.parse(readFileSync(repoConfigPath, "utf-8"));
+    } catch (err) {
+      process.stderr.write(`[utils] Failed to parse repo config at ${repoConfigPath}: ${err.message}\n`);
+    }
   }
-  return _configCache;
+
+  // 2. Mergir user override por cima (cada seção é merged shallow)
+  const userConfigPath = resolveUserConfigPath();
+  if (userConfigPath) {
+    try {
+      const userConfig = JSON.parse(readFileSync(userConfigPath, "utf-8"));
+      // Shallow merge — user override sobrescreve seções do repo
+      _configCache = { ...repoConfig };
+      for (const [section, sectionConfig] of Object.entries(userConfig)) {
+        if (typeof sectionConfig === "object" && sectionConfig !== null && !Array.isArray(sectionConfig)) {
+          _configCache[section] = { ...(repoConfig[section] || {}), ...sectionConfig };
+        } else {
+          _configCache[section] = sectionConfig;
+        }
+      }
+      return _configCache;
+    } catch (err) {
+      process.stderr.write(`[utils] Failed to parse user config at ${userConfigPath}: ${err.message}\n`);
+    }
+  }
+
+  return (_configCache = repoConfig);
 }
 
 // Internal helper — accepts already-loaded config to avoid redundant loads

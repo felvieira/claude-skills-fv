@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.9.1-user-config-override] - 2026-05-20
+
+### Added
+- **User-wide config override** em `~/.claude/dev-team-kit-config.json`. Sobrescreve seções de `hooks/config.json` do repo. Permite ativar Autonomous (ou outro nível) **só na sua máquina** sem alterar o default do repo.
+
+### Changed
+- **`hooks/scripts/utils.mjs`** — `loadFullConfig()` agora faz merge `repo config + user override` (user override sobrescreve seção-a-seção, shallow merge). Nova função `resolveUserConfigPath()` localiza `~/.claude/dev-team-kit-config.json`.
+- **`policies/auto-orchestration.md`** — documenta os 2 paths de config (repo vs user-wide) com merge order explícita. Caminho 1 "User-wide" marcado como **RECOMENDADO**.
+- **`README.md`** + **`README.pt-BR.md`** — bloco "Set up Autonomous" atualizado: arquivo agora é `~/.claude/dev-team-kit-config.json` (user-wide), não settings.json. Nota explícita: "doesn't affect the repo — other users keep the safe default (Active)".
+
+### Migration (não tem — backwards compat)
+- Repos existentes continuam funcionando: se não há user override, config do repo é usada
+- Quem já tinha `intent_classifier` em `settings.json` precisa mover pra `~/.claude/dev-team-kit-config.json` (settings.json não é lido pelo hook)
+
+### Why
+v1.9.0 fez Active default, mas usuário queria ativar Autonomous na **própria máquina** sem alterar o repo. Faltava mecanismo de user-wide override. Agora: repo permanece Active (default seguro), user-wide override permite personalização sem afetar quem clona.
+
+---
+
 ## [1.9.0-active-default] - 2026-05-20
 
 **Breaking-ish:** Default mudou de Passive (Nível 1) → **Active (Nível 2)**. Gates humanos no program continuam pausando — segurança preservada. Quem quiser comportamento antigo deve setar `auto_dry_run: false`.

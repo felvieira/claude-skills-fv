@@ -139,33 +139,54 @@ Usuário pode:
 
 ## Como mudar de nível (passo-a-passo)
 
-### Caminho 1 — Edit direto em `~/.claude/settings.json`
+### Os 2 lugares onde o hook lê config
 
-1. Abrir `~/.claude/settings.json` (Windows: `C:\Users\<user>\.claude\settings.json`)
-2. Adicionar/editar a chave `intent_classifier`:
+| Path | Escopo | Quando usar |
+|---|---|---|
+| `hooks/config.json` (no repo) ou `.bot/hooks/config.json` (em projeto consumidor) | **Repo / projeto** — afeta todos os usuários que clonarem | Default do projeto |
+| `~/.claude/dev-team-kit-config.json` | **User-wide** — só sua máquina, todos os projetos | Sua preferência pessoal sobrescrevendo o default do repo |
+
+**Merge order:** `defaults do hook` → `hooks/config.json` → `~/.claude/dev-team-kit-config.json` → env vars (env wins).
+
+### Caminho 1 — User-wide (sua máquina, todos os projetos) ⭐ RECOMENDADO
+
+1. Criar/editar `~/.claude/dev-team-kit-config.json` (Windows: `C:\Users\<user>\.claude\dev-team-kit-config.json`):
    ```jsonc
    {
-     "hooks": { /* ... mantém o que já tem ... */ },
      "intent_classifier": {
        "enabled": true,
-       "auto_dry_run": true,    // Active (default desde v1.9.0)
-       "autonomous": false,
-       "suppress": []
+       "auto_dry_run": true,
+       "autonomous": true,
+       "suppress": ["adversarial-dev", "comprehensive-review"]
      }
    }
    ```
-3. Salvar arquivo
-4. **Restartar Claude Code** (necessário pra hook reler config)
-5. Pronto
+2. Salvar arquivo
+3. **Restartar Claude Code**
 
-### Caminho 2 — Via slash command `/update-config`
+**Vantagem:** sua config pessoal não vai no repo, não afeta outros usuários.
+
+### Caminho 2 — Project-level (todos do projeto)
+
+Editar `hooks/config.json` (ou `.bot/hooks/config.json` se kit instalado em `.bot/`):
+```jsonc
+{
+  "intent_classifier": { ... }
+}
+```
+
+**Atenção:** isso vai no git, afeta todo mundo que clonar o repo.
+
+### Caminho 3 — Slash command `/update-config`
 
 ```
 /update-config intent_classifier.autonomous = true
 /update-config intent_classifier.suppress = ["adversarial-dev"]
 ```
 
-### Caminho 3 — Via env var (override temporário)
+(Edita o config apropriado — geralmente project se em projeto, user se rodando standalone.)
+
+### Caminho 4 — Via env var (override temporário)
 
 ```bash
 # bash/zsh
