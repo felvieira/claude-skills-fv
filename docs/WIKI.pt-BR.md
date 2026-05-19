@@ -270,7 +270,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 #### `/run-program` — Executa pipeline YAML declarativo
 
-**O que faz:** parseia e executa `programs/<nome>.yml` como pipeline declarativo. Steps podem ser slash commands, gates humanos, blocos paralelos, ou conditionals. Variable substitution via `${inputs.X}` e `${steps.X.output}`. Valida schema, resolve inputs, roda em ordem, pausa nos gates.
+**O que faz:** parseia e executa `programs/<nome>.yml` como pipeline declarativo. Steps podem ser slash commands, **prompts inline**, **scripts bash**, gates humanos, **loops com `until:` token**, blocos paralelos (com `trigger_rule: all_success|one_success|all_done`), ou conditionals. Variable substitution via `${inputs.X}` e `${steps.X.output}`. **`context: fresh`** per-step para isolamento, **`provider:` / `model:`** para routing. v1.7.0: 6 tipos de step (command, prompt, bash, gate, loop, parallel, conditional). 6 programs incluindo `adversarial-dev` (GAN-inspired) e `comprehensive-review` (5-agent paralelo).
 **Quando usar:** pipelines repetidos que precisam consistência (spec-driven, pipeline-discovery, loop-polishing, detective-spec); fluxos com múltiplos review gates; equipes que precisam mesmo pipeline executado igual por agentes diferentes.
 **Problema que resolve:** `programs/*.md` descreve o fluxo mas não é executável. Formato YAML é executável — máquina parseia, agente roda cada step, pausa em gates humanos, captura outputs pro próximo step.
 **Exemplo:** `/run-program spec-driven-development` ou `/run-program loop-polishing --dry-run`

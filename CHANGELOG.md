@@ -5,6 +5,43 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.7.0-program-engine-v2] - 2026-05-20
+
+Absorve 6 primitives + 2 patterns avançados de [coleam00/archon](https://github.com/coleam00/archon) (21k stars, "harness builder for AI coding"). Engine de programs sobe pra nível profissional.
+
+### Added — 6 step primitives novos
+- **`type: prompt`** — step ad-hoc com prompt inline, sem precisar criar slash command próprio. Suporta `$ARGUMENTS`, `$ARTIFACTS_DIR`, `allowed_tools`.
+- **`type: bash`** — step deterministic shell, sem AI. Útil pra build/test/lint/git ops. Captura output via `${steps.X.output}`. `timeout` configurável.
+- **`type: loop`** — primitive Ralph-style: roda `prompt`/`command` até output conter `until: TOKEN`, com `max_iterations`, `fresh_context: true` (sessão limpa por iteração), `interactive`, `on_max_reached`.
+- **`context: fresh`** — per-step. Força sessão isolada (zero contexto da conversa anterior). Combina perfeitamente com `parallel:` ou steps adversariais.
+- **`provider:` + `model:`** — model routing declarativo per step. Override do `policies/model-routing.md` para steps caros (`opus[1m]`) ou rotineiros (`haiku`).
+- **`trigger_rule:`** — para `type: parallel`: `all_success` (default, igual antes) / `one_success` (segue com primeiro OK) / `all_done` (espera todos terminarem, sucesso ou falha — útil para review agents).
+
+### Added — 2 programs novos
+- **`programs/adversarial-dev.{yml,md}`** (new) — **GAN-inspired**. Planner cria spec com sprints (Opus 1M) → loop alterna Generator (constrói) e Evaluator (ATACA, scores 0-10 em 5 critérios) → sprint só passa quando todos >= threshold; senão retry com feedback adversarial. `fresh_context: true` evita contaminação entre roles. Inspirado no [archon-adversarial-dev](https://github.com/coleam00/archon/blob/main/.archon/workflows/defaults/archon-adversarial-dev.yaml).
+- **`programs/comprehensive-review.{yml,md}`** (new) — **5-agent parallel PR review** (code/error-handling/test-coverage/comment-quality/docs-impact, cada um `context: fresh` com `provider`/`model` específico — sonnet pra profundos, haiku pra rotineiros) + security review + synthesize com decision matrix + auto-fix CRITICAL/HIGH configurável + post comment no GitHub via `gh pr comment`. Usa `trigger_rule: all_done` (falha de 1 agent não bloqueia os outros).
+
+### Changed
+- **`policies/programs-schema.md`** — expandido com 6 novos step types, seção dedicada para cada (Bash/Prompt/Loop/Context/Model routing), tabela summary de step types, novos anti-padrões (loop sem max_iterations, bash destrutivo sem gate, prompt > 5k chars, context fresh sem args explícitos).
+- **`scripts/validate-program.mjs`** — suporta novos step types; inferência automática de `type` quando ausente; valida `loop.max_iterations` obrigatório; flag warning em bash destrutivo (`rm -rf`, `git push --force`, `chmod 777`, `sudo`); flag prompt > 5k chars; valida `trigger_rule` enum.
+- **`scripts/run-program.mjs`** — `inferType()` helper para steps sem `type:` explícito; describe/dry-run expõem todos os novos campos (`prompt_preview`, `bash_preview`, `context`, `provider`, `model`, `trigger_rule`, `loop`).
+- **`programs/loop-polishing.yml`** — refinado usando novos primitives: pre-flight-tests via `bash:`, parallel com `trigger_rule: all_success` no standard e `all_done` no full, novo step `anti-ai-pass` (haiku) que aplica `policies/anti-ai-writing.md` em prosa nova.
+- **`programs/spec-driven-development.yml`** — quality-gates agora tem `trigger_rule: all_success` + `context: fresh` per agent + novo step `build-check` via `bash:` (deterministic build validation).
+- **`programs/README.md`** — index atualizado com 6 programs.
+- **`docs/WIKI.md` + `docs/WIKI.pt-BR.md`** — entrada `/run-program` atualizada destacando 6 step types e 6 programs.
+
+### Validated
+- `node scripts/validate-program.mjs`: 6/6 programs válidos com novos primitives
+- Backwards compat: programs antigos (sem novos primitives) continuam passando
+
+### Sources
+- [coleam00/archon](https://github.com/coleam00/archon) — workflow engine YAML deterministic. Absorvemos primitives (bash/prompt/loop/context/provider/trigger_rule) + 2 patterns (adversarial-dev, comprehensive-review). NÃO absorvemos: Web UI, Slack/Telegram/GitHub adapters, server backend Bun+SQLite, runtime Bun.
+
+### Why
+v1.6.0 dava skeleton de programs (command/gate/parallel/conditional). v1.7.0 dá **expressividade profissional**: pode misturar AI + bash deterministic, isolar steps via fresh context, rotear model por step, loop até convergência. Agora dá pra escrever programs equivalentes em poder ao archon-idea-to-pr.yaml flagship do Archon.
+
+---
+
 ## [1.6.1-programs-gaps] - 2026-05-18
 
 ### Changed

@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "37 specialist skills + 28 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec (legacy reverse engineering), static-analysis (semgrep+codeql), skill-author, web-asset-generator, tdd-engineer, architecture-deepener + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), executable YAML pipelines (/run-program). Two pipeline flows: /pipeline (classic) and /pipeline-discovery (with grill-me + PRD + issues + TDD). 14 dispatchable subagents. Lifecycle hooks. Full .bot/ install via /devkit-install-fv.",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"

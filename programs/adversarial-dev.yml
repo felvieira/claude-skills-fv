@@ -1,0 +1,153 @@
+schema_version: "1.0"
+
+program:
+  id: adversarial-dev
+  name: "Adversarial Development (GAN-inspired)"
+  version: "1.0.0"
+  description: "Build app from scratch via planner + generator + evaluator loop. Evaluator's job is to BREAK what generator builds."
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.7.0"
+  commands: [build, test, security-review]
+  policies: [policies/verification-before-completion.md, policies/anti-rationalization.md]
+
+inputs:
+  product_request:
+    type: string
+    required: true
+    prompt: "Descricao curta do produto a construir"
+
+  max_sprint_retries:
+    type: number
+    default: 3
+    prompt: "Max retries por sprint antes de abort (default 3)"
+
+  threshold:
+    type: number
+    default: 7
+    prompt: "Score minimo (0-10) por criterio para sprint passar"
+
+steps:
+  # ═══ PHASE 1: PLANNING ═══
+  - id: plan
+    type: prompt
+    context: fresh
+    provider: claude
+    model: opus[1m]
+    prompt: |
+      Voce e um product planning expert. Tome o user request e expanda em spec completa.
+
+      ## User Request
+      $ARGUMENTS
+
+      ## Task
+      Escreva spec completa em $ARTIFACTS_DIR/spec.md com:
+      1. Product Overview (o que faz, para quem, value proposition)
+      2. Tech Stack (escolhas concretas com versoes)
+      3. Design Language (cores hex, typography, spacing)
+      4. Feature List (exaustiva, por prioridade)
+      5. Sprint Plan (3-6 sprints ordenados por dependencia)
+         - Sprint 1: Foundation (setup, data models, UI shell)
+         - Sprints subsequentes constroem em cima
+         - Liste features especificas por sprint
+
+      Seja especifico e opiniado. Quanto mais concreto (paths exatos, hex codes, libs nomeadas),
+      melhor o generator constroi e o evaluator testa.
+
+      IMPORTANTE: Use Write tool para gravar $ARTIFACTS_DIR/spec.md. Nao apenas texto na conversa.
+    allowed_tools: [Read, Write, Glob, Grep]
+
+  # ═══ PHASE 2: WORKSPACE INIT ═══
+  - id: init-workspace
+    type: bash
+    depends_on: [plan]
+    bash: |
+      set -euo pipefail
+      ARTIFACTS="$ARTIFACTS_DIR"
+      mkdir -p "$ARTIFACTS/contracts"
+      mkdir -p "$ARTIFACTS/feedback"
+      mkdir -p "$ARTIFACTS/app"
+      cd "$ARTIFACTS/app"
+      git init -q
+      git commit --allow-empty -m "Initial commit: adversarial-dev workspace" -q
+
+      # Extract sprint count from spec
+      SPEC="$ARTIFACTS/spec.md"
+      SPRINT_COUNT=$(grep -c "^### Sprint [0-9]" "$SPEC" 2>/dev/null || echo "3")
+      echo "sprint_count=$SPRINT_COUNT" > "$ARTIFACTS/state.env"
+      echo "Workspace initialized. Sprints detected: $SPRINT_COUNT"
+
+  # ═══ PHASE 3: ADVERSARIAL LOOP ═══
+  - id: adversarial-loop
+    type: loop
+    loop:
+      prompt: |
+        ## Adversarial Sprint State Machine
+
+        Voce esta rodando um state machine de 2 papeis: Generator e Evaluator.
+
+        ## Step 1: Determinar fase
+        Leia $ARTIFACTS_DIR/state.env. Se nao existir current_sprint, comece em sprint=1, role=generator.
+
+        ## Step 2a: Se role=generator
+        Leia $ARTIFACTS_DIR/spec.md secao "Sprint $current_sprint".
+        Leia $ARTIFACTS_DIR/feedback/sprint-$current_sprint-attempt-$attempt.md se existir (feedback da iteracao anterior).
+        Implemente as features no $ARTIFACTS_DIR/app/. Commit incremental ao terminar.
+        Escreva role=evaluator no state.env. End turn.
+
+        ## Step 2b: Se role=evaluator
+        Sua MISSAO: QUEBRAR o que o generator construiu. Voce e adversario, nao validador amigavel.
+        Avalie 5 criterios (0-10 cada):
+        1. Feature completeness vs spec
+        2. Edge cases / error handling
+        3. Code quality (DRY, naming, separation)
+        4. Performance / efficiency
+        5. Security / safety
+        Para CADA criterio, tente quebrar — escreva ataque concreto que falharia.
+        Escreva $ARTIFACTS_DIR/feedback/sprint-$current_sprint-attempt-$attempt.md com scores + ataques.
+        Se TODOS criterios >= ${inputs.threshold}: sprint passou. Avance current_sprint, role=generator.
+        Se algum < ${inputs.threshold}: incremente attempt, role=generator (retry com feedback).
+        Se attempt > ${inputs.max_sprint_retries}: ABORT sprint. Output: <result>ABORT_SPRINT</result>
+
+        ## Step 3: Verificar completion
+        Se current_sprint > $sprint_count (todos sprints passaram): output <result>COMPLETE</result>
+
+        Update state.env com current_sprint, role, attempt.
+      until: COMPLETE
+      max_iterations: 60
+      fresh_context: true
+      on_max_reached: abort
+
+  # ═══ PHASE 4: FINAL VALIDATION ═══
+  - id: final-tests
+    type: bash
+    bash: |
+      set -euo pipefail
+      cd "$ARTIFACTS_DIR/app"
+      # Run any test command if defined
+      if [ -f package.json ]; then
+        npm test 2>&1 || echo "WARN: tests failed in final validation"
+      fi
+      echo "Final validation complete"
+
+  - id: gate-deliver
+    type: gate
+    message: "Adversarial loop completed. App em $ARTIFACTS_DIR/app/. Aceitar entrega?"
+    options: [approve, review-manually, reject]
+    on_reject: abort
+
+  # ═══ PHASE 5: REPORT ═══
+  - id: report
+    type: prompt
+    context: fresh
+    prompt: |
+      Gere relatorio final em $ARTIFACTS_DIR/report.md:
+      - Quantos sprints completaram
+      - Quantos retries por sprint
+      - Findings adversariais que viraram fix
+      - Score final por criterio
+      - O que ficou de fora (out of scope)
+
+      Use Read em $ARTIFACTS_DIR/feedback/*.md para consolidar.
+    allowed_tools: [Read, Write, Glob]

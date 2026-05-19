@@ -159,22 +159,78 @@ function validate(programPath, doc) {
       if (ids.has(step.id)) errors.push(`duplicate step id: ${step.id}`);
       ids.add(step.id);
 
-      const type = step.type || "command";
-      if (!["command", "gate", "parallel", "conditional"].includes(type)) {
-        errors.push(`step "${step.id}": unknown type "${type}"`);
+      // Infer type from fields (v1.7.0 — fields can be implicit)
+      let type = step.type;
+      if (!type) {
+        if (step.command) type = "command";
+        else if (step.prompt) type = "prompt";
+        else if (step.bash) type = "bash";
+        else if (step.message) type = "gate";
+        else if (step.loop) type = "loop";
+        else if (step.parallel) type = "parallel";
+        else if (step.if) type = "conditional";
+      }
+      const VALID_TYPES = ["command", "prompt", "bash", "gate", "loop", "parallel", "conditional"];
+      if (!VALID_TYPES.includes(type)) {
+        errors.push(`step "${step.id}": unknown type "${type}". Valid: ${VALID_TYPES.join(", ")}`);
       }
 
+      // Type-specific required fields
       if (type === "command" && !step.command) {
         errors.push(`step "${step.id}": type=command requires command field`);
+      }
+      if (type === "prompt" && !step.prompt) {
+        errors.push(`step "${step.id}": type=prompt requires prompt field`);
+      }
+      if (type === "bash" && !step.bash) {
+        errors.push(`step "${step.id}": type=bash requires bash field`);
       }
       if (type === "gate" && !step.message) {
         errors.push(`step "${step.id}": type=gate requires message field`);
       }
-      if (type === "parallel" && (!Array.isArray(step.parallel) || step.parallel.length === 0)) {
-        errors.push(`step "${step.id}": type=parallel requires parallel[] with ≥1 step`);
+      if (type === "loop") {
+        if (!step.loop) errors.push(`step "${step.id}": type=loop requires loop block`);
+        else {
+          if (!step.loop.prompt && !step.loop.command) {
+            errors.push(`step "${step.id}": loop requires loop.prompt or loop.command`);
+          }
+          if (!step.loop.until) {
+            errors.push(`step "${step.id}": loop requires loop.until token`);
+          }
+          if (!step.loop.max_iterations) {
+            errors.push(`step "${step.id}": loop requires loop.max_iterations (anti-pattern: infinite loops)`);
+          }
+        }
+      }
+      if (type === "parallel") {
+        if (!Array.isArray(step.parallel) || step.parallel.length === 0) {
+          errors.push(`step "${step.id}": type=parallel requires parallel[] with ≥1 step`);
+        }
+        if (step.trigger_rule && !["all_success", "one_success", "all_done"].includes(step.trigger_rule)) {
+          errors.push(`step "${step.id}": unknown trigger_rule "${step.trigger_rule}"`);
+        }
       }
       if (type === "conditional" && (!step.if || !step.then)) {
         errors.push(`step "${step.id}": type=conditional requires if + then`);
+      }
+
+      // Validate context / provider / model
+      if (step.context && !["inherit", "fresh"].includes(step.context)) {
+        errors.push(`step "${step.id}": context must be "inherit" or "fresh", got "${step.context}"`);
+      }
+      if (step.provider && !["claude", "codex"].includes(step.provider)) {
+        warnings.push(`step "${step.id}": provider "${step.provider}" is unusual (expected: claude, codex)`);
+      }
+
+      // Anti-pattern checks
+      if (type === "bash" && step.bash) {
+        const dangerous = /\b(rm\s+-rf|git\s+push\s+--force|git\s+reset\s+--hard|sudo|chmod\s+777)\b/;
+        if (dangerous.test(step.bash)) {
+          warnings.push(`step "${step.id}": bash contains potentially destructive command — ensure gate precedes`);
+        }
+      }
+      if (type === "prompt" && step.prompt && step.prompt.length > 5000) {
+        warnings.push(`step "${step.id}": prompt is ${step.prompt.length} chars (>5000) — consider extracting to slash command`);
       }
     }
 

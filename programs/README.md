@@ -60,3 +60,5 @@ One sentence describing the goal.
 | [spec-driven-development](spec-driven-development.md) · [yml](spec-driven-development.yml) | Constitution-anchored pipeline with /checklist + /analyze gates between artifacts |
 | [detective-spec](detective-spec.md) · [yml](detective-spec.yml) | Reverse-engineer specs from legacy: recon → modules → rules → flows → ADRs |
 | [loop-polishing](loop-polishing.md) · [yml](loop-polishing.yml) | Auto-loop with quality polishing pass before commit |
+| [adversarial-dev](adversarial-dev.md) · [yml](adversarial-dev.yml) | GAN-inspired: planner + generator/evaluator loop with adversarial scoring (5 criteria, threshold per sprint) |
+| [comprehensive-review](comprehensive-review.md) · [yml](comprehensive-review.yml) | 5-agent parallel PR review (code/errors/tests/comments/docs) + security + synthesize + auto-fix CRITICAL/HIGH |

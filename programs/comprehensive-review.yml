@@ -1,0 +1,200 @@
+schema_version: "1.0"
+
+program:
+  id: comprehensive-review
+  name: "Comprehensive PR Review (5-agent parallel)"
+  version: "1.0.0"
+  description: "Sync PR with main → 5 specialized review agents em paralelo → synthesize → auto-fix CRITICAL/HIGH → report"
+  authors: ["felvieira"]
+
+requires:
+  kit_version: ">=1.7.0"
+  commands: [review, security-review]
+  skills: ["11-reviewer", "06-security-review"]
+
+inputs:
+  pr_number:
+    type: number
+    required: true
+    prompt: "Numero do PR a revisar"
+
+  auto_fix:
+    type: enum
+    enum: [critical-only, critical-and-high, none]
+    default: critical-only
+    prompt: "Auto-fix severidade ate qual nivel?"
+
+steps:
+  # ═══ PHASE 1: SYNC ═══
+  - id: scope
+    type: bash
+    bash: |
+      set -euo pipefail
+      PR=${inputs.pr_number}
+      mkdir -p "$ARTIFACTS_DIR/pr-$PR"
+      gh pr view "$PR" --json title,body,baseRefName,headRefName,files > "$ARTIFACTS_DIR/pr-$PR/meta.json"
+      echo "PR #$PR scope captured"
+
+  - id: sync
+    type: bash
+    depends_on: [scope]
+    bash: |
+      set -euo pipefail
+      PR=${inputs.pr_number}
+      BASE=$(jq -r .baseRefName "$ARTIFACTS_DIR/pr-$PR/meta.json")
+      gh pr checkout "$PR"
+      git fetch origin "$BASE"
+      git merge "origin/$BASE" --no-edit || echo "Merge conflict — manual resolution may be needed"
+      echo "PR synced with $BASE"
+
+  # ═══ PHASE 2: 5 PARALLEL REVIEW AGENTS ═══
+  - id: parallel-review
+    type: parallel
+    trigger_rule: all_done
+    parallel:
+      # Agent 1 — Code quality
+      - id: code-review
+        type: prompt
+        context: fresh
+        provider: claude
+        model: sonnet
+        prompt: |
+          Voce e code reviewer focado em CLEAN CODE, DRY, SOLID.
+          Revise APENAS o diff do PR ${inputs.pr_number} (use `gh pr diff ${inputs.pr_number}`).
+          Reporte findings em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-code.md com:
+          - Severity (CRITICAL / HIGH / MEDIUM / LOW)
+          - File:line
+          - Concrete suggestion
+          NAO faca review de outros aspectos (security, tests, docs) — outros agents cobrem.
+        allowed_tools: [Read, Grep, Bash, Write]
+
+      # Agent 2 — Error handling
+      - id: error-handling
+        type: prompt
+        context: fresh
+        provider: claude
+        prompt: |
+          Voce e error handling specialist.
+          Revise diff do PR ${inputs.pr_number} caçando:
+          - try/catch ausentes em I/O, network, parse
+          - errors silenciosos (swallow)
+          - error messages sem contexto
+          - retry sem backoff
+          - racing / partial failures
+          Reporte em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-errors.md com severity + linha.
+        allowed_tools: [Read, Grep, Bash, Write]
+
+      # Agent 3 — Test coverage
+      - id: test-coverage
+        type: prompt
+        context: fresh
+        provider: claude
+        prompt: |
+          Voce e test coverage analyst.
+          Revise PR ${inputs.pr_number}: para cada arquivo de codigo modificado, ha test correspondente?
+          Caça: novos branches sem test, edge cases sem cover, mocks que escondem bugs.
+          Reporte em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-tests.md.
+        allowed_tools: [Read, Grep, Bash, Write]
+
+      # Agent 4 — Comment / naming quality
+      - id: comment-quality
+        type: prompt
+        context: fresh
+        provider: claude
+        model: haiku
+        prompt: |
+          Voce e comment & naming reviewer.
+          Revise diff do PR ${inputs.pr_number} caçando:
+          - Naming ruim (single-letter, abreviacao opaca, generico)
+          - Comentarios stale (descrevem comportamento antigo)
+          - TODOs sem owner / data
+          - Magic numbers sem const
+          Reporte em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-comments.md.
+        allowed_tools: [Read, Grep, Bash, Write]
+
+      # Agent 5 — Docs impact
+      - id: docs-impact
+        type: prompt
+        context: fresh
+        provider: claude
+        model: haiku
+        prompt: |
+          Voce e docs impact reviewer.
+          Revise PR ${inputs.pr_number} contra:
+          - README atualizado se mudou install/uso?
+          - CHANGELOG entry?
+          - JSDoc/docstrings em APIs publicas?
+          - Migration guide se quebrou contrato?
+          Reporte em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-docs.md.
+        allowed_tools: [Read, Grep, Bash, Write]
+
+  # ═══ PHASE 3: SECURITY (separate, mandatory) ═══
+  - id: security
+    type: command
+    depends_on: [parallel-review]
+    command: /security-review
+    args: "PR ${inputs.pr_number}"
+    context: fresh
+
+  # ═══ PHASE 4: SYNTHESIZE ═══
+  - id: synthesize
+    type: prompt
+    context: fresh
+    prompt: |
+      Voce e synthesizer. Leia os 6 reviews em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-*.md
+      e sintetize em $ARTIFACTS_DIR/pr-${inputs.pr_number}/synthesis.md:
+
+      ## Por severity
+      - CRITICAL: lista deduplicada, file:line, agent que reportou
+      - HIGH: idem
+      - MEDIUM / LOW: agrupado
+
+      ## Decision matrix
+      Para CADA critical/high, marque:
+      - auto_fix (pode aplicar agora sem perguntar)
+      - needs_discussion (requer humano)
+      - false_positive (justificar)
+
+      ## Sumario
+      - N CRITICAL, M HIGH, P MEDIUM, Q LOW
+      - Recomendacao final: APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
+    allowed_tools: [Read, Write, Glob]
+
+  # ═══ PHASE 5: AUTO-FIX (conditional) ═══
+  - id: auto-fix
+    type: conditional
+    if: inputs.auto_fix != "none"
+    then:
+      - id: fix-issues
+        type: prompt
+        context: fresh
+        provider: claude
+        model: sonnet
+        prompt: |
+          Leia $ARTIFACTS_DIR/pr-${inputs.pr_number}/synthesis.md.
+          Para issues marcados como auto_fix com severity:
+          - CRITICAL: sempre fix (se inputs.auto_fix em critical-only ou critical-and-high)
+          - HIGH: fix se inputs.auto_fix == "critical-and-high"
+
+          Aplique fix via Edit. Commit por issue resolvido com message claro.
+          Pule false_positive e needs_discussion.
+
+          Output: lista de fixes aplicados + lista de fixes pulados com razao.
+        allowed_tools: [Read, Edit, Write, Bash, Glob, Grep]
+
+  # ═══ PHASE 6: REPORT TO GITHUB ═══
+  - id: post-comment
+    type: bash
+    bash: |
+      set -euo pipefail
+      PR=${inputs.pr_number}
+      SYNTH="$ARTIFACTS_DIR/pr-$PR/synthesis.md"
+      if [ ! -f "$SYNTH" ]; then echo "ERROR: synthesis not found"; exit 1; fi
+      gh pr comment "$PR" --body-file "$SYNTH"
+      echo "Comment posted to PR #$PR"
+
+  - id: gate-final
+    type: gate
+    message: "Comprehensive review entregue. Reviewer humano vai dar override? (artefatos em $ARTIFACTS_DIR/pr-${inputs.pr_number}/)"
+    options: [approve, request-changes, hold]
+    on_reject: continue

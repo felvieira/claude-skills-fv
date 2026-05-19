@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-1.6.1-0f766e)
+![Version](https://img.shields.io/badge/version-1.7.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-MIT-7c3aed)
@@ -631,6 +631,7 @@ Full release history in **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Version | Date | Highlights |
 |---|---|---|
+| **v1.7.0** | 2026-05-20 | **Program Engine v2** — 6 novos primitives (`prompt`/`bash`/`loop`/`context: fresh`/`provider+model`/`trigger_rule`) + 2 programs avançados (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). Absorvido de [coleam00/archon](https://github.com/coleam00/archon) |
 | **v1.6.0** | 2026-05-18 | Executable YAML pipeline programs: `/run-program` slash command + 4 programs (`pipeline-discovery`, `spec-driven-development`, `loop-polishing`, `detective-spec`); schema with gates/parallel/conditional/vars; validator + planner scripts. From [github/spec-kit workflows/](https://github.com/github/spec-kit/tree/main/workflows) extended |
 | **v1.5.2** | 2026-05-16 | Plugin layout for Claude Code 2.x autodiscovery: `.claude/commands/` → `commands/`, `.claude/agents/` → `agents/`, hooks/hooks.json converted, `.mcp.json` added |
 | **v1.5.1** | 2026-05-15 | v1.5.0 doc gaps: version table, Acknowledgements (5 new sources), CONTRIBUTING policy checklist |
@@ -663,6 +664,7 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **Claude Code Setup (`claude-code-setup:claude-automation-recommender`)** — `--recommend-automation` mode in skill 18 (v1.5.0). Pattern absorbed.
 - **Claude MD Management (`claude-md-management:claude-md-improver`)** — `audit` mode in skill 28 (v1.5.0). Pattern absorbed.
 - **[blader/humanizer](https://github.com/blader/humanizer)** + **[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)** — 29 anti-AI writing patterns + `/humanize` command (v1.4.1).
+- **[coleam00/archon](https://github.com/coleam00/archon)** — Program engine primitives (`type: prompt`/`bash`/`loop`, `context: fresh`, `provider`/`model` per step, `trigger_rule`) + 2 patterns (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). v1.7.0. We do NOT adopt: Web UI, Slack/Telegram/GitHub adapters, server backend, runtime Bun.
 
 ---
 
