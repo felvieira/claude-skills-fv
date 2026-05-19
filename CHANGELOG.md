@@ -5,6 +5,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [1.7.1-engine-v2-docs] - 2026-05-20
+
+### Changed
+- **`docs/SKILLS-OVERVIEW.md`** — entrada `/run-program` atualizada com 7 step types, programs novos (adversarial-dev, comprehensive-review), crédito Archon.
+- **`AGENTS.md`** — entrada `/run-program` na tabela expandida com 7 step types + 6 programs.
+- **`.claude-plugin/plugin.json`** — description detalha 7 step types + 6 programs + crédito archon.
+
+---
+
 ## [1.7.0-program-engine-v2] - 2026-05-20
 
 Absorve 6 primitives + 2 patterns avançados de [coleam00/archon](https://github.com/coleam00/archon) (21k stars, "harness builder for AI coding"). Engine de programs sobe pra nível profissional.

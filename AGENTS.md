@@ -62,7 +62,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/analyze` | Cross-artifact consistency check (read-only) entre constituição → spec → plan → issues. CRITICAL bloqueia `/build` |
 | `/humanize` | Remove os 29 padrões de AI-generated writing de qualquer prosa (docs, PRDs, copy, changelogs) |
 | `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
-| `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com gates humanos, parallel/conditional steps, variable substitution |
+| `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com **7 step types** (command/prompt/bash/gate/loop/parallel/conditional), `context: fresh` per step, `provider`/`model` routing, `trigger_rule` para parallel. 6 programs: pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN), **comprehensive-review** (5-agent parallel) |
 
 Navegação de skills: `docs/skill-guides/skill-discovery.md`
 

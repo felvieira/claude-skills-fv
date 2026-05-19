@@ -225,11 +225,11 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 
 ### `/run-program` — Executable YAML pipelines
 
-**O que faz:** executa `programs/<nome>.yml` como pipeline declarativo com gates humanos, parallel blocks, conditional steps e variable substitution.
-**Quando usar:** pipelines repetidos que precisam consistência.
-**Problema que resolve:** programs descritivos (`.md`) não são executáveis; YAML é.
-**Exemplo:** `/run-program spec-driven-development`
-**Takeaway:** **mesmo pipeline executado igual por agentes diferentes.**
+**O que faz:** executa `programs/<nome>.yml` com **7 step types**: command, prompt (inline), bash (deterministic), gate (humano), loop (until: TOKEN com fresh_context), parallel (com `trigger_rule`), conditional. Suporta `context: fresh`, `provider`/`model` per step, variable substitution.
+**Quando usar:** pipelines repetidos com gates, paralelização, isolamento de contexto, mix AI+bash.
+**Problema que resolve:** consistência entre agentes; expressividade pra workflows complexos (review multi-agente, adversarial dev).
+**Exemplo:** `/run-program adversarial-dev` ou `/run-program comprehensive-review --input pr_number=42`
+**Takeaway:** **6 programs prontos:** pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN-inspired), **comprehensive-review** (5-agent parallel). v1.7.0 absorveu primitives de [coleam00/archon](https://github.com/coleam00/archon).
 
 ### `/consolidate-memory` — Manutenção do vault
 
