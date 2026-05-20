@@ -72,13 +72,24 @@ node -e "
   let d = '';
   process.stdin.on('data', c => d += c);
   process.stdin.on('end', () => {
-    const hooksJson = JSON.parse(d);
-    const postToolUse = hooksJson.PostToolUse || [];
-    const hasEventLogger = postToolUse.some(s => s.includes('session-event-logger'));
+    const raw = JSON.parse(d);
+    // Claude Code plugin schema: {hooks: {<event>: [{matcher?, hooks: [{type, command}]}]}}
+    const events = raw.hooks || raw;
+    const flattenCommands = (event) => {
+      const blocks = events[event] || [];
+      const cmds = [];
+      for (const block of blocks) {
+        const list = block.hooks || (Array.isArray(block) ? block : []);
+        for (const h of list) cmds.push(typeof h === 'string' ? h : (h.command || ''));
+      }
+      return cmds;
+    };
+    const postToolUse = flattenCommands('PostToolUse');
+    const preToolUse = flattenCommands('PreToolUse');
+    const hasEventLogger = postToolUse.some(c => c.includes('session-event-logger'));
     if (!hasEventLogger) {
       throw new Error('hooks.json PostToolUse does not include session-event-logger');
     }
-    const preToolUse = hooksJson.PreToolUse || [];
     if (preToolUse.length === 0) {
       throw new Error('hooks.json PreToolUse is empty');
     }
