@@ -5,6 +5,85 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.7.1-conflict-telemetry] - 2026-05-20
+
+User opted to implement only the conflict telemetry item from the v2.7.0 roadmap — low-risk, high-future-value. Starts accumulating data so v2.8.0 can surface conflict-resolution health.
+
+### Added
+
+- **`scripts/log-conflict-decision.mjs`** (new) — CLI tool to record trade-off resolutions to `.bot/conflict-decisions.jsonl`. Schema:
+  ```jsonc
+  {
+    "ts": "ISO-8601",
+    "conflict": ["policy-A.md", "policy-B.md"],
+    "resolution": "case-1-canonical" | "hierarchy" | "ad-hoc",
+    "outcome": "applied" | "reverted" | "user_chose_X" | "pending",
+    "user_consulted": boolean,
+    "context": "..."  // optional, max 200 chars
+  }
+  ```
+  Best-effort. Fail-open. Never blocks the model.
+
+### Changed
+
+- **`scripts/savings-report.mjs`** — new section 🤝 **Trade-off Resolution** in `/savings` output:
+  - Total conflicts resolved in window
+  - Auto-resolved (via hierarquia + casos resolvidos) vs user-escalated
+  - ⚠ Reverted count (sinal de resolução ruim — calibrate)
+  - Top recurring conflicts (candidates pra virar Casos Resolvidos)
+
+- **`policies/trade-off-resolution.md`** — seção "Telemetria (v2.7.1+)" agora documenta o comando concreto + schema + quando registrar (✅/❌) + integração futura com `/savings`.
+
+- **`commands/savings.md`** — tabela de fontes inclui `.bot/conflict-decisions.jsonl`.
+
+- **Plugin manifests** bumped to 2.7.1.
+
+### Workflow esperado
+
+Quando o modelo aplica `policies/trade-off-resolution.md` pra resolver conflito:
+
+1. Decide resolução (caso resolvido / hierarquia / ad-hoc)
+2. Aplica a decisão
+3. Log via `node scripts/log-conflict-decision.mjs --conflict A,B --resolution X --outcome Y`
+4. Continua a task
+
+`/savings` agrega periodicamente: "esta semana 8 conflitos, 6 automáticos, 2 escalados, 0 reverted. Top conflito recorrente: X vs Y (3×)".
+
+### Por que minor patch ao invés de feature
+
+Funcionalidade nova (logging + nova seção no `/savings`), mas:
+- Sem mudança de comportamento default
+- Sem breaking change
+- Sem dependência nova (script standalone)
+- Tudo aditivo
+
+### Roadmap restante (não bloqueante)
+
+Items do roadmap v2.7.x que **NÃO** foram feitos (decisão consciente — implementar só quando demanda real):
+
+- v2.7.2 — `commands/check-slo.md` slash command
+- v2.7.3 — `scripts/pull-slo.mjs` helper genérico (Datadog/Grafana/etc)
+- v2.8.0 — `programs/slo-driven-feature.yml` program declarativo
+
+Esses dependem de uso real de observability frequente. Quando aparecer demanda, voltar e implementar item específico.
+
+### Verification
+
+```
+$ node scripts/log-conflict-decision.mjs --conflict A,B --resolution case-1-canonical --outcome applied
+Logged conflict decision: A vs B → case-1-canonical (applied)
+
+$ /savings
+🤝 Trade-off Resolution
+Resolved 2 policy conflicts in this window:
+- 1 resolved automatically
+- 1 escalated to user via AskUserQuestion
+```
+
+CI green (check-consistency, check-harness-coherence, schema-validator, check-hook-scripts-exist).
+
+---
+
 ## [2.7.0-trade-off-resolution-and-runtime-feedback] - 2026-05-20
 
 Fecha os 2 gaps restantes da re-leitura do artigo da Birgitta Böckeler. Junto com v2.5.0 + v2.6.0, **todos os 6 gaps identificados foram fechados**.

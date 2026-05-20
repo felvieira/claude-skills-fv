@@ -112,15 +112,44 @@ Quando o **mesmo conflito** aparece em **3+ sessões**, é hora de:
 2. Considerar resolver a **causa raiz** (policy A e B realmente precisam coexistir? podem ser fundidas?)
 3. Rodar `scripts/check-harness-coherence.mjs` (v2.6.0+) — talvez já detecte como contradição
 
-## Telemetria (futuro v2.7.1)
+## Telemetria (v2.7.1+)
 
-Roadmap: `.bot/conflict-decisions.jsonl` registrando:
-- Timestamp
-- Policies envolvidas
-- Resolução aplicada (caso resolvido vs ad-hoc)
-- Outcome (user reverted? user confirmed?)
+Sempre que esta policy resolver um conflito, registre em `.bot/conflict-decisions.jsonl` via:
 
-Permite `/savings` mostrar "N conflicts resolved via policy, M required user intervention" — mede coherence health.
+```bash
+node scripts/log-conflict-decision.mjs \
+  --conflict "policy-A.md,policy-B.md" \
+  --resolution "case-N-canonical|hierarchy|ad-hoc" \
+  --outcome "applied|reverted|user_chose_X|pending" \
+  [--user-consulted true] \
+  [--context "..."]
+```
+
+**Quando registrar:**
+- ✅ Quando aplicou um Caso Resolvido (case-1 a case-5)
+- ✅ Quando usou apenas hierarquia (sem caso resolvido específico)
+- ✅ Quando teve que perguntar ao user (ad-hoc)
+- ❌ Não registre conflitos sintéticos (não-reais) ou testes
+
+**Schema do JSONL:**
+```jsonc
+{
+  "ts": "ISO-8601",
+  "conflict": ["policy-A.md", "policy-B.md"],
+  "resolution": "case-1-canonical" | "hierarchy" | "ad-hoc",
+  "outcome": "applied" | "reverted" | "user_chose_X" | "pending",
+  "user_consulted": boolean,    // opcional, true se AskUserQuestion foi usado
+  "context": "..."              // opcional, max 200 chars
+}
+```
+
+**Como `/savings` usa (roadmap v2.8.0):**
+- Total de conflitos resolvidos na janela
+- % resolvidos automaticamente vs % escalados
+- Top 3 conflitos recorrentes (candidatos a virar Casos Resolvidos)
+- Conflitos com outcome="reverted" (sinal de resolução ruim — calibrar)
+
+Best-effort. Falha silenciosa. Nunca bloqueia o modelo.
 
 ## Integração com `/savings`
 

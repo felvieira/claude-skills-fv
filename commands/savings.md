@@ -52,6 +52,7 @@ Após o output, **interprete brevemente** os 3 maiores insights:
 | `.bot/agent-dispatch-errors.jsonl` | `agent-dispatch-validator` (PreToolUse, v2.2.1+) | blocked Agent dispatches com skill name como subagent_type |
 | `.bot/pre-execution-gate.jsonl` | `pre-execution-gate` (UserPromptSubmit, v2.4.0+) | decisões do gate: concrete_bypass / open_discussion_bypass / enrich / guided_enrich / force_bypass / pass_through |
 | `.swarm/classifier.jsonl` | `intent-classifier` (UserPromptSubmit) | classificações de intent: categoria, command sugerido, LLM vs regex |
+| `.bot/conflict-decisions.jsonl` | `policies/trade-off-resolution.md` via `scripts/log-conflict-decision.mjs` (v2.7.1+) | resoluções de conflito: policies envolvidas, resolution type, outcome |
 
 Todas best-effort. Engine é fail-open: arquivos faltando = seção vazia, sem crash.
 

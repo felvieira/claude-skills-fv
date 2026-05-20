@@ -180,6 +180,31 @@ function collectEvents(root, sinceMs) {
   };
 }
 
+function collectConflictDecisions(root, sinceMs) {
+  // v2.7.1+: telemetria de trade-off resolution (policies/trade-off-resolution.md)
+  const records = readJsonl(path.join(root, ".bot/conflict-decisions.jsonl"), sinceMs);
+  const autoResolved = records.filter(r => !r.user_consulted).length;
+  const userEscalated = records.filter(r => r.user_consulted).length;
+  const reverted = records.filter(r => r.outcome === "reverted").length;
+  const byConflict = {};
+  for (const r of records) {
+    const key = [...r.conflict].sort().join(" vs ");
+    byConflict[key] = (byConflict[key] || 0) + 1;
+  }
+  const topRecurring = Object.entries(byConflict)
+    .filter(([, n]) => n >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([conflict, count]) => ({ conflict, count }));
+  return {
+    total: records.length,
+    auto_resolved: autoResolved,
+    user_escalated: userEscalated,
+    reverted_count: reverted,
+    top_recurring: topRecurring,
+  };
+}
+
 function collectClassifier(root, sinceMs) {
   const records = readJsonl(path.join(root, ".swarm/classifier.jsonl"), sinceMs);
   const decisions = records.filter(r => r.result === "suggested");
@@ -296,6 +321,7 @@ function aggregate({ root, since }) {
   const gate = collectGateDecisions(root, sinceMs);
   const events = collectEvents(root, sinceMs);
   const classifier = collectClassifier(root, sinceMs);
+  const conflicts = collectConflictDecisions(root, sinceMs);
   const harnessCoverage = collectHarnessCoverage(root, sinceMs);
 
   const totalTokensSaved = agentDispatch.tokens_saved + toolUsage.tokens_saved + gate.tokens_saved;
@@ -333,6 +359,7 @@ function aggregate({ root, since }) {
     gate,
     events,
     classifier,
+    conflicts,
     efficiency_bytes_per_call: efficiency,
   };
 }
@@ -469,6 +496,26 @@ function renderMarkdown(report) {
       md.push(`**Top tools used:**`);
       for (const tt of report.events.top_tools) {
         md.push(`- \`${tt.tool}\` × ${tt.calls}`);
+      }
+      md.push(``);
+    }
+  }
+
+  // Conflict resolution (v2.7.1+) — telemetria de trade-off-resolution.md
+  if (report.conflicts.total > 0) {
+    md.push(`## 🤝 Trade-off Resolution`);
+    md.push(``);
+    md.push(`Resolved **${report.conflicts.total}** policy conflicts in this window:`);
+    md.push(`- ${report.conflicts.auto_resolved} resolved automatically (hierarquia + casos resolvidos)`);
+    md.push(`- ${report.conflicts.user_escalated} escalated to user via AskUserQuestion`);
+    if (report.conflicts.reverted_count > 0) {
+      md.push(`- ⚠ ${report.conflicts.reverted_count} reverted by user (sign of bad resolution — calibrate!)`);
+    }
+    md.push(``);
+    if (report.conflicts.top_recurring.length > 0) {
+      md.push(`**Top recurring conflicts** (candidates for new Casos Resolvidos in \`policies/trade-off-resolution.md\`):`);
+      for (const r of report.conflicts.top_recurring) {
+        md.push(`- \`${r.conflict}\` × ${r.count}`);
       }
       md.push(``);
     }
