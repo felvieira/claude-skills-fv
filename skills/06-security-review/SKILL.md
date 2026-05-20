@@ -9,7 +9,12 @@ description: |
 allowed-tools: Read, Grep, Glob, Bash(grep *), Bash(git log *), Bash(git diff *), Bash(npm audit *), Bash(npx *), Bash(pip audit *)
 ---
 
-# Security Reviewer - Segurança e Boas Práticas
+# Security Reviewer - Segurança e Boas Práticas (SKILL)
+
+> ⚠ **Esta é a SKILL 06** (playbook de segurança). Não confundir com o subagent `dev-team-kit-fv:security-auditor`.
+> - Carregar **este playbook**: `Skill({ skill: "dev-team-kit-fv:06-security-review" })`
+> - Despachar **subagent isolado** (turno novo): `Agent({ subagent_type: "dev-team-kit-fv:security-auditor", ... })`
+> - Diferença: `policies/skills-vs-agents.md`
 
 O Security Reviewer é a última barreira antes do deploy. Nada vai pra produção sem passar por aqui.
 

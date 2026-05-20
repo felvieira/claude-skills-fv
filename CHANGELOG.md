@@ -5,6 +5,75 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.2.0-skills-vs-agents-disambiguation] - 2026-05-19
+
+Fecha gap estrutural identificado quando o modelo passou skill numerada como `subagent_type` do tool `Agent`, gerando `InputValidationError` em 5 dispatches paralelos (case real). A v2.2.0 elimina a ambiguidade entre o universo das **skills** (`skills/NN-*/`, invocadas via `Skill` tool) e o universo dos **subagents** (`agents/*.md`, invocados via `Agent` tool) que compartilham o prefixo `dev-team-kit-fv:`.
+
+### Added
+
+- **`policies/skills-vs-agents.md`** (new) — policy canônica que define a regra normativa: skills numeradas (`NN-name`) só via `Skill` tool; subagents kebab-case só via `Agent` tool. Inclui matriz de espelhos (conceitos com skill + agent), 4 anti-padrões registrados e os 3 caminhos canônicos de paralelização (worktree+general-purpose, `/loop`, `/swarm`).
+- **`hooks/scripts/agent-dispatch-validator.mjs`** (new) — PreToolUse hook que intercepta `Agent` calls com `subagent_type` começando em `dev-team-kit-fv:`. Bloqueia (decision="block") quando o nome é skill ou inexistente, devolvendo mensagem acionável com fix sugerido (Skill tool direto ou worktree+general-purpose+Skill no prompt). Telemetria em `.bot/agent-dispatch-errors.jsonl`. Desativável via `DEVKIT_DISABLED_HOOKS=agent-dispatch-validator` ou profile.
+- **`skills/40-parallel-dispatcher/SKILL.md`** (new) — skill especializada em paralelização. Decision tree, 3 caminhos canônicos (A: subagents nativos, B: worktree+general-purpose, C: `/swarm`), 5 anti-padrões e playbook de consolidação pós-dispatch. Trigger em "paralelize", "N slices", "dispatch paralelo", "comprehensive review", "multi-agent parallel".
+- **`templates/parallel-slice-prompt.md`** (new) — template canônico de prompt self-contained para subagent paralelo (PASSO 1 Skill obrigatório + contexto + critérios + output esperado). Inclui exemplo concreto e anti-padrões.
+- **`agents/anti-ai-writing.md`** (new) — subagent fantasma que era referenciado em `swarm-protocol.md` mas não existia. Implementado com protocol shell e regra de operação: flag os 29 padrões de `policies/anti-ai-writing.md` sem reescrever (default report-only).
+- **`docs/skill-guides/skills-vs-agents-disambiguation.md`** (new) — guia longo com 15 cenários reais lado-a-lado (prompt → raciocínio → invocação correta). Inclui decision tree visual, FAQ, queries de audit de telemetria.
+- **`evals/policies/skills-vs-agents/golden.json`** (new) — 8 cases incluindo regression do erro original (5 slices), comprehensive review (4 agents paralelos), prompt ambíguo "use o frontend agent" e cenários sintéticos para o hook.
+- **`evals/policies/skills-vs-agents/test-hook.mjs`** (new) — smoke test executável (5 cases) que valida bloqueio, pass-through e mensagens do hook. `node evals/.../test-hook.mjs` → exit 0 = green.
+
+### Changed
+
+- **`GLOBAL.md`** — bloco "Skills vs Agents (regra crítica)" adicionado nos defaults globais. Inclui regra mnemônica: prefixo + número → skill; prefixo + kebab-case → agent.
+- **`AGENTS.md`** — seção "Subagents (`.claude/agents/`)" reescrita como "Subagents Despacháveis (`agents/`) vs Skills (`skills/NN-*/`)". Inclui tabela canônica dos 15 nomes válidos, coluna de "Espelho-skill" e seção "Anti-padrão (não fazer)".
+- **`skills/09-orchestrator/SKILL.md`** — disclaimer no topo (esta é skill, não agent). Seção "Como paralelizar slices (sem cair em armadilha skill-vs-agent)" adicionada após vertical slicing com os 3 caminhos canônicos.
+- **`skills/05-qa-testing/SKILL.md`, `skills/06-security-review/SKILL.md`, `skills/11-reviewer/SKILL.md`** — disclaimer no topo apontando para o agent espelho correspondente.
+- **`agents/code-reviewer.md`, `agents/orchestrator.md`, `agents/security-auditor.md`, `agents/test-engineer.md`** — disclaimer no topo apontando para a skill espelho.
+- **`policies/swarm-protocol.md`** Phase 3 — substituído pseudo-código por invocação correta com `Agent({ subagent_type: "dev-team-kit-fv:..." })` para os 4 review agents, incluindo o novo `anti-ai-writing` (subagent que finalmente existe).
+- **`hooks/hooks.json`** — `agent-dispatch-validator.mjs` adicionado como **primeiro** hook PreToolUse (precede os outros para falhar fast).
+- **VERSION**: `1.2.0` → `2.2.0`.
+
+### Why
+
+Causa raiz: o kit tem dois universos com prefixo `dev-team-kit-fv:` (38 skills numeradas + 14 subagents kebab-case), mas não tinha disambiguation explícita. Modelos confundiam ao despachar trabalho paralelo, especialmente para skills sem agent espelho (`04-frontend-integration`, `03-backend-api`, etc).
+
+Solução em 3 frentes simultâneas:
+1. **Doc**: policy normativa + GLOBAL.md/AGENTS.md atualizados + 15-cenário guide
+2. **Instrução**: disclaimers em todas as skills/agents espelhados
+3. **Runtime**: hook bloqueador com mensagem acionável + telemetria
+
+Hook validado por smoke test (5/5 green) cobrindo bloqueio, pass-through legítimo, pass-through não-kit, nomes inexistentes e tools não-Agent. Eval golden cases cobrem o erro original (regression) + 7 cenários adicionais.
+
+### How it works
+
+```
+Você: "paralelize 5 slices de frontend"
+  ↓
+Modelo tenta: Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
+  ↓
+Hook agent-dispatch-validator detecta: 04-frontend-integration está em skills/, não em agents/
+  ↓
+Hook bloqueia com: "❌ ... este nome é uma SKILL ... Correções: 1) Skill tool ... 2) general-purpose + worktree + Skill no prompt"
+  ↓
+Modelo aplica fallback correto: Agent × 5 com isolation:worktree, cada prompt instrui Skill internamente
+  ↓
+Dispatch funciona. 5 worktrees isolados, 5 PRs (ou consolidação no orquestrador).
+```
+
+### Migration
+
+Nenhuma ação requerida para usuários existentes — todos os disclaimers e o hook são aditivos. O hook é fail-open: se desativado ou se utils.mjs não resolver, ele passa.
+
+Para desativar (não recomendado):
+```bash
+DEVKIT_DISABLED_HOOKS=agent-dispatch-validator <comando>
+```
+
+ou em `~/.claude/dev-team-kit-config.json`:
+```jsonc
+{ "hook_profiles": { "profiles": { "minimal": { "disabled": ["agent-dispatch-validator"] } } } }
+```
+
+---
+
 ## [2.1.1-refactor-safely-docs] - 2026-05-20
 
 ### Changed

@@ -88,13 +88,18 @@ Cada iteração:
 
 ### Phase 3 — Quality Gates (parallel, fresh context cada)
 
-Despacha 4 agentes simultâneos via Task:
-- `code-reviewer`
-- `security-auditor`
-- `test-engineer`
-- `anti-ai-writing` (prosa nova)
+Despacha 4 subagents simultâneos via `Agent` tool (single message, 4 tool calls em paralelo):
+
+```typescript
+Agent({ subagent_type: "dev-team-kit-fv:code-reviewer", ... })
+Agent({ subagent_type: "dev-team-kit-fv:security-auditor", ... })
+Agent({ subagent_type: "dev-team-kit-fv:test-engineer", ... })
+Agent({ subagent_type: "dev-team-kit-fv:anti-ai-writing", ... })  // v2.2.0+
+```
 
 Cada um output em `.swarm/<id>/review/<agent>.md` com severity + file:line + suggested fix.
+
+⚠ Esses 4 nomes são **subagents válidos** (sem número, kebab-case). NUNCA passar nome de skill numerada aqui — ver `policies/skills-vs-agents.md`.
 
 ### Phase 4 — Synthesize
 

@@ -7,7 +7,12 @@ description: |
   "fixture", "regressao", "teste de integracao", "testing library".
 ---
 
-# QA Engineer - Testes Unitarios e E2E
+# QA Engineer - Testes Unitarios e E2E (SKILL)
+
+> ⚠ **Esta é a SKILL 05** (playbook de QA). Não confundir com o subagent `dev-team-kit-fv:test-engineer`.
+> - Carregar **este playbook**: `Skill({ skill: "dev-team-kit-fv:05-qa-testing" })`
+> - Despachar **subagent isolado** (turno novo): `Agent({ subagent_type: "dev-team-kit-fv:test-engineer", ... })`
+> - Diferença: `policies/skills-vs-agents.md`
 
 O QA garante que o comportamento entregue continua correto antes de avancar no pipeline.
 

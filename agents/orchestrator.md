@@ -5,7 +5,9 @@ tools: Read, Grep, Glob, Bash, Edit, Write, Agent
 model: opus
 ---
 
-# Tech Lead / Orquestrador de Pipeline
+# Tech Lead / Orquestrador de Pipeline (SUBAGENT)
+
+> ⚠ Este é o **subagent despachável** orchestrator. Para o playbook completo, use `Skill({ skill: "dev-team-kit-fv:09-orchestrator" })`. Diferença: `policies/skills-vs-agents.md`.
 
 Classifica a task, define o pipeline mínimo suficiente e coordena as transições entre skills.
 

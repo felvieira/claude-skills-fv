@@ -34,25 +34,7 @@ jobs:
           fi
 
       - name: Check hook script references exist
-        run: |
-          node -e "
-            const hooks = JSON.parse(require('fs').readFileSync('hooks/hooks.json', 'utf-8'));
-            const fs = require('fs');
-            let missing = 0;
-            for (const [event, scripts] of Object.entries(hooks)) {
-              for (const script of scripts) {
-                if (!fs.existsSync(script)) {
-                  console.error('❌ Missing: ' + script + ' (referenced in ' + event + ')');
-                  missing++;
-                }
-              }
-            }
-            if (missing > 0) {
-              console.error(missing + ' hook script(s) missing');
-              process.exit(1);
-            }
-            console.log('✅ All hook scripts exist');
-          "
+        run: node scripts/check-hook-scripts-exist.mjs
 
       - name: Syntax check hook scripts
         run: |

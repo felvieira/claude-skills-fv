@@ -33,6 +33,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/agent-dispatch-validator.mjs\""
+          },
+          {
+            "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-tool-enforcer.mjs\""
           },
           {
