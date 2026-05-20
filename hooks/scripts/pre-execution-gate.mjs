@@ -1,7 +1,23 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync, appendFileSync } from 'fs';
 import { dirname } from 'path';
 import { readHookConfig, isHookDisabled, resolveBotPath } from './utils.mjs';
+
+// Telemetry for /savings command (v2.4.0+). Best-effort, never blocks.
+function logDecision(decision, score, extras = {}) {
+  try {
+    const botDir = resolveBotPath();
+    mkdirSync(botDir, { recursive: true });
+    const path = resolveBotPath('pre-execution-gate.jsonl');
+    appendFileSync(path, JSON.stringify({
+      ts: new Date().toISOString(),
+      hook: 'pre-execution-gate',
+      decision,
+      score: typeof score === 'number' ? Number(score.toFixed(2)) : null,
+      ...extras,
+    }) + '\n', 'utf-8');
+  } catch {}
+}
 
 const CONCRETE_SIGNALS = [
   /(?:[A-Za-z]:)?(?:\/|\\)[\w./\\-]+\.\w+/,
@@ -92,6 +108,8 @@ process.stdin.on('end', () => {
   } catch {}
 
   if (hasConcreteSignal(prompt)) {
+    const isForce = /^(?:force:|!)/.test(prompt);
+    logDecision(isForce ? 'force_bypass' : 'concrete_bypass', null);
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }
@@ -99,6 +117,7 @@ process.stdin.on('end', () => {
   // Open-ended discussion/opinion prompts are NOT "ambiguous" — they're deliberately broad
   // and the right response is to engage, not interrogate. Bypass the gate.
   if (isOpenDiscussion(prompt)) {
+    logDecision('open_discussion_bypass', null);
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }
@@ -108,6 +127,7 @@ process.stdin.on('end', () => {
   const cfg = readHookConfig('pre_execution_gate', { enrich_threshold: 0.40, block_threshold: 0.70 });
 
   if (score < cfg.enrich_threshold) {
+    logDecision('pass_through', score);
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }
@@ -167,6 +187,8 @@ INSTRUCAO VINCULANTE — execute antes de qualquer outra acao:
 ANTI-PADRAO: nao listar 5 perguntas de uma vez. Nao seguir adiante sem clarificar. Nao perguntar coisas que repo-audit/working-set ja respondem.
 
 Prefixo "force:" ou "!" no inicio do prompt do user bypassa este gate (intencao explicita de prosseguir sem perguntas).`;
+
+  logDecision(score < cfg.block_threshold ? 'enrich' : 'guided_enrich', score);
 
   process.stdout.write(JSON.stringify({
     continue: true,

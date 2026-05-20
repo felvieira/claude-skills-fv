@@ -5,6 +5,67 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.4.0-savings-report] - 2026-05-20
+
+User-facing feature: visibility into what the kit actually saves. Aggregates telemetry from 5 hook sources into a single actionable report — tokens economizados, USD, bugs prevented, dev hours equivalent, hot files, gate decisions.
+
+User question that triggered this: "tem como criar um helper nele que mostre qto de tokens foi salvo pelo sistema? e mais metricas que podem ser interessantes pro user?"
+
+### Added
+
+- **`scripts/savings-report.mjs`** (new) — engine que agrega 5 fontes de telemetria (`.auto/events.jsonl`, `.bot/.tool-usage.json`, `.bot/agent-dispatch-errors.jsonl`, `.bot/pre-execution-gate.jsonl`, `.swarm/classifier.jsonl`) num relatório markdown ou JSON. Suporta `--since 24h|7d|30d`, `--mini` (3-line summary), `--format markdown|json`, `--root`. Heurísticas declaradas inline (auditáveis).
+
+- **`commands/savings.md`** (new) — slash command `/savings` que invoca o engine no modo completo e responde com markdown formatado + interpretação dos 3 maiores insights.
+
+- **`hooks/scripts/stop-savings-summary.mjs`** (new) — Stop hook que mostra mini-resumo de 3 linhas automaticamente ao final de sessões (throttled a 1 vez a cada 5min). Plugin como **terceiro** hook Stop (após context-guard, persistent-mode).
+
+- **`policies/savings-metrics.md`** (new) — auditoria completa das 6 heurísticas usadas (`REREAD_AVG_FILE_TOKENS`, `SKILL_AS_SUBAGENT_TOKENS_SAVED`, `ENRICHED_PROMPT_TOKENS_SAVED`, `REPEATED_SEARCH_TOKENS_SAVED`, `BUG_PREVENTED_USD`, `HOURS_PER_BUG_PREVENTED`). Inclui fontes (IBM SystemSciences, Capers Jones, Microsoft Research), pontos cegos, roadmap.
+
+### Changed
+
+- **`hooks/scripts/pre-execution-gate.mjs`** — agora grava telemetria de **cada decisão** em `.bot/pre-execution-gate.jsonl`: `concrete_bypass`, `open_discussion_bypass`, `force_bypass`, `pass_through`, `enrich`, `guided_enrich`. Best-effort, fail-open, não bloqueia hook se filesystem falha.
+
+- **`hooks/hooks.json`** — `stop-savings-summary.mjs` adicionado como terceiro hook Stop.
+
+- **`AGENTS.md`** — `/savings` adicionado na tabela de slash commands.
+
+- **Plugin manifests** bumped to 2.4.0.
+
+### Métricas que o relatório mostra
+
+| Categoria | Métricas |
+|---|---|
+| **Bottom line** | Tokens saved, USD saved, bugs prevented, USD bugs prevented, dev hours equivalent, combined value |
+| **Agent Dispatch Validator** | Total blocks, skill-as-subagent blocks, unknown name blocks, top offenders |
+| **Pre-Execution Gate** | Distribuição (concrete bypass / open discussion / enrich / guided enrich / force / pass through), enrichment rate |
+| **Tool Usage** | Reads/searches/writes totais, bytes lidos, large reads, hot files (candidatos a learned-skill) |
+| **Tool Call Activity** | Total calls, error rate, avg bytes/call (eficiência), span horas |
+| **Intent Classifier** | Total classificações, LLM vs regex, por categoria |
+
+### Verification
+
+Rodado com dados reais do próprio kit:
+
+```
+$ node scripts/savings-report.mjs --mini
+[Savings] ~18.8k tokens saved (~$0.06) · 11 risks prevented · 5 prompts processed
+  • 4× blocked skill-as-subagent dispatch (v2.2.1 hook)
+  • 6 repeated-read/search signals flagged
+  Run '/savings' for full report.
+```
+
+Stop hook gera output válido com `hookEventName: "Stop"` (sem schema violation).
+
+### Princípio
+
+Métricas de "savings" facilmente viram marketing. Esta release foca em **honestidade auditável**:
+- Heurísticas em código declarado, não escondidas
+- Fontes literárias citadas (cost-of-defect research)
+- Pontos cegos documentados (cache hits, custo infra externa não medidos)
+- Distinção clara: estimativas vs billing real
+
+---
+
 ## [2.3.0-pre-execution-gate-active-enrichment] - 2026-05-20
 
 Completes the `pre-execution-gate` story. v2.2.3 stopped the hook from silently dropping prompts. v2.3.0 makes the hook actually **do** what `skills/09-orchestrator/SKILL.md` line 329-336 has prescribed since v1.0: **ENRICH** (infer + offer 3 options) and **GUIDED ENRICH** (ask one focused question via AskUserQuestion).
