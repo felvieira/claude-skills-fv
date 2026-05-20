@@ -248,23 +248,42 @@ function formatBytes(b) {
 function collectHarnessCoverage(root, sinceMs) {
   // Inspired by Birgitta Böckeler: "harness coverage similar to code coverage".
   // Counts which declared sensors actually fired in the window.
-  // Declared sensors = all hook scripts in hooks/scripts/ that emit telemetry.
+  // Plus trust calibration (v2.6.0+): alarm sensors silent for too long.
   const sensors = {
     "agent-dispatch-validator": { source: ".bot/agent-dispatch-errors.jsonl", category: "maintainability" },
     "pre-execution-gate":       { source: ".bot/pre-execution-gate.jsonl",   category: "behaviour" },
     "intent-classifier":        { source: ".swarm/classifier.jsonl",         category: "meta" },
     "session-event-logger":     { source: ".auto/events.jsonl",              category: "meta" },
   };
+  const SILENT_ALARM_DAYS = 7; // sensor silent > 7d = trust calibration alarm
   const coverage = {};
   for (const [name, meta] of Object.entries(sensors)) {
-    const records = readJsonl(path.join(root, meta.source), sinceMs);
-    coverage[name] = { ...meta, fired: records.length, active: records.length > 0 };
+    // Read full file (not just window) to find last firing
+    const allRecords = readJsonl(path.join(root, meta.source), null);
+    const windowRecords = readJsonl(path.join(root, meta.source), sinceMs);
+    const lastTs = allRecords.length ? allRecords[allRecords.length - 1].ts : null;
+    const daysSinceLastFiring = lastTs
+      ? (Date.now() - new Date(lastTs).getTime()) / 86400000
+      : null;
+
+    const silentAlarm = daysSinceLastFiring !== null && daysSinceLastFiring > SILENT_ALARM_DAYS;
+
+    coverage[name] = {
+      ...meta,
+      fired: windowRecords.length,
+      active: windowRecords.length > 0,
+      last_fired_at: lastTs,
+      days_since_last_firing: daysSinceLastFiring,
+      silent_alarm: silentAlarm,
+    };
   }
   const total = Object.keys(coverage).length;
   const active = Object.values(coverage).filter(c => c.active).length;
+  const silentAlarms = Object.values(coverage).filter(c => c.silent_alarm).length;
   return {
     declared: total,
     active,
+    silent_alarms: silentAlarms,
     coverage_pct: total ? (active / total) * 100 : 0,
     sensors: coverage,
   };
@@ -357,14 +376,29 @@ function renderMarkdown(report) {
   md.push(`## 🎯 Harness Coverage`);
   md.push(``);
   md.push(`${report.harness_coverage.active}/${report.harness_coverage.declared} sensors fired in this window (**${report.harness_coverage.coverage_pct.toFixed(0)}%** harness coverage)`);
-  md.push(``);
-  md.push(`| Sensor | Category | Fired | Status |`);
-  md.push(`|---|---|---|---|`);
-  for (const [name, meta] of Object.entries(report.harness_coverage.sensors)) {
-    md.push(`| \`${name}\` | ${meta.category} | ${meta.fired} | ${meta.active ? "✅ active" : "⚪ silent"} |`);
+  if (report.harness_coverage.silent_alarms > 0) {
+    md.push(``);
+    md.push(`🚨 **${report.harness_coverage.silent_alarms} sensor(s) silent for > 7 days** — possible trust calibration issue. See alarms below.`);
   }
   md.push(``);
-  md.push(`> Silent sensors aren't broken — they just didn't have anything to react to in this window. But if a sensor is silent for weeks, consider whether it's still valuable. See \`policies/harness-categories.md\`.`);
+  md.push(`| Sensor | Category | Fired (window) | Days since last firing | Status |`);
+  md.push(`|---|---|---|---|---|`);
+  for (const [name, meta] of Object.entries(report.harness_coverage.sensors)) {
+    const days = meta.days_since_last_firing === null
+      ? "never"
+      : meta.days_since_last_firing < 1
+        ? "<1d"
+        : `${meta.days_since_last_firing.toFixed(1)}d`;
+    let status = "✅ active";
+    if (meta.silent_alarm) status = "🚨 silent alarm";
+    else if (!meta.active) status = "⚪ silent";
+    md.push(`| \`${name}\` | ${meta.category} | ${meta.fired} | ${days} | ${status} |`);
+  }
+  md.push(``);
+  md.push(`> 🚨 **Silent alarm** = sensor hasn't fired in >7 days. Two possibilities:`);
+  md.push(`> 1. **Project hygiene improved** — the sensor's pattern stopped happening (good). Verify by checking if the policy still matters.`);
+  md.push(`> 2. **Sensor is broken or misconfigured** — Birgitta Böckeler: _"If sensors never fire, is that a sign of high quality or inadequate detection mechanisms?"_`);
+  md.push(`> See \`policies/harness-categories.md\` Principle 5 + \`policies/self-correcting-sensors.md\`.`);
   md.push(``);
 
   md.push(`## 🛡 Agent Dispatch Validator (v2.2.1)`);

@@ -39,6 +39,9 @@ jobs:
       - name: Validate hook output schemas against Claude Code spec
         run: node evals/hooks/schema-validator.mjs
 
+      - name: Check harness coherence (no broken refs, no count drift)
+        run: node scripts/check-harness-coherence.mjs
+
       - name: Syntax check hook scripts
         run: |
           errors=0

@@ -5,6 +5,81 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.6.0-harness-coherence-and-self-correcting] - 2026-05-20
+
+Continuação do v2.5.0. Implementa os 4 itens de alto valor restantes identificados na re-leitura do artigo da Birgitta Böckeler.
+
+User pediu: *"o que pdoemos tirar proveito desse texto pra fazer?"* — análise revelou 6 gaps, 4 foram implementados aqui.
+
+### Added
+
+- **`scripts/check-harness-coherence.mjs`** (new) — enforces Princípio 4 de `policies/harness-categories.md`. 6 checkers:
+  - Ghost subagents (mencionados em AGENTS.md mas sem `agents/<name>.md`)
+  - Broken script refs (policy/skill cita `scripts/X.mjs` que não existe)
+  - Broken policy refs (skill cita `policies/X.md` que não existe)
+  - Broken mirror pairs (skill 09 claims agent orchestrator, etc — verificação dos 4 pares)
+  - Hook script refs em hooks.json
+  - Count drift (README declara "37 skills" mas tem 39)
+
+  Exit 1 se há findings High. Roda no CI.
+
+- **`policies/self-correcting-sensors.md`** (new) — padrão canônico baseado na Birgitta: _"sensors that produce signals optimised for LLM consumption — a positive kind of prompt injection."_ Princípio: todo sensor deve responder (1) o que, (2) por quê, (3) como corrigir com código pronto. Auditoria dos 16 hooks atuais: 4 ✅ excelentes, 7 🟡 parciais, 1 🔴 insuficiente, 4 N/A. Refactor backlog priorizado.
+
+### Changed
+
+- **`scripts/savings-report.mjs`** — **Trust calibration** (v2.6.0+): cada sensor mostra `days_since_last_firing` e flag `🚨 silent alarm` se silencioso >7 dias. Responde pergunta aberta da Birgitta: _"If sensors never fire, is that a sign of high quality or inadequate detection mechanisms?"_
+
+- **`skills/05-qa-testing/SKILL.md`** — nova seção **Mutation Testing como sensor avançado**. Quando aplicar, quando skip, tools por linguagem (8 tools mapeadas), workflow de adoção, integração com skill 37 (TDD). Inspirado em Birgitta: _"Mutation and structural testing are having a resurgence"_.
+
+- **`.github/workflows/validate-plugin.yml`** — adicionado step `Check harness coherence (no broken refs, no count drift)` no CI. Roda `scripts/check-harness-coherence.mjs`. Class de regressão (drift inicial fixado) não pode mais vazar.
+
+- **`README.md`** — counter drift corrigido (37 → 39 skills em 5 lugares).
+
+- **Plugin manifests** bumped to 2.6.0.
+
+### Drift real fixado
+
+O próprio `check-harness-coherence.mjs` pegou:
+1. `policies/harness-categories.md` referenciava `scripts/check-harness-coherence.mjs` (não existia ainda — drift do v2.5.0!) → **agora existe**
+2. `README.md` declarava "37 skills" em 5 lugares → **corrigido pra 39**
+3. Validação rodando no CI a partir desta release
+
+### Princípios reforçados
+
+- **Princípio 4 de harness-categories** (harness coherence) agora **enforced** automaticamente
+- **Princípio 2** (self-correcting feedback) tem **padrão canônico documentado** + auditoria + refactor backlog
+- Roadmap pra refactor dos 8 hooks com 🟡/🔴 nas próximas patches
+
+### Roadmap derivado (v2.6.x)
+
+- v2.6.1 — `ai-writing-detector` com sugestões de reescrita (saí de 🔴)
+- v2.6.2 — `post-tool-verifier` com template completo de learned-skill
+- v2.6.3 — `constitution-watcher` com sugestão de bump específico
+- v2.7.0 — Eval suite: cada hook verificado contra padrão self-correcting
+
+### Verification
+
+```
+$ node scripts/check-harness-coherence.mjs
+✅ All coherent. No contradictions found across 39 skills, 15 agents,
+   39 policies, 31 commands, 18 hooks.
+
+$ node scripts/check-consistency.mjs
+Consistency check passed (39 skills, 36 tools, 15 agents).
+
+$ node evals/hooks/schema-validator.mjs
+✅ All hooks emit valid schema (16/16)
+
+$ /savings
+🎯 Harness Coverage: 4/4 sensors fired, 0 silent alarms
+```
+
+### Why minor bump
+
+Adiciona feature nova (`check-harness-coherence` runnable + integrado ao CI), nova policy fundamental (`self-correcting-sensors`), e mudança visível no `/savings` (trust calibration). Tudo aditivo.
+
+---
+
 ## [2.5.0-harness-engineering] - 2026-05-20
 
 Major absorption release. Integrates concepts from Birgitta Böckeler's *"Harness engineering for coding agent users"* (Thoughtworks, 2026-04-02). The kit already had most pieces; v2.5.0 gives them shared vocabulary, fills gaps, and adds the missing pieces.
