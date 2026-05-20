@@ -5,6 +5,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.2.1-skills-vs-agents-disambiguation] - 2026-05-20
+
+Same content as planned for v2.2.0 (skills-vs-agents disambiguation). Version bumped to 2.2.1 because the v2.2.0 tag was already claimed by an earlier dense-output-mode policy release. Functional release notes below remain unchanged.
+
+---
+
 ## [2.2.0-skills-vs-agents-disambiguation] - 2026-05-19
 
 Fecha gap estrutural identificado quando o modelo passou skill numerada como `subagent_type` do tool `Agent`, gerando `InputValidationError` em 5 dispatches paralelos (case real). A v2.2.0 elimina a ambiguidade entre o universo das **skills** (`skills/NN-*/`, invocadas via `Skill` tool) e o universo dos **subagents** (`agents/*.md`, invocados via `Agent` tool) que compartilham o prefixo `dev-team-kit-fv:`.
