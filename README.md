@@ -131,7 +131,7 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 36 tools backed by the 38 skills.
+In the table below, treat `dev-team-kit` as 36 tools backed by the 39 skills.
 The MCP exposes 36 tools backed by the installed skills.
 
 ### Install Modes Compared
