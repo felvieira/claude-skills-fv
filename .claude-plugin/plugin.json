@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "39 specialist skills + 31 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, program-router, parallel-dispatcher + spec-driven development, anti-AI writing, memory consolidation, executable YAML pipelines. v2.5.0: **Harness engineering** absorbed from Birgitta Böckeler (Thoughtworks) — policies/harness-categories.md (maintainability/architecture-fitness/behaviour), /drift-scan command (dead-code, stale-todos, dep-staleness, doc-code drift), templates/harness/ per topology (crud-api, event-processor, data-dashboard), harness coverage in /savings, approved-fixtures pattern in skill 37, fitness functions YAML in skill 38, harnessability score in skill 18. v2.4.0: /savings + Stop summary. v2.3.0: pre-execution-gate active enrichment. v2.2.1: Skills-vs-Agents disambiguation. v2.0.0: /swarm total autonomy. 15 dispatchable subagents. Full .bot/ install via /devkit-install-fv.",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"

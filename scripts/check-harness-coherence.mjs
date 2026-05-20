@@ -111,15 +111,50 @@ function checkScriptReferences(idx) {
     ...listFiles(join(ROOT, "policies"), ".md").map(f => `policies/${f}`),
     ...listDirs(join(ROOT, "skills"), /^\d{2}-/).map(d => `skills/${d}/SKILL.md`),
     ...listFiles(join(ROOT, "commands"), ".md").map(f => `commands/${f}`),
-    "AGENTS.md", "GLOBAL.md", "README.md", "CHANGELOG.md",
+    "AGENTS.md", "GLOBAL.md", "README.md",
+    // Note: CHANGELOG.md not included — has historical refs to scripts that may
+    // not exist at HEAD (e.g. examples of detected drift, old references)
   ];
+  // Lines containing these markers are skipped (refs are roadmap/example, not active)
+  const SKIP_CONTEXT_MARKERS = [
+    /\broadmap\b/i,
+    /\bv2\.\d+\.\d+\s*(?:—|--|\s+)/i,  // "v2.7.1 — pull-slo.mjs"
+    /\bfuture\b/i,
+    /\bTODO\b/,
+    /\bplanned\b/i,
+  ];
+  // Placeholder names in examples
+  const PLACEHOLDER_NAMES = new Set(["X", "Y", "Z", "foo", "bar", "baz", "example", "your-script", "name"]);
+
   for (const rel of docFiles) {
     const content = readText(rel);
     if (!content) continue;
+    const lines = content.split("\n");
     // Match references to scripts/X.mjs and hooks/scripts/X.mjs
     const re = /`(scripts\/[\w./-]+\.mjs|hooks\/scripts\/[\w./-]+\.mjs)`/g;
+
+    // Build line index lookup for context check
+    let charIdx = 0;
+    const lineOf = (offset) => {
+      let acc = 0;
+      for (let i = 0; i < lines.length; i++) {
+        acc += lines[i].length + 1;
+        if (acc > offset) return lines[i];
+      }
+      return "";
+    };
+
     for (const m of content.matchAll(re)) {
       const refPath = m[1];
+
+      // Skip placeholder names
+      const baseName = refPath.split("/").pop().replace(/\.mjs$/, "");
+      if (PLACEHOLDER_NAMES.has(baseName)) continue;
+
+      // Skip if the line containing this ref has a roadmap/future marker
+      const lineContent = lineOf(m.index);
+      if (SKIP_CONTEXT_MARKERS.some(rx => rx.test(lineContent))) continue;
+
       if (!existsSync(join(ROOT, refPath))) {
         flag(
           "broken-script-ref",

@@ -5,6 +5,71 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.7.0-trade-off-resolution-and-runtime-feedback] - 2026-05-20
+
+Fecha os 2 gaps restantes da re-leitura do artigo da Birgitta Böckeler. Junto com v2.5.0 + v2.6.0, **todos os 6 gaps identificados foram fechados**.
+
+### Added
+
+- **`policies/trade-off-resolution.md`** (new) — responde pergunta aberta da Birgitta: _"How far can we trust agents to make sensible trade-offs when instructions and feedback signals point in different directions?"_
+
+  Conteúdo:
+  - **Hierarquia canônica explícita** (constitution > GLOBAL > policies > skills > templates)
+  - **5 casos resolvidos** dos conflitos mais comuns (token-efficiency vs dense-output, verification vs velocity, etc)
+  - **Decision tree** pra conflitos novos (4 níveis até `AskUserQuestion`)
+  - **Anti-padrões** (decidir silenciosamente, listar 5 opções, justificar com "geralmente")
+  - **Red flags** (mesmo conflito em 3+ sessões → virar Caso Resolvido)
+
+### Changed
+
+- **`skills/20-observability-sre/SKILL.md`** — nova seção **Runtime Feedback Sensors** absorvendo pergunta aberta da Birgitta sobre runtime monitoring como sensor. 3 workflows documentados:
+  - **SLO-driven feature work** — puxar P95/error rate antes/depois de implementação
+  - **Log anomaly detection** — AI judge sampling de logs com custo realista
+  - **Response quality sampling** — apps com IA, evaluating outputs
+
+  Templates concretos pra Datadog/Grafana/CloudWatch/Sentry. Integração explícita com skills 03, 07, 21, 24, 30.
+
+- **`scripts/check-harness-coherence.mjs`** — checker mais inteligente:
+  - Detecta refs em contexto de **roadmap** (`v2.7.1 — pull-slo.mjs`) e ignora (não é drift)
+  - Detecta refs em **placeholders** (X.mjs, foo.mjs) e ignora
+  - Exclui CHANGELOG.md do scan (refs históricos a exemplos de drift)
+  - Reduz false positives mantendo detecção de drift real
+
+- **Plugin manifests** bumped to 2.7.0.
+
+### Os 6 gaps da re-leitura — todos fechados
+
+| # | Gap | Release |
+|---|---|---|
+| 1 | Self-correcting sensors (positive prompt injection) | ✅ v2.6.0 |
+| 2 | Harness coherence enforcement | ✅ v2.6.0 |
+| 3 | Mutation testing como sensor | ✅ v2.6.0 |
+| 4 | Trust calibration (silent sensors) | ✅ v2.6.0 |
+| 5 | Trade-off resolution policy | ✅ v2.7.0 |
+| 6 | Runtime feedback sensors | ✅ v2.7.0 |
+
+### Princípio reforçado
+
+A pergunta da Birgitta sobre conflitos de instruções não tem resposta única — depende do contexto. Mas o **modelo precisa ter uma estratégia de decisão consistente entre sessões**, ou produz output incoerente. v2.7.0 fornece essa estratégia: hierarquia + casos resolvidos + decision tree + escalação explícita.
+
+### Roadmap derivado
+
+- v2.7.1 — `scripts/pull-slo.mjs` helper genérico
+- v2.7.2 — `commands/check-slo.md` slash command
+- v2.7.3 — `.bot/conflict-decisions.jsonl` telemetria pra `/savings`
+- v2.8.0 — `/savings` mostra "N conflicts resolved via policy"
+- v2.8.0 — `programs/slo-driven-feature.yml` program
+
+### Verification
+
+```
+✅ check-harness-coherence: All coherent (39 skills, 15 agents, 40 policies, 31 commands, 18 hooks)
+✅ check-consistency: 39 skills, 36 tools, 15 agents
+✅ schema-validator: 16/16 hooks valid
+```
+
+---
+
 ## [2.6.0-harness-coherence-and-self-correcting] - 2026-05-20
 
 Continuação do v2.5.0. Implementa os 4 itens de alto valor restantes identificados na re-leitura do artigo da Birgitta Böckeler.
