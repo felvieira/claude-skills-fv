@@ -5,6 +5,39 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.4.2-stop-hook-pollution-fix] - 2026-05-20
+
+UX fix: Stop hooks (`context-guard-stop`, `stop-savings-summary`) were firing **during** inspection commands like `/savings`, polluting their output. User repro: ran `/savings`, saw the report but with two extra `Stop says:` lines appended that belonged to the meta-command itself, not to a real session end.
+
+### Fixed
+
+- **`hooks/scripts/stop-savings-summary.mjs`** — new `isInspectionCommandContext()` checks `.bot/.hook-session.json` for `last_prompt` matching inspection command patterns. If matched, exits silently. Patterns cover: `/savings`, `/metrics`, `/cost`, `/cost-tracker`, `/consolidate-memory`, `/analyze`, `/checklist`, and variations like "resumir o /savings".
+- **`hooks/scripts/context-guard-stop.mjs`** — same suppression logic added at top of handler.
+
+### Why
+
+The Stop event fires after the model emits a final response — including responses produced by inspection commands. A naive Stop hook can't tell the difference between "real session end" and "model finished executing /savings", so it injects context that ends up rendered inside the inspection output.
+
+Fix detects the case by reading `last_prompt` (saved by `pre-execution-gate` for every UserPromptSubmit). If the user just asked for `/savings`, the auto-summary is redundant and noisy.
+
+### Verification
+
+```
+# /savings invoked → both hooks silent (no pollution)
+$ last_prompt="/savings"
+$ stop-savings-summary → {"continue":true}
+$ context-guard-stop  → {"continue":true}
+
+# Normal prompt → both fire normally
+$ last_prompt="como funciona X"
+$ stop-savings-summary → {"continue":true,"systemMessage":"[Savings] ~21.9k tokens saved..."}
+$ context-guard-stop  → {"continue":true,"systemMessage":"[ContextGuard] Stopping..."}
+```
+
+Schema validator still green (16/16).
+
+---
+
 ## [2.4.1-stop-sessionstart-schema-fix] - 2026-05-20
 
 Critical schema fix. v2.2.2 thought the bug was "missing hookEventName" — wrong diagnosis. The real bug: **Stop and SessionStart hooks DO NOT support `hookSpecificOutput` at all**. Claude Code's schema only allows it for 4 events: `PreToolUse`, `UserPromptSubmit`, `PostToolUse`, `PostToolBatch`.

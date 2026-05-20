@@ -4,11 +4,42 @@ import { dirname } from 'path';
 import { execSync } from 'child_process';
 import { readHookConfig, resolveBotPath, isHookDisabled } from './utils.mjs';
 
+// Suppress context-guard reminder when user is running an inspection/meta command —
+// otherwise it pollutes the output of the command they actually wanted.
+const INSPECTION_COMMAND_PATTERNS = [
+  /^\s*\/savings\b/i,
+  /^\s*\/metrics\b/i,
+  /^\s*\/cost\b/i,
+  /^\s*\/cost-tracker\b/i,
+  /^\s*\/consolidate-memory\b/i,
+  /^\s*\/analyze\b/i,
+  /^\s*\/checklist\b/i,
+  /\b(?:resumir|resume|mostra|mostrar|show|display)\s+(?:o\s+)?\/savings\b/i,
+];
+
+function isInspectionCommandContext() {
+  try {
+    const sessionPath = resolveBotPath('.hook-session.json');
+    if (!existsSync(sessionPath)) return false;
+    const session = JSON.parse(readFileSync(sessionPath, 'utf-8'));
+    const lastPrompt = session.last_prompt || '';
+    return INSPECTION_COMMAND_PATTERNS.some(p => p.test(lastPrompt));
+  } catch {
+    return false;
+  }
+}
+
 let _input = '';
 process.stdin.setEncoding('utf-8');
 process.stdin.on('data', (chunk) => { _input += chunk; });
 process.stdin.on('end', () => {
   if (isHookDisabled('context-guard-stop')) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
+  // Don't show context-guard reminder during inspection commands.
+  if (isInspectionCommandContext()) {
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }
