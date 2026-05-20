@@ -5,6 +5,54 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.3.0-pre-execution-gate-active-enrichment] - 2026-05-20
+
+Completes the `pre-execution-gate` story. v2.2.3 stopped the hook from silently dropping prompts. v2.3.0 makes the hook actually **do** what `skills/09-orchestrator/SKILL.md` line 329-336 has prescribed since v1.0: **ENRICH** (infer + offer 3 options) and **GUIDED ENRICH** (ask one focused question via AskUserQuestion).
+
+### The gap that existed
+
+The orchestrator skill specified:
+- score 0.4-0.7 → ENRICH: infer scope from repo-audit, confirm with 3 options
+- score > 0.7 → GUIDED ENRICH: ask 1 multiple-choice question, infer the rest
+
+But the hook only emitted a passive "advisory" warning. The model could (and did) ignore it. Real example: user prompt "implementar feature" got a soft warning, the model would either ask 5 chaotic questions or just guess.
+
+### Fixed
+
+- **`hooks/scripts/pre-execution-gate.mjs`** — emits **binding instructions** with explicit decision tree:
+  1. Classify intent: (A) implementation, (B) open discussion, (C) informational question
+  2. If (B) or (C) → answer directly (no interrogation)
+  3. If (A) and ENRICH mode → infer from repo-audit, present 3 concrete options, await pick
+  4. If (A) and GUIDED ENRICH mode → use `AskUserQuestion` tool for ONE focused question, then infer the rest
+  5. `force:` / `!` prefix bypasses everything (explicit user intent to proceed)
+
+- **Anti-patterns explicitly named** in the instruction: "don't list 5 questions at once", "don't proceed without clarifying", "don't ask things the repo-audit already answers".
+
+### Why a minor bump (not patch)
+
+This changes behavior in a way users will notice — vague implementation prompts now trigger 1 focused question via `AskUserQuestion` instead of silently proceeding with model's guess. Users get better outcomes but it's a real behavior change.
+
+Discussion / opinion / feedback / informational prompts are **explicitly excluded** by the instruction's decision tree, so those still flow naturally.
+
+### Verification
+
+```
+"o que vc melhoraria no sistema..."  → continue:true, no enrich (open discussion bypass)
+"implementar feature"                → continue:true + binding GUIDED ENRICH instruction
+"fix bug em src/auth.ts:42"          → continue:true, no enrich (concrete signal bypass)
+"force: refatora o auth"             → continue:true, no enrich (escape prefix)
+```
+
+### Why this matters
+
+v2.2.3 was a defensive fix (stop silently blocking). v2.3.0 is the offensive fix (do the right thing). The hook now **actively improves prompt quality** instead of just passively flagging issues.
+
+User question that triggered this: "vc não deveria perguntar coisas pro user pra complementar? ou melhorar você o prompt corrigindo?"
+
+Answer: yes. Now it does.
+
+---
+
 ## [2.2.3-pre-execution-gate-no-block] - 2026-05-20
 
 Critical UX fix: `pre-execution-gate` was emitting `continue: false` on UserPromptSubmit for vague prompts (score > 0.70), causing Claude Code to render "Operation stopped by hook" with no visible feedback. Hostile UX — user had no idea why their prompt was discarded.

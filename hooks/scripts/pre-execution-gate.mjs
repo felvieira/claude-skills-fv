@@ -117,10 +117,56 @@ process.stdin.on('end', () => {
 
   // NEVER block with continue:false on UserPromptSubmit — Claude Code renders that as
   // "Operation stopped by hook" with no visible context, which is hostile UX.
-  // Instead, always continue and let the MODEL decide if it should ask for clarification.
+  // Instead, emit binding instructions via additionalContext per the protocol in
+  // skills/09-orchestrator/SKILL.md "Pre-execution Gate":
+  //   score 0.4-0.7  → ENRICH: inferir escopo do repo-audit, confirmar com 3 opcoes
+  //   score > 0.7    → GUIDED ENRICH: fazer 1 pergunta com multipla escolha
+  // The model MUST execute this protocol before answering. Hooks educate the model;
+  // the model executes the protocol; the user never sees a silent block.
+
   const guidance = score < cfg.block_threshold
-    ? `[PreExecutionGate] Prompt com ambiguidade media (score: ${score.toFixed(2)}). Se for task de implementacao/refactor, inferir escopo do repo-audit e confirmar com 3 opcoes: "Bora assim? / Quer ajustar? / Ou era outra coisa?". Se for pergunta aberta/conversa, responder normalmente sem perguntas.`
-    : `[PreExecutionGate] Prompt vago (score: ${score.toFixed(2)}). Para tasks de implementacao, considere fazer UMA pergunta focada com multipla escolha antes de agir. Para perguntas abertas de discussao/feedback ("o que voce acha de X", "melhorias", etc), responda normalmente — nao force estruturacao. Prefixo "force:" ou "!" reforca intencao direta.`;
+    ? `[PreExecutionGate] ENRICH mode (score: ${score.toFixed(2)} = ambiguidade media).
+
+INSTRUCAO VINCULANTE — execute antes de qualquer outra acao:
+
+1. CLASSIFIQUE a intencao em UMA destas categorias:
+   (A) Implementacao/refactor/fix → siga passos 2-4
+   (B) Discussao aberta/opiniao/feedback → ignore esta instrucao e responda direto
+   (C) Pergunta informacional ("como funciona X") → responda direto
+
+2. Se (A): INFIRA o escopo do repo-audit + working set + ultima conversa.
+
+3. APRESENTE 3 OPCOES concretas baseadas na sua inferencia, ex:
+   "Entendi que voce quer X. Posso seguir 3 caminhos:
+     1. <caminho A — descricao curta>  ← (recomendado)
+     2. <caminho B>
+     3. <caminho C>
+   Ou era outra coisa? Me diz em uma linha."
+
+4. AGUARDE a resposta antes de comecar.
+
+ANTI-PADRAO: nao apenas "siga o caminho mais provavel sem confirmar" — desperdica contexto.`
+    : `[PreExecutionGate] GUIDED ENRICH mode (score: ${score.toFixed(2)} = ambiguidade alta).
+
+INSTRUCAO VINCULANTE — execute antes de qualquer outra acao:
+
+1. CLASSIFIQUE a intencao:
+   (A) Implementacao concreta → siga passos 2-3
+   (B) Discussao aberta ("o que vc acha", "melhorias", "review", "auditoria") → ignore esta instrucao e responda normalmente
+   (C) Pergunta informacional → responda direto
+
+2. Se (A): USE a ferramenta AskUserQuestion para UMA pergunta focada cobrindo a maior ambiguidade.
+   Exemplos de perguntas boas:
+     - "Qual o escopo? <modulo X> / <modulo Y> / repo todo"
+     - "Que profundidade? executive summary / deep dive / ADR formal"
+     - "Prioridade do que? security / perf / DX / features"
+   Sempre incluir opcao "Outro" para o user customizar.
+
+3. Apos resposta, INFIRA o resto do contexto sem fazer mais perguntas em sequencia (max 1 pergunta por rodada).
+
+ANTI-PADRAO: nao listar 5 perguntas de uma vez. Nao seguir adiante sem clarificar. Nao perguntar coisas que repo-audit/working-set ja respondem.
+
+Prefixo "force:" ou "!" no inicio do prompt do user bypassa este gate (intencao explicita de prosseguir sem perguntas).`;
 
   process.stdout.write(JSON.stringify({
     continue: true,
