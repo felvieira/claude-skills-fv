@@ -90,6 +90,7 @@ process.stdin.on("end", () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "PreToolUse",
           additionalContext: [
             `⚡ Model Routing: Entrando em plan mode.`,
             `   Considere: /model ${config.plan_model} (melhor raciocinio pra arquitetura e decisoes)`,
@@ -108,6 +109,7 @@ process.stdin.on("end", () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "PreToolUse",
           additionalContext: [
             `⚡ Model Routing: Saindo de plan mode.`,
             `   Considere: /model ${config.exec_model} (execucao eficiente com menor custo)`,
@@ -129,6 +131,7 @@ process.stdin.on("end", () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "PreToolUse",
           additionalContext: [
             `⚡ Model Routing: Subagent sem model explicito.`,
             `   Prompt sugere task ${tier} → recomendado: model: "${model}"`,

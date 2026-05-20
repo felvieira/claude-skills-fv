@@ -179,7 +179,7 @@ process.stdin.on("end", () => {
     const additionalContext = repetitionWarning ? `${repetitionWarning}\n${writeNotice}` : writeNotice;
     process.stdout.write(JSON.stringify({
       continue: true,
-      hookSpecificOutput: { additionalContext },
+      hookSpecificOutput: { hookEventName: "PreToolUse", additionalContext },
     }));
     return;
   }
@@ -206,6 +206,7 @@ process.stdin.on("end", () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "PreToolUse",
           additionalContext: messages.join("\n\n"),
         },
       }));
@@ -216,7 +217,7 @@ process.stdin.on("end", () => {
   if (repetitionWarning) {
     process.stdout.write(JSON.stringify({
       continue: true,
-      hookSpecificOutput: { additionalContext: repetitionWarning },
+      hookSpecificOutput: { hookEventName: "PreToolUse", additionalContext: repetitionWarning },
     }));
     return;
   }

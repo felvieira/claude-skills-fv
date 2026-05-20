@@ -293,6 +293,7 @@ process.stdin.on("end", () => {
       JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "UserPromptSubmit",
           additionalContext: additionalContextParts.join("\n\n---\n\n"),
         },
       })

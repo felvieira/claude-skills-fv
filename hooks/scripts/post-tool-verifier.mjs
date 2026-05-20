@@ -62,6 +62,7 @@ process.stdin.on('end', () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "PostToolUse",
           additionalContext: `[LearnedSkills] Debugging pattern detected. If this solution is: (1) not Googleable, (2) specific to this codebase, and (3) required real debugging effort — save it as a learned skill in .bot/learned-skills/ using the format in the kit. Use devkit_learned_skills MCP tool or create the .md file directly.`
         }
       }));

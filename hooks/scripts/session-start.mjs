@@ -103,6 +103,6 @@ process.stdin.on('end', () => {
 
   process.stdout.write(JSON.stringify({
     continue: true,
-    hookSpecificOutput: { additionalContext },
+    hookSpecificOutput: { hookEventName: "SessionStart", additionalContext },
   }));
 });

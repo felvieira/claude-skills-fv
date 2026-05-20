@@ -97,6 +97,7 @@ process.stdin.on('end', () => {
     process.stdout.write(JSON.stringify({
       continue: true,
       hookSpecificOutput: {
+        hookEventName: "UserPromptSubmit",
         additionalContext: `[PreExecutionGate] Prompt com ambiguidade media (score: ${score.toFixed(2)}). Antes de montar pipeline, inferir escopo do repo-audit e confirmar com o usuario usando 3 opcoes: "Bora assim? / Quer ajustar? / Ou era outra coisa?".${auditHint}`
       }
     }));
@@ -104,6 +105,7 @@ process.stdin.on('end', () => {
     process.stdout.write(JSON.stringify({
       continue: false,
       hookSpecificOutput: {
+        hookEventName: "UserPromptSubmit",
         additionalContext: `[PreExecutionGate] Prompt vago (score: ${score.toFixed(2)}). Antes de agir, fazer UMA pergunta focada com opcoes multipla escolha para capturar a intencao. Usar repo-audit e session para inferir o resto. Oferecer sempre: "Bora assim? / Quer ajustar? / Ou era outra coisa?". Prefixo "force:" ou "!" bypassa este gate.${auditHint}`
       }
     }));

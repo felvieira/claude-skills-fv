@@ -5,6 +5,39 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.2.2-hook-schema-fix] - 2026-05-20
+
+Patch fix for hook output validation. Claude Code recently tightened the hook output schema and started rejecting `hookSpecificOutput` blocks that omit the `hookEventName` field. 8 of our hooks were emitting outputs without this field, producing red error blocks at the end of every session (e.g. `Stop hook error: Hook JSON output validation failed — hookSpecificOutput is missing required field "hookEventName"`).
+
+### Fixed
+
+- **`hooks/scripts/context-guard-stop.mjs`** — 3 outputs missing `hookEventName: "Stop"`
+- **`hooks/scripts/persistent-mode.mjs`** — 1 output missing `hookEventName: "Stop"`
+- **`hooks/scripts/session-start.mjs`** — 1 output missing `hookEventName: "SessionStart"`
+- **`hooks/scripts/keyword-detector.mjs`** — 1 output missing `hookEventName: "UserPromptSubmit"`
+- **`hooks/scripts/pre-execution-gate.mjs`** — 2 outputs missing `hookEventName: "UserPromptSubmit"`
+- **`hooks/scripts/model-routing-hook.mjs`** — 3 outputs missing `hookEventName: "PreToolUse"`
+- **`hooks/scripts/pre-tool-enforcer.mjs`** — 3 outputs missing `hookEventName: "PreToolUse"`
+- **`hooks/scripts/post-tool-verifier.mjs`** — 1 output missing `hookEventName: "PostToolUse"`
+
+All 15 hook outputs now declare `hookEventName` matching the event they fire on. No more red validation errors at session end. No behavior change beyond schema compliance.
+
+### Why
+
+Pre-existing hooks predate Claude Code's stricter schema enforcement. The `agent-dispatch-validator.mjs` shipped in v2.2.1 already followed the new schema correctly (it was written against the current spec), but the existing hooks hadn't been audited. Audit + fix was triggered by a real session in `master-tech-ai-itw` where the Stop hook spammed validation errors after a normal answer.
+
+### Verification
+
+```
+✅ context-guard-stop.mjs: smoke test passes with hookEventName: "Stop"
+✅ All 11 hooks with hookSpecificOutput now declare hookEventName
+✅ Node syntax check: all hooks parse
+✅ Eval suite (skills-vs-agents): 5/5 pass
+✅ Consistency check: 39 skills, 36 tools, 15 agents
+```
+
+---
+
 ## [2.2.1-skills-vs-agents-disambiguation] - 2026-05-20
 
 Same content as planned for v2.2.0 (skills-vs-agents disambiguation). Version bumped to 2.2.1 because the v2.2.0 tag was already claimed by an earlier dense-output-mode policy release. Functional release notes below remain unchanged.

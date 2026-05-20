@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "39 specialist skills + 29 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, program-router (auto-orchestration), parallel-dispatcher (skill 40) + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), executable YAML pipelines (/run-program with 7 step types). v2.2.1: **Skills-vs-Agents disambiguation** — PreToolUse hook blocks skill names being passed as subagent_type with actionable fix message, prevents the 'skill-as-subagent' InputValidationError class. v2.0.0: **/swarm — total autonomy** mode (worktree isolado + Ralph loop fresh-context-per-story + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR creation). Auto-orchestration via intent-classifier hook routes feature prompts to /swarm in Autonomous mode. Two pipeline flows: /pipeline and /pipeline-discovery. 15 dispatchable subagents (now including anti-ai-writing). Lifecycle hooks. Full .bot/ install via /devkit-install-fv.",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"

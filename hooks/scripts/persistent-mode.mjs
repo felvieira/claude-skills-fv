@@ -19,6 +19,7 @@ process.stdin.on('end', () => {
         process.stdout.write(JSON.stringify({
           continue: false,
           hookSpecificOutput: {
+            hookEventName: "Stop",
             additionalContext: `[PersistentMode] Pipeline "${state.pipeline}" is active (step ${state.current_step || '?'}/${state.total_steps || '?'}). Complete the current pipeline stage before stopping. To force stop, delete .bot/docs/context/pipeline-active.json.`
           }
         }));

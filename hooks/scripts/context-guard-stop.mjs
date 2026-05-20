@@ -90,7 +90,7 @@ process.stdin.on('end', () => {
 
       process.stdout.write(JSON.stringify({
         continue: false,
-        hookSpecificOutput: { additionalContext: message }
+        hookSpecificOutput: { hookEventName: "Stop", additionalContext: message }
       }));
       process.exit(0);
     }
@@ -106,6 +106,7 @@ process.stdin.on('end', () => {
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
+          hookEventName: "Stop",
           additionalContext: `\u26A0 Contexto em ${pct}%. Considere /compact em breve.${taskHint} Preserve o foco atual e descarte exploracao anterior.`
         }
       }));
@@ -117,6 +118,7 @@ process.stdin.on('end', () => {
   process.stdout.write(JSON.stringify({
     continue: true,
     hookSpecificOutput: {
+      hookEventName: "Stop",
       additionalContext: `[ContextGuard] Stopping. If context feels high (10+ messages since last /compact), consider /compact first. If pipeline is active, complete current stage.`
     }
   }));
