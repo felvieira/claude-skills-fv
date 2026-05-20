@@ -16,12 +16,12 @@ process.stdin.on('end', () => {
     try {
       const state = JSON.parse(readFileSync(stateFile, 'utf-8'));
       if (state.active && state.pipeline) {
+        // Stop hooks: use top-level decision/reason/systemMessage (no hookSpecificOutput).
+        const msg = `[PersistentMode] Pipeline "${state.pipeline}" is active (step ${state.current_step || '?'}/${state.total_steps || '?'}). Complete the current pipeline stage before stopping. To force stop, delete .bot/docs/context/pipeline-active.json.`;
         process.stdout.write(JSON.stringify({
-          continue: false,
-          hookSpecificOutput: {
-            hookEventName: "Stop",
-            additionalContext: `[PersistentMode] Pipeline "${state.pipeline}" is active (step ${state.current_step || '?'}/${state.total_steps || '?'}). Complete the current pipeline stage before stopping. To force stop, delete .bot/docs/context/pipeline-active.json.`
-          }
+          decision: "block",
+          reason: msg,
+          systemMessage: msg
         }));
         return;
       }

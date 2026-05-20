@@ -101,8 +101,10 @@ process.stdin.on('end', () => {
     ? `[DevTeamKit] Session started. ${parts.join('\n\n')} Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.`
     : '[DevTeamKit] Session started. Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.';
 
+  // SessionStart hooks: hookSpecificOutput NOT in the canonical event list.
+  // Use systemMessage at top-level instead.
   process.stdout.write(JSON.stringify({
     continue: true,
-    hookSpecificOutput: { hookEventName: "SessionStart", additionalContext },
+    systemMessage: additionalContext,
   }));
 });

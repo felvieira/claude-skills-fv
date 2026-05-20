@@ -5,6 +5,76 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.4.1-stop-sessionstart-schema-fix] - 2026-05-20
+
+Critical schema fix. v2.2.2 thought the bug was "missing hookEventName" — wrong diagnosis. The real bug: **Stop and SessionStart hooks DO NOT support `hookSpecificOutput` at all**. Claude Code's schema only allows it for 4 events: `PreToolUse`, `UserPromptSubmit`, `PostToolUse`, `PostToolBatch`.
+
+User repro: session in `master-tech-ai-itw` ran a normal answer, then Stop hook emitted `{ continue: true, hookSpecificOutput: { hookEventName: "Stop", additionalContext: "..." } }` → red error block: `Hook JSON output validation failed — (root): Invalid input`.
+
+### Root cause analysis
+
+The error message in the user's screenshot literally lists the supported events:
+
+```
+"hookSpecificOutput": {
+  "for PreToolUse": ...
+  "for UserPromptSubmit": ...
+  "for PostToolUse": ...
+  "for PostToolBatch": ...
+}
+```
+
+Stop and SessionStart are NOT in that list. Messages for those events must go via `systemMessage` (top-level), not `hookSpecificOutput.additionalContext`.
+
+### Fixed (4 hooks)
+
+Migrated from `hookSpecificOutput.additionalContext` to top-level `systemMessage` (and `decision: "block"` + `reason` for blocking cases):
+
+- **`hooks/scripts/context-guard-stop.mjs`** — 3 outputs migrated. Blocking case now uses `decision: "block"` + `reason` + `systemMessage`. Non-blocking uses `systemMessage` only.
+- **`hooks/scripts/persistent-mode.mjs`** — 1 output. Blocking case migrated to `decision: "block"` + `reason` + `systemMessage`.
+- **`hooks/scripts/stop-savings-summary.mjs`** — 1 output (v2.4.0 inherited the bug). Migrated to `systemMessage`.
+- **`hooks/scripts/session-start.mjs`** — 1 output. Migrated to `systemMessage`.
+
+### Added: prevent regression
+
+- **`evals/hooks/schema-validator.mjs`** (new) — exhaustive validator that runs every hook in `hooks.json` against canonical Claude Code schema:
+  - Validates top-level field names against allowed set
+  - Validates `hookSpecificOutput` only used for the 4 supported events
+  - Validates `hookEventName` matches the binding event
+  - Validates `decision` and `permissionDecision` enums
+  - Validates `UserPromptSubmit` requires `additionalContext`
+- **`.github/workflows/validate-plugin.yml`** — added `Validate hook output schemas against Claude Code spec` step. Now CI catches schema violations before they reach users.
+
+### Why this couldn't be caught earlier
+
+v2.2.2 added `hookEventName` to every `hookSpecificOutput` because the error message at the time said "missing required field hookEventName". That was the symptom. The actual schema constraint (event whitelist) only became visible in v2.4.x via a more verbose error message. Now we have the schema validator to ensure this class of error stays gone.
+
+### Verification
+
+```
+$ node evals/hooks/schema-validator.mjs
+🔬 Validating 16 hook bindings against Claude Code schema
+
+  ✅ pre-execution-gate.mjs (UserPromptSubmit)
+  ✅ keyword-detector.mjs (UserPromptSubmit)
+  ✅ intent-classifier.mjs (UserPromptSubmit)
+  ✅ session-start.mjs (SessionStart)
+  ✅ agent-dispatch-validator.mjs (PreToolUse)
+  ✅ pre-tool-enforcer.mjs (PreToolUse)
+  ✅ model-routing-hook.mjs (PreToolUse)
+  ✅ simplify-ignore.mjs (PreToolUse)
+  ✅ context-guard-stop.mjs (Stop)
+  ✅ persistent-mode.mjs (Stop)
+  ✅ stop-savings-summary.mjs (Stop)
+  ✅ post-tool-verifier.mjs (PostToolUse)
+  ✅ simplify-ignore.mjs (PostToolUse)
+  (3 hooks exited silently — OK)
+
+✅ All hooks emit valid schema
+```
+
+---
+
 ## [2.4.0-savings-report] - 2026-05-20
 
 User-facing feature: visibility into what the kit actually saves. Aggregates telemetry from 5 hook sources into a single actionable report — tokens economizados, USD, bugs prevented, dev hours equivalent, hot files, gate decisions.

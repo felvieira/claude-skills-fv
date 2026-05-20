@@ -88,9 +88,12 @@ process.stdin.on('end', () => {
         writeFileSync(blockFile, JSON.stringify({ count: blocks + 1 }));
       } catch {}
 
+      // Stop hooks: hookSpecificOutput NOT supported by Claude Code schema.
+      // Use top-level fields: decision="block" + reason to actively block stop.
       process.stdout.write(JSON.stringify({
-        continue: false,
-        hookSpecificOutput: { hookEventName: "Stop", additionalContext: message }
+        decision: "block",
+        reason: message,
+        systemMessage: message
       }));
       process.exit(0);
     }
@@ -105,10 +108,7 @@ process.stdin.on('end', () => {
 
       process.stdout.write(JSON.stringify({
         continue: true,
-        hookSpecificOutput: {
-          hookEventName: "Stop",
-          additionalContext: `\u26A0 Contexto em ${pct}%. Considere /compact em breve.${taskHint} Preserve o foco atual e descarte exploracao anterior.`
-        }
+        systemMessage: `\u26A0 Contexto em ${pct}%. Considere /compact em breve.${taskHint} Preserve o foco atual e descarte exploracao anterior.`
       }));
       process.exit(0);
     }
@@ -117,9 +117,6 @@ process.stdin.on('end', () => {
   // Fallback reminder when stopping without token data
   process.stdout.write(JSON.stringify({
     continue: true,
-    hookSpecificOutput: {
-      hookEventName: "Stop",
-      additionalContext: `[ContextGuard] Stopping. If context feels high (10+ messages since last /compact), consider /compact first. If pipeline is active, complete current stage.`
-    }
+    systemMessage: `[ContextGuard] Stopping. If context feels high (10+ messages since last /compact), consider /compact first. If pipeline is active, complete current stage.`
   }));
 });

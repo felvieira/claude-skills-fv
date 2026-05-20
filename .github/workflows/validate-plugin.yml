@@ -36,6 +36,9 @@ jobs:
       - name: Check hook script references exist
         run: node scripts/check-hook-scripts-exist.mjs
 
+      - name: Validate hook output schemas against Claude Code spec
+        run: node evals/hooks/schema-validator.mjs
+
       - name: Syntax check hook scripts
         run: |
           errors=0

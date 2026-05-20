@@ -96,11 +96,10 @@ process.stdin.on('end', () => {
 
   markShown();
 
+  // Stop hooks: hookSpecificOutput NOT supported by Claude Code schema.
+  // Use systemMessage at top-level instead.
   process.stdout.write(JSON.stringify({
     continue: true,
-    hookSpecificOutput: {
-      hookEventName: 'Stop',
-      additionalContext: summary,
-    },
+    systemMessage: summary,
   }));
 });
