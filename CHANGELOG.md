@@ -5,6 +5,42 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.2.3-pre-execution-gate-no-block] - 2026-05-20
+
+Critical UX fix: `pre-execution-gate` was emitting `continue: false` on UserPromptSubmit for vague prompts (score > 0.70), causing Claude Code to render "Operation stopped by hook" with no visible feedback. Hostile UX — user had no idea why their prompt was discarded.
+
+User repro: prompt "o que vc melhoraria no sistema seja dry clean code seguranca performance features organizacao etc me d euma doc" → blocked, no message visible, prompt lost.
+
+### Fixed
+
+- **`hooks/scripts/pre-execution-gate.mjs`** — never emits `continue: false` anymore. The guidance text now goes via `additionalContext` and the **model** decides whether to ask clarifying questions or proceed (which is what should have been the design from day 1). Hooks should educate the model, not block the user.
+- **New open-discussion detection** — prompts asking for opinion/feedback/improvements/audit ("o que vc acha", "melhorias", "review do sistema") bypass the gate entirely. These are deliberately broad and asking for clarification defeats their purpose. 6 regex patterns added (PT + EN).
+
+### Why
+
+The original design treated "vague prompt" as something to block. But:
+
+1. Some prompts are vague **on purpose** (asking for opinion, brainstorm, feedback).
+2. Even truly vague implementation prompts shouldn't lose data — the model should ask, not the harness reject silently.
+3. Claude Code's UI doesn't render `additionalContext` when `continue: false`, so the block was opaque.
+
+Now the hook is purely advisory: it emits guidance, the model decides what to do with it.
+
+### Verification
+
+```
+Prompt "o que vc melhoraria no sistema..."
+  → {"continue": true}   ✅ (open discussion detected, no warning)
+
+Prompt "implementar feature" (vague impl)
+  → continue:true + warning  ✅ (model sees guidance, may ask)
+
+Prompt "fix bug em src/auth.ts:42"
+  → {"continue": true}   ✅ (concrete signal, fast path)
+```
+
+---
+
 ## [2.2.2-hook-schema-fix] - 2026-05-20
 
 Patch fix for hook output validation. Claude Code recently tightened the hook output schema and started rejecting `hookSpecificOutput` blocks that omit the `hookEventName` field. 8 of our hooks were emitting outputs without this field, producing red error blocks at the end of every session (e.g. `Stop hook error: Hook JSON output validation failed — hookSpecificOutput is missing required field "hookEventName"`).

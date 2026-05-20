@@ -22,8 +22,23 @@ const CONCRETE_SIGNALS = [
   /^(?:force:|!)/,
 ];
 
+// Open-ended discussion / opinion / feedback prompts. These are deliberately broad and
+// asking the model to ask clarifying questions defeats their purpose.
+const OPEN_DISCUSSION_PATTERNS = [
+  /\b(?:o que (?:voce |vc |tu )?(?:acha|pensa|recomenda|sugere|melhoraria|faria|diria))\b/i,
+  /\b(?:me (?:explique|conta|diz|fala|d[ea]) (?:uma )?(?:opiniao|doc|sugestao|ideia|visao|analise))\b/i,
+  /\b(?:what (?:do you|would you) (?:think|recommend|suggest|improve))\b/i,
+  /\b(?:dry|clean code|seguranca|security|performance|organizacao|features|melhorias|improvements|sugestoes|suggestions|ideias|ideas)\b.*\b(?:dry|clean code|seguranca|security|performance|organizacao|features|melhorias|improvements|sugestoes|suggestions|ideias|ideas)\b/i,
+  /\b(?:audit(?:oria)?|review (?:do|of) (?:the |o |a )?(?:codigo|code|sistema|system|projeto|project))\b/i,
+  /\b(?:brainstorm|discuss(?:ao|ion)?|trade.?offs?)\b/i,
+];
+
 function hasConcreteSignal(text) {
   return CONCRETE_SIGNALS.some(p => p.test(text));
+}
+
+function isOpenDiscussion(text) {
+  return OPEN_DISCUSSION_PATTERNS.some(p => p.test(text));
 }
 
 function scoreAmbiguity(text) {
@@ -81,6 +96,13 @@ process.stdin.on('end', () => {
     process.exit(0);
   }
 
+  // Open-ended discussion/opinion prompts are NOT "ambiguous" — they're deliberately broad
+  // and the right response is to engage, not interrogate. Bypass the gate.
+  if (isOpenDiscussion(prompt)) {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  }
+
   const score = scoreAmbiguity(prompt);
 
   const cfg = readHookConfig('pre_execution_gate', { enrich_threshold: 0.40, block_threshold: 0.70 });
@@ -93,21 +115,18 @@ process.stdin.on('end', () => {
   const auditSnippet = readRepoAuditSnippet();
   const auditHint = auditSnippet ? `\n\nContexto do projeto (repo-audit):\n${auditSnippet}` : '';
 
-  if (score < cfg.block_threshold) {
-    process.stdout.write(JSON.stringify({
-      continue: true,
-      hookSpecificOutput: {
-        hookEventName: "UserPromptSubmit",
-        additionalContext: `[PreExecutionGate] Prompt com ambiguidade media (score: ${score.toFixed(2)}). Antes de montar pipeline, inferir escopo do repo-audit e confirmar com o usuario usando 3 opcoes: "Bora assim? / Quer ajustar? / Ou era outra coisa?".${auditHint}`
-      }
-    }));
-  } else {
-    process.stdout.write(JSON.stringify({
-      continue: false,
-      hookSpecificOutput: {
-        hookEventName: "UserPromptSubmit",
-        additionalContext: `[PreExecutionGate] Prompt vago (score: ${score.toFixed(2)}). Antes de agir, fazer UMA pergunta focada com opcoes multipla escolha para capturar a intencao. Usar repo-audit e session para inferir o resto. Oferecer sempre: "Bora assim? / Quer ajustar? / Ou era outra coisa?". Prefixo "force:" ou "!" bypassa este gate.${auditHint}`
-      }
-    }));
-  }
+  // NEVER block with continue:false on UserPromptSubmit — Claude Code renders that as
+  // "Operation stopped by hook" with no visible context, which is hostile UX.
+  // Instead, always continue and let the MODEL decide if it should ask for clarification.
+  const guidance = score < cfg.block_threshold
+    ? `[PreExecutionGate] Prompt com ambiguidade media (score: ${score.toFixed(2)}). Se for task de implementacao/refactor, inferir escopo do repo-audit e confirmar com 3 opcoes: "Bora assim? / Quer ajustar? / Ou era outra coisa?". Se for pergunta aberta/conversa, responder normalmente sem perguntas.`
+    : `[PreExecutionGate] Prompt vago (score: ${score.toFixed(2)}). Para tasks de implementacao, considere fazer UMA pergunta focada com multipla escolha antes de agir. Para perguntas abertas de discussao/feedback ("o que voce acha de X", "melhorias", etc), responda normalmente — nao force estruturacao. Prefixo "force:" ou "!" reforca intencao direta.`;
+
+  process.stdout.write(JSON.stringify({
+    continue: true,
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext: guidance + auditHint
+    }
+  }));
 });
