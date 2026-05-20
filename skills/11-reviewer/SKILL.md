@@ -8,7 +8,12 @@ description: |
   "pode deployar", "pronto pra produção", "validar entrega", "review completo", "última verificação".
 ---
 
-# Reviewer Final - Gate de Deploy
+# Reviewer Final - Gate de Deploy (SKILL)
+
+> ⚠ **Esta é a SKILL 11** (playbook de review). Não confundir com o subagent `dev-team-kit-fv:code-reviewer`.
+> - Carregar **este playbook**: `Skill({ skill: "dev-team-kit-fv:11-reviewer" })`
+> - Despachar **subagent isolado** (turno novo): `Agent({ subagent_type: "dev-team-kit-fv:code-reviewer", ... })`
+> - Diferença: `policies/skills-vs-agents.md`
 
 O Reviewer é o portão final antes do deploy. Valida TUDO. Não documenta — valida que a documentação existe. Nada passa sem aprovação explícita.
 

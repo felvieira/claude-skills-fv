@@ -1,0 +1,163 @@
+{
+  "policy": "skills-vs-agents",
+  "purpose": "Validate that the model correctly distinguishes Skill tool from Agent tool, especially when dev-team-kit-fv: prefix is involved. Regression suite for the Skills-vs-Agents confusion fixed in v2.2.0.",
+  "cases": [
+    {
+      "id": "sva-001",
+      "description": "Parallelize 5 frontend slices — must NOT pass skill name as subagent_type",
+      "user_prompt": "Tenho 5 slices de frontend prontos para paralelizar (Slice 2: Mirror, Slice 3: Memories, Slice 4: Prompts, Slice 5: Copilot, Slice 6: Graph improvements). Dispare os 5 sub-agents em paralelo.",
+      "expected_behavior": {
+        "must_call": "Agent",
+        "must_have_subagent_type": "general-purpose",
+        "must_have_isolation": "worktree",
+        "tool_calls_in_single_message": 5,
+        "prompt_must_include": [
+          "PASSO 1 OBRIGATÓRIO",
+          "Skill({ skill: \"dev-team-kit-fv:04-frontend-integration\" })"
+        ]
+      },
+      "must_not_do": [
+        "Agent({ subagent_type: \"dev-team-kit-fv:04-frontend-integration\", ... })",
+        "Agent({ subagent_type: \"dev-team-kit-fv:NN-anything\", ... })"
+      ],
+      "regression_for": "v2.2.0 — original error in user screenshot (5 slices dispatched with skill name as subagent_type)"
+    },
+    {
+      "id": "sva-002",
+      "description": "Isolated PR review — should use Agent with code-reviewer subagent",
+      "user_prompt": "Faça uma review isolada do PR #42 — só me devolve o relatório, não quero ocupar contexto da sessão.",
+      "expected_behavior": {
+        "must_call": "Agent",
+        "must_have_subagent_type": "dev-team-kit-fv:code-reviewer"
+      },
+      "must_not_do": [
+        "Skill({ skill: \"dev-team-kit-fv:code-reviewer\" })",
+        "Skill({ skill: \"dev-team-kit-fv:11-reviewer\" })"
+      ]
+    },
+    {
+      "id": "sva-003",
+      "description": "Load QA playbook into current context before implementing",
+      "user_prompt": "Antes de implementar, carregue o playbook de QA pra eu já trabalhar com TDD em mente.",
+      "expected_behavior": {
+        "must_call": "Skill",
+        "must_have_skill_name": "dev-team-kit-fv:05-qa-testing"
+      },
+      "must_not_do": [
+        "Agent({ subagent_type: \"dev-team-kit-fv:test-engineer\", ... })",
+        "Agent({ subagent_type: \"dev-team-kit-fv:05-qa-testing\", ... })"
+      ]
+    },
+    {
+      "id": "sva-004",
+      "description": "Ambiguous prompt 'use the frontend agent' — must clarify or default to skill",
+      "user_prompt": "Use o frontend agent pra implementar a tela de mirror.",
+      "expected_behavior": {
+        "must_either": [
+          {
+            "option": "ask_clarification",
+            "must_mention": ["frontend tem skill (04-frontend-integration), não agent"]
+          },
+          {
+            "option": "default_to_skill",
+            "must_call": "Skill",
+            "must_have_skill_name": "dev-team-kit-fv:04-frontend-integration"
+          }
+        ]
+      },
+      "must_not_do": [
+        "Agent({ subagent_type: \"dev-team-kit-fv:frontend\", ... })",
+        "Agent({ subagent_type: \"dev-team-kit-fv:04-frontend-integration\", ... })"
+      ]
+    },
+    {
+      "id": "sva-005",
+      "description": "Regression: hook must block skill-as-subagent dispatch with actionable message",
+      "scenario": "synthetic_hook_test",
+      "input_to_hook": {
+        "tool_name": "Agent",
+        "tool_input": {
+          "subagent_type": "dev-team-kit-fv:04-frontend-integration",
+          "description": "Slice 2",
+          "prompt": "..."
+        }
+      },
+      "expected_hook_output": {
+        "decision": "block",
+        "reason_must_include": [
+          "não é um subagent_type válido",
+          "este nome é uma SKILL",
+          "Skill({ skill: \"dev-team-kit-fv:04-frontend-integration\" })",
+          "general-purpose",
+          "isolation: \"worktree\"",
+          "policies/skills-vs-agents.md"
+        ]
+      },
+      "expected_side_effect": {
+        "telemetry_logged_to": ".bot/agent-dispatch-errors.jsonl",
+        "telemetry_must_include": {
+          "blocked": true,
+          "subagent_type": "dev-team-kit-fv:04-frontend-integration",
+          "detected_as": "skill"
+        }
+      }
+    },
+    {
+      "id": "sva-006",
+      "description": "Hook must pass-through legitimate kit subagent",
+      "scenario": "synthetic_hook_test",
+      "input_to_hook": {
+        "tool_name": "Agent",
+        "tool_input": {
+          "subagent_type": "dev-team-kit-fv:code-reviewer",
+          "description": "Review",
+          "prompt": "..."
+        }
+      },
+      "expected_hook_output": {
+        "continue": true,
+        "no_decision_field": true
+      }
+    },
+    {
+      "id": "sva-007",
+      "description": "Hook must pass-through non-kit subagent (general-purpose, Explore, etc.)",
+      "scenario": "synthetic_hook_test",
+      "input_to_hook": {
+        "tool_name": "Agent",
+        "tool_input": {
+          "subagent_type": "general-purpose",
+          "description": "x",
+          "prompt": "y"
+        }
+      },
+      "expected_hook_output": {
+        "continue": true,
+        "no_decision_field": true
+      }
+    },
+    {
+      "id": "sva-008",
+      "description": "Comprehensive review — 4 review subagents in parallel (single message, 4 tool calls)",
+      "user_prompt": "Faça review completo desse PR: code, security, tests, prosa.",
+      "expected_behavior": {
+        "tool_calls_in_single_message": 4,
+        "subagent_types_used": [
+          "dev-team-kit-fv:code-reviewer",
+          "dev-team-kit-fv:security-auditor",
+          "dev-team-kit-fv:test-engineer",
+          "dev-team-kit-fv:anti-ai-writing"
+        ]
+      }
+    }
+  ],
+  "meta": {
+    "regression_for_session": "v2.2.0 (2026-05-19)",
+    "linked_artifacts": [
+      "policies/skills-vs-agents.md",
+      "hooks/scripts/agent-dispatch-validator.mjs",
+      "skills/40-parallel-dispatcher/SKILL.md",
+      "templates/parallel-slice-prompt.md"
+    ]
+  }
+}

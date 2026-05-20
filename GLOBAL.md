@@ -17,6 +17,23 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - Preferir ferramentas de code intelligence (graph, symbol, semantic) sobre Grep/Read bruto — ver `policies/code-exploration.md`
 - Definir `model` explicito ao spawnar subagents — ver `policies/model-routing.md`
 - Respeitar hierarquia de contexto (Rules > Specs > Source > Errors > Conversation) e trust levels — ver `policies/context-engineering.md`
+- **Skills ≠ Agents.** `Skill` tool carrega playbook no contexto atual; `Agent` tool executa turno isolado com subagent. Nunca passar nome de skill numerada (`NN-name`) como `subagent_type`. Ver `policies/skills-vs-agents.md`
+
+## Skills vs Agents (regra crítica)
+
+`Skill` tool ≠ `Agent` tool. Detalhes em `policies/skills-vs-agents.md`.
+
+- **Skills** (`skills/NN-*/`): carregam contexto via `Skill(skill: "dev-team-kit-fv:NN-name")`.
+  Nomes começam com número (`01-`, `04-`, `09-`...).
+- **Subagents** (`agents/*.md`): executam turno isolado via `Agent(subagent_type: "dev-team-kit-fv:name")`.
+  Nomes são semânticos (kebab-case sem número): `code-reviewer`, `debugger`, etc.
+
+Regra mnemônica:
+- Prefixo `dev-team-kit-fv:` + número → **skill**, use `Skill` tool.
+- Prefixo `dev-team-kit-fv:` sem número → **agent**, use `Agent` tool.
+
+Paralelizar uma skill = dispare N `general-purpose` com `isolation: "worktree"`,
+o prompt instrui invocar `Skill` lá dentro. **NUNCA** passe nome de skill como `subagent_type`.
 
 ## Hierarquia de Instrucoes
 1. `GLOBAL.md`

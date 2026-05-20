@@ -7,7 +7,12 @@ description: |
   "iniciar", "pipeline", "orquestrar", "coordenar", "planejar execucao", "proximo passo", "workflow".
 ---
 
-# Tech Lead / Orquestrador de Pipeline
+# Tech Lead / Orquestrador de Pipeline (SKILL)
+
+> ⚠ **Esta é a SKILL 09** (playbook de contexto). Não é o subagent `dev-team-kit-fv:orchestrator`.
+> - Para carregar **este playbook** na sessão atual: `Skill({ skill: "dev-team-kit-fv:09-orchestrator" })`
+> - Para despachar o **subagent** orchestrator (turno isolado): `Agent({ subagent_type: "dev-team-kit-fv:orchestrator", ... })`
+> - Diferença: `policies/skills-vs-agents.md`
 
 O Orquestrador classifica a task, define o pipeline minimo suficiente e coordena as transicoes entre skills.
 
@@ -176,6 +181,54 @@ Apos aprovacao do plano, despachar o pipeline base **dentro de cada slice** (cad
 Slices independentes paralelizam via `/worktree` ou `/loop --worktree --parallel N`. Slices dependentes sequencializam pela dependencia.
 
 Detalhes em `policies/vertical-slices.md` (anti-padroes, heuristicas de tamanho, evidencia de conformidade).
+
+### Como paralelizar slices (sem cair em armadilha skill-vs-agent)
+
+⚠ **PROIBIDO** passar nome de skill numerada como `subagent_type`:
+
+```typescript
+// ❌ InputValidationError em runtime — esses nomes são SKILLS, não subagents
+Agent({ subagent_type: "dev-team-kit-fv:03-backend-api", ... })
+Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
+Agent({ subagent_type: "dev-team-kit-fv:05-qa-testing", ... })
+```
+
+**CORRETO — 3 caminhos:**
+
+**A) Worktree + general-purpose (paralelização granular, recomendado para N slices)**
+
+```typescript
+const slices = [/* lista de vertical slices */];
+// Um único message com N tool calls — dispatch em paralelo
+for (const slice of slices) Agent({
+  subagent_type: "general-purpose",
+  isolation: "worktree",
+  description: `Slice ${slice.id} — ${slice.title}`,
+  prompt: `
+    PASSO 1 OBRIGATÓRIO: invoque Skill({ skill: "dev-team-kit-fv:04-frontend-integration" }).
+    PASSO 2: implemente conforme: ${slice.description}
+    Critérios de aceitação: ${slice.acceptance.join("; ")}
+    Arquivos esperados: ${slice.files.join(", ")}
+    Output: commit(s) atômicos + resumo final ≤200 palavras.
+  `
+});
+```
+
+Ver `templates/parallel-slice-prompt.md` para template completo e `skills/40-parallel-dispatcher/SKILL.md`.
+
+**B) `/loop --worktree --parallel N` (process-based, Ralph loop)**
+
+```bash
+node scripts/auto-loop.mjs --worktree --parallel 5 "feature X em 5 slices"
+```
+
+**C) `/swarm` (autonomia total, do prompt ao PR mergeable)**
+
+```
+/swarm "implementar feature X"
+```
+
+Anti-padrão registrado em `policies/skills-vs-agents.md#anti-padrão-1` (case real do v2.2.0).
 
 ## Pipeline Base
 

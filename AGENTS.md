@@ -93,30 +93,84 @@ Navegação de skills: `docs/skill-guides/skill-discovery.md`
 - `.claude/commands/` = slash commands por fase de desenvolvimento
 - `.claude/agents/` = subagents despachaveis via Task tool
 
-## Subagents (`.claude/agents/`)
+## Subagents Despacháveis (`agents/`) vs Skills (`skills/NN-*/`)
 
-Subagents são agentes especializados que podem ser despachados via `Task` tool no Claude Code.
-Copiados para o repo consumidor pelo `install.sh`.
+⚠ **REGRA CRÍTICA — ler antes de despachar qualquer trabalho paralelo.**
 
-| Subagent | Especialidade | Tools |
-|----------|---------------|-------|
-| `code-reviewer` | Review senior: correctness, design, readability, performance, security | Read, Grep, Glob, Bash |
-| `security-auditor` | Audit de segurança: OWASP, auth, injeção, CORS, deps | Read, Grep, Glob, Bash |
-| `test-engineer` | QA Prove-It: happy path, error, edge case, regression, performance | Read, Grep, Glob, Bash, Edit, Write |
-| `orchestrator` | Tech Lead: classifica task, define pipeline mínimo, coordena skills | todas |
-| `debugger` | Root cause sistemático: hipótese → evidência → fix mínimo | Read, Grep, Glob, Bash, Edit |
-| `detective-contracts` | Detetive de contratos de módulo (legado) — read-only | Read, Grep, Glob, Bash |
-| `detective-business-rules` | Detetive de regras de negócio escondidas (legado) — read-only | Read, Grep, Glob, Bash |
-| `detective-flows` | Detetive de fluxos end-to-end (legado) — read-only | Read, Grep, Glob, Bash |
-| `detective-adrs` | Detetive de decisões arquiteturais retroativas (legado) — read-only | Read, Grep, Glob, Bash |
-| `semgrep-scanner` | Pipeline da skill 34: scans Semgrep em paralelo por linguagem, agrega SARIF | Read, Grep, Glob, Bash |
-| `semgrep-triager` | Pipeline da skill 34: triagem TP/FP/needs-investigation lendo contexto fonte | Read, Grep, Glob, Write |
-| `codeql-runner` | Pipeline da skill 34: orquestra build de database CodeQL + queries (taint tracking interprocedural) | Read, Grep, Glob, Bash |
-| `sarif-parsing` | Pipeline da skill 34: parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | Read, Glob, Bash, Write |
-| `variant-analysis` | Pipeline da skill 34: caça variantes de bug confirmado e gera custom rule reusável | Read, Grep, Glob, Bash, Write |
+O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
-**Como invocar** (via `Task` tool ou prompt Claude Code):
+| Universo | Localização | Invocação | Convenção de nome |
+|---|---|---|---|
+| **Skills** (38 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`39-` |
+| **Subagents** (14 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
+**Apenas estes 14 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
+
+Detalhes completos: `policies/skills-vs-agents.md`. Hook fail-fast: `hooks/scripts/agent-dispatch-validator.mjs`.
+
+### Tabela de Subagents (todos os 14 válidos)
+
+| Subagent | Especialidade | Espelho-skill (carregar playbook) | Tools |
+|----------|---------------|------------------------------------|-------|
+| `code-reviewer` | Review senior: correctness, design, readability, performance, security | `11-reviewer` | Read, Grep, Glob, Bash |
+| `security-auditor` | Audit de segurança: OWASP, auth, injeção, CORS, deps | `06-security-review` | Read, Grep, Glob, Bash |
+| `test-engineer` | QA Prove-It: happy path, error, edge case, regression, performance | `05-qa-testing` | Read, Grep, Glob, Bash, Edit, Write |
+| `orchestrator` | Tech Lead: classifica task, define pipeline mínimo, coordena skills | `09-orchestrator` | todas |
+| `debugger` | Root cause sistemático: hipótese → evidência → fix mínimo | — | Read, Grep, Glob, Bash, Edit |
+| `detective-contracts` | Detetive de contratos de módulo (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
+| `detective-business-rules` | Detetive de regras de negócio escondidas (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
+| `detective-flows` | Detetive de fluxos end-to-end (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
+| `detective-adrs` | Detetive de decisões arquiteturais retroativas (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
+| `semgrep-scanner` | Scans Semgrep em paralelo por linguagem, agrega SARIF | `34-static-analysis` (fase) | Read, Grep, Glob, Bash |
+| `semgrep-triager` | Triagem TP/FP/needs-investigation lendo contexto fonte | `34-static-analysis` (fase) | Read, Grep, Glob, Write |
+| `codeql-runner` | Orquestra build de database CodeQL + queries (taint tracking interprocedural) | `34-static-analysis` (fase) | Read, Grep, Glob, Bash |
+| `sarif-parsing` | Parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | `34-static-analysis` (fase) | Read, Glob, Bash, Write |
+| `variant-analysis` | Caça variantes de bug confirmado e gera custom rule reusável | `34-static-analysis` (fase) | Read, Grep, Glob, Bash, Write |
+
+### Como invocar (CORRETO)
+
+**Subagent isolado** (turno separado, contexto novo):
+
+```typescript
+Agent({
+  subagent_type: "dev-team-kit-fv:code-reviewer",
+  description: "Review changes in src/auth",
+  prompt: "Review the diff in src/auth/. Focus on token handling and CSRF."
+})
 ```
-Despache o subagent code-reviewer para revisar as mudanças em src/auth/
+
+**Skill no contexto atual** (carregar playbook):
+
+```typescript
+Skill({ skill: "dev-team-kit-fv:11-reviewer" })  // carrega playbook de review
+Skill({ skill: "dev-team-kit-fv:04-frontend-integration" })  // carrega playbook frontend
 ```
+
+**Paralelizar N slices** (cada subagent invoca skill internamente):
+
+```typescript
+// 1 message, N tool calls em paralelo
+for (const slice of slices) Agent({
+  subagent_type: "general-purpose",
+  isolation: "worktree",
+  description: `Slice ${slice.id}`,
+  prompt: `
+    PRIMEIRO PASSO OBRIGATÓRIO: invoque Skill({ skill: "dev-team-kit-fv:04-frontend-integration" }).
+    Depois implemente: ${slice.description}
+    Critérios: ${slice.acceptance.join("; ")}
+  `
+})
+```
+
+Ver `templates/parallel-slice-prompt.md` para template canônico. Ver `skills/40-parallel-dispatcher/SKILL.md` para skill especializada em paralelização.
+
+### Anti-padrão (não fazer)
+
+```typescript
+// ❌ TODOS quebram com InputValidationError — esses nomes são SKILLS, não agents
+Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
+Agent({ subagent_type: "dev-team-kit-fv:05-qa-testing", ... })
+Agent({ subagent_type: "dev-team-kit-fv:09-orchestrator", ... })
+```
+
+O hook `agent-dispatch-validator` (v2.2.0+) bloqueia esses casos e devolve mensagem acionável.
