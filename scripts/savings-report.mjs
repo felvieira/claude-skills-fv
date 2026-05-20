@@ -245,6 +245,31 @@ function formatBytes(b) {
   return `${v.toFixed(1)} ${units[i]}`;
 }
 
+function collectHarnessCoverage(root, sinceMs) {
+  // Inspired by Birgitta Böckeler: "harness coverage similar to code coverage".
+  // Counts which declared sensors actually fired in the window.
+  // Declared sensors = all hook scripts in hooks/scripts/ that emit telemetry.
+  const sensors = {
+    "agent-dispatch-validator": { source: ".bot/agent-dispatch-errors.jsonl", category: "maintainability" },
+    "pre-execution-gate":       { source: ".bot/pre-execution-gate.jsonl",   category: "behaviour" },
+    "intent-classifier":        { source: ".swarm/classifier.jsonl",         category: "meta" },
+    "session-event-logger":     { source: ".auto/events.jsonl",              category: "meta" },
+  };
+  const coverage = {};
+  for (const [name, meta] of Object.entries(sensors)) {
+    const records = readJsonl(path.join(root, meta.source), sinceMs);
+    coverage[name] = { ...meta, fired: records.length, active: records.length > 0 };
+  }
+  const total = Object.keys(coverage).length;
+  const active = Object.values(coverage).filter(c => c.active).length;
+  return {
+    declared: total,
+    active,
+    coverage_pct: total ? (active / total) * 100 : 0,
+    sensors: coverage,
+  };
+}
+
 function aggregate({ root, since }) {
   const sinceMs = parseSince(since);
   const agentDispatch = collectAgentDispatchBlocks(root, sinceMs);
@@ -252,6 +277,7 @@ function aggregate({ root, since }) {
   const gate = collectGateDecisions(root, sinceMs);
   const events = collectEvents(root, sinceMs);
   const classifier = collectClassifier(root, sinceMs);
+  const harnessCoverage = collectHarnessCoverage(root, sinceMs);
 
   const totalTokensSaved = agentDispatch.tokens_saved + toolUsage.tokens_saved + gate.tokens_saved;
   const usdSaved = tokensToUSD(totalTokensSaved, "input");
@@ -282,6 +308,7 @@ function aggregate({ root, since }) {
       usd_bugs_prevented: usdBugs,
       hours_equivalent: hoursEquivalent,
     },
+    harness_coverage: harnessCoverage,
     agent_dispatch: agentDispatch,
     tool_usage: toolUsage,
     gate,
@@ -324,6 +351,20 @@ function renderMarkdown(report) {
   md.push(`| **Combined value** | ~${formatUSD(t.usd_saved_estimated + t.usd_bugs_prevented)} |`);
   md.push(``);
   md.push(`> Heuristics declared in \`policies/savings-metrics.md\`. These are estimates, not billing data.`);
+  md.push(``);
+
+  // Harness coverage (v2.5.0+) — inspired by Birgitta Böckeler
+  md.push(`## 🎯 Harness Coverage`);
+  md.push(``);
+  md.push(`${report.harness_coverage.active}/${report.harness_coverage.declared} sensors fired in this window (**${report.harness_coverage.coverage_pct.toFixed(0)}%** harness coverage)`);
+  md.push(``);
+  md.push(`| Sensor | Category | Fired | Status |`);
+  md.push(`|---|---|---|---|`);
+  for (const [name, meta] of Object.entries(report.harness_coverage.sensors)) {
+    md.push(`| \`${name}\` | ${meta.category} | ${meta.fired} | ${meta.active ? "✅ active" : "⚪ silent"} |`);
+  }
+  md.push(``);
+  md.push(`> Silent sensors aren't broken — they just didn't have anything to react to in this window. But if a sensor is silent for weeks, consider whether it's still valuable. See \`policies/harness-categories.md\`.`);
   md.push(``);
 
   md.push(`## 🛡 Agent Dispatch Validator (v2.2.1)`);

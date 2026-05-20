@@ -3,6 +3,25 @@
 ## Objetivo
 Definir o que realmente bloqueia uma entrega.
 
+## Princípio: Keep quality left
+
+> Inspirado em Birgitta Böckeler (Thoughtworks). Ver `docs/inspiration/harness-engineering.md`.
+
+Gates não devem se concentrar no fim do pipeline. **Quanto mais cedo o feedback, mais barato o fix.** Distribuição correta:
+
+| Estágio | Gates apropriados | Custo |
+|---|---|---|
+| **Antes do prompt** (UserPromptSubmit hooks) | ENRICH/GUIDED ENRICH p/ prompts vagos | ms — gratuito |
+| **Antes da escrita** (PreToolUse hooks) | Skill-as-subagent validator, model routing | ms — gratuito |
+| **Após cada tool call** (PostToolUse hooks) | Anti-AI writing, constitution drift watcher | ms-s — barato |
+| **Pre-commit** (sob demanda ou hook git) | Linter, formatter, type-check, fast tests | s-min — barato |
+| **Pipeline (CI)** | Schema validator, consistency check, full test suite, mutation testing | min — médio |
+| **Pós-integração contínuo** (fora do change lifecycle) | `/drift-scan` (dead code, dep staleness, doc-vs-code) | h-d — caro |
+
+**Princípio derivado:** gates inferenciais caros (LLM-based) só devem rodar nas etapas pipeline e contínuo. Gates pre-commit têm que ser computacionais e rápidos pra não bloquear o flow.
+
+Ver `policies/harness-categories.md` pra tabela mestra de sensors categorizados.
+
 ## Gate Obrigatorio
 - problema principal resolvido
 - mudanca coerente com o contexto

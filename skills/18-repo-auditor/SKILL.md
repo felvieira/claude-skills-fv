@@ -12,6 +12,51 @@ allowed-tools: Read, Grep, Glob, Bash(git *), Bash(ls *), Bash(wc *), Bash(find 
 
 O Repo Auditor cria uma fotografia operacional do repositorio para que o restante do sistema trabalhe com contexto persistido e enxuto.
 
+## Harnessability Score (v2.5.0+)
+
+> Inspirado em Birgitta Böckeler — "ambient affordances" tornam o codebase mais governável pelo agente. Ver `policies/harness-categories.md` + `docs/inspiration/harness-engineering.md`.
+
+Junto com a auditoria, calcule e reporte o **harnessability score** do projeto (0-100):
+
+| Sinal | Pontos | Como detectar |
+|---|---|---|
+| Linguagem com static typing forte (TS strict, Rust, Go, Java) | +20 | `tsconfig.json` com `strict:true`, `Cargo.toml`, `go.mod`, `pom.xml` |
+| Linter configurado | +15 | `.eslintrc*`, `ruff.toml`, `clippy.toml`, `golangci.yml` |
+| Module boundaries claros | +15 | DDD (`domains/`), hexagonal (`adapters/` + `ports/`), feature folders, monorepo tooling |
+| Testes existentes c/ cobertura > 60% | +15 | `tests/`, `__tests__/`, coverage report ou badge ≥60% |
+| CI configurado | +10 | `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, etc |
+| `AGENTS.md` ou `CLAUDE.md` presente | +10 | grep no root |
+| Repo-audit recente (<30d) | +5 | `docs/repo-audit/current.md` modtime |
+| Constitution definida | +5 | `memory/constitution.md` existe |
+| Dependency scanner | +5 | dependabot config, `.snyk`, renovate config |
+
+**Interpretação:**
+
+| Score | Nível | Recomendação |
+|---|---|---|
+| 0-30 | Baixa harnessability | Considerar skill 23 (migration-refactor) antes de feature work pesado. Modo `/swarm` autonomous arriscado — preferir `/auto` ou `/loop` com supervisão. |
+| 31-60 | Média | Kit funcional, alguns gaps. Considerar skills 38 (architecture-deepener) + 06 (security-review) pra fortalecer. |
+| 61-85 | Boa | Kit roda com pouca supervisão. Modo `/swarm` aceitável. |
+| 86-100 | Alta | Modo `/swarm` autonomous totalmente viável. |
+
+**Ambient affordances:** liste os 3 maiores presentes E os 3 maiores gaps no relatório, com recomendações concretas. Exemplo:
+
+```markdown
+## Ambient Affordances
+
+**Top 3 presentes:**
+- TypeScript strict habilitado
+- Feature folders em `src/features/` com co-location
+- Husky + lint-staged em pre-commit
+
+**Top 3 gaps:**
+- Sem dependency scanner (recomendado: dependabot)
+- Coverage < 40% (skill 05 sugere meta de 60%)
+- ADRs ausentes (`docs/adr/` vazio)
+
+**Score: 65/100 (Boa harnessability)**
+```
+
 ## Governanca Global
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/handoffs.md`, `policies/tool-safety.md` e `policies/evals.md`.

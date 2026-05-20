@@ -19,6 +19,49 @@ Identificar friccao arquitetural e propor **deepening opportunities** — refact
 
 Adaptado de [mattpocock/skills/engineering/improve-codebase-architecture](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture) e integrado ao kit (skill 23 Migration & Refactor + skill 33 Detective Spec + `policies/vertical-slices.md`).
 
+## Fitness Functions YAML (v2.5.0+)
+
+> Inspirado em Birgitta Böckeler (Thoughtworks) + Neal Ford ("Building Evolutionary Architectures"). Ver `docs/inspiration/harness-engineering.md` + `policies/harness-categories.md`.
+
+Esta skill agora também produz **fitness functions runnable** quando o usuário pedir auditoria arquitetural com gates concretos. Formato canônico:
+
+```yaml
+# .harness/fitness-functions.yml
+fitness_functions:
+  - id: <kebab-case-id>
+    description: "Frase clara do que regula"
+    type: structural | performance | accessibility | security
+    runner: grep | dep-cruiser | lighthouse | custom-script
+    rule: <padrão ou query do runner>
+    fail_threshold: <int — 0 = zero tolerância>
+    severity: high | medium | low
+    applies_to: <glob opcional>
+```
+
+Exemplo prático — leaky abstraction de DB:
+
+```yaml
+- id: no-db-in-domain
+  description: Domain layer não importa bibliotecas de DB
+  type: structural
+  runner: dep-cruiser
+  rule:
+    forbidden:
+      - from: 'src/domain/'
+        to: '(prisma|typeorm|sequelize|knex|pg|mongodb)'
+  severity: high
+```
+
+**Quando produzir YAML vs apenas relatório:**
+
+| Output | Quando |
+|---|---|
+| Relatório markdown apenas | Auditoria inicial, usuário entendendo opções |
+| + `fitness-functions.yml` | Quer **gate automatizado**, tem CI, prevenir regressão |
+| + Aplicar refactor | Via `/auto`, `/swarm` ou `refactor-safely` |
+
+Ao produzir YAML, salvar em `<consumer>/.harness/fitness-functions.yml`. Roadmap v2.5.1: `/run-fitness` command runs the file.
+
 ## Governanca Global
 
 Esta skill segue `GLOBAL.md`, `policies/source-driven.md`, `policies/writing-clarity.md`, `policies/handoffs.md`.

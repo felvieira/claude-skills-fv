@@ -5,6 +5,80 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.5.0-harness-engineering] - 2026-05-20
+
+Major absorption release. Integrates concepts from Birgitta Böckeler's *"Harness engineering for coding agent users"* (Thoughtworks, 2026-04-02). The kit already had most pieces; v2.5.0 gives them shared vocabulary, fills gaps, and adds the missing pieces.
+
+User question that triggered this: *"tem algo aki que podemos usar"* (sharing the article).
+
+### Added
+
+- **`policies/harness-categories.md`** (new) — canonical taxonomy of regulation: **Maintainability** / **Architecture Fitness** / **Behaviour**. Tabela mestra de todos os hooks/agents/skills categorizados (computational vs inferential, feedforward vs feedback). 5 princípios (Keep quality left, Self-correcting feedback messages, Variety reduction, Harness coherence, Reduce review toil). Harnessability score 0-100.
+- **`docs/inspiration/harness-engineering.md`** (new) — audit trail intelectual: conceitos da Birgitta absorvidos, quotes de OpenAI/Stripe/etc, vocabulário canônico (harness, guide, sensor, regulator, variety, harnessability, ambient affordance, drift, fitness function, topology).
+- **`scripts/drift-scan.mjs`** + **`commands/drift-scan.md`** (new) — `/drift-scan` continuous drift detection rodando contra todo o codebase. 6 sensors: large-files, dead-code, stale-todos (via git blame), dep-staleness (npm outdated), doc-code drift, test-coverage. Output markdown/json. Inspirado em "garbage collection" da OpenAI.
+- **`templates/harness/`** (new) — 3 topologias canônicas com README documentando guides + sensors + fitness functions specific:
+  - `templates/harness/crud-api/` — business service expondo dados via HTTP
+  - `templates/harness/event-processor/` — consumer Kafka/SQS/RabbitMQ
+  - `templates/harness/data-dashboard/` — frontend analítico
+  - Variety reduction concreta (Ashby's Law)
+
+### Changed
+
+- **`scripts/savings-report.mjs`** — nova seção 🎯 **Harness Coverage** mostra quantos sensors declarados dispararam na janela (`agent-dispatch-validator`, `pre-execution-gate`, `intent-classifier`, `session-event-logger`). Inspirado na pergunta aberta da Birgitta: "we need harness coverage similar to code coverage".
+- **`policies/quality-gates.md`** — bloco "Keep quality left" com tabela de gates por estágio (UserPromptSubmit ms → drift scan h-d).
+- **`policies/programs-schema.md`** — bloco "Ashby's Law + variety reduction" justificando por que programs/templates existem.
+- **`skills/18-repo-auditor/SKILL.md`** — adicionado **Harnessability Score** (0-100, 9 critérios) + ambient affordances mapping. Determina recomendação de autonomy level (`/swarm` vs `/auto`).
+- **`skills/37-tdd-engineer/SKILL.md`** — adicionado **Approved Fixtures Pattern** (Llewellyn Falco) com workflow round 1/2/3, anti-padrões, libs por linguagem. Cita Birgitta como mitigação real do behaviour harness gap.
+- **`skills/38-architecture-deepener/SKILL.md`** — adicionado **Fitness Functions YAML** com formato canônico + exemplo (no-db-in-domain) + decision tree de quando produzir YAML vs apenas relatório.
+- **`AGENTS.md`** — `/drift-scan` adicionado na tabela.
+- **Plugin manifests** bumped to 2.5.0.
+
+### Vocabulário canônico estabelecido
+
+Cada palavra agora tem significado **preciso** no kit (não mais solta):
+
+| Palavra | Significado |
+|---|---|
+| Harness | Tudo no agente exceto o modelo |
+| Guide | Feedforward control |
+| Sensor | Feedback control |
+| Computational | Determinístico, rápido |
+| Inferential | LLM-based, mais caro |
+| Regulator | O kit como sistema cibernético |
+| Variety | Espaço de outputs possíveis |
+| Harnessability | Quão amenable um projeto é a regulação |
+| Ambient affordance | Propriedade do ambiente que torna agente governável |
+| Drift | Degradação gradual fora do change lifecycle |
+| Fitness function | Sensor de característica arquitetural não-funcional |
+| Topology | Tipo recorrente de serviço |
+
+### Princípios novos derivados (em `policies/harness-categories.md`)
+
+1. **Keep quality left** — sensors caros (inferenciais) só em pipeline/contínuo, baratos (computacionais) em todo commit
+2. **Self-correcting feedback** — sensor que retorna fix + código é melhor que sensor que só aponta erro
+3. **Variety reduction (Ashby)** — programs/templates não são overhead, são defesas estruturais
+4. **Harness coherence** — guides e sensors não podem se contradizer (roadmap: `check-harness-coherence.mjs` em v2.5.1)
+5. **Reduce review toil, don't replace review** — humano focado em ambiguidade arquitetural, não em bug óbvio
+
+### Roadmap derivado (v2.5.1+)
+
+- v2.5.1 — `/run-fitness` command que executa `.harness/fitness-functions.yml` declaradas
+- v2.5.1 — `scripts/check-harness-coherence.mjs` (princípio 4 enforced)
+- v2.5.2 — `/init-harness <topology>` que aplica template em consumer
+- v2.6.0 — Histórico de drift scans em `.bot/drift-history.jsonl`
+- v2.6.0 — Mais topologias (worker, gateway, ML inference)
+- v2.7.0 — Custom rule generator a partir de incidentes capturados
+
+### Why minor bump
+
+Mudanças significativas de modelo mental (vocabulário canônico) + features novas (`/drift-scan`, templates, harness coverage). Tudo aditivo, sem breaking change.
+
+### Reconhecimento
+
+Conceitos centrais absorvidos de Birgitta Böckeler (Thoughtworks). Ver `docs/inspiration/harness-engineering.md` para audit trail completo + citações + outras fontes (OpenAI harness post, Stripe minions, Ashby's Law, Neal Ford fitness functions).
+
+---
+
 ## [2.4.2-stop-hook-pollution-fix] - 2026-05-20
 
 UX fix: Stop hooks (`context-guard-stop`, `stop-savings-summary`) were firing **during** inspection commands like `/savings`, polluting their output. User repro: ran `/savings`, saw the report but with two extra `Stop says:` lines appended that belonged to the meta-command itself, not to a real session end.

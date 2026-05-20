@@ -4,6 +4,24 @@
 
 **Inspiração:** [github/spec-kit `workflows/speckit/workflow.yml`](https://github.com/github/spec-kit/blob/main/workflows/speckit/workflow.yml) + extensões nossas (when, parallel, vars).
 
+## Por que programs existem (Ashby's Law + variety reduction)
+
+> Birgitta Böckeler (Thoughtworks): *"An LLM-based coding agent can produce almost anything, but committing to a topology narrows that space, making a comprehensive harness more achievable. Defining topologies is a variety-reduction move."*
+
+A [Lei de Ashby da Variedade Requerida](https://en.wikipedia.org/wiki/Variety_(cybernetics)) diz: um regulator precisa ter ao menos a mesma **variety** que o sistema que governa. LLMs têm variety quase infinita — produzem qualquer coisa. Sensors deterministas têm variety limitada.
+
+**Soluções pra fechar o gap:**
+
+1. **Reduzir variety do sistema** — programs/topologies/templates constrangem o LLM a um espaço menor de outputs possíveis. Cada program é uma "variety-reduction move" que torna o harness mais cobertor possível.
+
+2. **Aumentar variety do regulator** — mais sensors, mais inferenciais. Caro.
+
+A estratégia preferida do kit é (1): use `/run-program` quando possível pra constranger o espaço de outputs, ao invés de tentar cobrir N possibilidades com sensors.
+
+**Implicação:** novos programs devem ser priorizados sempre que houver um pattern recorrente. Cada program criado equivale a "reduzimos a variety do sistema neste ponto" e o harness fica naturalmente mais cobertor.
+
+Ver `policies/harness-categories.md` para o framework completo de regulação.
+
 ## Relação com `programs/*.md`
 
 - **`programs/*.md`** = **descritivo** — explica o fluxo, when/why/handoff, decisões de design. Para humanos lerem.
