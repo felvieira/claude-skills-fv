@@ -1,0 +1,1 @@
+{"hook_event_name":"PostToolUse","tool_name":"Edit","tool_input":{"file_path":"D:/Repos/claude-skills-fv/src/auth.ts","old_string":"foo","new_string":"bar"},"tool_response":{"success":true,"message":"Found that the root cause was a stale token cache. The issue was that the refresh logic never invalidated on logout."}}

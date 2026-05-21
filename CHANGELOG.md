@@ -5,6 +5,49 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.8.0-self-correcting-sensors-complete] - 2026-05-21
+
+**Backlog `🟡` de `policies/self-correcting-sensors.md` zerado.** Os 4 hooks medium-impact (`context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`) foram refatorados pro padrão canônico (Where/Why/Fix/References) e o padrão virou **invariante mantido por eval no CI**.
+
+### Added
+
+- **`evals/policies/self-correcting-sensors/`** (new eval suite, 8 cases) — verifica que cada sensor corretivo do kit emite mensagem no formato canônico. Cobre os 8 hooks corretivos (ai-writing-detector, post-tool-verifier, constitution-watcher, conflict-resolution-reminder, pre-tool-enforcer, persistent-mode, context-guard-stop, keyword-detector). Inclui `golden.json` (definições) + `run-eval.mjs` (runner com setup/teardown idempotente — patcha `config.json` opt-in flag, cria pipeline-active.json temporário, reseta block counter, throttle file). 8/8 ✅ em 2 runs consecutivas.
+
+- **`.github/workflows/validate-plugin.yml`** — step "Run self-correcting sensors eval" adicionado. Class de regressão fechada: PR que quebre o padrão self-correcting é bloqueado no CI.
+
+### Changed
+
+- **`hooks/scripts/context-guard-stop.mjs`** — block message reescrito no formato canônico com listas explícitas `PRESERVE:` (task atual, files edited, decisions, AskUserQuestion pendente) e `DISCARD:` (initial exploration, tool outputs already summarized, older messages). Inclui Alternative (end session se for natural stopping point) e References. Warning proativo (entre warn e block thresholds) também segue o formato.
+
+- **`hooks/scripts/pre-tool-enforcer.mjs`** — 3 mensagens reformatadas:
+  - **Repeated read** (a/b/c/d options): reuse, targeted reread com offset/limit, extract learned skill, working set check
+  - **Repeated search** (a/b/c options): reuse, refine pattern, switch to code-intel tool
+  - **Write notice** (a/b/c options + skip-if): Read fresh / harness state current / new file (skip)
+
+- **`hooks/scripts/persistent-mode.mjs`** — block reescrito com 3 opções graceful nomeadas:
+  - **CONTINUE (recommended):** apenas submeta o próximo prompt — pipeline auto-avança
+  - **ABORT GRACEFULLY:** `/pipeline-cancel` (preserva progresso, resumable)
+  - **FORCE STOP (destructive):** comandos `rm` (bash) + `Remove-Item` (PowerShell) explícitos, com aviso "loses progress"
+
+- **`hooks/scripts/keyword-detector.mjs`** — 2 mensagens reformatadas:
+  - **LearnedSkill matched:** inclui description, summary, How to use ("trate como guidance"), source path, score/uses, references
+  - **SkillDetected (kit skill):** Where (trigger), Why, How to use (invoke via Skill tool), skip-if (informational), references
+
+- **`policies/self-correcting-sensors.md`** — auditoria atualizada (16 → 17 hooks; 4 hooks passaram de 🟡 para ✅), refactor backlog zerado ("medium impact done"), roadmap reescrito declarando o padrão self-correcting como invariante mantido por eval no CI.
+
+### Verification
+
+- `check-harness-coherence`: ✅ All coherent (39 skills, 15 agents, 40 policies, 32 commands, 19 hooks)
+- `check-consistency`: ✅ 39 skills, 36 tools, 15 agents
+- **self-correcting sensors eval: ✅ 8/8 passed** (2 runs consecutivas — idempotente)
+- CI workflow plugado e validado
+
+### Migration
+
+Nenhuma. Aditivo + textual. Mensagens dos hooks ficaram mais longas (estimativa: +400-600 tokens/hook quando disparam), mas mais acionáveis. Throttles existentes (1×/10min em `conflict-resolution-reminder`, max_blocks_per_session=2 em `context-guard-stop`) garantem que o ruído não escale.
+
+---
+
 ## [2.7.3-self-correcting-sensors-batch-2] - 2026-05-21
 
 Continuação do v2.7.2 — fecha os 2 itens high-impact restantes da auditoria em `policies/self-correcting-sensors.md` (`post-tool-verifier` 🟡 e `constitution-watcher` 🟡) e adiciona um **novo sensor** que cobre o gap mais crítico do v2.7.1 (telemetria de conflict-decisions vazia porque modelo esquecia de chamar o script).

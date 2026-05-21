@@ -261,7 +261,20 @@ process.stdin.on("end", () => {
     if (!matched) continue;
 
     additionalContextParts.push(
-      `[LearnedSkill: ${learnedSkill.name}] ${learnedSkill.description}\n${learnedSkill.summary}`
+      [
+        `[keyword-detector] 💡 LearnedSkill matched: ${learnedSkill.name}`,
+        ``,
+        `Why this matters: a previous session captured a reusable solution for this trigger. Applying it now skips re-derivation.`,
+        ``,
+        `Skill summary: ${learnedSkill.description}`,
+        learnedSkill.summary,
+        ``,
+        `How to use: treat the bullets above as guidance for this turn. If the situation matches, follow the steps; if it doesn't, ignore and proceed normally (skip-cost is zero).`,
+        ``,
+        `Source: ${learnedSkill.filePath || "(learned-skill)"}`,
+        `Score: ${learnedSkill.score?.toFixed?.(2) ?? "?"} (effective ${learnedSkill.effectiveScore?.toFixed?.(2) ?? "?"}, uses=${learnedSkill.uses ?? 0})`,
+        `References: policies/learned-skills.md`,
+      ].join("\n")
     );
     injectedThisSession.push(key);
     learnedCount++;
@@ -280,7 +293,19 @@ process.stdin.on("end", () => {
     });
     if (!matched) continue;
     additionalContextParts.push(
-      `[SkillDetected: ${skill.id}] Trigger matched for "${skill.name}". Use this skill for the current task.`
+      [
+        `[keyword-detector] 🎯 Skill matched: ${skill.id}`,
+        ``,
+        `Where: trigger="${skill.name}" found in the user prompt (non-informational context)`,
+        ``,
+        `Why this matters: skill ${skill.id} encapsulates the playbook for this kind of task. Using it ensures the kit's conventions are followed instead of improvising.`,
+        ``,
+        `How to use: invoke via the Skill tool with name "${skill.id}". The skill loads its own SKILL.md and instructions automatically — you don't need to read it manually.`,
+        ``,
+        `Skip if: the prompt is informational ("explain X", "what is Y") rather than a task request.`,
+        ``,
+        `References: skills/${skill.id}/SKILL.md, policies/self-correcting-sensors.md`,
+      ].join("\n")
     );
     break;
   }

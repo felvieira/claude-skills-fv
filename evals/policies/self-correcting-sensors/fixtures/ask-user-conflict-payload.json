@@ -1,0 +1,1 @@
+{"hook_event_name":"PostToolUse","tool_name":"AskUserQuestion","tool_input":{"questions":[{"question":"Detectei conflito entre policies/token-efficiency.md e policies/dense-output-mode.md - qual ganha?","header":"Trade-off","multiSelect":false,"options":[{"label":"token-efficiency","description":"minimo"},{"label":"dense","description":"adapta"}]}]}}

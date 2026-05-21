@@ -111,6 +111,9 @@ jobs:
       - name: Run consistency check
         run: node scripts/check-consistency.mjs
 
+      - name: Run self-correcting sensors eval
+        run: node evals/policies/self-correcting-sensors/run-eval.mjs
+
       - name: Validate agent frontmatter
         run: |
           node -e "

@@ -69,33 +69,33 @@ Fix (option B, if applicable):
 References: <policies/X.md OR specific docs>
 ```
 
-## Auditoria atual (v2.7.3)
+## Auditoria atual (v2.8.0)
 
-Status dos 16 hooks do kit contra este padrão:
+Status dos 17 hooks do kit contra este padrão. **Todos os corretivos foram refatorados para o padrão canônico em v2.8.0** — backlog 🟡/🔴 zerado.
 
 | Hook | Self-correcting? | Status |
 |---|---|---|
 | `agent-dispatch-validator` | ✅ Excelente | Modelo canônico. Bloqueia + fornece 2 opções de fix + código pronto |
 | `pre-execution-gate` | ✅ Bom | ENRICH/GUIDED ENRICH instrução vinculante com decision tree |
-| `context-guard-stop` | 🟡 Parcial | Sugere `/compact` mas não diz "qual contexto preservar" |
-| `pre-tool-enforcer` | 🟡 Parcial | Aponta "read 3x" mas não diz "use working-set assim" |
+| `context-guard-stop` | ✅ Bom (v2.8.0) | Formato Where/Why/Fix com listas PRESERVE/DISCARD explícitas + alternative |
+| `pre-tool-enforcer` | ✅ Bom (v2.8.0) | Repeated read/search/write — todos com fix options (a/b/c/d) e references |
 | `model-routing-hook` | ✅ Bom | "Considere /model X (motivo) — link policy" |
 | `intent-classifier` | ✅ Bom | Sugere command + reasoning + confidence |
-| `keyword-detector` | 🟡 Parcial | Injeta learned-skill mas sem instrução de uso |
+| `keyword-detector` | ✅ Bom (v2.8.0) | LearnedSkill + SkillDetected explicam HOW to use + skip-conditions |
 | `session-start` | ⚪ N/A | Informacional, não corretivo |
 | `post-tool-verifier` | ✅ Bom (v2.7.3) | "Save as learned skill" + template YAML pronto-pra-colar + gate de 3 critérios |
 | `ai-writing-detector` | ✅ Bom (v2.7.2) | Cada pattern emite `rewrite_hint` com fix pronto; output canônico |
 | `constitution-watcher` | ✅ Bom (v2.7.3) | 4 passos numerados (analyze + bump + commit isolado + changelog) |
 | `simplify-ignore` | ⚪ N/A | Behavior-only |
-| `persistent-mode` | 🟡 Parcial | Bloqueia mas só sugere "delete pipeline-active.json" — radical |
+| `persistent-mode` | ✅ Bom (v2.8.0) | Block com 3 opções graceful: CONTINUE / ABORT GRACEFULLY / FORCE STOP (com comandos) |
 | `stop-savings-summary` | ⚪ N/A | Informacional, não corretivo |
 | `session-event-logger` | ⚪ N/A | Telemetria, não emite feedback |
 | `verify-integrity` | ⚪ N/A | Setup-time, não runtime |
 | `conflict-resolution-reminder` (v2.7.3) | ✅ Bom | Detecta resolução de trade-off + injeta 3 templates de `log-conflict-decision` prontos |
 
-## Refactor backlog
+## Refactor backlog — ✅ ZERADO em v2.8.0
 
-Hooks com 🟡 precisam ser melhorados em ordem de impacto:
+Todos os hooks corretivos do kit agora seguem o padrão canônico. O backlog histórico está preservado abaixo apenas para audit trail.
 
 ### High impact — ✅ DONE em v2.7.2 / v2.7.3
 
@@ -103,7 +103,14 @@ Hooks com 🟡 precisam ser melhorados em ordem de impacto:
 2. ~~**`post-tool-verifier`**~~ → ✅ v2.7.3. Template YAML pronto-pra-colar + gate de 3 critérios para decidir antes de gravar.
 3. ~~**`constitution-watcher`**~~ → ✅ v2.7.3. 4 passos numerados (analyze → bump → commit isolado → changelog).
 
-### Medium impact
+### Medium impact — ✅ DONE em v2.8.0
+
+4. ~~**`context-guard-stop`**~~ → ✅ v2.8.0. Block message com Where/Why + listas PRESERVE/DISCARD + alternative (end session) + references.
+5. ~~**`pre-tool-enforcer`**~~ → ✅ v2.8.0. Repeated read (a/b/c/d options), repeated search (a/b/c options), write notice (a/b/c options + skip-if).
+6. ~~**`persistent-mode`**~~ → ✅ v2.8.0. Block com 3 opções graceful nomeadas: CONTINUE / ABORT GRACEFULLY (com /pipeline-cancel) / FORCE STOP (com comandos rm bash + PS).
+7. ~~**`keyword-detector`**~~ → ✅ v2.8.0. LearnedSkill com source/score/uses + How to use. SkillDetected com Where/Why/How to use (Skill tool) + skip-if (informational).
+
+### Medium impact (legado — preservado para audit)
 
 4. **`context-guard-stop`** — quando sugere `/compact`, dizer o que preservar:
    ```
@@ -194,9 +201,10 @@ process.stdout.write(JSON.stringify({
 ## Roadmap
 
 - ✅ v2.7.2 — `ai-writing-detector` com `rewrite_hint` por pattern (`bba05da`)
-- ✅ v2.7.3 — `post-tool-verifier` com template YAML + `constitution-watcher` com 4 passos
-- v2.7.4+ — Medium impact: `context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`
-- v2.8.0 — Eval suite: cada hook tem teste verificando que mensagem inclui seções Where/Why/Fix/References
+- ✅ v2.7.3 — `post-tool-verifier` com template YAML + `constitution-watcher` com 4 passos + `conflict-resolution-reminder` novo
+- ✅ v2.8.0 — Medium impact zerado (`context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`) + **eval suite** em `evals/policies/self-correcting-sensors/` (8/8 cases verde, idempotente). Plugado no CI via `.github/workflows/validate-plugin.yml`.
+
+A partir daqui o padrão self-correcting é **invariante mantido por eval no CI**. Hooks novos precisam passar pela suite pra entrar.
 
 ## Referências
 

@@ -1,0 +1,142 @@
+{
+  "$schema": "../../schema.json",
+  "id": "self-correcting-sensors",
+  "description": "Eval suite: every active sensor hook must emit messages following the canonical self-correcting format (Where / Why / Fix / References). Sourced from policies/self-correcting-sensors.md.",
+  "version": "1.0",
+  "created": "2026-05-21",
+  "cases": [
+    {
+      "id": "scs-001",
+      "description": "ai-writing-detector output must include rewrite_hint per finding",
+      "hook": "ai-writing-detector",
+      "fixture": "fixtures/ai-writing-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[ai-writing-detector]",
+          "Where:",
+          "Why this matters:",
+          "Fix:",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-002",
+      "description": "post-tool-verifier must emit learned-skill YAML template, not bare prose",
+      "hook": "post-tool-verifier",
+      "fixture": "fixtures/debug-edit-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[post-tool-verifier]",
+          "Where:",
+          "Why this matters:",
+          "Fix (template ready to paste):",
+          ".bot/learned-skills/",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-003",
+      "description": "constitution-watcher must emit 4 numbered steps with semver criteria",
+      "hook": "constitution-watcher",
+      "fixture": "fixtures/constitution-edit-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[constitution-watcher]",
+          "Where:",
+          "Why this matters:",
+          "Fix",
+          "/analyze --strict",
+          "MAJOR",
+          "MINOR",
+          "PATCH",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-004",
+      "description": "conflict-resolution-reminder must emit 3 log-conflict templates",
+      "hook": "conflict-resolution-reminder",
+      "fixture": "fixtures/ask-user-conflict-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[conflict-resolution-reminder]",
+          "Where:",
+          "Why this matters:",
+          "Fix",
+          "case-N-canonical",
+          "hierarchy",
+          "ad-hoc",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-005",
+      "description": "pre-tool-enforcer write-notice must follow canonical format with file target",
+      "hook": "pre-tool-enforcer",
+      "fixture": "fixtures/write-tool-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[pre-tool-enforcer]",
+          "Where:",
+          "Why this matters:",
+          "Fix",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-006",
+      "description": "persistent-mode block message must include 3 graceful options (continue/abort/force)",
+      "hook": "persistent-mode",
+      "fixture": "fixtures/pipeline-active-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[persistent-mode]",
+          "Where:",
+          "Why this matters:",
+          "CONTINUE",
+          "ABORT GRACEFULLY",
+          "FORCE STOP",
+          "References:"
+        ],
+        "stdout_decision_block": true
+      }
+    },
+    {
+      "id": "scs-007",
+      "description": "context-guard-stop block must include PRESERVE/DISCARD lists",
+      "hook": "context-guard-stop",
+      "fixture": "fixtures/high-context-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[context-guard-stop]",
+          "Where:",
+          "Why this matters:",
+          "PRESERVE:",
+          "DISCARD:",
+          "References:"
+        ]
+      }
+    },
+    {
+      "id": "scs-008",
+      "description": "keyword-detector SkillDetected message must explain HOW to invoke",
+      "hook": "keyword-detector",
+      "fixture": "fixtures/skill-trigger-payload.json",
+      "expect": {
+        "stdout_contains_all": [
+          "[keyword-detector]",
+          "Where:",
+          "Why this matters:",
+          "How to use:",
+          "Skill tool",
+          "References:"
+        ]
+      }
+    }
+  ]
+}

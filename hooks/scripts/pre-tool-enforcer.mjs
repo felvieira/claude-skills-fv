@@ -125,7 +125,21 @@ function registerUsage(toolName, toolInput) {
     if (usage.reads[target] === 3) {
       usage.repeated_signals.push(`Repeated read: ${target}`);
       saveToolUsage(usage);
-      return `[ExplorationReuse] O arquivo "${target}" ja foi lido 3 vezes nesta sessao. Reutilize working set, repo-audit, current-focus ou extraia uma learned skill antes de ler de novo.`;
+      return [
+        `[pre-tool-enforcer] ⚠ Repeated read — "${target}" already read 3× this session`,
+        ``,
+        `Where: ${target}`,
+        ``,
+        `Why this matters: re-reading the same file 3+ times signals stale working memory. The previous reads are still in conversation context — re-reading wastes tokens and adds nothing new.`,
+        ``,
+        `Fix — pick one:`,
+        `  (a) Reuse: search this conversation for the previous Read output before issuing another one.`,
+        `  (b) Targeted reread: if you only need a specific section, use Read with offset/limit (line N to M) instead of the whole file.`,
+        `  (c) Extract: if a recurring decision lives in this file, save a learned skill in .bot/learned-skills/<name>.md so future sessions skip the read entirely.`,
+        `  (d) Working set: check .bot/.working-set.json — relevant decisions may already be summarized there.`,
+        ``,
+        `References: policies/context-economy.md, policies/learned-skills.md, policies/self-correcting-sensors.md`,
+      ].join("\n");
     }
   }
 
@@ -134,7 +148,20 @@ function registerUsage(toolName, toolInput) {
     if (usage.searches[target] === 3) {
       usage.repeated_signals.push(`Repeated search: ${toolName} ${target}`);
       saveToolUsage(usage);
-      return `[ExplorationReuse] O padrao "${target}" ja foi buscado 3 vezes nesta sessao. Reutilize os resultados anteriores, working set ou troque para uma busca mais estrutural.`;
+      return [
+        `[pre-tool-enforcer] ⚠ Repeated search — "${target}" via ${toolName} already issued 3× this session`,
+        ``,
+        `Where: pattern="${target}" tool=${toolName}`,
+        ``,
+        `Why this matters: same query, same codebase, same results. Re-running the search wastes tokens and signals you may be looking for the wrong thing.`,
+        ``,
+        `Fix — pick one:`,
+        `  (a) Reuse: scroll up — the earlier ${toolName} output still has the matches you need.`,
+        `  (b) Refine: widen or narrow the pattern (e.g., add file glob, switch to multiline, change regex anchor) instead of repeating verbatim.`,
+        `  (c) Switch tool: if you need symbol semantics (callers/definitions), prefer code-intel tools over Grep (see policies/code-exploration.md).`,
+        ``,
+        `References: policies/code-exploration.md, policies/context-economy.md, policies/self-correcting-sensors.md`,
+      ].join("\n");
     }
   }
 
@@ -175,8 +202,24 @@ process.stdin.on("end", () => {
   const repetitionWarning = registerUsage(toolName, toolInput);
 
   if (WRITE_TOOLS.includes(toolName)) {
-    const writeNotice = "[PreToolUse] About to write. GLOBAL.md Context Decay Awareness: if this session has 10+ messages, re-read the target file before editing to avoid stale-state regressions.";
-    const additionalContext = repetitionWarning ? `${repetitionWarning}\n${writeNotice}` : writeNotice;
+    const writeTarget = toolInput?.file_path || toolInput?.path || "<unknown>";
+    const writeNotice = [
+      `[pre-tool-enforcer] ✎ About to write — context-decay check`,
+      ``,
+      `Where: ${writeTarget} (tool: ${toolName})`,
+      ``,
+      `Why this matters: after 10+ messages, your memory of file contents may be stale. Auto-compaction can silently truncate context. Editing against stale state causes regressions.`,
+      ``,
+      `Fix — before the next Edit/Write on this file:`,
+      `  (a) If you have NOT read this file in the last 5 turns → Read it now (fresh).`,
+      `  (b) If you JUST read/edited it via the harness (same turn or last) → harness state is current, proceed.`,
+      `  (c) If the file is new (Write creating it) → skip; no prior state to be stale.`,
+      ``,
+      `Skip if: this is a brand-new file, or you read/edited the exact same lines in the last 1-2 turns.`,
+      ``,
+      `References: GLOBAL.md ("Context Decay Awareness"), policies/self-correcting-sensors.md`,
+    ].join("\n");
+    const additionalContext = repetitionWarning ? `${repetitionWarning}\n\n---\n\n${writeNotice}` : writeNotice;
     process.stdout.write(JSON.stringify({
       continue: true,
       hookSpecificOutput: { hookEventName: "PreToolUse", additionalContext },

@@ -78,16 +78,27 @@ process.stdin.on('end', () => {
     const pct = Math.round(usage * 100);
 
     if (usage >= cfg.block_threshold) {
-      let message = `\u{1F6D1} Contexto em ${pct}%. Rode /compact antes de continuar.\n`;
+      // Self-correcting format (v2.8.0): Where / Why / Fix / References
+      const parts = [
+        `[context-guard-stop] 🛑 Context at ${pct}% — block ${blocks + 1}/${cfg.max_blocks_per_session}`,
+        ``,
+        `Where: input_tokens=${inputTokens} / context_window=${contextWindow}`,
+        ``,
+        `Why this matters: continuing past ${Math.round(cfg.block_threshold * 100)}% risks auto-compaction during a critical edit, which silently drops earlier context and breaks multi-file refactors. Compacting NOW preserves what matters.`,
+        `(see policies/context-economy.md, GLOBAL.md "Context Decay Awareness")`,
+        ``,
+        `Fix — run /compact with this preservation list:`,
+        ``,
+      ];
 
       if (cfg.strategic_compact) {
-        message += '\nO que preservar:\n';
+        parts.push(`  PRESERVE:`);
 
         // Task hint from session state
         try {
           const session = JSON.parse(readFileSync(resolveBotPath('.hook-session.json'), 'utf-8'));
           if (session.last_prompt) {
-            message += `- Task atual: "${session.last_prompt}"\n`;
+            parts.push(`    - Current task: "${session.last_prompt}"`);
           }
         } catch {}
 
@@ -96,7 +107,7 @@ process.stdin.on('end', () => {
           const diff = execSync('git diff --name-only HEAD', { encoding: 'utf-8', timeout: 3000 }).trim();
           if (diff) {
             const files = diff.split('\n').slice(0, 5).join(', ');
-            message += `- Arquivos editados: ${files}\n`;
+            parts.push(`    - Files edited this session: ${files}`);
           }
         } catch {}
 
@@ -104,15 +115,25 @@ process.stdin.on('end', () => {
         try {
           const ws = JSON.parse(readFileSync(resolveBotPath('.working-set.json'), 'utf-8'));
           if (ws.decisions && ws.decisions.length > 0) {
-            message += `- Decisoes pendentes: ${ws.decisions.slice(0, 2).join('; ')}\n`;
+            parts.push(`    - Pending decisions: ${ws.decisions.slice(0, 2).join('; ')}`);
           }
         } catch {}
 
-        message += '\nO que pode ser descartado:\n';
-        message += '- Exploracao de codigo ja concluida\n';
-        message += '- Outputs de ferramentas ja processados\n';
-        message += `- Block ${blocks + 1}/${cfg.max_blocks_per_session} desta sessao`;
+        parts.push(`    - Any open AskUserQuestion result not yet acted on`);
+        parts.push(``);
+        parts.push(`  DISCARD:`);
+        parts.push(`    - Initial code exploration (Read/Grep already digested)`);
+        parts.push(`    - Tool outputs already summarized`);
+        parts.push(`    - Older messages superseded by recent decisions`);
+      } else {
+        parts.push(`  /compact`);
       }
+
+      parts.push(``);
+      parts.push(`Alternative: if you're at a natural stopping point, end the session — context restarts fresh next turn.`);
+      parts.push(``);
+      parts.push(`References: policies/context-economy.md, policies/self-correcting-sensors.md, GLOBAL.md`);
+      const message = parts.join('\n');
 
       try {
         mkdirSync(dirname(blockFile), { recursive: true });
@@ -134,20 +155,42 @@ process.stdin.on('end', () => {
       let taskHint = '';
       try {
         const session = JSON.parse(readFileSync(resolveBotPath('.hook-session.json'), 'utf-8'));
-        if (session.last_prompt) taskHint = ` Foco atual: "${session.last_prompt}".`;
+        if (session.last_prompt) taskHint = ` Focus: "${session.last_prompt}".`;
       } catch {}
+
+      const warn = [
+        `[context-guard-stop] \u26A0 Context at ${pct}% \u2014 approaching block threshold`,
+        ``,
+        `Where: input_tokens=${inputTokens} / context_window=${contextWindow}`,
+        ``,
+        `Why this matters: at ${Math.round(cfg.block_threshold * 100)}% the next stop will be blocked.${taskHint}`,
+        ``,
+        `Fix: run /compact at the next natural pause. Preserve current focus; discard prior exploration.`,
+        ``,
+        `References: policies/context-economy.md`,
+      ].join('\n');
 
       process.stdout.write(JSON.stringify({
         continue: true,
-        systemMessage: `\u26A0 Contexto em ${pct}%. Considere /compact em breve.${taskHint} Preserve o foco atual e descarte exploracao anterior.`
+        systemMessage: warn
       }));
       process.exit(0);
     }
   }
 
   // Fallback reminder when stopping without token data
+  const fallback = [
+    `[context-guard-stop] Stop reminder`,
+    ``,
+    `Why this matters: no token data available, but if 10+ messages elapsed since the last /compact, context drift is likely.`,
+    ``,
+    `Fix: if pipeline is active, finish the current stage first. Then /compact if context feels heavy.`,
+    ``,
+    `References: policies/context-economy.md`,
+  ].join('\n');
+
   process.stdout.write(JSON.stringify({
     continue: true,
-    systemMessage: `[ContextGuard] Stopping. If context feels high (10+ messages since last /compact), consider /compact first. If pipeline is active, complete current stage.`
+    systemMessage: fallback
   }));
 });
