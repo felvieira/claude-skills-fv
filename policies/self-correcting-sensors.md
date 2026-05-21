@@ -69,7 +69,7 @@ Fix (option B, if applicable):
 References: <policies/X.md OR specific docs>
 ```
 
-## Auditoria atual (v2.6.0)
+## Auditoria atual (v2.7.3)
 
 Status dos 16 hooks do kit contra este padrão:
 
@@ -83,41 +83,25 @@ Status dos 16 hooks do kit contra este padrão:
 | `intent-classifier` | ✅ Bom | Sugere command + reasoning + confidence |
 | `keyword-detector` | 🟡 Parcial | Injeta learned-skill mas sem instrução de uso |
 | `session-start` | ⚪ N/A | Informacional, não corretivo |
-| `post-tool-verifier` | 🟡 Parcial | "Save as learned skill" mas não mostra formato |
-| `ai-writing-detector` | 🔴 Insuficiente | Flagga pattern mas não sugere reescrita |
-| `constitution-watcher` | 🟡 Parcial | Avisa drift mas não sugere update específico |
+| `post-tool-verifier` | ✅ Bom (v2.7.3) | "Save as learned skill" + template YAML pronto-pra-colar + gate de 3 critérios |
+| `ai-writing-detector` | ✅ Bom (v2.7.2) | Cada pattern emite `rewrite_hint` com fix pronto; output canônico |
+| `constitution-watcher` | ✅ Bom (v2.7.3) | 4 passos numerados (analyze + bump + commit isolado + changelog) |
 | `simplify-ignore` | ⚪ N/A | Behavior-only |
 | `persistent-mode` | 🟡 Parcial | Bloqueia mas só sugere "delete pipeline-active.json" — radical |
 | `stop-savings-summary` | ⚪ N/A | Informacional, não corretivo |
 | `session-event-logger` | ⚪ N/A | Telemetria, não emite feedback |
 | `verify-integrity` | ⚪ N/A | Setup-time, não runtime |
+| `conflict-resolution-reminder` (v2.7.3) | ✅ Bom | Detecta resolução de trade-off + injeta 3 templates de `log-conflict-decision` prontos |
 
 ## Refactor backlog
 
-Hooks com 🟡 ou 🔴 precisam ser melhorados em ordem de impacto:
+Hooks com 🟡 precisam ser melhorados em ordem de impacto:
 
-### High impact (vale fazer)
+### High impact — ✅ DONE em v2.7.2 / v2.7.3
 
-1. **`ai-writing-detector`** — flagga 29 patterns mas não sugere reescrita. Cada pattern em `policies/anti-ai-writing.md` deveria ter um "exemplo de reescrita" colado quando flagada.
-
-2. **`post-tool-verifier`** — quando sugere "save as learned skill", deveria mostrar template pronto:
-   ```
-   "Save this as a learned skill in .bot/learned-skills/<name>.md with format:
-     ---
-     name: <name>
-     trigger: ["pattern1", "pattern2"]
-     ---
-     # When you see this debugging pattern again...
-     1. Step
-     2. Step"
-   ```
-
-3. **`constitution-watcher`** — quando detecta drift, deveria sugerir o exato bump:
-   ```
-   "Constitution v1.2.0 mentions 'max complexity 10' but new function in src/x.ts:42
-    has complexity 14. Either: (a) bump constitution to 'max complexity 14' (justify),
-    or (b) refactor x.ts to extract helpers. See policies/quality-gates.md."
-   ```
+1. ~~**`ai-writing-detector`**~~ → ✅ v2.7.2 (`bba05da`). Cada pattern ganhou `rewrite_hint` colado no output.
+2. ~~**`post-tool-verifier`**~~ → ✅ v2.7.3. Template YAML pronto-pra-colar + gate de 3 critérios para decidir antes de gravar.
+3. ~~**`constitution-watcher`**~~ → ✅ v2.7.3. 4 passos numerados (analyze → bump → commit isolado → changelog).
 
 ### Medium impact
 
@@ -209,10 +193,10 @@ process.stdout.write(JSON.stringify({
 
 ## Roadmap
 
-- v2.6.1 — Refactor `ai-writing-detector` com sugestões de reescrita
-- v2.6.2 — Refactor `post-tool-verifier` com template completo
-- v2.6.3 — Refactor `constitution-watcher` com sugestão de bump
-- v2.7.0 — Eval suite: cada hook tem teste verificando que mensagem tem fix-section
+- ✅ v2.7.2 — `ai-writing-detector` com `rewrite_hint` por pattern (`bba05da`)
+- ✅ v2.7.3 — `post-tool-verifier` com template YAML + `constitution-watcher` com 4 passos
+- v2.7.4+ — Medium impact: `context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`
+- v2.8.0 — Eval suite: cada hook tem teste verificando que mensagem inclui seções Where/Why/Fix/References
 
 ## Referências
 

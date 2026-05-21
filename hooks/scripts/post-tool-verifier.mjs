@@ -59,11 +59,59 @@ process.stdin.on('end', () => {
   if (hasDebuggingComment && isWriteTool) {
     const history = getEditHistory();
     if (passesQualityGate(history)) {
+      const fileName = (input.tool_input.file_path || "").split(/[\\/]/).pop() || "<file>";
+      const skillStem = fileName.replace(/\.[^.]+$/, "").replace(/[^a-z0-9-]/gi, "-").toLowerCase() || "fix";
+      const template = [
+        `[post-tool-verifier] ⚠ Debugging pattern detected (multi-file or multi-edit session)`,
+        ``,
+        `Where: ${fileName} (recent Edit/Write with debugging evidence in comments/response)`,
+        ``,
+        `Why this matters: real debugging discoveries vanish when context is compacted.`,
+        `Capturing as a learned skill prevents re-deriving the same fix next session.`,
+        `(see policies/self-correcting-sensors.md + policies/learned-skills.md)`,
+        ``,
+        `Decide first (the gate):`,
+        `  Save ONLY if all 3 are true:`,
+        `    1. Not Googleable (no public docs/SO answer covers it)`,
+        `    2. Specific to THIS codebase (not generic JS/Python advice)`,
+        `    3. Required real debugging effort (>15 min, hypothesis-driven)`,
+        `  If any is false → skip. Generic fixes do not earn a slot.`,
+        ``,
+        `Fix (template ready to paste):`,
+        `  Create file: .bot/learned-skills/${skillStem}.md`,
+        ``,
+        `  ---`,
+        `  name: ${skillStem}`,
+        `  trigger: ["<keyword-from-symptom>", "<keyword-from-root-cause>"]`,
+        `  created: ${new Date().toISOString().slice(0, 10)}`,
+        `  source_file: ${fileName}`,
+        `  ---`,
+        ``,
+        `  # When you see this pattern again`,
+        ``,
+        `  ## Symptom`,
+        `  <1-2 lines: what the user/log/test reports>`,
+        ``,
+        `  ## Root cause`,
+        `  <why this happens in this codebase specifically>`,
+        ``,
+        `  ## Fix`,
+        `  1. <concrete step>`,
+        `  2. <concrete step>`,
+        ``,
+        `  ## How NOT to fix it`,
+        `  <the wrong path you tried first, so future-you skips it>`,
+        ``,
+        `Alternative: if you use the MCP, run \`devkit_learned_skills.save\` with the same fields.`,
+        ``,
+        `References: policies/learned-skills.md, policies/self-correcting-sensors.md`,
+      ].join("\n");
+
       process.stdout.write(JSON.stringify({
         continue: true,
         hookSpecificOutput: {
           hookEventName: "PostToolUse",
-          additionalContext: `[LearnedSkills] Debugging pattern detected. If this solution is: (1) not Googleable, (2) specific to this codebase, and (3) required real debugging effort — save it as a learned skill in .bot/learned-skills/ using the format in the kit. Use devkit_learned_skills MCP tool or create the .md file directly.`
+          additionalContext: template
         }
       }));
       process.exit(0);

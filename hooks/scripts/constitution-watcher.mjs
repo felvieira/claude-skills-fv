@@ -46,15 +46,42 @@ function handle(payload) {
     process.exit(0);
   }
 
-  // Emit advisory context
+  // Emit advisory context (self-correcting pattern)
+  const fileName = path.split(/[\\/]/).pop();
+  const today = new Date().toISOString().slice(0, 10);
   const advice = [
-    "⚠️ memory/constitution.md foi modificado.",
-    "",
-    "Recomendado: rodar `/analyze --strict` para detectar artefatos invalidados pela mudanca",
-    "(specs, plans ou issues que conflitam com o novo principio).",
-    "",
-    "Se a mudanca exige bump semver: registrar em commit dedicado `chore(constitution): ...`",
-    "Ver `policies/constitution.md` para criterios MAJOR/MINOR/PATCH.",
+    `[constitution-watcher] ⚠ memory/constitution.md modified`,
+    ``,
+    `Where: ${fileName}`,
+    ``,
+    `Why this matters: the constitution is the highest-authority source. A change`,
+    `here may silently invalidate specs/plans/issues written against the OLD principles.`,
+    `Skipping the analyze step leaves drift that resurfaces at /build or /review time.`,
+    `(see policies/constitution.md, policies/trade-off-resolution.md hierarchy)`,
+    ``,
+    `Fix — apply in order:`,
+    ``,
+    `  1. Run /analyze --strict`,
+    `     Detects specs/plans/issues that conflict with the new principle.`,
+    ``,
+    `  2. Decide semver bump (MAJOR / MINOR / PATCH):`,
+    `     - MAJOR: removed or inverted an existing principle (breaking)`,
+    `     - MINOR: added a new principle without invalidating existing artifacts`,
+    `     - PATCH: clarification, typo, reordering, formatting`,
+    `     Criteria detail: policies/constitution.md`,
+    ``,
+    `  3. Commit in isolation (do NOT mix with feature changes):`,
+    `     git add memory/constitution.md`,
+    `     git commit -m "chore(constitution): <one-line summary> [bump: <MAJOR|MINOR|PATCH>]"`,
+    ``,
+    `  4. If MAJOR or MINOR → also bump VERSION (if constitution is versioned in repo)`,
+    `     and update CHANGELOG.md with the principle delta.`,
+    ``,
+    `Alternative: if this edit is just a draft / WIP, revert and continue in a branch.`,
+    `  git restore memory/constitution.md`,
+    ``,
+    `References: policies/constitution.md, policies/trade-off-resolution.md, policies/self-correcting-sensors.md`,
+    `Today: ${today}`,
   ].join("\n");
 
   process.stdout.write(

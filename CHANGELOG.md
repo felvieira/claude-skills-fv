@@ -5,6 +5,61 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.7.3-self-correcting-sensors-batch-2] - 2026-05-21
+
+Continuação do v2.7.2 — fecha os 2 itens high-impact restantes da auditoria em `policies/self-correcting-sensors.md` (`post-tool-verifier` 🟡 e `constitution-watcher` 🟡) e adiciona um **novo sensor** que cobre o gap mais crítico do v2.7.1 (telemetria de conflict-decisions vazia porque modelo esquecia de chamar o script).
+
+### Added
+
+- **`hooks/scripts/conflict-resolution-reminder.mjs`** (new, PostToolUse) — detecta quando o modelo provavelmente acabou de resolver um trade-off (heurística: `AskUserQuestion` mencionando conflito + policy, OU `Bash` lendo 2+ paths de `policies/` na mesma chamada) e injeta lembrete self-correcting com **3 templates de `log-conflict-decision.mjs` prontos para colar** (case-N-canonical / hierarchy / ad-hoc).
+
+  - Throttle: 1 lembrete por 10 min por sessão (state em `.bot/.conflict-reminder.json`)
+  - Fail-open: qualquer erro silencia, nunca bloqueia
+  - Registrado no `hooks/hooks.json` no slot PostToolUse (último, após `ai-writing-detector`)
+
+- **`commands/log-conflict.md`** (new slash command) — wrapper trivial sobre `scripts/log-conflict-decision.mjs`. Reduz fricção: `/log-conflict --conflict A.md,B.md --resolution case-N --outcome applied` em vez de invocar o script Node diretamente. Cobre os 3 cenários documentados em `policies/trade-off-resolution.md`.
+
+### Changed
+
+- **`hooks/scripts/post-tool-verifier.mjs`** — quando dispara o "save as learned skill", agora emite **template YAML pronto-pra-colar** com:
+  - Gate de 3 critérios explícito (not Googleable / specific to codebase / >15min effort) — força decisão antes do save
+  - Frontmatter completo (`name`, `trigger`, `created`, `source_file`) com defaults inferidos do arquivo
+  - 4 seções obrigatórias do skill (Symptom / Root cause / Fix / How NOT to fix it)
+  - Path de saída sugerido derivado do nome do arquivo (`<stem>.md` slugificado)
+  - Bloco "Alternative" mencionando MCP `devkit_learned_skills.save`
+
+  Antes: prosa genérica de 1 linha apontando "save it as a learned skill". Agora: arquivo praticamente escrito.
+
+- **`hooks/scripts/constitution-watcher.mjs`** — quando detecta edit em `memory/constitution.md`, emite **4 passos numerados** em vez de 2 linhas de advisory:
+  1. Rode `/analyze --strict`
+  2. Decida semver bump (MAJOR/MINOR/PATCH com critérios)
+  3. Commit isolado (`chore(constitution): ... [bump: X]`) — sem misturar com features
+  4. Se MAJOR/MINOR → bump VERSION + CHANGELOG
+
+  Inclui "Alternative" para reverter draft (`git restore`) e referências cruzadas com `trade-off-resolution.md` (hierarquia).
+
+- **`policies/self-correcting-sensors.md`** — auditoria atualizada:
+  - `ai-writing-detector` 🔴 → ✅ (v2.7.2)
+  - `post-tool-verifier` 🟡 → ✅ (v2.7.3)
+  - `constitution-watcher` 🟡 → ✅ (v2.7.3)
+  - Nova linha: `conflict-resolution-reminder` ✅ (v2.7.3)
+  - Roadmap atualizado: high-impact ✅ DONE, medium-impact pendente em v2.7.4+, eval suite em v2.8.0
+
+- **`hooks/hooks.json`** — `conflict-resolution-reminder` adicionado ao final do array PostToolUse (último, para não interferir com hooks anteriores).
+
+### Verification
+
+- `check-harness-coherence`: ✅ All coherent (39 skills, 15 agents, 40 policies, **32 commands**, **19 hooks** — refletindo o novo command + hook)
+- `check-consistency`: ✅ 39 skills, 36 tools, 15 agents
+- Smoke do `conflict-resolution-reminder`: ✅ detecta `ask-user-conflict` em `AskUserQuestion` mencionando policies, emite `additionalContext` self-correcting com 3 templates prontos
+- Smoke da regex de detecção: ✅ `hasConflictWord && hasPolicyRef` true para frase real
+
+### Migration
+
+Nenhuma. Aditivo. Sensores existentes continuam funcionando — output deles ficou mais útil. Hook novo é fail-open e throttled (1×/10min) — sem ruído.
+
+---
+
 ## [2.7.2-self-correcting-ai-writing-detector] - 2026-05-20
 
 Upgrade do `ai-writing-detector` para o padrão self-correcting estabelecido em `policies/self-correcting-sensors.md` (v2.6.0). Fecha o item 🔴 "insuficiente" da auditoria.
