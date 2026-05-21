@@ -5,6 +5,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.7.2-self-correcting-ai-writing-detector] - 2026-05-20
+
+Upgrade do `ai-writing-detector` para o padrão self-correcting estabelecido em `policies/self-correcting-sensors.md` (v2.6.0). Fecha o item 🔴 "insuficiente" da auditoria.
+
+### Changed
+
+- **`hooks/scripts/ai-writing-detector.mjs`** — cada entry de `AI_PATTERNS` ganha campo `rewrite_hint` com fix concreto e código-pronto-pra-colar. Output do hook reorganizado:
+  - **Where**: arquivo afetado
+  - **Why this matters**: por que o sinal importa
+  - **Findings + Fix**: pattern detectado + rewrite_hint pronto
+  - **Quick action / Bulk action**: `/humanize <file>` ou edição manual
+  - **References**: `policies/anti-ai-writing.md`, `policies/self-correcting-sensors.md`
+
+  Antes: sensor apontava o problema (categoria + lista de palavras) mas o modelo precisava abrir a policy de 29 patterns pra descobrir como corrigir. Agora a correção vem pronta no próprio output — sensor self-correcting.
+
+- **`hooks/config.json`** — minificado para 1 linha (sem mudança semântica).
+
+### Verification
+
+- `check-harness-coherence`: ✅ All coherent (39 skills, 15 agents, 40 policies, 31 commands, 18 hooks)
+- `check-consistency`: ✅ 39 skills, 36 tools, 15 agents
+- Smoke test do detector: 7/7 patterns matched, 100% com `rewrite_hint` populado
+
+---
+
 ## [2.7.1-conflict-telemetry] - 2026-05-20
 
 User opted to implement only the conflict telemetry item from the v2.7.0 roadmap — low-risk, high-future-value. Starts accumulating data so v2.8.0 can surface conflict-resolution health.

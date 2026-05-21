@@ -22,21 +22,44 @@
 
 import { readHookConfig, isHookDisabled } from "./utils.mjs";
 
+// Each pattern includes a rewrite_hint that the model can apply directly.
+// Follows policies/self-correcting-sensors.md: tell the model HOW to fix, not just WHAT is wrong.
 const AI_PATTERNS = [
-  // Vocabulário de alta frequência
-  { pattern: /\b(delve|pivotal|tapestry|underscore|vibrant|intricate|foster|garner|embark|testament|indelible|showcasing|elevating)\b/gi, category: "AI vocabulary" },
-  // Copula avoidance
-  { pattern: /\b(serves as|stands as|boasts a|functions as|acts as)\b/gi, category: "copula avoidance" },
-  // Signposting
-  { pattern: /\b(let'?s dive (in|into)|here'?s what you need to know|without further ado|let'?s explore|let'?s break (this|it) down)\b/gi, category: "signposting" },
-  // Conclusões genéricas
-  { pattern: /\b(the future looks bright|exciting times (lie )?ahead|journey toward excellence|step in the right direction)\b/gi, category: "generic conclusion" },
-  // Frases de enchimento
-  { pattern: /\b(in order to|it is important to note( that)?|at this point in time|due to the fact that|in the event that)\b/gi, category: "filler phrases" },
-  // Sycofância / chatbot artifacts
-  { pattern: /\b(great question|I hope this helps|let me know if you'?d? like|certainly!|of course!)\b/gi, category: "chatbot artifact" },
-  // Inflação de significado
-  { pattern: /\b(pivotal moment|evolving landscape|underscores (its|the) (vital|crucial|important)|reflects broader|setting the stage for)\b/gi, category: "significance inflation" },
+  {
+    pattern: /\b(delve|pivotal|tapestry|underscore|vibrant|intricate|foster|garner|embark|testament|indelible|showcasing|elevating)\b/gi,
+    category: "AI vocabulary",
+    rewrite_hint: "Replace with plain English: delve→explore, pivotal→key, tapestry→mix, underscore→show, vibrant→active, intricate→complex, foster→build, garner→get, embark→start, testament→proof, indelible→lasting, showcasing→showing, elevating→raising.",
+  },
+  {
+    pattern: /\b(serves as|stands as|boasts a|functions as|acts as)\b/gi,
+    category: "copula avoidance",
+    rewrite_hint: "Use plain 'is' or 'has': 'X serves as a Y' → 'X is a Y'; 'boasts a 30% improvement' → 'has 30% improvement' or 'improves 30%'.",
+  },
+  {
+    pattern: /\b(let'?s dive (in|into)|here'?s what you need to know|without further ado|let'?s explore|let'?s break (this|it) down)\b/gi,
+    category: "signposting",
+    rewrite_hint: "Delete the signpost — start with the actual content. 'Let's dive into auth' → '## Auth'.",
+  },
+  {
+    pattern: /\b(the future looks bright|exciting times (lie )?ahead|journey toward excellence|step in the right direction)\b/gi,
+    category: "generic conclusion",
+    rewrite_hint: "Either delete the closer entirely OR replace with a concrete next step / metric. 'The future looks bright' → '' or 'Next: ship v2 in Q3'.",
+  },
+  {
+    pattern: /\b(in order to|it is important to note( that)?|at this point in time|due to the fact that|in the event that)\b/gi,
+    category: "filler phrases",
+    rewrite_hint: "Cut filler: 'in order to' → 'to'; 'it is important to note that' → '' (delete); 'at this point in time' → 'now'; 'due to the fact that' → 'because'; 'in the event that' → 'if'.",
+  },
+  {
+    pattern: /\b(great question|I hope this helps|let me know if you'?d? like|certainly!|of course!)\b/gi,
+    category: "chatbot artifact",
+    rewrite_hint: "Delete entirely. These add zero information — they only soften tone. Answer directly.",
+  },
+  {
+    pattern: /\b(pivotal moment|evolving landscape|underscores (its|the) (vital|crucial|important)|reflects broader|setting the stage for)\b/gi,
+    category: "significance inflation",
+    rewrite_hint: "Cut the inflation. If the thing matters, the reader sees it; if it doesn't, no adjective will save it. 'a pivotal moment in auth' → 'auth change'.",
+  },
 ];
 
 // Paths que NÃO são prosa de usuário — ignorar
@@ -112,22 +135,35 @@ function handle(payload) {
   if (!content || content.length < 100) process.exit(0);
 
   const findings = [];
-  for (const { pattern, category } of AI_PATTERNS) {
+  for (const { pattern, category, rewrite_hint } of AI_PATTERNS) {
     const matches = content.match(pattern);
     if (matches && matches.length > 0) {
       const unique = [...new Set(matches.map((m) => m.toLowerCase()))];
-      findings.push(`${category}: ${unique.join(", ")}`);
+      findings.push({ category, unique, rewrite_hint });
     }
   }
 
   if (findings.length === 0) process.exit(0);
 
+  const fileName = filePath.split(/[\\/]/).pop();
   const advice = [
-    `⚠️ ai-writing-detector: found ${findings.length} AI writing pattern(s) in ${filePath.split(/[\\/]/).pop()}`,
-    "",
-    ...findings.map((f) => `  • ${f}`),
-    "",
-    "Run `/humanize` to clean up, or check `policies/anti-ai-writing.md` for all 29 patterns.",
+    `[ai-writing-detector] ⚠ found ${findings.length} AI writing pattern(s) in ${fileName}`,
+    ``,
+    `Where: ${fileName} (recent Write/Edit)`,
+    ``,
+    `Why this matters: prose that reads as AI-generated reduces trust and signals lack of editorial care. See policies/anti-ai-writing.md (29 patterns catalogued).`,
+    ``,
+    `Findings + Fix:`,
+    ``,
+    ...findings.flatMap((f) => [
+      `• ${f.category}: ${f.unique.join(", ")}`,
+      `  Fix: ${f.rewrite_hint}`,
+      ``,
+    ]),
+    `Quick action: edit ${fileName} now applying the fixes above.`,
+    `Bulk action: run \`/humanize ${fileName}\` to apply all 29 patterns from policies/anti-ai-writing.md.`,
+    ``,
+    `References: policies/anti-ai-writing.md, policies/self-correcting-sensors.md`,
   ].join("\n");
 
   process.stdout.write(
