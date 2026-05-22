@@ -22,6 +22,7 @@ import {
   saveWorkingSet,
 } from "./lib/project-intel.js";
 import { compressOutput } from "./lib/output-compressor.js";
+import { getDefaultCache } from "./lib/cross-call-dedup.js";
 import { querySessionEvents, querySeenFiles, querySeenErrors } from "./lib/event-log.js";
 
 // Load .env.local fallback
@@ -1366,22 +1367,53 @@ server.registerTool(
   "devkit_compress_output",
   {
     title: "Compress Output",
-    description: "Compresses verbose bash/tool output before passing it to the model. Strips ANSI codes, deduplicates adjacent lines, collapses directory listings, and truncates by strategy. Use before pasting large command outputs into context.",
+    description: "Compresses verbose bash/tool output before passing it to the model. Strips ANSI codes, deduplicates adjacent lines, collapses directory listings, and truncates by strategy. Optionally enables stage-0 cross-call dedup (MinHash + Jaccard ≥0.85) to short-circuit re-runs of the same command. Use before pasting large command outputs into context.",
     inputSchema: {
-      text:      z.string().describe("Raw text output to compress (bash output, logs, etc.)"),
-      hint:      z.enum(["generic", "git log", "npm install", "test"]).optional().describe("Output type hint for smarter filtering (default: generic)"),
-      max_lines: z.number().optional().describe("Maximum output lines to keep (default: 40)"),
-      strategy:  z.enum(["head", "tail", "head_tail"]).optional().describe("Truncation strategy: head = first N lines, tail = last N lines, head_tail = N/2 from top + N/2 from bottom (default: head_tail)"),
+      text:       z.string().describe("Raw text output to compress (bash output, logs, etc.)"),
+      hint:       z.enum(["generic", "git log", "npm install", "test"]).optional().describe("Output type hint for smarter filtering (default: generic)"),
+      max_lines:  z.number().optional().describe("Maximum output lines to keep (default: 40)"),
+      strategy:   z.enum(["head", "tail", "head_tail"]).optional().describe("Truncation strategy: head = first N lines, tail = last N lines, head_tail = N/2 from top + N/2 from bottom (default: head_tail)"),
+      cross_call: z.boolean().optional().describe("Enable stage-0 cross-call dedup (default: false). When true, identical or ≥85%% similar outputs from the last 16 calls are replaced with a short marker."),
+      label:      z.string().optional().describe("Optional label stored with the cross-call record (e.g. command name) — shows in the replacement marker"),
     },
-    annotations: { readOnlyHint: true },
+    annotations: { readOnlyHint: false },
   },
-  async ({ text, hint, max_lines, strategy }) => {
+  async ({ text, hint, max_lines, strategy, cross_call, label }) => {
     const result = compressOutput({
       text,
-      hint:      hint as "generic" | "git log" | "npm install" | "test" | undefined,
+      hint:           hint as "generic" | "git log" | "npm install" | "test" | undefined,
       max_lines,
-      strategy:  strategy as "head" | "tail" | "head_tail" | undefined,
+      strategy:       strategy as "head" | "tail" | "head_tail" | undefined,
+      crossCall:      cross_call ?? false,
+      crossCallLabel: label,
     });
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_dedup_status",
+  {
+    title: "Cross-Call Dedup Status",
+    description: "Returns the current state of the process-wide cross-call dedup cache: how many entries the sliding window holds, and a summary of recent labels. Useful for auditing autonomous loops to see which commands are getting deduplicated.",
+    inputSchema: {
+      reset: z.boolean().optional().describe("If true, clears the cache after reading (default: false)"),
+    },
+    annotations: { readOnlyHint: false },
+  },
+  async ({ reset }) => {
+    const cache = getDefaultCache();
+    const size = cache.size();
+    const result = {
+      window_size: size,
+      // Internal records aren't exposed by design — surface only counts +
+      // public methods. Callers wanting per-call details should use
+      // compress_output with cross_call=true and inspect cross_call_match.
+      reset_after_read: reset === true,
+    };
+    if (reset === true) cache.clear();
     return {
       content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
     };

@@ -21,7 +21,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 6. [Subagents (14) — despacháveis via Task tool](#6-subagents-14)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
-9. [MCP server: 36 tools por trás dos panos](#9-mcp-server-36-tools-por-trás-dos-panos)
+9. [MCP server: 37 tools por trás dos panos](#9-mcp-server-37-tools-por-trás-dos-panos)
 10. [Quando usar o quê: árvore de decisão](#10-quando-usar-o-quê-árvore-de-decisão)
 11. [Inspirações e atribuições](#11-inspirações-e-atribuições)
 
@@ -748,7 +748,7 @@ Com plugin instalado, dentro do repo alvo:
 /devkit-install-fv
 ```
 
-Instala `.bot/` completo: MCP server (36 tools), policies, templates, docs, hooks, learned-skills, configs multi-plataforma (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
+Instala `.bot/` completo: MCP server (37 tools), policies, templates, docs, hooks, learned-skills, configs multi-plataforma (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
 
 #### Modo 3 — Bash direto
 
@@ -767,7 +767,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
-| MCP server (36 tools) | ✗ | ✓ | ✓ |
+| MCP server (37 tools) | ✗ | ✓ | ✓ |
 | Templates de handoff | ✗ | ✓ | ✓ |
 | Docs + repo-audit | ✗ | ✓ | ✓ |
 | Configs multi-plataforma | ✗ | ✓ | ✓ |
@@ -787,9 +787,9 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 ---
 
-## 9. MCP server: 36 tools por trás dos panos
+## 9. MCP server: 37 tools por trás dos panos
 
-O kit inclui um **MCP server próprio** (`mcp-server/src/index.ts`) com **36 tools** expostas para qualquer cliente MCP (Cursor, Windsurf, Gemini CLI, etc).
+O kit inclui um **MCP server próprio** (`mcp-server/src/index.ts`) com **37 tools** expostas para qualquer cliente MCP (Cursor, Windsurf, Gemini CLI, etc).
 
 Tools são ortogonais às skills — implementam capacidades de baixo nível que as skills consomem:
 

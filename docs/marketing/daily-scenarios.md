@@ -12,7 +12,7 @@
 **Em três:**
 - 39 especialistas (PO, designer, backend, frontend, QA, security, SRE, copywriter, SEO, release manager, etc.) embarcados como skills numeradas;
 - 14 subagents despacháveis em paralelo (code-reviewer, security-auditor, debugger, detective-contracts, semgrep-scanner, etc.);
-- 36 ferramentas MCP + 9 hooks de ciclo de vida + 25+ slash commands + 6 pipelines YAML executáveis + memória persistente entre sessões.
+- 37 ferramentas MCP + 9 hooks de ciclo de vida + 25+ slash commands + 6 pipelines YAML executáveis + memória persistente entre sessões.
 
 **Em uma frase pra investidor:** transforma qualquer agente de coding (Claude Code, Cursor, Windsurf, Copilot, Gemini CLI) em uma fábrica de software com pipeline estruturado, gates de qualidade e roteamento automático de modelo — sem vendor lock-in, MIT, grátis.
 
@@ -276,7 +276,7 @@
 ### Cenário 27 — "Mudei de Claude pra Cursor"
 **A dor.** Você customizou 50 prompts no Claude Code. Trocou de tool. Perdeu tudo.
 **Sem o kit.** Recomeça do zero.
-**Com o kit.** Kit roda em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity. MCP server universal expõe 36 tools pra qualquer cliente MCP-compatível. Skills via `AGENTS.md`/`.windsurf/rules/`/`.github/copilot-instructions.md`/`GEMINI.md`. Zero vendor lock-in.
+**Com o kit.** Kit roda em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity. MCP server universal expõe 37 tools pra qualquer cliente MCP-compatível. Skills via `AGENTS.md`/`.windsurf/rules/`/`.github/copilot-instructions.md`/`GEMINI.md`. Zero vendor lock-in.
 
 ---
 
@@ -298,6 +298,13 @@
 **A dor.** Você instalou, sente que está ajudando, mas não tem prova.
 **Sem o kit.** Achismo.
 **Com o kit.** `/savings` reporta da sessão (ou janela maior): tokens economizados, custo em USD prevenido, riscos prevenidos (PRs sem QA bloqueados, secrets pegos antes do commit, scope creep evitado), hot files trabalhados, decisões do gate. Auditável em `policies/savings-metrics.md`. Stop hook gera mini-resumo automático.
+
+---
+
+### Cenário 31 — "/auto rodou 2h e gastou $40 só re-rodando npm test"
+**A dor.** Loop autônomo trabalhando overnight, você acorda e vê a fatura. O modelo re-executou `npm test`, `eslint`, `tsc --noEmit` em todas as 47 iterações. Output idêntico, custo cheio cada vez.
+**Sem o kit.** IA não tem memória cross-call. Cada `npm test` chega como novidade. Você paga 47x pelo mesmo bloco de saída — só os timestamps mudam.
+**Com o kit (v2.9.0+).** Cross-call dedup (stage 0 do output-compressor) mantém janela deslizante de 16 chamadas, faz MinHash em trigrams normalizados (durações/SHAs/timestamps viram placeholders), e quando o Jaccard ≥0.85, substitui o output inteiro por `[squeez-style: ~97% similar to call #12 (npm test)]`. Benchmark publicado em `bench/`: **98% de redução agregada no second-run**. Ligar via `devkit_compress_output` com `cross_call: true` ou via API (`crossCall: true`). Auditável com `devkit_dedup_status`.
 
 ---
 
@@ -335,6 +342,7 @@
 | 28 | #22 Manutenção semanal | "Schedule + loop. Quartas-feiras agendadas." |
 | 29 | #29 Confabulação | "Source-driven, search-first. Não chuta." |
 | 30 | #30 ROI provado | "/savings: tokens economizados, USD prevenido, riscos pegos." |
+| 31 | #31 Loop $40 em re-runs | "98% de redução no second-run. Cross-call dedup com MinHash. Benchmark publicado." |
 
 ---
 

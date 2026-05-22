@@ -5,6 +5,42 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.9.1-dedup-surfaced-and-bench-gated] - 2026-05-22
+
+**Hardening da v2.9.0.** Cross-call dedup ganha tool MCP dedicada (`devkit_dedup_status`) e parâmetros opt-in no `devkit_compress_output`. CI ganha gate de regressão de bench. Documentação alinhada (tool count 36 → 37, policy de cost-optimization atualizada, novo cenário em USE-CASES + marketing).
+
+### Added
+
+- **`devkit_dedup_status`** (nova tool MCP) em `mcp-server/src/index.ts` — retorna tamanho da janela de cross-call dedup; aceita `reset: true` pra zerar. Tool count: 36 → 37.
+- **`devkit_compress_output`** ganha 2 parâmetros opt-in: `cross_call: boolean` (liga stage 0) e `label: string` (anota o registro pra mostrar no marker). Retorno expõe `cross_call_match: { call_id, kind, similarity }` quando aplica.
+- **`bench/check-regression.mjs`** — gate de CI. Roda `bench/run.mjs --json`, compara aggregate ao baseline em `docs/benchmarks/runs/2026-05-22-baseline.json`, falha (exit 1) se single-call OU second-run regredirem >5 pontos. Configurável via `--baseline=...` e `--max-drop=N`.
+- **`.github/workflows/validate.yml`** — 3 steps novos:
+  - `Run MCP server unit tests (cross-call dedup)` → 11/11
+  - `Run bench regression gate` → fail-on-regression
+  - `Run harness coherence check` → garante consistência entre policies/commands/hooks
+- **Cenário 18 em `docs/USE-CASES.md`** — "Loop autônomo gastando muito token em re-runs" + entry na tabela de decisão rápida ("loop gastando muito token" / "re-run" → habilitar `cross_call: true`).
+- **Cenário 31 em `docs/marketing/daily-scenarios.md`** — "/auto rodou 2h e gastou $40 só re-rodando npm test". 30 dias → 31 dias no calendário.
+
+### Changed
+
+- **`policies/cost-optimization.md`** — nova seção "Cross-Call Dedup (Stage 0 do output-compressor)" antes de "Rate Limit e Retry". Documenta quando ligar, como ligar (via MCP tool ou API), o que muda no output, números do benchmark, e auditoria runtime via `devkit_dedup_status`.
+- **`docs/WIKI.md` + `docs/WIKI.pt-BR.md`** — todas as 9 referências "36 tools" atualizadas pra "37 tools" (incluindo TOC anchor).
+- **`README.md` + `README.pt-BR.md`** — 6 referências "36 tools" → "37 tools".
+- **`mcp-server/README.md`** — header atualizado: 36 tools → 37 tools, 32 skills → 39 skills (este último estava defasado desde uma versão anterior).
+- **`mcp-server/package.json` description** — atualizada pra "37 tools backed by 39 skills".
+- **`D:\claude-memory\architecture\claude-skills-fv\decisions.md`** — pendências da v2.9.0 marcadas como resolvidas; novas pendências documentadas (real-world session capture, per-host hint comparison, persistência opcional do cache).
+
+### Verification
+
+- `tsc` build do mcp-server: ✅ zero erros
+- `npm test`: ✅ 11/11 cross-call tests
+- `node scripts/check-consistency.mjs`: ✅ 39 skills, 37 tools, 15 agents
+- `node scripts/check-harness-coherence.mjs`: ✅ all coherent
+- `node bench/check-regression.mjs`: ✅ no regression
+- `node bench/run.mjs`: aggregate 13% single / 98% re-run (estável vs baseline)
+
+---
+
 ## [2.9.0-attribution-and-cross-call-dedup] - 2026-05-22
 
 **Licença trocada de MIT para Apache-2.0 com arquivo `NOTICE` obrigatório**, primeira ideia técnica do `claudioemmanuel/squeez` absorvida (cross-call dedup via MinHash), e benchmark público reproduzível em `bench/`. Decisão de design: atribuição passa a ser exigência legal, não convenção.

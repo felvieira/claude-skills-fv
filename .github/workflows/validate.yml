@@ -48,3 +48,13 @@ jobs:
       - name: Build MCP server
         working-directory: mcp-server
         run: npm run build
+
+      - name: Run MCP server unit tests (cross-call dedup)
+        working-directory: mcp-server
+        run: npm test
+
+      - name: Run bench regression gate
+        run: node bench/check-regression.mjs --max-drop=5
+
+      - name: Run harness coherence check
+        run: node scripts/check-harness-coherence.mjs

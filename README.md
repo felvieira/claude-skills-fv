@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 39 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.9.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.9.1-0f766e)
 ![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -78,7 +78,7 @@ The **Dev Team Kit** is a set of 39 specialized skills that turns any compatible
 - **QA, Security and Reviewer mandatory** — no delivery ships without validation
 - **Automatic model routing** — haiku for boilerplate, sonnet for implementation, opus for architecture
 - **Lifecycle hooks** — the agent detects vague context, re-reads files before editing, monitors token cost
-- **Built-in MCP server** — 36 tools exposed for any MCP client
+- **Built-in MCP server** — 37 tools exposed for any MCP client
 - **Persistent memory** — working set, context pack, learned skills with confidence scoring accumulated per project
 - **Multi-platform install** — Claude Code, Cursor, Windsurf, Copilot, Gemini CLI and more
 
@@ -131,8 +131,8 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 36 tools backed by the 39 skills.
-The MCP exposes 36 tools backed by the installed skills.
+In the table below, treat `dev-team-kit` as 37 tools backed by the 39 skills.
+The MCP exposes 37 tools backed by the installed skills.
 
 ### Install Modes Compared
 
@@ -142,7 +142,7 @@ The MCP exposes 36 tools backed by the installed skills.
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
-| MCP server (36 tools) | ❌ | ✅ | ✅ |
+| MCP server (37 tools) | ❌ | ✅ | ✅ |
 | Handoff templates | ❌ | ✅ | ✅ |
 | Docs + repo-audit | ❌ | ✅ | ✅ |
 | Multi-platform configs | ❌ | ✅ | ✅ |
@@ -552,7 +552,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 │   ├── hooks.json
 │   ├── config.json
 │   └── scripts/
-├── mcp-server/           ← MCP server with 36 tools
+├── mcp-server/           ← MCP server with 37 tools
 ├── patterns/ai-integration/
 ├── personas/             ← agent personas (code-reviewer, security-auditor, test-engineer)
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals

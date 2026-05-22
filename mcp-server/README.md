@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe 36 tools do Dev Team Kit, apoiadas pelas 32 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 37 tools do Dev Team Kit, apoiadas pelas 39 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -72,11 +72,11 @@ The 26 slash commands (including `/constitution`, `/analyze`, `/checklist`) are 
 - **Slash commands** are interactive workflows that take freeform input, ask follow-up questions, and produce artifacts (files in the consumer repo). They belong in the agent's slash-command interface, not in the tool-use loop.
 - **MCP tools** are programmatic, single-call functions with structured I/O. They are invoked transparently as part of agent reasoning, not as explicit user-driven workflows.
 
-The 36 tools below are infrastructure (routing, context packs, image generation, scraping, session intelligence) — building blocks used by skills and commands. Adding `/constitution` as a tool would break the user-facing interaction model (the agent calling it without user intent).
+The 37 tools below are infrastructure (routing, context packs, image generation, scraping, session intelligence) — building blocks used by skills and commands. Adding `/constitution` as a tool would break the user-facing interaction model (the agent calling it without user intent).
 
 If a slash command needs programmatic access from another tool, expose a **dedicated helper tool** (not the whole command). Currently none of the spec-driven commands need this.
 
-## Tools (36)
+## Tools (37)
 
 ### Knowledge (14)
 
@@ -125,11 +125,12 @@ If a slash command needs programmatic access from another tool, expose a **dedic
 | `devkit_suggest_trailers` | Sugere trailers de commit a partir do diff |
 | `devkit_context_guard` | Avalia uso de contexto antes de encerrar |
 
-### Session Intelligence (4)
+### Session Intelligence (5)
 
 | Tool | O que faz |
 |------|-----------|
-| `devkit_compress_output` | Comprime output verboso de bash (ANSI strip, dedup, truncação) antes de passar ao modelo |
+| `devkit_compress_output` | Comprime output verboso de bash (ANSI strip, dedup, truncação, opcionalmente cross-call dedup stage 0) antes de passar ao modelo |
+| `devkit_dedup_status` | Inspeciona a janela de cross-call dedup (v2.9.1+); aceita `reset: true` pra zerar |
 | `devkit_session_events` | Lê e filtra o log JSONL de eventos da sessão (.auto/events.jsonl) |
 | `devkit_seen_files` | Lista todos os arquivos acessados na sessão, dedupados por path |
 | `devkit_seen_errors` | Lista erros da sessão agrupados por hash normalizado |

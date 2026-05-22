@@ -164,6 +164,18 @@ Cada cenário cai em uma das 5 categorias:
 - **Comando:** `/devkit-install-fv`
 - **Auto-routed?** Não — setup é decisão explícita.
 
+### 18. Loop autônomo gastando muito token em re-runs
+
+> "/auto está rodando há 2h, já gastei $40 e ele fica rodando `npm test` e `eslint` toda iteração"
+
+- **Categoria:** C (direto) + ajuste de configuração
+- **Comando:** ligar **cross-call dedup** (v2.9.0+) — `devkit_compress_output` com `cross_call: true` ou stage 0 no compressor.
+- **Por quê:** loops autônomos re-executam comandos idênticos (`npm test`, `eslint`, `tsc --noEmit`, `git status`) dezenas de vezes. Sem cross-call dedup, cada re-run paga o custo de tokens inteiro. Com a janela de 16 chamadas + MinHash + Jaccard ≥0.85, re-runs idênticos ou ≥85% similares (variação só de timestamp/duração) são substituídos por um marker curto. Benchmark inicial: **98% de redução no second-run agregado**.
+- **Auditoria:** `devkit_dedup_status` retorna o tamanho atual da janela; `reset: true` zera.
+- **Auto-routed em Autonomous?** Não — é configuração, não task. Mas o `/swarm` já roda com cross-call ligado por default desde v2.9.0.
+
+---
+
 ### 17. Manutenção contínua / agendada
 
 > "Rodar review semanal" / "atualizar deps mensalmente" / "checar segurança toda quarta"
@@ -195,6 +207,7 @@ Cada cenário cai em uma das 5 categorias:
 | "o que é", "como funciona", "explica" | D | conversa |
 | "instalar kit", "setup projeto" | Setup | `/devkit-install-fv` |
 | "rodar semanal", "todo dia", "automatizar" | E | `/schedule` |
+| "loop gastando muito token", "re-run", "comando repetido" | C | habilitar `cross_call: true` (v2.9.0+) |
 
 ---
 

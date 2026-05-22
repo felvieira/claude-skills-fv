@@ -48,6 +48,29 @@ Regras gerais:
 - `--porcelain` / `--format` quando precisar de parsing
 - Em comandos esperando muitas linhas, **sempre** pipe pra `head/tail` antes de chamar
 
+## Cross-Call Dedup (Stage 0 do output-compressor)
+
+Desde **v2.9.0**, o `output-compressor` tem uma stage **antes** da pipeline intra-call: uma janela deslizante de 16 chamadas com MinHash + Jaccard ≥0.85 que detecta quando o agente está re-rodando algo idêntico ou quase idêntico.
+
+**Quando ligar:**
+- Loops autônomos (`/auto`, `/swarm`, `/loop`) — comandos como `npm test`, `git status`, `eslint`, `tsc --noEmit` rodam dezenas de vezes por sessão
+- Iterações de debug onde você roda o mesmo comando vendo se mudou
+- Re-runs de validação após cada commit local
+
+**Como ligar:**
+- Via MCP tool `devkit_compress_output` com `cross_call: true` + `label: "<cmd>"`
+- Via API direta: `compressOutput({ text, hint, crossCall: true, crossCallLabel: "npm test" })`
+- A janela é process-wide e singleton via `getDefaultCache()`. Sem opt-in, default `false`.
+
+**O que muda no output:**
+- Match exato → `[squeez-style: identical to call #N (label)]`
+- Match fuzzy (timestamps/durações diferentes) → `[squeez-style: ~P% similar to call #N (label)]`
+- O resultado carrega `cross_call_match: { call_id, kind, similarity }` pra auditoria
+
+**Por que importa:** no benchmark inicial (5 fixtures, 9.3KB), single-call atinge 13%, second-run **98%**. Esse delta é o que vai compor dentro de loops autônomos.
+
+**Audit em runtime:** `devkit_dedup_status` retorna o tamanho atual da janela; passe `reset: true` se quiser zerar.
+
 ## Rate Limit e Retry
 
 - Nao disparar muitos subagents simultaneos — cada um consome cota separada
