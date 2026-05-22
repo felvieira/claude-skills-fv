@@ -2,10 +2,10 @@
 
 # Dev Team Kit — 37 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.1.1-0f766e)
-![Skills](https://img.shields.io/badge/skills-37-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.9.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
-![License](https://img.shields.io/badge/license-MIT-7c3aed)
+![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
@@ -59,8 +59,8 @@ Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCA
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
 
-### 🆓 Tudo grátis, MIT, open source
-Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra sempre — inclusive em projeto comercial.
+### 🆓 Grátis, Apache-2.0, open source
+Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra sempre — inclusive em projeto comercial. Apache-2.0 com arquivo `NOTICE` força atribuição rio abaixo: quem reempacotar o kit é obrigado a manter o crédito de quem moldou as ideias dentro dele.
 
 ---
 

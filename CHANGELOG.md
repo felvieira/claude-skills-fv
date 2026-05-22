@@ -5,6 +5,46 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.9.0-attribution-and-cross-call-dedup] - 2026-05-22
+
+**Licença trocada de MIT para Apache-2.0 com arquivo `NOTICE` obrigatório**, primeira ideia técnica do `claudioemmanuel/squeez` absorvida (cross-call dedup via MinHash), e benchmark público reproduzível em `bench/`. Decisão de design: atribuição passa a ser exigência legal, não convenção.
+
+### Added
+
+- **`LICENSE`** — substituído pelo texto canônico do **Apache License 2.0** (copyright Felipe Vieira, 2025-present).
+- **`NOTICE`** (novo) — consolida atribuição de todos os 17 projetos open-source cujas ideias o kit absorveu (spec-kit, prd-taskmaster, optillm, mattpocock/skills, Context-Engineering, agentmemory, reversa, archon, blader/humanizer, aihero.dev, ClickUp, Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management, Birgitta Böckeler/Thoughtworks, **claudioemmanuel/squeez**). Apache-2.0 §4(d) exige preservação do NOTICE em qualquer redistribuição.
+- **`mcp-server/src/lib/cross-call-dedup.ts`** — janela deslizante de 16 chamadas com FNV-1a 64-bit (match exato O(1)) + bottom-k MinHash em trigrams de tokens (signature K=96) + Jaccard similarity threshold ≥0.85 (fuzzy). Emite marker curto (`[squeez-style: identical to call #N]` / `[squeez-style: ~P% similar to call #N (label)]`) substituindo output redundante. API: `CrossCallDedupCache` (classe) + `getDefaultCache()` (singleton process-wide). Zero deps.
+- **`mcp-server/src/lib/cross-call-dedup.test.ts`** — 11 testes de unidade (deterministic hash, distinguishes near-strings, hex format, jaccard identidade, timestamp survives threshold, unrelated stays low, cache miss/exact/fuzzy paths, window size, clear). Roda via `npm test` no mcp-server (sem framework).
+- **`bench/`** (novo diretório) — benchmark público reproduzível:
+  - `bench/fixtures/` com 5 cenários iniciais (`npm-install.txt`, `git-log.txt`, `test-jest.txt`, `eslint.txt`, `grep-output.txt`)
+  - `bench/run.mjs` — runner que mede single-call reduction vs second-run reduction (cross-call cache seeded), exporta JSON ou tabela human-readable
+  - `bench/README.md` — guia de uso e de como adicionar fixtures
+- **`docs/benchmarks/token-savings.md`** — source of truth público das métricas de compressão. Documenta metodologia, fixtures, aproximação de tokens (bytes ÷ 4), e roadmap (CI regression gate, real-world session capture, per-host comparison).
+- **`README.md` + `README.pt-BR.md`** — nova seção `## License & attribution` (EN) com instrução explícita: "se você fork, repackage ou build em cima — keep NOTICE intact". Entry de `claudioemmanuel/squeez` adicionada em Acknowledgements com o que foi/não foi absorvido.
+
+### Changed
+
+- **`mcp-server/src/lib/output-compressor.ts`** — pipeline agora tem **stage 0** opt-in: `crossCall: true` consulta o cache antes da pipeline intra-call. Em match, output curto-circuita com o marker e o resultado carrega `cross_call_match: { call_id, kind, similarity }` pra auditoria. Em miss, o texto entra na cache pra futuras matches. Sem breaking change — `crossCall` é opt-in com default `false`.
+- **`mcp-server/package.json`** — license `MIT` → `Apache-2.0`. Novos scripts: `test` (roda testes do cross-call-dedup), `bench` e `bench:json` (rodam o harness).
+- **`.claude-plugin/plugin.json`** — license `MIT` → `Apache-2.0`.
+- **`README.md` + `README.pt-BR.md`** — badge MIT trocado por Apache-2.0. Linha "All free, MIT" reescrita como "Free, Apache-2.0" com mensagem explícita sobre `NOTICE` força atribuição rio abaixo.
+
+### Decision rationale
+
+A licença MIT permite que qualquer um repackage o kit, remova a linha de copyright (sim, MIT pede mas ninguém fiscaliza), e revenda. Apache-2.0 com `NOTICE` separado torna a atribuição uma exigência **legal preservada por §4(d)** — quem repackage tem que preservar o arquivo, sob pena de não estar mais sob a licença. Para um projeto que **explicitamente absorve ideias de 17 outros projetos**, isso é coerente: queremos dar e exigir o mesmo crédito que damos. Patent grant do Apache também protege contra patent troll downstream.
+
+### Acknowledgement source
+
+- **claudioemmanuel/squeez** (Apache-2.0) — MinHash cross-call dedup pattern (`src/context/redundancy.rs` + `src/context/hash.rs`) + benchmark methodology (versioned fixtures + A/B harness). Não absorvido: Rust binary, multi-host shell hooks, "caveman" persona, summarization fallback.
+
+### Verification
+
+- `mcp-server`: `npm run build` deve compilar limpo (sem regressão de tipos no compressor).
+- `npm test` no mcp-server: 11/11 testes do cross-call-dedup ✅.
+- `bench/run.mjs`: aggregate `single%` e `second-run%` calculados em 5 fixtures.
+
+---
+
 ## [2.8.0-self-correcting-sensors-complete] - 2026-05-21
 
 **Backlog `🟡` de `policies/self-correcting-sensors.md` zerado.** Os 4 hooks medium-impact (`context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`) foram refatorados pro padrão canônico (Where/Why/Fix/References) e o padrão virou **invariante mantido por eval no CI**.

@@ -1,0 +1,116 @@
+{
+  "summary": {
+    "fixtures_count": 5,
+    "total_original_bytes": 9330,
+    "total_original_tokens_approx": 2333,
+    "single_call_reduction_pct": 13,
+    "second_run_reduction_pct": 98
+  },
+  "results": [
+    {
+      "fixture": "eslint.txt",
+      "hint": "generic",
+      "original_bytes": 1694,
+      "original_tokens_approx": 424,
+      "single_call": {
+        "compressed_bytes": 1694,
+        "compressed_tokens_approx": 424,
+        "reduction_pct": 0
+      },
+      "second_run": {
+        "compressed_bytes": 46,
+        "compressed_tokens_approx": 12,
+        "reduction_pct": 97,
+        "cross_call_match": {
+          "call_id": 1,
+          "kind": "exact",
+          "similarity": 1
+        }
+      }
+    },
+    {
+      "fixture": "git-log.txt",
+      "hint": "git log",
+      "original_bytes": 1919,
+      "original_tokens_approx": 480,
+      "single_call": {
+        "compressed_bytes": 1196,
+        "compressed_tokens_approx": 299,
+        "reduction_pct": 38
+      },
+      "second_run": {
+        "compressed_bytes": 46,
+        "compressed_tokens_approx": 12,
+        "reduction_pct": 98,
+        "cross_call_match": {
+          "call_id": 3,
+          "kind": "exact",
+          "similarity": 1
+        }
+      }
+    },
+    {
+      "fixture": "grep-output.txt",
+      "hint": "generic",
+      "original_bytes": 1716,
+      "original_tokens_approx": 429,
+      "single_call": {
+        "compressed_bytes": 1716,
+        "compressed_tokens_approx": 429,
+        "reduction_pct": 0
+      },
+      "second_run": {
+        "compressed_bytes": 46,
+        "compressed_tokens_approx": 12,
+        "reduction_pct": 97,
+        "cross_call_match": {
+          "call_id": 5,
+          "kind": "exact",
+          "similarity": 1
+        }
+      }
+    },
+    {
+      "fixture": "npm-install.txt",
+      "hint": "npm install",
+      "original_bytes": 2280,
+      "original_tokens_approx": 570,
+      "single_call": {
+        "compressed_bytes": 1965,
+        "compressed_tokens_approx": 491,
+        "reduction_pct": 14
+      },
+      "second_run": {
+        "compressed_bytes": 50,
+        "compressed_tokens_approx": 13,
+        "reduction_pct": 98,
+        "cross_call_match": {
+          "call_id": 7,
+          "kind": "exact",
+          "similarity": 1
+        }
+      }
+    },
+    {
+      "fixture": "test-jest.txt",
+      "hint": "test",
+      "original_bytes": 1721,
+      "original_tokens_approx": 430,
+      "single_call": {
+        "compressed_bytes": 1557,
+        "compressed_tokens_approx": 389,
+        "reduction_pct": 10
+      },
+      "second_run": {
+        "compressed_bytes": 43,
+        "compressed_tokens_approx": 11,
+        "reduction_pct": 98,
+        "cross_call_match": {
+          "call_id": 9,
+          "kind": "exact",
+          "similarity": 1
+        }
+      }
+    }
+  ]
+}

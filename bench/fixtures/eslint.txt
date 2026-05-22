@@ -1,0 +1,26 @@
+/home/user/repo/src/lib/output-compressor.ts
+   12:5   warning  'CompressionHint' is defined but never used  @typescript-eslint/no-unused-vars
+   45:11  warning  Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+
+/home/user/repo/src/lib/cross-call-dedup.ts
+   34:7   warning  'fnv1a32' is defined but never used          @typescript-eslint/no-unused-vars
+
+/home/user/repo/src/services/classifier.ts
+   23:15  error    'console' is not allowed                     no-console
+   89:3   warning  Missing return type on function              @typescript-eslint/explicit-function-return-type
+  102:11  error    'any' is not allowed                         @typescript-eslint/no-explicit-any
+  145:7   warning  'unused' is defined but never used           @typescript-eslint/no-unused-vars
+
+/home/user/repo/src/services/skill-loader.ts
+   18:22  warning  Missing return type on function              @typescript-eslint/explicit-function-return-type
+   34:11  warning  Unexpected any. Specify a different type     @typescript-eslint/no-explicit-any
+   45:7   warning  'matter' is defined but never used           @typescript-eslint/no-unused-vars
+   67:3   error    Expected '!==' and instead saw '!='          eqeqeq
+   89:11  warning  Unexpected any                               @typescript-eslint/no-explicit-any
+  103:7   warning  Missing return type on function              @typescript-eslint/explicit-function-return-type
+
+/home/user/repo/src/index.ts
+   12:5   warning  'EventEmitter' is defined but never used     @typescript-eslint/no-unused-vars
+
+✖ 13 problems (3 errors, 10 warnings)
+  3 errors and 10 warnings potentially fixable with the `--fix` option.

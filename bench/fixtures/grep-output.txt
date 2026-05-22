@@ -1,0 +1,23 @@
+src/lib/output-compressor.ts:8:export type CompressionHint = "generic" | "git log" | "npm install" | "test";
+src/lib/output-compressor.ts:11:export interface CompressOptions {
+src/lib/output-compressor.ts:18:export interface CompressResult {
+src/lib/output-compressor.ts:146:export function compressOutput(opts: CompressOptions): CompressResult {
+src/lib/cross-call-dedup.ts:24:export function fnv1a64(input: string): string {
+src/lib/cross-call-dedup.ts:60:export function shingleMinHash(text: string): number[] {
+src/lib/cross-call-dedup.ts:91:export function jaccard(a: number[], b: number[]): number {
+src/lib/cross-call-dedup.ts:120:export interface CallRecord {
+src/lib/cross-call-dedup.ts:132:export interface DedupResult {
+src/lib/cross-call-dedup.ts:144:export interface CrossCallDedupOptions {
+src/lib/cross-call-dedup.ts:156:export class CrossCallDedupCache {
+src/lib/cross-call-dedup.ts:223:export function getDefaultCache(): CrossCallDedupCache {
+src/lib/cross-call-dedup.ts:230:export function resetDefaultCache(): void {
+src/services/classifier.ts:5:export interface ClassifyResult {
+src/services/classifier.ts:34:export async function classify(prompt: string): Promise<ClassifyResult> {
+src/services/skill-loader.ts:8:export interface SkillMeta {
+src/services/skill-loader.ts:18:export function loadSkill(slug: string): SkillMeta {
+src/services/skill-loader.ts:67:export function listSkills(): SkillMeta[] {
+src/index.ts:23:export { compressOutput } from "./lib/output-compressor.js";
+src/index.ts:24:export { classify } from "./services/classifier.js";
+src/types.ts:5:export type SessionId = string;
+src/types.ts:8:export interface ToolUseEvent {
+src/types.ts:18:export interface CompressionEvent {

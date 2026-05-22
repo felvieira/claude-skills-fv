@@ -6,10 +6,10 @@
 
 # Dev Team Kit — 39 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.1.1-0f766e)
+![Version](https://img.shields.io/badge/version-2.9.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
-![License](https://img.shields.io/badge/license-MIT-7c3aed)
+![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
@@ -63,8 +63,8 @@ Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
 
-### 🆓 All free, MIT, open source
-No subscription. No trial. No hidden premium tier. Clone it, install it, use it forever — including in commercial projects.
+### 🆓 Free, Apache-2.0, open source
+No subscription. No trial. No hidden premium tier. Clone it, install it, use it forever — including in commercial projects. Apache-2.0 with a `NOTICE` file enforces attribution downstream: anyone repackaging the kit must preserve credit to the people whose ideas shaped it.
 
 ---
 
@@ -838,6 +838,15 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **Claude MD Management (`claude-md-management:claude-md-improver`)** — `audit` mode in skill 28 (v1.5.0). Pattern absorbed.
 - **[blader/humanizer](https://github.com/blader/humanizer)** + **[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)** — 29 anti-AI writing patterns + `/humanize` command (v1.4.1).
 - **[coleam00/archon](https://github.com/coleam00/archon)** — Program engine primitives (`type: prompt`/`bash`/`loop`, `context: fresh`, `provider`/`model` per step, `trigger_rule`) + 2 patterns (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). v1.7.0. We do NOT adopt: Web UI, Slack/Telegram/GitHub adapters, server backend, runtime Bun.
+- **[claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez)** — Apache-2.0. MinHash-based cross-call output dedup (bottom-k shingles + Jaccard threshold) absorbed into `mcp-server/src/lib/cross-call-dedup.ts`, and the public benchmark methodology (versioned fixtures + A/B baseline harness) absorbed into `bench/`. v2.9.0. We do NOT adopt: the Rust binary, multi-host shell hooks, the "caveman" persona, or the summarization fallback.
+
+---
+
+## License & attribution
+
+Licensed under the **Apache License, Version 2.0**. See [`LICENSE`](./LICENSE) for the full text and [`NOTICE`](./NOTICE) for the third-party attribution that must be preserved in any redistribution.
+
+If you fork, repackage, or build on top of this kit: keep `NOTICE` intact. The people listed there shaped the patterns inside — attribution is the only thing the license asks of you.
 
 ---
 

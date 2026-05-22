@@ -1,0 +1,118 @@
+Dev Team Kit (claude-skills-fv)
+Copyright 2025-present Felipe Vieira
+
+This product includes software developed by Felipe Vieira and contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+================================================================================
+Third-party attribution (ideas, patterns, and code-level adaptations absorbed)
+================================================================================
+
+This kit absorbs ideas and patterns from the open-source projects listed below.
+Where code-level adaptations exist, they are decoupled from each project's
+original infrastructure and re-implemented to fit our skill kit model.
+
+The full Acknowledgements section in `README.md` describes which artifacts were
+absorbed, where they live in this kit, and what was deliberately not adopted.
+
+---
+
+claudioemmanuel/squeez
+  https://github.com/claudioemmanuel/squeez
+  License: Apache-2.0
+  Adapted: MinHash-based cross-call output deduplication pattern (bottom-k
+  shingles + Jaccard similarity threshold), and the public benchmark
+  methodology (versioned fixtures + A/B baseline harness). Reference
+  implementation lives in `mcp-server/src/lib/cross-call-dedup.ts` and
+  `bench/fixtures/`. We do not adopt the Rust binary, multi-host shell hooks,
+  the "caveman" persona, or summarization fallback.
+
+github/spec-kit
+  https://github.com/github/spec-kit
+  License: MIT
+  Adapted: /constitution, /analyze, /checklist commands and the spec-driven
+  development workflow. Not adopted: the spec-kit CLI in Python and the
+  `.specify/` directory layout.
+
+anombyte93/prd-taskmaster
+  https://github.com/anombyte93/prd-taskmaster
+  License: MIT
+  Adapted: 13-check PRD quality validation taxonomy and discovery question
+  structure. Not adopted: the Taskmaster AI dependency and `script.py` layer.
+
+algorithmicsuperintelligence/optillm
+  https://github.com/algorithmicsuperintelligence/optillm
+  License: Apache-2.0
+  Adapted: inference-time compute patterns (MoA, Self-Consistency, BoN,
+  PlanSearch, SPL, RTO) in `patterns/ai-integration/inference-time-compute.md`.
+  Not adopted: the optillm proxy infrastructure or techniques requiring
+  logit access.
+
+mattpocock/skills
+  https://github.com/mattpocock/skills
+  License: MIT
+  Adapted: /grill-me, /to-prd, /to-issues commands.
+
+davidkimai/Context-Engineering
+  https://github.com/davidkimai/Context-Engineering
+  License: MIT
+  Adapted: protocol shells (Pareto-lang), atom-to-field taxonomy, programs
+  layer.
+
+rohitg00/agentmemory
+  https://github.com/rohitg00/agentmemory
+  License: MIT
+  Adapted: 4-tier memory consolidation model and privacy filter.
+
+sandeco/reversa
+  https://github.com/sandeco/reversa
+  License: MIT
+  Adapted: Detective Spec pipeline for legacy reverse-engineering (skill 33).
+
+blader/humanizer
+  https://github.com/blader/humanizer
+  License: MIT
+  Adapted: 29 anti-AI writing patterns and the /humanize command, combined
+  with the public "Signs of AI writing" essay from Wikipedia.
+
+coleam00/archon
+  https://github.com/coleam00/archon
+  License: see upstream
+  Adapted: program engine primitives (`type: prompt|bash|loop`,
+  `context: fresh`, per-step `provider`/`model`, `trigger_rule`) and two
+  workflow patterns (`adversarial-dev` GAN-inspired, `comprehensive-review`
+  5-agent parallel). Not adopted: Web UI, Slack/Telegram/GitHub adapters,
+  server backend, Bun runtime.
+
+aihero.dev — "5 Agent Skills I Use Every Day"
+  https://www.aihero.dev/5-agent-skills-i-use-every-day
+  Adapted: documentation format for `docs/WIKI.md` and
+  `docs/SKILLS-OVERVIEW.md`.
+
+ClickUp — Agent Prompting Guide
+  https://clickup.com/blog/agent-prompting-guide/
+  Adapted: Five Building Block framework, layering A→B→C.
+
+Anthropic Skills (anthropic-skills:*)
+  Adapted: `policies/mcp-builder-patterns.md`,
+  `policies/memory-consolidation.md`, and the `/consolidate-memory` command.
+
+Superpowers (superpowers:*)
+  Adapted: `policies/verification-before-completion.md`,
+  `policies/receiving-code-review.md`, parallelization section in
+  `policies/execution.md`.
+
+Claude Code Setup (claude-code-setup:claude-automation-recommender)
+  Adapted: `--recommend-automation` mode in skill 18.
+
+Claude MD Management (claude-md-management:claude-md-improver)
+  Adapted: `audit` mode in skill 28.
+
+Birgitta Böckeler (Thoughtworks) — "Harness engineering"
+  Adapted (v2.5.0): `policies/harness-categories.md`, `/drift-scan` command,
+  `templates/harness/` per topology, harness coverage in `/savings`,
+  approved-fixtures pattern in skill 37, fitness-functions YAML in skill 38,
+  harnessability score in skill 18.

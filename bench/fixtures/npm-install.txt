@@ -1,0 +1,46 @@
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.
+npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm http fetch GET 200 https://registry.npmjs.org/lodash 142ms
+npm http fetch GET 200 https://registry.npmjs.org/chalk 156ms
+npm http fetch GET 200 https://registry.npmjs.org/glob 89ms
+npm http fetch GET 200 https://registry.npmjs.org/minimatch 67ms
+npm http fetch GET 200 https://registry.npmjs.org/semver 91ms
+npm http fetch GET 200 https://registry.npmjs.org/yargs 178ms
+npm http fetch GET 200 https://registry.npmjs.org/inquirer 203ms
+npm http fetch GET 200 https://registry.npmjs.org/commander 112ms
+npm http fetch GET 200 https://registry.npmjs.org/debug 81ms
+npm http fetch GET 200 https://registry.npmjs.org/express 421ms
+npm http fetch GET 200 https://registry.npmjs.org/cors 78ms
+npm http fetch GET 200 https://registry.npmjs.org/helmet 95ms
+npm http fetch GET 200 https://registry.npmjs.org/morgan 88ms
+npm http fetch GET 200 https://registry.npmjs.org/dotenv 56ms
+npm http fetch GET 200 https://registry.npmjs.org/jsonwebtoken 134ms
+npm http fetch GET 200 https://registry.npmjs.org/bcrypt 287ms
+npm http fetch GET 200 https://registry.npmjs.org/mongoose 512ms
+npm http fetch GET 200 https://registry.npmjs.org/redis 198ms
+npm timing idealTree:userRequests Completed in 1842ms
+npm timing idealTree:#root Completed in 1842ms
+npm timing idealTree Completed in 3201ms
+npm timing reify:loadTrees Completed in 3ms
+npm timing reify:diffTrees Completed in 12ms
+npm timing reify:retireShallow Completed in 0ms
+npm timing reify:createSparse Completed in 78ms
+npm timing reify:loadBundles Completed in 0ms
+npm timing reify:unpack Completed in 1234ms
+npm timing reify:unretire Completed in 2ms
+npm timing reify:build Completed in 18ms
+npm timing reify:trash Completed in 0ms
+npm timing reify Completed in 4892ms
+npm timing command:install Completed in 8230ms
+added 487 packages, and audited 488 packages in 8s
+
+54 packages are looking for funding
+  run `npm fund` for details
+
+3 high severity vulnerabilities
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.

@@ -1,0 +1,43 @@
+ PASS  src/lib/output-compressor.test.ts (1.842s)
+  output-compressor
+    ✓ strips ANSI escape codes (12ms)
+    ✓ dedups adjacent identical lines (8ms)
+    ✓ collapses directory listings with 5+ siblings (14ms)
+    ✓ applies hint filter for git log (6ms)
+    ✓ applies hint filter for npm install (9ms)
+    ✓ applies hint filter for test output (11ms)
+    ✓ truncates with head_tail strategy (5ms)
+    ✓ truncates with head strategy (3ms)
+    ✓ truncates with tail strategy (4ms)
+    ✓ reports accurate reduction percentage (7ms)
+ PASS  src/lib/cross-call-dedup.test.ts (0.512s)
+  cross-call-dedup
+    ✓ fnv1a64: deterministic (2ms)
+    ✓ fnv1a64: distinguishes near-strings (1ms)
+    ✓ fnv1a64: returns 16 hex chars (1ms)
+    ✓ jaccard: identical text → 1.0 (3ms)
+    ✓ jaccard: timestamp tweak survives ≥0.85 threshold (4ms)
+    ✓ jaccard: unrelated text → low (2ms)
+    ✓ cache: first insert never matches (1ms)
+    ✓ cache: exact re-run hits exact path (2ms)
+    ✓ cache: fuzzy re-run hits fuzzy path (3ms)
+    ✓ cache: respects window size (1ms)
+    ✓ cache: clear resets state (1ms)
+ PASS  src/services/classifier.test.ts (0.987s)
+  classifier
+    ✓ classifies feature intent (15ms)
+    ✓ classifies bug intent (12ms)
+    ✓ classifies refactor intent (18ms)
+    ✓ falls back to regex when LLM confidence low (22ms)
+ PASS  src/services/skill-loader.test.ts (1.234s)
+  skill-loader
+    ✓ loads SKILL.md by number (8ms)
+    ✓ loads SKILL.md by name (11ms)
+    ✓ throws on missing skill (4ms)
+    ✓ caches parsed metadata (6ms)
+
+Test Suites: 4 passed, 4 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        4.578s
+Ran all test suites.
