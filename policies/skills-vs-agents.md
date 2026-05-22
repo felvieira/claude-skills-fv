@@ -237,6 +237,14 @@ Pra desativar (não recomendado): `DEVKIT_DISABLED_HOOKS=agent-dispatch-validato
 
 ---
 
+## Anti-pattern: paralelizar agents no mesmo working tree
+
+3 agents que tocam arquivos comuns (ex: `src/index.js`) sobrescrevem uns aos outros quando rodam em paralelo no mesmo working tree. Caso real: durante eval-bench, 3 agents reescreveram `src/index.js` do devkit-sandbox em paralelo, perdendo mudanças sucessivas.
+
+Regra: SEMPRE usar `isolation: "worktree"` ou `/loop --worktree --parallel N` quando despachar 2+ agents simultâneos que podem tocar os mesmos arquivos. Sem worktree, paralelize apenas tasks read-only (eval, audit, search).
+
+---
+
 ## Eval cases
 
 Ver `evals/policies/skills-vs-agents/golden.json`:

@@ -537,6 +537,203 @@ else
 fi
 ```
 
+## Rollback Persistente — .last-tag pattern
+
+### Problema
+O script de rollback acima exige que o operador saiba manualmente qual tag usar (`./rollback.sh <tag-anterior>`). Em pipelines CI/CD com múltiplos deploys por dia, a tag anterior não é conhecida em tempo de execução sem consultar registries externos — o que aumenta MTTR e risco de erro humano.
+
+### Solução: persistir tag em arquivo .last-tag
+
+Antes de promover a nova tag, salve a tag atual em `.last-tag` no servidor. Em caso de rollback, leia o arquivo em vez de hardcodar.
+
+```bash
+#!/bin/bash
+# scripts/deploy-with-tag-persist.sh
+# Uso: ./deploy-with-tag-persist.sh ghcr.io/org/app:sha-abc123
+
+REGISTRY=ghcr.io/org/app
+LAST_TAG_FILE=/app/.last-tag
+NEW_TAG=$1
+
+if [ -z "$NEW_TAG" ]; then
+  echo "Uso: $0 <nova-tag>"
+  exit 1
+fi
+
+# Persiste tag atual como "last" antes de promover
+if [ -f "$LAST_TAG_FILE" ]; then
+  CURRENT_TAG=$(cat "$LAST_TAG_FILE")
+  echo "Tag atual: $CURRENT_TAG → será salva como last"
+fi
+echo "$NEW_TAG" > "$LAST_TAG_FILE"
+
+# Promove nova tag
+export IMAGE_TAG=$NEW_TAG
+docker compose up -d --force-recreate
+
+sleep 10
+if curl -sf http://localhost:3000/api/health > /dev/null; then
+  echo "Deploy OK: $NEW_TAG"
+else
+  echo "Deploy falhou — iniciando rollback automático para $CURRENT_TAG"
+  export IMAGE_TAG=$CURRENT_TAG
+  echo "$CURRENT_TAG" > "$LAST_TAG_FILE"
+  docker compose up -d --force-recreate
+  exit 1
+fi
+
+# Rollback manual independente:
+# docker pull $(cat /app/.last-tag)
+# IMAGE_TAG=$(cat /app/.last-tag) docker compose up -d --force-recreate
+```
+
+### Pattern em GitHub Actions
+
+```yaml
+# No job deploy-production — persistir tag via SSH após health check
+- name: Persist last-tag e deploy
+  uses: appleboy/ssh-action@v1
+  with:
+    host: ${{ secrets.PROD_HOST }}
+    username: ${{ secrets.DEPLOY_USER }}
+    key: ${{ secrets.DEPLOY_KEY }}
+    script: |
+      cd /app
+      NEW_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+      LAST_TAG_FILE=".last-tag"
+
+      # Guarda tag anterior antes de promover
+      [ -f "$LAST_TAG_FILE" ] && cp "$LAST_TAG_FILE" ".prev-tag"
+
+      echo "$NEW_TAG" > "$LAST_TAG_FILE"
+      IMAGE_TAG=$NEW_TAG docker compose up -d --force-recreate
+      sleep 10
+      curl -f http://localhost:3000/api/health || {
+        echo "Health check falhou — rollback para $(cat .prev-tag)"
+        IMAGE_TAG=$(cat .prev-tag) docker compose up -d --force-recreate
+        cp .prev-tag "$LAST_TAG_FILE"
+        exit 1
+      }
+      docker system prune -f
+```
+
+### Pattern em docker-compose com variável de ambiente
+
+```yaml
+# docker-compose.yml — ler tag de variável
+services:
+  backend:
+    image: ${IMAGE_TAG:-ghcr.io/org/app:latest}
+```
+
+```bash
+# rollback.sh sem argumento — usa .last-tag automaticamente
+#!/bin/bash
+ROLLBACK_TAG=$(cat /app/.last-tag 2>/dev/null)
+if [ -z "$ROLLBACK_TAG" ]; then
+  echo "Arquivo .last-tag não encontrado. Rollback manual necessário."
+  exit 1
+fi
+echo "Rollback para: $ROLLBACK_TAG"
+IMAGE_TAG=$ROLLBACK_TAG docker compose up -d --force-recreate
+```
+
+## ssl-init.sh — Idempotent SSL Setup
+
+### Problema
+O bloco SSL no `nginx/conf.d/app.conf` referencia `fullchain.pem` e `privkey.pem` que só existem após `certbot certonly` ter rodado com sucesso. Se o nginx subir antes do certbot, ele falha e o compose inteiro fica unhealthy — especialmente em primeiro deploy ou após troca de servidor.
+
+### Solução: script ssl-init.sh idempotente
+
+```bash
+#!/bin/bash
+# scripts/ssl-init.sh
+# Detecta se certificado existe e cria apenas se necessário.
+# Idempotente: rodar múltiplas vezes é seguro.
+
+set -euo pipefail
+
+DOMAIN=${1:-"seudominio.com"}
+EMAIL=${2:-"admin@seudominio.com"}
+CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
+
+echo "[ssl-init] Verificando certificado para $DOMAIN..."
+
+if [ -f "$CERT_PATH" ]; then
+  # Verifica validade — renova se expira em menos de 30 dias
+  EXPIRY=$(openssl x509 -enddate -noout -in "$CERT_PATH" | cut -d= -f2)
+  EXPIRY_EPOCH=$(date -d "$EXPIRY" +%s 2>/dev/null || date -jf "%b %d %H:%M:%S %Y %Z" "$EXPIRY" +%s)
+  NOW_EPOCH=$(date +%s)
+  DAYS_LEFT=$(( (EXPIRY_EPOCH - NOW_EPOCH) / 86400 ))
+
+  if [ "$DAYS_LEFT" -gt 30 ]; then
+    echo "[ssl-init] Certificado válido por mais $DAYS_LEFT dias. Nenhuma ação."
+    exit 0
+  fi
+  echo "[ssl-init] Certificado expira em $DAYS_LEFT dias — renovando..."
+fi
+
+echo "[ssl-init] Obtendo certificado via certbot..."
+certbot certonly \
+  --webroot \
+  --webroot-path /var/www/certbot \
+  --email "$EMAIL" \
+  --agree-tos \
+  --no-eff-email \
+  --non-interactive \
+  -d "$DOMAIN" \
+  -d "www.$DOMAIN" \
+  2>&1 | tee -a /var/log/ssl-init.log
+
+echo "[ssl-init] Recarregando nginx..."
+docker compose exec nginx nginx -s reload 2>/dev/null || nginx -s reload
+
+echo "[ssl-init] Certificado configurado com sucesso."
+```
+
+### Como integrar no entrypoint do container
+
+**Opção 1 — rodar antes de subir nginx (recomendado para primeiro deploy):**
+
+```bash
+# No script de deploy ou no docker-compose entrypoint do serviço nginx
+entrypoint: >
+  /bin/sh -c "
+    /scripts/ssl-init.sh seudominio.com admin@seudominio.com &&
+    nginx -g 'daemon off;'
+  "
+```
+
+**Opção 2 — nginx sobe com config HTTP-only primeiro, ssl-init promove para HTTPS:**
+
+```yaml
+# docker-compose.yml — nginx com dois configs
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/conf.d/http-only.conf:/etc/nginx/conf.d/default.conf:ro  # inicial
+      - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf:ro            # após ssl-init
+      - certbot_data:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    command: >
+      /bin/sh -c "
+        nginx -g 'daemon off;' &
+        sleep 5 &&
+        /scripts/ssl-init.sh seudominio.com admin@seudominio.com &&
+        cp /etc/nginx/conf.d/app.conf /etc/nginx/conf.d/default.conf &&
+        nginx -s reload &&
+        wait
+      "
+```
+
+**Cron para renovação automática no servidor:**
+
+```bash
+# /etc/cron.d/ssl-renew
+0 3 * * * root /app/scripts/ssl-init.sh seudominio.com admin@seudominio.com >> /var/log/ssl-renew.log 2>&1
+```
+
 ### Blue-Green Deployment
 - Manter dois ambientes identicos (blue e green)
 - Deploy no ambiente inativo

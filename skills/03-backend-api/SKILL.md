@@ -369,6 +369,131 @@ export const createBaseService = <T>(model: any) => ({
 });
 ```
 
+## Stack Alternativa — Plain JS + better-sqlite3
+
+### Quando Usar
+
+- Repos pequenos, scripts, ferramentas CLI, sandboxes e protótipos
+- Projetos onde TypeScript e ORM adicionam mais fricção do que valor
+- Dados locais, single-user, ou leitura intensiva com writes eventuais
+- Casos onde o binário precisa ser zero-dependência (Tauri, Electron, scripts CI)
+
+### DB Singleton Pattern
+
+```js
+// src/db.js
+const Database = require('better-sqlite3');
+const path = require('path');
+
+let _db = null;
+
+function getDb() {
+  if (_db) return _db;
+  _db = new Database(path.join(__dirname, '..', 'data.db'));
+  _db.pragma('journal_mode = WAL');
+  _db.pragma('foreign_keys = ON');
+  _db.pragma('synchronous = NORMAL');
+  return _db;
+}
+
+module.exports = { getDb };
+```
+
+### Schema via db.exec() — sem Prisma
+
+```js
+// src/migrate.js
+const { getDb } = require('./db');
+
+function migrate() {
+  const db = getDb();
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id         TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+      email      TEXT NOT NULL UNIQUE,
+      name       TEXT NOT NULL,
+      password   TEXT NOT NULL,
+      role       TEXT NOT NULL DEFAULT 'user',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      deleted_at TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+    CREATE INDEX IF NOT EXISTS idx_users_deleted_at ON users(deleted_at);
+  `);
+}
+
+module.exports = { migrate };
+```
+
+### Queries — sempre parametrizadas
+
+```js
+// src/repositories/user.repository.js
+const { getDb } = require('../db');
+
+const UserRepo = {
+  findById(id) {
+    return getDb().prepare('SELECT * FROM users WHERE id = ? AND deleted_at IS NULL').get(id);
+  },
+
+  findByEmail(email) {
+    return getDb().prepare('SELECT * FROM users WHERE email = ? AND deleted_at IS NULL').get(email);
+  },
+
+  findAll({ page = 1, perPage = 20 } = {}) {
+    const offset = (page - 1) * perPage;
+    const rows = getDb()
+      .prepare('SELECT * FROM users WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT ? OFFSET ?')
+      .all(perPage, offset);
+    const { total } = getDb()
+      .prepare('SELECT COUNT(*) as total FROM users WHERE deleted_at IS NULL')
+      .get();
+    return { data: rows, meta: { page, perPage, total, totalPages: Math.ceil(total / perPage) } };
+  },
+
+  create(data) {
+    const stmt = getDb().prepare(
+      'INSERT INTO users (email, name, password, role) VALUES (@email, @name, @password, @role)'
+    );
+    stmt.run(data);
+    return this.findByEmail(data.email);
+  },
+
+  softDelete(id) {
+    return getDb()
+      .prepare("UPDATE users SET deleted_at = datetime('now') WHERE id = ?")
+      .run(id);
+  },
+};
+
+module.exports = UserRepo;
+```
+
+### Transactions — síncronas, rápidas
+
+```js
+// db.transaction() retorna função que roda tudo atomicamente
+const { getDb } = require('./db');
+
+function transferCredits(fromId, toId, amount) {
+  const db = getDb();
+  const transfer = db.transaction((from, to, amt) => {
+    db.prepare('UPDATE wallets SET credits = credits - ? WHERE id = ?').run(amt, from);
+    db.prepare('UPDATE wallets SET credits = credits + ? WHERE id = ?').run(amt, to);
+  });
+  transfer(fromId, toId, amount); // lança se qualquer stmt falhar
+}
+```
+
+### Quando NÃO Usar
+
+- Alta concorrência de writes (SQLite é single-writer; use PostgreSQL)
+- Multi-tenant grande ou dados que crescem para GB+
+- Microservices distribuídos que precisam de conexão compartilhada
+- Quando replicação, CDC ou streaming de dados for requisito
+
+---
+
 ### Estrategia de Migrations
 
 - Toda migration DEVE ter UP e DOWN (reversivel)

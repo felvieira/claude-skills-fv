@@ -153,6 +153,22 @@ Usar `Playwright MCP` quando a tarefa exigir:
 
 Isso complementa os testes e2e formais e ajuda especialmente em verificacoes visuais ou exploratorias.
 
+### Pattern: cleanup SQLite WAL no Windows
+
+Windows mantém lock em arquivos SQLite WAL/SHM por alguns ms após `db.close()`. Cleanup síncrono em `afterAll` falha com EBUSY. Use retry diferido:
+
+```js
+afterAll(() => {
+  db.close();
+  setTimeout(() => {
+    const tryUnlink = (p) => { try { if (fs.existsSync(p)) fs.unlinkSync(p); } catch {} };
+    [TEST_DB, TEST_DB + '-wal', TEST_DB + '-shm'].forEach(tryUnlink);
+  }, 200);
+});
+```
+
+Descoberto em eval-bench/Teste 2 (2026-05-23). Pattern não é Windows-only — também previne problema em CI Linux com discos lentos.
+
 ## Cobertura Minima Recomendada
 
 - hooks, stores e utils com logica propria

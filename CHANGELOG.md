@@ -5,6 +5,41 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.10.1-eval-bench-driven-fixes] - 2026-05-23
+
+**Fixes derivados do eval-bench** — 6 melhorias concretas baseadas em achados reais dos 53 cenários testados nesta sessão. Pass rate esperado sobe de 88.9% (48/54) pra ~92.6% após próximo bench.
+
+### Added
+
+- **`patterns/ai-integration/text-generation.md`** (~180 linhas) — pattern completo de integração LLM com adapter (`generateText`/`streamText`/`generateObject`), fallback chain, React hooks, observability + cost tracking, 2 decision tables. Era stub de 3-9 linhas, virou conteúdo de produção. Resolve FAIL +1.0 da skill 25.
+- **`templates/ai-integration-plan.md`** (~140 linhas) — template preenchível com context table, decision table provider/modelo, prompt template com Zod, cost ceiling, fallback matrix (5 cenários), observability spec, security boundary checklist (8 itens). Resolve FAIL +1.0 da skill 25.
+- **`eval-bench/scenarios/agents/code-reviewer.md`** (362 linhas) — cenário v2 com PR simulado de 23 arquivos, 8 findings distribuídos em concerns diferentes (race condition financeira, timing attack, circular dependency, N+1 em map async, test fraco, secrets vs .gitignore alarme falso/real, Dockerfile regression). Substitui scenario v1 que era trivial demais (delta +1.0 FAIL).
+
+### Changed
+
+- **`skills/07-deploy-docker/SKILL.md`** — +196 linhas em 2 seções novas: (1) Rollback Persistente com `.last-tag` pattern (deploy bash + GitHub Actions + rollback.sh sem args) e (2) `ssl-init.sh` idempotente (detect cert existente + verificar validade + 2 estratégias de integração + cron de renovação). Resolve MARGINAL FAIL +1.3.
+- **`skills/03-backend-api/SKILL.md`** — +90 linhas em "Stack Alternativa — Plain JS + better-sqlite3" com DB singleton WAL/FK pragmas, schema via `db.exec()` + `CREATE TABLE IF NOT EXISTS`, queries parametrizadas, `db.transaction()`. Reduz fricção em projetos sem TypeScript/Prisma (Teste 3 mostrou que a adaptação manual era necessária).
+- **`skills/05-qa-testing/SKILL.md`** — nova subseção "Pattern: cleanup SQLite WAL no Windows" com `setTimeout` deferido pra unlink WAL/SHM. Descoberto durante eval-bench Teste 2.
+- **`policies/skills-vs-agents.md`** — novo anti-padrão registrado: "paralelizar agents no mesmo working tree" com regra obrigatória de worktree quando 2+ agents tocam arquivos comuns. Caso real: 3 sobrescritas de `src/index.js` durante eval-bench paralelo.
+
+### Verified (no changes needed)
+
+- **`agents/semgrep-scanner.md`** — já existia em `agents/` e listado em `AGENTS.md` linha 126. Skill 34 e policy `skills-vs-agents.md` consistentes. O eval-bench wave5 que sinalizou "missing" foi escrito antes da criação do agent (artefato histórico).
+
+### Eval bench cobertura ampliada
+
+Skill 39 (program-router) re-avaliada em sessão isolada nesta janela: **PASS +2.4** (era timeout). Pass rate sobe de 47/53 (88.7%) pra **48/54 (88.9%)**. Aplicando os fixes acima, próxima execução do bench deve atingir **~92.6%** (50/54).
+
+### Verification
+
+- `tsc` build mcp-server: ✅ zero erros
+- `npm test`: ✅ 15/15 (11 cross-call + 4 skill-manifest)
+- `check-consistency.mjs`: ✅ 39 skills, 37 tools, 15 agents
+- `check-harness-coherence.mjs`: ✅ 43 policies, 32 commands, 19 hooks all coherent
+- `bench/check-regression.mjs`: ✅ no regression (13%/98% estável)
+
+---
+
 ## [2.10.0-deerflow-conventions-absorbed] - 2026-05-23
 
 **Três convenções de [bytedance/deer-flow](https://github.com/bytedance/deer-flow) 2.0 absorvidas como policies + código mínimo, sem virar runtime.** DeerFlow é um harness Python + LangGraph + Docker — opostíssimo do nosso modelo parasitário em skills MD. Mas o vocabulário deles pra **observability tags**, **skill manifest** e **progressive loading** é melhor que o nosso (que era implícito). Adotar a nomenclatura deles padroniza nossa telemetria com qualquer downstream LangSmith/Langfuse e prepara terreno pra skills publicáveis por terceiros sem fork.
