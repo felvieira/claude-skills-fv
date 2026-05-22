@@ -18,6 +18,55 @@ const MAX_STR_LEN     = 200;                 // truncate long string values
 const RETENTION_DAYS  = 14;                  // prune rotated events older than this
 const SENSITIVE_KEYS  = new Set(['password', 'secret', 'token', 'key', 'api_key', 'authorization']);
 
+// Reserved trace tag fields — convention absorbed from bytedance/deer-flow.
+// These flow into LangSmith/Langfuse-compatible callbacks without adding deps.
+// See policies/observability-trace-tags.md.
+const TRACE_TAG_ENV_KEYS = {
+  session_id: ['CLAUDE_SESSION_ID', 'DEER_FLOW_THREAD_ID', 'AGENT_THREAD_ID'],
+  user_id:    ['CLAUDE_USER_ID',    'DEER_FLOW_USER_ID',   'USER',  'USERNAME'],
+  trace_name: ['CLAUDE_TRACE_NAME', 'DEER_FLOW_ASSISTANT_ID', 'AGENT_NAME'],
+  env:        ['DEVKIT_ENV',        'DEER_FLOW_ENV',       'ENVIRONMENT', 'NODE_ENV'],
+  model:      ['CLAUDE_MODEL',      'ANTHROPIC_MODEL',     'AGENT_MODEL'],
+};
+
+/**
+ * Resolve a trace tag from the first env var that holds a value.
+ * Returns undefined when no source is set — caller decides whether to omit
+ * the field entirely or store a default. We omit, per Langfuse convention.
+ */
+function resolveTag(keys) {
+  for (const k of keys) {
+    const v = process.env[k];
+    if (v && v.trim()) return v.trim();
+  }
+  return undefined;
+}
+
+/**
+ * Build the observability tag block for a single event. Conforms to the
+ * convention in policies/observability-trace-tags.md so downstream tools
+ * (LangSmith, Langfuse, custom dashboards) can read events without a
+ * per-tool adapter.
+ */
+function buildTraceTags() {
+  const session_id = resolveTag(TRACE_TAG_ENV_KEYS.session_id);
+  const user_id    = resolveTag(TRACE_TAG_ENV_KEYS.user_id);
+  const trace_name = resolveTag(TRACE_TAG_ENV_KEYS.trace_name);
+  const env        = resolveTag(TRACE_TAG_ENV_KEYS.env);
+  const model      = resolveTag(TRACE_TAG_ENV_KEYS.model);
+
+  const tags = [];
+  if (env)   tags.push(`env:${env}`);
+  if (model) tags.push(`model:${model}`);
+
+  const out = {};
+  if (session_id) out.session_id = session_id;
+  if (user_id)    out.user_id    = user_id;
+  if (trace_name) out.trace_name = trace_name;
+  if (tags.length > 0) out.tags = tags;
+  return out;
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Truncate a string to MAX_STR_LEN chars */
@@ -147,13 +196,15 @@ async function main() {
       : outputContent
   );
 
-  // Build event record
+  // Build event record. Trace tags are merged on top so any future fields
+  // never collide with operational fields (ts, tool, args, status, …).
   const event = {
     ts,
     tool:     toolName,
     args:     normalizeArgs(toolInput),
     status,
     bytes_out: bytesOut,
+    ...buildTraceTags(),
   };
   if (errorMsg) event.error = errorMsg;
 

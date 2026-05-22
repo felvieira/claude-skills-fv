@@ -26,6 +26,12 @@ export async function listSkills(): Promise<SkillMeta[]> {
     const id = path.dirname(dir);
     const triggers = extractTriggers(data.description || "");
 
+    // Manifest v2 fields (absorbed from bytedance/deer-flow) — all optional.
+    // `requires` accepts either a JSON-style array or a YAML list.
+    const requires = Array.isArray(data.requires)
+      ? data.requires.map((r: unknown) => String(r))
+      : undefined;
+
     skills.push({
       id,
       name: data.name || id,
@@ -33,6 +39,10 @@ export async function listSkills(): Promise<SkillMeta[]> {
       argumentHint: data["argument-hint"],
       allowedTools: data["allowed-tools"],
       triggers,
+      version: data.version ? String(data.version) : undefined,
+      author: data.author ? String(data.author) : undefined,
+      compatibility: data.compatibility ? String(data.compatibility) : undefined,
+      requires,
     });
   }
 

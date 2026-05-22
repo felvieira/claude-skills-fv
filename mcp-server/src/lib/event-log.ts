@@ -18,6 +18,13 @@ export interface SessionEvent {
   status: "ok" | "error";
   bytes_out?: number;
   error?: string;
+  // ─── Observability trace tags (absorbed from bytedance/deer-flow) ───────────
+  // All optional, populated by session-event-logger.mjs when the corresponding
+  // env vars are set. See policies/observability-trace-tags.md.
+  session_id?: string;   // thread/conversation id
+  user_id?: string;      // effective user id (or process owner fallback)
+  trace_name?: string;   // assistant id / agent name
+  tags?: string[];       // free-form, conventionally env:<x>, model:<y>
 }
 
 export interface EventFilter {

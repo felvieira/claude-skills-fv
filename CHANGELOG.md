@@ -5,6 +5,46 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.10.0-deerflow-conventions-absorbed] - 2026-05-23
+
+**Três convenções de [bytedance/deer-flow](https://github.com/bytedance/deer-flow) 2.0 absorvidas como policies + código mínimo, sem virar runtime.** DeerFlow é um harness Python + LangGraph + Docker — opostíssimo do nosso modelo parasitário em skills MD. Mas o vocabulário deles pra **observability tags**, **skill manifest** e **progressive loading** é melhor que o nosso (que era implícito). Adotar a nomenclatura deles padroniza nossa telemetria com qualquer downstream LangSmith/Langfuse e prepara terreno pra skills publicáveis por terceiros sem fork.
+
+### Added
+
+- **`policies/observability-trace-tags.md`** — convenção de tags (`session_id`, `user_id`, `trace_name`, `tags`) compatível com Langfuse `RunnableConfig.metadata` e OpenTelemetry span attributes. Mapeamento env-var → campo documentado.
+- **`policies/skill-manifest.md`** — contrato v2 do frontmatter de SKILL.md (`version`, `author`, `compatibility`, `requires`). Todos os campos opcionais. Backward compat 100% — skills atuais continuam válidas. Tabela de quando preencher por cenário.
+- **`policies/progressive-skill-loading.md`** — nomeia o padrão que 4 hooks já implementam coordenadamente (`keyword-detector`, `pre-execution-gate`, `session-start`, `pre-tool-enforcer`). Documenta custo evitado (~31k tokens/sessão) + anti-padrões.
+- **`policies/cost-optimization.md`** — 2 cross-links novos pras policies acima.
+
+### Changed
+
+- **`hooks/scripts/session-event-logger.mjs`** — agora popula `session_id`/`user_id`/`trace_name`/`tags` em cada evento JSONL quando env vars correspondentes existem (`CLAUDE_SESSION_ID`/`DEER_FLOW_THREAD_ID`/…, `DEVKIT_ENV`/`NODE_ENV`/…, etc.). Campos omitidos quando ausentes (estilo Langfuse) — sem placeholder.
+- **`mcp-server/src/lib/event-log.ts`** — interface `SessionEvent` expandida com os 4 campos opcionais. Readers existentes ignoram quando ausentes.
+- **`mcp-server/src/types.ts`** — interface `SkillMeta` expandida com `version`/`author`/`compatibility`/`requires` (todos opcionais).
+- **`mcp-server/src/services/file-reader.ts`** — `listSkills()` parsea os 4 campos novos via `gray-matter`. Sem breaking change.
+- **`NOTICE`** — entry de `bytedance/deer-flow` com lista detalhada do que foi/não foi absorvido.
+- **`README.md`** — Acknowledgements adicional pra DeerFlow.
+
+### Decision rationale
+
+DeerFlow tem 69k stars e é runtime Python independente. Absorver código deles quebraria a tese do kit (parasitário em Claude Code/Cursor, zero deps pesadas). Mas as **convenções** deles cobrem 3 lacunas reais:
+
+1. Telemetria sem schema padrão → vai pra LangSmith/Langfuse no dia que o consumidor ligar
+2. Skill metadata pobre (só `name`+`description`) → impede skills de terceiros publicáveis
+3. "Progressive loading" era propriedade não-nomeada → externos não entendem
+
+Custo de absorção: 2 arquivos de código (`session-event-logger.mjs`, `file-reader.ts` + types) + 3 policies novos. Zero deps adicionadas. Zero breaking changes.
+
+### Verification
+
+- `tsc` build do mcp-server: ✅ esperado zero erros (verificar antes do commit)
+- `npm test`: ✅ 11/11 cross-call-dedup (sem regressão)
+- `check-consistency.mjs`: ✅ esperado pass
+- `check-harness-coherence.mjs`: ✅ 43 policies (40 → 43, +3 novas)
+- `bench/check-regression.mjs`: ✅ esperado no regression (mudanças não tocam compressor)
+
+---
+
 ## [2.9.1-dedup-surfaced-and-bench-gated] - 2026-05-22
 
 **Hardening da v2.9.0.** Cross-call dedup ganha tool MCP dedicada (`devkit_dedup_status`) e parâmetros opt-in no `devkit_compress_output`. CI ganha gate de regressão de bench. Documentação alinhada (tool count 36 → 37, policy de cost-optimization atualizada, novo cenário em USE-CASES + marketing).

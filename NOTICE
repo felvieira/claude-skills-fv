@@ -30,6 +30,22 @@ claudioemmanuel/squeez
   `bench/fixtures/`. We do not adopt the Rust binary, multi-host shell hooks,
   the "caveman" persona, or summarization fallback.
 
+bytedance/deer-flow
+  https://github.com/bytedance/deer-flow
+  License: MIT
+  Adapted: (1) observability trace tags convention (session_id, user_id,
+  trace_name, tags) for JSONL events in `hooks/scripts/session-event-logger.mjs`
+  and the `SessionEvent` interface in `mcp-server/src/lib/event-log.ts`,
+  documented in `policies/observability-trace-tags.md`. (2) skill manifest
+  frontmatter v2 (version, author, compatibility, requires) parsed by
+  `mcp-server/src/services/file-reader.ts`, contract in
+  `policies/skill-manifest.md`. (3) progressive skill loading framing
+  documented in `policies/progressive-skill-loading.md`. We do NOT adopt:
+  the LangGraph/LangChain runtime, the backend Gateway, the IM channels
+  (Telegram/Slack/Feishu/WeCom/WeChat/DingTalk), the sandbox provisioner,
+  the web UI, the deerflow.tech hosted service, or the `.skill` archive
+  installation format (deferred to a future v3).
+
 github/spec-kit
   https://github.com/github/spec-kit
   License: MIT

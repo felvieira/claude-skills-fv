@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 39 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.9.1-0f766e)
+![Version](https://img.shields.io/badge/version-2.10.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -839,6 +839,7 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **[blader/humanizer](https://github.com/blader/humanizer)** + **[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)** — 29 anti-AI writing patterns + `/humanize` command (v1.4.1).
 - **[coleam00/archon](https://github.com/coleam00/archon)** — Program engine primitives (`type: prompt`/`bash`/`loop`, `context: fresh`, `provider`/`model` per step, `trigger_rule`) + 2 patterns (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). v1.7.0. We do NOT adopt: Web UI, Slack/Telegram/GitHub adapters, server backend, runtime Bun.
 - **[claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez)** — Apache-2.0. MinHash-based cross-call output dedup (bottom-k shingles + Jaccard threshold) absorbed into `mcp-server/src/lib/cross-call-dedup.ts`, and the public benchmark methodology (versioned fixtures + A/B baseline harness) absorbed into `bench/`. v2.9.0. We do NOT adopt: the Rust binary, multi-host shell hooks, the "caveman" persona, or the summarization fallback.
+- **[bytedance/deer-flow](https://github.com/bytedance/deer-flow)** — MIT. Three conventions absorbed: observability trace tags (`session_id`/`user_id`/`trace_name`/`tags`) in `policies/observability-trace-tags.md` + wired into `session-event-logger.mjs`; skill manifest frontmatter v2 (`version`/`author`/`compatibility`/`requires`) in `policies/skill-manifest.md` + parsed by `file-reader.ts`; progressive skill loading framing in `policies/progressive-skill-loading.md`. v2.10.0. We do NOT adopt: LangGraph/LangChain runtime, backend Gateway, IM channels, sandbox provisioner, web UI, hosted service, `.skill` archive format.
 
 ---
 

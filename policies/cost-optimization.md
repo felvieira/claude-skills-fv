@@ -71,6 +71,14 @@ Desde **v2.9.0**, o `output-compressor` tem uma stage **antes** da pipeline intr
 
 **Audit em runtime:** `devkit_dedup_status` retorna o tamanho atual da janela; passe `reset: true` se quiser zerar.
 
+## Progressive Skill Loading
+
+Ver `policies/progressive-skill-loading.md`. Skills numeradas carregam **só quando trigger explícito** (palavra-chave, intent classification, pedido direto), nunca todas de uma vez. Custo evitado: ~31k tokens por sessão (39 skills × ~800 tokens). Mecanismo coordenado por 4 hooks (`keyword-detector`, `pre-execution-gate`, `session-start`, `pre-tool-enforcer`).
+
+## Observability Trace Tags
+
+Ver `policies/observability-trace-tags.md`. Eventos em `.auto/events.jsonl` carregam metadata opcional (`session_id`, `user_id`, `trace_name`, `tags`) compatível com Langfuse/LangSmith. Populados automaticamente pelo `session-event-logger.mjs` a partir de env vars. `/savings` ignora quando ausentes.
+
 ## Rate Limit e Retry
 
 - Nao disparar muitos subagents simultaneos — cada um consome cota separada
