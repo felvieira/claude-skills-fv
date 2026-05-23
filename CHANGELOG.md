@@ -5,6 +5,49 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.11.0-blog-publishing-skills] - 2026-05-23
+
+**2 skills novas pra automação de blog publishing.** Skill 41 (blog-publisher) compõe um pipeline completo: texto/assunto → HTML → imagens → commit/push → URL pública. Skill 42 (blog-screenshot) é especialista Playwright pra capturas. Repo separado `felvieira/blog` criado com Pages habilitado.
+
+### Added
+
+- **`skills/41-blog-publisher/SKILL.md`** — skill compositora. Recebe texto ou assunto, escreve post HTML completo, gera imagens (via skill 17 fal.ai ou skill 42 Playwright conforme decisão), salva em `D:/Repos/blog/posts/YYYY-MM-DD-slug.html`, commit+push, retorna URL pública. Compõe sobre skills 13 (marketing-copy), 17 (image-generator), 26 (prompt-engineer) e 42 (blog-screenshot). Triggers: "post no blog", "publicar post", "novo post". v1.0.0, compatibility ≥2.10.2.
+- **`skills/42-blog-screenshot/SKILL.md`** — skill especialista em capturas via Playwright MCP. Decision tree fullPage vs viewport vs element, viewports padrão por destino (cover/hero/mobile), naming convention pro slot do skill 41, handling de cookie banners, FOUT prevention. v1.0.0.
+- **Repo novo `felvieira/blog`** — destino dos posts. Estrutura: `posts/`, `assets/css/post.css` (dark mode), `assets/images/`, `TEMPLATE.html` com placeholders handlebars-style, `index.html` landing page, `scripts/new-post.mjs` (scaffold) e `scripts/update-index.mjs` (regenera index após cada post). GitHub Pages habilitado em main root. `.nojekyll` pra servir HTML direto.
+
+### Changed
+
+- **`.claude-plugin/plugin.json`** — version 2.10.2 → **2.11.0**, description expandida pra mencionar blog-publisher e blog-screenshot.
+- **`.claude-plugin/marketplace.json`** — version 2.8.0 → **2.11.0**, descrição atualizada pra "41 specialist skills" (2x — top-level e plugin entry).
+- **`mcp-server/package.json`** — version 2.10.2 → **2.11.0**, description "37 tools backed by 41 skills".
+- **`README.md`** — H1 "39" → "41 Specialist Skills", badge `skills-39` → `skills-41`, parágrafo "set of 39 specialized skills" → "set of 41" + menção a blog publishing automation, "The 39 Specialists" → "The 41 Specialists". Badge version 2.10.2 → 2.11.0.
+- **`README.pt-BR.md`** — Badge version 2.10.2 → 2.11.0.
+
+### Verification
+
+- `check-consistency`: ✅ 41 skills, 37 tools, 15 agents
+- `check-harness-coherence`: ✅ 44 policies, 32 commands, 19 hooks all coherent — sem count drift
+
+### Use case
+
+```
+User: "publica um post sobre como configurar o Dev Team Kit no Cursor"
+
+Kit:
+1. Skill 41 ativa via keyword "publica" + "post"
+2. Skill 41 invoca skill 13 (marketing-copy) pra estruturar voz
+3. Escreve corpo HTML (intro + steps + screenshots + CTA)
+4. Detecta que pode usar screenshots → invoca skill 42 (Playwright) pra capturar Cursor Settings → MCP tab
+5. Cover image via skill 17 (fal.ai gemini-25-flash) prompt: "minimal dark UI screenshot stylized"
+6. Roda scripts/new-post.mjs com slug + body + cover
+7. update-index.mjs regenera index.html + README do blog
+8. git commit + push
+9. Aguarda Pages build (~30s)
+10. Retorna: https://felvieira.github.io/blog/posts/2026-05-23-dev-team-kit-no-cursor.html
+```
+
+---
+
 ## [2.10.2-analyze-doc-and-goal-driven] - 2026-05-23
 
 **Public bench reports + Goal-Driven Execution policy (4th Karpathy pillar).**

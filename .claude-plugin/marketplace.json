@@ -1,6 +1,6 @@
 {
   "name": "claude-skills-fv",
-  "description": "Dev Team Kit — 39 specialist skills + 29 slash commands for coding agents. Spec-driven development, anti-AI writing, memory consolidation, skills-vs-agents disambiguation (v2.2.1) and more.",
+  "description": "Dev Team Kit — 41 specialist skills + 29 slash commands for coding agents. Spec-driven development, anti-AI writing, memory consolidation, skills-vs-agents disambiguation (v2.2.1) and more.",
   "owner": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"
@@ -12,8 +12,8 @@
         "source": "github",
         "repo": "felvieira/claude-skills-fv"
       },
-      "description": "39 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, parallel-dispatcher + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), skills-vs-agents disambiguation hook (v2.2.1 — prevents InputValidationError when skill names are passed as subagent_type), and more.",
-      "version": "2.8.0",
+      "description": "41 specialist skills for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, parallel-dispatcher + spec-driven development (/constitution, /analyze, /checklist), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), skills-vs-agents disambiguation hook (v2.2.1 — prevents InputValidationError when skill names are passed as subagent_type), and more.",
+      "version": "2.11.0",
       "category": "development",
       "tags": [
         "skills",
