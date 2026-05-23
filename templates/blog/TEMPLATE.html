@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}} — {{GITHUB_USER}}'s blog</title>
+<meta name="description" content="{{EXCERPT}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{EXCERPT}}">
+<meta property="og:image" content="{{COVER_IMAGE_URL}}">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body>
+<nav class="top">
+  <a class="brand" href="../">📝 {{GITHUB_USER}}'s blog</a>
+  <a href="https://github.com/{{GITHUB_USER}}" style="margin-left:auto">GitHub</a>
+  <a href="https://github.com/felvieira/claude-skills-fv">Dev Team Kit</a>
+</nav>
+
+<main class="wrap">
+  <h1>{{TITLE}}</h1>
+  <p class="meta">
+    <span>{{DATE_HUMAN}}</span>
+    <span class="tag">{{LANG_LABEL}}</span>
+    <span class="tag">{{READING_TIME}} min read</span>
+  </p>
+
+  <article>
+{{BODY_HTML}}
+  </article>
+
+  <footer class="post">
+    <span>Published {{DATE_ISO}} · CC-BY-4.0</span>
+    <span><a href="{{SOURCE_URL}}">View source</a> · <a href="https://github.com/{{GITHUB_USER}}/{{BLOG_REPO}}">All posts</a></span>
+  </footer>
+</main>
+</body>
+</html>

@@ -5,6 +5,68 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.11.1-blog-multi-user] - 2026-05-23
+
+**Skill 41 (blog-publisher) agora é multi-user.** Pergunta legítima do usuário ("e se outra pessoa usar?") expôs que a v2.11.0 tinha `felvieira/blog` hardcoded em vários lugares. Refatoração completa:
+
+### Added
+
+- **`scripts/init-blog-repo.mjs`** — script reutilizável. Qualquer user roda 1x com `--path=<abs> --user=<gh-name> --repo=blog [--create-github]` pra:
+  1. Scaffoldar diretório destino do template em `templates/blog/`
+  2. Substituir `{{GITHUB_USER}}` e `{{BLOG_REPO}}` nos arquivos
+  3. `git init` no destino
+  4. Salvar `~/.dev-team-kit/blog-config.json` com paths/URLs do user
+  5. (Opcional) `gh repo create` + habilitar Pages
+  6. Commit inicial
+  
+  Idempotente — arquivos já presentes não são sobrescritos.
+
+- **`templates/blog/` no kit** — fonte de verdade pros scaffoldings:
+  - `TEMPLATE.html` (placeholders `{{GITHUB_USER}}`, `{{BLOG_REPO}}`, `{{SOURCE_URL}}`)
+  - `index.html` landing
+  - `_README.md` (vira `README.md` após substituição)
+  - `_gitignore` (vira `.gitignore`)
+  - `assets/css/post.css`
+  - `scripts/new-post.mjs` e `scripts/update-index.mjs` (ambos lendo `~/.dev-team-kit/blog-config.json`)
+
+### Changed
+
+- **`skills/41-blog-publisher/SKILL.md`** — removido hardcode `felvieira/blog`. Adicionada seção "Multi-user — resolução do repo destino" descrevendo schema do `blog-config.json`, fluxo da primeira invocação (instruir user a rodar init script), e leitura subsequente. Paths e URLs no SKILL agora usam placeholders `{blog_repo_path}`, `{pages_url}`, `{github_user_repo_url}`.
+
+- **`templates/blog/scripts/new-post.mjs`** — lê `~/.dev-team-kit/blog-config.json` (override via `DEVKIT_BLOG_CONFIG` env). Deriva `pages_url` ou de config explícita ou de `github_user`+`blog_repo`. Cover URL e source URL parametrizados. Fallback gracioso se config não existe (não quebra).
+
+- **`templates/blog/scripts/update-index.mjs`** — lê mesmo config pra construir regex de strip do suffix do `<title>`. Regex tolerante (matcha tanto `{user}'s blog` específico quanto qualquer `X's blog`).
+
+- **`templates/blog/TEMPLATE.html`** — title, brand, nav links e footer agora usam placeholders `{{GITHUB_USER}}`, `{{BLOG_REPO}}`, `{{SOURCE_URL}}`. Funciona pra qualquer user.
+
+- Version bumps: plugin.json, marketplace.json, mcp-server/package.json, README badges → 2.11.1.
+
+### Migration (for v2.11.0 users)
+
+```bash
+# 1. Pull o kit atualizado
+cd /path/to/claude-skills-fv && git pull
+
+# 2. Rode o init script com seus dados (cria config + opcionalmente repo no GitHub)
+node scripts/init-blog-repo.mjs --path=/abs/path/to/blog --user=<your-gh-user> --repo=blog --create-github
+
+# 3. Em qualquer sessão Claude, invoque a skill 41 normalmente
+```
+
+Quem já tinha `D:/Repos/blog/` (felvieira) só precisa rodar:
+```bash
+node scripts/init-blog-repo.mjs --path=D:/Repos/blog --user=felvieira --repo=blog
+```
+(sem `--create-github`, já existe). Templates antigos do diretório serão respeitados (não sobrescreve).
+
+### Verification
+
+- `check-consistency`: ✅ 41 skills, 37 tools, 15 agents
+- `check-harness-coherence`: ✅ 44 policies all coherent
+- Schema do config validado pelos 2 scripts (new-post + update-index) com fallback gracioso
+
+---
+
 ## [2.11.0-blog-publishing-skills] - 2026-05-23
 
 **2 skills novas pra automação de blog publishing.** Skill 41 (blog-publisher) compõe um pipeline completo: texto/assunto → HTML → imagens → commit/push → URL pública. Skill 42 (blog-screenshot) é especialista Playwright pra capturas. Repo separado `felvieira/blog` criado com Pages habilitado.

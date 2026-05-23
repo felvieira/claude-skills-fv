@@ -2,7 +2,7 @@
 name: 41-blog-publisher
 description: |
   Skill compositora que pega texto/assunto e gera post de blog HTML completo no repo
-  D:/Repos/blog (https://github.com/felvieira/blog), com imagens (via skill 17 fal.ai ou
+  {blog_repo_path} ({github_user_repo_url}), com imagens (via skill 17 fal.ai ou
   skill 42 Playwright screenshot), commit+push automático, retorna URL pública via GitHub Pages.
   Trigger em: "post no blog", "publicar post", "escrever post", "blog post", "publish blog",
   "gera post", "criar post", "novo post no meu blog".
@@ -32,19 +32,58 @@ Esta skill segue `GLOBAL.md`, `policies/anti-ai-writing.md`, `policies/handoffs.
 
 - Usuário pede "publica post sobre X", "escreve blog post de Y", "gera post no meu blog"
 - Usuário fornece um texto longo e diz "vira post de blog"
-- Usuário menciona "publicar no blog felvieira/blog"
+- Usuário menciona "publicar no meu blog" / "publicar post"
 
 ## Quando NÃO Usar
 
 - Para escrever só o texto sem publicar — usar skill 13 (marketing-copy) direto
-- Para postar no Medium/Dev.to/LinkedIn — esta skill publica APENAS no repo blog próprio
+- Para postar no Medium/Dev.to/LinkedIn — esta skill publica APENAS no repo blog próprio do usuário
 - Para editar post existente — usar Edit tool direto no arquivo HTML do post
 
-## Repo de destino
+## Multi-user — resolução do repo destino
 
-`D:/Repos/blog/` ↔ `https://github.com/felvieira/blog` ↔ Pages: `https://felvieira.github.io/blog/`
+A skill **não tem repo hardcoded**. Ela lê `~/.dev-team-kit/blog-config.json`
+(override via env `DEVKIT_BLOG_CONFIG`). Schema:
 
-Estrutura conhecida:
+```json
+{
+  "github_user":    "<user>",
+  "blog_repo":      "blog",
+  "blog_repo_path": "/abs/path/to/blog/repo",
+  "pages_url":      "https://<user>.github.io/blog"
+}
+```
+
+### Se o arquivo de config NÃO existe (primeira invocação)
+
+A skill **deve pausar e instruir o usuário** a rodar o init script:
+
+```bash
+node /caminho/para/claude-skills-fv/scripts/init-blog-repo.mjs \
+  --path=/abs/path/to/blog \
+  --user=<github-username> \
+  --repo=blog \
+  --create-github
+```
+
+Esse script:
+1. Cria diretório + copia templates de `templates/blog/` do kit
+2. Substitui `{{GITHUB_USER}}` e `{{BLOG_REPO}}` nos arquivos
+3. `git init` no destino
+4. Salva `~/.dev-team-kit/blog-config.json`
+5. (Se `--create-github`) cria repo no GitHub via `gh` e habilita Pages
+6. Faz commit inicial
+
+Após o script rodar, a skill 41 funciona automaticamente — sem mais perguntas.
+
+### Se já existe
+
+Lê o config, deriva todos os paths/URLs dinamicamente:
+- `blog_repo_path` → onde escrever os arquivos
+- `pages_url` → URL pública pra retornar ao user
+- `github_user` + `blog_repo` → preencher placeholders no HTML
+
+Estrutura conhecida do repo destino (criada pelo init script):
 
 ```
 blog/
@@ -83,7 +122,7 @@ Se input é texto pronto:
 1. Converter de markdown/texto plano pra HTML semântico (`<h2>`, `<h3>`, `<p>`, `<ul>`, `<pre>`, `<code>`, `<table>`, `<blockquote>`)
 2. Aplicar mesma policy anti-ai-writing pra revisar (não reescrever — só sinalizar)
 
-Salvar como arquivo temporário: `D:/Repos/blog/.tmp-body-{slug}.html`
+Salvar como arquivo temporário: `{blog_repo_path}/.tmp-body-{slug}.html`
 
 ### 3. Decidir geração de imagens (decision tree)
 
@@ -98,7 +137,7 @@ Post fala sobre URL/site/dashboard navegável?
 
 **Cover image:**
 - Sempre gerada (ou screenshot do primeiro elemento se for sobre algo navegável)
-- Salva em `D:/Repos/blog/assets/images/{slug}-cover.{png|jpg}`
+- Salva em `{blog_repo_path}/assets/images/{slug}-cover.{png|jpg}`
 - Referenciada no template como `{{COVER_IMAGE_URL}}`
 
 **Inline images:**
@@ -108,7 +147,7 @@ Post fala sobre URL/site/dashboard navegável?
 ### 4. Invocar scaffold
 
 ```bash
-cd D:/Repos/blog && node scripts/new-post.mjs \
+cd {blog_repo_path} && node scripts/new-post.mjs \
   --slug={slug} \
   --title="{title}" \
   --lang={lang} \
@@ -126,7 +165,7 @@ O script:
 ### 5. Cleanup + commit + push
 
 ```bash
-cd D:/Repos/blog && rm .tmp-body-{slug}.html
+cd {blog_repo_path} && rm .tmp-body-{slug}.html
 git add -A
 git commit -m "post: {title}"
 git push origin main
@@ -138,10 +177,10 @@ Aguardar GitHub Pages build (~30s) antes de retornar URL.
 
 ```
 ✅ Post publicado:
-https://felvieira.github.io/blog/posts/YYYY-MM-DD-{slug}.html
+{pages_url}/posts/YYYY-MM-DD-{slug}.html
 
-Index atualizado em: https://felvieira.github.io/blog/
-Source: https://github.com/felvieira/blog/blob/main/posts/YYYY-MM-DD-{slug}.html
+Index atualizado em: {pages_url}/
+Source: {github_user_repo_url}/blob/main/posts/YYYY-MM-DD-{slug}.html
 ```
 
 ## Decisão de imagem (matriz)
@@ -165,8 +204,8 @@ Default: **`gemini-25-flash` $0.039/img** — boa qualidade, custo previsível.
 
 ## Saídas Esperadas
 
-- Arquivo HTML em `D:/Repos/blog/posts/YYYY-MM-DD-{slug}.html`
-- 1+ imagens em `D:/Repos/blog/assets/images/`
+- Arquivo HTML em `{blog_repo_path}/posts/YYYY-MM-DD-{slug}.html`
+- 1+ imagens em `{blog_repo_path}/assets/images/`
 - Commit + push no repo blog
 - `index.html` e `README.md` atualizados (via `update-index.mjs`)
 - URL pública retornada ao usuário
@@ -222,6 +261,6 @@ Após retornar URL ao usuário, sugerir próximos passos opcionais:
 - `skills/42-blog-screenshot/SKILL.md` — screenshots Playwright
 - `skills/13-marketing-copy/SKILL.md` — voz e CTAs
 - `policies/anti-ai-writing.md` — 29 padrões a evitar
-- `D:/Repos/blog/TEMPLATE.html` — template base
-- `D:/Repos/blog/scripts/new-post.mjs` — scaffold
-- `D:/Repos/blog/scripts/update-index.mjs` — index regenerator
+- `{blog_repo_path}/TEMPLATE.html` — template base
+- `{blog_repo_path}/scripts/new-post.mjs` — scaffold
+- `{blog_repo_path}/scripts/update-index.mjs` — index regenerator
