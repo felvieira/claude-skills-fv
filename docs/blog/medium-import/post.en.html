@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>We Tested Our AI Coding Kit Against Itself. Here's What We Found.</title>
+</head>
+<body>
+
+<h1>We Tested Our AI Coding Kit Against Itself. Here's What We Found.</h1>
+
+<p><strong>TL;DR:</strong> We ran 53 evaluation scenarios + 3 end-to-end tests against the Dev Team Kit. Same model. Same prompt. With and without the kit. The numbers are real, the code is real, and yes — it works. <strong>92.6% pass rate. +1.84 average quality delta. 53/53 E2E tests green.</strong> Reports are public and reproducible.</p>
+
+<hr>
+
+<h2>The problem nobody wants to talk about</h2>
+
+<p>You install some "AI coding skills" package. The README says it's amazing. You use it for a week. Things feel maybe a bit better? But you don't actually know.</p>
+
+<p>Most AI tooling lives in this fog: marketing claims, vibes, anecdotes. Nobody measures. When we built the <strong>Dev Team Kit</strong> (an Apache-2.0 plugin that adds 39 specialist skills, 15 subagents and 32 slash commands to Claude Code, Cursor, Windsurf, etc.) we promised ourselves we wouldn't ship in that fog.</p>
+
+<p>So we built our own bench. Then we ran it. Then we published the results.</p>
+
+<p>The reports are here, bilingual, single HTML file each, no server required:</p>
+
+<ul>
+<li>🌎 <strong>English:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+<li>🇧🇷 <strong>Português:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
+</ul>
+
+<p>This post explains what's in them.</p>
+
+<hr>
+
+<h2>What we tested</h2>
+
+<p>Two distinct test types, on purpose.</p>
+
+<h3>1. Isolation bench — 53 scenarios</h3>
+
+<p>Every skill (39) and every subagent (15, minus one that timed out) got the same treatment:</p>
+
+<ul>
+<li><strong>Pass A — Baseline.</strong> Real prompt. Cold Claude Sonnet 4.6. No skill loaded.</li>
+<li><strong>Pass B — Treatment.</strong> Same prompt. Same model. Skill loaded.</li>
+<li><strong>Rubric.</strong> 5 criteria × 1-5 scale: specificity, completeness, correctness, actionability, discipline.</li>
+<li><strong>Pass threshold.</strong> Treatment delta ≥ 1.5 over baseline.</li>
+</ul>
+
+<p>Why isolation? Because the question "does this skill add value?" only has meaning if you can isolate it. Otherwise you're testing the model, not the skill.</p>
+
+<h3>2. End-to-end — 3 real tests</h3>
+
+<p>But isolation doesn't tell you if the <em>system</em> works. So we also ran:</p>
+
+<ul>
+<li><strong>Test 1 — App from scratch.</strong> Single prompt: <em>"task-management app with JWT auth, CRUD, Node.js + SQLite"</em>. 4-phase pipeline (PO → Orchestrator → Backend → QA). <strong>Result: 33/33 Jest tests passing.</strong></li>
+<li><strong>Test 2 — Manual pipeline.</strong> Real handoffs between 6 skills (PO → Orchestrator → Backend → QA → Security → Reviewer) for a CSV export feature. <strong>Result: 12/12 tests + Security caught a CSV injection bug the QA had missed.</strong> That's the chain working.</li>
+<li><strong>Test 3 — Feature in existing repo.</strong> Skill 03 in a sandbox repo, no Prisma, no TypeScript — just plain Node + better-sqlite3. <strong>Result: 8/8 tests, zero invented dependencies.</strong></li>
+</ul>
+
+<hr>
+
+<h2>What we found</h2>
+
+<h3>Overall</h3>
+
+<table border="1" cellpadding="6" cellspacing="0">
+<thead>
+<tr><th>Metric</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td>Pass rate</td><td><strong>92.6%</strong> (50/54)</td></tr>
+<tr><td>Average baseline</td><td>2.69 / 5</td></tr>
+<tr><td>Average treatment</td><td>4.52 / 5</td></tr>
+<tr><td>Average delta</td><td><strong>+1.84</strong></td></tr>
+<tr><td>E2E tests green</td><td><strong>53/53</strong></td></tr>
+<tr><td>Re-run token reduction</td><td><strong>98%</strong></td></tr>
+</tbody>
+</table>
+
+<h3>Best performer: semgrep-triager — delta +3.25</h3>
+
+<p>The cold model scored 1.75/5 on triaging Semgrep findings. Essentially: "read the code and see if it looks like a false positive." Generic, dangerous, no protocol.</p>
+
+<p>With the subagent loaded: jq SARIF parser, 3-question TP/FP decision table, anti-bias guardrails (3 FPs in a row without code-reading = stop), suppression gate with explicit approval required before <code>// nosemgrep</code>, fix diffs with owner and effort per TP.</p>
+
+<p>That's transformative. The cold model wasn't just less complete — it was missing the safety layer entirely.</p>
+
+<h3>Most interesting failure: code-reviewer agent</h3>
+
+<p>Initial test: delta +1.0 (FAIL — below the 1.5 threshold). Investigation showed the scenario was too easy. The bugs in the test PR were obvious enough that even a cold model caught them. The kit's structure (OWASP labels, severity gate, owner per finding) was real value — but the baseline ceiling was high.</p>
+
+<p>We did what good benches do: <strong>rewrote the scenario harder.</strong> New version: a PR with 23 files, 8 findings distributed across different concerns (race condition, timing attack in password compare, circular import, N+1 in <code>map async</code>, weak test, secrets exposure vs <code>.gitignore</code> false-alarm question, Dockerfile regression).</p>
+
+<p>Result on retest: <strong>+2.29 PASS.</strong> Cold model caught 3 of 8. Treatment caught 8 + 2 bonus.</p>
+
+<p>The methodology lesson: when a skill seems to fail, check the scenario before blaming the skill.</p>
+
+<hr>
+
+<h2>How we fixed what the bench found</h2>
+
+<p>We had 4 problems flagged by the first run:</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+<thead>
+<tr><th>Skill</th><th>Issue</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>25 — AI Integration</td><td>2 templates were 3–9 line stubs</td><td>Wrote 422 + 225 real lines (adapter pattern, fallback chain, observability, security checklist)</td></tr>
+<tr><td>07 — Deploy Docker</td><td>Rollback used hardcoded prev-tag, SSL block assumed certbot already ran</td><td>Added <code>.last-tag</code> persistence + <code>ssl-init.sh</code> idempotent (+196 lines)</td></tr>
+<tr><td>03 — Backend API</td><td>Playbook was TypeScript/Prisma-only</td><td>Added 90-line "Plain JS + better-sqlite3" section</td></tr>
+<tr><td>Code-reviewer</td><td>Scenario too easy</td><td>Rewrote scenario (see above)</td></tr>
+</tbody>
+</table>
+
+<p>Then we <strong>re-ran the bench</strong> on all 4. Three flipped to PASS with measured deltas (+2.0, +1.8, +2.29). The fourth (skill 24 — Release Manager) stayed near-miss, but for a different reason: the baseline got stronger when we gave the model repo context, compressing the delta. Not a skill problem — a scenario ceiling problem.</p>
+
+<p>The principle this establishes: <strong>every FAIL in the bench becomes a concrete fix in the next version. We don't rationalize findings. We fix them and measure again.</strong></p>
+
+<p>That's not marketing. That's how the project is run.</p>
+
+<hr>
+
+<h2>What this proves about LLM coding</h2>
+
+<p>The interesting result isn't "the kit works." It's <em>what kind of work</em> the kit does.</p>
+
+<p>The kit doesn't add value by "knowing more." It adds value by <strong>enforcing structure the cold model never produces spontaneously:</strong></p>
+
+<ul>
+<li><strong>Persistent artifact paths</strong> — skills name where to write output (<code>_detective_sdd/</code>, <code>docs/repo-audit/current.md</code>). Cold model produces content with invented structure.</li>
+<li><strong>Handoff chains</strong> — outputs reference next skill by number (<code>→ skill 06 → skill 11</code>). Cold model ends without pointing forward.</li>
+<li><strong>Anti-pattern enforcement tables</strong> — every critical skill has a "rationalization vs reality" table. Cold models don't list what NOT to do.</li>
+<li><strong>Evidence anchors</strong> — detective skills require <code>[evidence: file:line]</code> + confidence tier. Cold model states facts without sourcing.</li>
+<li><strong>Suppression gates</strong> — semgrep-triager requires explicit approval to silence findings. Cold model silences silently.</li>
+</ul>
+
+<p>These aren't features. These are <strong>constraints</strong>. The cold model is capable, but unconstrained. The kit constrains the output in ways that make it auditable and chainable.</p>
+
+<hr>
+
+<h2>What about the autonomous modes?</h2>
+
+<p>Glad you asked. We tested those too. Process-based modes that run as Node subprocesses (<code>auto-loop.mjs</code>, <code>swarm/index.mjs</code>, 7 YAML programs):</p>
+
+<ul>
+<li><strong>auto-loop.mjs</strong> — Executed for real. Dispatched Claude, captured output, ran validation. 12 documented flags, 9 exit codes. Works.</li>
+<li><strong>swarm/index.mjs</strong> — Refused to run with a dirty working tree. <em>That's the right behavior</em> — autonomous mode shouldn't squash uncommitted work. We tested the guard, which is what we wanted to verify.</li>
+<li><strong>7 YAML programs</strong> — pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, adversarial-dev, comprehensive-review, refactor-safely. All validated, all dry-run with structured step output. 6 step types in use (command, gate, conditional, parallel, bash, loop, prompt).</li>
+</ul>
+
+<p>The autonomous machinery exists, runs, and has safety rails. The reports go into detail.</p>
+
+<hr>
+
+<h2>What we deliberately did <em>not</em> test</h2>
+
+<p>Being honest matters more than looking complete. Here's the skip list:</p>
+
+<ul>
+<li>Image generation against real fal.ai API (would burn credits without changing the conclusion)</li>
+<li>Multi-platform — only validated on Claude Code. Cursor/Windsurf/Gemini CLI listed as supported but not bench-tested this round.</li>
+<li><code>/swarm</code> with a real PR opened to GitHub (working tree was busy)</li>
+<li><code>/loop --parallel</code> with real worktrees (subprocess, time-consuming)</li>
+</ul>
+
+<p>These are in the public report's "Honesty" section. The kit's not done — but we measure what we ship.</p>
+
+<hr>
+
+<h2>Try it yourself</h2>
+
+<p>It's <a href="https://github.com/felvieira/claude-skills-fv/blob/main/LICENSE">Apache-2.0</a>, free, and ships with a <a href="https://github.com/felvieira/claude-skills-fv/blob/main/NOTICE">NOTICE</a> file that preserves attribution to the 17+ open-source projects whose ideas shaped it (DeerFlow, spec-kit, archon, mattpocock/skills, Karpathy's observations, and more).</p>
+
+<pre><code># Install on Claude Code
+claude plugin install https://github.com/felvieira/claude-skills-fv
+
+# Or clone + install in your project
+git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
+bash /tmp/dev-team-kit/setup/install.sh /path/to/your/project</code></pre>
+
+<p>Works in Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode. Brings 39 skills, 15 subagents, 32 slash commands, 7 executable YAML programs, and a public benchmark you can run on your own machine in under 30 seconds.</p>
+
+<p>The bench reports — with every test, every number, every code snippet — are at:</p>
+
+<ul>
+<li>🌎 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+<li>🇧🇷 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
+</ul>
+
+<p>The repo: <strong><a href="https://github.com/felvieira/claude-skills-fv">github.com/felvieira/claude-skills-fv</a></strong></p>
+
+<p>If you only remember one thing from this post: <strong>AI tooling that doesn't publish its bench results is asking you to trust vibes. Don't.</strong></p>
+
+<hr>
+
+<p><em>Built and shipped under Apache-2.0 with NOTICE-enforced attribution. Bench scenarios reproducible.</em></p>
+
+</body>
+</html>

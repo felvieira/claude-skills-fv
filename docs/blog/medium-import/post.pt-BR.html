@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Testamos Nosso Kit de IA Contra Si Mesmo. Os Números São Esses.</title>
+</head>
+<body>
+
+<h1>Testamos Nosso Kit de IA Contra Si Mesmo. Os Números São Esses.</h1>
+
+<p><strong>TL;DR:</strong> Rodamos 53 cenários de avaliação + 3 testes end-to-end no Dev Team Kit. Mesmo modelo. Mesmo prompt. Com e sem o kit. Os números são reais, o código é real, e sim — funciona. <strong>92.6% de pass rate. +1.84 delta médio de qualidade. 53/53 testes E2E verdes.</strong> Os relatórios são públicos e reproduzíveis.</p>
+
+<hr>
+
+<h2>O problema que ninguém quer falar</h2>
+
+<p>Você instala um pacote de "AI coding skills". O README diz que é fantástico. Você usa por uma semana. As coisas parecem um pouco melhores? Mas você não sabe ao certo.</p>
+
+<p>A maioria das ferramentas de IA vive nessa neblina: claim de marketing, vibes, anedotas. Ninguém mede. Quando construímos o <strong>Dev Team Kit</strong> (um plugin Apache-2.0 que adiciona 39 skills especialistas, 15 subagents e 32 slash commands ao Claude Code, Cursor, Windsurf, etc.) prometemos não publicar nessa neblina.</p>
+
+<p>Então construímos nosso próprio bench. Rodamos ele. Publicamos os resultados.</p>
+
+<p>Os relatórios estão aqui, bilíngues, um único arquivo HTML cada, sem servidor:</p>
+
+<ul>
+<li>🇧🇷 <strong>Português:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
+<li>🌎 <strong>English:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+</ul>
+
+<p>Esse post explica o que tem dentro deles.</p>
+
+<hr>
+
+<h2>O que testamos</h2>
+
+<p>Dois tipos de teste, de propósito.</p>
+
+<h3>1. Bench de isolamento — 53 cenários</h3>
+
+<p>Cada skill (39) e cada subagent (15, menos um que travou em timeout) passou pelo mesmo procedimento:</p>
+
+<ul>
+<li><strong>Pass A — Baseline.</strong> Prompt real. Claude Sonnet 4.6 frio. Sem skill carregada.</li>
+<li><strong>Pass B — Treatment.</strong> Mesmo prompt. Mesmo modelo. Skill carregada.</li>
+<li><strong>Rubrica.</strong> 5 critérios × escala 1-5: especificidade, completude, correção, executabilidade, disciplina.</li>
+<li><strong>Threshold de aprovação.</strong> Delta de treatment ≥ 1.5 sobre o baseline.</li>
+</ul>
+
+<p>Por que isolamento? Porque a pergunta "essa skill agrega valor?" só tem sentido se você consegue isolar o efeito. Caso contrário você está testando o modelo, não a skill.</p>
+
+<h3>2. End-to-end — 3 testes reais</h3>
+
+<p>Mas isolamento não diz se o <em>sistema</em> funciona. Então também rodamos:</p>
+
+<ul>
+<li><strong>Teste 1 — App do zero.</strong> Pedido único: <em>"app de gestão de tarefas com JWT auth, CRUD, Node.js + SQLite"</em>. Pipeline de 4 fases (PO → Orchestrator → Backend → QA). <strong>Resultado: 33/33 testes Jest passando.</strong></li>
+<li><strong>Teste 2 — Pipeline manual.</strong> Handoffs reais entre 6 skills (PO → Orchestrator → Backend → QA → Security → Reviewer) para uma feature de export CSV. <strong>Resultado: 12/12 testes + Security pegou um bug de CSV injection que o QA tinha perdido.</strong> Isso é a cadeia funcionando.</li>
+<li><strong>Teste 3 — Feature em repo existente.</strong> Skill 03 num repo sandbox, sem Prisma, sem TypeScript — só Node puro + better-sqlite3. <strong>Resultado: 8/8 testes, zero dependência inventada.</strong></li>
+</ul>
+
+<hr>
+
+<h2>O que encontramos</h2>
+
+<h3>Geral</h3>
+
+<table border="1" cellpadding="6" cellspacing="0">
+<thead>
+<tr><th>Métrica</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Pass rate</td><td><strong>92.6%</strong> (50/54)</td></tr>
+<tr><td>Baseline médio</td><td>2.69 / 5</td></tr>
+<tr><td>Treatment médio</td><td>4.52 / 5</td></tr>
+<tr><td>Delta médio</td><td><strong>+1.84</strong></td></tr>
+<tr><td>Testes E2E verdes</td><td><strong>53/53</strong></td></tr>
+<tr><td>Redução de tokens em re-run</td><td><strong>98%</strong></td></tr>
+</tbody>
+</table>
+
+<h3>Melhor resultado: semgrep-triager — delta +3.25</h3>
+
+<p>O modelo frio tirou 1.75/5 fazendo triagem de findings do Semgrep. Essencialmente: "lê o código e vê se parece falso positivo." Genérico, perigoso, sem protocolo.</p>
+
+<p>Com o subagent carregado: parser jq pra SARIF, tabela de 3 perguntas pra decisão TP/FP, guardrails anti-bias (3 FPs seguidos sem leitura de código = parar), suppression gate com aprovação explícita obrigatória antes de qualquer <code>// nosemgrep</code>, fix diff com owner e esforço por TP.</p>
+
+<p>Isso é transformativo. O modelo frio não estava só menos completo — estava sem a camada de segurança inteira.</p>
+
+<h3>Falha mais interessante: agent code-reviewer</h3>
+
+<p>Teste inicial: delta +1.0 (FAIL — abaixo do threshold 1.5). Investigação mostrou que o cenário era fácil demais. Os bugs no PR de teste eram óbvios o suficiente pra até o modelo frio pegar. A estrutura do kit (OWASP labels, severity gate, owner por finding) era valor real — mas o teto do baseline estava alto.</p>
+
+<p>Fizemos o que bons benches fazem: <strong>reescrevemos o cenário mais difícil.</strong> Nova versão: um PR com 23 arquivos, 8 findings distribuídos em concerns diferentes (race condition, timing attack em comparação de senha, import circular, N+1 em <code>map async</code>, teste fraco, secrets vs <code>.gitignore</code> — alarme falso ou real?, regressão Dockerfile).</p>
+
+<p>Resultado no reteste: <strong>+2.29 PASS.</strong> Modelo frio achou 3 dos 8. Treatment achou 8 + 2 bônus.</p>
+
+<p>A lição metodológica: quando uma skill parece falhar, cheque o cenário antes de culpar a skill.</p>
+
+<hr>
+
+<h2>Como corrigimos o que o bench achou</h2>
+
+<p>Tínhamos 4 problemas flagrados na primeira rodada:</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+<thead>
+<tr><th>Skill</th><th>Problema</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>25 — AI Integration</td><td>2 templates eram stubs de 3–9 linhas</td><td>Escrevemos 422 + 225 linhas reais (adapter pattern, fallback chain, observability, security checklist)</td></tr>
+<tr><td>07 — Deploy Docker</td><td>Rollback usava prev-tag hardcoded, bloco SSL assumia certbot já rodado</td><td>Adicionamos <code>.last-tag</code> persistido + <code>ssl-init.sh</code> idempotente (+196 linhas)</td></tr>
+<tr><td>03 — Backend API</td><td>Playbook era só TypeScript/Prisma</td><td>Adicionamos seção de 90 linhas "Plain JS + better-sqlite3"</td></tr>
+<tr><td>Code-reviewer</td><td>Cenário fácil demais</td><td>Reescrevemos o cenário (ver acima)</td></tr>
+</tbody>
+</table>
+
+<p>Aí <strong>rodamos o bench de novo</strong> nos 4. Três viraram PASS com deltas medidos (+2.0, +1.8, +2.29). O quarto (skill 24 — Release Manager) ficou near-miss, mas por outra razão: o baseline também ficou mais forte quando demos contexto de repo ao modelo, comprimindo o delta. Não é problema da skill — é teto de cenário.</p>
+
+<p>O princípio que isso estabelece: <strong>cada FAIL no bench vira fix concreto na versão seguinte. Não justificamos achados. Corrigimos e medimos de novo.</strong></p>
+
+<p>Isso não é marketing. É como o projeto é tocado.</p>
+
+<hr>
+
+<h2>O que isso prova sobre LLM coding</h2>
+
+<p>O resultado interessante não é "o kit funciona." É <em>que tipo de trabalho</em> o kit faz.</p>
+
+<p>O kit não agrega valor por "saber mais." Agrega valor <strong>enforçando estrutura que o modelo frio nunca produz espontaneamente:</strong></p>
+
+<ul>
+<li><strong>Paths persistentes de artefatos</strong> — skills nomeiam onde escrever (<code>_detective_sdd/</code>, <code>docs/repo-audit/current.md</code>). Modelo frio produz conteúdo com estrutura inventada.</li>
+<li><strong>Handoff chains</strong> — outputs referenciam a próxima skill por número (<code>→ skill 06 → skill 11</code>). Modelo frio termina sem apontar pra frente.</li>
+<li><strong>Tabelas anti-pattern</strong> — toda skill crítica tem uma tabela "racionalização vs realidade". Modelos frios não listam o que NÃO fazer.</li>
+<li><strong>Evidence anchors</strong> — skills detective exigem <code>[evidence: file:linha]</code> + tier de confiança. Modelo frio afirma fatos sem citar fonte.</li>
+<li><strong>Suppression gates</strong> — semgrep-triager exige aprovação explícita pra silenciar findings. Modelo frio silencia silenciosamente.</li>
+</ul>
+
+<p>Não são features. São <strong>constraints</strong>. O modelo frio é capaz, mas sem constraint. O kit constringe a saída em formas que tornam ela auditável e encadeável.</p>
+
+<hr>
+
+<h2>E os modos autônomos?</h2>
+
+<p>Boa pergunta. Esses também testamos. Modos process-based que rodam como subprocesso Node (<code>auto-loop.mjs</code>, <code>swarm/index.mjs</code>, 7 programs YAML):</p>
+
+<ul>
+<li><strong>auto-loop.mjs</strong> — Executado de verdade. Disparou Claude, capturou output, rodou validation. 12 flags documentadas, 9 exit codes. Funciona.</li>
+<li><strong>swarm/index.mjs</strong> — Se recusou a rodar com working tree sujo. <em>Isso é o comportamento certo</em> — modo autônomo não deve sobrescrever trabalho não commitado. Testamos o guard, que era o que queríamos validar.</li>
+<li><strong>7 programs YAML</strong> — pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, adversarial-dev, comprehensive-review, refactor-safely. Todos validados, todos com dry-run estruturado. 6 step types em uso (command, gate, conditional, parallel, bash, loop, prompt).</li>
+</ul>
+
+<p>A maquinaria autônoma existe, roda, e tem safety rails. Os relatórios detalham.</p>
+
+<hr>
+
+<h2>O que deliberadamente <em>não</em> testamos</h2>
+
+<p>Honestidade importa mais que parecer completo. Lista do que pulamos:</p>
+
+<ul>
+<li>Geração de imagem contra a API real do fal.ai (queimaria créditos sem mudar a conclusão)</li>
+<li>Multi-plataforma — só validado em Claude Code. Cursor/Windsurf/Gemini CLI listados como suportados mas não testados nessa rodada.</li>
+<li><code>/swarm</code> com PR real aberto no GitHub (working tree estava ocupada)</li>
+<li><code>/loop --parallel</code> com worktrees reais (subprocess, consome tempo)</li>
+</ul>
+
+<p>Estão na seção "Honestidade" do relatório público. O kit não está pronto — mas medimos o que entregamos.</p>
+
+<hr>
+
+<h2>Testa você mesmo</h2>
+
+<p>É <a href="https://github.com/felvieira/claude-skills-fv/blob/main/LICENSE">Apache-2.0</a>, grátis, e vem com arquivo <a href="https://github.com/felvieira/claude-skills-fv/blob/main/NOTICE">NOTICE</a> que preserva atribuição aos 17+ projetos open-source cujas ideias moldaram ele (DeerFlow, spec-kit, archon, mattpocock/skills, observações do Karpathy, e mais).</p>
+
+<pre><code># Instalar no Claude Code
+claude plugin install https://github.com/felvieira/claude-skills-fv
+
+# Ou clone + instala no seu projeto
+git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
+bash /tmp/dev-team-kit/setup/install.sh /caminho/do/seu/projeto</code></pre>
+
+<p>Funciona em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode. Traz 39 skills, 15 subagents, 32 slash commands, 7 programs YAML executáveis, e um benchmark público que você roda na sua máquina em menos de 30 segundos.</p>
+
+<p>Os relatórios do bench — com todo teste, todo número, todo snippet de código — estão em:</p>
+
+<ul>
+<li>🇧🇷 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
+<li>🌎 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+</ul>
+
+<p>O repo: <strong><a href="https://github.com/felvieira/claude-skills-fv">github.com/felvieira/claude-skills-fv</a></strong></p>
+
+<p>Se você só lembrar de uma coisa desse post: <strong>ferramenta de IA que não publica os resultados do próprio bench está pedindo pra você confiar em vibes. Não confia.</strong></p>
+
+<hr>
+
+<p><em>Construído e entregue sob Apache-2.0 com atribuição forçada via NOTICE. Cenários do bench reproduzíveis.</em></p>
+
+</body>
+</html>
