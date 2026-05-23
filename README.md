@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 39 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.10.1-0f766e)
+![Version](https://img.shields.io/badge/version-2.10.2-0f766e)
 ![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -24,6 +24,19 @@
 | 🇧🇷 **Português** | [`docs/WIKI.pt-BR.md`](docs/WIKI.pt-BR.md) |
 
 Every skill, subagent, command, policy, plugin and MCP tool documented — in the format of [aihero.dev's "5 Agent Skills I Use Every Day"](https://www.aihero.dev/5-agent-skills-i-use-every-day).
+
+---
+
+### 📊 Quality Bench — measured results, not marketing claims
+
+We tested every skill and subagent with a published rubric. 53 isolation scenarios + 3 end-to-end tests. Same model, same prompt — with and without the kit. Numbers are measured, code is real, results are auditable.
+
+| Language | Link | Highlights |
+|---|---|---|
+| 🌎 **English** | [`analyze-doc/index.en.html`](analyze-doc/index.en.html) | 92.6% pass rate · +1.84 avg delta · 53/53 E2E green |
+| 🇧🇷 **Português** | [`analyze-doc/index.pt-BR.html`](analyze-doc/index.pt-BR.html) | Mesmo relatório em PT-BR |
+
+Includes before/after with full output text, per-skill delta scores, process-based test results, and v2.10.1 fix verification. Methodology in [`eval-bench/`](eval-bench/).
 
 ---
 
@@ -840,6 +853,7 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **[coleam00/archon](https://github.com/coleam00/archon)** — Program engine primitives (`type: prompt`/`bash`/`loop`, `context: fresh`, `provider`/`model` per step, `trigger_rule`) + 2 patterns (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). v1.7.0. We do NOT adopt: Web UI, Slack/Telegram/GitHub adapters, server backend, runtime Bun.
 - **[claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez)** — Apache-2.0. MinHash-based cross-call output dedup (bottom-k shingles + Jaccard threshold) absorbed into `mcp-server/src/lib/cross-call-dedup.ts`, and the public benchmark methodology (versioned fixtures + A/B baseline harness) absorbed into `bench/`. v2.9.0. We do NOT adopt: the Rust binary, multi-host shell hooks, the "caveman" persona, or the summarization fallback.
 - **[bytedance/deer-flow](https://github.com/bytedance/deer-flow)** — MIT. Three conventions absorbed: observability trace tags (`session_id`/`user_id`/`trace_name`/`tags`) in `policies/observability-trace-tags.md` + wired into `session-event-logger.mjs`; skill manifest frontmatter v2 (`version`/`author`/`compatibility`/`requires`) in `policies/skill-manifest.md` + parsed by `file-reader.ts`; progressive skill loading framing in `policies/progressive-skill-loading.md`. v2.10.0. We do NOT adopt: LangGraph/LangChain runtime, backend Gateway, IM channels, sandbox provisioner, web UI, hosted service, `.skill` archive format.
+- **[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)** — Idea attribution only (no upstream license declared). The "Goal-Driven Execution" principle from Andrej Karpathy's public observations on LLM coding pitfalls was the missing 4th pillar in our policy set; absorbed into `policies/goal-driven-execution.md` (v2.10.2). The other 3 Karpathy pillars (Think Before Coding, Simplicity First, Surgical Changes) were already covered by `anti-rationalization.md`, Senior Dev Override in `GLOBAL.md`, and `vertical-slices.md`.
 
 ---
 

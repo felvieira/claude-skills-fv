@@ -5,6 +5,41 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.10.2-analyze-doc-and-goal-driven] - 2026-05-23
+
+**Public bench reports + Goal-Driven Execution policy (4th Karpathy pillar).**
+
+### Added
+
+- **`analyze-doc/`** (new top-level folder) — bilingual HTML quality reports:
+  - `analyze-doc/index.en.html` (English, 922 lines)
+  - `analyze-doc/index.pt-BR.html` (Portuguese, 922 lines)
+  - `analyze-doc/README.md` — overview + methodology
+  - Cross-language nav links (EN ↔ PT)
+  - Sections: hero, summary, before/after with real text, 3 E2E tests, 5 wave tables, process-based, v2.10.1 fixes, token savings, honesty, conclusion
+- **`policies/goal-driven-execution.md`** — 4th Karpathy pillar made explicit. Verifiable success criteria + loop until met. Generalizes skill 37 (TDD) pattern to refactor/bugfix/perf/migration. Vague-task → goal-driven rewrite table. Composes with `verification-before-completion.md`, `anti-rationalization.md`, skill 37, skill 01.
+
+### Changed
+
+- **`README.md` + `README.pt-BR.md`** — new "📊 Quality Bench" section pointing to `analyze-doc/` with 92.6% pass rate headline. Version badges bumped to 2.10.2.
+- **`NOTICE` + `README.md` Acknowledgements** — added `multica-ai/andrej-karpathy-skills` entry (idea attribution only; no upstream license declared) acknowledging Karpathy's framing for the Goal-Driven Execution principle.
+
+### Why this version exists
+
+User question after v2.10.1: "tem coisas que vale a pena absorver de multica-ai/andrej-karpathy-skills?"
+Audit revealed: 3 of Karpathy's 4 principles were already covered (Think Before Coding = anti-rationalization, Simplicity First = Senior Dev Override, Surgical Changes = vertical-slices). The 4th — Goal-Driven Execution — was a real gap. Created the policy + attribution.
+
+Also: user wanted public bench reports in a dedicated folder visible from README. Created `analyze-doc/` with bilingual HTMLs.
+
+### Verification
+
+- HTML files valid (922 lines each, mirror structure)
+- 4 PT residual terms in EN file (all in code/example blocks, semantically equivalent)
+- NOTICE entry follows existing format
+- Karpathy license: not declared upstream → treated as idea attribution only, no code copied
+
+---
+
 ## [2.10.1-eval-bench-driven-fixes] - 2026-05-23
 
 **Fixes derivados do eval-bench** — 6 melhorias concretas baseadas em achados reais dos 53 cenários testados nesta sessão. Pass rate esperado sobe de 88.9% (48/54) pra ~92.6% após próximo bench.

@@ -132,3 +132,15 @@ Birgitta Böckeler (Thoughtworks) — "Harness engineering"
   `templates/harness/` per topology, harness coverage in `/savings`,
   approved-fixtures pattern in skill 37, fitness-functions YAML in skill 38,
   harnessability score in skill 18.
+
+multica-ai/andrej-karpathy-skills (Jiayuan Yu)
+  https://github.com/multica-ai/andrej-karpathy-skills
+  License: not declared upstream (treated as idea attribution only, no code
+  copied). Original framing derived from Andrej Karpathy's public
+  observations on X about LLM coding pitfalls.
+  Adapted (v2.10.2): `policies/goal-driven-execution.md` — the "Goal-Driven
+  Execution" principle (define verifiable success criteria, loop until met)
+  was the missing fourth pillar in our policy set. The other three pillars
+  Karpathy lists (Think Before Coding, Simplicity First, Surgical Changes)
+  were already covered by `anti-rationalization.md`, the Senior Dev Override
+  in `GLOBAL.md`, and `vertical-slices.md` respectively.
