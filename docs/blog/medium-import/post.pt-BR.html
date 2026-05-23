@@ -2,67 +2,120 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Testamos Nosso Kit de IA Contra Si Mesmo. Os Números São Esses.</title>
+<title>Dev Team Kit — 39 Skills Dentro do Seu Agente de IA, Medido</title>
 </head>
 <body>
 
-<h1>Testamos Nosso Kit de IA Contra Si Mesmo. Os Números São Esses.</h1>
+<h1>Dev Team Kit — 39 Especialistas Dentro do Seu Agente de IA. E Medimos Tudo.</h1>
 
-<p><strong>TL;DR:</strong> Rodamos 53 cenários de avaliação + 3 testes end-to-end no Dev Team Kit. Mesmo modelo. Mesmo prompt. Com e sem o kit. Os números são reais, o código é real, e sim — funciona. <strong>92.6% de pass rate. +1.84 delta médio de qualidade. 53/53 testes E2E verdes.</strong> Os relatórios são públicos e reproduzíveis.</p>
+<p><img src="https://opengraph.githubassets.com/1/felvieira/claude-skills-fv" alt="github.com/felvieira/claude-skills-fv" /></p>
 
-<hr>
-
-<h2>O problema que ninguém quer falar</h2>
-
-<p>Você instala um pacote de "AI coding skills". O README diz que é fantástico. Você usa por uma semana. As coisas parecem um pouco melhores? Mas você não sabe ao certo.</p>
-
-<p>A maioria das ferramentas de IA vive nessa neblina: claim de marketing, vibes, anedotas. Ninguém mede. Quando construímos o <strong>Dev Team Kit</strong> (um plugin Apache-2.0 que adiciona 39 skills especialistas, 15 subagents e 32 slash commands ao Claude Code, Cursor, Windsurf, etc.) prometemos não publicar nessa neblina.</p>
-
-<p>Então construímos nosso próprio bench. Rodamos ele. Publicamos os resultados.</p>
-
-<p>Os relatórios estão aqui, bilíngues, um único arquivo HTML cada, sem servidor:</p>
-
-<ul>
-<li>🇧🇷 <strong>Português:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
-<li>🌎 <strong>English:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
-</ul>
-
-<p>Esse post explica o que tem dentro deles.</p>
+<p><strong>TL;DR:</strong> Um plugin Apache-2.0 que transforma Claude Code, Cursor, Windsurf e qualquer agente compatível com MCP num time completo de desenvolvimento virtual: 39 skills especialistas (PO, designer, backend, frontend, QA, security, SRE, …), 15 subagents despacháveis, 32 slash commands, 7 pipelines YAML executáveis, modos autônomos, memória persistente entre sessões, e economia de tokens embutida. Rodamos um benchmark público em cada peça. <strong>92.6% de pass rate. +1.84 delta médio de qualidade. 53/53 testes E2E verdes.</strong> Tudo em <a href="https://github.com/felvieira/claude-skills-fv">github.com/felvieira/claude-skills-fv</a>.</p>
 
 <hr>
 
-<h2>O que testamos</h2>
+<h2>O que tem no kit</h2>
 
-<p>Dois tipos de teste, de propósito.</p>
+<p>O Dev Team Kit instala como plugin do Claude Code (ou via shell script em qualquer agente compatível com MCP) e imediatamente dá ao modelo um time estruturado pra despachar trabalho. As peças:</p>
 
-<h3>1. Bench de isolamento — 53 cenários</h3>
-
-<p>Cada skill (39) e cada subagent (15, menos um que travou em timeout) passou pelo mesmo procedimento:</p>
+<h3>39 skills especialistas (por categoria)</h3>
 
 <ul>
-<li><strong>Pass A — Baseline.</strong> Prompt real. Claude Sonnet 4.6 frio. Sem skill carregada.</li>
-<li><strong>Pass B — Treatment.</strong> Mesmo prompt. Mesmo modelo. Skill carregada.</li>
-<li><strong>Rubrica.</strong> 5 critérios × escala 1-5: especificidade, completude, correção, executabilidade, disciplina.</li>
-<li><strong>Threshold de aprovação.</strong> Delta de treatment ≥ 1.5 sobre o baseline.</li>
+<li><strong>Gestão e Coordenação (16):</strong> Context Manager, Orchestrator, Documenter, Reviewer, Repo Auditor, Asset Librarian, Observability/SRE, Data Analytics, Accessibility, Migration &amp; Refactor, Release Manager, AI Integration Architect, Prompt Engineer, Video Integration, CLAUDE.md Generator, Cost Tracker, Session Summary, Smart Suggestions, Detective Spec, Skill Author, Architecture Deepener.</li>
+<li><strong>Produto e Design (4):</strong> PO, UI/UX Designer, Design Intelligence, Web Asset Generator.</li>
+<li><strong>Desenvolvimento (4):</strong> Backend Engineer, Frontend Engineer, Motion Designer, Mobile/Tauri.</li>
+<li><strong>Conteúdo e Discovery (2):</strong> Marketing Copy, SEO Specialist.</li>
+<li><strong>Qualidade e Entrega (5):</strong> QA Engineer, Security Reviewer, Static Analysis, TDD Engineer, Deploy Engineer.</li>
 </ul>
 
-<p>Por que isolamento? Porque a pergunta "essa skill agrega valor?" só tem sentido se você consegue isolar o efeito. Caso contrário você está testando o modelo, não a skill.</p>
+<p>Cada skill é um playbook markdown com tabelas anti-racionalização, handoff chains apontando pra próxima skill, paths persistentes de artefato, e evidence anchors. Catálogo completo: <a href="https://github.com/felvieira/claude-skills-fv#the-39-specialists">README → The 39 Specialists</a>.</p>
 
-<h3>2. End-to-end — 3 testes reais</h3>
+<h3>15 subagents despacháveis</h3>
 
-<p>Mas isolamento não diz se o <em>sistema</em> funciona. Então também rodamos:</p>
+<p>Pra quando você quer um turno isolado com contexto fresh: <code>code-reviewer</code>, <code>security-auditor</code>, <code>test-engineer</code>, <code>orchestrator</code>, <code>debugger</code>, 4 Detective subagents pra engenharia reversa de legado, 5 subagents de Static Analysis (semgrep-scanner, semgrep-triager, codeql-runner, sarif-parsing, variant-analysis), e o auditor anti-AI-writing.</p>
 
-<ul>
-<li><strong>Teste 1 — App do zero.</strong> Pedido único: <em>"app de gestão de tarefas com JWT auth, CRUD, Node.js + SQLite"</em>. Pipeline de 4 fases (PO → Orchestrator → Backend → QA). <strong>Resultado: 33/33 testes Jest passando.</strong></li>
-<li><strong>Teste 2 — Pipeline manual.</strong> Handoffs reais entre 6 skills (PO → Orchestrator → Backend → QA → Security → Reviewer) para uma feature de export CSV. <strong>Resultado: 12/12 testes + Security pegou um bug de CSV injection que o QA tinha perdido.</strong> Isso é a cadeia funcionando.</li>
-<li><strong>Teste 3 — Feature em repo existente.</strong> Skill 03 num repo sandbox, sem Prisma, sem TypeScript — só Node puro + better-sqlite3. <strong>Resultado: 8/8 testes, zero dependência inventada.</strong></li>
-</ul>
+<h3>32 slash commands por fase</h3>
+
+<p><code>/spec</code> · <code>/plan</code> · <code>/build</code> · <code>/test</code> · <code>/review</code> · <code>/simplify</code> · <code>/ship</code> · <code>/pipeline</code> · <code>/best</code> · <code>/auto</code> · <code>/loop</code> · <code>/swarm</code> · <code>/worktree</code> · <code>/detective-spec</code> · <code>/grill-me</code> · <code>/to-prd</code> · <code>/to-issues</code> · <code>/pipeline-discovery</code> · <code>/constitution</code> · <code>/checklist</code> · <code>/analyze</code> · <code>/humanize</code> · <code>/consolidate-memory</code> · <code>/run-program</code> · <code>/savings</code> · <code>/drift-scan</code> — e mais alguns. <a href="https://github.com/felvieira/claude-skills-fv#slash-commands--shortcuts-by-development-phase">Tabela completa</a>.</p>
+
+<h3>7 pipelines YAML executáveis</h3>
+
+<p><code>pipeline-discovery</code>, <code>spec-driven-development</code>, <code>loop-polishing</code>, <code>detective-spec</code>, <code>adversarial-dev</code>, <code>comprehensive-review</code>, <code>refactor-safely</code> — workflows declarativos multi-step com gates humanos, steps paralelos/condicionais, substituição de variáveis. <a href="https://github.com/felvieira/claude-skills-fv/tree/main/programs">programs/</a>.</p>
 
 <hr>
 
-<h2>O que encontramos</h2>
+<h2>Os modos autônomos</h2>
 
-<h3>Geral</h3>
+<p>O kit traz 3 níveis de autonomia dependendo de quão hands-off você quer ser:</p>
+
+<ul>
+<li><strong><code>/auto</code></strong> — Agente único roda sua task end-to-end, para quando os testes passam. Bom pra task pequena.</li>
+<li><strong><code>/loop</code></strong> — Loop multi-agente com polishing pass. Suporta <code>--parallel N</code> com worktrees git isolados, <code>--polish=none|light|standard|full</code>, backoff classificado, token cap, condições stop-when, e 9 exit codes pra integração CI. Configurável: agente <code>claude</code> ou <code>codex</code>.</li>
+<li><strong><code>/swarm</code></strong> — Autonomia total. Prompt único → PR mergeable. Worktree isolado + Ralph loop (contexto fresh por story) + 4 agentes de review paralelos + self-fix CRITICAL/HIGH + PR automático no GitHub. <a href="https://github.com/felvieira/claude-skills-fv/blob/main/policies/swarm-protocol.md">Protocolo</a>.</li>
+</ul>
+
+<p>Mais um <strong>intent classifier</strong> baseado em hook que detecta a intenção do seu prompt (feature / bug / refactor / spike / etc.) e auto-sugere o command certo. 4 níveis configuráveis: Manual / Passivo / Ativo (padrão) / Autônomo (só CI). <a href="https://github.com/felvieira/claude-skills-fv/blob/main/policies/auto-orchestration.md">Policy de auto-orchestration</a>.</p>
+
+<hr>
+
+<h2>Como economiza seus tokens</h2>
+
+<p>Conta de token é real. O kit luta em 5 frentes:</p>
+
+<ul>
+<li><strong>Compressão de output</strong> — strip ANSI, dedup de linhas adjacentes, colapsa listings de diretório, filtro hint-aware (git log / npm install / output de teste), truncação head-tail. <strong>13% de redução single-call</strong> medido em bench público com 5 fixtures.</li>
+<li><strong>Cross-call MinHash dedup (v2.9.0)</strong> — janela deslizante de 16 chamadas com FNV-1a exato + bottom-k MinHash + Jaccard ≥0.85 fuzzy. Detecta re-runs do mesmo comando em loops autônomos. <strong>98% de redução em second-run</strong> medido.</li>
+<li><strong>Model routing</strong> — Haiku pra boilerplate, Sonnet pra implementação, Opus só pra arquitetura. Enforced via hook.</li>
+<li><strong>Progressive skill loading</strong> — skills carregam só quando keyword de trigger dispara (sem pré-carregar). ~31k tokens economizados por sessão que seriam gastos com skills inativas.</li>
+<li><strong>Pipeline mínimo suficiente do Orchestrator</strong> — pra qualquer task, corta skills irrelevantes com justificativa explícita. Exemplo: feature de export CSV cortou 8 skills (UI/UX, Frontend, SEO, Deploy, etc.) ≈ 24k tokens.</li>
+</ul>
+
+<p>Mensurável via <code>/savings</code> — command embutido que reporta por sessão: tokens economizados, USD prevenido, riscos bloqueados, hot files. <a href="https://github.com/felvieira/claude-skills-fv/blob/main/policies/savings-metrics.md">Heurísticas declaradas em policy</a>.</p>
+
+<hr>
+
+<h2>Como mantém correto</h2>
+
+<p>O mecanismo do kit não é "saber mais." É enforçar estrutura que o modelo frio não produz espontaneamente:</p>
+
+<ul>
+<li><strong>Paths persistentes de artefato</strong> — skills nomeiam onde escrever (<code>docs/repo-audit/current.md</code>, <code>_detective_sdd/</code>, …).</li>
+<li><strong>Handoff chains</strong> — todo output aponta pra próxima skill por número (→ skill 06 → skill 11).</li>
+<li><strong>Tabelas anti-racionalização</strong> — toda skill crítica tem tabela "racionalização vs realidade" pra pegar bias mid-execução.</li>
+<li><strong>Evidence anchors</strong> — skills detective exigem <code>[evidence: file:linha]</code> + tier de confiança.</li>
+<li><strong>Suppression gates</strong> — <code>semgrep-triager</code> bloqueia <code>// nosemgrep</code> sem aprovação explícita.</li>
+<li><strong>Memória entre sessões</strong> — <code>learned-skills/</code> por projeto com score 0-1, decay semanal, auto-archive abaixo de 0.3. <a href="https://github.com/felvieira/claude-skills-fv/blob/main/policies/memory-consolidation.md">policy</a>.</li>
+</ul>
+
+<p>19 hooks de ciclo de vida rodam automaticamente: pre-execution gate, keyword detector, context guard, model routing, post-tool verifier, intent classifier, persistent mode, simplify-ignore protection. <a href="https://github.com/felvieira/claude-skills-fv#hook-system--intelligence-on-lifecycle-events">Tabela de hooks</a>.</p>
+
+<hr>
+
+<h2>E aí testamos</h2>
+
+<p>Nada disso importa sem prova. Então construímos um bench público e rodamos. Cada skill, cada subagent, cada modo autônomo.</p>
+
+<p><strong>Relatórios completos:</strong></p>
+
+<ul>
+<li>🇧🇷 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a> (Português)</li>
+<li>🌎 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a> (English)</li>
+</ul>
+
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/01-hero.png" alt="Hero stats: 54 skills/agents avaliados, 92.6% pass rate, +1.84 delta médio, 53/53 E2E verdes, 98% redução de re-run" /></p>
+
+<h3>O que testamos</h3>
+
+<p>Dois tipos de teste:</p>
+
+<ol>
+<li><strong>Bench de isolamento — 53 cenários.</strong> Mesmo prompt, mesmo modelo (claude-sonnet-4-6), com vs sem o kit. Rubrica: 5 critérios × 1-5. Pass = delta ≥ 1.5.</li>
+<li><strong>End-to-end — 3 testes reais.</strong> App do zero (33/33 testes Jest), pipeline completo com handoffs (12/12 + Security pegou o que QA perdeu), feature em repo existente (8/8, zero dependência inventada).</li>
+</ol>
+
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/02-summary.png" alt="Tabela de resumo: 5 categorias com baseline vs treatment e deltas. Melhor categoria é Produto/Design com +2.18." /></p>
+
+<h3>O que encontramos</h3>
 
 <table border="1" cellpadding="6" cellspacing="0">
 <thead>
@@ -78,79 +131,40 @@
 </tbody>
 </table>
 
-<h3>Melhor resultado: semgrep-triager — delta +3.25</h3>
+<h3>A cadeia funcionando — prova visual</h3>
 
-<p>O modelo frio tirou 1.75/5 fazendo triagem de findings do Semgrep. Essencialmente: "lê o código e vê se parece falso positivo." Genérico, perigoso, sem protocolo.</p>
+<p>Teste 2: PO → Orchestrator → Backend → QA → Security → Reviewer pra uma feature de export CSV. <strong>Security pegou um bug de CSV injection que o QA tinha perdido.</strong> Isso é a cadeia fazendo o trabalho dela.</p>
 
-<p>Com o subagent carregado: parser jq pra SARIF, tabela de 3 perguntas pra decisão TP/FP, guardrails anti-bias (3 FPs seguidos sem leitura de código = parar), suppression gate com aprovação explícita obrigatória antes de qualquer <code>// nosemgrep</code>, fix diff com owner e esforço por TP.</p>
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/03-pipeline.png" alt="Diagrama do pipeline manual: 6 skills em sequência cada uma com check verde — 12/12 testes passando, 0 critical security, Reviewer aprovou" /></p>
 
-<p>Isso é transformativo. O modelo frio não estava só menos completo — estava sem a camada de segurança inteira.</p>
+<h3>Before / after com texto real</h3>
 
-<h3>Falha mais interessante: agent code-reviewer</h3>
+<p>É assim que o kit fica no mesmo prompt. Cenário PO feature spec: output do modelo frio (vermelho, baseline 2.3) vs output com skill carregada (verde, treatment 4.8). Delta +2.5.</p>
 
-<p>Teste inicial: delta +1.0 (FAIL — abaixo do threshold 1.5). Investigação mostrou que o cenário era fácil demais. Os bugs no PR de teste eram óbvios o suficiente pra até o modelo frio pegar. A estrutura do kit (OWASP labels, severity gate, owner por finding) era valor real — mas o teto do baseline estava alto.</p>
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/04-before-after.png" alt="Comparação lado a lado do output de PO feature spec: modelo frio dá passos genéricos, kit-loaded dá vertical slices, critérios DADO/QUANDO/ENTÃO, códigos de erro APNs, requisitos LGPD, callout Safari 16.4" /></p>
 
-<p>Fizemos o que bons benches fazem: <strong>reescrevemos o cenário mais difícil.</strong> Nova versão: um PR com 23 arquivos, 8 findings distribuídos em concerns diferentes (race condition, timing attack em comparação de senha, import circular, N+1 em <code>map async</code>, teste fraco, secrets vs <code>.gitignore</code> — alarme falso ou real?, regressão Dockerfile).</p>
+<h3>O resultado destaque — semgrep-triager +3.25</h3>
 
-<p>Resultado no reteste: <strong>+2.29 PASS.</strong> Modelo frio achou 3 dos 8. Treatment achou 8 + 2 bônus.</p>
+<p>Modelo frio em triagem de findings do Semgrep: 1.75/5. Essencialmente "lê o código e vê se parece falso positivo." Genérico, perigoso, sem protocolo.</p>
 
-<p>A lição metodológica: quando uma skill parece falhar, cheque o cenário antes de culpar a skill.</p>
+<p>Com o subagent: 5.0/5. Parser jq pra SARIF, tabela de 3 perguntas pra decisão TP/FP, guardrail anti-bias (3 FPs seguidos sem leitura de código = parar), suppression gate exigindo aprovação explícita antes de <code>// nosemgrep</code>, fix diffs com owner e esforço por TP. Transformativo.</p>
 
-<hr>
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/05-wave5-agents.png" alt="Tabela Wave 5 subagents: 15 subagents com scores delta variando de +1.0 a +3.25. semgrep-triager lidera com +3.25." /></p>
 
-<h2>Como corrigimos o que o bench achou</h2>
+<h3>Quando o bench falha, corrigimos</h3>
 
-<p>Tínhamos 4 problemas flagrados na primeira rodada:</p>
+<p>Primeira rodada teve 4 problemas. Três eram gaps de skill, um era cenário fácil demais. Corrigimos os 4 e rodamos de novo:</p>
 
-<table border="1" cellpadding="6" cellspacing="0">
-<thead>
-<tr><th>Skill</th><th>Problema</th><th>Fix</th></tr>
-</thead>
-<tbody>
-<tr><td>25 — AI Integration</td><td>2 templates eram stubs de 3–9 linhas</td><td>Escrevemos 422 + 225 linhas reais (adapter pattern, fallback chain, observability, security checklist)</td></tr>
-<tr><td>07 — Deploy Docker</td><td>Rollback usava prev-tag hardcoded, bloco SSL assumia certbot já rodado</td><td>Adicionamos <code>.last-tag</code> persistido + <code>ssl-init.sh</code> idempotente (+196 linhas)</td></tr>
-<tr><td>03 — Backend API</td><td>Playbook era só TypeScript/Prisma</td><td>Adicionamos seção de 90 linhas "Plain JS + better-sqlite3"</td></tr>
-<tr><td>Code-reviewer</td><td>Cenário fácil demais</td><td>Reescrevemos o cenário (ver acima)</td></tr>
-</tbody>
-</table>
+<ul>
+<li><strong>Skill 25 (AI Integration Architect)</strong> — era +1.0 FAIL. Templates eram stubs de 3-9 linhas. Escrevemos 422 + 225 linhas reais. <strong>→ +2.0 PASS.</strong></li>
+<li><strong>Skill 07 (Deploy Docker)</strong> — era +1.3 MARGINAL. Rollback usava prev-tag hardcoded, bloco SSL assumia certbot já rodado. Adicionamos persistência <code>.last-tag</code> + <code>ssl-init.sh</code> idempotente. <strong>→ +1.8 PASS.</strong></li>
+<li><strong>Code-reviewer agent</strong> — era +1.0 FAIL. Cenário de teste fácil demais. Reescrevemos com PR de 23 arquivos e 8 bugs sutis. <strong>→ +2.29 PASS.</strong></li>
+<li><strong>Skill 24 (Release Manager)</strong> — continuou near-miss (+1.2). Não é problema da skill: cenário com teto de baseline forte.</li>
+</ul>
 
-<p>Aí <strong>rodamos o bench de novo</strong> nos 4. Três viraram PASS com deltas medidos (+2.0, +1.8, +2.29). O quarto (skill 24 — Release Manager) ficou near-miss, mas por outra razão: o baseline também ficou mais forte quando demos contexto de repo ao modelo, comprimindo o delta. Não é problema da skill — é teto de cenário.</p>
+<p><img src="https://felvieira.github.io/claude-skills-fv/analyze-doc/screenshots/06-fixes.png" alt="Seção v2.10.1 Fixes: 4 cards mostrando antes/depois com deltas medidos. Três cards verdes PASS, um amarelo near-miss." /></p>
 
 <p>O princípio que isso estabelece: <strong>cada FAIL no bench vira fix concreto na versão seguinte. Não justificamos achados. Corrigimos e medimos de novo.</strong></p>
-
-<p>Isso não é marketing. É como o projeto é tocado.</p>
-
-<hr>
-
-<h2>O que isso prova sobre LLM coding</h2>
-
-<p>O resultado interessante não é "o kit funciona." É <em>que tipo de trabalho</em> o kit faz.</p>
-
-<p>O kit não agrega valor por "saber mais." Agrega valor <strong>enforçando estrutura que o modelo frio nunca produz espontaneamente:</strong></p>
-
-<ul>
-<li><strong>Paths persistentes de artefatos</strong> — skills nomeiam onde escrever (<code>_detective_sdd/</code>, <code>docs/repo-audit/current.md</code>). Modelo frio produz conteúdo com estrutura inventada.</li>
-<li><strong>Handoff chains</strong> — outputs referenciam a próxima skill por número (<code>→ skill 06 → skill 11</code>). Modelo frio termina sem apontar pra frente.</li>
-<li><strong>Tabelas anti-pattern</strong> — toda skill crítica tem uma tabela "racionalização vs realidade". Modelos frios não listam o que NÃO fazer.</li>
-<li><strong>Evidence anchors</strong> — skills detective exigem <code>[evidence: file:linha]</code> + tier de confiança. Modelo frio afirma fatos sem citar fonte.</li>
-<li><strong>Suppression gates</strong> — semgrep-triager exige aprovação explícita pra silenciar findings. Modelo frio silencia silenciosamente.</li>
-</ul>
-
-<p>Não são features. São <strong>constraints</strong>. O modelo frio é capaz, mas sem constraint. O kit constringe a saída em formas que tornam ela auditável e encadeável.</p>
-
-<hr>
-
-<h2>E os modos autônomos?</h2>
-
-<p>Boa pergunta. Esses também testamos. Modos process-based que rodam como subprocesso Node (<code>auto-loop.mjs</code>, <code>swarm/index.mjs</code>, 7 programs YAML):</p>
-
-<ul>
-<li><strong>auto-loop.mjs</strong> — Executado de verdade. Disparou Claude, capturou output, rodou validation. 12 flags documentadas, 9 exit codes. Funciona.</li>
-<li><strong>swarm/index.mjs</strong> — Se recusou a rodar com working tree sujo. <em>Isso é o comportamento certo</em> — modo autônomo não deve sobrescrever trabalho não commitado. Testamos o guard, que era o que queríamos validar.</li>
-<li><strong>7 programs YAML</strong> — pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, adversarial-dev, comprehensive-review, refactor-safely. Todos validados, todos com dry-run estruturado. 6 step types em uso (command, gate, conditional, parallel, bash, loop, prompt).</li>
-</ul>
-
-<p>A maquinaria autônoma existe, roda, e tem safety rails. Os relatórios detalham.</p>
 
 <hr>
 
@@ -159,9 +173,9 @@
 <p>Honestidade importa mais que parecer completo. Lista do que pulamos:</p>
 
 <ul>
-<li>Geração de imagem contra a API real do fal.ai (queimaria créditos sem mudar a conclusão)</li>
+<li>Geração de imagem contra API real do fal.ai (queimaria créditos sem mudar conclusão)</li>
 <li>Multi-plataforma — só validado em Claude Code. Cursor/Windsurf/Gemini CLI listados como suportados mas não testados nessa rodada.</li>
-<li><code>/swarm</code> com PR real aberto no GitHub (working tree estava ocupada)</li>
+<li><code>/swarm</code> com PR real aberto no GitHub (working tree estava ocupada durante o bench)</li>
 <li><code>/loop --parallel</code> com worktrees reais (subprocess, consome tempo)</li>
 </ul>
 
@@ -169,9 +183,9 @@
 
 <hr>
 
-<h2>Testa você mesmo</h2>
+<h2>Testa</h2>
 
-<p>É <a href="https://github.com/felvieira/claude-skills-fv/blob/main/LICENSE">Apache-2.0</a>, grátis, e vem com arquivo <a href="https://github.com/felvieira/claude-skills-fv/blob/main/NOTICE">NOTICE</a> que preserva atribuição aos 17+ projetos open-source cujas ideias moldaram ele (DeerFlow, spec-kit, archon, mattpocock/skills, observações do Karpathy, e mais).</p>
+<p>É <a href="https://github.com/felvieira/claude-skills-fv/blob/main/LICENSE">Apache-2.0</a>, grátis, e vem com arquivo <a href="https://github.com/felvieira/claude-skills-fv/blob/main/NOTICE">NOTICE</a> que força atribuição aos 17+ projetos open-source cujas ideias moldaram ele (DeerFlow, spec-kit, archon, mattpocock/skills, observações do Karpathy, e mais).</p>
 
 <pre><code># Instalar no Claude Code
 claude plugin install https://github.com/felvieira/claude-skills-fv
@@ -180,22 +194,26 @@ claude plugin install https://github.com/felvieira/claude-skills-fv
 git clone https://github.com/felvieira/claude-skills-fv /tmp/dev-team-kit
 bash /tmp/dev-team-kit/setup/install.sh /caminho/do/seu/projeto</code></pre>
 
-<p>Funciona em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode. Traz 39 skills, 15 subagents, 32 slash commands, 7 programs YAML executáveis, e um benchmark público que você roda na sua máquina em menos de 30 segundos.</p>
+<p>Funciona em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode.</p>
 
-<p>Os relatórios do bench — com todo teste, todo número, todo snippet de código — estão em:</p>
+<h3>Links rápidos</h3>
 
 <ul>
-<li>🇧🇷 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
-<li>🌎 <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+<li><strong>Repo:</strong> <a href="https://github.com/felvieira/claude-skills-fv">github.com/felvieira/claude-skills-fv</a></li>
+<li><strong>README completo:</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/README.pt-BR.md">README.pt-BR.md</a></li>
+<li><strong>Relatório do bench (PT):</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.pt-BR.html">analyze-doc/index.pt-BR.html</a></li>
+<li><strong>Relatório do bench (EN):</strong> <a href="https://github.com/felvieira/claude-skills-fv/blob/main/analyze-doc/index.en.html">analyze-doc/index.en.html</a></li>
+<li><strong>Catálogo de skills:</strong> <a href="https://github.com/felvieira/claude-skills-fv/tree/main/skills">skills/</a></li>
+<li><strong>Pipelines YAML:</strong> <a href="https://github.com/felvieira/claude-skills-fv/tree/main/programs">programs/</a></li>
+<li><strong>Policies:</strong> <a href="https://github.com/felvieira/claude-skills-fv/tree/main/policies">policies/</a></li>
+<li><strong>Benchmark público:</strong> <a href="https://github.com/felvieira/claude-skills-fv/tree/main/bench">bench/</a></li>
 </ul>
-
-<p>O repo: <strong><a href="https://github.com/felvieira/claude-skills-fv">github.com/felvieira/claude-skills-fv</a></strong></p>
 
 <p>Se você só lembrar de uma coisa desse post: <strong>ferramenta de IA que não publica os resultados do próprio bench está pedindo pra você confiar em vibes. Não confia.</strong></p>
 
 <hr>
 
-<p><em>Construído e entregue sob Apache-2.0 com atribuição forçada via NOTICE. Cenários do bench reproduzíveis.</em></p>
+<p><em>Construído e entregue sob Apache-2.0 com atribuição forçada via NOTICE. Cenários do bench reproduzíveis: <code>node bench/run.mjs</code> em menos de 30 segundos.</em></p>
 
 </body>
 </html>
