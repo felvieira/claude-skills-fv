@@ -243,6 +243,29 @@ The MCP exposes 37 tools backed by the installed skills.
 | 37 | **TDD Engineer** | red-green-refactor enforced; combats horizontal slicing anti-pattern (writing all tests before all impl); 1 test → 1 impl → repeat. Pairs with skill 38 for deep module identification |
 | 07 | **Deploy Engineer** | containerization, CI/CD, blue-green rollout, rollback and infra as code |
 
+### Publishing and Automation (v2.11.0+)
+
+| # | Skill | What it does |
+|---|---|---|
+| 41 | **Blog Publisher** | composer skill — receives text/topic → writes HTML post → generates images (via skill 17 fal.ai or skill 42 Playwright) → commits/pushes to your blog repo → returns public URL. Multi-user via `~/.dev-team-kit/blog-config.json`. |
+| 42 | **Blog Screenshot** | Playwright-based capture for posts: viewports per destination (cover/hero/mobile), cookie banner removal, FOUT prevention, naming convention compatible with skill 41 |
+
+**Setup (one-time per user):**
+
+```bash
+# Create your blog repo + GitHub Pages + config
+node scripts/init-blog-repo.mjs \
+  --path=/abs/path/to/blog \
+  --user=<github-username> \
+  --repo=blog \
+  --create-github
+
+# Then in any Claude Code session:
+# "publica um post sobre <topic>"  → skill 41 takes it from there
+```
+
+The init script creates `~/.dev-team-kit/blog-config.json` so the skill knows where to publish. See `scripts/init-blog-repo.mjs` and `templates/blog/` for details.
+
 ---
 
 ## Main Pipeline
