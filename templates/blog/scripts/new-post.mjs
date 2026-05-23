@@ -89,11 +89,18 @@ const sourceUrl = config.github_user && config.blog_repo
   ? `https://github.com/${config.github_user}/${config.blog_repo}/blob/main/posts/${filename}`
   : "";
 
+// Cover image visible in body (not just og:meta). Required for posts that
+// have a --cover argument — falls back to empty string when absent.
+const coverImgTag = args.cover
+  ? `<img src="../${args.cover}" alt="${(args.title || "").replace(/"/g, "&quot;")} — cover" style="width:100%; height:auto; border-radius:8px; margin: 24px 0 32px; border: 1px solid var(--border)">`
+  : "";
+
 const html = tmpl
   .replaceAll("{{LANG}}", args.lang)
   .replaceAll("{{TITLE}}", args.title)
   .replaceAll("{{EXCERPT}}", args.excerpt)
   .replaceAll("{{COVER_IMAGE_URL}}", coverUrl)
+  .replaceAll("{{COVER_IMG_TAG}}", coverImgTag)
   .replaceAll("{{DATE_HUMAN}}", dateHuman)
   .replaceAll("{{DATE_ISO}}", today)
   .replaceAll("{{LANG_LABEL}}", langLabel)

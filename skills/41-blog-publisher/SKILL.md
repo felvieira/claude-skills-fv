@@ -20,7 +20,26 @@ requires:
 
 # Blog Publisher — Skill 41
 
-> **Compositora.** Recebe texto/assunto → produz post HTML completo → publica no GitHub Pages → retorna URL.
+> **Compositora ENRIQUECEDORA.** Recebe input (link/texto/assunto) → lê fonte → pesquisa contexto adicional → produz post ORIGINAL em **PT-BR por default** → publica no GitHub Pages → retorna URL.
+
+## Princípio fundador — ENRIQUECEDORA, NÃO TRADUTORA
+
+Esta skill **nunca** copia ou traduz textualmente uma fonte. Ela:
+
+1. **Lê a fonte completa** (URL via WebFetch, texto colado, ou assunto livre)
+2. **Identifica os pontos centrais** que a fonte cobre
+3. **Pesquisa contexto adicional** (3+ fontes externas relacionadas — docs oficiais, repos, outros artigos)
+4. **Escreve um post ORIGINAL** que dialoga com a fonte:
+   - Resume os pontos centrais com palavras próprias
+   - Adiciona o que a fonte NÃO cobriu
+   - Adiciona links externos com contexto extra
+   - Conecta com o que faz sentido pro nosso domínio (kit, ferramentas, opiniões)
+5. **Atribui a fonte sempre** (link no início + parágrafo "Inspirado em...")
+6. **Default sempre PT-BR** — mesmo se a fonte for em outra língua. Só escreve em outra língua se o user pedir explicitamente.
+
+Saída: post **original**, que cita a fonte com respeito, mas agrega valor.
+
+> **Anti-padrão:** copiar/traduzir verbatim. Mesmo "adaptação livre" é arriscada. Sempre escrever do zero usando a fonte como inspiração.
 
 ## Governança Global
 
@@ -31,8 +50,19 @@ Esta skill segue `GLOBAL.md`, `policies/anti-ai-writing.md`, `policies/handoffs.
 ## Quando Usar
 
 - Usuário pede "publica post sobre X", "escreve blog post de Y", "gera post no meu blog"
-- Usuário fornece um texto longo e diz "vira post de blog"
+- Usuário fornece um link/URL e diz "cria post baseado nisso"
+- Usuário cola um texto e diz "vira post"
 - Usuário menciona "publicar no meu blog" / "publicar post"
+
+## Protocolo de input (3 modos)
+
+| Input | Ação |
+|---|---|
+| URL | WebFetch o conteúdo → extrair pontos centrais → pesquisar contexto adicional → escrever post novo |
+| Texto colado | Identificar pontos centrais → pesquisar contexto adicional → escrever post novo (não copiar) |
+| Assunto livre | Pesquisar 3+ fontes do assunto → escrever post com voz própria |
+
+Em qualquer caso, **sempre PT-BR por default**.
 
 ## Quando NÃO Usar
 
@@ -135,14 +165,24 @@ Post fala sobre URL/site/dashboard navegável?
             └── inline images opcionais conforme o post
 ```
 
-**Cover image:**
+**Cover image (OBRIGATÓRIA + VISÍVEL):**
 - Sempre gerada (ou screenshot do primeiro elemento se for sobre algo navegável)
 - Salva em `{blog_repo_path}/assets/images/{slug}-cover.{png|jpg}`
-- Referenciada no template como `{{COVER_IMAGE_URL}}`
+- **Aparece em 2 lugares:** (a) `<meta og:image>` pro share social — automático via `{{COVER_IMAGE_URL}}`; (b) **`<img>` visível no body do post** — automático via `{{COVER_IMG_TAG}}` (inserido logo abaixo do `<h1>` e meta, antes do `<article>`)
+- Passa `--cover=assets/images/{slug}-cover.jpg` pro `new-post.mjs`. Sem esse arg, o body fica sem cover visível (anti-padrão).
 
-**Inline images:**
-- 1-3 por post (não exagerar)
-- Referenciadas no body HTML como `<img src="../assets/images/{slug}-N.{ext}" alt="..." />`
+**Inline images (OBRIGATÓRIAS pra posts >1000 palavras):**
+- Mínimo 2-3 imagens inline distribuídas nas seções principais
+- **Não opcional** — texto longo sem quebra visual perde o leitor
+- Salvar como `{slug}-N-{seção}.jpg` (ex: `top-1-claude-code-1-claudemd.jpg`)
+- Referenciadas no body HTML como:
+  ```html
+  <p><img src="../assets/images/{slug}-N-{tema}.jpg" alt="descrição acessível"></p>
+  ```
+- Inserir **antes** do `<h3>` da seção correspondente (não depois)
+- Prompts pras imagens devem ser **distintas** umas das outras — não gerar 3 covers parecidas
+
+**Posts curtos (<1000 palavras):** só cover é OK, inline pode pular.
 
 ### 4. Invocar scaffold
 
