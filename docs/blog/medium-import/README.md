@@ -4,18 +4,36 @@ O Medium tem um importer oficial que aceita HTML público via URL. Esses 2 arqui
 
 ## Passos pra publicar
 
-1. **Pegue o raw URL do GitHub** de cada arquivo:
+⚠ **Importante:** `raw.githubusercontent.com` retorna `Content-Type: text/plain` — Medium rejeita.
+Use as URLs do **GitHub Pages** abaixo (servem como `text/html` real).
 
-   - 🌎 EN: `https://raw.githubusercontent.com/felvieira/claude-skills-fv/main/docs/blog/medium-import/post.en.html`
-   - 🇧🇷 PT-BR: `https://raw.githubusercontent.com/felvieira/claude-skills-fv/main/docs/blog/medium-import/post.pt-BR.html`
+1. **URLs corretas pra Medium import:**
 
-2. **Vá em `https://medium.com/p/import`** (Medium > três pontinhos > Import a story)
+   - 🌎 **EN:** `https://felvieira.github.io/claude-skills-fv/docs/blog/medium-import/post.en.html`
+   - 🇧🇷 **PT-BR:** `https://felvieira.github.io/claude-skills-fv/docs/blog/medium-import/post.pt-BR.html`
+
+2. **Vá em [medium.com/p/import](https://medium.com/p/import)** (Medium > três pontinhos > Import a story)
 
 3. **Cole a URL** e clique em Import
 
 4. **Medium converte** preservando: headings (h1/h2/h3), parágrafos, listas, tabelas, blocos de código, links, separadores (hr)
 
 5. **Edite no Medium** se quiser: adicionar cover image, ajustar tags, escolher publicação
+
+### Caso o Pages ainda não tenha buildado
+
+Primeiro build leva 1–2 min. Verifica status em:
+`https://github.com/felvieira/claude-skills-fv/actions` (workflow "pages build and deployment").
+
+Quando aparecer ✅ verde, as URLs acima funcionam.
+
+### Plan B — Copy-paste manual
+
+Se ainda assim der problema:
+1. Abre o arquivo HTML local no browser (Chrome/Edge)
+2. `Ctrl+A` (seleciona tudo) → `Ctrl+C` (copia rich-text formatado)
+3. Vai pro Medium > New Story > cola direto no editor
+4. Medium aceita o rich-text e mantém formatação
 
 ## O que o Medium preserva bem
 
