@@ -16,3 +16,4 @@ graphify-out/
 .swarm/
 .claude/worktrees/
 .playwright-mcp/
+.tmp-*
