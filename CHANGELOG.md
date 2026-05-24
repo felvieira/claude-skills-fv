@@ -43,9 +43,10 @@ Padrão "idea-level absorption" mantido (igual DeerFlow v2.10.0, optillm v2.x): 
 ### Verified
 
 - check-consistency ✅ 42 skills (sem nova skill, sem nova entry necessária)
-- l3-persona-generator ✅ smoke test com fixture
-- mmd-canvas-builder ✅ smoke test com fixture
+- l3-persona-generator ✅ smoke test com fixture (3 atoms + 2 scenarios → persona.md)
+- mmd-canvas-builder ✅ smoke test com fixture (5 tool calls → 15-line canvas + 5 refs)
 - bench ✅ sem regressão esperada (mudanças são doc + script novo, sem hot path)
+- **Symbolic memory before/after bench** ([`docs/bench/v2.14-symbolic-memory.md`](docs/bench/v2.14-symbolic-memory.md)) — fixture de 60 tool calls sintéticos (grep/read/bash/edit/agent/glob com bodies realistas): 29.793 → 1.364 tokens em contexto (**−95.42%** favorable-case). Drill-down 100% lossless. Reproduzível via `node docs/bench/v2.14-symbolic-memory-bench.mjs`. Nota honesta no doc: 95% é upper bound; espera-se 40-70% em workloads reais (Tencent publicou −33% SWE-bench, −61% WideSearch).
 
 ---
 
