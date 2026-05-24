@@ -5,6 +5,64 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.15.0-stack-default-template] - 2026-05-24
+
+**Template de stack completo para novos projetos** — elimina Write×130 de scaffolding repetitivo em futuros `/swarm` greenfield. Decisões de infra/auth/DB/LLM já tomadas; `/swarm` começa direto no código da feature. + policy honesta sobre model routing (enforcement real vs. sugestão).
+
+### Added
+
+- **`templates/stack-default/`** — template completo (17 arquivos):
+  - `docker-compose.yml` — Postgres 16 + Redis 7 + MinIO + Traefik v3 (auto-TLS)
+  - `docker-compose.override.yml` — dev: Adminer, Redis Commander, Mailpit, minio-init
+  - `.env.example` — todas as vars com comentários e valores padrão seguros
+  - `Makefile` — shortcuts: `make dev`, `make db-migrate`, `make db-studio`, `make reset`
+  - `openrouter/config.ts` — adapter TS com tiers (fast/balanced/deep), fallback chain, retry, streaming via Vercel AI SDK
+  - `apps/web/` — Next.js 15 scaffold:
+    - `package.json` (Next 15, Better Auth 1.2, Drizzle 0.43, AI SDK 4.3, Shadcn-ready)
+    - `Dockerfile` multi-stage (dev hot-reload + prod standalone)
+    - `src/db/index.ts` — Drizzle singleton com connection pool
+    - `src/db/schema.ts` — tabelas Better Auth (user, session, account, verification)
+    - `src/auth/index.ts` — Better Auth server (email+password, OAuth comentado)
+    - `src/auth/client.ts` — Better Auth browser client
+    - `src/app/layout.tsx` + `globals.css` — Tailwind 4 + CSS vars dark/light
+    - `src/app/api/auth/[...all]/route.ts` — catch-all Better Auth handler
+    - `src/app/api/chat/route.ts` — exemplo streaming LLM com auth guard
+    - `src/lib/llm.ts` — re-export do adapter OpenRouter
+    - `drizzle.config.ts` + `next.config.ts`
+  - `README-stack.md` — decisões já tomadas (tabela de escolha/rejeição), como usar com /swarm, como override por projeto via constitution.md
+
+- **`policies/model-routing-real.md`** — documenta honestamente:
+  - O hook `model-routing-hook.mjs` só emite **sugestão** via `additionalContext`, não enforcement
+  - Claude Code hooks não têm campo `override_model` — limitação da API
+  - Enforcement real = passar `model:` explícito no `Agent()` call
+  - Status atual por componente (tabela: swarm/hook/OpenRouter adapter/skills)
+  - Roadmap: short (instrução), medium (update skills 09/40), long (hook block sem model:)
+
+### Why this stack
+
+| Princípio | Escolha |
+|---|---|
+| Max open source onde vale | Postgres, Redis, MinIO, Traefik, Better Auth, Drizzle, Next.js, Shadcn |
+| Sem vendor lock em LLM | OpenRouter (1 key, 300+ models, troca model via .env) |
+| IA só via integração | Não modelo local (custo/qualidade), não provider direto (lock) |
+| Docker Compose sempre | Kubernetes overkill até 10k req/s; Railway/Render = vendor lock |
+
+### Verified
+
+- check-consistency ✅ 42 skills (template é artefato de uso, não skill)
+- SKILLS-OVERVIEW + WIKI ✅ 47 policies
+- template estrutura ✅ 17 arquivos, sem dep circular, tsconfig-ready
+
+### Decided NOT to include
+
+- **Kubernetes/Helm** — overkill até escala real
+- **CI/CD pipeline** — depende de host (GitHub Actions vs GitLab CI vs outros)
+- **Grafana stack** — adicionar como compose profile quando precisar observability prod
+- **BullMQ** — Redis já disponível; adicionar quando precisar queue
+- **Testes** — variam por projeto; adicionar via skill 05
+
+---
+
 ## [2.14.0-tencentdb-agent-memory-absorptions] - 2026-05-24
 
 **3 absorções idea-level de [Tencent/TencentDB-Agent-Memory](https://github.com/Tencent/TencentDB-Agent-Memory)** (3.9k stars, abril/2026, NOASSERTION license) — sem absorver código do runtime TypeScript deles. Foco em padrões que cobrem 2 lacunas reais do kit: compressão de context em long-horizon agents e destilação de persona cross-session.

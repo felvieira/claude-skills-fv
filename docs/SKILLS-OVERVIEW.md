@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 42 skills, 15 subagents, 31 slash commands, 46 policies
-> **Última atualização:** 2026-05-24 (v2.14.0 — TencentDB Agent Memory absorptions)
+> **Versão:** 42 skills, 15 subagents, 31 slash commands, 47 policies
+> **Última atualização:** 2026-05-24 (v2.15.0 — stack-default template + model-routing-real policy)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
