@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
 > **Version:** 42 skills · 15 subagents · 31 slash commands · 47 policies
-> **Last updated:** 2026-05-24 (v2.15.0 — stack-default template + model-routing-real policy)
+> **Last updated:** 2026-05-24 (v2.16.0 — skill 17 portable + canonical default rule + /swarm phase 2.5 visual assets)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -440,10 +440,15 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 #### Skill 17 — Image Generator
 
-**What it does:** generates or adapts visual assets (hero, mascot, illustration, background, layout, icon) via fal.ai (5 models: gpt-image-1-mini, Gemini 2.5 Flash, Gemini 3 Pro, gpt-image-1.5, Grok Imagine). Vendor-agnostic — alternatives (Replicate, OpenAI direct, Stability) supported.
-**When to activate:** project needs a new or derived image.
-**Problem it solves:** "image here" placeholder on a landing page.
-**Takeaway:** **model choice is by cost + quality.** Multi-model pipeline (iterate cheap → validate medium → final premium) costs $0.10-$0.50 per hero. Details in `docs/skill-guides/image-generator-models.md`.
+**What it does:** generates or adapts visual assets (hero, mascot, illustration, background, layout, icon) via FAL.AI. Single source of truth: `models/image-models.json` (5 models). Executes via `scripts/generate-image.mjs` (zero-dep Node 18+, works on any machine — no Python required).
+**When to activate:** project needs a new or derived image. `/swarm` invokes automatically in Phase 2.5 when PRD/stories mention landing/sistema/UI new.
+**Problem it solves:** "image here" placeholder on a landing page, and the previous Python dependency that only worked on the author's machine.
+**Canonical default rule (v2.16.0):**
+- text-to-image (no `--ref`) → **grok-imagine** ($0.020/img)
+- edit/refine (with `--ref`) → **gemini-25-flash** ($0.039/img)
+- Override only with justification (e.g., `--model gemini-3-pro` for complex typography in OG cards)
+**Example:** `node scripts/generate-image.mjs --prompt "minimalist hero" --aspect 16:9 --out public/hero.jpg`
+**Takeaway:** **default rule is canonical — no inventing.** Multi-model pipeline (iterate cheap → validate → final) still costs $0.10-$0.50 per hero. 6 consumer skills (02 UI/UX, 04 Frontend, 14 SEO, 19 Asset Librarian, 29 Design Intel, 36 Web Assets) all reference skill 17 for image needs.
 
 #### Skill 18 — Repo Auditor
 

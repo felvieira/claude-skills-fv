@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.16.1-docs-kit-wide-usage-update] - 2026-05-24
+
+**Docs-only patch** atualizando os 5 entry points (README, quickstart, WIKI, SKILLS-OVERVIEW, AGENTS) com "como usar" das mudanças v2.14-v2.16. Sem alteração de código.
+
+### Changed
+
+- **`README.md`** — badge corrigido (era stale em v2.11.1, agora v2.16.0). Nova seção "What's new in v2.14-v2.16" com tabela de 3 versões e links pros artefatos. Link pro quickstart no topo.
+- **`docs/quickstart.md`** — nova seção "Cenários comuns (v2.16.0) — copy-paste" com os 4 fluxos: (1) gerar imagem CLI, (2) /swarm com phase 2.5, (3) bootstrap template stack-default, (4) consumir adapters no app runtime. Inclui tabelas de regra default (imagem + LLM) e troubleshooting comum.
+- **`docs/WIKI.md`** — entry de skill 17 expandido com regra default explícita, /swarm phase 2.5, cross-skill integration (02/04/14/19/29/36). Header → v2.16.0.
+- **`docs/SKILLS-OVERVIEW.md`** — header → v2.16.0.
+- **`AGENTS.md`** — nova seção "Image Generation (regra canônica do kit)" com fluxo de despachar skill 17 + execução TS. Nova seção "Template stack-default" com comando de bootstrap.
+
+### Verified
+
+- GLOBAL.md: confirmado **zero referências** ao path privado `D:/Repos/GERAL/` em qualquer doc do kit.
+
+---
+
 ## [2.16.0-skill-17-portable-and-default-rule] - 2026-05-24
 
 **Skill 17 (image-generator) agora funciona em qualquer máquina** + regra default canônica do kit (grok-imagine t2i / gemini-25-flash edit) + integração explícita com `/swarm` e 6 skills consumidoras (02, 04, 09, 14, 29, 36).

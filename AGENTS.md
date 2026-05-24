@@ -81,6 +81,32 @@ Navegação de skills: `docs/skill-guides/skill-discovery.md`
   - **polishing pass** configurável via `--polish none|light|standard|full`
   - exit codes determinísticos para uso em CI (ver `.claude/commands/loop.md`)
 
+## Image Generation (v2.16.0 — regra canônica do kit)
+
+Quando o agente precisar gerar ou adaptar imagem (hero, ícone, ilustração, OG card, mascote, favicon):
+
+1. **Despachar skill 17 (`17-image-generator`)** — nunca chamar API FAL.AI direto, nunca instalar SDK extra.
+2. **Skill 17 aplica regra default automaticamente:**
+   - text-to-image (sem `referenceImages`) → **grok-imagine** ($0.020/img)
+   - edit/refine (com `referenceImages`) → **gemini-25-flash** ($0.039/img)
+   - Override (`--model gemini-3-pro` etc.) só com justificativa documentada
+3. **Execução:** `node scripts/generate-image.mjs --prompt "..." [--ref ./img.jpg] --out path` (zero-dep, lê `models/image-models.json`).
+4. **`/swarm` invoca automaticamente** em Phase 2.5 quando PRD/stories mencionam landing/sistema/UI novo.
+5. **Fonte única de models:** `models/image-models.json` — atualizar lá quando preços mudarem, propaga pra skill + template stack-default.
+
+Detalhes em `skills/17-image-generator/SKILL.md → Regra Default`.
+
+## Template `stack-default` (v2.15.x)
+
+Pra projeto novo (greenfield), em vez de scaffoldar do zero (Write × 130):
+
+```bash
+cp -r templates/stack-default/ ../meu-projeto/
+cd ../meu-projeto/ && cp .env.example .env && make dev
+```
+
+Stack já decidida (não reabrir): Docker Compose + Postgres 16 + Redis 7 + MinIO + Traefik + Next.js 15 + Better Auth + Drizzle + OpenRouter (LLM) + FAL.AI (image). Decisões em `templates/stack-default/README-stack.md`.
+
 ## Artefatos Principais
 - `GLOBAL.md` = regras universais
 - `policies/` = regras compartilhadas (inclui `context-engineering.md` para hierarquia de contexto)
