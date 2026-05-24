@@ -133,6 +133,25 @@ Executar apenas o aprovado:
 - Total de arquivos antes vs depois (diff esperado vs real)
 - Search funciona (`python D:\claude-memory\scripts\search.py "test query"`)
 
+### Passo 6.5 — Regenerar Persona L3 (opcional, default ON)
+
+Após o vault estar consolidado, regenerar a destilação L3 da pirâmide de memória (ver `policies/memory-pyramid.md`):
+
+```bash
+node scripts/l3-persona-generator.mjs --project "<slug-do-projeto>"
+# → D:/claude-memory/architecture/<slug>/persona.md
+```
+
+Critérios pra rodar:
+- Existem ≥ 5 atoms em `memory/feedback_*.md` ou ≥ 3 cenários em `architecture/<slug>/decisions.md`
+- Última geração foi há > 7 dias OU mudanças significativas no consolidate
+
+Pular se:
+- Vault recém-criado (poucos atoms — persona viria pobre)
+- User passou `--no-persona`
+
+A persona é **regenerada do zero**, não editada — edits manuais são perdidos. Persona vira o L3 injetado no SessionStart de futuras sessões.
+
 ### Passo 7 — Report final
 
 ```markdown
@@ -163,6 +182,7 @@ Executar apenas o aprovado:
 - `[--auto-yes]` — aplica tudo sem confirmar (CUIDADO; só com snapshot recente)
 - `[--age-threshold <days>]` — idade para considerar stale (default 90)
 - `[--score-threshold <float>]` — score mínimo para keep (default 0.3)
+- `[--no-persona]` — pula o passo 6.5 (geração de Persona L3)
 
 ## Output esperado
 
@@ -182,6 +202,7 @@ Executar apenas o aprovado:
 
 - `policies/memory-consolidation.md` — regras canônicas
 - `policies/memory-tiers.md` — hierarquia 4-tier (Working/Episodic/Semantic/Procedural)
+- `policies/memory-pyramid.md` — pirâmide L0→L3 (passo 6.5 regenera L3)
 - `policies/persistence.md` — o que persistir (esta policy define o que limpar)
 
 ## Handoff

@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 42 skills · 15 subagents · 31 slash commands · 45 policies
-> **Last updated:** 2026-05-23 (v2.12.1 — 24-tools audit absorptions + eval-triggers runtime)
+> **Version:** 42 skills · 15 subagents · 31 slash commands · 46 policies
+> **Last updated:** 2026-05-24 (v2.14.0 — TencentDB Agent Memory absorptions: symbolic-memory + memory-pyramid)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 

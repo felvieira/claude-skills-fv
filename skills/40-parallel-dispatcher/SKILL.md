@@ -221,6 +221,39 @@ Após os N subagents retornarem:
 
 ---
 
+## Long-horizon compression (50+ tool calls)
+
+Quando o trabalho paralelo gera muitas tool calls (caso típico em `/swarm`, `/auto`, e comprehensive reviews 4-5 agents), o histórico de mensagens vira gargalo de context window antes do trabalho terminar.
+
+Solução: **Mermaid canvas + `node_id` drill-down** — comprime tool outputs verbosos num grafo de alta densidade, mantendo evidência crua em arquivos no disco.
+
+Quando ativar (uma das heurísticas basta):
+
+1. ≥ 30 tool calls na sessão atual
+2. Histórico de mensagens > 50% do context window
+3. Dentro de `/swarm`, `/auto`, `/loop` longo (>10 iterations)
+4. Pedido explícito do usuário
+
+Fluxo:
+
+```bash
+# Cada subagent emite linhas em .auto/tool-calls.jsonl ou .swarm/tool-calls.jsonl
+#   {"tool":"grep","summary":"search timing-safe cmp","ref":"N3","body":"..."}
+# (o body fica em refs/Nk.md; só o summary entra no canvas)
+
+node scripts/mmd-canvas-builder.mjs --session .auto
+# → .auto/canvas.mmd  (canvas Mermaid com [Nk] node ids)
+# → .auto/refs/Nk.md  (1 arquivo por node, drill-down)
+```
+
+O canvas é injetado no próximo turno do orquestrador em vez do histórico cru. Para detalhe de um node específico, o agente lê `refs/Nk.md` sob demanda — não promove o arquivo inteiro de volta pro contexto.
+
+Ver `policies/symbolic-memory.md` para regras completas (formato, anti-padrões, drill-down protocol).
+
+**Não ativar** em sessões curtas (< 30 tool calls) — overhead sem retorno.
+
+---
+
 ## Telemetria
 
 Cada bloqueio do hook `agent-dispatch-validator` loga em `.bot/agent-dispatch-errors.jsonl`:
@@ -242,3 +275,5 @@ Use pra audit: `cat .bot/agent-dispatch-errors.jsonl | jq '.subagent_type' | sor
 - `policies/swarm-protocol.md` — swarm completo com Ralph + review paralelo
 - `AGENTS.md` seção "Subagents Despacháveis" — lista de 15 nomes válidos
 - `skills/09-orchestrator/SKILL.md` seção "Como paralelizar slices" — entrypoint do orquestrador
+- `policies/symbolic-memory.md` — Mermaid canvas + drill-down para long-horizon (v2.14.0)
+- `scripts/mmd-canvas-builder.mjs` — builder zero-dep do canvas

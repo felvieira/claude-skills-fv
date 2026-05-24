@@ -5,6 +5,50 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.14.0-tencentdb-agent-memory-absorptions] - 2026-05-24
+
+**3 absorções idea-level de [Tencent/TencentDB-Agent-Memory](https://github.com/Tencent/TencentDB-Agent-Memory)** (3.9k stars, abril/2026, NOASSERTION license) — sem absorver código do runtime TypeScript deles. Foco em padrões que cobrem 2 lacunas reais do kit: compressão de context em long-horizon agents e destilação de persona cross-session.
+
+### Added
+
+- **`policies/symbolic-memory.md`** — Mermaid canvas + `node_id` drill-down para sessões com 50+ tool calls (typical em `/swarm`, `/auto`, comprehensive reviews 4-5 agents). Define regras de quando ativar, formato do canvas, drill-down protocol, anti-padrões e métricas. Trade-off vs. upstream documentado: nosso é opt-in via script, deles é injeção automática no runtime.
+- **`policies/memory-pyramid.md`** — pirâmide L0 (Conversation) → L1 (Atom) → L2 (Scenario) → L3 (Persona). Mapeia a layering dentro dos 4 tiers existentes de `policies/memory-tiers.md`: L0+L1 viram Episodic, L2+L3 viram Semantic. Não substitui — complementa.
+- **`scripts/l3-persona-generator.mjs`** (266 linhas, zero-dep, Node 18+) — gera `D:/claude-memory/architecture/<project>/persona.md` agregando atoms (`memory/*.md`) + scenarios (`decisions.md`). Modo `--fixture <dir>` para testar sem vault real, `--stdout` para dry-run.
+- **`scripts/mmd-canvas-builder.mjs`** (185 linhas, zero-dep, Node 18+) — lê `.auto/tool-calls.jsonl` e emite `.auto/canvas.mmd` (Mermaid graph com node ids `[Nk]`) + `.auto/refs/Nk.md` (drill-down targets). Cap de `--max-nodes` (default 60) colapsa nodes antigos.
+
+### Changed
+
+- **`skills/40-parallel-dispatcher/SKILL.md`** — nova seção "Long-horizon compression (50+ tool calls)" entre "Pós-dispatch: consolidação" e "Telemetria". Documenta heurísticas de ativação, fluxo de geração do canvas, e link pra `policies/symbolic-memory.md`. Cross-link no bloco "Referências".
+- **`commands/consolidate-memory.md`** — novo passo 6.5 "Regenerar Persona L3 (opcional, default ON)" entre verify e report. Critérios pra rodar/pular, flag `--no-persona` para skip, link pra `policies/memory-pyramid.md`.
+- **`NOTICE`** — atribuição da TencentDB Agent Memory na seção v2.14.0 (license NOASSERTION upstream, idea-level adoption documentada).
+- **`.claude-plugin/plugin.json`** — bump v2.13.0 → v2.14.0, description atualizada com as absorções.
+
+### Decided NOT to adopt
+
+- **Runtime TypeScript** (`src/` upstream, 50+ arquivos TS) — eles dependem de OpenClaw/Hermes gateway + sqlite-vec; nosso kit é parasitário em Claude Code, zero infra.
+- **Embeddings + RRF fusion recall** — upstream usa BM25 + embeddings com Reciprocal Rank Fusion. Nosso vault de markdown puro com grep+wikilinks atende; recall marginal melhor não compensa a infra extra.
+- **Auto-extraction via DeepSeek-V3.2** — upstream chama LLM extra pra L1/L2 extraction automática. Nosso flow é semi-manual via `/consolidate-memory` — preserva inspecionabilidade e zero custo por sessão.
+- **Docker/Hermes deployment** — upstream tem `docker/Dockerfile.hermes` para rodar memory plugin como serviço. Fora do escopo do kit.
+- **`offload/state-manager.ts` runtime injection** — upstream injeta MMD a cada turno via plugin lifecycle hooks. Nosso é via prompt explícito do orquestrador (skill 40), opt-in.
+
+### Significância
+
+Cobre 2 lacunas reais sem expandir surface area do kit:
+
+1. **Long-horizon** — `/swarm` e `/auto` hoje compactam contexto via summary lossy (perde trace). Mermaid canvas + refs/ preserva drill-down completo.
+2. **Cross-session persona** — vault hoje é flat (logs cronológicos). L3 Persona dá ao SessionStart um arquivo de 1-2KB destilando assinatura estável do user/projeto.
+
+Padrão "idea-level absorption" mantido (igual DeerFlow v2.10.0, optillm v2.x): vocabulário + estrutura entram via policy doc, código entra como script zero-dep, **não** absorvemos infra do upstream.
+
+### Verified
+
+- check-consistency ✅ 42 skills (sem nova skill, sem nova entry necessária)
+- l3-persona-generator ✅ smoke test com fixture
+- mmd-canvas-builder ✅ smoke test com fixture
+- bench ✅ sem regressão esperada (mudanças são doc + script novo, sem hot path)
+
+---
+
 ## [2.13.0-trigger-eval-full-coverage] - 2026-05-24
 
 **Cobertura 100% de trigger eval fixtures** (42/42 skills) + accent-folding no matcher. Skill discovery agora é mensurável programaticamente em todo o catálogo.

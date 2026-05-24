@@ -228,3 +228,48 @@ alirezarezvani/claude-skills (advisory only)
   (`evals/triggers/<skill>.json` with should/shouldn't pairs). We do NOT
   adopt their 329-skill catalog (intentional anti-pattern in our kit:
   quality over quantity).
+
+================================================================================
+v2.14.0 — TencentDB Agent Memory absorptions (2026-05-24)
+================================================================================
+
+Tencent/TencentDB-Agent-Memory
+  https://github.com/Tencent/TencentDB-Agent-Memory
+  License: NOASSERTION upstream (README shows an MIT badge; actual LICENSE
+  file lists no SPDX identifier). Treated as idea-level adoption only —
+  no upstream code was copied. Two new policies and two zero-dep Node
+  scripts re-implement the patterns from scratch to fit the kit's
+  infrastructure-free model.
+  Adapted (v2.14.0):
+    (1) Symbolic memory — Mermaid canvas + `node_id` drill-down for
+        long-horizon agents (50+ tool calls). Documented in
+        `policies/symbolic-memory.md`; reference implementation in
+        `scripts/mmd-canvas-builder.mjs` (zero-dep, reads
+        `.auto/tool-calls.jsonl`, emits `.auto/canvas.mmd` plus
+        `.auto/refs/Nk.md`). Cross-link in
+        `skills/40-parallel-dispatcher/SKILL.md`.
+    (2) Memory pyramid — L0 (Conversation) → L1 (Atom) → L2 (Scenario) →
+        L3 (Persona) layering, mapped onto our existing 4-tier model in
+        `policies/memory-tiers.md`. Documented in
+        `policies/memory-pyramid.md`; L3 generator in
+        `scripts/l3-persona-generator.mjs` (zero-dep, reads
+        `memory/*.md` atoms + `architecture/<project>/decisions.md`
+        scenarios). Wired into `commands/consolidate-memory.md` as
+        optional step 6.5.
+  We do NOT adopt:
+    - The TypeScript runtime (`src/`) and its OpenClaw/Hermes plugin
+      lifecycle hooks. We have no plugin gateway to host such a runtime.
+    - The sqlite-vec storage and BM25 + embedding + RRF hybrid recall.
+      The vault stays as inspectable markdown; grep + wikilinks remain
+      the recall mechanism.
+    - The DeepSeek-V3.2 / OpenAI-compatible LLM extractor invoked for
+      automatic L1/L2 extraction. Our consolidation stays semi-manual
+      via `/consolidate-memory`, preserving zero per-session cost and
+      auditability.
+    - The Docker Hermes deployment (`docker/Dockerfile.hermes`) and
+      the gateway HTTP API.
+    - Automatic context-window monitoring with `mildOffloadRatio` /
+      `aggressiveCompressRatio` thresholds. Activation in the kit is
+      explicit (heuristics documented in the policy, decision made by
+      the orchestrator), not driven by a state machine.
+
