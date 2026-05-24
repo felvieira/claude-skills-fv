@@ -5,6 +5,35 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.17.0-diff-impact-and-graph-auto-update] - 2026-05-25
+
+Inspirado em `Lum1104/Understand-Anything` (MIT, 24.7k stars). Implementa as 2 ideias verdes (diff impact analysis + graph auto-update) e documenta as 2 amarelas (dashboard web + pipeline multi-agent) como roadmap futuro. Zero código copiado — implementação própria em cima do `graphify-out/` que já existia.
+
+### Added
+
+- **`scripts/diff-impact.mjs`** (~230 linhas) — cruza `git diff` com `graphify-out/graph.json` e reporta nós diretamente tocados + dependentes em N hops (BFS). Modos: vs HEAD~1 (default), `--staged`, `--ref <branch>`. Flags: `--depth N` (default 2), `--json`. Inspirado em `/understand-diff`.
+- **`commands/diff-impact.md`** — slash command com triggers em PT/EN. Casos de uso: skill 11 reviewer antes de aprovar PR, skill 23 antes de refactor, pre-commit opcional. Lista limitações conhecidas (graph stale, paths Windows, edges dinâmicas).
+- **`hooks/scripts/graph-update-post-tool.mjs`** — hook PostToolUse opt-in (`GRAPHIFY_AUTO=1`) que regenera `graphify-out/graph.json` após Edit/Write em arquivo de código (15 extensões). Silencia se graphify não está instalado. Timeout 30s. Wirado em `hooks/hooks.json`.
+- **`docs/patterns/insights-dashboard-future.md`** (240 linhas) — roadmap pras 2 ideias amarelas: (1) interactive web dashboard com 5 stack candidatos + caminho incremental em 4 fases; (2) pipeline multi-agent inspirado nos 9 agents do Lum com mapeamento pras skills 18/33/38 + propostas pra skills 44/45. Decisão explícita de NÃO executar agora.
+
+### Changed
+
+- **`.claude-plugin/plugin.json`** + **`mcp-server/package.json`** — bump v2.16.2 → v2.17.0.
+- **`hooks/hooks.json`** — adicionado `graph-update-post-tool.mjs` à lista PostToolUse (total 18 hook scripts).
+
+### Verified
+
+- `check-hook-scripts-exist.mjs` ✅ 18/18 OK
+- `diff-impact.mjs` testado vs HEAD~1, `--staged`, `--ref main` — funciona, exit 0 quando sem mudanças, lista nós + ripple quando há
+- `check-consistency.mjs` ✅ 42 skills, 37 tools, 15 agents
+
+### Notes
+
+- Roadmap explicita por que NÃO executar dashboard nem multi-agent pipeline agora: feature creep antes de validar demanda, refactor caro das skills 18/33/38, risco de chegar perto do anti-padrão do `alirezarezvani/claude-skills` (329 skills).
+- `--auto-update` é opt-in por design — rodar graphify em todo edit pode pesar em repos grandes. User ativa explicitamente.
+
+---
+
 ## [2.16.2-acknowledgements-tone] - 2026-05-24
 
 **Docs-only patch** ajustando o tom das atribuições públicas. Substitui "absorved X (paths, linhas, detalhes mecânicos)" por "inspired by X" em todos os entry points públicos do kit, sem perder a atribuição legal.
