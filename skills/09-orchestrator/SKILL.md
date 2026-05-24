@@ -197,12 +197,15 @@ Agent({ subagent_type: "dev-team-kit-fv:05-qa-testing", ... })
 
 **A) Worktree + general-purpose (paralelização granular, recomendado para N slices)**
 
+> ⚠ **Sempre passar `model:` explícito.** Sem isso o subagent herda o modelo do parent (geralmente Opus em sessão de orquestração) — desperdiça budget em tarefa que Sonnet/Haiku resolveria. Ver `policies/model-routing-real.md` para o porquê o hook não consegue forçar isso por nós.
+
 ```typescript
 const slices = [/* lista de vertical slices */];
 // Um único message com N tool calls — dispatch em paralelo
 for (const slice of slices) Agent({
   subagent_type: "general-purpose",
   isolation: "worktree",
+  model: "sonnet",                    // implementação de slice = Balanced tier
   description: `Slice ${slice.id} — ${slice.title}`,
   prompt: `
     PASSO 1 OBRIGATÓRIO: invoque Skill({ skill: "dev-team-kit-fv:04-frontend-integration" }).
@@ -214,7 +217,18 @@ for (const slice of slices) Agent({
 });
 ```
 
-Ver `templates/parallel-slice-prompt.md` para template completo e `skills/40-parallel-dispatcher/SKILL.md`.
+**Tabela canônica: que `model:` passar por tipo de slice**
+
+| Tipo de slice | `model:` | Por quê |
+|---|---|---|
+| Backend/Frontend impl, QA tests, docs | `"sonnet"` | Balanced — implementação padrão, sem necessidade de raciocínio profundo |
+| Security review, arquitetura, debug cross-layer | `"opus"` | Deep — exige raciocínio multi-passo, custo justificado |
+| Rename, lint fix, boilerplate, microcopy, format | `"haiku"` | Fast — tarefa mecânica, padrão conhecido, economia 10x |
+| Detective spec (4 detectives em paralelo) | `"sonnet"` | Balanced — análise estrutural sem decisão crítica |
+
+**Anti-padrão**: spawnar 5 slices sem `model:` em sessão Opus → custo 10x maior que necessário. Hook avisa mas não bloqueia.
+
+Ver `templates/parallel-slice-prompt.md`, `skills/40-parallel-dispatcher/SKILL.md` e `policies/model-routing-real.md`.
 
 **B) `/loop --worktree --parallel N` (process-based, Ralph loop)**
 

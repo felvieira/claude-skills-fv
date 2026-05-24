@@ -65,6 +65,38 @@ function looksLikeSkillName(name) {
   return /^\d{2}-/.test(name);
 }
 
+/**
+ * Warning não-bloqueante: Agent() spawn sem `model:` explícito.
+ * Loga em .bot/missing-model.jsonl pra telemetria. NÃO bloqueia o dispatch.
+ *
+ * Ver policies/model-routing-real.md — hook não pode forçar model, só sugerir.
+ * Sem model:, o subagent herda o do parent. Em sessão Opus = 10x mais caro.
+ */
+function maybeWarnMissingModel(input, agentName) {
+  if (isHookDisabled('agent-dispatch-validator.missing-model')) return;
+  const model = input?.tool_input?.model;
+  if (model && typeof model === "string" && model.length > 0) return;  // OK
+
+  try {
+    const botDir = resolveBotPath();
+    mkdirSync(botDir, { recursive: true });
+    appendFileSync(
+      resolveBotPath("missing-model.jsonl"),
+      JSON.stringify({
+        ts: new Date().toISOString(),
+        hook: HOOK_ID,
+        warned: "missing-model",
+        subagent_type: KIT_PREFIX + agentName,
+        description: input?.tool_input?.description || null,
+        hint: "passe model: 'haiku'|'sonnet'|'opus' para evitar herdar do parent (policies/model-routing-real.md)",
+      }) + "\n",
+      "utf-8",
+    );
+  } catch {
+    // Silencioso — telemetria não bloqueia
+  }
+}
+
 function logTelemetry(record) {
   try {
     const botDir = resolveBotPath();
@@ -155,7 +187,8 @@ process.stdin.on("end", () => {
   const skills = listSkills();
 
   if (validAgents.has(name)) {
-    // Subagent legítimo → libera
+    // Subagent legítimo → libera. Mas avisa se model não foi explícito.
+    maybeWarnMissingModel(input, name);
     process.stdout.write(JSON.stringify({ continue: true }));
     process.exit(0);
   }

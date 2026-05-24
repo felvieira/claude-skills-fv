@@ -73,10 +73,12 @@ Use quando os subagents `agents/*.md` cobrem o trabalho **sem precisar de skill 
 ```typescript
 // Comprehensive PR review: 4 subagents em paralelo
 // SINGLE message, 4 tool calls — paralelização real
-Agent({ subagent_type: "dev-team-kit-fv:code-reviewer",   description: "Review", prompt: "..." })
-Agent({ subagent_type: "dev-team-kit-fv:security-auditor", description: "Audit",  prompt: "..." })
-Agent({ subagent_type: "dev-team-kit-fv:test-engineer",    description: "Tests",  prompt: "..." })
-Agent({ subagent_type: "dev-team-kit-fv:anti-ai-writing",  description: "Prose",  prompt: "..." })
+// Note: code-reviewer e security-auditor = "opus" (raciocínio cross-layer)
+//       test-engineer e anti-ai-writing = "sonnet" (validação padrão)
+Agent({ subagent_type: "dev-team-kit-fv:code-reviewer",    model: "opus",   description: "Review", prompt: "..." })
+Agent({ subagent_type: "dev-team-kit-fv:security-auditor", model: "opus",   description: "Audit",  prompt: "..." })
+Agent({ subagent_type: "dev-team-kit-fv:test-engineer",    model: "sonnet", description: "Tests",  prompt: "..." })
+Agent({ subagent_type: "dev-team-kit-fv:anti-ai-writing",  model: "sonnet", description: "Prose",  prompt: "..." })
 ```
 
 Lista canônica dos 15 subagents válidos: ver `AGENTS.md` tabela.
@@ -93,14 +95,24 @@ const slices = [
 ];
 
 // SINGLE message, 3 tool calls — paralelização real com isolamento
+// SEMPRE passar `model:` — sem isso o subagent herda do parent (geralmente Opus)
+// e gasta budget desnecessário. Ver policies/model-routing-real.md.
 for (const slice of slices) Agent({
   subagent_type: "general-purpose",
   isolation: "worktree",
+  model: tierForSlice(slice),         // → sonnet (impl), opus (arch/security), haiku (rename/format)
   description: `Slice ${slice.id} — ${slice.title}`,
   prompt: buildSliceSelfContainedPrompt(slice)
   // Template: templates/parallel-slice-prompt.md
   // Estrutura: PASSO 1 (Skill tool) + Contexto + Critérios + Output esperado
 });
+
+// Helper canônico:
+function tierForSlice(slice) {
+  if (slice.kind === "security" || slice.kind === "architecture") return "opus";
+  if (slice.kind === "rename"   || slice.kind === "format")        return "haiku";
+  return "sonnet";  // default: implementação, testes, docs
+}
 ```
 
 ### Caminho C — `/swarm` (autonomia total)
@@ -191,7 +203,21 @@ Message: [
 ]
 ```
 
-### Anti-padrão 5 — Esquecer `isolation: "worktree"` com slice que muda código
+### Anti-padrão 5 — Agent() sem `model:` em sessão Opus
+
+```typescript
+// ❌ Herda Opus do parent — gasta ~10x mais que o necessário em slice trivial
+Agent({ subagent_type: "general-purpose", prompt: "rename 5 variables to camelCase" })
+
+// ✅ Forçar tier apropriado
+Agent({ subagent_type: "general-purpose", model: "haiku", prompt: "rename 5 variables to camelCase" })
+```
+
+**Por quê isso importa:** Claude Code hooks **não conseguem** forçar troca de model em tempo de dispatch (a API hook não tem `override_model`). O hook `model-routing-hook.mjs` só **sugere** via additionalContext. Enforcement real = passar `model:` explícito. Detalhe em `policies/model-routing-real.md`.
+
+Custo numa sessão típica de `/swarm` com 5 slices: passar `model: "sonnet"` em vez de herdar Opus economiza ~$0.40 por slice × 5 = $2 por sessão. Em 30 sessões/mês = $60. Vale o hábito.
+
+### Anti-padrão 6 — Esquecer `isolation: "worktree"` com slice que muda código
 
 Sem worktree, N subagents tocam o **mesmo working tree** = race conditions, conflitos, lock contention.
 

@@ -5,6 +5,42 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.15.1-fal-adapter-and-model-routing-enforcement] - 2026-05-24
+
+Patch da v2.15.0 com 3 itens: FAL.AI adapter no template stack-default, exemplos com `model:` explícito nas skills 09/40, e warning não-bloqueante no hook quando Agent() sem `model:`.
+
+### Added
+
+- **`templates/stack-default/fal/config.ts`** — adapter FAL.AI self-contained (sem dep externa, sem referência ao `D:/Repos/GERAL/` que é privado do autor):
+  - Presets: `cheap` (grok-imagine $0.020), `edit` (gemini-25-flash $0.039), `quality` (gemini-3-pro $0.150), `premium` (gpt-image-1.5 $0.080)
+  - Auto-detect: se passar `referenceImages`, usa endpoint de edit automaticamente
+  - REST API direta (sem SDK) — submit-then-poll na queue FAL com timeout de 60s
+  - `generateImage()`, `listImageModels()`, `estimateImageCost()` exportados
+- **`templates/stack-default/apps/web/src/lib/image.ts`** — re-export do adapter (igual ao pattern do `lib/llm.ts`)
+- **`templates/stack-default/apps/web/src/app/api/image/route.ts`** — exemplo de route com auth guard + cost cap de $0.50/request
+- **`.env.example`** — `FAL_AI_API_KEY` documentado com link pro dashboard
+- **`README-stack.md`** — seção dedicada FAL.AI (presets, exemplos, motivação) + entry na tabela de stack
+- **`hooks/scripts/agent-dispatch-validator.mjs`** — função `maybeWarnMissingModel()` que loga em `.bot/missing-model.jsonl` quando Agent() é chamado sem `model:` explícito. **Não bloqueia** (warning only).
+
+### Changed
+
+- **`skills/09-orchestrator/SKILL.md`** — seção "Como paralelizar slices" agora inclui `model:` explícito em todos os exemplos, tabela canônica de tier por tipo de slice, e helper `tierForSlice()` reusável.
+- **`skills/40-parallel-dispatcher/SKILL.md`** — Caminho A (4 review agents) e Caminho B (worktree) com `model:` hardcoded. Novo "Anti-padrão 5: Agent() sem model: em sessão Opus" com custo estimado ($2/sessão × 30 sessões/mês = $60 wasted).
+
+### Why this matters
+
+Pergunta do user: "se chamar subagent você consegue mudar a LLM correto? então não deveria fazer tudo via subagents?"
+
+Resposta documentada em [`policies/model-routing-real.md`](policies/model-routing-real.md):
+- Sim, `Agent({ model: "..." })` é o ÚNICO enforcement real de routing no Claude Code
+- Mas não fazer tudo via subagent — subagents têm fresh context (não veem a conversa), latência de spin-up, custo de duplicação. Trade-off: usar quando ganho de tier compensa overhead (slices paralelos, reviews simultâneos, batch de tarefas haiku-friendly)
+
+### Removed (não-aplicável)
+
+- Nenhuma referência ao `D:/Repos/GERAL/` (caminho privado do autor) foi adicionada — o kit é público e auto-contido.
+
+---
+
 ## [2.15.0-stack-default-template] - 2026-05-24
 
 **Template de stack completo para novos projetos** — elimina Write×130 de scaffolding repetitivo em futuros `/swarm` greenfield. Decisões de infra/auth/DB/LLM já tomadas; `/swarm` começa direto no código da feature. + policy honesta sobre model routing (enforcement real vs. sugestão).

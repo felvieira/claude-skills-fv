@@ -33,6 +33,7 @@ O que "faz sentido" significa:
 | **Observability** | OpenTelemetry + Grafana + Loki | Datadog, NewRelic | OSS completo, self-hosted, sem custo por seat |
 | **Email** | SMTP padrão (Resend/Postmark/SES) | SendGrid | SendGrid: lock-in. SMTP: padrão aberto, troca sem código |
 | **Container** | Docker Compose | Kubernetes, Railway, Render | K8s: overkill até 10k req/s. Railway/Render: vendor lock |
+| **Image gen** | FAL.AI (multi-vendor gateway) | Replicate, DALL-E direto, Midjourney | FAL: 1 key → grok/gemini/gpt-image; trocar model via preset, sem vendor lock |
 
 ---
 
@@ -63,6 +64,49 @@ return streamLLM({ tier: "balanced", messages });
 | `deep` | `anthropic/claude-opus-4-5` | Raciocínio complexo, security, arquitetura |
 
 Para trocar modelo sem mudar código: edite `LLM_MODEL_FAST/BALANCED/DEEP` no `.env`.
+
+---
+
+## Image generation via FAL.AI — como usar
+
+Adapter self-contained em `fal/config.ts`. Só ativar se o projeto precisa gerar imagem.
+
+```ts
+import { generateImage, estimateImageCost } from "@/lib/image";
+
+// Text-to-image barato (social posts, iteração)
+const { images, estimatedCostUsd } = await generateImage({
+  prompt: "minimalist cover art, blue gradient, abstract shapes",
+  preset: "cheap",            // grok-imagine → $0.020/img
+  aspectRatio: "16:9",
+});
+
+// Edit/refine (precisa imagem de referência)
+await generateImage({
+  prompt: "remove background, keep subject sharp",
+  preset: "edit",             // gemini-25-flash → $0.039/img (auto-detect se referenceImages presente)
+  referenceImages: ["https://example.com/photo.jpg"],
+});
+
+// Cost guard antes de gerar
+const cost = estimateImageCost({ preset: "quality", numImages: 4 });
+if (cost > userBudget) throw new Error("budget exceeded");
+```
+
+**Presets disponíveis** (configurar `FAL_AI_API_KEY` no `.env`):
+
+| Preset | Default model | Preço/img | Quando usar |
+|---|---|---:|---|
+| `cheap` | `grok-imagine` | $0.020 | Text-to-image padrão, social posts, iteração alta |
+| `edit` | `gemini-25-flash` | $0.039 | Refine com imagem de referência, inpaint, background removal |
+| `quality` | `gemini-3-pro` | $0.150 | Tipografia complexa, prompts difíceis, hi-fi |
+| `premium` | `gpt-image-1.5` | $0.080 | OG cards, acabamento de marketing, tipografia fina |
+
+**Route handler exemplo**: `apps/web/src/app/api/image/route.ts` — inclui auth guard + cost cap de $0.50/request.
+
+**Por que FAL.AI** (não Replicate, não DALL-E direto): 1 API key → acesso a Grok/Gemini/GPT-Image/Flux/SD/etc, troca de model sem reescrever, sem vendor lock de um provider só.
+
+Atualizar `fal/config.ts > MODELS` quando preços/disponibilidade mudarem (snapshot Maio/2026).
 
 ---
 
@@ -157,5 +201,6 @@ O orquestrador respeita constitution.md sobre este README.
 | Traefik | v3.0 | 2026-05-24 |
 | AI SDK | 4.3.x | 2026-05-24 |
 | OpenRouter | via API key | 2026-05-24 |
+| FAL.AI | via API key | 2026-05-24 |
 
 Atualizar esta tabela a cada upgrade deliberado.
