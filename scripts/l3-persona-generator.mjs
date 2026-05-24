@@ -93,7 +93,8 @@ function listFiles(dir, pattern) {
 // Memory parsing (L1 atoms)
 // ──────────────────────────────────────────────────────────────
 
-function parseFrontmatter(content) {
+function parseFrontmatter(rawContent) {
+  const content = rawContent.replace(/\r\n/g, "\n");
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) return { meta: {}, body: content };
   const meta = {};
@@ -139,8 +140,10 @@ function loadAtoms(memoryDir) {
 // ──────────────────────────────────────────────────────────────
 
 function parseDecisions(decisionsPath) {
-  const content = safeRead(decisionsPath);
-  if (!content) return [];
+  const raw = safeRead(decisionsPath);
+  if (!raw) return [];
+  // Normalize Windows CRLF → LF so split("\n\n") works on any OS
+  const content = raw.replace(/\r\n/g, "\n");
   const scenarios = [];
   // Match `### YYYY-MM-DD — title` or `### <title>` (loose)
   const re = /^###\s+(.+)$/gm;
@@ -153,10 +156,17 @@ function parseDecisions(decisionsPath) {
     const start = positions[i].start;
     const end = i + 1 < positions.length ? positions[i + 1].start : content.length;
     const block = content.slice(start, end);
-    const firstPara = block.split("\n\n").slice(1, 2).join("\n\n").trim();
+    // Find first non-empty paragraph after the ### heading line
+    const paras = block.split("\n\n").slice(1).map(p => p.trim()).filter(Boolean);
+    const firstPara = paras[0] || "";
+    // Strip bold markers (**Decisão:** etc) and take first meaningful line
+    const cleanedPara = firstPara
+      .replace(/^\*\*[^*]+:\*\*\s*/gm, "")  // strip **Label:**
+      .replace(/^#+\s*/gm, "")               // strip any sub-headers
+      .trim();
     scenarios.push({
       title: positions[i].title,
-      summary: firstPara.split("\n").slice(0, 3).join(" ").slice(0, 280),
+      summary: cleanedPara.split("\n").slice(0, 2).join(" ").slice(0, 280),
     });
   }
   return scenarios;
