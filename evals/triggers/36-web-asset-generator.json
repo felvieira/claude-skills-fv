@@ -1,0 +1,22 @@
+{
+  "skill": "36-web-asset-generator",
+  "should_trigger": [
+    "preciso gerar favicon multi-size a partir do logo",
+    "gerar favicons completos pra PWA",
+    "criar PWA icon set pra manifest do app",
+    "configurar manifest do PWA com icones corretos",
+    "Open Graph image pra compartilhamento no Facebook",
+    "OG image quando compartilhar no WhatsApp",
+    "social meta tags pra Twitter card e LinkedIn",
+    "twitter card grande com imagem destacada",
+    "apple-touch-icon faltando, gerar agora",
+    "imagem de compartilhamento dinâmica por rota"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "rodar migration drop coluna no postgres",
+    "configurar SSL via cert-manager",
+    "escrever ADR sobre cache distribuído",
+    "instrumentar tracking de eventos no PostHog"
+  ]
+}

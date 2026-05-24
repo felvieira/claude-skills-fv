@@ -48,6 +48,15 @@ const skillFilter = flag("--skill");
 const minShould = Number(flag("--min-should") ?? 80); // %
 const maxShouldnt = Number(flag("--max-shouldnt") ?? 20); // %
 
+// ─── Normalização Unicode (v2.13.0+) ─────────────────────────────────────────
+// Match precisa ser tolerante a acentos PT-BR. Prompts reais escritos sem
+// acento ("validacao final", "producao", "ultima verificacao") devem casar
+// triggers declarados com acento ("validação final", "produção", etc).
+// NFD decompõe (ç → c + cedilha) e strip combining marks remove os diacríticos.
+function foldAccents(s) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
 // ─── Extrai triggers da SKILL.md ─────────────────────────────────────────────
 // Os triggers vivem DENTRO do campo `description:` (texto livre YAML multiline),
 // numa frase tipo: Trigger em: "x", "y", "z". O frontmatter inteiro pode ser
@@ -87,12 +96,15 @@ function extractTriggers(skillBody) {
 }
 
 // ─── Match heurístico ────────────────────────────────────────────────────────
+// Case-insensitive E accent-insensitive (NFD fold). Ambos lados normalizados
+// antes do includes() pra que "validacao final" case "validação final".
 function matchesAnyTrigger(prompt, triggers) {
-  const p = prompt.toLowerCase();
+  const p = foldAccents(prompt.toLowerCase());
   for (const t of triggers) {
     if (!t) continue;
-    if (p.includes(t)) {
-      return { matched: true, by: t };
+    const tNorm = foldAccents(t.toLowerCase());
+    if (p.includes(tNorm)) {
+      return { matched: true, by: t }; // retorna trigger ORIGINAL (com acento)
     }
   }
   return { matched: false, by: null };

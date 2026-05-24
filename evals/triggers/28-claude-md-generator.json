@@ -1,0 +1,22 @@
+{
+  "skill": "28-claude-md-generator",
+  "should_trigger": [
+    "preciso gerar claude.md pro repo novo",
+    "criar claude.md específico pro projeto consumidor",
+    "fazer onboarding do agente nesse repo recém-clonado",
+    "setup claude md depois da auditoria do repo",
+    "documentar projeto para agente colaborar melhor",
+    "preciso de contexto do projeto consolidado no CLAUDE.md",
+    "gerar claude.md a partir do output do repo auditor",
+    "rodar o claude.md generator pra o repo do cliente",
+    "criar claude.md acionavel pro time usar com o Claude Code",
+    "documentar projeto para agente saber as convenções"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo com Tailwind",
+    "configurar SSL via cert-manager no nginx",
+    "rodar semgrep scan no PR",
+    "definir tokens visuais do design system",
+    "instrumentar tracking de eventos no Mixpanel"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "30-cost-tracker",
+  "should_trigger": [
+    "qual o custo dessa sessao até agora?",
+    "preciso de relatorio de custo do sprint",
+    "quanto gastou em chamadas de IA esse mês?",
+    "monitorar token usage por skill no pipeline",
+    "qual o consumo de tokens na conversa atual?",
+    "definir budget mensal pro time de IA",
+    "ver custo de cada chamada fal.ai do dia",
+    "estimativa de cost por feature usando agente",
+    "gera relatorio de custo agregado por projeto",
+    "quanto gastou no mês passado em LLM?"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "definir critério de aceitação da nova feature",
+    "configurar nginx como reverse proxy",
+    "rodar semgrep scan no PR atual",
+    "tirar print da landing pra blog"
+  ]
+}

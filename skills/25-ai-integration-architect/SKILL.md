@@ -3,6 +3,7 @@ name: ai-integration-architect
 description: |
   Skill para desenhar e implementar integracoes de IA em aplicacoes, separando provider, adapter, hooks,
   observabilidade, custo e seguranca. Use quando o usuario quiser adicionar texto, imagem ou video ao app.
+  Trigger em: "integrar IA no app", "AI integration", "provider adapter de IA", "feature de IA", "chamar OpenAI", "chamar Anthropic", "Claude API", "LLM no app", "arquitetura de IA", "custo de IA", "fallback de provider", "rate limit de IA".
 ---
 
 # AI Integration Architect

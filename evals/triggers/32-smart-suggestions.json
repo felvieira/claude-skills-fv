@@ -1,0 +1,22 @@
+{
+  "skill": "32-smart-suggestions",
+  "should_trigger": [
+    "o que fazer agora pra fechar essa feature?",
+    "preciso de uma sugestao do próximo passo",
+    "suggest pra eu não travar no planejamento",
+    "qual o proximo passo no pipeline?",
+    "what now depois do build passar?",
+    "me ajuda a decidir entre refatorar ou shipar",
+    "preciso priorizar as tarefas pendentes",
+    "next ação mais relevante agora",
+    "qual sugestao você daria pra desbloquear?",
+    "o que fazer agora pra reduzir risco do deploy?"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo",
+    "rodar migration drop coluna deprecated",
+    "configurar SSL via cert-manager",
+    "gerar OG image pra compartilhamento",
+    "instrumentar tracking de eventos"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "12-motion-design",
+  "should_trigger": [
+    "adicionar animacao de entrada nos cards do dashboard",
+    "transicao suave entre páginas usando framer motion",
+    "spring animation pro botão primário quando clicado",
+    "hover effect nos itens do menu lateral",
+    "scroll animation revelando seções da landing",
+    "configurar easing custom pra transicao de modal",
+    "implementar parallax na hero da home",
+    "micro-interacao no toggle de tema dark mode",
+    "motion design pra animar o checkout em etapas",
+    "preciso de uma transicao com framer motion no drawer mobile"
+  ],
+  "shouldnt_trigger": [
+    "criar ADR sobre decisão de cache distribuído",
+    "configurar pipeline CI/CD com GitHub Actions",
+    "definir critério de aceitação da feature de login",
+    "rodar codeql scan no repositório",
+    "documentar API de pagamento no swagger"
+  ]
+}

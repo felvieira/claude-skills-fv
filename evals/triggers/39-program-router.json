@@ -1,0 +1,22 @@
+{
+  "skill": "39-program-router",
+  "should_trigger": [
+    "qual program faz mais sentido pra essa task?",
+    "rodar program apropriado pra essa demanda",
+    "preciso de auto orchestrate antes de improvisar pipeline",
+    "qual workflow já existente cobre isso?",
+    "what program devo escolher pra spec driven dev?",
+    "essa é uma feature grande, qual program serve?",
+    "build app inteiro do zero, tem program greenfield?",
+    "review PR completo com adversarial, qual program?",
+    "começar discovery do projeto novo from scratch",
+    "rodar program de legacy com constitution e spec driven adversarial"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "definir paleta de cores do design system",
+    "configurar SSL no nginx",
+    "tirar print da landing pra blog",
+    "instrumentar tracking de eventos no PostHog"
+  ]
+}

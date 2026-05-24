@@ -1,0 +1,22 @@
+{
+  "skill": "08-context-manager",
+  "should_trigger": [
+    "preciso criar tarefa pra revisão de PR do checkout",
+    "monta uma lista de tarefas pra fechar a sprint",
+    "qual o status atual do progresso da feature de notificações?",
+    "vou trocar foco pra resolver bug crítico em produção",
+    "mostra o histórico do que foi feito hoje no projeto",
+    "qual a proxima tarefa do pipeline depois do build?",
+    "preciso resetar contexto e começar do zero o planejamento",
+    "o que falta pra encerrar a feature de export CSV?",
+    "atualiza o progresso da story de integração com Stripe",
+    "lista de tarefas pendentes do sprint atual"
+  ],
+  "shouldnt_trigger": [
+    "criar componente em React com Zustand",
+    "configurar nginx com SSL em produção",
+    "rodar semgrep scan no PR antes do merge",
+    "definir paleta e tipografia do design system",
+    "gerar favicon a partir do logo da empresa"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "13-marketing-copy",
+  "should_trigger": [
+    "preciso de copy nova pra landing page do produto",
+    "qual headline funciona melhor pra hero da home?",
+    "escrever CTA forte pro botão de cadastro",
+    "preciso de proposta de valor clara em uma frase",
+    "ajuda a escrever texto de venda pro plano premium",
+    "slogan curto e memorável pra campanha",
+    "copy de conversao pra checkout em etapas",
+    "marketing copy pro lançamento da feature nova",
+    "headline que destaca o benefício principal",
+    "landing page nova precisa de copy de impacto"
+  ],
+  "shouldnt_trigger": [
+    "criar dockerfile multistage otimizado",
+    "rodar migration drop coluna deprecated",
+    "configurar Zustand pra estado global",
+    "implementar hook de debounce em React",
+    "tirar print da tela pra documentação"
+  ]
+}

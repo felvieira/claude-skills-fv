@@ -1,0 +1,22 @@
+{
+  "skill": "25-ai-integration-architect",
+  "should_trigger": [
+    "preciso integrar IA no app pra geração de resumos",
+    "AI integration entre o backend e o provider de LLM",
+    "configurar provider adapter de IA com fallback",
+    "implementar feature de IA pra sugerir respostas",
+    "chamar OpenAI com retry e timeout adequado",
+    "chamar Anthropic Claude API pro chat assistente",
+    "Claude API com prompt caching habilitado",
+    "adicionar LLM no app pra autocompletar texto",
+    "definir arquitetura de IA com observabilidade e custo",
+    "controlar custo de IA com cache e modelo barato"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna no postgres",
+    "tirar print da home pra documentação",
+    "configurar tracking de eventos no PostHog"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "21-data-analytics",
+  "should_trigger": [
+    "preciso instrumentar tracking de eventos no checkout",
+    "configurar analytics no PostHog pra rastrear funil",
+    "definir tracking plan pra feature de cadastro",
+    "naming de evento consistente entre web e mobile",
+    "métrica de produto pra ativação do plano free",
+    "funil de conversão da home até a compra",
+    "instrumentar evento de clique no botão CTA",
+    "preciso de data analytics pra entender retenção semanal",
+    "tracking de eventos no Amplitude do app mobile",
+    "Mixpanel pra cohort de usuários ativos"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "configurar SSL via cert-manager no nginx",
+    "implementar hook de debounce no input de busca",
+    "documentar ADR sobre cache distribuído",
+    "tirar print da landing pra documentação"
+  ]
+}

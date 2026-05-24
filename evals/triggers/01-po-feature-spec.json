@@ -1,0 +1,22 @@
+{
+  "skill": "01-po-feature-spec",
+  "should_trigger": [
+    "preciso escrever a especificação de uma nova feature de carrinho persistente",
+    "como PO, quero priorizar o backlog do trimestre antes do planning",
+    "monta uma user story pro fluxo de cadastro com login social",
+    "definir critério de aceitação pra feature de export CSV",
+    "lista os requisitos do MVP de onboarding em três passos",
+    "vamos definir escopo da feature de notificações em tempo real",
+    "atualizar roadmap do produto pra incluir integração com Stripe",
+    "preciso de uma especificação clara pro endpoint de checkout",
+    "qual o MVP minimo viavel pra validar a hipotese?",
+    "quero adicionar uma nova feature de favoritos no perfil"
+  ],
+  "shouldnt_trigger": [
+    "configurar webhook do GitHub Actions pra build noturna",
+    "ajustar regra de nginx pra cache de estáticos",
+    "rodar codeql scan no PR antes do merge",
+    "criar dockerfile multistage pra reduzir imagem final",
+    "tirar print da landing pra usar no readme"
+  ]
+}

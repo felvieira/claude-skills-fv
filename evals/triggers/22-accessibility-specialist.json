@@ -1,0 +1,22 @@
+{
+  "skill": "22-accessibility-specialist",
+  "should_trigger": [
+    "preciso revisar acessibilidade do formulário de cadastro",
+    "validar conformidade WCAG AA da landing nova",
+    "rodar audit de acessibilidade no checkout",
+    "navegacao por teclado tá quebrada no modal",
+    "screen reader não anuncia o status do toast",
+    "verificar contraste de cor da paleta atual",
+    "ajustar semantica HTML pra melhorar acessibilidade",
+    "implementar motion reduction respeitando prefers-reduced-motion",
+    "ARIA labels corretas nos botões de ícone",
+    "leitor de tela tá pulando o título da seção"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "configurar pipeline CI/CD no GitHub Actions",
+    "rodar migration drop coluna no postgres",
+    "definir SLO de 99.9% pra API",
+    "gerar OG image pra compartilhamento no WhatsApp"
+  ]
+}

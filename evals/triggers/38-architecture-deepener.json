@@ -1,0 +1,22 @@
+{
+  "skill": "38-architecture-deepener",
+  "should_trigger": [
+    "preciso encontrar oportunidades de deepening no codebase",
+    "transformar shallow module em deep module no módulo de pagamentos",
+    "refactor architecture pra reduzir acoplamento",
+    "improve architecture do diretório de serviços compartilhados",
+    "consolidate modules que tão muito fragmentados",
+    "preparar o codebase pra ser agent-friendly codebase",
+    "tornar o repo AI-navigable antes do agente assumir",
+    "analisar module depth do diretório src/billing",
+    "achar deep module candidates pra refatorar",
+    "deepening de modulo shallow que tá vazando complexidade"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna",
+    "tirar print da home pra blog",
+    "instrumentar tracking de eventos no Mixpanel"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "23-migration-refactor-specialist",
+  "should_trigger": [
+    "preciso fazer migracao de framework do React 17 pro 19",
+    "modernizacao de legacy do módulo de billing",
+    "aplicar strangler pattern pra trocar o ORM aos poucos",
+    "refactor estrutural do diretório de serviços compartilhados",
+    "upgrade grande de Node 16 pra Node 22",
+    "extracao incremental do módulo monolítico em serviços",
+    "migracao de runtime de Node pra Bun",
+    "trocar ORM de Sequelize pra Prisma sem downtime",
+    "rollout incremental de refactor com feature flag",
+    "migrar para a nova versão do Next.js sem quebrar produção"
+  ],
+  "shouldnt_trigger": [
+    "criar copy de conversao pra landing",
+    "definir tokens visuais do design system",
+    "rodar semgrep scan no PR atual",
+    "tirar print da home pra documentação",
+    "configurar tracking de eventos no Mixpanel"
+  ]
+}

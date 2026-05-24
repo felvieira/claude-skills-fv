@@ -3,6 +3,7 @@ name: asset-librarian
 description: |
   Skill para inventariar e organizar imagens, icones, logos, fontes, tokens visuais e referencias graficas do projeto.
   Use quando precisar mapear assets existentes, evitar inconsistencias visuais e apoiar UI/UX, Frontend e Image Generator.
+  Trigger em: "asset librarian", "inventariar assets", "inventario de assets", "mapear assets", "organizar assets", "design tokens", "biblioteca de assets", "auditar assets visuais", "catalogar logos", "incoerencia visual".
 ---
 
 # Asset Librarian

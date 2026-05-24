@@ -1,0 +1,22 @@
+{
+  "skill": "26-prompt-engineer",
+  "should_trigger": [
+    "preciso de prompt engineering pra melhorar a feature de chat",
+    "atuar como prompt engineer pra rever o system prompt",
+    "melhorar prompt do classificador de intenção",
+    "otimizar prompt pra reduzir tokens consumidos",
+    "criar template de prompt reutilizavel pra resumos",
+    "ajustar system prompt do assistente do app",
+    "aplicar few-shot pra melhorar acurácia da extração",
+    "usar chain of thought no agente de planejamento",
+    "preciso reduzir custo de prompt sem perder qualidade",
+    "iterar prompt do gerador de imagens com test cases"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "configurar SSL via cert-manager",
+    "implementar hook customizado em React",
+    "tirar print da landing pra documentação",
+    "rodar migration drop coluna no postgres"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "20-observability-sre",
+  "should_trigger": [
+    "preciso adicionar observabilidade ao serviço de pagamento",
+    "configurar logs estruturados com correlation id",
+    "implementar SRE básico no serviço de checkout",
+    "definir SLO de 99.9% pra API pública",
+    "configurar alertas pra error budget estourando",
+    "adicionar tracing distribuido com OpenTelemetry",
+    "criar health check no endpoint /healthz",
+    "readiness probe no Kubernetes pro pod do worker",
+    "rollback seguro depois do deploy ruim",
+    "preciso de runbook operacional pro incidente de ontem"
+  ],
+  "shouldnt_trigger": [
+    "criar copy pra landing page nova",
+    "definir paleta de cores do design system",
+    "escrever user story de cadastro com login social",
+    "gerar favicon a partir do logo",
+    "rodar firecrawl pra coletar concorrentes"
+  ]
+}

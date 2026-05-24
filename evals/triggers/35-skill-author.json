@@ -1,0 +1,22 @@
+{
+  "skill": "35-skill-author",
+  "should_trigger": [
+    "preciso criar nova skill pra detectar vazamento de credenciais",
+    "atuar como skill author pra refatorar a skill 09",
+    "rodar skill creator pra adicionar skill nova ao kit",
+    "editar skill existente pra melhorar discovery",
+    "avaliar skill 22 com fixtures de trigger",
+    "rodar skill eval pra ver se o description triggea bem",
+    "otimizar description da skill 04 pra melhor discovery",
+    "esse pattern vira meta-skill ou skill normal?",
+    "kit governance: padronizar o frontmatter das skills",
+    "adicionar nova capacidade ao kit como skill numerada"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna no postgres",
+    "configurar SSL no nginx",
+    "instrumentar tracking de eventos"
+  ]
+}

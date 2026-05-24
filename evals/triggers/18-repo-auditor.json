@@ -1,0 +1,22 @@
+{
+  "skill": "18-repo-auditor",
+  "should_trigger": [
+    "preciso fazer um repo audit antes de começar a refatorar",
+    "rodar a auditoria de repo pra ter contexto inicial",
+    "mapear stack do projeto e convenções usadas",
+    "qual o harnessability score atual do nosso codebase?",
+    "atualizar o repo-audit antes da próxima sprint",
+    "preciso inventariar o codebase pra dar contexto ao agente",
+    "gera a fotografia do repo pra cachear contexto",
+    "auditar repositorio novo que acabei de clonar",
+    "atualizar current.md depois das mudanças do mês",
+    "mapear convencoes do projeto pra padronizar PRs"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo com Tailwind",
+    "subir docker-compose com postgres e redis",
+    "escrever copy nova pra landing page",
+    "gerar favicon a partir do logo",
+    "configurar tracking de eventos no PostHog"
+  ]
+}

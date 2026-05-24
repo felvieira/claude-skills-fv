@@ -3,6 +3,7 @@ name: prompt-engineer
 description: |
   Skill para desenhar prompts reutilizaveis de texto, imagem e video com foco em clareza, controle, custo e reprodutibilidade.
   Use quando a qualidade do prompt for parte central da feature ou do fluxo.
+  Trigger em: "prompt engineer", "prompt engineering", "melhorar prompt", "otimizar prompt", "template de prompt", "system prompt", "few-shot", "chain of thought", "reduzir custo de prompt", "iterar prompt", "prompt reutilizavel".
 ---
 
 # Prompt Engineer

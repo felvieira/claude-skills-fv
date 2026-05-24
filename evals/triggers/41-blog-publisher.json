@@ -1,0 +1,22 @@
+{
+  "skill": "41-blog-publisher",
+  "should_trigger": [
+    "preciso de novo post no blog sobre TDD com agente",
+    "publicar post no blog falando sobre dev kit",
+    "escrever post de review do GPT-5 vs Claude 4.7",
+    "gera blog post sobre as 24 tools que testei",
+    "publish blog post com screenshots da landing",
+    "criar post comparando frameworks frontend de 2025",
+    "novo post no meu blog com cover gerado por IA",
+    "publicar post mostrando o workflow novo do kit",
+    "escrever post técnico sobre prompt caching",
+    "criar post curto sobre lição aprendida hoje"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna deprecated",
+    "configurar SSL via cert-manager no nginx",
+    "instrumentar tracking de eventos no PostHog"
+  ]
+}

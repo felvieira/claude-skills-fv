@@ -3,6 +3,7 @@ name: release-manager
 description: |
   Skill para coordenar release, versionamento, changelog, release notes, rollout, rollback e comunicacao interna.
   Use quando a mudanca estiver pronta para empacotamento e liberacao controlada.
+  Trigger em: "release manager", "coordenar release", "versionamento semver", "changelog", "release notes", "rollout controlado", "comunicacao de release", "tag de versao", "bump de versao", "release candidate".
 ---
 
 # Release Manager

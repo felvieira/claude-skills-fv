@@ -1,0 +1,22 @@
+{
+  "skill": "40-parallel-dispatcher",
+  "should_trigger": [
+    "preciso paralelize as 5 stories em worktrees diferentes",
+    "rodar N slices em paralelo, cada um em worktree próprio",
+    "dispatch paralelo de reviews por área do código",
+    "criar 4 worktree paralelo pra trabalhar simultâneo",
+    "subir 5 workers fazendo build em paralelo",
+    "fazer dispatch em paralelo de tarefas independentes",
+    "fan-out das tasks pelo time de agents",
+    "scatter-gather pra coletar resultados de N reviews",
+    "preciso de comprehensive review com 4 angles em paralelo",
+    "multi-agent parallel pra reviewar PR grande"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "definir paleta de cores do design system",
+    "configurar SSL via cert-manager",
+    "rodar migration drop coluna no postgres",
+    "instrumentar tracking de eventos no PostHog"
+  ]
+}

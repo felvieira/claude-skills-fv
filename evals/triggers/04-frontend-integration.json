@@ -1,0 +1,22 @@
+{
+  "skill": "04-frontend-integration",
+  "should_trigger": [
+    "preciso criar um componente em React pra listagem de produtos",
+    "implementar página Next.js de detalhe de pedido com SSR",
+    "como faço integração da API de pagamento com React Query?",
+    "skeleton loading enquanto carrega os dados do dashboard",
+    "Zustand pra gerenciar estado global do carrinho",
+    "TanStack Query pra cache de requisições paginadas",
+    "criar hook customizado pra debounce de input de busca",
+    "deixar o layout responsivo em mobile com Tailwind",
+    "formulário de cadastro com validação client-side",
+    "configurar roteamento dinâmico em /produtos/[slug]"
+  ],
+  "shouldnt_trigger": [
+    "rodar migration drop coluna deprecated no postgres",
+    "ajustar regra de firewall na VPC da AWS",
+    "subir cluster Kubernetes em produção",
+    "configurar SSL via cert-manager no nginx",
+    "criar runbook de troubleshooting do banco"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "37-tdd-engineer",
+  "should_trigger": [
+    "vamos fazer tdd nessa feature de checkout",
+    "implementar test-first pro novo endpoint",
+    "aplicar red-green-refactor no módulo de pagamento",
+    "usar tracer bullet pra implementar a feature ponta a ponta",
+    "escrever behavior test antes de implementar",
+    "integration test pro fluxo de cadastro completo",
+    "como aplicar tdd nesse bugfix?",
+    "deep module pra encapsular a lógica de billing",
+    "interface design test pra validar o contrato",
+    "preciso de tdd rigoroso, red green refactor"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo com Tailwind",
+    "definir paleta de cores do design system",
+    "configurar SSL via cert-manager no nginx",
+    "instrumentar tracking de eventos",
+    "tirar print da landing pra blog"
+  ]
+}

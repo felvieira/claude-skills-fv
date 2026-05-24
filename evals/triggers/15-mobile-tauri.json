@@ -1,0 +1,22 @@
+{
+  "skill": "15-mobile-tauri",
+  "should_trigger": [
+    "preciso empacotar o app web como app nativo via Tauri",
+    "gerar APK Android pra distribuir interno",
+    "build do desktop app pra Windows e macOS",
+    "configurar cross-platform build no Tauri v2",
+    "como gerar executável .exe assinado pra Windows",
+    "build nativo pro Linux gerando .AppImage e .deb",
+    "preciso adicionar notificação nativa no app desktop",
+    "acesso ao file system nativo pra ler arquivos locais",
+    "como gerar .dmg pra distribuir o macOS app",
+    "Android build com permissões corretas"
+  ],
+  "shouldnt_trigger": [
+    "criar pipeline CI/CD com GitHub Actions",
+    "definir tracking de eventos no Mixpanel",
+    "escrever documentação ADR do serviço de cache",
+    "rodar semgrep scan no PR",
+    "configurar SSL via cert-manager no nginx"
+  ]
+}

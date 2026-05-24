@@ -1,0 +1,22 @@
+{
+  "skill": "17-image-generator",
+  "should_trigger": [
+    "preciso gerar imagem de hero pra landing page nova",
+    "criar imagem de background pra seção de pricing",
+    "gerar hero image abstrata em tons azuis",
+    "background image dark mode pra dashboard",
+    "preciso de favicon novo a partir do logo",
+    "icone customizado pro botão de export",
+    "criar mascote da marca em estilo flat",
+    "illustration de empty state pro feed vazio",
+    "remover fundo da foto de produto",
+    "transparent icon pra usar no menu lateral"
+  ],
+  "shouldnt_trigger": [
+    "configurar pipeline CI/CD com GitHub Actions",
+    "rodar migration de drop coluna no postgres",
+    "definir critério de aceitação da nova feature",
+    "escrever ADR sobre decisão de cache distribuído",
+    "implementar middleware de rate limit"
+  ]
+}

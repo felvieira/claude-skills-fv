@@ -1,0 +1,22 @@
+{
+  "skill": "34-static-analysis",
+  "should_trigger": [
+    "rodar semgrep no repo antes do release",
+    "preciso de codeql scan no PR de auth",
+    "fazer static analysis no monorepo",
+    "scan de seguranca antes do deploy pra produção",
+    "rodar SAST no código novo",
+    "fazer varredura de vulnerabilidades com semgrep",
+    "pre-deploy security scan obrigatório",
+    "OWASP scan pra checar top 10",
+    "CVE check nas dependências do projeto",
+    "auditoria automatizada antes da release"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "definir tokens visuais do design system",
+    "escrever copy nova pra landing",
+    "tirar print da home pra blog",
+    "gerar favicon a partir do logo"
+  ]
+}

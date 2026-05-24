@@ -1,0 +1,22 @@
+{
+  "skill": "27-video-integration-specialist",
+  "should_trigger": [
+    "preciso integrar text-to-video no app pra gerar clips",
+    "implementar image-to-video a partir de uma foto",
+    "adicionar video generativo na feature de marketing",
+    "gerar avatar video pro onboarding interativo",
+    "motion explainer animado pra landing nova",
+    "clip promocional pra campanha de lançamento",
+    "como gerar video curto via fal video?",
+    "integrar Sora pra geração de video no app",
+    "testar Veo do Google pra video AI",
+    "Runway video pra editar clips na pipeline"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna no postgres",
+    "configurar SSL no nginx",
+    "instrumentar tracking de eventos no PostHog"
+  ]
+}

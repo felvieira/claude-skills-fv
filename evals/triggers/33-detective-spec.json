@@ -1,0 +1,22 @@
+{
+  "skill": "33-detective-spec",
+  "should_trigger": [
+    "preciso fazer engenharia reversa do código legado",
+    "rodar detective spec pra extrair spec do módulo de billing",
+    "reverse spec do serviço de pagamento sem doc nenhuma",
+    "esse legado não tem spec, preciso extrair spec dele",
+    "documentar codigo existente sem reescrever nada",
+    "vibe coding sem doc, preciso retroativo das regras de negócio",
+    "o que esse codigo faz exatamente, ninguém sabe mais",
+    "gera spec a partir do codigo do checkout legado",
+    "atuar como detective pra mapear contratos do módulo X",
+    "detective spec pra extrair regras de negócio do legado"
+  ],
+  "shouldnt_trigger": [
+    "criar dockerfile multistage otimizado",
+    "definir paleta de cores do design system",
+    "rodar tracking de eventos no PostHog",
+    "configurar SSL via cert-manager no nginx",
+    "implementar hook de debounce em React"
+  ]
+}

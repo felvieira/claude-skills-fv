@@ -1,0 +1,22 @@
+{
+  "skill": "10-documenter",
+  "should_trigger": [
+    "preciso documentar a nova API de pagamentos no swagger",
+    "criar ADR registrando a decisão de migrar pra Postgres",
+    "atualizar o README do repo com instruções de setup",
+    "escrever feature doc da integração com Stripe",
+    "criar runbook de troubleshooting pra o serviço de filas",
+    "documentação completa do fluxo de autenticação",
+    "preciso registrar decisão de arquitetura sobre cache",
+    "api doc com exemplos de request e response",
+    "atualizar docs após a refatoração do módulo de billing",
+    "doc de operação pro time de SRE"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo com Tailwind",
+    "subir cluster Kubernetes com nginx ingress",
+    "rodar scan semgrep no PR atual",
+    "definir tokens visuais do design system",
+    "configurar tracking de eventos no PostHog"
+  ]
+}

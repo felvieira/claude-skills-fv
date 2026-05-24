@@ -3,6 +3,7 @@ name: migration-refactor-specialist
 description: |
   Skill para migracoes, modernizacao de legacy e refactors estruturais. Use quando precisar fazer upgrades grandes,
   extracao incremental, strangler pattern, compatibilidade de transicao e rollout seguro.
+  Trigger em: "migracao de framework", "modernizacao de legacy", "strangler pattern", "refactor estrutural", "upgrade grande", "extracao incremental", "migracao de runtime", "trocar ORM", "rollout incremental de refactor", "migrar para".
 ---
 
 # Migration Refactor Specialist

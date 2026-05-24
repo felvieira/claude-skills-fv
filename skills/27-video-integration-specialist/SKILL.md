@@ -3,6 +3,7 @@ name: video-integration-specialist
 description: |
   Skill para integrar geracao e manipulacao de video em aplicacoes. Use quando o app precisar de text-to-video,
   image-to-video, clips promocionais, avatar video, motion explainers ou outros fluxos de video generativo.
+  Trigger em: "text-to-video", "image-to-video", "video generativo", "avatar video", "motion explainer", "clip promocional", "gerar video", "fal video", "Sora", "Veo", "Runway video", "video AI".
 ---
 
 # Video Integration Specialist

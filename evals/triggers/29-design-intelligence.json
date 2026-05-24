@@ -1,0 +1,22 @@
+{
+  "skill": "29-design-intelligence",
+  "should_trigger": [
+    "preciso melhorar interface da home com base em referencias",
+    "pesquisar concorrentes do nicho de fintech no Brasil",
+    "fazer benchmark visual da nossa landing vs top 5 do mercado",
+    "analisar tendencias de design em SaaS B2B em 2025",
+    "montar moodboard pra rebranding do produto",
+    "redesign completo da página de pricing",
+    "rodar design competitivo pra entender padrões do nicho",
+    "analise visual das 10 melhores landings do segmento",
+    "preciso de referencia UI pra dashboard analytics",
+    "design competitivo pra inspirar a próxima iteração"
+  ],
+  "shouldnt_trigger": [
+    "rodar migration drop coluna no postgres",
+    "configurar pipeline CI/CD com GitHub Actions",
+    "criar ADR sobre cache distribuído",
+    "implementar JWT com refresh token",
+    "instrumentar tracking de eventos no Amplitude"
+  ]
+}

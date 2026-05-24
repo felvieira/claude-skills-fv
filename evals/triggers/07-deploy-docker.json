@@ -1,0 +1,22 @@
+{
+  "skill": "07-deploy-docker",
+  "should_trigger": [
+    "preciso criar um Dockerfile multistage otimizado pra build",
+    "subir docker-compose com postgres, redis e backend",
+    "deploy do app em produção via GitHub Actions",
+    "configurar pipeline CI/CD com testes antes do build",
+    "configurar nginx como reverse proxy com SSL",
+    "subir o cluster Kubernetes em AWS EKS",
+    "como organizar variáveis de ambiente entre staging e produção",
+    "ajustar infraestrutura pra autoscaling no pico de tráfego",
+    "preparar release semver com tag e changelog",
+    "configurar deploy automático em ambiente de staging"
+  ],
+  "shouldnt_trigger": [
+    "escrever user story pro fluxo de onboarding",
+    "definir paleta de cores do design system",
+    "rodar test suite local em modo watch",
+    "tirar print pra usar no post do blog",
+    "revisar prompts de geração de imagem"
+  ]
+}

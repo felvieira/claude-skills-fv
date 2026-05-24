@@ -3,6 +3,7 @@ name: accessibility-specialist
 description: |
   Skill dedicada a acessibilidade digital. Use quando precisar revisar WCAG, teclado, screen reader, contraste,
   semantica, motion reduction e acessibilidade de formularios, componentes e fluxos.
+  Trigger em: "acessibilidade", "accessibility", "a11y", "WCAG", "screen reader", "navegacao por teclado", "contraste de cor", "ARIA", "semantica HTML", "motion reduction", "leitor de tela", "audit de acessibilidade".
 ---
 
 # Accessibility Specialist

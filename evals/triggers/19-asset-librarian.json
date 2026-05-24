@@ -1,0 +1,22 @@
+{
+  "skill": "19-asset-librarian",
+  "should_trigger": [
+    "preciso inventariar assets visuais do projeto",
+    "rodar o asset librarian pra mapear logos e icones",
+    "fazer inventario de assets antes de mudar a marca",
+    "mapear assets de imagens e fontes existentes",
+    "organizar assets soltos em /public dentro de pastas semânticas",
+    "preciso de uma biblioteca de assets central pra o time",
+    "auditar assets visuais redundantes no monorepo",
+    "catalogar logos e variações por contexto",
+    "tem incoerencia visual entre as telas, queria mapear",
+    "documentar design tokens existentes no projeto"
+  ],
+  "shouldnt_trigger": [
+    "rodar migration de schema no postgres",
+    "configurar pipeline CI/CD no GitHub Actions",
+    "escrever ADR sobre escolha de banco",
+    "implementar middleware de autenticação JWT",
+    "criar componente React com Zustand"
+  ]
+}

@@ -5,6 +5,37 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.13.0-trigger-eval-full-coverage] - 2026-05-24
+
+**Cobertura 100% de trigger eval fixtures** (42/42 skills) + accent-folding no matcher. Skill discovery agora é mensurável programaticamente em todo o catálogo.
+
+### Added
+- **34 trigger fixtures novos** em `evals/triggers/` (cobertura 8/42 → 42/42 skills, 19% → 100%):
+  01-po-feature-spec, 04-frontend-integration, 07-deploy-docker, 08-context-manager, 10-documenter, 12-motion-design, 13-marketing-copy, 15-mobile-tauri, 17-image-generator, 18-repo-auditor, 19-asset-librarian, 20-observability-sre, 21-data-analytics, 22-accessibility-specialist, 23-migration-refactor-specialist, 24-release-manager, 25-ai-integration-architect, 26-prompt-engineer, 27-video-integration-specialist, 28-claude-md-generator, 29-design-intelligence, 30-cost-tracker, 31-session-summary, 32-smart-suggestions, 33-detective-spec, 34-static-analysis, 35-skill-author, 36-web-asset-generator, 37-tdd-engineer, 38-architecture-deepener, 39-program-router, 40-parallel-dispatcher, 41-blog-publisher, 42-blog-screenshot
+- Cada fixture: 10 should + 5 shouldnt prompts em PT-BR. shouldnt sempre vem de skill adjacente (cross-skill leakage test).
+
+### Changed
+- **`scripts/eval-triggers.mjs`** — `foldAccents()` (NFD + strip combining marks) aplicado em ambos lados do match. Resolve o problema PT-BR: prompts reais escritos sem acento (`validacao`, `producao`, `ultima verificacao`) agora casam triggers declarados com acento (`validação`, `produção`, `última verificação`). Ganho imediato no run existente: skills 06 (80→100%) e 11 (90→100%).
+- **10 SKILL.md ganharam linha "Trigger em:" no frontmatter** (não tinham, o extractor retornava `[]`): 18-repo-auditor, 19-asset-librarian, 20-observability-sre, 21-data-analytics, 22-accessibility-specialist, 23-migration-refactor-specialist, 24-release-manager, 25-ai-integration-architect, 26-prompt-engineer, 27-video-integration-specialist. Vocabulário canônico do domínio de cada uma adicionado pelo subagent.
+- **`.claude-plugin/plugin.json`** + **`mcp-server/package.json`** — bump v2.12.2 → v2.13.0 (minor, não patch: cobertura 100% + accent-folding são features).
+
+### Verified
+- check-consistency ✅ 42 skills, 37 tools, 15 agents
+- skill-quality-score --min 20 ✅
+- eval-triggers --strict ✅ **42/42 PASS**:
+  - 40 skills com 10/10 (100%) should + 0/5 (0%) shouldnt
+  - 2 skills com 9/10 (90%) should + 0/5 (0%) shouldnt: 02-ui-ux-design, 28-claude-md-generator
+  - 1 skill com 8/10 (80%) should + 0/5 (0%) shouldnt: 43-canary-deployment
+  - **0 skills com shouldnt > 0** (zero false positive cross-skill)
+- bench ✅ 13% / 98% (zero regressão)
+- hook-scripts-exist ✅ 17/17
+- validate-program ✅ 7/7
+
+### Significância
+Skill discovery deixou de ser hipótese ("a description triggera bem?") e virou métrica versionada. PR que afeta `description` de qualquer skill agora pode ser validado em segundos via `node scripts/eval-triggers.mjs --skill NN-name`. CI futuro pode usar `--strict` como hard gate.
+
+---
+
 ## [2.12.2-submodule-pattern-and-6-trigger-fixtures] - 2026-05-24
 
 Fecha 2 itens v3-deferred do log de v2.12.1: o pattern de submodule do `antfu/skills` e a expansão de `evals/triggers/` pra mais skills.

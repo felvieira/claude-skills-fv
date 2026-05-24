@@ -1,0 +1,22 @@
+{
+  "skill": "42-blog-screenshot",
+  "should_trigger": [
+    "tira print da home da Vercel pra usar no post",
+    "screenshot do site da Anthropic pra documentação",
+    "preciso de captura tela do dashboard atual",
+    "screenshot da página de pricing do concorrente",
+    "tira print da landing nova pra blog",
+    "print da landing pra usar no post novo",
+    "print do dashboard mobile pra comparativo",
+    "screenshot pro blog cobrindo a hero da home",
+    "captura tela full-page da landing finalizada",
+    "tira print scrolando até o footer"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React com Zustand",
+    "definir tokens visuais do design system",
+    "configurar SSL no nginx",
+    "rodar semgrep scan no PR",
+    "instrumentar tracking de eventos no Amplitude"
+  ]
+}

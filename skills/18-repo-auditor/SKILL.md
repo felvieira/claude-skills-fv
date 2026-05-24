@@ -4,6 +4,7 @@ description: |
   Skill de auditoria inicial e continua do repositorio. Use quando precisar mapear stack real, convencoes,
   assets, testes, docs, riscos e pontos de integracao antes de executar outras skills. O resultado deve ser
   persistido em markdown reutilizavel para reduzir releitura e economizar tokens.
+  Trigger em: "repo audit", "auditar repositorio", "mapear stack do projeto", "harnessability score", "repo-audit", "auditoria de repo", "fotografia do repo", "current.md", "mapear convencoes do projeto", "inventariar o codebase".
 argument-hint: "[caminho-do-repo]"
 allowed-tools: Read, Grep, Glob, Bash(git *), Bash(ls *), Bash(wc *), Bash(find *)
 ---

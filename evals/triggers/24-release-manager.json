@@ -1,0 +1,22 @@
+{
+  "skill": "24-release-manager",
+  "should_trigger": [
+    "atuar como release manager pra fechar a v2.13",
+    "preciso coordenar release da próxima versão",
+    "definir versionamento semver pra próxima minor",
+    "gerar changelog automático a partir dos PRs",
+    "escrever release notes pro time de produto",
+    "rollout controlado em 10% dos usuários primeiro",
+    "comunicacao de release pro Slack interno",
+    "criar tag de versao v2.14.0 e push",
+    "bump de versao no package.json pra patch",
+    "preparar release candidate antes do GA"
+  ],
+  "shouldnt_trigger": [
+    "criar componente React responsivo",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna deprecated",
+    "tirar print da landing pra documentação",
+    "instrumentar tracking de eventos"
+  ]
+}

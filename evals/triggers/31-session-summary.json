@@ -1,0 +1,22 @@
+{
+  "skill": "31-session-summary",
+  "should_trigger": [
+    "preciso de resumo do que foi feito hoje",
+    "gera summary da sessao antes de encerrar",
+    "me passa o handoff pro próximo dev pegar amanhã",
+    "vou encerrar sessao, consolida o trabalho",
+    "preciso passar bastao pro plantonista da noite",
+    "quero continuar depois, salva o estado atual",
+    "faz um recap das decisões importantes de hoje",
+    "session summary com pendências em aberto",
+    "preciso saber o que foi feito antes de continuar",
+    "gera handoff document pra retomar amanhã"
+  ],
+  "shouldnt_trigger": [
+    "criar Dockerfile multistage otimizado",
+    "definir paleta de cores do design system",
+    "rodar migration drop coluna no postgres",
+    "configurar tracking no PostHog",
+    "implementar middleware de rate limit"
+  ]
+}
