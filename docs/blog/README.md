@@ -7,6 +7,7 @@ Posts prontos pra colar no Medium, Dev.to, LinkedIn Articles ou qualquer platafo
 | Data | Título | Idiomas |
 |---|---|---|
 | 2026-05-23 | We Tested Our AI Coding Kit Against Itself | [EN](./2026-05-23-we-tested-our-ai-coding-kit.en.md) · [PT-BR](./2026-05-23-we-tested-our-ai-coding-kit.pt-BR.md) |
+| 2026-05-23 | 24 Claude Code Tools: What's Actually Worth Installing (Honest Review) | [EN](./2026-05-23-honest-review-24-claude-code-tools.en.md) · [PT-BR](./2026-05-23-honest-review-24-claude-code-tools.pt-BR.md) |
 
 ## Como usar
 

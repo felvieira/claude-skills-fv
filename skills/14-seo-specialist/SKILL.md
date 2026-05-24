@@ -1,11 +1,13 @@
 ---
 name: seo-specialist
 description: |
-  Skill do Especialista SEO para otimização de páginas e sistemas para motores de busca. Use quando precisar
-  otimizar meta tags, Open Graph, sitemap, schema markup, Core Web Vitals, performance, imagens, fontes,
-  acessibilidade para SEO, ou qualquer decisão de ranqueamento. Trigger em: "SEO", "meta tags", "Open Graph",
-  "sitemap", "schema markup", "Core Web Vitals", "performance", "LCP", "CLS", "ranking", "canonical",
-  "robots.txt".
+  Skill do Especialista SEO para otimização de páginas e sistemas para motores de busca tradicionais e
+  também para otimização para ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews).
+  Use quando precisar otimizar meta tags, Open Graph, sitemap, schema markup, Core Web Vitals, performance,
+  imagens, fontes, acessibilidade para SEO, ou qualquer decisão de ranqueamento e citação por motores
+  generativos. Trigger em: "SEO", "meta tags", "Open Graph", "sitemap", "schema markup", "Core Web Vitals",
+  "performance", "LCP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine",
+  "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization".
 ---
 
 # SEO Specialist - Otimização para Motores de Busca
@@ -428,6 +430,123 @@ Regras:
 - [ ] Preload de recursos críticos
 - [ ] CDN configurado para assets estáticos
 
+### GEO/AEO
+
+Ver seção dedicada `## GEO/AEO — Otimização para LLMs e Answer Engines` abaixo, com checklist completo de citação por motores generativos (clear claims, quotable headings, FAQ/HowTo schema, E-E-A-T, tabelas, llms.txt).
+
+## GEO/AEO — Otimização para LLMs e Answer Engines
+
+LLMs como ChatGPT, Claude, Perplexity e Google AI Overviews viraram a primeira camada de descoberta para muitos usuários — eles fazem a pergunta no chat antes de abrir o Google. GEO (Generative Engine Optimization) e AEO (Answer Engine Optimization) cobrem técnicas para tornar o conteúdo extraível, citável e referenciável por esses sistemas. Diferente de SEO clássico (que otimiza ranking em SERP), GEO/AEO otimiza para ser a fonte que o LLM cita textualmente na resposta gerada.
+
+### Conteúdo citável
+
+LLMs extraem trechos curtos e atômicos. Estruture o conteúdo para facilitar essa extração:
+
+- **Clear atomic claims:** 1 fato por sentença. Evite parágrafos com múltiplas afirmações concatenadas — o LLM precisa conseguir citar uma frase isolada sem perder contexto.
+  - Ruim: "A Vitamina D é importante para os ossos e também tem papel no sistema imune, sendo que sua deficiência afeta 50% da população em climas frios."
+  - Bom: "A Vitamina D regula a absorção de cálcio. Sua deficiência afeta 50% da população em climas frios (Holick, 2024)."
+- **Quotable H2/H3 como perguntas:** headings em forma de pergunta direta batem com a query do usuário no LLM. "Como configurar SSL no Nginx" extrai melhor que "Configuração de SSL".
+- **Parágrafos curtos:** máximo 3-4 frases. Blocos longos são descartados na extração.
+- **TL;DR no topo:** 2-3 linhas resumindo o artigo logo após o H1. LLMs frequentemente citam o TL;DR como resposta direta.
+- **Listas numeradas e com bullets:** estruturas enumeradas são extraídas com fidelidade muito maior que prosa corrida.
+
+### Structured data específico
+
+Além do schema clássico (Website, Organization), priorize tipos que LLMs consomem para grounding:
+
+- **FAQPage schema** (já tem template em `FAQSchema.tsx` — ver seção `## Schema Markup - JSON-LD` acima): cada par pergunta/resposta vira candidato a citação direta em AI Overviews.
+- **HowTo schema:** para tutoriais e procedimentos. Cada `step` é extraído individualmente.
+- **Article schema com metadados completos:** `author` (com `@type: Person` e `url` para bio), `datePublished`, `dateModified` (LLMs ranqueiam por frescor — conteúdo sem `dateModified` perde relevância em queries que pedem informação atual), `publisher`, `headline`, `description`.
+
+```typescript
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  author: {
+    '@type': 'Person',
+    name: 'Nome do Autor',
+    url: 'https://site.com/sobre/autor',
+  },
+  datePublished: '2025-01-15',
+  dateModified: '2025-03-20',
+  publisher: {
+    '@type': 'Organization',
+    name: 'Nome da Publicação',
+    logo: { '@type': 'ImageObject', url: 'https://site.com/logo.png' },
+  },
+};
+```
+
+### E-E-A-T para LLMs
+
+Experience, Expertise, Authoritativeness, Trustworthiness. LLMs filtram fontes por sinais de autoridade explícitos:
+
+- **Bio do autor visível na página:** nome, credenciais, link para perfil profissional. Não basta no schema — precisa estar no HTML renderizado.
+- **Fontes externas linkadas:** sempre que citar dado, estudo ou stat, link para a fonte primária. LLMs verificam grounding via outbound links.
+- **Datas claras em todo conteúdo:** `<time datetime="2025-03-20">20 de março de 2025</time>` visível no corpo, não só no schema.
+- **Contradições explícitas:** não use "alguns dizem X" — atribua nominalmente. "Smith (2024) defende X, mas Jones (2025) contradiz com Y baseado em dados de Z." Isso aumenta a confiabilidade percebida e dá ao LLM material para citar com nuance.
+- **Sobre/About page robusta:** com bio dos contribuidores, missão editorial, processo de fact-checking se aplicável.
+
+### Tabelas e listas
+
+LLMs extraem tabelas com altíssima fidelidade — frequentemente reproduzem a tabela inteira na resposta. Use tabelas sempre que comparar:
+
+- Planos/preços
+- Features entre alternativas
+- Antes/depois
+- Especificações técnicas
+- Prós/contras
+
+Listas com bullets ou numeradas vencem prosa para qualquer enumeração. Se tem mais de 3 itens equivalentes, vire lista.
+
+### llms.txt
+
+Arquivo opcional na raiz do site (analogia ao `robots.txt`), formato markdown, lista o conteúdo canônico e legível por LLMs. Não é padrão oficial mas começou a ser respeitado por crawlers de Anthropic, OpenAI e Perplexity.
+
+**public/llms.txt**
+
+```markdown
+# Nome do Site
+
+> Descrição breve em 1-2 linhas do que o site oferece.
+
+## Documentação principal
+
+- [Guia de introdução](https://site.com/docs/intro): visão geral em 5 min
+- [API Reference](https://site.com/docs/api): endpoints e schemas
+- [Tutoriais](https://site.com/tutoriais): passo a passo por caso de uso
+
+## Conteúdo editorial
+
+- [Blog](https://site.com/blog): artigos técnicos atualizados
+- [Changelog](https://site.com/changelog): histórico de releases
+
+## Opcional
+
+- [FAQ](https://site.com/faq): perguntas frequentes
+```
+
+Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado em markdown plano — útil para sites pequenos onde o LLM pode ingerir tudo.
+
+### GEO Checklist
+
+- [ ] TL;DR de 2-3 linhas no topo de cada artigo/página de conteúdo
+- [ ] H2/H3 formulados como perguntas diretas quando aplicável
+- [ ] Parágrafos com máximo 3-4 frases
+- [ ] Claims atômicos (1 fato por sentença) em conteúdo factual
+- [ ] FAQPage schema implementado em páginas com FAQ
+- [ ] HowTo schema em tutoriais e procedimentos
+- [ ] Article schema com `author`, `datePublished`, `dateModified`, `publisher`
+- [ ] Bio do autor visível no HTML (não só no schema)
+- [ ] Fontes externas linkadas para todo dado/stat citado
+- [ ] Datas visíveis no corpo do conteúdo via `<time datetime="">`
+- [ ] Atribuições nominais em vez de "alguns dizem"
+- [ ] Tabelas comparativas usadas sempre que comparar 2+ itens
+- [ ] Listas numeradas ou com bullets para enumerações de 3+ itens
+- [ ] `llms.txt` na raiz do site listando conteúdo canônico
+- [ ] Página `/sobre` ou `/about` com missão editorial e bios
+
 ## Evidencia de Conclusao
 
 - metadata e semantica definidas
@@ -453,6 +572,10 @@ Meta descriptions: SEO NAO reescreve o copy — apenas otimiza formato, keywords
 3. Sitemap.xml configurado e acessível
 4. Core Web Vitals na zona verde (Google PageSpeed Insights)
 5. Lighthouse score > 90 em todas as categorias (Performance, Accessibility, Best Practices, SEO)
+
+## Fontes Externas
+
+- GEO/AEO patterns inspired by [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) (MIT) — comprehensive SEO skill with deep GEO coverage.
 
 ## Regra de Código
 

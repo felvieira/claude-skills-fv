@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 750" width="1500" height="750">
+  <!-- background -->
+  <rect width="1500" height="750" fill="#f4f1ea"/>
+
+  <!-- grid of 24 tool tiles (5 rows × varying cols) -->
+  <g stroke="#1a1a1a" stroke-width="3" fill="none">
+    <!-- row 1: 6 tiles, mix verdict -->
+    <rect x="120" y="100" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="240" y="100" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="360" y="100" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="480" y="100" width="80" height="80" fill="#ffba49"/>
+    <rect x="600" y="100" width="80" height="80" fill="#c1292e"/>
+    <rect x="720" y="100" width="80" height="80" fill="#c1292e"/>
+
+    <!-- row 2 -->
+    <rect x="120" y="220" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="240" y="220" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="360" y="220" width="80" height="80" fill="#ffba49"/>
+    <rect x="480" y="220" width="80" height="80" fill="#c1292e"/>
+    <rect x="600" y="220" width="80" height="80" fill="#c1292e"/>
+    <rect x="720" y="220" width="80" height="80" fill="#c1292e"/>
+
+    <!-- row 3 -->
+    <rect x="120" y="340" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="240" y="340" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="360" y="340" width="80" height="80" fill="#0f4c5c"/>
+    <rect x="480" y="340" width="80" height="80" fill="#ffba49"/>
+    <rect x="600" y="340" width="80" height="80" fill="#c1292e"/>
+    <rect x="720" y="340" width="80" height="80" fill="#c1292e"/>
+
+    <!-- row 4 -->
+    <rect x="120" y="460" width="80" height="80" fill="#c1292e"/>
+    <rect x="240" y="460" width="80" height="80" fill="#c1292e"/>
+    <rect x="360" y="460" width="80" height="80" fill="#c1292e"/>
+    <rect x="480" y="460" width="80" height="80" fill="#c1292e"/>
+    <rect x="600" y="460" width="80" height="80" fill="#c1292e"/>
+    <rect x="720" y="460" width="80" height="80" fill="#c1292e"/>
+  </g>
+
+  <!-- magnifying glass over a checkmark in upper-right -->
+  <g transform="translate(1050, 200)">
+    <!-- shadow -->
+    <circle cx="155" cy="155" r="140" fill="#1a1a1a" opacity="0.15"/>
+    <!-- glass -->
+    <circle cx="150" cy="150" r="140" stroke="#1a1a1a" stroke-width="10" fill="#f4f1ea" opacity="0.95"/>
+    <!-- handle -->
+    <line x1="245" y1="245" x2="340" y2="340" stroke="#1a1a1a" stroke-width="20" stroke-linecap="round"/>
+    <!-- big checkmark inside -->
+    <path d="M 80 160 L 130 210 L 230 100" stroke="#0f4c5c" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- legend bottom-right -->
+  <g transform="translate(900, 600)" font-family="JetBrains Mono, Consolas, monospace" font-size="22">
+    <rect x="0" y="0" width="30" height="30" fill="#0f4c5c"/>
+    <text x="42" y="22" fill="#1a1a1a">9 worth installing</text>
+    <rect x="0" y="50" width="30" height="30" fill="#ffba49"/>
+    <text x="42" y="72" fill="#1a1a1a">4 worth checking</text>
+    <rect x="0" y="100" width="30" height="30" fill="#c1292e"/>
+    <text x="42" y="122" fill="#1a1a1a">11 skip</text>
+  </g>
+
+  <!-- corner brand -->
+  <text x="120" y="700" font-family="JetBrains Mono, Consolas, monospace" font-size="18" fill="#1a1a1a" opacity="0.6">
+    dev-team-kit-fv · honest review · 2026-05-23
+  </text>
+</svg>

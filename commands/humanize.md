@@ -55,11 +55,31 @@ Aplicar todas as 5 categorias de `policies/anti-ai-writing.md`:
 - Tom adequado ao contexto (formal, casual, técnico)
 - Informações específicas e dados concretos
 
-**Injetar:**
-- Opiniões quando couber
-- Ritmo variado (frases curtas e longas misturadas)
-- Incerteza honesta quando existe
-- Especificidade sobre sentimentos e reações
+**Injetar (Personality and Soul — do blader/humanizer):**
+
+Texto AI-livre porém sem voz é tão óbvio quanto texto-AI puro. Sinais de prosa sem alma mesmo "limpa":
+- Toda frase com mesmo comprimento e estrutura
+- Sem opiniões, só reporte neutro
+- Sem reconhecer incerteza ou sentimento misto
+- Sem primeira pessoa quando cabe
+- Sem humor, sem aresta, sem personalidade
+- Lê como verbete de Wikipedia ou release de imprensa
+
+Como adicionar voz:
+- **Ter opinião.** Não só reportar fato — reagir a ele. "Sinceramente não sei como me sentir sobre isso" é mais humano que "alguns veem prós, outros veem contras" neutralmente listados.
+- **Variar ritmo.** Frases curtas e diretas. Depois uma mais longa que toma seu tempo pra chegar onde vai. Misturar.
+- **Reconhecer complexidade.** Humanos reais têm sentimentos mistos. "Isso é impressionante mas também meio perturbador" bate "isso é impressionante".
+- **Usar "eu" quando couber.** Primeira pessoa não é não-profissional — é honesto. "Continuo voltando a..." ou "O que me pega é..." sinaliza pessoa real pensando.
+- **Deixar entrar alguma bagunça.** Estrutura perfeita parece algoritmo. Tangentes, asides, pensamento meio formado são humanos.
+- **Específico sobre sentimento.** Não "isso é preocupante" — "tem algo perturbador em agentes triturando código às 3am sem ninguém olhando".
+
+Exemplo lado a lado (do blader/humanizer):
+
+Antes (limpo mas sem pulso):
+> O experimento produziu resultados interessantes. Os agentes geraram 3 milhões de linhas de código. Alguns devs ficaram impressionados, outros céticos. As implicações permanecem incertas.
+
+Depois (tem pulso):
+> Sinceramente não sei como me sentir sobre esse. 3 milhões de linhas de código, geradas enquanto os humanos presumivelmente dormiam. Metade da comunidade dev tá pirando, a outra metade tá explicando por que não conta. A verdade provavelmente está em algum lugar entediante no meio — mas continuo pensando nesses agentes trabalhando madrugada adentro.
 
 ### Passo 4 — Auditoria anti-IA
 

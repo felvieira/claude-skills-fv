@@ -1,0 +1,22 @@
+{
+  "skill": "43-canary-deployment",
+  "should_trigger": [
+    "vou fazer um canary deployment na proxima sprint",
+    "como fazer rollout gradual de uma feature pra producao",
+    "preciso de blue-green deployment com rollback automatico",
+    "configurar feature flag rollout pro novo modelo de IA",
+    "como evitar deploy que derruba tudo de uma vez",
+    "implementar progressive deployment via traffic splitter",
+    "rollback automatico quando p95 latency degradar",
+    "estrategia de release com 1% canary primeiro",
+    "deploy seguro de mudanca de schema de banco",
+    "watch metrics durante deploy e abortar se quebrar SLO"
+  ],
+  "shouldnt_trigger": [
+    "criar novo branch git",
+    "rodar testes unitarios localmente",
+    "configurar webpack dev server",
+    "escrever README de projeto",
+    "instalar dependencia npm"
+  ]
+}

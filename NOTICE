@@ -144,3 +144,87 @@ multica-ai/andrej-karpathy-skills (Jiayuan Yu)
   Karpathy lists (Think Before Coding, Simplicity First, Surgical Changes)
   were already covered by `anti-rationalization.md`, the Senior Dev Override
   in `GLOBAL.md`, and `vertical-slices.md` respectively.
+
+================================================================================
+v2.12.0 — 24 Claude Code tools audit (2026-05-23)
+================================================================================
+
+anthropics/skills (frontend-design subdir)
+  https://github.com/anthropics/skills/tree/main/skills/frontend-design
+  License: custom (see source LICENSE.txt)
+  Adapted (v2.12.0): aesthetic anchors framework (11 anchors with palette /
+  typography / texture combinations) and the "ban generic fonts" rule
+  (Inter, Roboto, Arial, system, Space Grotesk) plus the "match implementation
+  complexity to aesthetic vision" principle, absorbed into
+  `skills/02-ui-ux-design/SKILL.md`. We do NOT adopt the rest of the
+  Anthropic skills repo wholesale — only this pattern.
+
+AgriciDaniel/claude-seo
+  https://github.com/AgriciDaniel/claude-seo
+  License: MIT
+  Adapted (v2.12.0): GEO/AEO (Generative Engine Optimization / Answer Engine
+  Optimization) framework — atomic claims, quotable H2/H3 as direct questions,
+  TL;DR at top, structured data with author/datePublished, E-E-A-T for LLMs,
+  llms.txt convention — absorbed into `skills/14-seo-specialist/SKILL.md`
+  as a dedicated section with its own checklist. We do NOT adopt their
+  25 sub-skills + 18 sub-agents architecture; only the GEO/AEO knowledge.
+
+garrytan/gstack
+  https://github.com/garrytan/gstack
+  License: MIT
+  Adapted (v2.12.0): `/canary` command framework — 3 deployment strategies
+  (traffic-based 1%/10%/50%/100%, feature flag, blue-green), 7-metric
+  observation table with thresholds, automatic rollback triggers — absorbed
+  as new `skills/43-canary-deployment/SKILL.md`. We do NOT adopt the rest
+  of gstack's 23 tools — we have our own 42-skill suite covering the same
+  ground; only the canary skill filled a real gap.
+
+obra/superpowers
+  https://github.com/obra/superpowers
+  License: MIT (additional attribution on top of earlier v2.x adoption)
+  Adapted (v2.12.0): "Iron Law" framing + "Rationalization Prevention"
+  excuses-vs-reality table from the `verification-before-completion` skill,
+  enriching our existing `policies/verification-before-completion.md`. The
+  earlier v2.x adoption of the same skill remains; v2.12 adds the harder
+  framing language. We do NOT adopt the rest of the superpowers framework
+  — our kit has its own composition model.
+
+blader/humanizer (v2.12.0 increment)
+  https://github.com/blader/humanizer
+  Adapted (v2.12.0 — on top of earlier 29-pattern adoption): "Personality
+  and Soul" section with side-by-side examples of clean-but-soulless vs
+  has-a-pulse writing, absorbed into `commands/humanize.md`. The earlier
+  29-pattern adoption remains the base; v2.12 adds the voice-injection
+  guidance.
+
+anthropics/financial-services
+  https://github.com/anthropics/financial-services
+  License: Apache-2.0
+  Adapted (v2.12.0): vertical-plugin architectural pattern (named agent
+  plugins self-contained + vertical plugins bundling skills + connectors +
+  partner plugins for third-party contributions + managed-agent cookbooks
+  for Anthropic Managed Agents API deployment), documented in
+  `docs/patterns/vertical-plugins.md`. Pattern documented for future
+  adoption; no refactor executed in v2.12. We do NOT adopt the
+  financial-services domain agents themselves.
+
+openai/codex-plugin-cc
+  https://github.com/openai/codex-plugin-cc
+  License: Apache-2.0
+  Adapted (v2.12.0): integration documentation in
+  `docs/skill-guides/codex-plugin-integration.md` explaining the 7 commands
+  (`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`,
+  `/codex:status`, `/codex:result`, `/codex:cancel`, `/codex:setup`) and
+  how our `codex:rescue` and `codex:setup` subagents come from this
+  official OpenAI plugin. We do NOT reimplement the plugin — users install
+  it via `/plugin install codex@openai-codex`; we document the integration.
+
+alirezarezvani/claude-skills (advisory only)
+  https://github.com/alirezarezvani/claude-skills
+  License: MIT
+  Treated as advisory source (v2.12.0): we adopted two ideas from their
+  `SKILL-AUTHORING-STANDARD.md` — programmatic skill quality scoring
+  (`scripts/skill-quality-score.mjs`) and trigger eval format
+  (`evals/triggers/<skill>.json` with should/shouldn't pairs). We do NOT
+  adopt their 329-skill catalog (intentional anti-pattern in our kit:
+  quality over quantity).

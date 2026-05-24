@@ -192,6 +192,21 @@ async function main() {
     // schemas/skill-io/ doesn't exist yet — skip
   }
 
+  // Skill quality gate (v2.12.0+)
+  // Roda scripts/skill-quality-score.mjs com gate >= 20/30 (rubrica programatica:
+  // frontmatter, estrutura, tamanho, anti-AI tells, atribuicao). Substitui a
+  // rubrica manual antes descrita na skill 35-skill-author.
+  try {
+    const { execSync } = await import("node:child_process");
+    execSync("node scripts/skill-quality-score.mjs --json --min 20", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    // se chegou aqui, todas as skills >= 20/30 — passa
+  } catch {
+    failures.push("scripts/skill-quality-score.mjs --min 20 failed: alguma skill abaixo de 20/30");
+  }
+
   if (failures.length > 0) {
     console.error("Consistency check failed:");
     for (const failure of failures) {

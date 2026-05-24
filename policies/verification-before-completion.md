@@ -2,6 +2,26 @@
 
 **Princípio:** evidence before assertions. Antes de declarar "feito", "funcionando", "passando" ou "fixed" — **rodar comando que prova** e mostrar a saída.
 
+## A Iron Law (do obra/superpowers)
+
+> **NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE**
+
+Se você não rodou o comando de verificação **nesta mesma resposta**, você não pode afirmar que passou. Verificação de 3 mensagens atrás não conta — o estado pode ter mudado. Verificação parcial não conta. Confiança não conta. Só evidência fresca conta.
+
+## Gate Function
+
+Antes de qualquer claim de status ou expressão de satisfação:
+
+1. **IDENTIFICAR:** qual comando prova essa claim?
+2. **RODAR:** executar o comando completo (fresh, não cached)
+3. **LER:** output inteiro, conferir exit code, contar failures
+4. **VERIFICAR:** o output confirma a claim?
+   - Se NÃO: declarar status real com evidência
+   - Se SIM: declarar claim COM a evidência colada
+5. **SÓ ENTÃO:** fazer a claim
+
+Pular qualquer passo = mentir, não verificar.
+
 **Quando aplicar (obrigatório):**
 - antes de marcar task como done
 - antes de commit que diz "fix X" ou "implement Y"
@@ -57,6 +77,35 @@
 ❌ "Skipping verification — change is trivial"
 ✅ Trivial change ainda merece `git diff` mostrado + 1 smoke check
 ```
+
+## Red Flags — STOP imediato (do obra/superpowers)
+
+Se você está prestes a usar qualquer destas palavras/frases sem ter rodado verificação fresca **nesta mesma resposta**, pare:
+
+- "should work", "probably", "seems to", "deve funcionar", "imagino que"
+- "Great!", "Perfect!", "Done!", "Pronto!", "Show!", "Beleza!" antes de mostrar evidência
+- Prestes a commit/push/PR sem evidência colada
+- Confiar em report de subagent ("agent said success") sem checar diff/output
+- "Tests pass" tendo rodado só lint
+- "Só dessa vez"
+- "Tô cansado, quero fechar"
+- Qualquer palavra que **implique** sucesso sem ter rodado verificação
+
+## Rationalization Prevention (do obra/superpowers)
+
+Tabela de desculpas comuns e a realidade:
+
+| Desculpa | Realidade |
+|---|---|
+| "Should work now" | RODE a verificação |
+| "Estou confiante" | Confiança ≠ evidência |
+| "Só dessa vez" | Sem exceções |
+| "Linter passou" | Linter ≠ compilador |
+| "Subagent disse que funcionou" | Verificar independente (git diff, output) |
+| "Estou cansado" | Cansaço ≠ desculpa |
+| "Verificação parcial é o bastante" | Parcial não prova nada |
+| "Mudei a palavra, regra não se aplica" | Spirit over letter |
+| "Só mudei comentário" | Comentário ≠ trivial se afeta build/docs |
 
 ## Workflow padrão
 

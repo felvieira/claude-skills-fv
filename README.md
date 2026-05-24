@@ -71,7 +71,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, documentation — **41 specialists in total**. Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **42 specialists in total** (numeric IDs go to 43; ID 16 was deprecated and the number is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -144,7 +144,7 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 37 tools backed by the 41 skills.
+In the table below, treat `dev-team-kit` as 37 tools backed by the 42 skills.
 The MCP exposes 37 tools backed by the installed skills.
 
 ### Install Modes Compared
@@ -179,7 +179,7 @@ The MCP exposes 37 tools backed by the installed skills.
 
 ---
 
-## The 41 Specialists
+## The 42 Specialists
 
 ### Management and Coordination
 
@@ -249,6 +249,7 @@ The MCP exposes 37 tools backed by the installed skills.
 |---|---|---|
 | 41 | **Blog Publisher** | composer skill — receives text/topic → writes HTML post → generates images (via skill 17 fal.ai or skill 42 Playwright) → commits/pushes to your blog repo → returns public URL. Multi-user via `~/.dev-team-kit/blog-config.json`. |
 | 42 | **Blog Screenshot** | Playwright-based capture for posts: viewports per destination (cover/hero/mobile), cookie banner removal, FOUT prevention, naming convention compatible with skill 41 |
+| 43 | **Canary Deployment** | gradual rollout (1%/10%/50%/100%) + 7-metric watch + automatic rollback. 3 strategies (traffic-based, feature flag, blue-green). Sits between skill 24 (release-manager) and skill 07 (deploy-docker). v2.12.0. |
 
 **Setup (one-time per user):**
 
@@ -877,6 +878,19 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 - **[claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez)** — Apache-2.0. MinHash-based cross-call output dedup (bottom-k shingles + Jaccard threshold) absorbed into `mcp-server/src/lib/cross-call-dedup.ts`, and the public benchmark methodology (versioned fixtures + A/B baseline harness) absorbed into `bench/`. v2.9.0. We do NOT adopt: the Rust binary, multi-host shell hooks, the "caveman" persona, or the summarization fallback.
 - **[bytedance/deer-flow](https://github.com/bytedance/deer-flow)** — MIT. Three conventions absorbed: observability trace tags (`session_id`/`user_id`/`trace_name`/`tags`) in `policies/observability-trace-tags.md` + wired into `session-event-logger.mjs`; skill manifest frontmatter v2 (`version`/`author`/`compatibility`/`requires`) in `policies/skill-manifest.md` + parsed by `file-reader.ts`; progressive skill loading framing in `policies/progressive-skill-loading.md`. v2.10.0. We do NOT adopt: LangGraph/LangChain runtime, backend Gateway, IM channels, sandbox provisioner, web UI, hosted service, `.skill` archive format.
 - **[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)** — Idea attribution only (no upstream license declared). The "Goal-Driven Execution" principle from Andrej Karpathy's public observations on LLM coding pitfalls was the missing 4th pillar in our policy set; absorbed into `policies/goal-driven-execution.md` (v2.10.2). The other 3 Karpathy pillars (Think Before Coding, Simplicity First, Surgical Changes) were already covered by `anti-rationalization.md`, Senior Dev Override in `GLOBAL.md`, and `vertical-slices.md`.
+
+### v2.12.0 — 24 Claude Code tools audit (2026-05-23)
+
+After the [LinkedIn "24 things actually worth adding to Claude Code" list](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.en.md), I read all 24 repos and absorbed 7 patterns. Full review post: [EN](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.en.md) · [PT-BR](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.pt-BR.md).
+
+- **[anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design)** — Aesthetic anchors framework (11 anchors with palette/typography/texture pairing) + ban on generic fonts (Inter/Roboto/Arial/Space Grotesk), absorbed into `skills/02-ui-ux-design/SKILL.md`. Kills the "AI UI all looks the same" problem.
+- **[AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo)** — MIT. GEO/AEO (Generative Engine Optimization / Answer Engine Optimization) section absorbed into `skills/14-seo-specialist/SKILL.md` with its own checklist — atomic claims, quotable H2/H3, TL;DR at top, `llms.txt`, E-E-A-T for LLMs.
+- **[garrytan/gstack](https://github.com/garrytan/gstack)** — MIT. `/canary` skill absorbed as new `skills/43-canary-deployment/SKILL.md` — 3 strategies, 7 metrics, automatic rollback. The only gap in our release pipeline.
+- **[obra/superpowers](https://github.com/obra/superpowers)** — MIT (additional adoption). "Iron Law" framing + "Rationalization Prevention" table absorbed into `policies/verification-before-completion.md`, on top of the earlier v1.5 adoption.
+- **[blader/humanizer](https://github.com/blader/humanizer)** — MIT (additional adoption). "Personality and Soul" section absorbed into `commands/humanize.md`, on top of the earlier 29-pattern adoption.
+- **[anthropics/financial-services](https://github.com/anthropics/financial-services)** — Apache-2.0. Vertical-plugin architectural pattern (named agent plugins + vertical plugins + partner plugins + managed-agent cookbooks) documented in `docs/patterns/vertical-plugins.md` for future adoption.
+- **[openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc)** — Apache-2.0. Integration guide in `docs/skill-guides/codex-plugin-integration.md` for the 7 commands (`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:status`, `/codex:result`, `/codex:cancel`, `/codex:setup`). We don't reimplement — users install via `/plugin install codex@openai-codex`.
+- **[alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills)** — MIT (advisory only). Adopted 2 ideas from their `SKILL-AUTHORING-STANDARD.md`: programmatic skill quality scoring (`scripts/skill-quality-score.mjs`) and trigger eval format (`evals/triggers/<skill>.json` with should/shouldn't pairs). We did NOT adopt their 329-skill catalog approach — quality over quantity.
 
 ---
 

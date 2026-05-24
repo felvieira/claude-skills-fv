@@ -51,6 +51,40 @@ Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar
 5. Definir breakpoints e comportamento responsivo
 6. Validar usabilidade com heurísticas de Nielsen
 
+## Direção Estética — Aesthetic Anchors
+
+Antes de qualquer wireframe ou token, escolher **uma** âncora estética e comprometer com ela. Interface sem direção vira média genérica — o padrão "SaaS azul com Inter". A âncora orienta paleta, tipografia, textura, densidade, ritmo visual e até a complexidade da implementação. Misturar âncoras dilui o resultado; escolher uma e executar com precisão diferencia.
+
+Âncoras disponíveis (escolher 1):
+
+- **Brutally minimal** — preto/branco/cinza, tipografia neutra precisa (Helvetica, Söhne, Aktiv), espaço em branco generoso, zero ornamento
+- **Maximalist chaos** — múltiplas cores saturadas, sobreposições, layers, animações densas, tipografia mista e expressiva
+- **Retro-futuristic** — paletas anos 70/80 (laranja queimado, marrom, creme), grotescas geométricas (Eurostile, Orbitron), grids visíveis
+- **Organic/natural** — tons terrosos, serifs orgânicas (Cooper, Recoleta), texturas de papel, formas irregulares, ilustração feita à mão
+- **Luxury/refined** — paletas restritas (off-white, bordô, dourado fosco), serifs de alto contraste (Didot, Bodoni), espaçamento amplo, fotografia premium
+- **Playful/toy-like** — cores primárias vibrantes, tipografia arredondada (Fraunces wonky, Mochiy), formas chunky, ícones ilustrados
+- **Editorial/magazine** — grid tipográfico forte, mistura serif display + sans body, hierarquia jornalística, drop caps, fotografia com bleed
+- **Brutalist/raw** — HTML default exposto, bordas duras, tipografia monoespaçada ou system-ui propositalmente "feia", contraste agressivo
+- **Art deco/geometric** — simetria, linhas finas douradas/metálicas, paletas escuras profundas, tipografia geométrica (Poiret, Limelight)
+- **Soft/pastel** — pastéis dessaturados, serifs suaves ou rounded sans, sombras difusas, gradientes sutis
+- **Industrial/utilitarian** — monoespaçadas técnicas (JetBrains Mono, IBM Plex Mono), tabelas de dados, grids visíveis, paletas funcionais (verde terminal, âmbar)
+
+**Regra de complexidade casada com visão:**
+- Maximalist/editorial/art deco exigem implementação elaborada (layers, custom shaders, animações orquestradas) — código simples nessas âncoras parece preguiçoso
+- Brutally minimal/refined exigem precisão obsessiva em espaçamento, tipografia e timing — código complicado nessas âncoras parece poluído
+
+**Reforço de atmosfera:** uma vez escolhida a âncora, considerar gradient meshes, noise/grain overlays, padrões geométricos, transparências em camadas, sombras dramáticas, cursors customizados — desde que alinhados à âncora (não como ornamento solto).
+
+**Anti-padrões a evitar (independente da âncora):**
+
+- Fonts genéricas sem justificativa: Arial, Inter, Roboto, Space Grotesk, system-ui default
+- Gradiente roxo-para-rosa em fundo branco (clichê "AI SaaS 2023")
+- Paleta indigo-500/violet-500 default do Tailwind sem customização
+- Sombras `shadow-lg` genéricas sem direção de luz definida
+- Border-radius `rounded-2xl` em tudo sem razão estética
+- "Bento grid" como solução padrão para qualquer landing
+- Hero com headline + subhead + 2 CTAs centralizado sem identidade
+
 ## Bibliotecas com MCP
 
 Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, esta skill pode consultar ou configurar MCPs como `Magic UI MCP` e `React Bits MCP`, desde que:
@@ -110,7 +144,12 @@ export const tokens = {
   },
   typography: {
     fontFamily: {
-      sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      // CHOOSE ONE that fits the aesthetic anchor — see "Direção Estética" section.
+      // NEVER default to Inter/Roboto/Arial without justification.
+      // Examples by anchor: minimal → Helvetica/Söhne; editorial → Fraunces + Inter Tight;
+      // retro-futuristic → Eurostile/Orbitron; refined → Didot/Bodoni + Söhne.
+      // Pair a distinctive display font with a refined, legible body font.
+      sans: "/* SET PER PROJECT — display + body pairing */",
       mono: "'JetBrains Mono', 'Fira Code', monospace",
     },
     fontSize: {
@@ -283,6 +322,10 @@ Comunicar:
 ## Código Limpo
 
 Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
+
+## Fontes
+
+- Aesthetic anchors pattern adapted from [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (custom license, see source).
 
 ## Integração com Pipeline
 

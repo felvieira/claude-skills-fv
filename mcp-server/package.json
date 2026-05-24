@@ -1,7 +1,7 @@
 {
   "name": "@felvieira/dev-team-kit-mcp",
-  "version": "2.11.1",
-  "description": "MCP server for the Dev Team Kit - 37 tools backed by 41 skills + 24 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development), routing, context packs, working sets, image generation, scraping and session intelligence",
+  "version": "2.12.0",
+  "description": "MCP server for the Dev Team Kit - 37 tools backed by 42 skills + 24 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development, /canary for gradual rollout), routing, context packs, working sets, image generation, scraping and session intelligence",
   "main": "dist/index.js",
   "bin": {
     "dev-team-kit-mcp": "dist/index.js"
