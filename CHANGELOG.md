@@ -5,6 +5,30 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.16.2-acknowledgements-tone] - 2026-05-24
+
+**Docs-only patch** ajustando o tom das atribuições públicas. Substitui "absorved X (paths, linhas, detalhes mecânicos)" por "inspired by X" em todos os entry points públicos do kit, sem perder a atribuição legal.
+
+### Por quê
+
+User feedback: "no nosso readme não precisa falar o que fez com cada item base que pegamos como padrão, pode só falar baseado ou inspirado por x na feature y entende pra não parecer que copiei pq não copiamos."
+
+Procedente. O texto antigo listava paths de arquivos, números de linhas e "we adopted X, Y, Z" como se descrevesse uma cópia mecânica. Cada item é, na verdade, uma reimplementação independente alinhada às convenções do kit (zero-dep, markdown-first).
+
+### Changed
+
+- **`README.md` → seção Acknowledgements** reescrita como tabela única "Project / Feature inspired in this kit / Version". Removido detalhamento de paths internos; mantido link upstream + license + uma frase do que inspirou.
+- **`README.pt-BR.md`** equivalente em português, completado com entries que faltavam (v2.9 squeez, v2.10 deer-flow, v2.10.2 karpathy, v2.12 7-tools-audit, v2.14 TencentDB) que estavam stale no PT-BR.
+- **`docs/WIKI.md` + `WIKI.pt-BR.md`** suavizadas as duas menções internas de "absorbed skill 16" → "scope folded into policies/model-routing.md" (referência interna do próprio kit, não atribuição externa).
+- **`NOTICE`** reescrito por completo: header agora explica explicitamente que cada entry é idea-level, não cópia de código; cada projeto fica em formato curto (link + license + 1-linha do que inspirou) sem detalhar paths de arquivos. Compliance Apache-2.0 §4(d) preservada (link + license + atribuição legível mantidos).
+
+### Not changed
+
+- Estrutura de skills, scripts, policies: idêntica. Patch é 100% prosa.
+- `CHANGELOG.md` histórico anterior: mantido como estava. Tom retrospectivo das entries antigas (v2.9 a v2.14) ficou — reescrever histórico parece pior que deixar com terminologia velha em contexto datado.
+
+---
+
 ## [2.16.1-docs-kit-wide-usage-update] - 2026-05-24
 
 **Docs-only patch** atualizando os 5 entry points (README, quickstart, WIKI, SKILLS-OVERVIEW, AGENTS) com "como usar" das mudanças v2.14-v2.16. Sem alteração de código.

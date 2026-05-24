@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ## 5. Skills (37)
 
-Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente vago (absorvida pela `policies/model-routing.md`).
+Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
 ### Categoria: Management & Coordination
 
@@ -690,7 +690,7 @@ Toda feature multi-camada entregue como vertical slice (DB+back+front+e2e), nunc
 Critical/High aberto = no merge. Reviewer + QA + Security são gates, não sugestões. **Por que importa:** gate enforçado é o que diferencia código pro de código indie.
 
 #### `model-routing.md`
-Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Absorveu skill 16 (llm-selector). **Por que importa:** Opus para gerar `import x from 'y'` queima dinheiro.
+Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Substitui o que seria a skill 16 (llm-selector) — escolha de modelo vive como policy, não como skill separada. **Por que importa:** Opus para gerar `import x from 'y'` queima dinheiro.
 
 #### `writing-clarity.md`
 10 regras de Strunk adaptadas para output de agente. Voz ativa, sem palavras-tampão, frases curtas. Aplica a commits, error messages, handoffs, slash command output, docs. **Por que importa:** prosa LLM-style fluffy queima tokens e tempo de leitura.

@@ -409,7 +409,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ## 5. Skills (37)
 
-Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent (absorbed by `policies/model-routing.md`).
+Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
 ### Category: Management & Coordination
 
@@ -712,7 +712,7 @@ Every multi-layer feature delivered as a vertical slice (DB+back+front+e2e), nev
 Critical/High open = no merge. Reviewer + QA + Security are gates, not suggestions. **Why it matters:** an enforced gate is what separates production code from hobby code.
 
 #### `model-routing.md`
-Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Absorbed skill 16 (llm-selector). **Why it matters:** Opus to generate `import x from 'y'` burns money.
+Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replaces what would have been skill 16 (llm-selector) — model selection lives as policy, not as a separate skill. **Why it matters:** Opus to generate `import x from 'y'` burns money.
 
 #### `writing-clarity.md`
 10 Strunk rules adapted for agent output. Active voice, no filler words, short sentences. Applies to commits, error messages, handoffs, slash command output, docs. **Why it matters:** LLM-style fluffy prose burns tokens and reading time.

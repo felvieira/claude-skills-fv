@@ -20,7 +20,7 @@
 |---|---|---|
 | **v2.16.0** | Skill 17 (image-generator) portátil em qualquer máquina + regra default canônica (grok-imagine t2i / gemini-25-flash edit). `/swarm` invoca automaticamente em landings/sistemas novos (phase 2.5). | [`scripts/generate-image.mjs`](scripts/generate-image.mjs), [`models/image-models.json`](models/image-models.json), [`skills/17-image-generator/`](skills/17-image-generator/SKILL.md) |
 | **v2.15.x** | Template `stack-default` (Docker + Next.js 15 + Better Auth + Drizzle + OpenRouter + FAL.AI) + policy `model-routing-real` (honest about hook = suggestion, `model:` explicit = enforcement) | [`templates/stack-default/`](templates/stack-default/README-stack.md), [`policies/model-routing-real.md`](policies/model-routing-real.md) |
-| **v2.14.0** | TencentDB Agent Memory absorptions: `symbolic-memory` (Mermaid canvas + node_id drill-down for long-horizon agents) + `memory-pyramid` (L0→L3 layering). | [`policies/symbolic-memory.md`](policies/symbolic-memory.md), [`policies/memory-pyramid.md`](policies/memory-pyramid.md) |
+| **v2.14.0** | Long-horizon context compression: `symbolic-memory` (Mermaid canvas + `node_id` drill-down) and `memory-pyramid` (L0→L3 layering). Inspired by the layering and symbolic memory ideas published in TencentDB Agent Memory; our implementation is independent (zero-dep Node + markdown). | [`policies/symbolic-memory.md`](policies/symbolic-memory.md), [`policies/memory-pyramid.md`](policies/memory-pyramid.md) |
 
 **Como usar:** veja [`docs/quickstart.md`](docs/quickstart.md) para os 4 cenários comuns (gerar imagem CLI, swarm com geração automática, bootstrap template, runtime adapter).
 
@@ -868,39 +868,40 @@ Skip auto: informational prompts ("o que é..."), trivial ("fix typo"), or alrea
 
 ## Acknowledgements
 
-This kit absorbs ideas from several open-source projects, decoupled from their original infrastructure and adapted to our skill kit model:
+This kit is the result of looking at a lot of prior art and re-implementing the ideas that fit our skill-kit model. Nothing here is copied code — each item below was reimagined as policy, skill, or zero-dep script in our own conventions. Links lead to the upstream projects that inspired each direction.
 
-- **[github/spec-kit](https://github.com/github/spec-kit)** — `/constitution`, `/analyze`, `/checklist` commands and spec-driven development workflow (v1.3.0+). We do not adopt their CLI Python or `.specify/` directory; ideas are wired into our `memory/`, `docs/`, and slash command system.
-- **[anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster)** — 13-check PRD quality validation (v1.2.1). We do not adopt the Taskmaster AI dependency or `script.py` layer; only the validation taxonomy and discovery question structure.
-- **[algorithmicsuperintelligence/optillm](https://github.com/algorithmicsuperintelligence/optillm)** — inference-time compute patterns (MoA, Self-Consistency, BoN, PlanSearch, SPL, RTO) in `patterns/ai-integration/inference-time-compute.md` (v1.3.0). We do not adopt the proxy infrastructure or techniques requiring logit access.
-- **[mattpocock/skills](https://github.com/mattpocock/skills)** — `/grill-me`, `/to-prd`, `/to-issues` commands.
-- **[davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering)** — protocol shells (Pareto-lang), atom→field taxonomy, programs layer (v1.1.0).
-- **[rohitg00/agentmemory](https://github.com/rohitg00/agentmemory)** — 4-tier memory consolidation model and privacy filter (v1.2.0).
-- **[ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/)** — Five Building Block framework, layering A→B→C (v1.2.0).
-- **[sandeco/reversa](https://github.com/sandeco/reversa)** — Detective Spec pipeline for legacy reverse-engineering (skill 33).
-- **[aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day)** — documentation format for `docs/WIKI.md` and `docs/SKILLS-OVERVIEW.md`.
-- **Anthropic Skills (`anthropic-skills:*`)** — `policies/mcp-builder-patterns.md` and `policies/memory-consolidation.md` + `/consolidate-memory` command (v1.5.0). Patterns absorbed; no runtime dependency on the external skill.
-- **Superpowers (`superpowers:*`)** — `policies/verification-before-completion.md`, `policies/receiving-code-review.md`, parallelization section in `policies/execution.md` (v1.5.0). Patterns absorbed; no runtime dependency.
-- **Claude Code Setup (`claude-code-setup:claude-automation-recommender`)** — `--recommend-automation` mode in skill 18 (v1.5.0). Pattern absorbed.
-- **Claude MD Management (`claude-md-management:claude-md-improver`)** — `audit` mode in skill 28 (v1.5.0). Pattern absorbed.
-- **[blader/humanizer](https://github.com/blader/humanizer)** + **[Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)** — 29 anti-AI writing patterns + `/humanize` command (v1.4.1).
-- **[coleam00/archon](https://github.com/coleam00/archon)** — Program engine primitives (`type: prompt`/`bash`/`loop`, `context: fresh`, `provider`/`model` per step, `trigger_rule`) + 2 patterns (`adversarial-dev` GAN-inspired, `comprehensive-review` 5-agent parallel). v1.7.0. We do NOT adopt: Web UI, Slack/Telegram/GitHub adapters, server backend, runtime Bun.
-- **[claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez)** — Apache-2.0. MinHash-based cross-call output dedup (bottom-k shingles + Jaccard threshold) absorbed into `mcp-server/src/lib/cross-call-dedup.ts`, and the public benchmark methodology (versioned fixtures + A/B baseline harness) absorbed into `bench/`. v2.9.0. We do NOT adopt: the Rust binary, multi-host shell hooks, the "caveman" persona, or the summarization fallback.
-- **[bytedance/deer-flow](https://github.com/bytedance/deer-flow)** — MIT. Three conventions absorbed: observability trace tags (`session_id`/`user_id`/`trace_name`/`tags`) in `policies/observability-trace-tags.md` + wired into `session-event-logger.mjs`; skill manifest frontmatter v2 (`version`/`author`/`compatibility`/`requires`) in `policies/skill-manifest.md` + parsed by `file-reader.ts`; progressive skill loading framing in `policies/progressive-skill-loading.md`. v2.10.0. We do NOT adopt: LangGraph/LangChain runtime, backend Gateway, IM channels, sandbox provisioner, web UI, hosted service, `.skill` archive format.
-- **[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)** — Idea attribution only (no upstream license declared). The "Goal-Driven Execution" principle from Andrej Karpathy's public observations on LLM coding pitfalls was the missing 4th pillar in our policy set; absorbed into `policies/goal-driven-execution.md` (v2.10.2). The other 3 Karpathy pillars (Think Before Coding, Simplicity First, Surgical Changes) were already covered by `anti-rationalization.md`, Senior Dev Override in `GLOBAL.md`, and `vertical-slices.md`.
+Full third-party attribution (license + scope) is in [`NOTICE`](./NOTICE), preserved per Apache-2.0 §4(d).
 
-### v2.12.0 — 24 Claude Code tools audit (2026-05-23)
+| Project | Feature in this kit | Version |
+|---|---|---|
+| [github/spec-kit](https://github.com/github/spec-kit) | Inspired the `/constitution`, `/analyze`, `/checklist` commands and the spec-driven workflow | v1.3.0+ |
+| [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster) | Inspired the 13-check PRD quality validation taxonomy | v1.2.1 |
+| [algorithmicsuperintelligence/optillm](https://github.com/algorithmicsuperintelligence/optillm) | Inspired the inference-time compute patterns doc (MoA, Self-Consistency, BoN, PlanSearch, SPL, RTO) | v1.3.0 |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | Inspired the `/grill-me`, `/to-prd`, `/to-issues` commands | v1.4.0+ |
+| [davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering) | Inspired protocol shells (Pareto-lang), atom→field taxonomy, and the programs layer | v1.1.0 |
+| [rohitg00/agentmemory](https://github.com/rohitg00/agentmemory) | Inspired the 4-tier memory consolidation model and privacy filter | v1.2.0 |
+| [ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/) | Inspired the Five Building Block framework and A→B→C layering | v1.2.0 |
+| [sandeco/reversa](https://github.com/sandeco/reversa) | Inspired the Detective Spec pipeline (skill 33) | v1.6.0 |
+| [aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day) | Inspired the documentation format used in WIKI / SKILLS-OVERVIEW | v1.5.0 |
+| Anthropic Skills (`anthropic-skills:*`) | Inspired `policies/mcp-builder-patterns.md`, `policies/memory-consolidation.md`, `/consolidate-memory` | v1.5.0 |
+| Superpowers (`superpowers:*`) | Inspired `policies/verification-before-completion.md`, `policies/receiving-code-review.md`, parallelization framing | v1.5.0 |
+| Claude Code Setup | Inspired the `--recommend-automation` mode in the Repo Auditor skill | v1.5.0 |
+| Claude MD Management | Inspired the `audit` mode in the CLAUDE.md generator skill | v1.5.0 |
+| [blader/humanizer](https://github.com/blader/humanizer) + [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | Inspired the 29 anti-AI writing patterns and `/humanize` command | v1.4.1, v2.12 |
+| [coleam00/archon](https://github.com/coleam00/archon) | Inspired the program engine primitives + the `adversarial-dev` and `comprehensive-review` patterns | v1.7.0 |
+| [claudioemmanuel/squeez](https://github.com/claudioemmanuel/squeez) | Inspired the cross-call output dedup approach (MinHash + Jaccard) and the public benchmark methodology | v2.9.0 |
+| [bytedance/deer-flow](https://github.com/bytedance/deer-flow) | Inspired three conventions: observability trace tags, skill manifest frontmatter v2, and progressive skill loading framing | v2.10.0 |
+| [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | Inspired the "Goal-Driven Execution" pillar (the 4th principle missing from our policy set) | v2.10.2 |
+| [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Inspired the aesthetic anchors framework and the "ban generic fonts" rule in the UI/UX skill | v2.12.0 |
+| [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) | Inspired the GEO/AEO section in the SEO skill (Generative/Answer Engine Optimization) | v2.12.0 |
+| [garrytan/gstack](https://github.com/garrytan/gstack) | Inspired the `/canary` skill (3 strategies, 7 metrics, automatic rollback) | v2.12.0 |
+| [obra/superpowers](https://github.com/obra/superpowers) | Inspired the "Iron Law" framing and rationalization prevention table | v2.12.0 |
+| [anthropics/financial-services](https://github.com/anthropics/financial-services) | Inspired the vertical-plugin architectural pattern (documented for future adoption) | v2.12.0 |
+| [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc) | Inspired the Codex integration guide (we don't reimplement — users install the plugin directly) | v2.12.0 |
+| [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills) | Inspired programmatic skill quality scoring and the trigger eval format | v2.12.0 |
+| [Tencent/TencentDB-Agent-Memory](https://github.com/Tencent/TencentDB-Agent-Memory) | Inspired the `symbolic-memory` (Mermaid canvas + node_id drill-down) and `memory-pyramid` (L0→L3) policies | v2.14.0 |
 
-After auditing 24 Claude Code tools from a public list, I absorbed 7 patterns into this kit. The full review post is published on my personal blog (felvieira.github.io/blog).
-
-- **[anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design)** — Aesthetic anchors framework (11 anchors with palette/typography/texture pairing) + ban on generic fonts (Inter/Roboto/Arial/Space Grotesk), absorbed into `skills/02-ui-ux-design/SKILL.md`. Kills the "AI UI all looks the same" problem.
-- **[AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo)** — MIT. GEO/AEO (Generative Engine Optimization / Answer Engine Optimization) section absorbed into `skills/14-seo-specialist/SKILL.md` with its own checklist — atomic claims, quotable H2/H3, TL;DR at top, `llms.txt`, E-E-A-T for LLMs.
-- **[garrytan/gstack](https://github.com/garrytan/gstack)** — MIT. `/canary` skill absorbed as new `skills/43-canary-deployment/SKILL.md` — 3 strategies, 7 metrics, automatic rollback. The only gap in our release pipeline.
-- **[obra/superpowers](https://github.com/obra/superpowers)** — MIT (additional adoption). "Iron Law" framing + "Rationalization Prevention" table absorbed into `policies/verification-before-completion.md`, on top of the earlier v1.5 adoption.
-- **[blader/humanizer](https://github.com/blader/humanizer)** — MIT (additional adoption). "Personality and Soul" section absorbed into `commands/humanize.md`, on top of the earlier 29-pattern adoption.
-- **[anthropics/financial-services](https://github.com/anthropics/financial-services)** — Apache-2.0. Vertical-plugin architectural pattern (named agent plugins + vertical plugins + partner plugins + managed-agent cookbooks) documented in `docs/patterns/vertical-plugins.md` for future adoption.
-- **[openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc)** — Apache-2.0. Integration guide in `docs/skill-guides/codex-plugin-integration.md` for the 7 commands (`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:status`, `/codex:result`, `/codex:cancel`, `/codex:setup`). We don't reimplement — users install via `/plugin install codex@openai-codex`.
-- **[alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills)** — MIT (advisory only). Adopted 2 ideas from their `SKILL-AUTHORING-STANDARD.md`: programmatic skill quality scoring (`scripts/skill-quality-score.mjs`) and trigger eval format (`evals/triggers/<skill>.json` with should/shouldn't pairs). We did NOT adopt their 329-skill catalog approach — quality over quantity.
+Every entry above is an **idea-level** inspiration. We do not bundle code from these projects; our implementations are independent and aligned with this kit's zero-runtime-dep, markdown-first conventions. When a project's approach didn't fit (LangGraph runtime, proxy servers, Python CLIs, etc.), we said so in [`NOTICE`](./NOTICE).
 
 ---
 

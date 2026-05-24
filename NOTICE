@@ -8,268 +8,174 @@ you may not use this file except in compliance with the License.
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 ================================================================================
-Third-party attribution (ideas, patterns, and code-level adaptations absorbed)
+Third-party attribution (idea-level inspiration)
 ================================================================================
 
-This kit absorbs ideas and patterns from the open-source projects listed below.
-Where code-level adaptations exist, they are decoupled from each project's
-original infrastructure and re-implemented to fit our skill kit model.
+This kit was inspired by several open-source projects. Each entry below records
+the upstream project, its license, and a one-line description of what the kit
+implementation took from that direction.
 
-The full Acknowledgements section in `README.md` describes which artifacts were
-absorbed, where they live in this kit, and what was deliberately not adopted.
+No code from these projects is bundled or copied. Every kit artifact mentioned
+is an independent re-implementation in our markdown-first, zero-runtime-dep
+conventions. The `README.md → Acknowledgements` section provides additional
+context; this file exists to satisfy Apache-2.0 §4(d) and is required to be
+preserved in redistributions.
 
----
-
-claudioemmanuel/squeez
-  https://github.com/claudioemmanuel/squeez
-  License: Apache-2.0
-  Adapted: MinHash-based cross-call output deduplication pattern (bottom-k
-  shingles + Jaccard similarity threshold), and the public benchmark
-  methodology (versioned fixtures + A/B baseline harness). Reference
-  implementation lives in `mcp-server/src/lib/cross-call-dedup.ts` and
-  `bench/fixtures/`. We do not adopt the Rust binary, multi-host shell hooks,
-  the "caveman" persona, or summarization fallback.
-
-bytedance/deer-flow
-  https://github.com/bytedance/deer-flow
-  License: MIT
-  Adapted: (1) observability trace tags convention (session_id, user_id,
-  trace_name, tags) for JSONL events in `hooks/scripts/session-event-logger.mjs`
-  and the `SessionEvent` interface in `mcp-server/src/lib/event-log.ts`,
-  documented in `policies/observability-trace-tags.md`. (2) skill manifest
-  frontmatter v2 (version, author, compatibility, requires) parsed by
-  `mcp-server/src/services/file-reader.ts`, contract in
-  `policies/skill-manifest.md`. (3) progressive skill loading framing
-  documented in `policies/progressive-skill-loading.md`. We do NOT adopt:
-  the LangGraph/LangChain runtime, the backend Gateway, the IM channels
-  (Telegram/Slack/Feishu/WeCom/WeChat/DingTalk), the sandbox provisioner,
-  the web UI, the deerflow.tech hosted service, or the `.skill` archive
-  installation format (deferred to a future v3).
+--------------------------------------------------------------------------------
 
 github/spec-kit
   https://github.com/github/spec-kit
   License: MIT
-  Adapted: /constitution, /analyze, /checklist commands and the spec-driven
-  development workflow. Not adopted: the spec-kit CLI in Python and the
-  `.specify/` directory layout.
+  Inspired the spec-driven workflow and the /constitution, /analyze, /checklist
+  commands.
 
 anombyte93/prd-taskmaster
   https://github.com/anombyte93/prd-taskmaster
   License: MIT
-  Adapted: 13-check PRD quality validation taxonomy and discovery question
-  structure. Not adopted: the Taskmaster AI dependency and `script.py` layer.
+  Inspired the 13-check PRD quality validation taxonomy.
 
 algorithmicsuperintelligence/optillm
   https://github.com/algorithmicsuperintelligence/optillm
   License: Apache-2.0
-  Adapted: inference-time compute patterns (MoA, Self-Consistency, BoN,
-  PlanSearch, SPL, RTO) in `patterns/ai-integration/inference-time-compute.md`.
-  Not adopted: the optillm proxy infrastructure or techniques requiring
-  logit access.
+  Inspired the inference-time compute patterns documentation
+  (MoA, Self-Consistency, BoN, PlanSearch, SPL, RTO).
 
 mattpocock/skills
   https://github.com/mattpocock/skills
   License: MIT
-  Adapted: /grill-me, /to-prd, /to-issues commands.
+  Inspired the /grill-me, /to-prd, /to-issues commands.
 
 davidkimai/Context-Engineering
   https://github.com/davidkimai/Context-Engineering
   License: MIT
-  Adapted: protocol shells (Pareto-lang), atom-to-field taxonomy, programs
-  layer.
+  Inspired protocol shells (Pareto-lang), the atom-to-field taxonomy, and the
+  programs layer.
 
 rohitg00/agentmemory
   https://github.com/rohitg00/agentmemory
   License: MIT
-  Adapted: 4-tier memory consolidation model and privacy filter.
+  Inspired the 4-tier memory consolidation model and privacy filter.
+
+ClickUp — Agent Prompting Guide
+  https://clickup.com/blog/agent-prompting-guide/
+  Inspired the Five Building Block framework and A→B→C layering.
 
 sandeco/reversa
   https://github.com/sandeco/reversa
   License: MIT
-  Adapted: Detective Spec pipeline for legacy reverse-engineering (skill 33).
+  Inspired the Detective Spec pipeline for legacy reverse-engineering.
+
+aihero.dev — "5 Agent Skills I Use Every Day"
+  https://www.aihero.dev/5-agent-skills-i-use-every-day
+  Inspired the documentation format used for the kit's WIKI and
+  SKILLS-OVERVIEW pages.
+
+Anthropic Skills (anthropic-skills:*)
+  Inspired the MCP builder patterns documentation, the memory consolidation
+  policy, and the /consolidate-memory command.
+
+Superpowers (superpowers:*)
+  Inspired the verification-before-completion and receiving-code-review
+  policies, plus the parallelization framing.
+
+Claude Code Setup (claude-code-setup:claude-automation-recommender)
+  Inspired the --recommend-automation mode in the Repo Auditor skill.
+
+Claude MD Management (claude-md-management:claude-md-improver)
+  Inspired the audit mode in the CLAUDE.md generator skill.
 
 blader/humanizer
   https://github.com/blader/humanizer
   License: MIT
-  Adapted: 29 anti-AI writing patterns and the /humanize command, combined
-  with the public "Signs of AI writing" essay from Wikipedia.
+  Inspired the 29 anti-AI writing patterns, the /humanize command, and the
+  "Personality and Soul" voice-injection framing (combined with the public
+  "Signs of AI writing" essay from Wikipedia).
 
 coleam00/archon
   https://github.com/coleam00/archon
   License: see upstream
-  Adapted: program engine primitives (`type: prompt|bash|loop`,
-  `context: fresh`, per-step `provider`/`model`, `trigger_rule`) and two
-  workflow patterns (`adversarial-dev` GAN-inspired, `comprehensive-review`
-  5-agent parallel). Not adopted: Web UI, Slack/Telegram/GitHub adapters,
-  server backend, Bun runtime.
-
-aihero.dev — "5 Agent Skills I Use Every Day"
-  https://www.aihero.dev/5-agent-skills-i-use-every-day
-  Adapted: documentation format for `docs/WIKI.md` and
-  `docs/SKILLS-OVERVIEW.md`.
-
-ClickUp — Agent Prompting Guide
-  https://clickup.com/blog/agent-prompting-guide/
-  Adapted: Five Building Block framework, layering A→B→C.
-
-Anthropic Skills (anthropic-skills:*)
-  Adapted: `policies/mcp-builder-patterns.md`,
-  `policies/memory-consolidation.md`, and the `/consolidate-memory` command.
-
-Superpowers (superpowers:*)
-  Adapted: `policies/verification-before-completion.md`,
-  `policies/receiving-code-review.md`, parallelization section in
-  `policies/execution.md`.
-
-Claude Code Setup (claude-code-setup:claude-automation-recommender)
-  Adapted: `--recommend-automation` mode in skill 18.
-
-Claude MD Management (claude-md-management:claude-md-improver)
-  Adapted: `audit` mode in skill 28.
+  Inspired the program engine primitives (prompt/bash/loop step types,
+  fresh context, per-step provider/model, trigger rule) and two workflow
+  patterns (adversarial-dev, comprehensive-review).
 
 Birgitta Böckeler (Thoughtworks) — "Harness engineering"
-  Adapted (v2.5.0): `policies/harness-categories.md`, `/drift-scan` command,
-  `templates/harness/` per topology, harness coverage in `/savings`,
-  approved-fixtures pattern in skill 37, fitness-functions YAML in skill 38,
-  harnessability score in skill 18.
+  Inspired the harness-categories policy, the /drift-scan command, the harness
+  templates per topology, the approved-fixtures pattern, and the
+  harnessability score.
 
 multica-ai/andrej-karpathy-skills (Jiayuan Yu)
   https://github.com/multica-ai/andrej-karpathy-skills
-  License: not declared upstream (treated as idea attribution only, no code
-  copied). Original framing derived from Andrej Karpathy's public
-  observations on X about LLM coding pitfalls.
-  Adapted (v2.10.2): `policies/goal-driven-execution.md` — the "Goal-Driven
-  Execution" principle (define verifiable success criteria, loop until met)
-  was the missing fourth pillar in our policy set. The other three pillars
-  Karpathy lists (Think Before Coding, Simplicity First, Surgical Changes)
-  were already covered by `anti-rationalization.md`, the Senior Dev Override
-  in `GLOBAL.md`, and `vertical-slices.md` respectively.
+  License: not declared upstream (treated as idea attribution only).
+  Original framing comes from Andrej Karpathy's public observations on
+  LLM coding pitfalls.
+  Inspired the "Goal-Driven Execution" policy (define verifiable success
+  criteria, loop until met) — the fourth pillar in our policy set.
 
-================================================================================
-v2.12.0 — 24 Claude Code tools audit (2026-05-23)
-================================================================================
+claudioemmanuel/squeez
+  https://github.com/claudioemmanuel/squeez
+  License: Apache-2.0
+  Inspired the cross-call output deduplication approach (MinHash + Jaccard)
+  and the public benchmark methodology.
+
+bytedance/deer-flow
+  https://github.com/bytedance/deer-flow
+  License: MIT
+  Inspired three conventions: observability trace tags (session/user/trace
+  identifiers and tags for JSONL events), skill manifest frontmatter v2
+  (version/author/compatibility/requires), and the progressive skill loading
+  framing.
 
 anthropics/skills (frontend-design subdir)
   https://github.com/anthropics/skills/tree/main/skills/frontend-design
   License: custom (see source LICENSE.txt)
-  Adapted (v2.12.0): aesthetic anchors framework (11 anchors with palette /
-  typography / texture combinations) and the "ban generic fonts" rule
-  (Inter, Roboto, Arial, system, Space Grotesk) plus the "match implementation
-  complexity to aesthetic vision" principle, absorbed into
-  `skills/02-ui-ux-design/SKILL.md`. We do NOT adopt the rest of the
-  Anthropic skills repo wholesale — only this pattern.
+  Inspired the aesthetic anchors framework and the "ban generic fonts" rule
+  in the UI/UX skill.
 
 AgriciDaniel/claude-seo
   https://github.com/AgriciDaniel/claude-seo
   License: MIT
-  Adapted (v2.12.0): GEO/AEO (Generative Engine Optimization / Answer Engine
-  Optimization) framework — atomic claims, quotable H2/H3 as direct questions,
-  TL;DR at top, structured data with author/datePublished, E-E-A-T for LLMs,
-  llms.txt convention — absorbed into `skills/14-seo-specialist/SKILL.md`
-  as a dedicated section with its own checklist. We do NOT adopt their
-  25 sub-skills + 18 sub-agents architecture; only the GEO/AEO knowledge.
+  Inspired the GEO/AEO (Generative/Answer Engine Optimization) section in
+  the SEO skill — atomic claims, quotable H2/H3 as direct questions, TL;DR
+  at top, structured data with author/datePublished, E-E-A-T framing,
+  llms.txt convention.
 
 garrytan/gstack
   https://github.com/garrytan/gstack
   License: MIT
-  Adapted (v2.12.0): `/canary` command framework — 3 deployment strategies
-  (traffic-based 1%/10%/50%/100%, feature flag, blue-green), 7-metric
-  observation table with thresholds, automatic rollback triggers — absorbed
-  as new `skills/43-canary-deployment/SKILL.md`. We do NOT adopt the rest
-  of gstack's 23 tools — we have our own 42-skill suite covering the same
-  ground; only the canary skill filled a real gap.
+  Inspired the /canary skill — 3 deployment strategies (traffic-based,
+  feature flag, blue-green), 7-metric observation table, automatic rollback
+  triggers.
 
 obra/superpowers
   https://github.com/obra/superpowers
-  License: MIT (additional attribution on top of earlier v2.x adoption)
-  Adapted (v2.12.0): "Iron Law" framing + "Rationalization Prevention"
-  excuses-vs-reality table from the `verification-before-completion` skill,
-  enriching our existing `policies/verification-before-completion.md`. The
-  earlier v2.x adoption of the same skill remains; v2.12 adds the harder
-  framing language. We do NOT adopt the rest of the superpowers framework
-  — our kit has its own composition model.
-
-blader/humanizer (v2.12.0 increment)
-  https://github.com/blader/humanizer
-  Adapted (v2.12.0 — on top of earlier 29-pattern adoption): "Personality
-  and Soul" section with side-by-side examples of clean-but-soulless vs
-  has-a-pulse writing, absorbed into `commands/humanize.md`. The earlier
-  29-pattern adoption remains the base; v2.12 adds the voice-injection
-  guidance.
+  License: MIT
+  Inspired the "Iron Law" framing and the rationalization-prevention
+  excuses-vs-reality table in the verification-before-completion policy.
 
 anthropics/financial-services
   https://github.com/anthropics/financial-services
   License: Apache-2.0
-  Adapted (v2.12.0): vertical-plugin architectural pattern (named agent
-  plugins self-contained + vertical plugins bundling skills + connectors +
-  partner plugins for third-party contributions + managed-agent cookbooks
-  for Anthropic Managed Agents API deployment), documented in
-  `docs/patterns/vertical-plugins.md`. Pattern documented for future
-  adoption; no refactor executed in v2.12. We do NOT adopt the
-  financial-services domain agents themselves.
+  Inspired the vertical-plugin architectural pattern documented for future
+  adoption (no refactor executed at this time).
 
 openai/codex-plugin-cc
   https://github.com/openai/codex-plugin-cc
   License: Apache-2.0
-  Adapted (v2.12.0): integration documentation in
-  `docs/skill-guides/codex-plugin-integration.md` explaining the 7 commands
-  (`/codex:review`, `/codex:adversarial-review`, `/codex:rescue`,
-  `/codex:status`, `/codex:result`, `/codex:cancel`, `/codex:setup`) and
-  how our `codex:rescue` and `codex:setup` subagents come from this
-  official OpenAI plugin. We do NOT reimplement the plugin — users install
-  it via `/plugin install codex@openai-codex`; we document the integration.
+  Inspired the Codex integration guide for the seven /codex:* commands.
+  We don't reimplement the plugin — the integration guide documents how
+  users install Codex directly via the plugin system.
 
-alirezarezvani/claude-skills (advisory only)
+alirezarezvani/claude-skills
   https://github.com/alirezarezvani/claude-skills
   License: MIT
-  Treated as advisory source (v2.12.0): we adopted two ideas from their
-  `SKILL-AUTHORING-STANDARD.md` — programmatic skill quality scoring
-  (`scripts/skill-quality-score.mjs`) and trigger eval format
-  (`evals/triggers/<skill>.json` with should/shouldn't pairs). We do NOT
-  adopt their 329-skill catalog (intentional anti-pattern in our kit:
-  quality over quantity).
-
-================================================================================
-v2.14.0 — TencentDB Agent Memory absorptions (2026-05-24)
-================================================================================
+  Inspired programmatic skill quality scoring and the trigger eval format
+  (should/shouldn't pairs in JSON).
 
 Tencent/TencentDB-Agent-Memory
   https://github.com/Tencent/TencentDB-Agent-Memory
-  License: NOASSERTION upstream (README shows an MIT badge; actual LICENSE
-  file lists no SPDX identifier). Treated as idea-level adoption only —
-  no upstream code was copied. Two new policies and two zero-dep Node
-  scripts re-implement the patterns from scratch to fit the kit's
-  infrastructure-free model.
-  Adapted (v2.14.0):
-    (1) Symbolic memory — Mermaid canvas + `node_id` drill-down for
-        long-horizon agents (50+ tool calls). Documented in
-        `policies/symbolic-memory.md`; reference implementation in
-        `scripts/mmd-canvas-builder.mjs` (zero-dep, reads
-        `.auto/tool-calls.jsonl`, emits `.auto/canvas.mmd` plus
-        `.auto/refs/Nk.md`). Cross-link in
-        `skills/40-parallel-dispatcher/SKILL.md`.
-    (2) Memory pyramid — L0 (Conversation) → L1 (Atom) → L2 (Scenario) →
-        L3 (Persona) layering, mapped onto our existing 4-tier model in
-        `policies/memory-tiers.md`. Documented in
-        `policies/memory-pyramid.md`; L3 generator in
-        `scripts/l3-persona-generator.mjs` (zero-dep, reads
-        `memory/*.md` atoms + `architecture/<project>/decisions.md`
-        scenarios). Wired into `commands/consolidate-memory.md` as
-        optional step 6.5.
-  We do NOT adopt:
-    - The TypeScript runtime (`src/`) and its OpenClaw/Hermes plugin
-      lifecycle hooks. We have no plugin gateway to host such a runtime.
-    - The sqlite-vec storage and BM25 + embedding + RRF hybrid recall.
-      The vault stays as inspectable markdown; grep + wikilinks remain
-      the recall mechanism.
-    - The DeepSeek-V3.2 / OpenAI-compatible LLM extractor invoked for
-      automatic L1/L2 extraction. Our consolidation stays semi-manual
-      via `/consolidate-memory`, preserving zero per-session cost and
-      auditability.
-    - The Docker Hermes deployment (`docker/Dockerfile.hermes`) and
-      the gateway HTTP API.
-    - Automatic context-window monitoring with `mildOffloadRatio` /
-      `aggressiveCompressRatio` thresholds. Activation in the kit is
-      explicit (heuristics documented in the policy, decision made by
-      the orchestrator), not driven by a state machine.
-
+  License: NOASSERTION upstream (README shows an MIT badge; the LICENSE file
+  lists no SPDX identifier).
+  Inspired two policies — symbolic memory (Mermaid canvas with node_id
+  drill-down for long-horizon agents) and memory pyramid (L0→L3 layering
+  on top of the existing 4-tier model). Both reimplemented from scratch as
+  policies + zero-dep Node scripts to fit the kit's no-runtime model.
