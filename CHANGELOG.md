@@ -5,6 +5,43 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.12.0-24-tools-audit-absorptions] - 2026-05-23
+
+Auditoria dos 24 itens da lista LinkedIn "things actually worth adding to Claude Code". Resolvi 24 shortlinks `lnkd.in/*`, abri todos os repos, comparei com o kit, absorvi 7 patterns que valiam. 15 itens reportados como skip.
+
+### Added
+- **Skill 43-canary-deployment** — 239 linhas. 3 estratégias (traffic-based 1%/10%/50%/100%, feature flag, blue-green) + tabela com 7 métricas + rollback automático com 4 gatilhos + handoff entre skill 24 e 07. Atribuído a `garrytan/gstack`.
+- **`scripts/skill-quality-score.mjs`** (452 linhas) — scorer programático zero-dep, 5 critérios × 6 pontos = 30 max (frontmatter, estrutura, tamanho/cap, anti-AI tells, atribuição). `--json`, `--skill`, `--min`. Wire em `check-consistency.mjs` como gate `--min 20`.
+- **`scripts/eval-triggers.mjs`** — runtime dos fixtures `evals/triggers/*.json`. Match heurístico (overlap palavras-chave do prompt vs description da skill). Reporta hit rate (should ≥8/10, shouldnt ≤1/5). `--json`, `--skill`, `--min-should`, `--max-shouldnt`.
+- **`evals/triggers/`** — format JSON com 10 should + 5 shouldn't queries por skill. Fixtures pra 02-ui-ux-design e 43-canary-deployment + README.md.
+- **`evals/skills/canary-deployment-basics.md`**, `seo-specialist-geo-aeo.md`, `ui-ux-design-aesthetic-anchors.md` — 5-caso evals por absorção.
+- **`docs/patterns/vertical-plugins.md`** (214 linhas) — pattern arquitetural do `anthropics/financial-services` documentado pra futura adoção.
+- **`docs/skill-guides/codex-plugin-integration.md`** — guia dos 7 commands do plugin oficial OpenAI.
+
+### Changed
+- **`skills/02-ui-ux-design/SKILL.md`** — +45 linhas. Aesthetic anchors (11) + ban de fonts genéricas. Atribuído a `anthropics/skills/frontend-design`.
+- **`skills/14-seo-specialist/SKILL.md`** — +133 linhas. Seção GEO/AEO completa. Atribuído a `AgriciDaniel/claude-seo`.
+- **`commands/humanize.md`** — Personality and Soul section do `blader/humanizer`.
+- **`policies/verification-before-completion.md`** — Iron Law + Rationalization Prevention do `obra/superpowers`.
+- **`scripts/check-consistency.mjs`** — gate `--min 20` do skill-quality-score wirado.
+- **`README.md`** — bump descrição + nova subseção Acknowledgements v2.12.0 com 7 fontes.
+- **`NOTICE`** — 7 atribuições formais novas.
+- **`docs/SKILLS-OVERVIEW.md`** e **`docs/WIKI.md`** — atualizadas pra 42 skills · 15 subagents · 31 commands · 45 policies.
+- **`.claude-plugin/plugin.json`** + **`mcp-server/package.json`** — bump v2.11.1 → v2.12.0.
+
+### Verified
+- `check-consistency.mjs` ✅ 42 skills, 37 tools, 15 agents (skill ID 16 reservado/deprecado, sequência salta de 15 → 17)
+- `skill-quality-score.mjs --min 20` ✅ mean 25.14/30, min 20/30
+- `eval-triggers.mjs` ✅ (executado em v2.12.1, ver entrada abaixo)
+- `bench/run.mjs` ✅ 13% single / 98% re-run, zero regressão
+- `check-hook-scripts-exist.mjs` ✅ 17/17
+- `validate-program.mjs` ✅ 7/7
+
+### Notes
+Os 18 outros itens da lista LinkedIn foram reportados como skip (10 user-side MCPs, 2 verticais fora de escopo, 2 artigos introdutórios, 2 bundles ruidosos, 1 sobreposição direta, 1 curiosidade). Post pessoal com o review completo dos 24 ficou em `D:/Repos/blog/posts-source/` (fora do kit público — kit é pra todo mundo usar, blog é pessoal).
+
+---
+
 ## [2.11.1-blog-multi-user] - 2026-05-23
 
 **Skill 41 (blog-publisher) agora é multi-user.** Pergunta legítima do usuário ("e se outra pessoa usar?") expôs que a v2.11.0 tinha `felvieira/blog` hardcoded em vários lugares. Refatoração completa:

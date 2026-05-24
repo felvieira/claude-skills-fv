@@ -33,18 +33,20 @@ digitacao se for realista).
 
 ## Como rodar
 
-A execucao formal vai viver em `scripts/eval-triggers.mjs` (ainda nao implementado).
-A ideia: o script carrega todas as fixtures, para cada prompt simula a heuristica de
-matching (substring case-insensitive contra os triggers declarados no frontmatter da
-skill alvo) e reporta taxa de acerto.
+Implementado em `scripts/eval-triggers.mjs` (zero-dep, Node 18+):
 
-Enquanto o script nao existe, o eval pode ser feito manualmente:
+```bash
+node scripts/eval-triggers.mjs                                     # todas, tabela
+node scripts/eval-triggers.mjs --json                              # JSON puro
+node scripts/eval-triggers.mjs --skill 43-canary-deployment       # uma fixture
+node scripts/eval-triggers.mjs --min-should 80 --max-shouldnt 20  # threshold custom
+node scripts/eval-triggers.mjs --strict                           # exit 1 se algum FAIL
+```
 
-1. Abrir `skills/<skill-id>/SKILL.md` e extrair a lista de triggers do frontmatter
-2. Para cada prompt em `should_trigger`, marcar se algum trigger casa via substring
-   (case-insensitive)
-3. Repetir para `shouldnt_trigger`
-4. Conferir contra o threshold abaixo
+A heuristica e simples: extrai triggers entre aspas dentro do campo `description`
+do frontmatter da skill alvo (ex: "design", "wireframe"), faz match
+case-insensitive substring contra cada prompt. Se ANY trigger casa, o prompt e
+considerado "matched". Reporta hits/total por pool e veredito PASS/FAIL.
 
 ## Threshold sugerido
 

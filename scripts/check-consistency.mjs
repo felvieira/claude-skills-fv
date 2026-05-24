@@ -207,6 +207,24 @@ async function main() {
     failures.push("scripts/skill-quality-score.mjs --min 20 failed: alguma skill abaixo de 20/30");
   }
 
+  // Trigger eval gate (v2.12.1+) — soft warning, nao bloqueia consistency.
+  // Roda scripts/eval-triggers.mjs em modo strict (exit 1 se algum FAIL).
+  // Apenas printa warning — nao adiciona em failures — para evitar bloquear PRs
+  // por triggers ainda em iteracao. Use `node scripts/eval-triggers.mjs --strict`
+  // diretamente no pipeline de release se quiser bloquear.
+  try {
+    const { execSync } = await import("node:child_process");
+    execSync("node scripts/eval-triggers.mjs --json --strict", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch {
+    console.warn(
+      "WARN: scripts/eval-triggers.mjs --strict failed — algum trigger fixture " +
+        "abaixo do threshold. Rode `node scripts/eval-triggers.mjs` pra ver detalhe.",
+    );
+  }
+
   if (failures.length > 0) {
     console.error("Consistency check failed:");
     for (const failure of failures) {
