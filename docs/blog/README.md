@@ -26,7 +26,9 @@ Posts prontos pra colar no Medium, Dev.to, LinkedIn Articles ou qualquer platafo
 
 ## Cover image (sugestão)
 
-Use o gráfico de barras do bench (categorias com baseline/treatment/delta) — visível no HTML em qualquer wave. Screenshot e crop pra 1500×750.
+Pro post "We Tested Our AI Coding Kit": use o gráfico de barras do bench (categorias com baseline/treatment/delta) — visível no HTML em qualquer wave. Screenshot e crop pra 1500×750.
+
+Pro post "Honest Review 24 Tools": use [`covers/2026-05-23-honest-review-cover.jpg`](./covers/2026-05-23-honest-review-cover.jpg) (hero landscape) ou [`covers/2026-05-23-honest-review-social.jpg`](./covers/2026-05-23-honest-review-social.jpg) (square pra LinkedIn/Twitter card). Geradas via `gemini-25-flash` em `D:/Repos/GERAL/image-generation/generate.py`. SVG placeholder em [`covers/2026-05-23-honest-review-cover.svg`](./covers/2026-05-23-honest-review-cover.svg) fica como fallback quando FAL não está disponível.
 
 ## SEO tags sugeridas
 
