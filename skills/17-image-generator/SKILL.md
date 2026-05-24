@@ -6,7 +6,7 @@ description: |
   Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon", "icone",
   "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons".
 argument-hint: "[tipo: t2i|i2i|rembg|ico] [prompt ou caminho-da-imagem]"
-allowed-tools: Read, Write, Bash(python *), Bash(uv run *)
+allowed-tools: Read, Write, Bash(node *), Bash(python *), Bash(uv run *)
 ---
 
 # Image Generator
@@ -80,6 +80,19 @@ Antes de gerar qualquer imagem, verificar nesta ordem:
 
 - `t2i`: usar apenas quando nao houver asset base adequado
 - `i2i`: preferir quando o projeto ja tiver mascote, icone, ilustracao ou base visual reutilizavel
+
+## Regra Default (REGRA CANÔNICA DO KIT)
+
+Sem override explícito, a skill aplica esta regra:
+
+| Cenário | Model default | Custo | Razão |
+|---|---|---:|---|
+| **text-to-image** (sem imagem de referência) | **grok-imagine** | $0.020/img | Estética boa, custo baixo, default pra criativos |
+| **edit-image** (com `referenceImages`) | **gemini-25-flash** | $0.039/img | Melhor capacidade de refine/inpaint com base |
+
+Override só se o caso exigir (ex: tipografia complexa → `gemini-3-pro`, OG card final → `gpt-image-1.5`). Decisão sempre registrada na evidência de conclusão.
+
+Fonte única: [`models/image-models.json`](../../models/image-models.json) — atualize lá quando preços mudarem; propaga pra `scripts/generate-image.mjs` e `templates/stack-default/fal/config.ts` automaticamente.
 
 ## Tipos de Asset
 
@@ -156,7 +169,27 @@ Se mudar provider depois do projeto ter assets, registrar em ADR (`docs/adr/`) �
 
 ## Execucao
 
-Se o projeto usar script local, seguir o fluxo dele. Se nao usar, adaptar ao mecanismo disponivel no ambiente sem acoplar a skill a um vendor unico.
+**Default (TS, funciona em qualquer máquina):** `scripts/generate-image.mjs` do próprio kit. Zero-dep Node 18+, lê `models/image-models.json` como fonte única de verdade. Aplica a regra default automaticamente.
+
+```bash
+# text-to-image (usa grok-imagine $0.020)
+node scripts/generate-image.mjs --prompt "minimalist hero, blue gradient" --aspect 16:9 --out public/hero.jpg
+
+# edit/refine (usa gemini-25-flash $0.039, auto-detect via --ref)
+node scripts/generate-image.mjs --prompt "remove background, sharp subject" --ref ./logo.png --out public/logo-clean.png
+
+# override de model quando justificado
+node scripts/generate-image.mjs --prompt "OG card with title" --model gpt-image-1.5 --aspect 16:9 --out public/og.png
+
+# listar models e preços
+node scripts/generate-image.mjs --list
+```
+
+Auth: `FAL_AI_API_KEY` em env (fallback: `FAL_KEY`, `FAL_API_KEY`).
+
+**Fallback Python (opcional, só pra usuários que já mantêm pipeline próprio):** se o repo do usuário tiver script local (`scripts/generate.py` ou similar com mesma API), a skill pode usar — mas **não tente importar paths de fora do repo do projeto** (cada usuário tem caminhos diferentes; o kit não pode assumir nenhum). TS é sempre o default seguro.
+
+**Quando provider != FAL.AI:** ajustar `models/image-models.json` no fork do projeto, ou criar adapter substituto seguindo a mesma interface (`generateImage(opts) → {images, model, estimatedCostUsd}`).
 
 ## Output Path
 

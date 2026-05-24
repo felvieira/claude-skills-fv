@@ -56,65 +56,49 @@ export interface ImageGenResult {
 // Catalog de models (hardcoded — preços Maio/2026)
 // ─────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────
+// Models config — single source of truth em models/image-models.json
+// (mesmo arquivo consumido por scripts/generate-image.mjs no kit)
+// ─────────────────────────────────────────────────────────────
+
+import imageModelsConfig from "../models/image-models.json" assert { type: "json" };
+
 interface ModelConfig {
   id: string;
-  endpoint: string;       // path FAL.AI (sem domain)
-  editEndpoint?: string;  // endpoint específico pra edit (com reference)
+  endpoint: string;
+  editEndpoint?: string;
   pricePerImageUsd: number;
+  editPricePerImageUsd: number;
   supportsEdit: boolean;
-  supportsNegative: boolean;
   defaultFormat: "jpeg" | "png" | "webp";
 }
 
-const MODELS: Record<string, ModelConfig> = {
-  // CHEAP: criativos, social posts, iteração — text-to-image
-  "grok-imagine": {
-    id: "grok-imagine",
-    endpoint: "xai/grok-imagine-image",
-    editEndpoint: "xai/grok-imagine-image/edit",
-    pricePerImageUsd: 0.020,
-    supportsEdit: true,
-    supportsNegative: false,
-    defaultFormat: "jpeg",
-  },
+// Normaliza JSON → ModelConfig (mesmo formato que o resto do código espera)
+const MODELS: Record<string, ModelConfig> = Object.fromEntries(
+  Object.entries(imageModelsConfig.models as Record<string, any>).map(([id, m]) => [
+    id,
+    {
+      id,
+      endpoint: m.endpoints.t2i,
+      editEndpoint: m.endpoints.edit,
+      pricePerImageUsd: typeof m.pricing.t2i_usd_per_image === "number"
+        ? m.pricing.t2i_usd_per_image
+        : m.pricing.t2i_usd_per_image?.low_1024 ?? 0,
+      editPricePerImageUsd: typeof m.pricing.edit_usd_per_image === "number"
+        ? m.pricing.edit_usd_per_image
+        : m.pricing.edit_usd_per_image?.low_1024 ?? 0,
+      supportsEdit: m.supports?.edit ?? false,
+      defaultFormat: (m.default_params?.output_format ?? "jpeg") as "jpeg" | "png" | "webp",
+    },
+  ])
+);
 
-  // EDIT: melhor refine/inpaint com imagem de referência
-  "gemini-25-flash": {
-    id: "gemini-25-flash",
-    endpoint: "fal-ai/gemini-25-flash-image",
-    editEndpoint: "fal-ai/gemini-25-flash-image/edit",
-    pricePerImageUsd: 0.039,
-    supportsEdit: true,
-    supportsNegative: false,
-    defaultFormat: "jpeg",
-  },
-
-  // QUALITY: prompt difícil, tipografia, hi-fi
-  "gemini-3-pro": {
-    id: "gemini-3-pro",
-    endpoint: "fal-ai/gemini-3-pro-image",
-    pricePerImageUsd: 0.15,
-    supportsEdit: false,
-    supportsNegative: false,
-    defaultFormat: "png",
-  },
-
-  // PREMIUM: tipografia fina, acabamento OG card final
-  "gpt-image-1.5": {
-    id: "gpt-image-1.5",
-    endpoint: "fal-ai/gpt-image-1.5/text-to-image",
-    pricePerImageUsd: 0.080,
-    supportsEdit: false,
-    supportsNegative: false,
-    defaultFormat: "png",
-  },
-};
-
+// Presets do JSON → preset → model id
 const PRESET_TO_MODEL: Record<ImagePreset, string> = {
-  cheap:   "grok-imagine",
-  edit:    "gemini-25-flash",
-  quality: "gemini-3-pro",
-  premium: "gpt-image-1.5",
+  cheap:   imageModelsConfig.presets?.cheap?.model   ?? "grok-imagine",
+  edit:    imageModelsConfig.presets?.edit?.model    ?? "gemini-25-flash",
+  quality: imageModelsConfig.presets?.quality?.model ?? "gemini-3-pro",
+  premium: imageModelsConfig.presets?.premium?.model ?? "gpt-image-1.5",
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -250,10 +234,12 @@ export async function generateImage(opts: ImageGenOptions): Promise<ImageGenResu
     contentType: img.content_type ?? `image/${model.defaultFormat}`,
   }));
 
+  const pricePerImage = hasReferences ? model.editPricePerImageUsd : model.pricePerImageUsd;
+
   return {
     images,
     model: modelId,
-    estimatedCostUsd: model.pricePerImageUsd * images.length,
+    estimatedCostUsd: pricePerImage * images.length,
     durationMs: Date.now() - start,
   };
 }

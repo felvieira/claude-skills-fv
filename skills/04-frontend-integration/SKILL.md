@@ -511,6 +511,19 @@ const RETRY_CONFIG = {
 };
 ```
 
+## Quando precisar de imagem (placeholder, avatar default, hero, ilustração)
+
+Não use unsplash/lorem-picsum em prod. **Despache skill 17 (`image-generator`)** pra gerar asset alinhado ao projeto:
+
+```
+Tipo: placeholder | avatar-default | hero | illustration
+Contexto: [componente onde entra], [paleta do app]
+Output path: public/images/ ou assets/
+Restrições: [dimensão], [transparência se PNG], [formato preferido]
+```
+
+Skill 17 aplica regra default (grok-imagine $0.020 t2i / gemini-25-flash $0.039 edit). Em runtime do app (não em build): usar `templates/stack-default/apps/web/src/lib/image.ts` se template está sendo consumido.
+
 ## Evidencia de Conclusao
 
 - interface implementada conforme fluxo esperado

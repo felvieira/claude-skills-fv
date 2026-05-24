@@ -93,6 +93,8 @@ O Model Routing define o tier adequado para analisar screenshots (tipicamente De
 
 Montar super-prompt enriquecido com insights da analise e fazer handoff para o skill 17 gerar moodboards proprietarios.
 
+**Regra default da skill 17** (aplica automaticamente): moodboard sem referência → `grok-imagine` ($0.020/img × 4 painéis = $0.080). Com screenshots de referência → `gemini-25-flash` ($0.039/img). Override só se moodboard precisar de tipografia complexa (`--model gemini-3-pro`).
+
 ## Fases de Execucao
 
 ### Fase 1: Discovery

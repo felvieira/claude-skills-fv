@@ -5,6 +5,57 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.16.0-skill-17-portable-and-default-rule] - 2026-05-24
+
+**Skill 17 (image-generator) agora funciona em qualquer máquina** + regra default canônica do kit (grok-imagine t2i / gemini-25-flash edit) + integração explícita com `/swarm` e 6 skills consumidoras (02, 04, 09, 14, 29, 36).
+
+### Por quê
+
+User question: "já temos uma skill no kit que gera imagem com FAL não? o /swarm não chamaria ela pra gerar ícones e imagens?"
+
+Resposta: skill 17 existia mas tinha 3 bugs práticos:
+1. Dependia de `D:/Repos/GERAL/image-generation/generate.py` (path **privado** do autor) — quebrava em qualquer outra máquina
+2. Sem regra default escrita — modelo escolhia por heurística livre
+3. `/swarm` e skill 09 não invocavam automaticamente — usuário tinha que pedir
+
+Esta release resolve os 3.
+
+### Added
+
+- **`models/image-models.json`** — fonte única de verdade pros 5 models de imagem (grok-imagine, gemini-25-flash, gpt-image-1-mini, gpt-image-1.5, gemini-3-pro). Estrutura: `models`, `presets`, `default_rule`. Atualizar preços aqui propaga pra skill + template.
+- **`scripts/generate-image.mjs`** — zero-dep Node, lê `image-models.json`, REST API FAL.AI direta (sem SDK Python). CLI + lib import. Aplica regra default automaticamente. ~280 linhas.
+- **`templates/stack-default/models/image-models.json`** — cópia do mesmo JSON dentro do template (importável via `assert { type: "json" }` no TS).
+- **Cross-link de skill 17 em skills consumidoras**:
+  - `02-ui-ux-design` — seção "Quando precisar de imagem (hero, ilustração, mascote, background)"
+  - `04-frontend-integration` — seção "Quando precisar de imagem (placeholder, avatar default)"
+  - `14-seo-specialist` — seção "Quando precisar de imagem (OG card, Twitter card)" com override pra `gemini-3-pro` (tipografia)
+  - `29-design-intelligence` — regra default agregada à seção "Geracao de Moodboard"
+  - `36-web-asset-generator` — handoff direto reforçado com regra default
+
+### Changed
+
+- **`skills/17-image-generator/SKILL.md`**:
+  - Frontmatter: `allowed-tools` agora inclui `Bash(node *)` (TS é default; Python fica como fallback opcional)
+  - Nova seção "Regra Default (REGRA CANÔNICA DO KIT)" — tabela explícita: t2i → grok-imagine $0.020, edit → gemini-25-flash $0.039
+  - Seção "Execucao" reescrita: TS é default (`node scripts/generate-image.mjs ...`), Python fallback documentado mas sem assumir paths
+- **`commands/swarm.md`** — nova "Phase 2.5 Visual Assets" no processo de 7 phases. Aciona skill 17 quando PRD/stories mencionam landing/sistema/UI novo. Não aciona em features backend-only.
+- **`skills/09-orchestrator/SKILL.md`** — seção "Skill Transversal: Image Generator" agora declara regra default explícita + comando de execução TS.
+- **`templates/stack-default/fal/config.ts`** — em vez de hardcoded, importa `../models/image-models.json` via JSON import assertion. DRY total.
+
+### Verified
+
+- `generate-image.mjs --list` ✅ — lista 5 models corretamente
+- `generate-image.mjs --help` ✅ — output bem formatado
+- check-consistency ✅ 42 skills, 37 tools, 15 agents
+- hook-scripts-exist ✅ 17/17
+
+### Decided NOT to do
+
+- **Não gerei imagem real durante o smoke test** — custaria $0.020 sem permissão. Pipeline validado por estrutura (JSON parse OK, model resolve OK, CLI flow OK).
+- **Não removi suporte Python da skill 17** — quem já tem pipeline próprio em `generate.py` continua funcionando se passar `--python <path>`. Mas TS é o default agora.
+
+---
+
 ## [2.15.1-fal-adapter-and-model-routing-enforcement] - 2026-05-24
 
 Patch da v2.15.0 com 3 itens: FAL.AI adapter no template stack-default, exemplos com `model:` explícito nas skills 09/40, e warning não-bloqueante no hook quando Agent() sem `model:`.

@@ -284,6 +284,12 @@ Invoke skill 17 (image-generator) ao identificar necessidade de assets visuais e
 - UI/UX precisa de imagens de referencia para compor o layout
 - Frontend precisa de hero images, backgrounds, ilustracoes para implementar
 - Qualquer skill precisa de icone, favicon ou asset grafico
+- `/swarm` em landing/sistema novo (ver phase 2.5 em `commands/swarm.md`)
+
+**Regra default (skill 17 aplica automaticamente, fonte: `models/image-models.json`):**
+- text-to-image sem referencia → **grok-imagine** ($0.020/img)
+- edit/refine com `referenceImages` → **gemini-25-flash** ($0.039/img)
+- Override só com justificativa (ex: tipografia complexa → gemini-3-pro $0.15)
 
 **Como acionar:**
 ```
@@ -292,6 +298,8 @@ Assets existentes: [paths de imagens, icones, backgrounds, mascotes ou referenci
 Design system: [cores, mood, contraste, linguagem visual]
 Output: [onde salvar, ou deixar auto-detectar]
 ```
+
+**Execucao:** `node scripts/generate-image.mjs --prompt "..."` (zero-dep, lê `models/image-models.json`). Detalhes em `skills/17-image-generator/SKILL.md`.
 
 ## Adaptacao de Pipeline
 

@@ -319,7 +319,7 @@ Apos geracao, entregar:
 
 ## Integracao com Pipeline
 
-- **Image Generator (skill 17):** **handoff direto** — apos skill 17 gerar logo/mascote/asset criativo principal, esta skill (36) deriva todos os formatos web operacionais (favicon multi-tamanho, apple-touch-icon, PWA icons incluindo maskable, Open Graph 1200x630, Twitter card 1200x675, manifest, browserconfig). Skill 17 cria o original criativo; skill 36 deriva o pacote operacional. Se logo nao existe, skill 17 cria primeiro; se ja existe, skill 36 roda sozinha.
+- **Image Generator (skill 17):** **handoff direto** — apos skill 17 gerar logo/mascote/asset criativo principal, esta skill (36) deriva todos os formatos web operacionais (favicon multi-tamanho, apple-touch-icon, PWA icons incluindo maskable, Open Graph 1200x630, Twitter card 1200x675, manifest, browserconfig). Skill 17 cria o original criativo; skill 36 deriva o pacote operacional. Se logo nao existe, skill 17 cria primeiro; se ja existe, skill 36 roda sozinha. **Quando gerar logo**, skill 17 usa default `grok-imagine` ($0.020). Para OG card com texto, override pra `gemini-3-pro` ($0.15 — vale pelo polish tipográfico).
 - **Frontend (skill 04):** integra `meta-tags.html` no template HTML/Next layout
 - **SEO (skill 14):** valida que tags estao corretas e completas para indexacao
 - **Asset Librarian (skill 19):** cataloga assets gerados em `docs/repo-audit/assets.md`

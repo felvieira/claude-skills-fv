@@ -292,6 +292,20 @@ Antes de aprovar qualquer interface, validar:
 9. **Recuperação de erros** — Mensagens claras com ação sugerida?
 10. **Ajuda e documentação** — Tooltips, onboarding?
 
+## Quando precisar de imagem (hero, ilustração, mascote, background)
+
+Não gere prompt direto pra FAL/DALL-E. **Despache a skill 17 (`image-generator`)** com contexto visual coletado nesta etapa:
+
+```
+Contexto: hero image pra landing de [produto]
+Paleta: [primary], [secondary], [contrast]
+Mood: minimalist / playful / corporate / etc
+Composição esperada: [centro/lateral/full-bleed]
+Referências (se houver): paths de assets existentes no projeto
+```
+
+Skill 17 aplica a regra default (grok-imagine pra t2i, gemini-25-flash pra edit) — você só precisa passar contexto, ela escolhe model + executa.
+
 ## Evidencia de Conclusao
 
 - fluxo principal definido

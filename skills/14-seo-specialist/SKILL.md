@@ -547,6 +547,19 @@ Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado 
 - [ ] `llms.txt` na raiz do site listando conteúdo canônico
 - [ ] Página `/sobre` ou `/about` com missão editorial e bios
 
+## Quando precisar de imagem (Open Graph card, Twitter card, hero pra blog post)
+
+Não use templates genéricos. **Despache skill 17 (`image-generator`)** pra OG card alinhado ao branding:
+
+```
+Tipo: og-card (1200x630) / twitter-card (1200x675)
+Texto na imagem: [título do post/página] — tipografia importa
+Paleta: [primary], [secondary]
+Output path: public/og/ ou public/share/
+```
+
+Skill 17 deve usar **`--model gemini-3-pro`** (override do default) quando texto na imagem for crítico — `gemini-3-pro` tem melhor tipografia que `grok-imagine` ($0.15 vs $0.020, mas vale pra OG card que vai pra produção). Para favicon multi-tamanho e PWA icons, despache **skill 36 (Web Asset Generator)** a partir do logo gerado.
+
 ## Evidencia de Conclusao
 
 - metadata e semantica definidas

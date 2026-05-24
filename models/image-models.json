@@ -1,0 +1,195 @@
+{
+  "version": "2026-05-24",
+  "provider": "fal.ai",
+  "queue_base_url": "https://queue.fal.run",
+  "default_text_to_image": "grok-imagine",
+  "default_edit_image": "gemini-25-flash",
+  "comment": "Fonte única de verdade pros models de geração de imagem. Consumido por scripts/generate-image.mjs (skill 17) e templates/stack-default/fal/config.ts. Quando preços mudarem, atualizar AQUI — propaga automaticamente.",
+
+  "models": {
+    "grok-imagine": {
+      "id": "grok-imagine",
+      "name": "Grok Imagine",
+      "vendor": "xai",
+      "endpoints": {
+        "t2i":  "xai/grok-imagine-image",
+        "edit": "xai/grok-imagine-image/edit"
+      },
+      "pricing": {
+        "t2i_usd_per_image":  0.020,
+        "edit_usd_per_image": 0.022
+      },
+      "tier": "cheap",
+      "use_cases": [
+        "criativos esteticos baratos",
+        "social posts rapidos",
+        "iteracao alta",
+        "DEFAULT text-to-image"
+      ],
+      "supports": {
+        "t2i": true,
+        "edit": true,
+        "aspect_ratios": ["16:9", "4:3", "3:2", "1:1", "2:3", "3:4", "9:16"],
+        "max_reference_images": 1
+      },
+      "default_params": {
+        "num_images": 1,
+        "aspect_ratio": "1:1",
+        "output_format": "jpeg"
+      },
+      "docs": "https://fal.ai/models/xai/grok-imagine-image"
+    },
+
+    "gemini-25-flash": {
+      "id": "gemini-25-flash",
+      "name": "Gemini 2.5 Flash Image",
+      "vendor": "google",
+      "endpoints": {
+        "t2i":  "fal-ai/gemini-25-flash-image",
+        "edit": "fal-ai/gemini-25-flash-image/edit"
+      },
+      "pricing": {
+        "t2i_usd_per_image":  0.039,
+        "edit_usd_per_image": 0.039
+      },
+      "tier": "edit-quality",
+      "use_cases": [
+        "DEFAULT edit-image",
+        "refine com imagem de referencia",
+        "inpaint / background removal",
+        "hero/onboarding com base"
+      ],
+      "supports": {
+        "t2i": true,
+        "edit": true,
+        "aspect_ratios": ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16"],
+        "max_reference_images": 4
+      },
+      "default_params": {
+        "num_images": 1,
+        "aspect_ratio": "1:1",
+        "output_format": "png"
+      },
+      "docs": "https://fal.ai/models/fal-ai/gemini-25-flash-image"
+    },
+
+    "gpt-image-1-mini": {
+      "id": "gpt-image-1-mini",
+      "name": "GPT Image 1 Mini",
+      "vendor": "openai",
+      "endpoints": {
+        "t2i":  "fal-ai/gpt-image-1-mini",
+        "edit": "fal-ai/gpt-image-1-mini/edit"
+      },
+      "pricing": {
+        "t2i_usd_per_image":  0.005,
+        "edit_usd_per_image": 0.005,
+        "notes": "low quality. medium ~0.011, high ~0.036"
+      },
+      "tier": "ultra-cheap",
+      "use_cases": [
+        "volume alto",
+        "thumbnails",
+        "iteracao em massa low-quality"
+      ],
+      "supports": {
+        "t2i": true,
+        "edit": true,
+        "image_sizes": ["1024x1024", "1536x1024", "1024x1536"],
+        "max_reference_images": 4,
+        "quality_tiers": ["low", "medium", "high"]
+      },
+      "default_params": {
+        "num_images": 1,
+        "image_size": "1024x1024",
+        "quality": "low",
+        "output_format": "png"
+      },
+      "docs": "https://fal.ai/models/fal-ai/gpt-image-1-mini"
+    },
+
+    "gpt-image-1.5": {
+      "id": "gpt-image-1.5",
+      "name": "GPT Image 1.5",
+      "vendor": "openai",
+      "endpoints": {
+        "t2i":  "fal-ai/gpt-image-1.5/text-to-image",
+        "edit": "fal-ai/gpt-image-1.5/edit"
+      },
+      "pricing": {
+        "t2i_usd_per_image":  0.080,
+        "edit_usd_per_image": 0.080,
+        "notes": "varia 0.009-0.20 por quality/size; high ~$0.080 medio"
+      },
+      "tier": "premium",
+      "use_cases": [
+        "acabamento final",
+        "alta fidelidade",
+        "OG cards finalizados",
+        "preserva composicao/iluminacao"
+      ],
+      "supports": {
+        "t2i": true,
+        "edit": true,
+        "image_sizes": ["1024x1024", "1536x1024", "1024x1536"],
+        "max_reference_images": 4,
+        "quality_tiers": ["low", "medium", "high"]
+      },
+      "default_params": {
+        "num_images": 1,
+        "image_size": "1024x1024",
+        "quality": "high",
+        "output_format": "png"
+      },
+      "docs": "https://fal.ai/models/fal-ai/gpt-image-1.5"
+    },
+
+    "gemini-3-pro": {
+      "id": "gemini-3-pro",
+      "name": "Gemini 3 Pro (Nano Banana Pro)",
+      "vendor": "google",
+      "endpoints": {
+        "t2i":  "fal-ai/gemini-3-pro-image-preview",
+        "edit": "fal-ai/gemini-3-pro-image-preview/edit"
+      },
+      "pricing": {
+        "t2i_usd_per_image":  0.15,
+        "edit_usd_per_image": 0.15,
+        "notes": "preview endpoint; 4K dobra; $1 = ~7 imgs"
+      },
+      "tier": "quality",
+      "use_cases": [
+        "prompt dificil",
+        "tipografia complexa",
+        "composicao com texto/layout precisos",
+        "realismo top"
+      ],
+      "supports": {
+        "t2i": true,
+        "edit": true,
+        "aspect_ratios": ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16"],
+        "max_reference_images": 1
+      },
+      "default_params": {
+        "num_images": 1,
+        "aspect_ratio": "1:1",
+        "output_format": "png"
+      },
+      "docs": "https://fal.ai/models/fal-ai/gemini-3-pro-image-preview"
+    }
+  },
+
+  "presets": {
+    "cheap":   { "model": "grok-imagine",     "reason": "default t2i barato" },
+    "edit":    { "model": "gemini-25-flash",  "reason": "default edit com referencia" },
+    "volume":  { "model": "gpt-image-1-mini", "reason": "thumbnails / batch" },
+    "premium": { "model": "gpt-image-1.5",    "reason": "OG card / final polish" },
+    "quality": { "model": "gemini-3-pro",     "reason": "tipografia / prompt dificil" }
+  },
+
+  "default_rule": {
+    "if_has_reference_images": "edit",
+    "else": "cheap",
+    "comment": "Regra default do kit: t2i sem referencia → grok-imagine ($0.020). Com referencia → gemini-25-flash ($0.039). Override explicito sempre vence."
+  }
+}

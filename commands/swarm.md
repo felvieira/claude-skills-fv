@@ -81,11 +81,27 @@ Ver [`policies/swarm-protocol.md`](../policies/swarm-protocol.md) para detalhes.
 | 0. Setup | bash | Cria worktree isolado, detecta tools (npm/cargo/etc) |
 | 1. PRD/Stories | AI (fresh) | Gera PRD + parseia stories. Ou lê issue/PRD existente. |
 | 2. Ralph Loop | AI loop (fresh per story) | Implementa story → valida → próxima. Circuit-breaker 3x. |
+| 2.5. Visual Assets (opcional) | AI (skill 17) | Se PRD/stories mencionam landing/sistema/UI nova → despacha skill 17 pra gerar hero/icones/OG cards. Regra default: grok-imagine (t2i) / gemini-25-flash (edit). |
 | 3. Quality Gates | parallel (4 agents, fresh cada) | code-reviewer + security + tests + anti-ai-writing |
 | 4. Synthesize | AI (fresh) | Agrega reviews em decision matrix (CRITICAL/HIGH/MEDIUM/LOW) |
 | 5. Self-Fix | AI (per finding) | Auto-aplica fixes CRITICAL/HIGH. Re-roda validation. |
 | 6. PR | bash | Rebase main + push + gh pr create + comment synthesis |
 | 7. Report | bash | Resumo + paths dos artifacts + worktree status |
+
+### Phase 2.5 — Visual Assets (quando aplicável)
+
+Aciona **skill 17 (`image-generator`)** quando o PRD/stories contém uma das condições:
+- Landing page nova
+- Sistema/app novo (sem assets pré-existentes)
+- Story que menciona "hero image", "ilustração", "favicon", "OG card", "icone"
+- Repo recém-criado (sem `public/images/` populado)
+
+Não aciona quando:
+- Feature backend-only (API, DB, jobs)
+- Repo já tem linguagem visual estabelecida (skill 17 só deriva, não inventa)
+- Story menciona apenas componentes UI (sem imagem dentro)
+
+Default automático (skill 17 aplica): **grok-imagine pra text-to-image** (~$0.020/img), **gemini-25-flash pra edit** (~$0.039/img). Ver [`skills/17-image-generator/SKILL.md → Regra Default`](../skills/17-image-generator/SKILL.md).
 
 ## Output esperado
 
