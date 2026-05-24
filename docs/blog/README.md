@@ -7,7 +7,8 @@ Posts prontos pra colar no Medium, Dev.to, LinkedIn Articles ou qualquer platafo
 | Data | Título | Idiomas |
 |---|---|---|
 | 2026-05-23 | We Tested Our AI Coding Kit Against Itself | [EN](./2026-05-23-we-tested-our-ai-coding-kit.en.md) · [PT-BR](./2026-05-23-we-tested-our-ai-coding-kit.pt-BR.md) |
-| 2026-05-23 | 24 Claude Code Tools: What's Actually Worth Installing (Honest Review) | [EN](./2026-05-23-honest-review-24-claude-code-tools.en.md) · [PT-BR](./2026-05-23-honest-review-24-claude-code-tools.pt-BR.md) |
+
+Posts pessoais do autor do kit que usam casos reais deste repo (ex: review de 24 tools, narrativas internas) ficam no repo pessoal de blog do autor, não aqui. Este diretório é só pros posts que viram **referência/exemplo do kit em si**.
 
 ## Como usar
 
@@ -26,9 +27,7 @@ Posts prontos pra colar no Medium, Dev.to, LinkedIn Articles ou qualquer platafo
 
 ## Cover image (sugestão)
 
-Pro post "We Tested Our AI Coding Kit": use o gráfico de barras do bench (categorias com baseline/treatment/delta) — visível no HTML em qualquer wave. Screenshot e crop pra 1500×750.
-
-Pro post "Honest Review 24 Tools": use [`covers/2026-05-23-honest-review-cover.jpg`](./covers/2026-05-23-honest-review-cover.jpg) (hero landscape) ou [`covers/2026-05-23-honest-review-social.jpg`](./covers/2026-05-23-honest-review-social.jpg) (square pra LinkedIn/Twitter card). Geradas via `gemini-25-flash` em `D:/Repos/GERAL/image-generation/generate.py`. SVG placeholder em [`covers/2026-05-23-honest-review-cover.svg`](./covers/2026-05-23-honest-review-cover.svg) fica como fallback quando FAL não está disponível.
+Use o gráfico de barras do bench (categorias com baseline/treatment/delta) — visível no HTML em qualquer wave. Screenshot e crop pra 1500×750.
 
 ## SEO tags sugeridas
 

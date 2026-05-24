@@ -881,7 +881,7 @@ This kit absorbs ideas from several open-source projects, decoupled from their o
 
 ### v2.12.0 — 24 Claude Code tools audit (2026-05-23)
 
-After the [LinkedIn "24 things actually worth adding to Claude Code" list](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.en.md), I read all 24 repos and absorbed 7 patterns. Full review post: [EN](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.en.md) · [PT-BR](./docs/blog/2026-05-23-honest-review-24-claude-code-tools.pt-BR.md).
+After auditing 24 Claude Code tools from a public list, I absorbed 7 patterns into this kit. The full review post is published on my personal blog (felvieira.github.io/blog).
 
 - **[anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design)** — Aesthetic anchors framework (11 anchors with palette/typography/texture pairing) + ban on generic fonts (Inter/Roboto/Arial/Space Grotesk), absorbed into `skills/02-ui-ux-design/SKILL.md`. Kills the "AI UI all looks the same" problem.
 - **[AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo)** — MIT. GEO/AEO (Generative Engine Optimization / Answer Engine Optimization) section absorbed into `skills/14-seo-specialist/SKILL.md` with its own checklist — atomic claims, quotable H2/H3, TL;DR at top, `llms.txt`, E-E-A-T for LLMs.
