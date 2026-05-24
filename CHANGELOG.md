@@ -5,6 +5,51 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.18.0-insights-dashboard-6-tabs] - 2026-05-25
+
+Dashboard web interativo entregue (antecipado do roadmap v2.18.x candidato em `docs/patterns/insights-dashboard-future.md` por demanda explícita do user). 6 tabs cobrindo grafo, bench, savings, drift, qualidade das skills e cobertura de trigger eval. Zero-build, zero-dep, single-file HTML + CDN.
+
+### Added
+
+- **`docs/preview/dashboard.html`** (946 linhas) — dashboard standalone. Dark mode (`#0a0a0a` bg, teal `#14b8a6` accent), system-ui sans, ui-monospace pra dados, 4px radius. 6 tabs:
+  - **Graph** — Cytoscape.js + fcose layout, 212 nodes color-coded por community (41 comunidades em HSL distribuído por golden angle), node size por degree, search por label/source_file, filtro por community, re-run layout, aside com detalhes do nó clicado
+  - **Bench** — summary cards (5 fixtures, 9.3 KB, 13% single / 98% second-run) + tabela por fixture
+  - **Savings** — JSON do `savings-report.mjs` (tokens, USD, hours saved)
+  - **Drift** — JSON do `drift-scan.mjs` (dead-code, large-files, stale-todos, etc por severidade)
+  - **Skill Quality** — tabela heatmap das 42 skills com score 0-30 + breakdown por critério (fm/str/size/anti-ai/att). Click expande pra ver `breakdown.detail` JSON
+  - **Trigger Eval** — tabela ordenada por should % asc (piores primeiro), verdict pill (pass/fail/error), cores por threshold (red <80%, yellow 80-89%, green ≥90%)
+- **`scripts/build-dashboard.mjs`** (256 linhas, Node ESM zero-dep) — gera snapshots dos 6 sources em `docs/preview/dashboard-data/`. Cada source roda em `safeRun` wrapper (falha isolada). Flags: `--only graph,bench,savings,drift,skill-quality,trigger-eval`, `--silent`, `--help`. Exit 0 se ao menos 1 source teve sucesso; exit 2 se todos falharam.
+- **`docs/preview/README.md`** (58 linhas) — explica POC, como rodar (file:// ou http.server), limitações conhecidas (CORS pode bloquear fetch local em alguns browsers), por que não está deployado.
+
+### Changed
+
+- **`.gitignore`** — adicionado `docs/preview/dashboard-data/` (snapshots são output gerado, regeneram cheap).
+- **`docs/patterns/insights-dashboard-future.md`** — tabela "Decisao Atual" atualizada: v2.18.0 marcado como entregue (Fases 1+2+3 antecipadas por demanda do user). v3.0 (pipeline multi-agent) continua adiado até trigger concreto.
+- **`.claude-plugin/plugin.json`** + **`mcp-server/package.json`** — bump v2.17.0 → v2.18.0.
+
+### Verified
+
+- `node scripts/build-dashboard.mjs` ✅ 6/6 sources OK (graph 164.4 KB, bench 2.8 KB, savings 4.0 KB, drift 16.3 KB, skill-quality 52.5 KB, trigger-eval 109.4 KB)
+- `--only skill-quality` e `--only trigger-eval` validados isoladamente
+- `check-consistency.mjs` ✅ 42 skills, 37 tools, 15 agents
+
+### Como rodar
+
+```bash
+node scripts/build-dashboard.mjs                    # gera 6 snapshots
+# abrir docs/preview/dashboard.html no browser (file://)
+# ou: cd docs/preview && python -m http.server 8000  (se CORS bloquear file://)
+```
+
+### Notes
+
+- Adiantamento do roadmap: o doc `insights-dashboard-future.md` previa dashboard como "v2.18.x candidato aguarda validação de demanda". User pediu explicitamente nesta sessão, então pulamos a validação e entregamos as 3 fases (MVP + auto-build + tabs extras) de uma vez.
+- 2 sources extras (skill-quality + trigger-eval) foram **sugestão minha** baseada em dados que o kit já gera mas não visualiza. User aprovou via escopo "Fase 1+2+3".
+- Adaptação ao shape real do `eval-triggers.mjs --json` foi necessária durante o build (script emite `passed` boolean por result, não `verdict` string como spec inicial). Renderer trata os 3 estados (pass/fail/error).
+- Pipeline multi-agent (skill 44 `tour-builder` candidata) continua adiado — sem trigger concreto ainda.
+
+---
+
 ## [2.17.0-diff-impact-and-graph-auto-update] - 2026-05-25
 
 Inspirado em `Lum1104/Understand-Anything` (MIT, 24.7k stars). Implementa as 2 ideias verdes (diff impact analysis + graph auto-update) e documenta as 2 amarelas (dashboard web + pipeline multi-agent) como roadmap futuro. Zero código copiado — implementação própria em cima do `graphify-out/` que já existia.

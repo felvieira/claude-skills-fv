@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev Team Kit — Insights Dashboard</title>
+<script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-elev: #141414;
+    --bg-elev-2: #1c1c1c;
+    --fg: #f0f0f0;
+    --fg-dim: #999;
+    --fg-mute: #666;
+    --accent: #14b8a6;
+    --accent-dim: #0d8a7c;
+    --border: #2a2a2a;
+    --warn: #f59e0b;
+    --err: #ef4444;
+    --ok: #22c55e;
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: var(--sans); }
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+  header {
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+  }
+  header h1 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  header .sub {
+    color: var(--fg-mute);
+    font-size: 12px;
+    font-family: var(--mono);
+  }
+  nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0 32px;
+  }
+  nav button {
+    background: transparent;
+    border: none;
+    color: var(--fg-dim);
+    padding: 14px 20px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav button:hover { color: var(--fg); }
+  nav button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  main { flex: 1; padding: 20px 32px; overflow: hidden; }
+  section { display: none; height: 100%; }
+  section.active { display: flex; flex-direction: column; }
+
+  /* graph tab */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .toolbar input, .toolbar select, .toolbar button {
+    background: var(--bg-elev);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .toolbar input { min-width: 220px; }
+  .toolbar input:focus, .toolbar select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .toolbar button {
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .toolbar button:hover { border-color: var(--accent); }
+  .stats-badge {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg-mute);
+    padding: 8px 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .graph-area {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    min-height: 500px;
+  }
+  #cy {
+    flex: 1;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    min-height: 500px;
+  }
+  #node-info {
+    width: 320px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    overflow-y: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  #node-info h3 {
+    margin: 0 0 12px 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--accent);
+  }
+  #node-info .row { display: flex; gap: 8px; margin-bottom: 6px; }
+  #node-info .k { color: var(--fg-mute); min-width: 90px; }
+  #node-info .v { color: var(--fg); word-break: break-all; }
+  #node-info .placeholder { color: var(--fg-mute); font-style: italic; font-family: var(--sans); }
+
+  /* bench / savings / drift tabs */
+  .tab-content { overflow-y: auto; }
+  .tab-content h2 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .tab-content p {
+    color: var(--fg-mute);
+    font-size: 13px;
+    margin: 0 0 20px 0;
+  }
+  .tab-content code {
+    font-family: var(--mono);
+    background: var(--bg-elev);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+  }
+  .card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-mute);
+    margin-bottom: 8px;
+  }
+  .card .value {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .card .value.accent { color: var(--accent); }
+  .card .hint {
+    font-size: 11px;
+    color: var(--fg-mute);
+    margin-top: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  table th, table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  table th {
+    color: var(--fg-mute);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  table tr:hover td { background: var(--bg-elev); }
+  pre {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    overflow: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg);
+    line-height: 1.5;
+    max-height: 600px;
+  }
+  .alert {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warn);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--fg-dim);
+  }
+  .alert.err { border-left-color: var(--err); }
+  .alert code { background: transparent; padding: 0; }
+
+  .sensor-block {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+  .sensor-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .sensor-head .name { font-weight: 600; font-size: 13px; }
+  .sensor-head .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: var(--fg-mute);
+  }
+  .sev-high { color: var(--err); }
+  .sev-medium { color: var(--warn); }
+  .sev-low { color: var(--fg-mute); }
+  .finding {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 0;
+    color: var(--fg-dim);
+  }
+
+  /* skill-quality + trigger-eval shared helpers */
+  table.heat td.score {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    padding: 8px 12px;
+  }
+  table.heat tr.skill-row { cursor: pointer; }
+  table.heat tr.skill-row:hover td { background: var(--bg-elev-2); }
+  tr.detail-row td {
+    background: var(--bg-elev-2) !important;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  tr.detail-row pre {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    max-height: 320px;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .pill.pass { background: rgba(34, 197, 94, 0.15); color: var(--ok); border: 1px solid rgba(34, 197, 94, 0.4); }
+  .pill.fail { background: rgba(239, 68, 68, 0.15); color: var(--err); border: 1px solid rgba(239, 68, 68, 0.4); }
+  .pill.err  { background: rgba(245, 158, 11, 0.15); color: var(--warn); border: 1px solid rgba(245, 158, 11, 0.4); }
+
+  footer {
+    padding: 16px 32px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--fg-mute);
+    font-size: 11px;
+    font-family: var(--mono);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dev Team Kit — Insights Dashboard</h1>
+  <div class="sub">built from graphify + bench + savings + drift</div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="graph">Graph</button>
+  <button class="tab-btn" data-tab="bench">Bench</button>
+  <button class="tab-btn" data-tab="savings">Savings</button>
+  <button class="tab-btn" data-tab="drift">Drift</button>
+  <button class="tab-btn" data-tab="skill-quality">Skill Quality</button>
+  <button class="tab-btn" data-tab="trigger-eval">Trigger Eval</button>
+</nav>
+
+<main>
+
+<!-- ─── Graph ─────────────────────────────────────────────────────────── -->
+<section id="tab-graph" class="active">
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="search by label or file...">
+    <select id="community-filter">
+      <option value="all">all communities</option>
+    </select>
+    <button id="layout-btn">re-run layout</button>
+    <div class="stats-badge" id="stats-badge">loading...</div>
+  </div>
+  <div class="graph-area">
+    <div id="cy"></div>
+    <aside id="node-info">
+      <div class="placeholder">click a node to see details</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── Bench ─────────────────────────────────────────────────────────── -->
+<section id="tab-bench" class="tab-content">
+  <h2>Compressor benchmark</h2>
+  <p>Last run: <span id="bench-date">—</span> · Source: <code>docs/benchmarks/runs/*.json</code></p>
+  <div id="bench-body">
+    <div class="alert">Loading bench snapshot...</div>
+  </div>
+</section>
+
+<!-- ─── Savings ───────────────────────────────────────────────────────── -->
+<section id="tab-savings" class="tab-content">
+  <h2>Savings telemetry</h2>
+  <p>Generated via <code>scripts/savings-report.mjs --format json</code></p>
+  <div id="savings-body">
+    <div class="alert">Loading savings snapshot...</div>
+  </div>
+</section>
+
+<!-- ─── Drift ─────────────────────────────────────────────────────────── -->
+<section id="tab-drift" class="tab-content">
+  <h2>Drift scan</h2>
+  <p>Generated via <code>scripts/drift-scan.mjs --format json</code></p>
+  <div id="drift-body">
+    <div class="alert">Loading drift snapshot...</div>
+  </div>
+</section>
+
+<!-- ─── Skill Quality ─────────────────────────────────────────────────── -->
+<section id="tab-skill-quality" class="tab-content">
+  <h2>Skill Quality</h2>
+  <p>Generated via <code>scripts/skill-quality-score.mjs --json</code> · click any row to expand breakdown detail</p>
+  <div id="skill-quality-body">
+    <div class="alert">Loading skill-quality snapshot...</div>
+  </div>
+</section>
+
+<!-- ─── Trigger Eval ──────────────────────────────────────────────────── -->
+<section id="tab-trigger-eval" class="tab-content">
+  <h2>Trigger Eval</h2>
+  <p>Generated via <code>scripts/eval-triggers.mjs --json</code> · sorted by should % ascending (worst first)</p>
+  <div id="trigger-eval-body">
+    <div class="alert">Loading trigger-eval snapshot...</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Dev Team Kit v2.18.x · POC — see <a href="../patterns/insights-dashboard-future.md">docs/patterns/insights-dashboard-future.md</a>
+</footer>
+
+<script>
+// ─── Tab routing ───────────────────────────────────────────────────────────
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll("main > section").forEach((s) => s.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById("tab-" + tab).classList.add("active");
+    // Cytoscape may need a resize when graph tab becomes visible.
+    if (tab === "graph" && window.__cy) window.__cy.resize();
+  });
+});
+
+// ─── Data fetch (file://-safe, each snapshot independent) ──────────────────
+async function fetchJson(path) {
+  try {
+    const res = await fetch(path, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return await res.json();
+  } catch (err) {
+    return { __error: err.message || String(err) };
+  }
+}
+
+function missingNotice(scriptName) {
+  return `<div class="alert err">Snapshot missing. Run <code>node scripts/build-dashboard.mjs</code> to generate this data, then reload. (Underlying script: <code>${scriptName}</code>)</div>`;
+}
+
+// ─── HSL palette (41 communities) ──────────────────────────────────────────
+function communityColor(c) {
+  if (c == null || isNaN(c)) return "#666";
+  const hue = (c * 137.508) % 360; // golden-angle distribution
+  return `hsl(${hue.toFixed(1)}, 60%, 55%)`;
+}
+
+// ─── Graph rendering ───────────────────────────────────────────────────────
+async function renderGraph() {
+  const data = await fetchJson("./dashboard-data/graph.json");
+  if (data.__error || data.error) {
+    document.getElementById("cy").innerHTML = `<div style="padding:32px;color:#999">${missingNotice("graph.json")}</div>`;
+    document.getElementById("stats-badge").textContent = "graph unavailable";
+    return;
+  }
+
+  // Degree map (used for node sizing).
+  const degree = {};
+  data.nodes.forEach((n) => { degree[n.id] = 0; });
+  data.links.forEach((l) => {
+    degree[l.source] = (degree[l.source] || 0) + 1;
+    degree[l.target] = (degree[l.target] || 0) + 1;
+  });
+
+  // Community set for dropdown.
+  const communities = Array.from(new Set(data.nodes.map((n) => n.community))).sort((a, b) => a - b);
+  const sel = document.getElementById("community-filter");
+  communities.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = String(c);
+    opt.textContent = `community ${c}`;
+    sel.appendChild(opt);
+  });
+
+  document.getElementById("stats-badge").textContent =
+    `${data.nodes.length} nodes · ${data.links.length} links · ${communities.length} communities`;
+
+  const elements = [];
+  data.nodes.forEach((n) => {
+    elements.push({
+      group: "nodes",
+      data: {
+        id: n.id,
+        label: n.label,
+        community: n.community,
+        source_file: n.source_file,
+        file_type: n.file_type,
+        deg: degree[n.id] || 1,
+        color: communityColor(n.community),
+      },
+    });
+  });
+  data.links.forEach((l, i) => {
+    elements.push({
+      group: "edges",
+      data: {
+        id: "e" + i,
+        source: l.source,
+        target: l.target,
+        relation: l.relation,
+        weight: l.weight,
+      },
+    });
+  });
+
+  const cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements,
+    style: [
+      {
+        selector: "node",
+        style: {
+          "background-color": "data(color)",
+          "width": "mapData(deg, 1, 30, 8, 36)",
+          "height": "mapData(deg, 1, 30, 8, 36)",
+          "label": "data(label)",
+          "font-size": 9,
+          "color": "#f0f0f0",
+          "text-outline-color": "#0a0a0a",
+          "text-outline-width": 2,
+          "text-valign": "bottom",
+          "text-margin-y": 4,
+          "min-zoomed-font-size": 8,
+        },
+      },
+      {
+        selector: "edge",
+        style: {
+          "width": 1,
+          "line-color": "#2a2a2a",
+          "curve-style": "haystack",
+          "opacity": 0.5,
+        },
+      },
+      {
+        selector: "node.dim",
+        style: { "opacity": 0.1, "text-opacity": 0 },
+      },
+      {
+        selector: "edge.dim",
+        style: { "opacity": 0.05 },
+      },
+      {
+        selector: "node:selected",
+        style: { "border-width": 2, "border-color": "#14b8a6" },
+      },
+    ],
+    layout: { name: "fcose", animate: false, nodeRepulsion: 4500, idealEdgeLength: 60, padding: 30 },
+    wheelSensitivity: 0.2,
+  });
+
+  window.__cy = cy;
+
+  // Node click → details panel.
+  const info = document.getElementById("node-info");
+  cy.on("tap", "node", (evt) => {
+    const n = evt.target.data();
+    const inEdges = cy.edges(`[target = "${n.id}"]`).length;
+    const outEdges = cy.edges(`[source = "${n.id}"]`).length;
+    info.innerHTML = `
+      <h3>${escapeHtml(n.label)}</h3>
+      <div class="row"><span class="k">id</span><span class="v">${escapeHtml(n.id)}</span></div>
+      <div class="row"><span class="k">source_file</span><span class="v">${escapeHtml(n.source_file || "—")}</span></div>
+      <div class="row"><span class="k">community</span><span class="v">${n.community}</span></div>
+      <div class="row"><span class="k">file_type</span><span class="v">${escapeHtml(n.file_type || "—")}</span></div>
+      <div class="row"><span class="k">degree</span><span class="v">${n.deg}</span></div>
+      <div class="row"><span class="k">edges in</span><span class="v">${inEdges}</span></div>
+      <div class="row"><span class="k">edges out</span><span class="v">${outEdges}</span></div>
+    `;
+  });
+  cy.on("tap", (evt) => {
+    if (evt.target === cy) {
+      info.innerHTML = '<div class="placeholder">click a node to see details</div>';
+    }
+  });
+
+  // Search + community filter.
+  const searchInput = document.getElementById("search");
+  function applyFilters() {
+    const q = searchInput.value.trim().toLowerCase();
+    const c = sel.value;
+    cy.batch(() => {
+      cy.nodes().forEach((node) => {
+        const d = node.data();
+        const matchesSearch = !q || (d.label || "").toLowerCase().includes(q) ||
+                                    (d.source_file || "").toLowerCase().includes(q);
+        const matchesCommunity = c === "all" || String(d.community) === c;
+        if (matchesSearch && matchesCommunity) node.removeClass("dim");
+        else node.addClass("dim");
+      });
+      cy.edges().forEach((edge) => {
+        const src = cy.getElementById(edge.data("source"));
+        const tgt = cy.getElementById(edge.data("target"));
+        if (src.hasClass("dim") || tgt.hasClass("dim")) edge.addClass("dim");
+        else edge.removeClass("dim");
+      });
+    });
+  }
+  searchInput.addEventListener("input", applyFilters);
+  sel.addEventListener("change", applyFilters);
+
+  document.getElementById("layout-btn").addEventListener("click", () => {
+    cy.layout({ name: "fcose", animate: true, nodeRepulsion: 4500, idealEdgeLength: 60 }).run();
+  });
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// ─── Bench rendering ───────────────────────────────────────────────────────
+async function renderBench() {
+  const data = await fetchJson("./dashboard-data/bench.json");
+  const body = document.getElementById("bench-body");
+  if (data.__error || data.error) {
+    body.innerHTML = missingNotice("bench.json");
+    return;
+  }
+  const s = data.summary || {};
+  document.getElementById("bench-date").textContent = "2026-05-22"; // matches baseline filename
+  const sizeKb = ((s.total_original_bytes || 0) / 1024).toFixed(1);
+  const cards = `
+    <div class="cards">
+      <div class="card"><div class="label">Fixtures</div><div class="value">${s.fixtures_count ?? "—"}</div></div>
+      <div class="card"><div class="label">Original size</div><div class="value">${sizeKb} KB</div><div class="hint">~${s.total_original_tokens_approx ?? "—"} tokens</div></div>
+      <div class="card"><div class="label">Single-call reduction</div><div class="value accent">${s.single_call_reduction_pct ?? "—"}%</div><div class="hint">mean across fixtures</div></div>
+      <div class="card"><div class="label">Second-run reduction</div><div class="value accent">${s.second_run_reduction_pct ?? "—"}%</div><div class="hint">mean after cache seed</div></div>
+    </div>
+  `;
+  const rows = (data.results || []).map((r) => {
+    const match = r.second_run && r.second_run.cross_call_match
+      ? `${r.second_run.cross_call_match.kind} (sim ${r.second_run.cross_call_match.similarity})`
+      : "—";
+    return `
+      <tr>
+        <td>${escapeHtml(r.fixture)}</td>
+        <td>${r.original_bytes}</td>
+        <td>${r.single_call ? r.single_call.reduction_pct : "—"}%</td>
+        <td>${r.second_run ? r.second_run.reduction_pct : "—"}%</td>
+        <td>${escapeHtml(match)}</td>
+      </tr>
+    `;
+  }).join("");
+  body.innerHTML = cards + `
+    <table>
+      <thead><tr>
+        <th>fixture</th><th>bytes</th><th>single %</th><th>second-run %</th><th>cross-call match</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+// ─── Savings rendering ─────────────────────────────────────────────────────
+async function renderSavings() {
+  const data = await fetchJson("./dashboard-data/savings.json");
+  const body = document.getElementById("savings-body");
+  if (data.__error || data.error) {
+    body.innerHTML = missingNotice("savings-report.mjs");
+    return;
+  }
+  const t = data.totals || {};
+  const tokens = (t.tokens_saved_estimated || 0).toLocaleString();
+  const usd = "$" + (t.usd_saved_estimated || 0).toFixed(2);
+  const usdBugs = "$" + (t.usd_bugs_prevented || 0).toFixed(2);
+  const hours = (t.hours_equivalent || 0).toFixed(1);
+  const bugs = t.bugs_prevented || 0;
+  const cards = `
+    <div class="cards">
+      <div class="card"><div class="label">Tokens saved</div><div class="value accent">${tokens}</div><div class="hint">aggregated across sources</div></div>
+      <div class="card"><div class="label">USD saved</div><div class="value">${usd}</div><div class="hint">direct token cost</div></div>
+      <div class="card"><div class="label">Bugs prevented</div><div class="value">${bugs}</div><div class="hint">${usdBugs} equivalent</div></div>
+      <div class="card"><div class="label">Hours equivalent</div><div class="value">${hours}</div><div class="hint">at 30 min / bug</div></div>
+    </div>
+  `;
+  // Optional: list top sensors if present.
+  let sensorsBlock = "";
+  if (data.harness_coverage && data.harness_coverage.sensors) {
+    const rows = Object.entries(data.harness_coverage.sensors).map(([name, s]) => `
+      <tr>
+        <td>${escapeHtml(name)}</td>
+        <td>${escapeHtml(s.category || "—")}</td>
+        <td>${s.fired ?? 0}</td>
+        <td>${s.active ? "active" : "idle"}</td>
+      </tr>
+    `).join("");
+    sensorsBlock = `
+      <h2 style="margin-top:24px;font-size:14px">Sensor coverage</h2>
+      <table>
+        <thead><tr><th>sensor</th><th>category</th><th>fired</th><th>state</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+  body.innerHTML = cards + sensorsBlock + `
+    <h2 style="margin-top:24px;font-size:14px">Raw snapshot</h2>
+    <pre id="savings-json">${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+  `;
+}
+
+// ─── Drift rendering ───────────────────────────────────────────────────────
+async function renderDrift() {
+  const data = await fetchJson("./dashboard-data/drift.json");
+  const body = document.getElementById("drift-body");
+  if (data.__error || data.error) {
+    body.innerHTML = missingNotice("drift-scan.mjs");
+    return;
+  }
+  const sensors = data.sensors || {};
+  let totalHigh = 0, totalMed = 0, totalLow = 0;
+  const blocks = [];
+  for (const [key, s] of Object.entries(sensors)) {
+    const findings = s.findings || [];
+    let high = 0, med = 0, low = 0;
+    const items = findings.slice(0, 10).map((f) => {
+      const sev = (f.severity || "low").toLowerCase();
+      if (sev === "high") high++;
+      else if (sev === "medium") med++;
+      else low++;
+      const label = f.file || f.path || f.id || f.todo || JSON.stringify(f);
+      const extra = f.lines ? ` (${f.lines} lines)` : f.age_days ? ` (${f.age_days}d old)` : "";
+      return `<div class="finding"><span class="sev-${sev}">[${sev}]</span> ${escapeHtml(String(label))}${escapeHtml(extra)}</div>`;
+    }).join("");
+    findings.forEach((f) => {
+      const sev = (f.severity || "low").toLowerCase();
+      if (sev === "high") totalHigh++;
+      else if (sev === "medium") totalMed++;
+      else totalLow++;
+    });
+    blocks.push(`
+      <div class="sensor-block">
+        <div class="sensor-head">
+          <span class="name">${escapeHtml(s.label || key)}</span>
+          <span class="count">${findings.length} finding(s)</span>
+        </div>
+        ${items || '<div class="finding sev-low">no findings</div>'}
+        ${findings.length > 10 ? `<div class="finding sev-low">... and ${findings.length - 10} more</div>` : ""}
+      </div>
+    `);
+  }
+  const cards = `
+    <div class="cards">
+      <div class="card"><div class="label">High severity</div><div class="value" style="color:#ef4444">${totalHigh}</div></div>
+      <div class="card"><div class="label">Medium</div><div class="value" style="color:#f59e0b">${totalMed}</div></div>
+      <div class="card"><div class="label">Low</div><div class="value">${totalLow}</div></div>
+      <div class="card"><div class="label">Sensors run</div><div class="value">${Object.keys(sensors).length}</div></div>
+    </div>
+  `;
+  body.innerHTML = cards + blocks.join("");
+}
+
+// ─── Skill-Quality rendering ───────────────────────────────────────────────
+function heatColor(score, max) {
+  // 0 → red (0deg), max/2 → yellow (50deg), max → green (130deg)
+  if (max <= 0) return "transparent";
+  const ratio = Math.max(0, Math.min(1, score / max));
+  const hue = ratio * 130; // 0..130
+  return `hsla(${hue.toFixed(0)}, 70%, 35%, 0.55)`;
+}
+
+async function renderSkillQuality() {
+  const data = await fetchJson("./dashboard-data/skill-quality.json");
+  const body = document.getElementById("skill-quality-body");
+  if (data.__error || data.error) {
+    body.innerHTML = missingNotice("skill-quality-score.mjs");
+    return;
+  }
+  const meta = data.meta || {};
+  const results = Array.isArray(data.results) ? data.results.slice() : [];
+  results.sort((a, b) => (b.total || 0) - (a.total || 0));
+
+  const max = meta.max || (results[0] && results[0].max) || 30;
+  const threshold = 25; // matches "% >= 25/30" requested
+  const passing = results.filter((r) => (r.total || 0) >= threshold).length;
+  const passingPct = results.length > 0 ? ((passing / results.length) * 100).toFixed(0) : "—";
+
+  const cards = `
+    <div class="cards">
+      <div class="card"><div class="label">Skills</div><div class="value">${meta.count ?? results.length}</div><div class="hint">${meta.scorable ?? results.length} scorable</div></div>
+      <div class="card"><div class="label">Mean score</div><div class="value accent">${meta.mean ?? "—"}<span style="font-size:14px;color:var(--fg-mute)"> / ${max}</span></div></div>
+      <div class="card"><div class="label">Min / Max</div><div class="value">${meta.min ?? "—"} / ${meta.max ?? "—"}</div></div>
+      <div class="card"><div class="label">&ge; ${threshold} / ${max}</div><div class="value accent">${passingPct}%</div><div class="hint">${passing} of ${results.length}</div></div>
+    </div>
+  `;
+
+  const dims = ["frontmatter", "structure", "size", "anti_ai", "attribution"];
+  const dimHeaders = { frontmatter: "fm", structure: "str", size: "size", anti_ai: "anti-ai", attribution: "att" };
+
+  const rows = results.map((r, i) => {
+    const cells = dims.map((d) => {
+      const b = (r.breakdown && r.breakdown[d]) || { score: 0, max: 0 };
+      const bg = heatColor(b.score, b.max);
+      return `<td class="score" style="background:${bg}">${b.score}/${b.max}</td>`;
+    }).join("");
+    const totalBg = heatColor(r.total || 0, r.max || max);
+    return `
+      <tr class="skill-row" data-idx="${i}">
+        <td>${escapeHtml(r.id)}</td>
+        <td class="score" style="background:${totalBg};font-weight:600">${r.total ?? "—"}/${r.max ?? max}</td>
+        ${cells}
+      </tr>
+      <tr class="detail-row" id="sq-detail-${i}" style="display:none">
+        <td colspan="${2 + dims.length}"><pre>${escapeHtml(JSON.stringify(r.breakdown, null, 2))}</pre></td>
+      </tr>
+    `;
+  }).join("");
+
+  body.innerHTML = cards + `
+    <table class="heat">
+      <thead>
+        <tr>
+          <th>skill</th>
+          <th style="text-align:right">total</th>
+          ${dims.map((d) => `<th style="text-align:right">${dimHeaders[d]}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  // Row expansion.
+  body.querySelectorAll("tr.skill-row").forEach((row) => {
+    row.addEventListener("click", () => {
+      const idx = row.dataset.idx;
+      const detail = document.getElementById("sq-detail-" + idx);
+      if (!detail) return;
+      detail.style.display = detail.style.display === "none" ? "table-row" : "none";
+    });
+  });
+}
+
+// ─── Trigger-Eval rendering ────────────────────────────────────────────────
+function shouldColor(pct) {
+  // <80 red, 80-89 yellow, >=90 green
+  if (pct == null) return "transparent";
+  if (pct < 80) return "hsla(0, 70%, 35%, 0.55)";
+  if (pct < 90) return "hsla(45, 75%, 35%, 0.55)";
+  return "hsla(130, 70%, 35%, 0.55)";
+}
+
+function shouldntColor(pct) {
+  // <=20 green, 21-50 yellow, >50 red (lower is better)
+  if (pct == null) return "transparent";
+  if (pct <= 20) return "hsla(130, 70%, 35%, 0.45)";
+  if (pct <= 50) return "hsla(45, 75%, 35%, 0.45)";
+  return "hsla(0, 70%, 35%, 0.45)";
+}
+
+async function renderTriggerEval() {
+  const data = await fetchJson("./dashboard-data/trigger-eval.json");
+  const body = document.getElementById("trigger-eval-body");
+  if (data.__error || data.error) {
+    body.innerHTML = missingNotice("eval-triggers.mjs");
+    return;
+  }
+  // Real script emits: summary.{fixtures_count, passed_count, failed_count, error_count, thresholds}
+  // and each result has { skill, error, triggers_count, should:{total,hits,pct,samples}, shouldnt:{...}, passed:bool }
+  const s = data.summary || {};
+  const results = Array.isArray(data.results) ? data.results.slice() : [];
+
+  const valid = results.filter((r) => !r.error && r.should);
+  const meanShould = valid.length
+    ? (valid.reduce((acc, r) => acc + (r.should.pct || 0), 0) / valid.length).toFixed(1)
+    : "—";
+  const meanShouldnt = valid.length
+    ? (valid.reduce((acc, r) => acc + ((r.shouldnt && r.shouldnt.pct) || 0), 0) / valid.length).toFixed(1)
+    : "—";
+
+  // Sort by should pct asc (worst first), errored rows pinned to top with NaN-ish.
+  results.sort((a, b) => {
+    const ap = a.error ? -1 : (a.should ? a.should.pct : 1000);
+    const bp = b.error ? -1 : (b.should ? b.should.pct : 1000);
+    return ap - bp;
+  });
+
+  const passed = s.passed_count ?? results.filter((r) => r.passed).length;
+  const failed = s.failed_count ?? results.filter((r) => r.passed === false && !r.error).length;
+  const errored = s.error_count ?? results.filter((r) => r.error).length;
+  const total = s.fixtures_count ?? results.length;
+
+  const cards = `
+    <div class="cards">
+      <div class="card"><div class="label">Skills evaluated</div><div class="value">${total}</div></div>
+      <div class="card"><div class="label">Passed</div><div class="value" style="color:var(--ok)">${passed}</div><div class="hint">${total ? ((passed/total)*100).toFixed(0) : "—"}% of total</div></div>
+      <div class="card"><div class="label">Failed / Errored</div><div class="value"><span style="color:var(--err)">${failed}</span> <span style="color:var(--fg-mute)">/</span> <span style="color:var(--warn)">${errored}</span></div></div>
+      <div class="card"><div class="label">Mean should %</div><div class="value accent">${meanShould}%</div><div class="hint">mean shouldn't: ${meanShouldnt}%</div></div>
+    </div>
+  `;
+
+  const rows = results.map((r) => {
+    if (r.error) {
+      return `
+        <tr>
+          <td>${escapeHtml(r.skill)}</td>
+          <td class="score">—</td>
+          <td class="score">—</td>
+          <td class="score">—</td>
+          <td><span class="pill err">error</span></td>
+        </tr>
+      `;
+    }
+    const sp = r.should ? r.should.pct : null;
+    const np = r.shouldnt ? r.shouldnt.pct : null;
+    const shouldCell = r.should
+      ? `<td class="score" style="background:${shouldColor(sp)}">${sp}% <span style="color:var(--fg-mute)">(${r.should.hits}/${r.should.total})</span></td>`
+      : `<td class="score">—</td>`;
+    const shouldntCell = r.shouldnt
+      ? `<td class="score" style="background:${shouldntColor(np)}">${np}% <span style="color:var(--fg-mute)">(${r.shouldnt.hits}/${r.shouldnt.total})</span></td>`
+      : `<td class="score">—</td>`;
+    const verdictPill = r.passed
+      ? `<span class="pill pass">pass</span>`
+      : `<span class="pill fail">fail</span>`;
+    return `
+      <tr>
+        <td>${escapeHtml(r.skill)}</td>
+        <td class="score">${r.triggers_count ?? "—"}</td>
+        ${shouldCell}
+        ${shouldntCell}
+        <td>${verdictPill}</td>
+      </tr>
+    `;
+  }).join("");
+
+  body.innerHTML = cards + `
+    <table class="heat">
+      <thead>
+        <tr>
+          <th>skill</th>
+          <th style="text-align:right">triggers</th>
+          <th style="text-align:right">should %</th>
+          <th style="text-align:right">shouldn't %</th>
+          <th>verdict</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+// ─── Boot ──────────────────────────────────────────────────────────────────
+renderGraph();
+renderBench();
+renderSavings();
+renderDrift();
+renderSkillQuality();
+renderTriggerEval();
+</script>
+
+</body>
+</html>

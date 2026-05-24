@@ -8,7 +8,7 @@
 
 - Repo de referencia [Lum1104/Understand-Anything](https://github.com/Lum1104/Understand-Anything) (24.7k stars, MIT, TS) tem 2 capacidades que valem absorver: um dashboard web interativo e um pipeline multi-agent dedicado a entender codebase.
 - Este doc separa as duas em parts independentes, descreve trade-offs de stack e propoe caminhos de adocao incremental.
-- **Decisao atual:** nao executar nenhuma das duas agora. v2.17.0 entrega `/diff-impact` + auto-update hook. v2.18.x candidato e o dashboard fase 1. v3.0 candidato e a primeira skill do pipeline.
+- **Decisao atual:** v2.17.0 entregou `/diff-impact` + auto-update hook. v2.18.0 entregou Dashboard Fases 1+2+3 (HTML estatico + 6 tabs + build script) — adiantou roadmap por demanda explicita do user. Pipeline multi-agent (v3.0 candidato) continua adiado ate trigger concreto.
 - Razoes para adiar: feature creep antes de validar demanda; risco de bloat (chegar perto do anti-padrao de kits com 300+ skills); refactor profundo das skills 18/33/38 tem custo alto e ROI nao comprovado.
 - Este doc existe pra registrar o pattern e o vocabulario. Quando aparecer demanda concreta, reabrir com este texto como ponto de partida.
 
@@ -216,9 +216,9 @@ Se Fases 1 e 2 vingaram:
 
 | Versao | Entrega | Status |
 |---|---|---|
-| v2.17.0 (agora) | `/diff-impact` + auto-update post-commit hook | Em andamento nesta sessao |
-| v2.18.x candidato | Dashboard MVP Fase 1 (HTML estatico + Cytoscape CDN) | Aguarda validacao de demanda |
-| v3.0 candidato | Pipeline Fase 1 (skill `tour-builder`) | Aguarda dashboard ou demanda independente |
+| v2.17.0 | `/diff-impact` + auto-update post-commit hook | Entregue |
+| v2.18.0 | Dashboard Fases 1+2+3 (HTML estatico + Cytoscape CDN + 6 tabs: Graph, Bench, Savings, Drift, Skill Quality, Trigger Eval + build script) | Entregue (adiantado por demanda explicita do user) |
+| v3.0 candidato | Pipeline Fase 1 (skill `tour-builder`) | Aguarda trigger concreto (issue, dor real, ou request) |
 
 **Nao fazer ainda:**
 - Dashboard com build pipeline (Vite/React/Astro)
