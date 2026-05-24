@@ -1,14 +1,24 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 37 Specialist Skills for Coding Agents
+# Dev Team Kit — 42 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.11.1-0f766e)
-![Skills](https://img.shields.io/badge/skills-39-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.16.1-0f766e)
+![Skills](https://img.shields.io/badge/skills-42-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
+
+### ✨ Novidades v2.14-v2.16
+
+| Versão | Destaque | Onde |
+|---|---|---|
+| **v2.16.0** | Skill 17 (image-generator) portátil em qualquer máquina + regra default canônica (grok-imagine t2i / gemini-25-flash edit). `/swarm` invoca automaticamente em landings/sistemas novos (phase 2.5). | [`scripts/generate-image.mjs`](scripts/generate-image.mjs), [`models/image-models.json`](models/image-models.json), [`skills/17-image-generator/`](skills/17-image-generator/SKILL.md) |
+| **v2.15.x** | Template `stack-default` (Docker + Next.js 15 + Better Auth + Drizzle + OpenRouter + FAL.AI) + policy `model-routing-real` (honesto: hook é sugestão, `model:` explícito é enforcement) | [`templates/stack-default/`](templates/stack-default/README-stack.md), [`policies/model-routing-real.md`](policies/model-routing-real.md) |
+| **v2.14.0** | Absorções do TencentDB Agent Memory: `symbolic-memory` (Mermaid canvas + node_id drill-down pra long-horizon) + `memory-pyramid` (camadas L0→L3). | [`policies/symbolic-memory.md`](policies/symbolic-memory.md), [`policies/memory-pyramid.md`](policies/memory-pyramid.md) |
+
+**Como usar:** ver [`docs/quickstart.md`](docs/quickstart.md) com os 4 cenários (gerar imagem CLI, swarm com geração automática, bootstrap do template, adapters em runtime).
 
 ---
 
