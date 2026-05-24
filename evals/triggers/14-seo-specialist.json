@@ -1,0 +1,22 @@
+{
+  "skill": "14-seo-specialist",
+  "should_trigger": [
+    "otimizar SEO da landing nova antes do lancamento",
+    "configurar meta tags e Open Graph pra cada pagina",
+    "schema markup de Article ta correto pro Google Rich Results?",
+    "Core Web Vitals na zona verde, LCP em 1.8s",
+    "ranking caiu, suspeito que e CLS alto na home",
+    "robots.txt bloqueando indexacao de pasta errada",
+    "preciso de canonical em todas as paginas paginadas",
+    "GEO/AEO: como otimizar pra Claude e Perplexity citarem",
+    "llms.txt na raiz do site, formato canonico",
+    "Answer Engine optimization pra aparecer em AI Overview"
+  ],
+  "shouldnt_trigger": [
+    "configurar JWT com refresh token rotation",
+    "criar migration pra dropar coluna deprecated",
+    "rodar test suite em modo watch local",
+    "subir docker compose com postgres e redis",
+    "implementar middleware de rate limit no backend"
+  ]
+}

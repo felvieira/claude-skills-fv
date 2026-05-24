@@ -58,3 +58,21 @@ Antes de decidir a arquitetura, consultar:
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/ai-integration-plan.md`.
+
+## Docs upstream via submodule (v2.12.2+, opt-in)
+
+Esta skill pode usar o `anthropics/anthropic-cookbook` como fonte de exemplos vivos via git submodule. Por padrao **nao esta inicializado** (evita ~100MB de clone obrigatorio). Para ativar:
+
+```bash
+git submodule init skills/25-ai-integration-architect/sources/anthropic-cookbook
+git submodule update --remote --depth=1
+```
+
+Quando ativo, os exemplos em `./sources/anthropic-cookbook/anthropic_api/` ficam em sync com o repo upstream. Pra atualizar:
+
+```bash
+git submodule update --remote skills/25-ai-integration-architect/sources/anthropic-cookbook
+git add . && git commit -m "chore: bump anthropic-cookbook submodule"
+```
+
+Pattern documentado em [`docs/patterns/submodule-skills.md`](../../docs/patterns/submodule-skills.md). Inspirado em [antfu/skills](https://github.com/antfu/skills) (MIT).

@@ -1,0 +1,10 @@
+# Garante que a pasta sources/ exista no repo mesmo sem submodules inicializados.
+#
+# Submodules opt-in declarados em .gitmodules:
+#   - anthropic-cookbook (https://github.com/anthropics/anthropic-cookbook)
+#
+# Para ativar:
+#   git submodule init skills/25-ai-integration-architect/sources/anthropic-cookbook
+#   git submodule update --remote --depth=1
+#
+# Documentacao: docs/patterns/submodule-skills.md

@@ -1,0 +1,22 @@
+{
+  "skill": "06-security-review",
+  "should_trigger": [
+    "fazer audit de seguranca antes do deploy de sexta",
+    "tem um XSS potencial nesse render de comentario",
+    "configurar CORS de forma segura pra producao",
+    "review de seguranca do fluxo de auth social",
+    "cookie precisa ser HttpOnly e Secure",
+    "checar OWASP Top 10 nesse endpoint novo",
+    "code review com foco em vulnerabilidade de injection",
+    "sanitizacao de input no formulario de upload",
+    "rodar pentest manual no fluxo de password reset",
+    "boas praticas pra evitar CSRF em forms"
+  ],
+  "shouldnt_trigger": [
+    "gerar copy pra newsletter mensal",
+    "configurar Google Analytics 4 no site",
+    "criar componente de Modal acessivel",
+    "publicar um post no blog sobre AI",
+    "ajustar contraste de texto pra WCAG AA"
+  ]
+}

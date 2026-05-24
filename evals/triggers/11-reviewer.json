@@ -1,0 +1,22 @@
+{
+  "skill": "11-reviewer",
+  "should_trigger": [
+    "review final antes do deploy de hoje a noite",
+    "esse PR ja pode deployar ou falta gate?",
+    "review completo do PR de auth antes de mergear",
+    "checklist final cobre security, qa, docs e perf?",
+    "gate de deploy pro staging passou nos 4 papeis?",
+    "reviewer aprova ou rejeita essa entrega?",
+    "pode deployar ou ainda tem coisa em aberto?",
+    "validar entrega da feature de upload antes de mergear",
+    "ultima verificação do fluxo end-to-end com QA",
+    "validação final do release antes de subir pra producao"
+  ],
+  "shouldnt_trigger": [
+    "criar logo monocromatica pra dark mode",
+    "rodar prompt de ideacao de copy",
+    "configurar webhook do Stripe em sandbox",
+    "definir nome de variavel pra feature flag",
+    "ajustar curva de animacao de hover"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "03-backend-api",
+  "should_trigger": [
+    "preciso desenhar o schema do banco pra essa nova feature",
+    "como modelar o endpoint REST de criacao de pedido",
+    "vou subir uma migration pra adicionar coluna user_id",
+    "qual a melhor estrategia de autenticacao JWT pra essa API",
+    "validacao server-side ta passando direto, tem que bloquear no backend",
+    "configurar middleware de rate limit no Express",
+    "ORM Prisma com PostgreSQL pra esse projeto Node.js",
+    "estrutura de backend pra NestJS com modulos por dominio",
+    "como salvar password com hash no banco de dados",
+    "endpoint GraphQL com resolver tipado"
+  ],
+  "shouldnt_trigger": [
+    "mudar a cor do botao primario",
+    "criar uma animacao de transicao entre paginas",
+    "escrever copy de CTA pra landing page",
+    "configurar Tailwind no projeto frontend",
+    "gerar imagem de hero pro blog"
+  ]
+}

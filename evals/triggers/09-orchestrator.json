@@ -1,0 +1,22 @@
+{
+  "skill": "09-orchestrator",
+  "should_trigger": [
+    "nova task chegou: construir feature de notificacoes",
+    "iniciar pipeline pra esse PRD que ficou pronto",
+    "qual o proximo passo apos PO entregar a spec",
+    "preciso orquestrar quem faz o que nessa entrega",
+    "planejar execucao da migracao do auth pra Auth0",
+    "coordenar handoff entre Backend e Frontend pra esse endpoint",
+    "workflow padrao pra bugfix em producao",
+    "iniciar do zero: app de chat com 2 telas e auth",
+    "como monto o pipeline pra essa task de discovery",
+    "iniciar a sequencia padrao apos spec aprovada"
+  ],
+  "shouldnt_trigger": [
+    "ajustar margem do botao primario pra 16px",
+    "escrever teste unitario de regex de telefone",
+    "renderizar grafico de barras com Recharts",
+    "configurar caching de CDN pra assets",
+    "definir esquema de cores dark mode"
+  ]
+}

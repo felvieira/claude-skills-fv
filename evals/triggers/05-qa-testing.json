@@ -1,0 +1,22 @@
+{
+  "skill": "05-qa-testing",
+  "should_trigger": [
+    "escrever teste unitario pro validator de email",
+    "configurar Jest com coverage minimo de 80%",
+    "rodar suite E2E em Playwright pra fluxo de checkout",
+    "Vitest ta falhando em CI mas passa local",
+    "criar fixture de usuario admin pros testes",
+    "mock do client HTTP pra teste de integracao",
+    "como validar regressao apos esse refactor",
+    "estrategia de QA antes de release pro fim de semana",
+    "teste de integracao com banco em memoria",
+    "testing library nao acha o elemento renderizado"
+  ],
+  "shouldnt_trigger": [
+    "configurar dominio customizado no Vercel",
+    "escrever ADR sobre migracao de monolito",
+    "definir paleta de cores pro design system",
+    "rodar npm install no projeto novo",
+    "criar issue no GitHub com label bug"
+  ]
+}

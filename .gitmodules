@@ -1,0 +1,4 @@
+[submodule "skills/25-ai-integration-architect/sources/anthropic-cookbook"]
+	path = skills/25-ai-integration-architect/sources/anthropic-cookbook
+	url = https://github.com/anthropics/anthropic-cookbook.git
+	shallow = true
