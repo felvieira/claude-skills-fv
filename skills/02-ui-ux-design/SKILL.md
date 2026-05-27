@@ -4,7 +4,7 @@ description: |
   Skill do Designer UI/UX para definição de interfaces e experiência do usuário. Use quando precisar criar
   wireframes, design system tokens, componentes de UI, fluxos de navegação, acessibilidade, ou qualquer
   decisão de interface. Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
-  "layout", "responsivo", "mobile first", "acessibilidade", "design system", "protótipo", "Figma".
+  "layout", "responsivo", "mobile first", "acessibilidade básica", "design system", "protótipo", "Figma".
 ---
 
 # UI/UX Designer - Interface e Usabilidade

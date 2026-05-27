@@ -3,8 +3,8 @@ name: session-summary
 description: |
   Skill de resumo de sessao para handoff entre sessoes. Consolida o que foi feito, decisoes tomadas,
   artefatos produzidos, pendencias e proximos passos. Facilita continuidade sem perder contexto.
-  Trigger em: "resumo", "summary", "o que foi feito", "handoff", "encerrar sessao", "passar bastao",
-  "continuar depois", "recap".
+  Trigger em: "resumo", "summary", "o que foi feito", "handoff retrospectivo", "encerrar sessao",
+  "salvar sessao", "continuar depois", "recap".
 argument-hint: "[--save | --show]"
 allowed-tools: Read, Write, Glob, Grep
 ---

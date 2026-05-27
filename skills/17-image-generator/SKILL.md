@@ -3,7 +3,7 @@ name: image-generator
 description: |
   Skill para geracao e adaptacao de assets visuais. Use quando o projeto precisar de hero image,
   background, ilustracao, icone, favicon, mascote ou derivacao de imagem existente sem destoar do app.
-  Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon", "icone",
+  Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon png", "icone",
   "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons".
 argument-hint: "[tipo: t2i|i2i|rembg|ico] [prompt ou caminho-da-imagem]"
 allowed-tools: Read, Write, Bash(node *), Bash(python *), Bash(uv run *)

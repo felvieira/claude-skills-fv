@@ -1,3 +1,7 @@
+---
+description: Prepara liberação formal — valida Reviewer + envolve Observability SRE + usa Release Manager para changelog, rollout e rollback
+---
+
 # review-release
 
 Objetivo: preparar uma liberacao formal.

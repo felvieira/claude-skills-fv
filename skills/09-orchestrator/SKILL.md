@@ -4,7 +4,7 @@ description: |
   Skill do Tech Lead/Orquestrador do pipeline de desenvolvimento. Deve ser usada no inicio de toda task
   e entre etapas relevantes do pipeline. Coordena qual skill executar, em que ordem, adapta o fluxo ao contexto,
   garante que nenhuma etapa critica seja pulada e mantem visao geral do progresso. Trigger em: "nova task",
-  "iniciar", "pipeline", "orquestrar", "coordenar", "planejar execucao", "proximo passo", "workflow".
+  "iniciar", "pipeline de desenvolvimento", "orquestrar", "coordenar", "planejar execucao", "proximo step do pipeline", "workflow".
 ---
 
 # Tech Lead / Orquestrador de Pipeline (SKILL)

@@ -5,6 +5,46 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.19.1-portfolio-polish] - 2026-05-27
+
+Polish pass pós-v2.19.0: corrigir bugs no `skill-health.mjs` (parser de frontmatter `description: |` multiline + extensão de detecção cross-section). Resultado: portfolio com **zero overlaps · zero dead policies · zero descriptions curtas · 100% cobertura de fixture · 45/45 eval-triggers PASS**.
+
+### Fixed
+
+- **`scripts/skill-health.mjs` — parser de frontmatter multiline YAML.** Bug original: ao encontrar `description: |`, o parser iniciava modo multiline mas nunca capturava as linhas indentadas (`multiline !== ''` era false na primeira iteração). Reescrito com loop `while`/`i++` que consome linhas indentadas até o próximo top-level key. Antes: 45 skills reportadas com `0 chars` (falso positivo total). Depois: descriptions reais entre 475-768 chars detectadas.
+- **`scripts/skill-health.mjs` — lookup de eval fixtures.** Bug: lia `.jsonl` (formato inexistente) e usava `meta.name` como chave (sem prefixo numérico). Corrigido pra `.json` com fallback de slug `dir` → `name`. Antes: 0 fixtures detectadas. Depois: 45/45 detectadas.
+- **`scripts/skill-health.mjs` — detecção de dead policies.** Bug: regex só pegava `policies/<name>(.md)?`, ignorando refs em prosa (`protocol-shells`) ou backtick (`` `<name>.md` ``). Antes: 3 false positives. Depois: 0 dead policies.
+
+### Changed
+
+- **`scripts/skill-health.mjs` — overlap detection cross-section.** Antes: só comparava triggers entre skills. Agora compara skills + subagents + commands juntos. Encontrou 9 overlaps reais — 8 refinados, 1 mantido por design.
+- **9 SKILL.md descriptions refinadas** pra eliminar overlaps cross-section:
+  - `02-ui-ux-design`: `"acessibilidade"` → `"acessibilidade básica"` (vs skill 22 especialista)
+  - `04-frontend-integration`: `"responsivo"` → `"mobile responsive"` (vs skill 02 design)
+  - `07-deploy-docker`: `"pipeline"` → `"pipeline CI/CD"` (vs skills 08, 09)
+  - `08-context-manager`: `"pipeline"` → `"pipeline de tarefas"`
+  - `09-orchestrator`: `"pipeline"` → `"pipeline de desenvolvimento"`, `"proximo passo"` → `"proximo step do pipeline"` (vs skill 32)
+  - `14-seo-specialist`: `"Open Graph"` → `"Open Graph metadata"` (vs skill 36 image)
+  - `17-image-generator`: `"favicon"` → `"favicon png"` (vs skill 36 metadata)
+  - `31-session-summary`: `"handoff"` → `"handoff retrospectivo"`, removido `"passar bastao"` (vs skill 45 prospectivo)
+  - `36-web-asset-generator`: `"Open Graph"` → `"Open Graph image"`
+  - `37-tdd-engineer`: `"deep module"` → `"tdd deep module"` (vs skill 38 architecture-deepener)
+- **`evals/triggers/31-session-summary.json`** — 3 prompts re-escopados pra "retrospectivo" (handoff prospectivo agora vai pra skill 45, semanticamente correto).
+- **4 commands sem frontmatter ganharam `description:`** — `audit-repo`, `inventory-assets`, `plan-feature`, `review-release` (commands "antigos" pré-padrão atual).
+
+### Verified
+
+- ✅ `node scripts/eval-triggers.mjs --strict` — **45/45 PASS**, zero regressão
+- ✅ `node scripts/skill-health.mjs` — portfolio limpo (0 flags em todas as categorias)
+- ✅ `node -c scripts/skill-health.mjs` — sintaxe OK
+- ✅ Diff: 12 SKILL.md + 1 fixture JSON + 4 commands + 1 script + version bumps + CHANGELOG
+
+### Why patch (2.19.1 não 2.19.x menor)
+
+Pure bug-fix em tooling + refinamento de descriptions. Zero breaking changes, zero novas features, zero novas skills. Patch semver é o nível correto.
+
+---
+
 ## [2.19.0-absorption-ecc-gstack-mattpocock-ruflo] - 2026-05-27
 
 Sessão de **absorção curada** de 6 repos externos (ECC, gstack, mattpocock/skills, ruvnet/ruflo, anthropics/knowledge-work-plugins, mukul975 cybersec). Não copiamos plataformas — extraímos conceitos pontuais que **se encaixam no nosso modelo** (markdown-first, policies governam, skills numeradas). Counts: **42→45 skills · 33→39 commands · 47→48 policies**.

@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
   "description": "45 specialist skills + 39 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, program-router, parallel-dispatcher, blog-publisher, blog-screenshot, canary-deployment, zoom-out, handoff-context, post-deploy-canary-monitor, diff-impact + spec-driven development, anti-AI writing, memory consolidation, executable YAML pipelines + insights dashboard (v2.18.0, 6 tabs). v2.19.0: absorção curada de ECC/gstack/mattpocock/ruflo — 3 skills novas, 6 commands (instinct-*, multi-plan, aside, skill-health), policies/boil-the-lake.md, truth-score em verification-before-completion + stream-chain em programs-schema. v2.18: HTML dashboard. v2.17: /diff-impact + graph auto-update hook. v2.16: skill 17 portable. v2.15: stack-default template. v2.14: TencentDB Agent Memory. v2.13: trigger eval 100%. v2.10: DeerFlow. v2.9: Apache-2.0 + MinHash dedup. 15 dispatchable subagents.",
-  "version": "2.19.0",
+  "version": "2.19.1",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"

@@ -6,7 +6,7 @@ description: |
   desenvolvimento test-first. Combate o anti-padrao "horizontal slicing" (escrever todos
   os testes antes de toda a implementacao).
   Trigger em: "tdd", "test-first", "red-green-refactor", "tracer bullet", "behavior test",
-  "integration test", "deep module", "interface design test".
+  "integration test", "tdd deep module", "interface design test".
 argument-hint: "[--module=path] [--behavior=descricao]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---

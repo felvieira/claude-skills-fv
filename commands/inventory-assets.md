@@ -1,3 +1,7 @@
+---
+description: Inventaria assets visuais do projeto (logos, ícones, fontes) e prepara base pra geração de imagens
+---
+
 # inventory-assets
 
 Objetivo: atualizar o inventario visual e preparar base para geracao de imagens.

@@ -5,7 +5,7 @@ description: |
   também para otimização para ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews).
   Use quando precisar otimizar meta tags, Open Graph, sitemap, schema markup, Core Web Vitals, performance,
   imagens, fontes, acessibilidade para SEO, ou qualquer decisão de ranqueamento e citação por motores
-  generativos. Trigger em: "SEO", "meta tags", "Open Graph", "sitemap", "schema markup", "Core Web Vitals",
+  generativos. Trigger em: "SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals",
   "performance", "LCP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine",
   "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization".
 ---

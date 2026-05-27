@@ -4,7 +4,7 @@ description: |
   Skill para gerar assets web a partir de logo ou texto: favicon (multi-size), PWA icons,
   Open Graph images (Facebook/Twitter/WhatsApp/LinkedIn), apple-touch-icon, e respectivos
   meta tags HTML. Use ao preparar deploy de site, landing page ou PWA novo.
-  Trigger em: "favicon", "favicons", "PWA icon", "manifest", "Open Graph", "OG image",
+  Trigger em: "favicon", "favicons", "PWA icon", "manifest", "Open Graph image", "OG image",
   "social meta", "twitter card", "apple-touch-icon", "imagem de compartilhamento", "share image".
 argument-hint: "[--input=path/to/logo.png] [--brand-name=X] [--brand-color=#hex] [--output-dir=public/]"
 allowed-tools: Read, Write, Bash(npx *), Bash(magick *), Bash(convert *), Bash(node *)

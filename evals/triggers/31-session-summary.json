@@ -3,14 +3,14 @@
   "should_trigger": [
     "preciso de resumo do que foi feito hoje",
     "gera summary da sessao antes de encerrar",
-    "me passa o handoff pro próximo dev pegar amanhã",
     "vou encerrar sessao, consolida o trabalho",
-    "preciso passar bastao pro plantonista da noite",
+    "salvar sessao com decisões e pendências",
     "quero continuar depois, salva o estado atual",
     "faz um recap das decisões importantes de hoje",
     "session summary com pendências em aberto",
     "preciso saber o que foi feito antes de continuar",
-    "gera handoff document pra retomar amanhã"
+    "handoff retrospectivo do que rolou na sessao",
+    "encerrar sessao com log do que aconteceu"
   ],
   "shouldnt_trigger": [
     "criar Dockerfile multistage otimizado",
