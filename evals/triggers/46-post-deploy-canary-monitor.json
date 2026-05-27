@@ -1,0 +1,22 @@
+{
+  "skill": "46-post-deploy-canary-monitor",
+  "should_trigger": [
+    "monitora produção pelas próximas 24h depois do deploy fechar",
+    "post-deploy check — quero vigiar regressão silenciosa",
+    "watch deploy pela próxima janela de observação",
+    "vigiar produção, deploy passou no canary mas quero confirmar",
+    "preciso verificar produção depois do rollout 100%",
+    "production health check com baseline comparativo",
+    "deploy stuck — produção tá saudável mas algo parece off",
+    "regressão silenciosa nas primeiras horas pós-deploy",
+    "monitora se LCP regrediu depois do deploy de hoje",
+    "watch production com screenshot diff vs baseline"
+  ],
+  "shouldnt_trigger": [
+    "faz o canary deployment com rollout 1% 5% 50% 100%",
+    "promove a release gradualmente em produção",
+    "configura blue-green deployment pra essa versão",
+    "rollback dessa release imediatamente",
+    "empacota o release e gera o changelog"
+  ]
+}

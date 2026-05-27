@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 42 skills · 15 subagents · 31 slash commands · 47 policies
+> **Version:** 45 skills · 15 subagents · 39 slash commands · 48 policies
 > **Last updated:** 2026-05-24 (v2.16.0 — skill 17 portable + canonical default rule + /swarm phase 2.5 visual assets)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -902,9 +902,19 @@ The kit wasn't built from scratch. It was composed from:
 
 ### Direct adaptations
 
-- **[mattpocock/skills](https://github.com/mattpocock/skills)** ([AI Hero post](https://www.aihero.dev/5-agent-skills-i-use-every-day)) — `/grill-me`, `/to-prd`, `/to-issues`, skill 37 (TDD Engineer), skill 38 (Architecture Deepener). Adapted for the kit (frontmatter, policy integration, approval gates).
+- **[mattpocock/skills](https://github.com/mattpocock/skills)** ([AI Hero post](https://www.aihero.dev/5-agent-skills-i-use-every-day)) — `/grill-me`, `/to-prd`, `/to-issues`, skill 37 (TDD Engineer), skill 38 (Architecture Deepener), skill 43 (zoom-out), skill 44 (handoff-context). Adapted for the kit (frontmatter, policy integration, approval gates).
 - **[Reversa](https://github.com/sandeco/reversa)** — skill 33 (Detective Spec). Adapted to integrate with Graphify + repo-audit + persistent memory.
+- **[gstack / Garry Tan](https://github.com/garrytan/gstack)** — `policies/boil-the-lake.md` (completeness philosophy adapted from `ETHOS.md`); skill 45 (post-deploy-canary-monitor, adapted from `canary` skill).
+- **[ECC / affaan-m](https://github.com/affaan-m/ECC)** — `/instinct-export`, `/instinct-import`, `/instinct-promote`, `/multi-plan`, `/aside`, `/skill-health` (all v2.19.0). Adapted to integrate with `.bot/learned-skills/` (our memory tiers) and skill 40 (parallel-dispatcher).
 - **Strunk & White — Elements of Style** — `policies/writing-clarity.md`. 10 rules adapted for agent output.
+
+### External complementary plugins
+
+These cover use cases **outside** the dev-team scope of this kit. We don't absorb them — we point you to them.
+
+- **[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)** (Anthropic, Apache-2.0) — 11 official plugins for **non-dev roles**: sales, legal, finance, marketing, customer-support, data, bio-research, HR, product-management, operations, productivity. Install: `claude plugin marketplace add anthropics/knowledge-work-plugins`.
+- **[mukul975/Anthropic-Cybersecurity-Skills](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)** (Apache-2.0) — **754 cybersecurity skills** mapped to MITRE ATT&CK / NIST CSF 2.0 / D3FEND / NIST AI RMF / OWASP. Use as a deep complement to our skill 06 (security-review) and skill 34 (static-analysis) for forensics, AD attack/defense, malware analysis, APT hunting. Standard: `agentskills.io` (see `docs/inspiration/agentskills-io-evaluation.md`).
+- **[ruvnet/ruflo](https://github.com/ruvnet/ruflo)** (MIT) — Full multi-agent orchestration platform with 98 agents, 314 MCP tools, 33 plugins, federation, self-learning swarm intelligence. Recommended when you need cross-machine agent coordination or production-grade swarm orchestration. See lessons learned in `docs/inspiration/ruflo-evaluation.md`.
 
 ### Conceptual inspirations
 

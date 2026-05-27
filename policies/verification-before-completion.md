@@ -147,6 +147,54 @@ Manual smoke test:
   → returns null (was: crash)
 ```
 
+## Score numérico opcional (v2.19.0+)
+
+> **Inspiração:** [ruvnet/ruflo](https://github.com/ruvnet/ruflo) — conceito "truth-score 0.95 threshold + auto-rollback". Adaptado pro nosso modelo (qualitativo default, score opcional pra gates de CI/release). Ver `docs/inspiration/ruflo-evaluation.md`.
+
+Para **outputs críticos** (security review, migration, release gate), além da evidência qualitativa, registrar **score 0.0-1.0** explícito com critério:
+
+| Output | Score | Critério |
+|--------|-------|----------|
+| `tests pass` | 1.0 se 100% verde; (passes/total) caso contrário | Suite afetada |
+| `build green` | 1.0 ou 0.0 (binário) | Exit code |
+| `lint clean` | 1 - (errors / files_changed) clamp 0-1 | Errors / arquivos |
+| `security review` | (1 - critical_findings/10) clamp 0-1 | Achados HIGH/CRITICAL |
+| `coverage` | percentual / 100 | Linha (não branch) |
+| `performance regression` | 1 se delta < threshold; 0 se > 2x threshold | Threshold da constituição |
+
+**Threshold default:** `0.95` para release gates (`/ship`, `/run-program canary`).
+
+**Comportamento abaixo do threshold:**
+
+1. **Default (manual):** registrar score, bloquear claim "ready to merge", esperar decisão humana.
+2. **Override `auto_rollback: true`:** reverter mudança automaticamente (skill 43 canary-deployment ou git reset).
+3. **Override `accept_below: <score>`:** aceitar manualmente com justificativa documentada (PR description ou ADR).
+
+**NÃO usar score quando:**
+- a verificação é binária genuína (ex: deployment URL responde 200 ou não) — não invente score
+- task trivial (rename, format) — overhead não compensa
+- não há baseline pra comparar (primeira release de feature nova)
+
+**Exemplo de uso em `/ship`:**
+
+```yaml
+# memory/constitution.md → release-gates
+verification_scores:
+  tests: { min: 1.0, blocking: true }
+  build: { min: 1.0, blocking: true }
+  security_review: { min: 0.95, blocking: true }
+  coverage: { min: 0.80, blocking: false, warn_below: 0.90 }
+  performance: { min: 0.95, blocking: false, regression_threshold: "10%" }
+```
+
+`/ship` lê estes thresholds, calcula score por gate, registra em `docs/releases/<versao>.md`, e bloqueia se algum `blocking: true` ficar abaixo do mínimo.
+
+**Cross-refs:**
+- skill 24 (release-manager) — consome thresholds da constituição
+- skill 11 (reviewer) — gate final, pode usar scores como input
+- skill 45 (post-deploy-canary-monitor) — escala rollback usando estes scores
+- `policies/quality-gates.md` — define quais gates rodam quando
+
 ## Por que isso importa
 
 Agentes têm tendência a "performar conclusão" — declarar done para fechar o ciclo da conversa. Isso gera:

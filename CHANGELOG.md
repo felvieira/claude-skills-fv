@@ -5,6 +5,71 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.19.0-absorption-ecc-gstack-mattpocock-ruflo] - 2026-05-27
+
+Sessão de **absorção curada** de 6 repos externos (ECC, gstack, mattpocock/skills, ruvnet/ruflo, anthropics/knowledge-work-plugins, mukul975 cybersec). Não copiamos plataformas — extraímos conceitos pontuais que **se encaixam no nosso modelo** (markdown-first, policies governam, skills numeradas). Counts: **42→45 skills · 33→39 commands · 47→48 policies**.
+
+### Added
+
+#### Skills (3 novas, numeradas 44-46)
+
+- **`skills/44-zoom-out/`** — mapa de módulos/callers antes de tocar código. Força uso de `graphify-out/graph.json` antes de Grep bruto (regra do CLAUDE.md global). Triggers em "estou perdido", "mapa de módulos", "visão geral", "como isso encaixa". Adaptado de [mattpocock/skills/engineering/zoom-out](https://github.com/mattpocock/skills/tree/main/skills/engineering/zoom-out) (MIT).
+- **`skills/45-handoff-context/`** — pacote **prospectivo** pra outro agente/dev pegar a task. Distinto da skill 31 (session-summary, retrospectivo): handoff produz setup commands + estado verificável + 1 próximo passo + armadilhas. Output em `docs/handoffs/YYYY-MM-DD-<feature>.md`. Adaptado de [mattpocock/skills/productivity/handoff](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff) (MIT).
+- **`skills/46-post-deploy-canary-monitor/`** — vigia produção **depois** do rollout fechar 100% (skill 43 cobre durante o rollout). Compara metrics + screenshots vs baseline pre-deploy, escala rollback se 2 alertas consecutivos. Output em `docs/canary-runs/`. Adaptado de [gstack/canary](https://github.com/garrytan/gstack/tree/main/canary) (MIT).
+
+#### Commands (6 novos)
+
+- **`commands/instinct-export.md` + `instinct-import.md` + `instinct-promote.md`** — portabilidade de `.bot/learned-skills/` (ver `policies/memory-tiers.md`) entre projetos/máquinas e promoção entre escopos project↔global. Backend: `scripts/instinct.mjs` (zero-dep, Node ≥18). Adaptado de [ECC](https://github.com/affaan-m/ECC) (MIT).
+- **`commands/multi-plan.md`** — roda `/plan` em paralelo (claude + codex), surface só **discordâncias** ao user via AskUserQuestion. Convergências auto-aprovadas. Reusa skill 40 (parallel-dispatcher) + subagent `codex:codex-rescue`. ~2x custo de `/plan` único — usar em decisões críticas. Adaptado de [ECC](https://github.com/affaan-m/ECC) (MIT).
+- **`commands/aside.md`** — pergunta tangencial sem **contaminar** task atual: não atualiza tasks, memória ou learned-skills. Isolamento explícito. Adaptado de [ECC](https://github.com/affaan-m/ECC) (MIT).
+- **`commands/skill-health.md`** — dashboard de saúde do portfolio: descriptions curtas (<80 chars), skills sem "Trigger em:" explícito, sem fixture em `evals/triggers/`, accuracy <70%, overlaps de triggers. Output em `docs/skill-health.md`. Backend: `scripts/skill-health.mjs` (~270 linhas, zero-dep). Adaptado de [ECC](https://github.com/affaan-m/ECC) (MIT).
+
+#### Scripts (2 novos, zero-dep)
+
+- **`scripts/instinct.mjs`** (~165 linhas) — `export`/`import`/`promote`/`list` de learned-skills. Schema bundle JSON `{version, scope, skills[{slug, meta, body, mtime}]}`. Frontmatter parser nativo.
+- **`scripts/skill-health.mjs`** (~270 linhas) — varre skills/, agents/, commands/, `evals/triggers/*.json`. Detecta 5 flags + overlaps por triggers compartilhados. Sai pra `docs/skill-health.md`.
+
+#### Policies (1 nova + 2 estendidas)
+
+- **`policies/boil-the-lake.md`** (~95 linhas) — filosofia de completude com **argumento econômico** (tabela compressão 3x-100x AI vs humano). Complementa "Senior Dev Override" do CLAUDE.md global (que é qualitativo) com dados quantitativos. Lake vs Ocean: fervva lakes, fragmente oceanos. Adaptado de [gstack/ETHOS.md](https://github.com/garrytan/gstack/blob/main/ETHOS.md) (MIT, Garry Tan).
+- **`policies/verification-before-completion.md`** — nova seção **"Score numérico opcional"** (0.0-1.0) pra release gates de CI. Threshold default 0.95. Tabela tests/build/lint/security/coverage/perf → score. Suporta `auto_rollback: true` opcional. Inspirado em truth-score do [ruvnet/ruflo](https://github.com/ruvnet/ruflo) (MIT).
+- **`policies/programs-schema.md`** — nova seção **"Stream-chain pattern"**. Formaliza o `output_step_N → input_step_N+1` que já existia implícito em `programs/*.yml`. Distingue stream-chain de fan-out e scatter-gather. Anti-padrão: chain >7 elos. Inspirado em [ruvnet/ruflo](https://github.com/ruvnet/ruflo) (MIT).
+
+#### Docs (3 novos)
+
+- **`docs/plans/2026-05-27-v2.19.0-absorption-plan.md`** — plano completo escrito antes da execução (13 itens, sequenciamento, risk register, critérios de aceitação).
+- **`docs/inspiration/agentskills-io-evaluation.md`** — avaliação do padrão cross-platform `agentskills.io` (usado por mukul975 cybersec). Decisão: **diferir** pra v2.20.0+. Razão: padrão emergente, valor depende de adoção por outras tools (Cursor/Gemini/Copilot).
+- **`docs/inspiration/ruflo-evaluation.md`** — lessons learned do ruvnet/ruflo (55.6k ⭐). Por que NÃO absorvemos a plataforma (98 agents/314 MCP tools/33 plugins é off-scope), quais 5 conceitos roubamos (lite vs full, stream-chain, truth-score, tool-descriptions audit, ReasoningBank pattern).
+
+#### Eval fixtures (3 novos JSONs)
+
+- `evals/triggers/44-zoom-out.json` (10 should + 5 shouldn't, **90% accuracy**)
+- `evals/triggers/45-handoff-context.json` (10 should + 5 shouldn't, **90% accuracy**)
+- `evals/triggers/46-post-deploy-canary-monitor.json` (10 should + 5 shouldn't, **100% accuracy**)
+
+### Changed
+
+- **`docs/SKILLS-OVERVIEW.md`** + **`docs/WIKI.md`** — contadores atualizados (42→45 skills, 31→39 commands, 47→48 policies). Nova seção `External complementary plugins` no WIKI apontando knowledge-work-plugins (não-dev), mukul cybersec (deep cybersec), ruflo (multi-agent platform).
+- **`.claude-plugin/plugin.json`** + **`mcp-server/package.json`** — bump v2.18.0 → v2.19.0 + description atualizada.
+
+### Verified
+
+- ✅ `node scripts/eval-triggers.mjs` — **45/45 PASS** (3 fixtures novas: 90/90/100%, todas ≥80% threshold)
+- ✅ `node scripts/instinct.mjs list` — smoke OK (sem instincts ainda → mensagem clara)
+- ✅ `node scripts/skill-health.mjs` — gera `docs/skill-health.md` (155 linhas) com flags reais do portfolio
+- ✅ Conflito de numeração resolvido: zoom-out movido 43→44, handoff 44→45, canary-monitor 45→46 (skill 43 já era `canary-deployment`, do v2.16.x)
+
+### Inspired by
+
+- **[ECC / affaan-m](https://github.com/affaan-m/ECC)** (MIT, 195k ⭐) — 4 commands (`/instinct-*` family) + `/multi-plan`, `/aside`, `/skill-health`. Não absorvemos os 28 agents/116 skills/59 commands deles — só os 6 conceitos que faltavam ao nosso modelo.
+- **[gstack / Garry Tan](https://github.com/garrytan/gstack)** (MIT, 103k ⭐) — policy `boil-the-lake.md` (de ETHOS.md) + skill 46 (post-deploy-canary-monitor).
+- **[mattpocock/skills](https://github.com/mattpocock/skills)** (MIT, 108k ⭐) — skills 44 (zoom-out) + 45 (handoff-context). Já tínhamos absorvido grill-me, to-prd, to-issues, tdd, architecture-deepener anteriormente.
+- **[ruvnet/ruflo](https://github.com/ruvnet/ruflo)** (MIT, 55.6k ⭐) — truth-score em verification-before-completion + stream-chain em programs-schema. Não absorvemos a plataforma (off-scope), só 2 conceitos pontuais. Ver `docs/inspiration/ruflo-evaluation.md`.
+- **[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)** (Apache-2.0) — referenciado no WIKI como complemento para roles não-dev. Não absorvido.
+- **[mukul975/Anthropic-Cybersecurity-Skills](https://github.com/mukul975/Anthropic-Cybersecurity-Skills)** (Apache-2.0) — referenciado no WIKI como complemento cybersec deep (754 skills mapeadas a MITRE/NIST/D3FEND/OWASP). Não absorvido.
+
+---
+
 ## [2.18.0-insights-dashboard-6-tabs] - 2026-05-25
 
 Dashboard web interativo entregue (antecipado do roadmap v2.18.x candidato em `docs/patterns/insights-dashboard-future.md` por demanda explícita do user). 6 tabs cobrindo grafo, bench, savings, drift, qualidade das skills e cobertura de trigger eval. Zero-build, zero-dep, single-file HTML + CDN.

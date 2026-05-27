@@ -351,6 +351,68 @@ Flags:
 - `--from <step_id>` — retoma de um step específico (após falha)
 - `--input <key=value>` — passa input explícito
 
+## Stream-chain pattern (v2.19.0+)
+
+> **Inspiração:** [ruvnet/ruflo](https://github.com/ruvnet/ruflo) — `stream-chain run` formaliza explicitamente `output_step_N → input_step_N+1`. Adaptado: nosso schema já suporta via `${steps.X.output}`, mas merece nome e documentação dedicada. Ver `docs/inspiration/ruflo-evaluation.md`.
+
+### Definição
+
+**Stream-chain** = composição linear de steps onde **output de cada step é input do próximo**, sem branching nem paralelismo. Cada elo da corrente transforma o dado adiante.
+
+### Quando é stream-chain vs pipeline genérico
+
+| Padrão | Característica | Exemplo no kit |
+|--------|----------------|----------------|
+| Stream-chain | Cadeia linear, output→input, transformação progressiva | `discover → spec → plan → build → test` |
+| Pipeline com gates | Stream-chain + checkpoints humanos entre elos | `programs/spec-driven-development.yml` |
+| Fan-out (parallel) | 1 input → N workers paralelos | `programs/comprehensive-review.yml` |
+| Scatter-gather | fan-out + agregação | `/multi-plan` (claude+codex) |
+
+### Schema canônico de stream-chain
+
+```yaml
+steps:
+  - id: extract
+    type: command
+    command: /spec
+    capture: spec_path
+
+  - id: refine
+    type: prompt
+    prompt: |
+      Refinar o spec em ${steps.extract.capture.spec_path}.
+      Output: docs/specs/<feature>-refined.md
+    capture: refined_path
+
+  - id: plan
+    type: command
+    command: /plan
+    args: "--input=${steps.refine.capture.refined_path}"
+```
+
+Cada step **lê explicitamente** o output do anterior via `${steps.X.capture.<name>}` ou `${steps.X.output}`. Sem isso, é só sequência (não stream-chain).
+
+### Vantagens de modelar como stream-chain
+
+1. **Cada elo é debugável isolado** — `--from <step_id>` retoma da quebra
+2. **Capture explícito** força contratos de output entre steps
+3. **Validador detecta** referência a step inexistente
+4. **Encaixa em pipelines maiores** — stream-chain é a building block, não o pipeline inteiro
+
+### Anti-padrões específicos
+
+- ❌ Stream-chain implícito (steps em sequência sem usar `${steps.X.output}`) — viola o contrato; é só lista, não corrente
+- ❌ Stream-chain com `context: fresh` em todos os elos — se cada step começa do zero, capture não chega. Use `inherit` ou passe via `args` explícito
+- ❌ Misturar stream-chain com `parallel` no mesmo nível — escolha um. Parallel é fan-out, não chain
+- ❌ Chain com mais de 7 elos — flag warning. Stream longa demais perde rastreabilidade. Quebre em sub-programs
+
+### Cross-refs
+
+- `${steps.X.capture.<name>}` — sintaxe canônica
+- `--from <step_id>` flag de retomada
+- `programs/pipeline-discovery.yml` — exemplo real de stream-chain longa
+- skill 40 (parallel-dispatcher) — quando NÃO usar stream-chain (fan-out)
+
 ## Integração com outras policies
 
 - `policies/handoffs.md` — programs implementam a cadeia canônica documentada lá

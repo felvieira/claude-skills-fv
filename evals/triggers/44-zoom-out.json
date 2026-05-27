@@ -1,0 +1,22 @@
+{
+  "skill": "44-zoom-out",
+  "should_trigger": [
+    "me dá uma visão geral desse módulo, tô meio perdido",
+    "preciso de um mapa dos módulos antes de mexer no auth",
+    "zoom out — quero ver como esse componente encaixa no resto",
+    "estou perdido nesse código, da onde começo?",
+    "big picture da pasta src/payments por favor",
+    "como o módulo X se conecta com o resto do sistema?",
+    "neighborhood view do diretório de hooks",
+    "quero a broader context antes de propor refactor",
+    "higher level perspective do fluxo de checkout",
+    "lista os callers principais do módulo de auth"
+  ],
+  "shouldnt_trigger": [
+    "fix esse bug específico no parser linha 142",
+    "renomeia essa função pra getUserById",
+    "ajusta o lint nesse arquivo",
+    "roda os testes da suite atual",
+    "commita as mudanças com mensagem padrão"
+  ]
+}

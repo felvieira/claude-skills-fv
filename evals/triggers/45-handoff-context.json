@@ -1,0 +1,22 @@
+{
+  "skill": "45-handoff-context",
+  "should_trigger": [
+    "preciso passar o bastão dessa task pro outro dev amanhã",
+    "vou parar agora, outro agente vai continuar — prepara handoff",
+    "delega isso pra outra sessão fresh, monta o pacote",
+    "transfer context dessa feature pro QA continuar",
+    "outro dev vai pegar essa branch — documenta o estado",
+    "preciso passar contexto dessa task pra alguém retomar",
+    "outro agente vai continuar daqui, prepara o briefing",
+    "vou abrir sessão nova — exporta o estado dessa feature",
+    "handoff dessa task pro time de release",
+    "monta o briefing prospectivo pra próxima sessão"
+  ],
+  "shouldnt_trigger": [
+    "resumo do que fiz hoje, quero o log",
+    "salva o que aconteceu nessa sessão",
+    "o que foi feito nessa task até agora?",
+    "encerra a sessão e gera o recap",
+    "atualiza o changelog com as mudanças"
+  ]
+}
