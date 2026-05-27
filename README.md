@@ -4,23 +4,24 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 42 Specialist Skills for Coding Agents
+# Dev Team Kit — 45 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.16.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-42-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.19.1-0f766e)
+![Skills](https://img.shields.io/badge/skills-45-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
-### ✨ What's new in v2.14-v2.16
+### ✨ What's new in v2.17-v2.19
 
 | Version | Highlight | Where |
 |---|---|---|
-| **v2.16.0** | Skill 17 (image-generator) portátil em qualquer máquina + regra default canônica (grok-imagine t2i / gemini-25-flash edit). `/swarm` invoca automaticamente em landings/sistemas novos (phase 2.5). | [`scripts/generate-image.mjs`](scripts/generate-image.mjs), [`models/image-models.json`](models/image-models.json), [`skills/17-image-generator/`](skills/17-image-generator/SKILL.md) |
-| **v2.15.x** | Template `stack-default` (Docker + Next.js 15 + Better Auth + Drizzle + OpenRouter + FAL.AI) + policy `model-routing-real` (honest about hook = suggestion, `model:` explicit = enforcement) | [`templates/stack-default/`](templates/stack-default/README-stack.md), [`policies/model-routing-real.md`](policies/model-routing-real.md) |
-| **v2.14.0** | Long-horizon context compression: `symbolic-memory` (Mermaid canvas + `node_id` drill-down) and `memory-pyramid` (L0→L3 layering). Inspired by the layering and symbolic memory ideas published in TencentDB Agent Memory; our implementation is independent (zero-dep Node + markdown). | [`policies/symbolic-memory.md`](policies/symbolic-memory.md), [`policies/memory-pyramid.md`](policies/memory-pyramid.md) |
+| **v2.19.1** | Polish pass: bugs no `skill-health.mjs` (parser YAML multiline), 9 overlaps cross-section refinados, 4 commands ganharam frontmatter. Portfolio limpo: 0 overlaps, 0 dead policies, 100% cobertura de fixture, 45/45 eval-triggers PASS. | [`scripts/skill-health.mjs`](scripts/skill-health.mjs), [`docs/skill-health.md`](docs/skill-health.md) |
+| **v2.19.0** | Absorção curada de ECC/gstack/mattpocock/ruflo — 3 skills novas (zoom-out, handoff-context, post-deploy-canary-monitor), 6 commands (instinct-export/import/promote, multi-plan, aside, skill-health), `policies/boil-the-lake.md`, truth-score em verification + stream-chain em programs-schema. | [`docs/plans/2026-05-27-v2.19.0-absorption-plan.md`](docs/plans/2026-05-27-v2.19.0-absorption-plan.md), [`docs/inspiration/ruflo-evaluation.md`](docs/inspiration/ruflo-evaluation.md) |
+| **v2.18.0** | Dashboard web interativo: 6 tabs (Graph, Bench, Savings, Drift, Skill Quality, Trigger Eval). Zero-build, zero-dep, single-file HTML + CDN. | [`docs/preview/dashboard.html`](docs/preview/dashboard.html), [`scripts/build-dashboard.mjs`](scripts/build-dashboard.mjs) |
+| **v2.17.0** | `/diff-impact` (ripple analysis) + graph auto-update hook (PostToolUse regenera graphify-out após Edit/Write). | [`commands/diff-impact.md`](commands/diff-impact.md), [`scripts/diff-impact.mjs`](scripts/diff-impact.mjs) |
 
 **Como usar:** veja [`docs/quickstart.md`](docs/quickstart.md) para os 4 cenários comuns (gerar imagem CLI, swarm com geração automática, bootstrap template, runtime adapter).
 

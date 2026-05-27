@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 37 skills · 14 subagents · 23 slash commands · 35 policies
-> **Última atualização:** 2026-05-19
+> **Versão:** 45 skills · 15 subagents · 39 slash commands · 48 policies
+> **Última atualização:** 2026-05-27 (v2.19.1)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
