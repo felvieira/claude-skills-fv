@@ -23,16 +23,26 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
 ├── skills/           ← uma pasta por skill (01-po-feature-spec, 02-ui-ux-design, ...)
 │   └── NN-nome/
 │       └── SKILL.md  ← prompt da skill
-├── .claude/commands/ ← slash commands (/spec, /plan, /build, /loop, ...)
+├── commands/         ← slash commands (/spec, /plan, /build, /loop, ...) — autodiscovery
+├── agents/           ← subagents despacháveis via Task tool — autodiscovery
 ├── policies/         ← regras compartilhadas entre skills
+├── programs/         ← pipelines declarativos YAML (.yml) + descritivos (.md)
 ├── personas/         ← personas de output estruturado
-├── hooks/            ← hooks PreToolUse / PostToolUse / SessionStart
+├── hooks/            ← hooks PreToolUse / PostToolUse / SessionStart / Stop / UserPromptSubmit
+│   ├── scripts/      ← cada hook é um .mjs Node
+│   ├── hooks.json    ← registro canônico dos hooks por evento
+│   └── config.json   ← defaults + perfis (minimal/standard/strict)
+├── evals/            ← fixtures versionados (triggers/, commands/, programs/)
 ├── docs/skill-guides/← guias operacionais (skill-discovery, autonomous-loop, ...)
-├── scripts/          ← utilitários (auto-loop.mjs, check-consistency.mjs, ...)
-├── mcp-server/       ← servidor MCP TypeScript (expõe as 32 tools)
+├── scripts/          ← utilitários (auto-loop.mjs, check-consistency.mjs, eval-triggers.mjs, ...)
+├── mcp-server/       ← servidor MCP TypeScript (expõe 37 tools)
 ├── setup/            ← instalador (install.sh) e configs de plataforma
 └── templates/        ← templates de handoff, plano, review, rejeição
 ```
+
+> **Autodiscovery (desde v1.5.2):** o plugin descobre skills, commands e agents pelos
+> diretórios `skills/`, `commands/` e `agents/` automaticamente. **Não** existe array
+> de registro em `.claude-plugin/plugin.json` — basta criar o arquivo no diretório certo.
 
 ---
 
@@ -51,16 +61,15 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
    - Seção `## Handoff` — para qual skill passa adiante
    - Seção `## Persona` (opcional) — referência a `personas/*.md`
 
-3. **Registre no `plugin.json`**:
-   ```json
-   "skills/NN-nome-da-skill/SKILL.md"
-   ```
+3. **Crie o fixture de eval** em `evals/triggers/NN-nome-da-skill.json` com `should_trigger` (≥10 prompts que devem ativar) e `shouldnt_trigger` (≥5 que não devem). Rode `node scripts/eval-triggers.mjs` — accuracy do should deve ser ≥80% e do shouldnt ≤20%.
 
-4. **Atualize o `README.md`** — adicione a skill na tabela de especialistas com número, nome, papel e handoffs.
+4. **Atualize os contadores** em todos os pontos canônicos: `README.md` + `README.pt-BR.md` (badge + tabela), `docs/WIKI.md` + `docs/WIKI.pt-BR.md` (header), `docs/SKILLS-OVERVIEW.md` (header), `.claude-plugin/plugin.json` (description + version), `mcp-server/package.json`, `CHANGELOG.md`.
 
-5. **Rode o check de consistência**:
+5. **Rode os checks** (a skill é autodiscovered — não há registro manual em plugin.json):
    ```bash
    node scripts/check-consistency.mjs
+   node scripts/eval-triggers.mjs
+   node scripts/skill-health.mjs   # 0 overlaps, 0 dead policies, description rica
    ```
 
 ---
@@ -76,45 +85,40 @@ Obrigado pelo interesse em contribuir! Este guia cobre como adicionar skills, co
 
 ## Adicionando slash commands
 
-1. **Crie `.claude/commands/nome.md`** com frontmatter:
+1. **Crie `commands/nome.md`** com frontmatter (autodiscovered — sem registro manual):
    ```markdown
    ---
    description: Descrição curta do comando
    ---
    ```
 
-2. **Registre no `plugin.json`**:
-   ```json
-   ".claude/commands/nome.md"
-   ```
-
-3. **Adicione à tabela de slash commands** em **TODOS** os pontos canônicos:
+2. **Adicione à tabela de slash commands** em **TODOS** os pontos canônicos:
    - `README.md` + `README.pt-BR.md` (tabela na seção de commands)
    - `AGENTS.md` (tabela "Slash Commands")
    - `docs/WIKI.md` + `docs/WIKI.pt-BR.md` (entrada completa formato aihero: what / when / problem / example / takeaway)
    - `docs/SKILLS-OVERVIEW.md` (entrada curta no índice de commands)
 
-4. **Se o command introduz pipeline novo:**
-   - criar declarativo em `programs/<nome>.md` e registrar em `programs/README.md`
+3. **Se o command introduz pipeline novo:**
+   - criar declarativo em `programs/<nome>.yml` + descritivo `programs/<nome>.md` e registrar em `programs/README.md`
    - atualizar `policies/handoffs.md` com a cadeia canônica
    - se o command tem autoridade sobre outras decisões (tipo `/constitution`): atualizar skills relevantes (`skills/NN-*/SKILL.md`) para consultá-lo
 
-5. **Cobertura de evals:**
+4. **Cobertura de evals:**
    - criar `evals/commands/<nome>/golden.json` com 3-4 casos cobrindo happy path, edge cases, anti-padrões
    - se o command é apoiado por subagent: também `evals/protocol-shells/<subagent>/`
 
-6. **Consistency check:**
-   - adicionar asserção em `scripts/check-consistency.mjs` validando que o command está registrado em `plugin.json`
+5. **Consistency check** (o command é autodiscovered de `commands/` — sem registro manual):
+   - se for um command estrutural, adicionar asserção em `scripts/check-consistency.mjs` validando que `commands/<nome>.md` existe
    - rodar `node scripts/check-consistency.mjs` antes de commitar — deve passar
 
-7. **Bumps semver:**
+6. **Bumps semver:**
    - `MAJOR` se removeu/renomeou command existente
    - `MINOR` se é command novo
    - `PATCH` se é só atualização de doc
    - bump em `README.md` (badge), `README.pt-BR.md` (badge), `.claude-plugin/plugin.json`, `mcp-server/package.json`, `docs/SKILLS-OVERVIEW.md` (header)
    - adicionar entrada no `CHANGELOG.md` com seções Added/Changed/Sources
 
-8. **Tag git + GitHub Release** ao mergear em main:
+7. **Tag git + GitHub Release** ao mergear em main:
    - `git tag vX.Y.Z -m "..."`
    - `gh release create vX.Y.Z --title "..." --notes-from-tag`
 
@@ -182,9 +186,9 @@ Exemplos (v1.6.0): `pipeline-discovery.yml`, `spec-driven-development.yml`, `loo
 
 ## Adicionando um subagent
 
-Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude Code.
+Subagents ficam em `agents/` (autodiscovered desde v1.5.2) e seguem o formato de frontmatter do Claude Code.
 
-1. **Crie `.claude/agents/nome.md`** com o frontmatter obrigatório:
+1. **Crie `agents/nome.md`** com o frontmatter obrigatório:
    ```markdown
    ---
    name: nome-do-agent
@@ -197,15 +201,11 @@ Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude
 
    [Prompt do agent aqui — seja específico sobre processo e output]
    ```
+   O plugin descobre o subagent automaticamente — **não** há registro manual em `plugin.json`.
 
-2. **Registre no `plugin.json`**:
-   ```json
-   ".claude/agents/nome.md"
-   ```
+2. **Documente em `AGENTS.md`** — adicione uma linha na tabela de subagents.
 
-3. **Documente em `AGENTS.md`** — adicione uma linha na tabela de subagents.
-
-4. **Rode o check de consistência** e adicione entrada no `CHANGELOG.md`.
+3. **Rode o check de consistência** e adicione entrada no `CHANGELOG.md`.
 
 **Boas práticas:**
 - Mantenha o prompt sob 2.000 chars — referencie `personas/` ou `skills/` por link em vez de duplicar
@@ -216,11 +216,17 @@ Subagents ficam em `.claude/agents/` e seguem o formato de frontmatter do Claude
 
 ## Editando hooks
 
-Os hooks ficam em `hooks/scripts/`. Cada arquivo `.mjs` é um hook Node.js.
+Os hooks ficam em `hooks/scripts/`. Cada arquivo `.mjs` é um hook Node.js. Ao **adicionar** um hook:
 
-- **Não altere `hooks/hooks.json`** sem atualizar o `install.sh` junto
-- Teste localmente com `node hooks/scripts/nome-do-hook.mjs`
-- Hooks são copiados para `.bot/hooks/` pelo instalador
+1. **Criar `hooks/scripts/nome-do-hook.mjs`** — leia stdin (JSON do payload), nunca bloqueie em erro (`try/catch` + `process.exit(0)`), emita `hookSpecificOutput.additionalContext` (UserPromptSubmit/PostToolUse) ou `systemMessage` (SessionStart) quando precisar falar com o agente.
+2. **Registrar em `hooks/hooks.json`** sob o evento certo (`UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`).
+3. **Declarar defaults em `hooks/config.json`** numa seção própria (ex: `"meu_hook": { "enabled": true }`) para o user customizar sem editar código.
+4. **Adicionar ao perfil `minimal`** em `config.json` (`hook_profiles.profiles.minimal.disabled`) se o hook for "ruidoso" (sugestões/avisos) — o perfil minimal desliga tudo que não é essencial.
+5. **Respeitar `isHookDisabled("nome-do-hook")`** no início (usa `utils.mjs`) para honrar perfis e `DEVKIT_DISABLED_HOOKS`.
+
+- Teste localmente: `echo '{"prompt":"..."}' | node hooks/scripts/nome-do-hook.mjs`
+- Valide sintaxe: `node --check hooks/scripts/nome-do-hook.mjs`
+- Hooks são copiados para `.bot/hooks/` pelo instalador (e `setup/install.sh` precisa conhecer hooks novos)
 
 ---
 
@@ -228,11 +234,13 @@ Os hooks ficam em `hooks/scripts/`. Cada arquivo `.mjs` é um hook Node.js.
 
 ```
 [ ] node scripts/check-consistency.mjs passa sem erros
-[ ] node --check scripts/auto-loop.mjs (se editou o script)
-[ ] plugin.json parseia como JSON válido
-[ ] Todas as referências em plugin.json existem no disco
-[ ] README.md atualizado (tabela de skills/commands se necessário)
-[ ] CHANGELOG.md atualizado na seção [Unreleased]
+[ ] node scripts/eval-triggers.mjs passa (se adicionou/editou skill — should ≥80%, shouldnt ≤20%)
+[ ] node scripts/skill-health.mjs limpo (0 overlaps, 0 dead policies, descriptions ricas)
+[ ] node --check no script editado (.mjs) — sintaxe válida
+[ ] .claude-plugin/plugin.json parseia como JSON válido (version bumpada se necessário)
+[ ] Contadores sincronizados (README.md, README.pt-BR.md, WIKI.md, WIKI.pt-BR.md, SKILLS-OVERVIEW.md)
+[ ] README.md em inglês, README.pt-BR.md em português (sem vazamento de idioma)
+[ ] CHANGELOG.md atualizado com a nova versão
 [ ] Commit segue as convenções abaixo
 ```
 
