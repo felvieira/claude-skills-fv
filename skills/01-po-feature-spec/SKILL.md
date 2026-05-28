@@ -212,3 +212,4 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa
 - **Context Manager (skill 08):** Rastreia progresso das tasks dentro desta skill
 - **Documentador (skill 10):** Documenta entregas desta skill durante o desenvolvimento
+- **skill 48 (research-prep):** roda **antes** desta skill quando a feature envolve tecnologia externa não dominada pelo time. Passar `memory/research/<slug>.md` como contexto de "o que existe" antes de escrever a spec.

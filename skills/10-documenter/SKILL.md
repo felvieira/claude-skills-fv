@@ -192,3 +192,7 @@ Tudo mais é sinal de que o código precisa de refatoração, não de comentári
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/doc-update.md`.
+
+## Integração com Pipeline
+
+- **skill 48 (research-prep):** roda **antes** desta skill quando o tópico a documentar requer pesquisa externa (tecnologia nova, comparativo de abordagens, ADR baseado em evidência). Passar `memory/research/<slug>.md` como fonte de verdade para a documentação.

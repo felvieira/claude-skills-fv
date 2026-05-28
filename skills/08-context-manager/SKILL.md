@@ -102,6 +102,25 @@ Se usar arquivo local, preferir `docs/context/current-focus.md` e `docs/context/
 - estado atual resumido sem ruido operacional
 - dependencias e blockers visiveis para a proxima etapa
 
+## Skills Utilitárias (context: fork)
+
+Quando uma sub-operação desta skill for puramente mecânica — ler cache, gravar estado,
+checar arquivo — sem necessidade de raciocínio do modelo, preferir o padrão:
+
+```yaml
+# frontmatter da sub-skill utilitária
+context: fork
+disable-model-invocation: true
+```
+
+Isso isola a execução e evita consumir contexto do agente principal para tarefas
+que são essencialmente I/O. Padrão observado em [addozhang/mem9](https://github.com/addozhang/mem9)
+(Apache-2.0) nas skills `recall`, `store` e `setup`.
+
+**Quando aplicar:** sub-skills de leitura de vault, gravação de estado de sessão,
+verificação de auth, fetch de memória externa. **Não aplicar** quando a operação
+requer julgamento contextual (ex: decidir o que salvar, priorizar tasks).
+
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/handoff.md`.

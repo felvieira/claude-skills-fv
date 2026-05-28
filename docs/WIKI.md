@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 46 skills · 15 subagents · 39 slash commands · 49 policies
-> **Last updated:** 2026-05-24 (v2.16.0 — skill 17 portable + canonical default rule + /swarm phase 2.5 visual assets)
+> **Version:** 48 skills · 15 subagents · 39 slash commands · 49 policies
+> **Last updated:** 2026-05-28 (v2.23.0 — skill 48 research-prep + Spring Boot playbook na 23 + padrões mem9)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 

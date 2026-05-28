@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 46 skills, 15 subagents, 39 slash commands, 49 policies
-> **Última atualização:** 2026-05-28 (v2.20.0 — skill 47 pattern-conformity — detecta e codifica padrões de coding do projeto existente, gera memory/patterns.md)
+> **Versão:** 48 skills, 15 subagents, 39 slash commands, 49 policies
+> **Última atualização:** 2026-05-28 (v2.23.0 — skill 48 research-prep + Spring Boot playbook na skill 23 + padrões mem9 no session-start e skill 08)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---

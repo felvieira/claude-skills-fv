@@ -3,7 +3,9 @@ name: migration-refactor-specialist
 description: |
   Skill para migracoes, modernizacao de legacy e refactors estruturais. Use quando precisar fazer upgrades grandes,
   extracao incremental, strangler pattern, compatibilidade de transicao e rollout seguro.
-  Trigger em: "migracao de framework", "modernizacao de legacy", "strangler pattern", "refactor estrutural", "upgrade grande", "extracao incremental", "migracao de runtime", "trocar ORM", "rollout incremental de refactor", "migrar para".
+  Trigger em: "migracao de framework", "modernizacao de legacy", "strangler pattern", "refactor estrutural", "upgrade grande", "extracao incremental", "migracao de runtime", "trocar ORM", "rollout incremental de refactor", "migrar para",
+  "spring boot 3", "spring boot 2 para 3", "jakarta migration", "javax para jakarta", "openrewrite", "upgrade spring boot",
+  "migrar jdk 21", "jdk 21 upgrade", "java 21 migration", "spring boot upgrade", "spring 3 migration".
 ---
 
 # Migration Refactor Specialist
@@ -50,6 +52,18 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 - plano de transicao definido
 - fases e riscos registrados
 - criterios de rollout e rollback claros
+
+## Playbooks Disponíveis
+
+Playbooks concretos por stack em `playbooks/`:
+
+| Playbook | Quando usar |
+|---|---|
+| `spring-boot-2-to-3.md` | Spring Boot 2.x → 3.x + JDK 8/11/17 → 21 via OpenRewrite. Inclui 10 passos, rollback, geração de REPORT.md. |
+
+Referências de suporte em `playbooks/references/`:
+- `common-fixes.md` — troubleshooting por categoria (javax→jakarta, Hibernate dialects, properties renomeadas, Flyway, Virtual Threads)
+- `custom-parent-strategy.md` — projetos com parent POM próprio: 3 estratégias (atualizar parent, BOM import, migrar JARs internos)
 
 ## Handoff
 

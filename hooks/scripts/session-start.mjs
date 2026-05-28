@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { spawn } from 'child_process';
+import { join } from 'path';
+import { homedir } from 'os';
 import { isHookDisabled, readHookConfig, resolveBotPath } from './utils.mjs';
 
 const BOOTSTRAP_DEFAULTS = {
@@ -27,6 +29,34 @@ process.stdin.on('end', () => {
       const firstLine = focus.split('\n').find(l => l.trim() && !l.startsWith('#')) || '';
       if (firstLine) parts.push(`Last focus: "${firstLine.trim()}"`);
     } catch {}
+  }
+
+  // --- Pattern conformity (skill 47) — inject memory/patterns.md if present ---
+  // Padrão inspirado em addozhang/mem9 user-prompt-submit hook (Apache-2.0):
+  // injetar contexto de memória automaticamente sem exigir invocação manual da skill.
+  const patternsCandidates = ['memory/patterns.md', '.bot/memory/patterns.md'];
+  for (const pPath of patternsCandidates) {
+    if (existsSync(pPath)) {
+      try {
+        const pContent = readFileSync(pPath, 'utf-8');
+        const pHeader = pContent.split('\n').find(l => l.startsWith('last_extracted:')) || '';
+        // Só injetar se gerado nos últimos 14 dias (TTL da skill 47)
+        if (pHeader) {
+          const dateMatch = pHeader.match(/(\d{4}-\d{2}-\d{2})/);
+          if (dateMatch) {
+            const age = (Date.now() - new Date(dateMatch[1]).getTime()) / (1000 * 60 * 60 * 24);
+            if (age <= 14) {
+              const MAX_PATTERNS_CHARS = 4000;
+              const snippet = pContent.length > MAX_PATTERNS_CHARS
+                ? pContent.slice(0, MAX_PATTERNS_CHARS) + '\n[...truncated — ver memory/patterns.md completo]'
+                : pContent;
+              parts.push(`[Code Style Map — skill 47]\n${snippet}`);
+            }
+          }
+        }
+      } catch {}
+      break;
+    }
   }
 
   // --- Meta-skill bootstrap ---
@@ -81,6 +111,61 @@ process.stdin.on('end', () => {
   } catch {
     // silent — integrity check is advisory, never blocks
   }
+
+  // --- Autonomous memory curator (v2.23.0) ---
+  // Dispara o curador de memoria em BACKGROUND (detached/unref) — nunca bloqueia
+  // o inicio da sessao. Ele decide sozinho se o vault esta "sujo" e, se estiver,
+  // aplica a parte mecanica (decay/archive/dedup) e registra trabalho semantico
+  // em .curator-pending.md. ZERO custo de LLM — a parte semantica e injetada
+  // abaixo pro agente JA PAGO da sessao corrente.
+  try {
+    const ccCfg = readHookConfig('memory_curator', { enabled: true });
+    if (ccCfg.enabled && !isHookDisabled('memory-curator')) {
+      const curatorCandidates = [
+        resolveBotPath('hooks/scripts/memory-curator.mjs'),
+        'hooks/scripts/memory-curator.mjs',
+      ];
+      const curator = curatorCandidates.find(p => existsSync(p));
+      if (curator) {
+        const child = spawn(process.execPath, [curator, '--silent'], {
+          stdio: 'ignore',
+          detached: true,
+        });
+        child.unref();
+        child.on('error', () => { /* silent */ });
+      }
+    }
+  } catch {
+    // silent — curator is autonomous + non-blocking, never breaks session start
+  }
+
+  // --- Inject pending semantic curation work (v2.23.0) ---
+  // Se o curador (de uma sessao ANTERIOR) deixou trabalho semantico pendente,
+  // injeta como instrucao pro agente da sessao atual resolver. Sem forkar LLM:
+  // usa o agente que ja esta presente. Procura o pending no vault resolvido.
+  try {
+    const vaultCandidates = [
+      readHookConfig('memory_curator', {}).vault_path,
+      'D:/claude-memory',
+      join(homedir(), 'claude-memory'),
+      resolveBotPath('docs/memory'),
+    ].filter(Boolean);
+    for (const v of vaultCandidates) {
+      const pending = join(v, '.curator-pending.md');
+      if (existsSync(pending)) {
+        try {
+          const body = readFileSync(pending, 'utf-8');
+          parts.push(
+            `[memory-curator] O curador autonomo aplicou a manutencao mecanica da memoria ` +
+            `(decay, archive, dedup) e deixou trabalho SEMANTICO que precisa do seu julgamento ` +
+            `em ${pending}. Quando houver folga nesta sessao, resolva os candidatos a merge ` +
+            `listados la e delete o arquivo. Conteudo:\n\n${body.slice(0, 1500)}`
+          );
+        } catch { /* skip unreadable */ }
+        break; // so o primeiro vault encontrado
+      }
+    }
+  } catch { /* never block */ }
 
   // --- Context-cost awareness (v2.21.0) ---
   // Inspirado nas dicas 5 (CLAUDE.md enxuto) e 2 (cuidado com MCPs) de

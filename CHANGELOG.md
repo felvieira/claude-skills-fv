@@ -5,6 +5,35 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.23.0-addozhang-absorption] - 2026-05-28
+
+Absorção de 3 repos HIGH VALUE de [addozhang](https://github.com/addozhang): Spring Boot migration playbook, skill 48 research-prep, e padrões de memória do mem9.
+
+### Added
+
+- **`skills/23-migration-refactor-specialist/playbooks/spring-boot-2-to-3.md`** — playbook concreto de 10 passos para migração Spring Boot 2.x → 3.x + JDK 8/11/17 → 21 via OpenRewrite. Inclui backup strategy, rollback, geração de `.migration-validation/REPORT.md`. Portado de [addozhang/spring-boot-migrator-skill](https://github.com/addozhang/spring-boot-migrator-skill) (MIT).
+- **`skills/23-migration-refactor-specialist/playbooks/references/common-fixes.md`** — troubleshooting por categoria: javax→jakarta, Hibernate dialects, properties renomeadas, conflitos de dependência, testes de segurança, OpenRewrite, drivers de banco, Flyway, Virtual Threads.
+- **`skills/23-migration-refactor-specialist/playbooks/references/custom-parent-strategy.md`** — 3 estratégias para projetos com parent POM próprio: atualizar parent, BOM import (recomendado), migrar JARs internos com Apache Tomcat Jakarta Migration Tool.
+- **`skills/48-research-prep/SKILL.md`** — skill nova para coleta técnica multi-fonte antes de escrever docs, PRDs, ADRs ou artigos. 4 fases: cache check → clarificação → coleta (docs oficiais + GitHub + SO + papers) → authority scoring (oficial 40% + recência 30% + profundidade 20% + comunidade 10%) → output em `memory/research/<slug>.md`. Handoffs para skills 10, 01, 26, 41. Portado de [addozhang/openclaw-forge](https://github.com/addozhang/openclaw-forge) (MIT).
+- **`hooks/lib/transcript-parser.mjs`** — utilitário ESM para extrair turnos estruturados do transcript Claude Code. Exporta `parseTranscript`, `getLastNTurns`, `getLastUserPrompt`, `formatForMemoryIngestion`, `extractQAPairs`. Adaptado de [addozhang/mem9](https://github.com/addozhang/mem9) (Apache-2.0).
+
+### Changed
+
+- **`skills/23-migration-refactor-specialist/SKILL.md`** — trigger words expandidos com `spring boot 3`, `jakarta migration`, `openrewrite`, `jdk 21 upgrade`, etc. Seção `## Playbooks Disponíveis` adicionada.
+- **`skills/08-context-manager/SKILL.md`** — seção `## Skills Utilitárias (context: fork)` adicionada com o padrão `context: fork` + `disable-model-invocation: true` para sub-operações mecânicas. Padrão do mem9.
+- **`skills/10-documenter/SKILL.md`** — seção `## Integração com Pipeline` adicionada com handoff para skill 48.
+- **`skills/01-po-feature-spec/SKILL.md`** — seção `## Integração com Pipeline` expandida com handoff para skill 48.
+- **`hooks/scripts/session-start.mjs`** — bloco "Pattern conformity" adicionado: injeta `memory/patterns.md` automaticamente no contexto de sessão se existir e tiver menos de 14 dias. Inspirado no padrão de injeção automática de memória do mem9 `user-prompt-submit.sh`.
+- Versão: 2.22.0 → 2.23.0
+
+### Notas
+
+- Skills 10 e 01 agora referenciam skill 48 explicitamente — discovery chain completa: `research-prep → po-feature-spec → documenter → blog-publisher`.
+- `transcript-parser.mjs` em `hooks/lib/` fica disponível para qualquer hook que precise processar turnos (ex: skill 31 session-summary).
+- Não absorvido: `google-tasks`, `ralph-loop`, `system-status` (nicho/duplicata), `mem9` como dependência externa (kit é self-contained), `Ai-Agent-Skills/skills.json` schema (roadmap v3.x).
+
+---
+
 ## [2.22.0-memory-curator] - 2026-05-28
 
 Auto-lapidação de memória inspirada no `curator.py` de [nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT). O Hermes roda um curador disparado por inatividade que forka um agente auxiliar para revisar/consolidar/arquivar a memória. Adaptamos o **gatilho** (não a autonomia total): ao fim de uma sessão, se o vault cresceu sem curadoria, o kit sugere `/consolidate-memory` — que já existe e faz todo o trabalho com snapshot+dry-run+nunca-deletar.
