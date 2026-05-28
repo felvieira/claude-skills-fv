@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
 > **Versão:** 46 skills · 15 subagents · 39 slash commands · 49 policies
-> **Última atualização:** 2026-05-28 (v2.22.0)
+> **Última atualização:** 2026-05-28 (v2.24.0 — curador autônomo de memória: roda async no SessionStart, decay/archive/dedup em JS puro sem gastar LLM)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 

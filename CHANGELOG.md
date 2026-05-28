@@ -5,6 +5,33 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.24.0-autonomous-memory-curator] - 2026-05-28
+
+Eleva o memory curator de **sugestão** (v2.22.0) para **autonomia real**: o agente cura a própria memória sozinho, sem o usuário decidir quando. Gerenciar memória é tarefa de fundo — não faz sentido pedir permissão.
+
+### A sacada: mecânico × semântico sem gastar LLM em dobro
+
+O `curator.py` do Hermes forka um agente auxiliar (gasta LLM separado). No nosso runtime o LLM já está presente (a sessão). Então dividimos: a **parte mecânica** roda em JS puro (zero LLM); a **parte semântica** é delegada ao agente já pago da sessão corrente via `.curator-pending.md`. Forkar `claude -p` queimaria a assinatura 2×.
+
+### Added
+
+- **`hooks/scripts/memory-curator.mjs`** — motor autônomo (JS puro). Disparado async (detached/unref) no SessionStart quando o vault está "sujo" (cresceu ≥30 arquivos E ≥7 dias). Faz sozinho: decay de score, archive de learned-skills <0.3+idade, dedup de logs por hash de conteúdo (mantém o mais antigo). Snapshot via git antes de mutar (`execFileSync`, sem shell — sem risco de injection). Detecta candidatos semânticos e grava em `.curator-pending.md` pro agente resolver.
+
+### Changed
+
+- **`hooks/scripts/session-start.mjs`** — dispara o curador async + injeta `.curator-pending.md` (de runs anteriores) como contexto pro agente da sessão resolver a parte semântica.
+- **`hooks/scripts/memory-curator-nudge.mjs`** — REMOVIDO. O nudge não-vinculante da v2.22.0 era meia-bomba (jogava a decisão no usuário). Substituído pelo curador autônomo.
+- **`hooks/config.json`** — `memory_curator` ganha campos do motor (`score_archive_threshold`, `decay_per_week`, `dedup_similarity`, `min_files_dirty`, `min_days_dirty`). Perfil minimal desliga `memory-curator`.
+- **`scripts/curator-state.mjs` + `commands/consolidate-memory.md`** — chave de state alinhada para `last_curated_at` (era `last_consolidated_at`).
+- **`policies/memory-curator.md`** — reescrita: de "sugere" (nível 2) para "autônomo + delega semântica" (nível 3). Documenta isolamento de teste (`--vault` não toca `.bot/` do CWD) e a divisão mecânico/semântico.
+- Versão: 2.23.0 → 2.24.0 (plugin.json + mcp-server estavam stale em 2.22.0 — corrigidos).
+
+### Segurança
+
+- Snapshot antes de qualquer mutação (git commit ou archive recuperável). Nunca deleta. Idempotente. `--vault` explícito isola para não contaminar o repo ao testar.
+
+---
+
 ## [2.23.0-addozhang-absorption] - 2026-05-28
 
 Absorção de 3 repos HIGH VALUE de [addozhang](https://github.com/addozhang): Spring Boot migration playbook, skill 48 research-prep, e padrões de memória do mem9.

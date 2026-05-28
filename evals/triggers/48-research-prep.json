@@ -1,0 +1,22 @@
+{
+  "skill": "48-research-prep",
+  "should_trigger": [
+    "faz um research de bibliotecas de rate limiting antes de eu escrever a doc",
+    "preciso de fontes sobre event sourcing pra montar o ADR",
+    "levanta o que existe sobre vector databases open source",
+    "monta um dossie tecnico sobre OAuth2 device flow",
+    "quero entender o estado da arte em LLM caching",
+    "compara abordagens de feature flags pra eu decidir",
+    "coleta docs e referencias sobre WebRTC antes do PRD",
+    "due diligence tecnica nas opcoes de fila de mensagens",
+    "benchmark de solucoes de full-text search self-hosted",
+    "levantamento de alternativas pra autenticacao serverless"
+  ],
+  "shouldnt_trigger": [
+    "implementa o endpoint POST /orders conforme a spec",
+    "roda os testes e corrige o que falhar",
+    "faz deploy da branch main no staging",
+    "renomeia a funcao getUser pra fetchUser no arquivo todo",
+    "escreve o texto final do post no blog (sem pesquisar nada)"
+  ]
+}

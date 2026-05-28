@@ -158,7 +158,7 @@ A persona é **regenerada do zero**, não editada — edits manuais são perdido
 
 ```bash
 node scripts/curator-state.mjs --write --vault "$VAULT"
-# → grava { last_consolidated_at: agora, files_at_last: <contagem pós-consolidação> }
+# → grava { last_curated_at: agora, files_at_last: <contagem pós-consolidação> }
 ```
 
 Depois, o relatório:

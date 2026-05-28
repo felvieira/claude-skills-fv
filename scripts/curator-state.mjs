@@ -8,7 +8,7 @@
  *
  * Uso:
  *   node scripts/curator-state.mjs --write [--vault D:/claude-memory]
- *     → grava { last_consolidated_at: agora, files_at_last: <contagem> }
+ *     → grava { last_curated_at: agora, files_at_last: <contagem> }
  *   node scripts/curator-state.mjs --read [--vault D:/claude-memory]
  *     → imprime o state atual (ou defaults)
  *
@@ -70,7 +70,7 @@ function readState(vault) {
   try {
     return JSON.parse(readFileSync(statePath(vault), "utf-8"));
   } catch {
-    return { last_consolidated_at: null, files_at_last: 0 };
+    return { last_curated_at: null, files_at_last: 0 };
   }
 }
 
@@ -78,13 +78,13 @@ const vault = resolveVault(arg("--vault"));
 
 if (arg("--write")) {
   const state = {
-    last_consolidated_at: new Date().toISOString(),
+    last_curated_at: new Date().toISOString(),
     files_at_last: totalVaultFiles(vault),
   };
   try {
     writeFileSync(statePath(vault), JSON.stringify(state, null, 2));
     console.log(`✓ curator state written → ${statePath(vault)}`);
-    console.log(`  last_consolidated_at: ${state.last_consolidated_at}`);
+    console.log(`  last_curated_at: ${state.last_curated_at}`);
     console.log(`  files_at_last: ${state.files_at_last}`);
   } catch (e) {
     console.error(`✗ failed to write curator state: ${e.message}`);

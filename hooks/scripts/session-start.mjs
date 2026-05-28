@@ -112,7 +112,7 @@ process.stdin.on('end', () => {
     // silent — integrity check is advisory, never blocks
   }
 
-  // --- Autonomous memory curator (v2.23.0) ---
+  // --- Autonomous memory curator (v2.24.0) ---
   // Dispara o curador de memoria em BACKGROUND (detached/unref) — nunca bloqueia
   // o inicio da sessao. Ele decide sozinho se o vault esta "sujo" e, se estiver,
   // aplica a parte mecanica (decay/archive/dedup) e registra trabalho semantico
@@ -139,7 +139,7 @@ process.stdin.on('end', () => {
     // silent — curator is autonomous + non-blocking, never breaks session start
   }
 
-  // --- Inject pending semantic curation work (v2.23.0) ---
+  // --- Inject pending semantic curation work (v2.24.0) ---
   // Se o curador (de uma sessao ANTERIOR) deixou trabalho semantico pendente,
   // injeta como instrucao pro agente da sessao atual resolver. Sem forkar LLM:
   // usa o agente que ja esta presente. Procura o pending no vault resolvido.

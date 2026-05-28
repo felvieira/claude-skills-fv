@@ -1,75 +1,85 @@
-# Memory Curator (auto-lapidação disparada por inatividade)
+# Memory Curator (auto-lapidação autônoma de memória)
 
-> **Inspiração:** [`curator.py` de nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT, "the agent that grows with you"). O Hermes roda um curador de memória **disparado por inatividade** que forka um agente auxiliar para revisar/consolidar/arquivar skills criadas pelo próprio agente. Esta policy adapta o **gatilho** (não a autonomia total) para o kit.
+> **Inspiração:** [`curator.py` de nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT, "the agent that grows with you"). O Hermes roda um curador **disparado por inatividade** que forka um agente auxiliar para revisar/consolidar/arquivar a memória. Esta policy adapta a ideia ao runtime do kit (markdown dentro do Claude Code), mantendo a autonomia mas evitando gastar LLM em dobro.
 
 ## Objetivo
 
-Garantir que a memória do kit **se lapide sozinha ao longo do tempo** em vez de acumular duplicatas, fatos stale e learned-skills de score baixo. Complementa `policies/memory-consolidation.md` (que define **o que** consolidar) adicionando **quando** disparar.
+A memória do kit **se lapida sozinha** — o usuário nunca decide quando. Manutenção de memória é tarefa de fundo: acumular duplicatas, fatos stale e learned-skills de score baixo degrada o contexto injetado no SessionStart. O curador resolve isso autonomamente.
 
-## A diferença entre as duas policies
+## A sacada: divisão mecânico × semântico (sem forkar LLM)
 
-| Policy | Pergunta que responde |
-|--------|----------------------|
-| `memory-consolidation.md` | **O que** limpar (duplicatas, stale, score baixo) e **como** (snapshot→dry-run→apply) |
-| `memory-curator.md` (esta) | **Quando** disparar a consolidação automaticamente |
+O Hermes forka um agente auxiliar (gasta um LLM separado) para curar. No nosso runtime isso seria **gastar a assinatura duas vezes** — o LLM já está presente (a própria sessão). Então dividimos o trabalho:
 
-## O gatilho (inactivity-triggered, não cron)
+| Camada | Quem faz | Quando | Custo LLM |
+|--------|----------|--------|-----------|
+| **Mecânica** (decay de score, archive <0.3+idade, dedup exato por hash, fix backlinks) | `memory-curator.mjs` em **JS puro** | async no SessionStart | **zero** |
+| **Semântica** (merge de logs parecidos-mas-não-idênticos, consolidação por significado) | o **agente da sessão atual** | quando lê `.curator-pending.md` | **zero extra** (já pago) |
 
-Igual ao Hermes, **não** usamos daemon cron. O nudge dispara no evento **Stop** (fim de sessão) quando **ambas** as condições são verdadeiras:
+O script **detecta** candidatos semânticos e grava em `.curator-pending.md`; o `session-start.mjs` injeta isso como contexto pro agente já presente resolver. Forkar `claude -p` seria anti-padrão — queimaria tokens novos pra fazer o que o agente faz de graça.
 
-1. **Vault cresceu o suficiente** desde a última consolidação (`min_files_since_last`, default 30 arquivos)
-2. **Faz tempo demais** desde a última consolidação (`min_days_since_last`, default 7 dias)
+## O gatilho (inactivity-triggered, não cron, autônomo)
 
-Ambas (AND, não OR) — precisão > cobertura. Um vault que cresceu muito mas foi consolidado ontem não precisa de nudge; um vault parado há 30 dias mas que não cresceu também não.
+Igual ao Hermes, **não** usamos daemon cron. O curador dispara **async (detached/unref)** no evento **SessionStart** — nunca bloqueia o início da sessão. Ele só age quando o vault está "sujo": **ambas** as condições verdadeiras:
 
-Hook responsável: `hooks/scripts/memory-curator-nudge.mjs`. Config em `hooks/config.json → memory_curator`.
+1. **Vault cresceu** ≥ `min_files_dirty` arquivos desde a última curadoria (default 30)
+2. **Faz** ≥ `min_days_dirty` dias desde a última (default 7)
 
-## O que o nudge NÃO faz (limites de segurança)
+AND, não OR — precisão > cobertura. Vault que cresceu mas foi curado ontem não roda; vault parado há 30 dias mas sem crescimento também não.
 
-Diferente do Hermes (que forka um agente autônomo), o nosso curator é **não-autônomo por design**:
+Hook disparador: `hooks/scripts/session-start.mjs` (spawn). Motor: `hooks/scripts/memory-curator.mjs`. Config em `hooks/config.json → memory_curator`.
 
-- ❌ **Não forka agente** que mexe na memória sozinho — risco de autonomia sobre memória sem revisão humana
-- ❌ **Não deleta nada** — só **sugere** rodar `/consolidate-memory`, que por sua vez nunca deleta (só arquiva)
-- ❌ **Não bloqueia** o Stop — é `systemMessage` não-vinculante
-- ✅ **Throttle** de 1 nudge / `nudge_throttle_hours` (default 24h) — não spama
+## O que é autônomo vs o que pede julgamento
 
-Se no futuro quisermos o curator autônomo total (nível 3), seria uma policy/feature separada com gates explícitos.
+**Autônomo (roda sozinho, sem perguntar):**
+- ✅ Decay de score em learned-skills (`-decay_per_week` por semana ociosa)
+- ✅ Archive de learned-skills com score < `score_archive_threshold` E idade > `score_archive_age_days`
+- ✅ Dedup de logs com conteúdo **idêntico** (hash normalizado) — mantém o mais antigo
+- ✅ Snapshot do vault antes de qualquer mutação
 
-## O ciclo de vida do `.curator-state.json`
+**Delegado ao agente (precisa de julgamento, vai pro `.curator-pending.md`):**
+- 🤔 Logs do **mesmo dia+projeto** mas conteúdo diferente — podem ser fragmentos ou assuntos distintos. O agente lê, decide, consolida ou descarta o candidato.
 
-Guardado na raiz do vault (`D:/claude-memory/.curator-state.json`):
+## Limites de segurança (invariantes do Hermes mantidas)
 
+- ❌ **Nunca deleta** — só move pra `.archive/` (recuperável)
+- ❌ **Nunca muta sem snapshot** — git commit se o vault é repo, senão archive é o fallback recuperável
+- ❌ **Nunca forka LLM** — a parte semântica é delegada ao agente presente, não a um subprocess pago
+- ✅ **Idempotente** — rodar 2× seguidas não causa dano (gate "sujo" + archive já-feito)
+- ✅ **Isolamento de teste** — com `--vault X` explícito, NÃO toca o `.bot/learned-skills` do CWD (evita contaminar o repo ao testar)
+
+## O ciclo de vida dos arquivos de estado
+
+**`.curator-state.json`** (raiz do vault) — controla o gatilho:
 ```json
-{
-  "last_consolidated_at": "2026-05-28T13:00:00.000Z",
-  "files_at_last": 1204
-}
+{ "last_curated_at": "2026-05-28T19:00:00.000Z", "files_at_last": 1204, "last_mechanical_actions": 5 }
 ```
+- **Escrito** pelo `memory-curator.mjs` ao final de cada run E pelo `/consolidate-memory` (via `curator-state.mjs --write`)
+- **Lido** pelo gate para calcular `grewBy` e `daysSince`
 
-- **Lido** pelo nudge para calcular `grewBy` e `daysSince`
-- **Escrito** pelo `/consolidate-memory` no passo final (Report) — registra o timestamp e a contagem de arquivos pós-consolidação
-
-Sem esse write, o nudge dispararia para sempre (sempre veria `last_consolidated_at: null`). Por isso o `/consolidate-memory` **deve** atualizar o state ao concluir.
+**`.curator-pending.md`** (raiz do vault) — trabalho semântico:
+- **Escrito** pelo curador quando detecta candidatos a merge
+- **Lido + injetado** pelo `session-start.mjs` pro agente da sessão seguinte
+- **Deletado** pelo agente após resolver (ou decidir ignorar)
 
 ## Lifecycle de learned-skills (espelhando o Hermes)
 
-O Hermes auto-transiciona skills `active → stale (30d) → archived (90d)`. No kit isso já existe via score+decay (`learned_skills_scoring` em config.json: `decay_per_week: 0.1`, `archive_threshold: 0.3`). O curator apenas **lembra de aplicar** rodando o `/consolidate-memory`, que executa:
-
-- Score < 0.3 e idade > 30d → archive
-- Score ≥ 0.8 e 5+ usos → promote para semantic tier
-- Triggers conflitantes → resolve
+O Hermes auto-transiciona `active → stale (30d) → archived (90d)`. No kit o curador aplica via score+decay diretamente (sem precisar do `/consolidate-memory`): decay semanal corrói o score; quando cruza `score_archive_threshold` + idade, arquiva. O `/consolidate-memory` continua existindo para curadoria **manual/profunda** (merge interativo, promote para semantic tier, normalização de tags).
 
 ## Anti-padrões
 
-- ❌ Nudge em vault pequeno/recém-limpo (treina o user a ignorar avisos)
 - ❌ Disparar por OR em vez de AND (cresceu OU antigo) → ruído
-- ❌ Consolidar automaticamente sem o snapshot+dry-run do `/consolidate-memory`
-- ❌ Esquecer de escrever `.curator-state.json` → nudge eterno
+- ❌ Mutar sem snapshot → vault sem undo
+- ❌ Forkar `claude -p` pra curar → gasta a assinatura 2×
+- ❌ Bloquear o SessionStart com curadoria síncrona → latência percebida
+- ❌ Tocar o `.bot/` do CWD quando rodando com `--vault` explícito → contaminação cruzada
+- ❌ Sugerir merge de logs que o dedup exato já arquivou
 
 ## Integração
 
-- `hooks/scripts/memory-curator-nudge.mjs` — o gatilho
-- `commands/consolidate-memory.md` — a ação sugerida (escreve o state ao concluir)
-- `policies/memory-consolidation.md` — o que/como consolidar
-- `policies/memory-tiers.md` — a estrutura 4-tier que está sendo mantida
+- `hooks/scripts/memory-curator.mjs` — o motor autônomo (JS puro)
+- `hooks/scripts/session-start.mjs` — dispara async + injeta `.curator-pending.md`
+- `scripts/curator-state.mjs` — lê/escreve `.curator-state.json` (usado pelo `/consolidate-memory`)
+- `commands/consolidate-memory.md` — curadoria manual profunda (complementa, não substitui)
+- `policies/memory-consolidation.md` — regras do que/como consolidar
+- `policies/memory-tiers.md` — estrutura 4-tier mantida
 - `policies/self-correcting-sensors.md` — filosofia de sensores conservadores

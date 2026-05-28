@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
 > **Version:** 48 skills · 15 subagents · 39 slash commands · 49 policies
-> **Last updated:** 2026-05-28 (v2.23.0 — skill 48 research-prep + Spring Boot playbook na 23 + padrões mem9)
+> **Last updated:** 2026-05-28 (v2.24.0 — curador autônomo de memória: roda async no SessionStart, decay/archive/dedup em JS puro sem gastar LLM)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 

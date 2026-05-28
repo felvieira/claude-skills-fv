@@ -1,14 +1,14 @@
 # Skill Portfolio Health
 
-> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-05-28T17:37:28.509Z.
+> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-05-28T19:25:48.262Z.
 > Não editar manualmente — alterações são sobrescritas.
 
 ## Sumário
 
-- **Skills:** 46
+- **Skills:** 47
 - **Subagents:** 15
 - **Commands:** 39
-- **Eval fixtures:** 46
+- **Eval fixtures:** 47
 - **Overlaps detectados (cross-section):** 0
 - **Dead policies (zero refs externas):** 0
 
@@ -46,16 +46,16 @@
 
 | Skill | Chars | Triggers | Fixture |
 |-------|-------|----------|---------|
+| 48-research-prep | 952 | 20 | 15 prompts |
 | 47-pattern-conformity | 937 | 20 | 15 prompts |
 | 46-post-deploy-canary-monitor | 768 | 18 | 15 prompts |
 | 14-seo-specialist | 726 | 20 | 15 prompts |
+| 23-migration-refactor-specialist | 660 | 21 | 15 prompts |
 | 44-zoom-out | 594 | 13 | 15 prompts |
 | 38-architecture-deepener | 577 | 9 | 15 prompts |
 | 39-program-router | 573 | 16 | 15 prompts |
 | 45-handoff-context | 546 | 14 | 15 prompts |
 | 18-repo-auditor | 519 | 10 | 15 prompts |
-| 11-reviewer | 510 | 13 | 15 prompts |
-| 43-canary-deployment | 483 | 9 | 15 prompts |
 
 ## Ações sugeridas
 
