@@ -152,7 +152,16 @@ Pular se:
 
 A persona é **regenerada do zero**, não editada — edits manuais são perdidos. Persona vira o L3 injetado no SessionStart de futuras sessões.
 
-### Passo 7 — Report final
+### Passo 7 — Report final + atualizar curator state
+
+**Primeiro**, registrar a conclusão no `.curator-state.json` para resetar o nudge de inatividade (`hooks/scripts/memory-curator-nudge.mjs`). Sem isso, o nudge dispararia para sempre:
+
+```bash
+node scripts/curator-state.mjs --write --vault "$VAULT"
+# → grava { last_consolidated_at: agora, files_at_last: <contagem pós-consolidação> }
+```
+
+Depois, o relatório:
 
 ```markdown
 # /consolidate-memory done — <data>
@@ -201,6 +210,7 @@ A persona é **regenerada do zero**, não editada — edits manuais são perdido
 ## Policies relevantes
 
 - `policies/memory-consolidation.md` — regras canônicas
+- `policies/memory-curator.md` — gatilho de auto-lapidação (quando rodar este command sozinho)
 - `policies/memory-tiers.md` — hierarquia 4-tier (Working/Episodic/Semantic/Procedural)
 - `policies/memory-pyramid.md` — pirâmide L0→L3 (passo 6.5 regenera L3)
 - `policies/persistence.md` — o que persistir (esta policy define o que limpar)

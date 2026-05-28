@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 46 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.21.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.22.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-46-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -10,10 +10,11 @@
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
 
-### ✨ Novidades v2.19-v2.21
+### ✨ Novidades v2.20-v2.22
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.22.0** | Memory curator — auto-lapidação de memória inspirada no `curator.py` do Hermes Agent. Um hook Stop disparado por inatividade sugere `/consolidate-memory` quando o vault cresce sem curadoria (≥30 arquivos novos E ≥7 dias). Não-autônomo por design: sugere, nunca mexe na memória sozinho. | [`hooks/scripts/memory-curator-nudge.mjs`](hooks/scripts/memory-curator-nudge.mjs), [`policies/memory-curator.md`](policies/memory-curator.md) |
 | **v2.21.0** | Context-cost guards — automatiza as 9 táticas de economia de plano. `topic-shift-detector` sugere `/clear` ao mudar de assunto; `session-start` avisa CLAUDE.md gordo (>200 linhas) + MCPs do projeto. Sensores conservadores (precisão > cobertura, falso positivo treina o user a ignorar avisos). | [`hooks/scripts/topic-shift-detector.mjs`](hooks/scripts/topic-shift-detector.mjs), [`policies/token-efficiency.md`](policies/token-efficiency.md) |
 | **v2.20.0** | Skill 47 `pattern-conformity` — detecta e codifica padrões de coding do projeto existente (naming, estrutura de arquivos, error handling, testing style, async, DI, API design) em `memory/patterns.md`. Novo código é restringido por esses padrões. 46/46 eval-triggers PASS. | [`skills/47-pattern-conformity/SKILL.md`](skills/47-pattern-conformity/SKILL.md), [`evals/triggers/47-pattern-conformity.json`](evals/triggers/47-pattern-conformity.json) |
 | **v2.19.1** | Polish pass: bugs no `skill-health.mjs` (parser YAML multiline), 9 overlaps cross-section refinados, 4 commands ganharam frontmatter. Portfolio limpo: 0 overlaps, 0 dead policies, 100% cobertura de fixture, 45/45 eval-triggers PASS. | [`scripts/skill-health.mjs`](scripts/skill-health.mjs), [`docs/skill-health.md`](docs/skill-health.md) |

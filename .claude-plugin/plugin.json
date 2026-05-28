@@ -1,7 +1,7 @@
 {
   "name": "dev-team-kit-fv",
-  "description": "46 specialist skills + 39 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, program-router, parallel-dispatcher, blog-publisher, blog-screenshot, canary-deployment, zoom-out, handoff-context, post-deploy-canary-monitor, pattern-conformity + spec-driven development, anti-AI writing, memory consolidation, executable YAML pipelines + insights dashboard (v2.18.0, 6 tabs). v2.21.0: context-cost guards — topic-shift-detector sugere /clear ao mudar de assunto, session-start avisa CLAUDE.md gordo (>200 linhas) + MCPs do projeto. Automatiza as 9 taticas de economia de plano em policies/token-efficiency.md. v2.20.0: skill 47 pattern-conformity. v2.19.0: absorção ECC/gstack/mattpocock/ruflo. v2.18: HTML dashboard. 15 dispatchable subagents.",
-  "version": "2.21.0",
+  "description": "46 specialist skills + 39 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, program-router, parallel-dispatcher, blog-publisher, blog-screenshot, canary-deployment, zoom-out, handoff-context, post-deploy-canary-monitor, pattern-conformity + spec-driven development, anti-AI writing, memory consolidation, executable YAML pipelines + insights dashboard (v2.18.0, 6 tabs). v2.22.0: memory curator — auto-lapidacao de memoria inspirada no curator.py do Hermes Agent; hook de inatividade sugere /consolidate-memory quando o vault cresce sem curadoria. v2.21.0: context-cost guards (topic-shift, CLAUDE.md/MCP warnings). v2.20.0: skill 47 pattern-conformity. v2.19.0: absorção ECC/gstack/mattpocock/ruflo. 15 dispatchable subagents.",
+  "version": "2.22.0",
   "author": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"

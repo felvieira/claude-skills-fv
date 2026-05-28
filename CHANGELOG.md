@@ -5,6 +5,30 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.22.0-memory-curator] - 2026-05-28
+
+Auto-lapidação de memória inspirada no `curator.py` de [nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT). O Hermes roda um curador disparado por inatividade que forka um agente auxiliar para revisar/consolidar/arquivar a memória. Adaptamos o **gatilho** (não a autonomia total): ao fim de uma sessão, se o vault cresceu sem curadoria, o kit sugere `/consolidate-memory` — que já existe e faz todo o trabalho com snapshot+dry-run+nunca-deletar.
+
+### Added
+
+- **`hooks/scripts/memory-curator-nudge.mjs`** — hook Stop que sugere `/consolidate-memory` quando **ambas** as condições batem: vault cresceu ≥30 arquivos desde a última curadoria E faz ≥7 dias. Throttle de 1 nudge/24h. Filosofia precisão > cobertura (AND, não OR). Não-autônomo por design: só sugere, nunca toca a memória sozinho.
+- **`scripts/curator-state.mjs`** — helper zero-dep que lê/escreve `.curator-state.json` no vault (`--read`/`--write`). Fecha o loop: o `/consolidate-memory` grava o state ao concluir, resetando o nudge.
+- **`policies/memory-curator.md`** — define o gatilho por inatividade, a diferença vs `memory-consolidation.md` (quando vs o quê), os limites de segurança (não forka agente, não deleta), e o ciclo de vida do `.curator-state.json`.
+
+### Changed
+
+- **`commands/consolidate-memory.md`** — Passo 7 agora grava `.curator-state.json` via `curator-state.mjs --write` antes do report (sem isso o nudge dispararia para sempre).
+- **`hooks/hooks.json`** — registra `memory-curator-nudge.mjs` no Stop (4º hook).
+- **`hooks/config.json`** — defaults de `memory_curator` + hook adicionado ao perfil minimal.
+- Versão: 2.21.0 → 2.22.0
+
+### Notas
+
+- **Não absorvemos o fork autônomo do Hermes** (nível 3) — autonomia sobre memória sem revisão humana é risco. Ficou o gatilho (nível 2): detecta + sugere. Se um dia quisermos o curador autônomo, seria feature separada com gates explícitos.
+- O lifecycle `active→stale→archived` do Hermes já existia no kit via score+decay (`learned_skills_scoring`). O curator só lembra de aplicá-lo rodando `/consolidate-memory`.
+
+---
+
 ## [2.21.0-context-cost-guards] - 2026-05-28
 
 Automacao das 9 taticas de economia de plano (inspirado em "Nunca mais fique sem creditos no Claude", D. Folloni). 2 hooks novos/estendidos que avisam — de forma nao-vinculante e conservadora — sobre os 3 maiores desperdicios silenciosos de contexto.

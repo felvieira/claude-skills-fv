@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 46 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.21.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.22.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-46-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -14,10 +14,11 @@
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
-### ✨ What's new in v2.19-v2.21
+### ✨ What's new in v2.20-v2.22
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.22.0** | Memory curator — self-pruning memory inspired by Hermes Agent's `curator.py`. An inactivity-triggered Stop hook suggests `/consolidate-memory` when the vault grows without curation (≥30 new files AND ≥7 days). Non-autonomous by design: suggests, never touches memory alone. | [`hooks/scripts/memory-curator-nudge.mjs`](hooks/scripts/memory-curator-nudge.mjs), [`policies/memory-curator.md`](policies/memory-curator.md) |
 | **v2.21.0** | Context-cost guards — automates the 9 plan-saving tactics. `topic-shift-detector` suggests `/clear` when you switch subjects; `session-start` warns about a bloated CLAUDE.md (>200 lines) + project MCPs. Conservative sensors (precision > coverage). | [`hooks/scripts/topic-shift-detector.mjs`](hooks/scripts/topic-shift-detector.mjs), [`policies/token-efficiency.md`](policies/token-efficiency.md) |
 | **v2.20.0** | Skill 47 `pattern-conformity` — detects and codifies existing codebase coding patterns (naming, file structure, error handling, testing style, async, DI, API design) into `memory/patterns.md`. New code is gated against it. 46/46 eval-triggers PASS. | [`skills/47-pattern-conformity/SKILL.md`](skills/47-pattern-conformity/SKILL.md), [`evals/triggers/47-pattern-conformity.json`](evals/triggers/47-pattern-conformity.json) |
 | **v2.19.1** | Polish pass: bugs in `skill-health.mjs` (multiline YAML parser), 9 cross-section overlaps refined, 4 commands got frontmatter. Clean portfolio: 0 overlaps, 0 dead policies, 100% fixture coverage, 45/45 eval-triggers PASS. | [`scripts/skill-health.mjs`](scripts/skill-health.mjs), [`docs/skill-health.md`](docs/skill-health.md) |
