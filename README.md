@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 46 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.20.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.21.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-46-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -14,10 +14,11 @@
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
-### ✨ What's new in v2.18-v2.20
+### ✨ What's new in v2.19-v2.21
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.21.0** | Context-cost guards — automatiza as 9 táticas de economia de plano. `topic-shift-detector` sugere `/clear` ao mudar de assunto; `session-start` avisa CLAUDE.md gordo (>200 linhas) + MCPs do projeto. Sensores conservadores (precisão > cobertura). | [`hooks/scripts/topic-shift-detector.mjs`](hooks/scripts/topic-shift-detector.mjs), [`policies/token-efficiency.md`](policies/token-efficiency.md) |
 | **v2.20.0** | Skill 47 `pattern-conformity` — detects and codifies existing codebase coding patterns (naming, file structure, error handling, testing style, async, DI, API design) into `memory/patterns.md`. New code is gated against it. 46/46 eval-triggers PASS. | [`skills/47-pattern-conformity/SKILL.md`](skills/47-pattern-conformity/SKILL.md), [`evals/triggers/47-pattern-conformity.json`](evals/triggers/47-pattern-conformity.json) |
 | **v2.19.1** | Polish pass: bugs no `skill-health.mjs` (parser YAML multiline), 9 overlaps cross-section refinados, 4 commands ganharam frontmatter. Portfolio limpo: 0 overlaps, 0 dead policies, 100% cobertura de fixture, 45/45 eval-triggers PASS. | [`scripts/skill-health.mjs`](scripts/skill-health.mjs), [`docs/skill-health.md`](docs/skill-health.md) |
 | **v2.19.0** | Absorção curada de ECC/gstack/mattpocock/ruflo — 3 skills novas (zoom-out, handoff-context, post-deploy-canary-monitor), 6 commands (instinct-export/import/promote, multi-plan, aside, skill-health), `policies/boil-the-lake.md`, truth-score em verification + stream-chain em programs-schema. | [`docs/plans/2026-05-27-v2.19.0-absorption-plan.md`](docs/plans/2026-05-27-v2.19.0-absorption-plan.md), [`docs/inspiration/ruflo-evaluation.md`](docs/inspiration/ruflo-evaluation.md) |

@@ -5,6 +5,28 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.21.0-context-cost-guards] - 2026-05-28
+
+Automacao das 9 taticas de economia de plano (inspirado em "Nunca mais fique sem creditos no Claude", D. Folloni). 2 hooks novos/estendidos que avisam — de forma nao-vinculante e conservadora — sobre os 3 maiores desperdicios silenciosos de contexto.
+
+### Added
+
+- **`hooks/scripts/topic-shift-detector.mjs`** — hook UserPromptSubmit que detecta mudanca de assunto entre prompts consecutivos (dominios tecnicos disjuntos + ausencia de sinal de continuidade) e sugere `/clear`. Filosofia precisao > cobertura: so dispara em shift OBVIO, respeita continuidade ("agora testa isso"), throttle de 5min, bypass com `force:`/slash. Cobre dica 1.
+- **Secao "Economia operacional de contexto" em `policies/token-efficiency.md`** — tabela das 9 taticas com marcacao do que o kit ja automatiza (🤖) vs habito manual (👤). Documenta `/context`, `/usage`, `/savings` como inspecao manual.
+
+### Changed
+
+- **`hooks/scripts/session-start.mjs`** — bloco "context-cost awareness": avisa se CLAUDE.md/AGENTS.md passa de 200 linhas (dica 5, recomendacao oficial Anthropic) e reporta MCPs configurados no projeto (dica 2). So conta o que da pra medir com certeza ("pelo menos N MCPs"). Opt-out via `context_cost.enabled=false`.
+- **`hooks/hooks.json`** — registra `topic-shift-detector.mjs` no UserPromptSubmit (4o hook).
+- Versão: 2.20.0 → 2.21.0
+
+### Notas
+
+- Dica 3 (manda tudo de uma vez) nao automatizavel — hook nao ve prompts futuros. Permanece como habito manual documentado.
+- Dicas 4, 6, 7, 8, 9 ja eram cobertas por `model-routing-hook`, `pre-execution-gate`, `context-guard-stop`, `agent-dispatch-validator`, `/multi-plan` — agora consolidadas na tabela da policy.
+
+---
+
 ## [2.20.0-pattern-conformity] - 2026-05-28
 
 Skill 47 `pattern-conformity` — o agente detecta e codifica os padrões de coding do projeto existente antes de escrever código novo. Produz `memory/patterns.md` com 8 categorias de padrões (P1-P8). 46/46 eval-triggers PASS, 0 overlaps, 0 dead policies.

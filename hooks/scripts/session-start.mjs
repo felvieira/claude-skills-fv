@@ -82,6 +82,59 @@ process.stdin.on('end', () => {
     // silent — integrity check is advisory, never blocks
   }
 
+  // --- Context-cost awareness (v2.21.0) ---
+  // Inspirado nas dicas 5 (CLAUDE.md enxuto) e 2 (cuidado com MCPs) de
+  // "Nunca mais fique sem creditos no Claude". So reporta o que da pra medir com
+  // certeza — nada de numeros enganosos. Opt-out: hook config context_cost.enabled=false.
+  try {
+    const ccCfg = readHookConfig('context_cost', {
+      enabled: true,
+      claude_md_warn_lines: 200,   // recomendacao oficial da Anthropic
+      mcp_warn_count: 5,
+    });
+    if (ccCfg.enabled) {
+      // dica 5 — CLAUDE.md gordo onera toda sessao. Checa projeto + .bot.
+      const claudeMdCandidates = ['CLAUDE.md', resolveBotPath('CLAUDE.md'), 'AGENTS.md'];
+      for (const md of claudeMdCandidates) {
+        if (existsSync(md)) {
+          try {
+            const lines = readFileSync(md, 'utf-8').split('\n').length;
+            if (lines > ccCfg.claude_md_warn_lines) {
+              parts.push(
+                `[context-cost] ${md} tem ${lines} linhas (recomendado < ${ccCfg.claude_md_warn_lines}). ` +
+                `Cada sessao carrega esse arquivo inteiro — considere modulariza-lo como indice ` +
+                `(ex: "regras de design em docs/design.md") pra reduzir custo por sessao. Ver policies/token-efficiency.md.`
+              );
+            }
+          } catch { /* skip unreadable */ }
+          break; // so reporta o primeiro encontrado (evita ruido)
+        }
+      }
+
+      // dica 2 — MCPs vao junto em todo prompt. So conta o que da pra ver com
+      // CERTEZA no settings do projeto. Diz "pelo menos N" porque MCPs tambem
+      // vem de ~/.claude.json, plugins e enterprise — nao da pra somar tudo aqui.
+      const mcpCandidates = ['.mcp.json', '.claude/settings.json', '.claude/settings.local.json'];
+      let projectMcpCount = 0;
+      for (const sp of mcpCandidates) {
+        if (existsSync(sp)) {
+          try {
+            const j = JSON.parse(readFileSync(sp, 'utf-8'));
+            const servers = j.mcpServers || j.mcp?.servers || {};
+            projectMcpCount += Object.keys(servers).length;
+          } catch { /* skip malformed */ }
+        }
+      }
+      if (projectMcpCount >= ccCfg.mcp_warn_count) {
+        parts.push(
+          `[context-cost] Pelo menos ${projectMcpCount} MCP server(s) configurado(s) neste projeto ` +
+          `(o total real pode ser maior — ha MCPs globais e de plugins). Cada MCP ativo entra no ` +
+          `contexto de TODO prompt, mesmo sem uso. Onde possivel, prefira skills (lazy-load) a MCPs. Ver policies/token-efficiency.md.`
+        );
+      }
+    }
+  } catch { /* never block session start */ }
+
   // --- Token budget guard ---
   // Estimate tokens (rough: 1 token ≈ 4 chars). Trim low-value parts if over budget.
   const budgetTokens = parseInt(process.env.DEVKIT_SESSION_INJECT_TOKENS || '2000', 10);
