@@ -638,7 +638,7 @@ bash scripts/smoke-install.sh
 
 ## Contribuindo
 
-Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia completo em **[CONTRIBUTING.md](./CONTRIBUTING.md)**.
+Quer adicionar uma skill, corrigir um bug ou propor uma melhoria? Veja o guia completo em **[CONTRIBUTING.pt-BR.md](./CONTRIBUTING.pt-BR.md)**.
 
 **Resumo rápido:**
 1. Crie a skill em `skills/NN-nome/SKILL.md` e registre no `plugin.json`

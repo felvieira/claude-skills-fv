@@ -21,5 +21,6 @@ The Dev Team Kit maintains documentation in two languages:
 ## Files currently bilingual
 
 - `README.md` ↔ `README.pt-BR.md`
+- `CONTRIBUTING.md` ↔ `CONTRIBUTING.pt-BR.md`
 
 (Add to this list as more docs are translated.)
