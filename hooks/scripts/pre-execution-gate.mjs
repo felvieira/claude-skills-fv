@@ -175,7 +175,11 @@ INSTRUCAO VINCULANTE — execute antes de qualquer outra acao:
    (B) Discussao aberta ("o que vc acha", "melhorias", "review", "auditoria") → ignore esta instrucao e responda normalmente
    (C) Pergunta informacional → responda direto
 
-2. Se (A): USE a ferramenta AskUserQuestion para UMA pergunta focada cobrindo a maior ambiguidade.
+2. Se (A): faca UMA pergunta focada cobrindo a maior ambiguidade.
+   - Se a ferramenta AskUserQuestion estiver DISPONIVEL no seu toolset → use-a.
+   - Se NAO estiver disponivel (runtime sem essa tool) → faca a pergunta em texto markdown:
+     uma lista numerada de 2-4 opcoes + "Outro". NUNCA escreva o XML/sintaxe da tool
+     manualmente no chat — se a tool nao existe, e texto markdown normal.
    Exemplos de perguntas boas:
      - "Qual o escopo? <modulo X> / <modulo Y> / repo todo"
      - "Que profundidade? executive summary / deep dive / ADR formal"

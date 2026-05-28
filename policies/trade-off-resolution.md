@@ -92,7 +92,7 @@ Em ambos casos, **documentar a decisão** em `docs/repo-audit/current.md` na pr�
 1. Tem caso resolvido nesta policy? → aplicar
 2. Não → Constitution do projeto fala sobre isso? → constitution ganha
 3. Não → uma das policies tem termo "ALWAYS"/"NEVER"/"OBRIGATORIO"? → essa ganha
-4. Não → pergunte ao user explicitamente (com AskUserQuestion):
+4. Não → pergunte ao user explicitamente (via AskUserQuestion se disponível; senão em texto markdown com opções numeradas):
    "Detectei conflito entre <policy A> e <policy B>. Como prefere resolver?"
 5. Após decisão do user → **documentar** este novo caso aqui (PR pra esta policy)
 ```
