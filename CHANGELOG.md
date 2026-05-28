@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.20.0-pattern-conformity] - 2026-05-28
+
+Skill 47 `pattern-conformity` — o agente detecta e codifica os padrões de coding do projeto existente antes de escrever código novo. Produz `memory/patterns.md` com 8 categorias de padrões (P1-P8). 46/46 eval-triggers PASS, 0 overlaps, 0 dead policies.
+
+### Added
+
+- **`skills/47-pattern-conformity/SKILL.md`** — nova skill que extrai convenções de coding reais de um projeto existente e as usa como restrição sobre código gerado. Fase 0 (cache hit em 14 dias), Fase 1 (coleta de amostras por categoria), Fase 2 (extração de 8 categorias: naming, estrutura, async, error handling, testing, DI, API, estado), Fase 3 (produção de `memory/patterns.md`), Fase 4 (gate de conformidade inline). Distinção explícita de skill 18 (stack) + 33 (business rules) + 44 (topology).
+- **`evals/triggers/47-pattern-conformity.json`** — 15 prompts (10 should + 5 shouldnt), 100% accuracy.
+
+### Changed
+
+- Versão: 2.19.1 → 2.20.0
+- Skill count: 45 → 46
+- Todos os docs atualizados (README.md, README.pt-BR.md, WIKI.md, WIKI.pt-BR.md, SKILLS-OVERVIEW.md)
+
+---
+
 ## [2.19.1-portfolio-polish] - 2026-05-27
 
 Polish pass pós-v2.19.0: corrigir bugs no `skill-health.mjs` (parser de frontmatter `description: |` multiline + extensão de detecção cross-section). Resultado: portfolio com **zero overlaps · zero dead policies · zero descriptions curtas · 100% cobertura de fixture · 45/45 eval-triggers PASS**.

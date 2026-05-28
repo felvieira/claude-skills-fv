@@ -1,0 +1,22 @@
+{
+  "skill": "47-pattern-conformity",
+  "should_trigger": [
+    "segue o padrao do projeto pra criar esse novo service",
+    "coda igual ao resto do codigo, nao inventa convencao nova",
+    "extrai padroes de coding desse codebase antes de escrever",
+    "qual e o padrao de tratamento de erro que o projeto usa?",
+    "nao reinventa padrao, usa o mesmo estilo de teste que ja tem",
+    "mapeia as convencoes de naming desse codebase",
+    "code style do projeto — extrai e aplica",
+    "pattern enforcement antes de gerar o novo modulo",
+    "coda consistente com o que ja existe no repositorio",
+    "como o projeto estrutura os components antes de eu criar um novo"
+  ],
+  "shouldnt_trigger": [
+    "faz zoom out no modulo de pagamentos pra eu entender os callers",
+    "audita o repositorio e gera o current.md com stack e harnessability score",
+    "extrai as regras de negocio escondidas no codigo de calculo de frete",
+    "cria um novo componente de botao para o design system",
+    "refatora esse servico legado pra usar async/await em vez de callbacks"
+  ]
+}

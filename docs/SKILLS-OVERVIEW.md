@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 45 skills + 15 subagents + 39 commands + 48 policies + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 46 skills + 15 subagents + 39 commands + 48 policies + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 45 skills, 15 subagents, 39 slash commands, 48 policies
-> **Última atualização:** 2026-05-27 (v2.19.0 — absorção ECC/gstack/mattpocock/ruflo — skills 44-46, 6 commands, 1 policy, 2 policy extensions)
+> **Versão:** 46 skills, 15 subagents, 39 slash commands, 48 policies
+> **Última atualização:** 2026-05-28 (v2.20.0 — skill 47 pattern-conformity — detecta e codifica padrões de coding do projeto existente, gera memory/patterns.md)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
