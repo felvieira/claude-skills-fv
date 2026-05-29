@@ -10,9 +10,9 @@
 **Em uma linha:** um time inteiro de devs sênior dentro do seu agente de IA.
 
 **Em três:**
-- 39 especialistas (PO, designer, backend, frontend, QA, security, SRE, copywriter, SEO, release manager, etc.) embarcados como skills numeradas;
-- 14 subagents despacháveis em paralelo (code-reviewer, security-auditor, debugger, detective-contracts, semgrep-scanner, etc.);
-- 37 ferramentas MCP + 9 hooks de ciclo de vida + 25+ slash commands + 6 pipelines YAML executáveis + memória persistente entre sessões.
+- 48 especialistas (PO, designer, backend, frontend, QA, security, SRE, copywriter, SEO, release manager, etc.) embarcados como skills numeradas;
+- 15 subagents despacháveis em paralelo (code-reviewer, security-auditor, debugger, detective-contracts, semgrep-scanner, etc.);
+- 37 ferramentas MCP + hooks de ciclo de vida + 39 slash commands + 8 pipelines YAML executáveis + memória persistente entre sessões.
 
 **Em uma frase pra investidor:** transforma qualquer agente de coding (Claude Code, Cursor, Windsurf, Copilot, Gemini CLI) em uma fábrica de software com pipeline estruturado, gates de qualidade e roteamento automático de modelo — sem vendor lock-in, MIT, grátis.
 

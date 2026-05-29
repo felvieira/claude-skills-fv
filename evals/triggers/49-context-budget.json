@@ -1,0 +1,30 @@
+{
+  "skill": "49-context-budget",
+  "description": "Audita peso de contexto carregado na sessão",
+  "triggers": [
+    "contexto inchado",
+    "context overflow",
+    "quanto contexto estou usando",
+    "peso do contexto",
+    "context budget",
+    "tokens carregados",
+    "sessão lenta",
+    "respostas degradadas",
+    "quanto cabe no context window",
+    "headroom de contexto",
+    "custo fixo de contexto",
+    "overhead de rules",
+    "overhead dos agents",
+    "impacto do MCP no contexto"
+  ],
+  "anti_triggers": [
+    "quanto gastei em tokens",
+    "custo da sessão",
+    "tokens consumidos em completions",
+    "cost tracker"
+  ],
+  "expected_phases": ["varredura de componentes", "estimativa de tokens", "relatório de budget", "recomendações"],
+  "distinctions": {
+    "vs_30_cost_tracker": "cost-tracker rastreia tokens gastos em completions; context-budget audita o que está carregado antes de qualquer completion"
+  }
+}

@@ -245,6 +245,16 @@ if [[ -d "$SCRIPT_DIR/agents" ]]; then
   ok "Copied subagents to .claude/agents/"
 fi
 
+# Copy rules/ to consumer repo's .claude/rules/dev-team-kit/ (path-scoped coding standards).
+# The Claude Code harness reads .claude/rules/**/*.md and attaches a file only when an
+# edited path matches its `paths:` glob frontmatter. Copy the WHOLE tree (do NOT flatten):
+# common/ and language dirs share filenames; flattening clobbers common + breaks ../common/ refs.
+if [[ -d "$SCRIPT_DIR/rules" ]]; then
+  mkdir -p "$TARGET_DIR/.claude/rules/dev-team-kit"
+  cp -r "$SCRIPT_DIR"/rules/. "$TARGET_DIR/.claude/rules/dev-team-kit"/
+  ok "Copied path-scoped rules to .claude/rules/dev-team-kit/"
+fi
+
 if [[ -d "$BOT_DIR/mcp-server" ]] && [[ -f "$BOT_DIR/mcp-server/package.json" ]]; then
   info "Building MCP server (npm install + tsc)..."
   (cd "$BOT_DIR/mcp-server" && npm install --silent && npm run build --silent) \

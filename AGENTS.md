@@ -64,6 +64,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
 | `/savings` | **(v2.4.0)** Mostra o que o kit salvou na sessão/janela: tokens economizados, USD, riscos prevenidos, hot files, decisões do gate. Auditoria em `policies/savings-metrics.md`. Mini-resumo automático no Stop hook. |
 | `/drift-scan` | **(v2.5.0)** Continuous drift detection contra todo o codebase: dead-code, large-files, stale-todos, dep-staleness, doc-code drift, test-coverage. Inspirado em Birgitta Böckeler — ver `docs/inspiration/harness-engineering.md`. |
+| `/context-budget` | **(v2.26.0)** Audita peso de contexto carregado na sessão: skills/agents/MCP/rules/CLAUDE.md — tokens estimados por componente, headroom disponível, alertas de overflow. Distinto do `/savings` (que rastreia completions runtime). |
 | `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com **7 step types** (command/prompt/bash/gate/loop/parallel/conditional), `context: fresh` per step, `provider`/`model` routing, `trigger_rule` para parallel. 6 programs: pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN), **comprehensive-review** (5-agent parallel) |
 | _(auto)_ | **Auto-orchestration** (v1.8.0): hook `intent-classifier` sugere program adequado baseado em intent do prompt. Skill 39 (program-router) confirma. 4 níveis de autonomia em `policies/auto-orchestration.md` |
 | `/swarm` | **TOTAL AUTONOMY** (v2.0.0): do prompt ao PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous (Nível 3), o hook auto-roteia features pra `/swarm`. Inspirado em Ralph/fix-issue/comprehensive-review do archon. |
@@ -109,7 +110,8 @@ Stack já decidida (não reabrir): Docker Compose + Postgres 16 + Redis 7 + MinI
 
 ## Artefatos Principais
 - `GLOBAL.md` = regras universais
-- `policies/` = regras compartilhadas (inclui `context-engineering.md` para hierarquia de contexto)
+- `policies/` = regras compartilhadas (inclui `context-engineering.md` para hierarquia de contexto e `rules-system.md` para os rules path-scoped)
+- `rules/` = padrões de codificação path-scoped (`common/` sempre aplica; `<linguagem>/` anexa via `paths:` glob). Copiados para `.claude/rules/dev-team-kit/` no install. Ver `policies/rules-system.md`.
 - `templates/` = formatos curtos padronizados
 - `skills/` = especialidades
 - `personas/` = personas estruturadas para review (code-reviewer, security-auditor, test-engineer)
@@ -129,14 +131,14 @@ O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
 | Universo | Localização | Invocação | Convenção de nome |
 |---|---|---|---|
-| **Skills** (38 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`39-` |
-| **Subagents** (14 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
+| **Skills** (48 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`48-` |
+| **Subagents** (16 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
-**Apenas estes 14 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
+**Apenas estes 16 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
 
 Detalhes completos: `policies/skills-vs-agents.md`. Hook fail-fast: `hooks/scripts/agent-dispatch-validator.mjs`.
 
-### Tabela de Subagents (todos os 14 válidos)
+### Tabela de Subagents (todos os 16 válidos)
 
 | Subagent | Especialidade | Espelho-skill (carregar playbook) | Tools |
 |----------|---------------|------------------------------------|-------|
@@ -154,6 +156,8 @@ Detalhes completos: `policies/skills-vs-agents.md`. Hook fail-fast: `hooks/scrip
 | `codeql-runner` | Orquestra build de database CodeQL + queries (taint tracking interprocedural) | `34-static-analysis` (fase) | Read, Grep, Glob, Bash |
 | `sarif-parsing` | Parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | `34-static-analysis` (fase) | Read, Glob, Bash, Write |
 | `variant-analysis` | Caça variantes de bug confirmado e gera custom rule reusável | `34-static-analysis` (fase) | Read, Grep, Glob, Bash, Write |
+| `anti-ai-writing` | Review de prosa: detecta os 29 padrões de AI-generated writing em docs/PRDs/copy | `41-blog-publisher` / `/humanize` | Read, Grep, Glob, Write |
+| `silent-failure-hunter` | Review-only: caça falhas silenciosas — `catch{}` vazio, `.catch(()=>[])`, stack trace perdido, fallback que esconde falha, rollback faltando | `06-security-review` (lente estreita) | Read, Grep, Glob, Bash |
 
 ### Como invocar (CORRETO)
 

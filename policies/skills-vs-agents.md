@@ -45,7 +45,7 @@ Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
 
 ### Subagents (`agents/name.md`)
 
-14 subagents hoje. Sempre nome semântico kebab-case (sem número).
+16 subagents hoje. Sempre nome semântico kebab-case (sem número).
 
 ```typescript
 // CORRETO

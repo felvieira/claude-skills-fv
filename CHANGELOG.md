@@ -5,6 +5,56 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.26.0-ecc-absorption-silent-failure-context-budget] - 2026-05-28
+
+Rodada de **absorção do ECC (segunda metade)**. Adiciona o 16º subagent (`silent-failure-hunter`) e a skill 49 (`context-budget`), além do comando `/context-budget`. Inclui também as correções finais de count drift em todos os docs (WIKI.md/WIKI.pt-BR.md ainda reportavam counts de v2.17 em vários pontos).
+
+### Added
+
+- **`agents/silent-failure-hunter.md`** — 16º subagent (review-only): caça falhas silenciosas — `catch{}` vazio, `.catch(()=>[])`, erros convertidos em `null`/`[]` sem log, stack traces perdidos, rollback faltando. Tolerância zero, sem escrita. Inspirado em padrão ECC.
+- **`skills/49-context-budget/SKILL.md`** — Skill 49: audita peso de contexto carregado (CLAUDE.md, agents/, MCP descriptions, rules ativas, skills invocadas, histórico). Estima tokens por componente, reporta headroom, alerta overflow em 80%/95%. **Distinto do skill 30 (cost-tracker)** que rastreia completions runtime.
+- **`commands/context-budget.md`** — `/context-budget` slash command.
+- **`evals/triggers/49-context-budget.json`** — eval fixture com triggers e anti-triggers.
+
+### Fixed
+
+- Count drift corrigido em: `WIKI.md`, `WIKI.pt-BR.md` (TOC anchor, heading, agents count, banner), `docs/SKILLS-OVERVIEW.md`, `policies/skills-vs-agents.md`, `README.md`, `README.pt-BR.md`.
+
+---
+
+## [2.25.0-rules-system-and-debt-paydown] - 2026-05-28
+
+Rodada de **dívida + absorção curada do ECC**. Paga drift acumulado nas docs, corrige um bug funcional na allowlist de subagents, adiciona o **rules system path-scoped** (maior gap identificado vs [affaan-m/ECC](https://github.com/affaan-m/ECC)), e reescreve os 5 skills stub que a `evals/skill-audit` já marcava como NEEDS-REWRITE.
+
+### Added
+
+- **`rules/`** — sistema de padrões de codificação **path-scoped**, inspirado no `rules/` do ECC (o mecanismo `paths:` glob + layering common/linguagem), reescrito na voz do kit. O harness do Claude Code lê `.claude/rules/**/*.md` e anexa um arquivo **só quando um arquivo editado casa o glob `paths:`** do frontmatter — Go nunca carrega regra de Python. `common/` (8 arquivos sem `paths:`, sempre aplicam): coding-style, testing, security, performance, patterns, git-workflow, code-review, development-workflow. Linguagens: `typescript/` (coding-style, testing, security), `python/` (idem), `react/` (patterns, security para `.tsx`/`.jsx`). Layering CSS-specificity: linguagem sobrescreve common no conflito.
+- **`policies/rules-system.md`** — policy que documenta o mecanismo, o gap que preenche (CLAUDE.md bloat, LLM esquece padrão mid-session), a diferença vs skills/policies/`memory/patterns.md` (skill 47), e a regra anti-flatten no install.
+- **`setup/install.sh`** — bloco que copia `rules/` inteiro para `.claude/rules/dev-team-kit/` do repo consumidor (cópia da árvore, nunca flatten — `common/` e dirs de linguagem compartilham nomes de arquivo).
+
+### Fixed
+
+- **Bug da allowlist de subagents (15º subagent)** — `anti-ai-writing.md` é um subagent válido e dispatchável, mas README/AGENTS/WIKI diziam "14 subagents" e **omitiam ele da tabela enumerada** que documenta a allowlist do `agent-dispatch-validator.mjs`. Um modelo lendo a tabela nunca despacharia `anti-ai-writing`. Corrigido em AGENTS.md (contagem + linha na tabela), `agent-dispatch-validator.mjs` (comentário + mensagem de bloqueio agora dinâmica via `skillsList.size`), `policies/skills-vs-agents.md`, README.md, README.pt-BR.md, WIKI.md e WIKI.pt-BR.md (seção "Content (1)" + heading/anchor + linha "Organ").
+- **Count drift generalizado** — README dizia "42 specialists", "41 skills", "38 skills", "37 tools" em linhas diferentes (real: 48 skills numeradas / 47 dirs físicos, ID 16 deprecado). Tabela de Specialists estava **faltando os skills 39, 40, 44, 45, 46, 47, 48**. SKILLS-OVERVIEW dizia "46 skills" e "22 policies" (real: 50 policies após esta versão). Linhas duplicadas na tabela de commands (`/constitution`, `/checklist`, `/analyze` apareciam 2×). Tudo reconciliado. Docs marketing (`daily-scenarios.md`, `vertical-plugins.md`) também atualizadas.
+
+### Changed
+
+- **Skills stub reescritos com profundidade** (eram ~55-65 linhas de checklist genérico → agora 117-140 linhas com exemplos concretos, tabelas e anti-padrões):
+  - **`22-accessibility-specialist`** — critérios WCAG 2.2 AA numerados (1.4.3, 2.4.7, 2.5.8, 3.3.1...), as 4 categorias de teste (axe / teclado / screen reader / zoom), exemplos de código (ARIA, reduced-motion), regra HTML-nativo > ARIA, anti-padrões.
+  - **`21-data-analytics`** — convenção `object_action` snake_case, formato de tracking plan tabelado, os 3 tipos de métrica (north-star/funil/contra-métrica), AARRR/HEART, PII/LGPD, server-side para conversão.
+  - **`24-release-manager`** — tabela de decisão SemVer (MAJOR/MINOR/PATCH por contrato), Changelog vs Release notes (audiências diferentes), runbook de rollout+rollback, matriz de comunicação por canal. (Mantido o gate de constituição que já existia.)
+  - **`27-video-integration-specialist`** — diferença imagem×vídeo (assíncrono, custo/segundo), panorama de providers (FAL gateway, Veo, Sora, Runway, Kling), fluxo submit→webhook/poll→storage, prompt cinematográfico (câmera/movimento/ritmo), controle de custo.
+  - **`19-asset-librarian`** — comandos de descoberta (`find`/`grep` de assets+tokens), schema do `assets.md`, 6 checks de consistência (paleta divergente, logo duplicado, peso morto), handoffs para skills 17/36/02/04.
+- **`AGENTS.md`** — `rules/` e `policies/rules-system.md` adicionados à lista de Artefatos Principais.
+- Versão: 2.24.0 → 2.25.0 (plugin.json, mcp-server/package.json, badges README).
+
+### Notas
+
+- **Não absorvido do ECC nesta rodada** (avaliado, fica para versões futuras): `context-budget` skill, `silent-failure-hunter` agent, `council` skill, `benchmark-optimization-loop`, `harness-optimizer` agent. Todos HIGH/MEDIUM value — candidatos a v2.26+.
+- Atribuição ao ECC preservada em `rules/README.md` e `policies/rules-system.md` (padrão "inspired by" da v2.16.2).
+
+---
+
 ## [2.24.0-autonomous-memory-curator] - 2026-05-28
 
 Eleva o memory curator de **sugestão** (v2.22.0) para **autonomia real**: o agente cura a própria memória sozinho, sem o usuário decidir quando. Gerenciar memória é tarefa de fundo — não faz sentido pedir permissão.

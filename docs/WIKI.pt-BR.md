@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 46 skills · 15 subagents · 39 slash commands · 49 policies
-> **Última atualização:** 2026-05-28 (v2.24.0 — curador autônomo de memória: roda async no SessionStart, decay/archive/dedup em JS puro sem gastar LLM)
+> **Versão:** 49 skills · 16 subagents · 39 slash commands · 50 policies
+> **Última atualização:** 2026-05-28 (v2.26.0 — silent-failure-hunter (16º subagent) + skill 49 context-budget + /context-budget command)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -17,8 +17,8 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (37) — especialistas por categoria](#5-skills-37)
-6. [Subagents (14) — despacháveis via Task tool](#6-subagents-14)
+5. [Skills (49) — especialistas por categoria](#5-skills-49)
+6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
 9. [MCP server: 37 tools por trás dos panos](#9-mcp-server-37-tools-por-trás-dos-panos)
@@ -390,7 +390,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (37)
+## 5. Skills (49)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -622,7 +622,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 ---
 
-## 6. Subagents (14)
+## 6. Subagents (16)
 
 Subagents são especialistas dispatcháveis via `Task` tool. Diferente de skills (que são markdown carregado pelo orchestrator), subagents rodam em sessão isolada com contexto próprio. Ideal para tarefas com escopo bem definido que se beneficiam de fresh context.
 
@@ -674,9 +674,19 @@ Múltiplas fontes SARIF: parse, dedup, agrega em relatório único. Diff vs base
 #### `variant-analysis`
 Bug confirmado → caça variantes do mesmo padrão, gera custom rule reusável para CI. **Approval gate obrigatório** antes de `git add tools/semgrep/<rule>.yml`. **Tools:** Read, Grep, Glob, Bash, Write.
 
+### Conteúdo (1)
+
+#### `anti-ai-writing`
+Revisa prosa (docs, PRDs, copy, changelogs, comentários de código) procurando os 29 padrões de AI-generated writing. Espelho da skill `41-blog-publisher` / `/humanize`. Read + Write para marcar inline. **Tools:** Read, Grep, Glob, Write.
+
+### Qualidade (1)
+
+#### `silent-failure-hunter`
+Agente review-only com tolerância zero a falha silenciosa: `catch{}` vazio, erro convertido em `null`/`[]` sem contexto, fallback `.catch(() => [])` que esconde a falha, stack trace perdido, rethrow genérico, async/rollback faltando. Lente estreita e profunda que `code-reviewer` e `security-auditor` não miram específico. Reporta findings (local/severidade/impacto/fix); não corrige. Adaptado de [affaan-m/ECC](https://github.com/affaan-m/ECC). **Tools:** Read, Grep, Glob, Bash.
+
 ---
 
-## 7. Policies (22)
+## 7. Policies (50)
 
 Policies são regras compartilhadas que governam comportamento das skills. Toda skill cita as policies que segue. **Top 5 mais importantes:**
 
@@ -726,7 +736,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 
 Schema oficial do Claude Code. Lista:
 - **37 skills** em `skills/NN-nome/SKILL.md`
-- **14 agents** em `.claude/agents/<name>.md`
+- **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
 

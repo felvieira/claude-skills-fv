@@ -6,18 +6,20 @@
 
 # Dev Team Kit — 48 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.24.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-48-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.26.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-49-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
 > A complete team of software specialists inside your coding agent.  
 > Every task is routed to the right specialist, run on the right model, and shipped at production quality.
 
-### ✨ What's new in v2.22-v2.24
+### ✨ What's new in v2.22-v2.25
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.26.0** | **ECC absorption (round 2)** — `silent-failure-hunter` (16th subagent, review-only: hunts empty catch{}, swallowed errors, dangerous fallbacks, lost stack traces, missing rollback) + skill 49 `context-budget` (audits loaded context weight per component, headroom + overflow alerts; distinct from cost-tracker which tracks runtime completions) + `/context-budget` command. Full count-drift reconciliation across all 8 doc locations. | [`agents/silent-failure-hunter.md`](agents/silent-failure-hunter.md), [`skills/49-context-budget/SKILL.md`](skills/49-context-budget/SKILL.md) |
+| **v2.25.0** | **Path-scoped rules system** (`.claude/rules/` with `paths:` glob — the harness attaches a coding standard only when an edited file matches, common+language layering, inspired by [ECC](https://github.com/affaan-m/ECC)) + debt paydown: fixed the subagent-allowlist bug (15th subagent `anti-ai-writing` was missing from the enumerated allowlist), reconciled pervasive count drift, and rewrote the 5 stub skills (19/21/22/24/27) with real depth. | [`rules/`](rules/), [`policies/rules-system.md`](policies/rules-system.md) |
 | **v2.24.0** | Memory curator goes **autonomous** — the agent prunes its own memory without asking. Async on SessionStart, it does decay/archive/dedup in pure JS (zero LLM) and delegates only the *semantic* merge work to the already-present session agent (no forked `claude -p` = no double billing). | [`hooks/scripts/memory-curator.mjs`](hooks/scripts/memory-curator.mjs), [`policies/memory-curator.md`](policies/memory-curator.md) |
 | **v2.23.0** | Curated absorption from addozhang — skill 48 `research-prep`, Spring Boot 2→3 migration playbook (skill 23), mem9 memory patterns in session-start + skill 08. | [`skills/48-research-prep/SKILL.md`](skills/48-research-prep/SKILL.md), [`skills/23-migration-refactor-specialist/playbooks/spring-boot-2-to-3.md`](skills/23-migration-refactor-specialist/playbooks/spring-boot-2-to-3.md) |
 | **v2.22.0** | Memory curator (first cut) — inactivity-triggered Stop hook that *suggested* `/consolidate-memory`. Superseded by the autonomous curator in v2.24.0. | [`policies/memory-curator.md`](policies/memory-curator.md) |
@@ -87,7 +89,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **42 specialists in total** (numeric IDs go to 43; ID 16 was deprecated and the number is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **48 specialists in total** (numeric IDs run 01–48; ID 16 was deprecated and the number is reserved, so 47 physical skill files). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -99,7 +101,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 41 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
+The **Dev Team Kit** is a set of 48 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
 
 **What you get:**
 
@@ -123,7 +125,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 38 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 48 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -160,14 +162,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 37 tools backed by the 42 skills.
+In the table below, treat `dev-team-kit` as 37 tools backed by the 48 skills.
 The MCP exposes 37 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 41 skills | ✅ | ✅ | ✅ |
+| 48 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -195,7 +197,7 @@ The MCP exposes 37 tools backed by the installed skills.
 
 ---
 
-## The 42 Specialists
+## The 48 Specialists
 
 ### Management and Coordination
 
@@ -221,8 +223,12 @@ The MCP exposes 37 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 37 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 48 specialists |
 | 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
+| 39 | **Program Router** | decides which `programs/*.yml` pipeline to run from task classification — works alongside the orchestrator (ad-hoc) and the intent-classifier hook (suggestion) |
+| 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
+| 44 | **Zoom Out** | builds a module map and topology of the codebase — complements smart-suggestions with a structural bird's-eye view |
+| 45 | **Handoff Context** | prospective handoff between sessions/agents — packages what the next session needs to continue without re-deriving context |
 
 ### Product and Design
 
@@ -241,6 +247,7 @@ The MCP exposes 37 tools backed by the installed skills.
 | 04 | **Frontend Engineer** | React/Next.js, state, API calls, performance and app experience |
 | 12 | **Motion Designer** | animations, transitions, micro-interactions and coherent visual behavior |
 | 15 | **Mobile / Tauri** | optional extension for desktop and mobile apps with Tauri + React Native |
+| 47 | **Pattern Conformity** | detects and codifies an existing codebase's coding conventions (naming, structure, error handling, testing, async, DI, API design) into `memory/patterns.md` so new code matches house style |
 
 ### Content and Discovery
 
@@ -248,6 +255,8 @@ The MCP exposes 37 tools backed by the installed skills.
 |---|---|---|
 | 13 | **Marketing Copy** | product copy, CTAs, landing pages, brand voice and conversion messaging |
 | 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap and discoverability |
+| 48 | **Research Prep** | multi-source technical research before writing docs/PRDs/ADRs/articles — official docs + GitHub + Stack Overflow + papers, scored by authority, output to `memory/research/<slug>.md`; feeds skills 10, 01, 26, 41 |
+| 49 | **Context Budget** | audits loaded context weight (skills, agents, MCP descriptions, rules, CLAUDE.md) — estimates tokens per component, headroom available and overflow alerts. Distinct from skill 30 (cost-tracker) which tracks runtime completion costs |
 
 ### Quality and Delivery
 
@@ -266,6 +275,7 @@ The MCP exposes 37 tools backed by the installed skills.
 | 41 | **Blog Publisher** | composer skill — receives text/topic → writes HTML post → generates images (via skill 17 fal.ai or skill 42 Playwright) → commits/pushes to your blog repo → returns public URL. Multi-user via `~/.dev-team-kit/blog-config.json`. |
 | 42 | **Blog Screenshot** | Playwright-based capture for posts: viewports per destination (cover/hero/mobile), cookie banner removal, FOUT prevention, naming convention compatible with skill 41 |
 | 43 | **Canary Deployment** | gradual rollout (1%/10%/50%/100%) + 7-metric watch + automatic rollback. 3 strategies (traffic-based, feature flag, blue-green). Sits between skill 24 (release-manager) and skill 07 (deploy-docker). v2.12.0. |
+| 46 | **Post-Deploy Canary Monitor** | continuous post-100% monitoring after a canary completes — watches error budget, latency and anomaly signals, opens a postmortem trigger on regression |
 
 **Setup (one-time per user):**
 
@@ -292,7 +302,7 @@ flowchart LR
     A[Task] --> B[Orchestrator 09]
     B --> C[Context Manager 08]
     B --> D[Minimum sufficient pipeline]
-    D --> E[Specialists 01–32]
+    D --> E[Specialists 01–48]
     E --> F[QA 05 + Security 06 + Reviewer 11]
     F --> G[Deploy 07 or Release 24]
     B --> H[Model routing per step]
@@ -366,7 +376,7 @@ The `context-guard-stop` hook operates on two levels:
 
 ## Subagents — Specialists Dispatchable via the `Task` Tool
 
-The kit ships 14 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
+The kit ships 16 Claude Code subagents in `.claude/agents/`, ready to dispatch with the `Task` tool or invoke from the prompt.
 
 ### Core (5)
 | Subagent | When to use | Tools |
@@ -393,6 +403,16 @@ The kit ships 14 Claude Code subagents in `.claude/agents/`, ready to dispatch w
 | `codeql-runner` | Bug needs interprocedural taint tracking: orchestrate CodeQL database build + queries | Read, Grep, Glob, Bash |
 | `sarif-parsing` | Multiple SARIF sources: parse, dedup, aggregate into single report (Semgrep + CodeQL + others) | Read, Glob, Bash, Write |
 | `variant-analysis` | Confirmed bug → hunt variants of same pattern, generate reusable custom rule for CI | Read, Grep, Glob, Bash, Write |
+
+### Content (1)
+| Subagent | When to use | Tools |
+|---|---|---|
+| `anti-ai-writing` | New prose entering the repo: detects the 29 AI-generated writing patterns in docs, PRDs, copy, changelogs | Read, Grep, Glob, Write |
+
+### Quality (1)
+| Subagent | When to use | Tools |
+|---|---|---|
+| `silent-failure-hunter` | Review-only: hunts silent failures — empty `catch{}`, `.catch(() => [])`, lost stack traces, fallbacks that hide failure, missing rollback | Read, Grep, Glob, Bash |
 
 **Invocation example:**
 
@@ -497,9 +517,6 @@ The installer prompts for each key and saves them in the project's `.env.local`.
 | `/consolidate-memory` | Memory vault janitor — merge duplicates, archive stale, prune index. Snapshot-first safe workflow. | Context Manager (08) janitor mode |
 | `/run-program` | Execute declarative YAML pipeline (programs/*.yml) with human gates, parallel/conditional steps, variable substitution | Orchestrator (09) executor mode |
 | `/swarm` | **TOTAL AUTONOMY**: prompt → PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. v2.0.0 | All skills coordinated |
-| `/constitution` | Bootstrap/update `memory/constitution.md` with governing principles (Code Quality, Testing, UX, Performance, Security) — hierarchical authority over PRD/plan/ADRs | PO (01) governance mode |
-| `/checklist` | Generate contextual checklist per feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases | PO (01) + validation |
-| `/analyze` | Cross-artifact consistency check (read-only) — constitution → specs → plan → issues. Findings classified CRITICAL/HIGH/MEDIUM/LOW | Reviewer (11) audit mode |
 
 ### `/loop` — Auto-Loop v2 (Multi-Agent Orchestrator)
 
@@ -611,7 +628,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 37 specialists (*/SKILL.md)
+├── skills/               ← 48 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```

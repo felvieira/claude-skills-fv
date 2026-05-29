@@ -8,7 +8,7 @@
 
 - Os repos `anthropics/financial-services` e `anthropics/claude-for-legal` empacotam capacidades como plugins verticais self-contained ao inves de um bundle monolitico.
 - Cada plugin agrupa skills + commands + connectors por dominio (vertical) ou por agente nomeado (named agent), permitindo install seletivo.
-- Nosso kit hoje e all-or-nothing: 42 skills + 14 subagents + 31 commands instalados juntos em `.bot/`.
+- Nosso kit hoje e all-or-nothing: 48 skills + 15 subagents + 39 commands instalados juntos em `.bot/`.
 - Este doc descreve o pattern e propoe um caminho de adocao incremental — sem comprometer com refactor imediato.
 
 ## Problema

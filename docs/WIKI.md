@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 48 skills · 15 subagents · 39 slash commands · 49 policies
-> **Last updated:** 2026-05-28 (v2.24.0 — curador autônomo de memória: roda async no SessionStart, decay/archive/dedup em JS puro sem gastar LLM)
+> **Version:** 49 skills · 16 subagents · 39 slash commands · 50 policies
+> **Last updated:** 2026-05-28 (v2.26.0 — silent-failure-hunter (16º subagent) + skill 49 context-budget + /context-budget command)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -17,8 +17,8 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (23) — shortcuts by phase](#4-slash-commands-23)
-5. [Skills (37) — specialists by category](#5-skills-37)
-6. [Subagents (14) — dispatchable via Task tool](#6-subagents-14)
+5. [Skills (49) — specialists by category](#5-skills-49)
+6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (22) — shared rules](#7-policies-22)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
 9. [MCP server: 37 tools under the hood](#9-mcp-server-37-tools-under-the-hood)
@@ -36,7 +36,7 @@ This kit implements context engineering across all 5 levels of the atom→field 
 | **Atom** | Single prompt | Individual skill (`skills/*/SKILL.md`) |
 | **Molecule** | Few-shot examples | `templates/` — handoff, plan, review, protocol-shell formats |
 | **Cell** | Memory + state | `learned-skills/`, `devkit_context_pack`, `devkit_working_set` |
-| **Organ** | Multi-agent | 14 subagents dispatched via Task tool (`.claude/agents/`) |
+| **Organ** | Multi-agent | 16 subagents dispatched via Task tool (`.claude/agents/`) |
 | **Neural Field** | Semantic resonance | Protocol shells + `programs/` — typed I/O composing into orchestrated flows |
 
 ### What this means in practice
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (37)
+## 5. Skills (49)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -642,9 +642,17 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Problem it solves:** shallow modules (interface as complex as implementation) that become god files and block evolution.
 **Takeaway:** **deletion test is the core.** If deleting concentrates complexity, the module was earning its place. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture).
 
+#### Skill 49 — Context Budget
+
+**What it does:** audits loaded context weight — CLAUDE.md (global + project), agents/*.md descriptions, active MCP server descriptions, path-scoped rules triggered, skills invoked this session, and accumulated conversation history. Estimates tokens per component, reports headroom available, and emits overflow alerts at 80%/95% thresholds.
+**When to activate:** session feels slow or responses degrade (possible context overflow); after enabling a new MCP server; before `/swarm` or `/loop --parallel`; repo with `.bot/` installed.
+**Problem it solves:** invisible context bloat — you don't know which component is eating 40% of your window until it starts degrading responses.
+**Distinct from:** Skill 30 (Cost Tracker) tracks runtime completion costs; Context Budget tracks what's loaded before any completion.
+**Takeaway:** agents/*.md descriptions are often the biggest fixed cost — 16 agents × ~500 tokens each = 8k tokens always present.
+
 ---
 
-## 6. Subagents (14)
+## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
 
@@ -696,9 +704,19 @@ Multiple SARIF sources: parse, dedup, aggregate into single report. Baseline dif
 #### `variant-analysis`
 Confirmed bug → hunts variants of the same pattern, generates reusable custom rule for CI. **Mandatory approval gate** before `git add tools/semgrep/<rule>.yml`. **Tools:** Read, Grep, Glob, Bash, Write.
 
+### Content (1)
+
+#### `anti-ai-writing`
+Reviews prose (docs, PRDs, copy, changelogs, code comments) for the 29 AI-generated writing patterns. Mirror of skill `41-blog-publisher` / `/humanize`. Read + Write so it can flag inline. **Tools:** Read, Grep, Glob, Write.
+
+### Quality (1)
+
+#### `silent-failure-hunter`
+Review-only agent with zero tolerance for silent failures: empty `catch{}`, errors converted to `null`/`[]` without context, `.catch(() => [])` fallbacks that hide failure, lost stack traces, generic rethrows, missing async/rollback handling. Narrow, deep lens that `code-reviewer` and `security-auditor` don't target specifically. Reports findings (location/severity/impact/fix); doesn't fix. Adapted from [affaan-m/ECC](https://github.com/affaan-m/ECC). **Tools:** Read, Grep, Glob, Bash.
+
 ---
 
-## 7. Policies (22)
+## 7. Policies (50)
 
 Policies are shared rules that govern skill behavior. Every skill cites the policies it follows. **Top 5 most important:**
 
@@ -748,7 +766,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 
 Official Claude Code schema. Lists:
 - **37 skills** in `skills/NN-name/SKILL.md`
-- **14 agents** in `.claude/agents/<name>.md`
+- **16 agents** in `.claude/agents/<name>.md`
 - **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
 

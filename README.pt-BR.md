@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 48 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.24.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.25.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-48-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -10,10 +10,11 @@
 > Um time completo de especialistas de software dentro do seu agente de código.  
 > Cada task é roteada para o especialista certo, executada no modelo certo, e entregue com qualidade de produção.
 
-### ✨ Novidades v2.22-v2.24
+### ✨ Novidades v2.22-v2.25
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.25.0** | **Rules system path-scoped** (`.claude/rules/` com `paths:` glob — o harness anexa um padrão de codificação só quando um arquivo editado casa o glob, layering common+linguagem, inspirado no [ECC](https://github.com/affaan-m/ECC)) + paydown de dívida: corrigido o bug da allowlist de subagents (o 15º subagent `anti-ai-writing` faltava na allowlist enumerada), reconciliado o count drift, e reescritos os 5 skills stub (19/21/22/24/27) com profundidade real. | [`rules/`](rules/), [`policies/rules-system.md`](policies/rules-system.md) |
 | **v2.24.0** | Memory curator vira **autônomo** — o agente lapida a própria memória sem pedir permissão. Async no SessionStart, faz decay/archive/dedup em JS puro (zero LLM) e delega só o merge *semântico* ao agente já presente da sessão (sem forkar `claude -p` = sem cobrar 2×). | [`hooks/scripts/memory-curator.mjs`](hooks/scripts/memory-curator.mjs), [`policies/memory-curator.md`](policies/memory-curator.md) |
 | **v2.23.0** | Absorção curada de addozhang — skill 48 `research-prep`, playbook de migração Spring Boot 2→3 (skill 23), padrões de memória mem9 no session-start + skill 08. | [`skills/48-research-prep/SKILL.md`](skills/48-research-prep/SKILL.md), [`skills/23-migration-refactor-specialist/playbooks/spring-boot-2-to-3.md`](skills/23-migration-refactor-specialist/playbooks/spring-boot-2-to-3.md) |
 | **v2.22.0** | Memory curator (primeira versão) — hook Stop disparado por inatividade que *sugeria* `/consolidate-memory`. Substituído pelo curador autônomo na v2.24.0. | [`policies/memory-curator.md`](policies/memory-curator.md) |
@@ -338,7 +339,7 @@ O hook `context-guard-stop` opera em dois níveis:
 
 ## Subagents — Especialistas Despacháveis via `Task` Tool
 
-O kit inclui 14 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
+O kit inclui 16 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
 
 ### Core (5)
 | Subagent | Quando usar | Tools |
@@ -365,6 +366,16 @@ O kit inclui 14 subagents Claude Code em `.claude/agents/`, prontos para despach
 | `codeql-runner` | Bug precisa taint tracking interprocedural: orquestra build de database CodeQL + queries | Read, Grep, Glob, Bash |
 | `sarif-parsing` | Múltiplas fontes SARIF: parse, dedup, agrega em relatório único (Semgrep + CodeQL + outros) | Read, Glob, Bash, Write |
 | `variant-analysis` | Bug confirmado → caça variantes do mesmo padrão, gera custom rule reusável para CI | Read, Grep, Glob, Bash, Write |
+
+### Conteúdo (1)
+| Subagent | Quando usar | Tools |
+|---|---|---|
+| `anti-ai-writing` | Review de prosa nova entrando no repo: detecta os 29 padrões de AI-generated writing em docs, PRDs, copy, changelogs | Read, Grep, Glob, Write |
+
+### Qualidade (1)
+| Subagent | Quando usar | Tools |
+|---|---|---|
+| `silent-failure-hunter` | Review-only: caça falhas silenciosas — `catch{}` vazio, `.catch(() => [])`, stack trace perdido, fallback que esconde falha, rollback faltando | Read, Grep, Glob, Bash |
 
 **Exemplo de invocação:**
 

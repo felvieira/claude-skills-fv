@@ -1,6 +1,6 @@
 # Skill Portfolio Health
 
-> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-05-28T19:25:48.262Z.
+> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-05-28T23:37:25.269Z.
 > Não editar manualmente — alterações são sobrescritas.
 
 ## Sumário

@@ -16,7 +16,7 @@
  *
  * Referências:
  *   - policies/skills-vs-agents.md (policy canônica)
- *   - AGENTS.md seção "Subagents Despacháveis" (tabela de 14 nomes válidos)
+ *   - AGENTS.md seção "Subagents Despacháveis" (tabela de nomes válidos)
  */
 
 import { existsSync, mkdirSync, appendFileSync, readdirSync } from "fs";
@@ -131,7 +131,7 @@ function buildBlockMessage(name, isSkill, skillsList) {
     lines.push("");
     lines.push("Ver policies/skills-vs-agents.md (anti-padrão 1).");
   } else {
-    lines.push("Subagents válidos (14):");
+    lines.push(`Subagents válidos (${skillsList.size}):`);
     for (const s of [...skillsList].sort()) {
       lines.push(`  - dev-team-kit-fv:${s}`);
     }
