@@ -81,6 +81,25 @@ Ver `policies/code-exploration.md` para regras completas e exemplos.
 
 Em Claude Code: `pre-tool-enforcer.mjs` sugere a ferramenta correta automaticamente.
 
+## Investigate-First Guard
+
+Antes de perguntar ao usuario, esgotar o que o proprio agente pode descobrir. Pergunta cuja resposta esta no ambiente (terminal/fs/config/rede) e proibida:
+
+- user do github → `gh api user --jq .login` / `gh auth status` / `git config user.name`
+- gh instalado/logado → `gh auth status`
+- branch atual → `git branch --show-current`
+- package manager → detectar lockfile via Glob
+- porta/servidor rodando → `curl localhost:PORT` / `lsof -i`
+- versao de runtime → `node -v` / ler `.nvmrc`
+- stack/framework → ler `package.json` / `docs/repo-audit/current.md`
+- conta de MCP conectado → tool `whoami`/`get_me` do proprio MCP
+
+So perguntar preferencia, intencao, trade-off ou decisao de negocio — coisas que so existem na cabeca do usuario.
+
+Em Claude Code: `investigate-first-guard.mjs` (PreToolUse) intercepta `AskUserQuestion`, detecta padrao auto-descobrivel e injeta `additionalContext` mandando investigar primeiro. Nao bloqueia (sem `continue:false`). Conservador: precisao > cobertura. Toggle: `hooks/config.json` → `investigate_first.enabled=false`.
+
+Ver `policies/investigate-first.md` para o catalogo completo e a fronteira descobrivel-vs-do-usuario.
+
 ## Model Routing
 
 Sugerir troca de modelo em dois contextos:

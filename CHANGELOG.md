@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.27.0-investigate-first-guard] - 2026-05-29
+
+Princípio **"investigar antes de perguntar"** com enforcement ativo. A IA nunca deve perguntar ao usuário algo que ela mesma pode descobrir rodando um comando, lendo um arquivo ou chamando um MCP. Investigar é barato; interromper o usuário é caro.
+
+### Added
+
+- **`policies/investigate-first.md`** — policy documentando o princípio + catálogo de 18 perguntas auto-descobríveis (user do github, gh logado, branch, package manager, porta, versão de runtime, stack, test runner, etc) com o comando exato pra descobrir cada uma. Define a fronteira: investigável (rode) vs genuinamente-do-usuário (preferência/intenção/trade-off → pergunte).
+- **`hooks/scripts/investigate-first-guard.mjs`** — hook PreToolUse que intercepta `AskUserQuestion`, detecta padrão auto-descobrível (15 regras) e injeta `additionalContext` mandando investigar primeiro. **Não bloqueia** (sem `continue:false`) — educa e deixa a IA refazer a decisão. Conservador: precisão > cobertura (preferência/escopo/trade-off passam livres). Toggle via `hooks/config.json → investigate_first.enabled=false`.
+- **`GLOBAL.md`** — default operacional novo: "Investigar antes de perguntar".
+- **`policies/hooks.md`** — seção "Investigate-First Guard".
+
+### Validação
+
+- 10/10 padrões auto-descobríveis disparam (github user, gh logado, package manager, branch, git email, porta, docker, node version, remote repo, MCP whoami).
+- 5/5 perguntas legítimas passam livres (preferência de tema, escopo de refactor, trade-off, decisão de negócio, escolha de abordagem).
+- Bug de regex corrigido durante o teste: trailing `\b` após stem truncado (`instalad`, `logad`, `conectad`) nunca casa porque a palavra real continua (`instalad`**o**) — removido o `\b` final dos grupos de stem.
+
+---
+
 ## [2.26.0-ecc-absorption-silent-failure-context-budget] - 2026-05-28
 
 Rodada de **absorção do ECC (segunda metade)**. Adiciona o 16º subagent (`silent-failure-hunter`) e a skill 49 (`context-budget`), além do comando `/context-budget`. Inclui também as correções finais de count drift em todos os docs (WIKI.md/WIKI.pt-BR.md ainda reportavam counts de v2.17 em vários pontos).

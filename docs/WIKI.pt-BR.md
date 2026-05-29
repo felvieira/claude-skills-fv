@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 49 skills · 16 subagents · 39 slash commands · 50 policies
-> **Última atualização:** 2026-05-28 (v2.26.0 — silent-failure-hunter (16º subagent) + skill 49 context-budget + /context-budget command)
+> **Versão:** 49 skills · 16 subagents · 39 slash commands · 51 policies
+> **Última atualização:** 2026-05-29 (v2.27.0 — investigate-first guard: hook que impede a IA de perguntar o que ela mesma pode descobrir (gh user, branch, package manager, porta) + policy investigate-first)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -686,7 +686,7 @@ Agente review-only com tolerância zero a falha silenciosa: `catch{}` vazio, err
 
 ---
 
-## 7. Policies (50)
+## 7. Policies (51)
 
 Policies são regras compartilhadas que governam comportamento das skills. Toda skill cita as policies que segue. **Top 5 mais importantes:**
 

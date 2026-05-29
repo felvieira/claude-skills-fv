@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 48 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.26.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.27.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-49-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.27.0** | **Investigate-first guard** — a principle with active enforcement: the AI must never ask the user something it can discover itself. New PreToolUse hook intercepts `AskUserQuestion`, detects self-discoverable questions (github user, gh logged-in, branch, package manager, port, runtime version, stack, MCP account) and tells the model to run the command first (`gh auth status`, `git config`, Glob lockfile, MCP `whoami`) instead of interrupting. Doesn't block — educates. Conservative: preference/intent/trade-off questions pass through. 10/10 discoverable patterns caught, 5/5 legit questions pass. | [`policies/investigate-first.md`](policies/investigate-first.md), [`hooks/scripts/investigate-first-guard.mjs`](hooks/scripts/investigate-first-guard.mjs) |
 | **v2.26.0** | **ECC absorption (round 2)** — `silent-failure-hunter` (16th subagent, review-only: hunts empty catch{}, swallowed errors, dangerous fallbacks, lost stack traces, missing rollback) + skill 49 `context-budget` (audits loaded context weight per component, headroom + overflow alerts; distinct from cost-tracker which tracks runtime completions) + `/context-budget` command. Full count-drift reconciliation across all 8 doc locations. | [`agents/silent-failure-hunter.md`](agents/silent-failure-hunter.md), [`skills/49-context-budget/SKILL.md`](skills/49-context-budget/SKILL.md) |
 | **v2.25.0** | **Path-scoped rules system** (`.claude/rules/` with `paths:` glob — the harness attaches a coding standard only when an edited file matches, common+language layering, inspired by [ECC](https://github.com/affaan-m/ECC)) + debt paydown: fixed the subagent-allowlist bug (15th subagent `anti-ai-writing` was missing from the enumerated allowlist), reconciled pervasive count drift, and rewrote the 5 stub skills (19/21/22/24/27) with real depth. | [`rules/`](rules/), [`policies/rules-system.md`](policies/rules-system.md) |
 | **v2.24.0** | Memory curator goes **autonomous** — the agent prunes its own memory without asking. Async on SessionStart, it does decay/archive/dedup in pure JS (zero LLM) and delegates only the *semantic* merge work to the already-present session agent (no forked `claude -p` = no double billing). | [`hooks/scripts/memory-curator.mjs`](hooks/scripts/memory-curator.mjs), [`policies/memory-curator.md`](policies/memory-curator.md) |
@@ -348,6 +349,7 @@ flowchart LR
 | `context-guard-stop` | Stop | warns at 50% (non-blocking) and blocks at 75% with smart summary | all |
 | `persistent-mode` | Stop | blocks stop while a pipeline is active | all |
 | `pre-tool-enforcer` | PreToolUse | re-reads before editing, suggests code intelligence tools | all |
+| `investigate-first-guard` | PreToolUse | intercepts `AskUserQuestion`, blocks self-discoverable questions (github user, branch, package manager, port…) and tells the model to run the command first | standard, strict |
 | `session-start` | SessionStart | restores state from previous session and injects skill-discovery | standard, strict |
 | `post-tool-verifier` | PostToolUse | detects debugging patterns, suggests extracting a learned skill | standard, strict |
 | `model-routing-hook` | PreToolUse | suggests model swap on plan mode and validates subagent spawns | standard, strict |
