@@ -3,6 +3,16 @@ id: 49-context-budget
 name: context-budget
 version: 1.0.0
 tags: [observability, context, performance, tokens, budget]
+description: |
+  Audita o peso de contexto carregado na sessão — CLAUDE.md, agents, MCP descriptions, rules
+  ativas, skills invocadas e histórico acumulado. Estima tokens por componente, reporta headroom
+  disponível e emite alertas de overflow. Distinto do cost-tracker (skill 30) que rastreia
+  tokens gastos em completions runtime.
+  Trigger em: "contexto inchado", "context overflow", "quanto contexto estou usando",
+  "peso do contexto", "context budget", "tokens carregados", "sessao lenta",
+  "respostas degradadas", "headroom de contexto", "custo fixo de contexto",
+  "overhead de rules", "overhead dos agents", "impacto do MCP no contexto",
+  "espaco no context window", "quanto cabe no context window"
 ---
 
 # Skill 49 — Context Budget
