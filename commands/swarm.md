@@ -36,7 +36,7 @@ description: Modo de autonomia total — do prompt ao PR mergeable. Worktree iso
 ```
 /swarm "implementar autenticação social com Google + GitHub"
 ```
-- Roda 7 phases
+- Roda 8 phases
 - **Pausa em gates críticos** (review humano pode override findings antes do PR)
 - Termina em PR aberto
 
@@ -67,12 +67,13 @@ Então o hook **sugere `/swarm` automaticamente** quando detecta intent de featu
 - `--max-iter-per-story <N>` — max iterações por story (default: 5)
 - `--auto-yes` — pula gates humanos (use só em CI ou Nível 3 Autonomous)
 - `--auto-merge` — ⚠ merge automático se CI passou (default: false; recomendado: nunca)
-- `--skip-review` — pula Phase 3 (quality gates). Útil pra prototype rápido.
-- `--skip-self-fix` — pula Phase 5 (só reporta, não fixa)
+- `--skip-adversarial` — pula Phase 3 (adversarial verify). Útil pra prototype rápido onde spec já é sólida.
+- `--skip-review` — pula Phase 4 (quality gates). Útil pra prototype rápido.
+- `--skip-self-fix` — pula Phase 6 (só reporta, não fixa)
 - `--dry-run` — mostra plano (worktree, stories esperadas, agents) sem executar
 - `--resume <run-id>` — retoma run anterior que parou (procura em `.swarm/<id>/`)
 
-## Processo (7 phases)
+## Processo (8 phases)
 
 Ver [`policies/swarm-protocol.md`](../policies/swarm-protocol.md) para detalhes.
 
@@ -82,11 +83,29 @@ Ver [`policies/swarm-protocol.md`](../policies/swarm-protocol.md) para detalhes.
 | 1. PRD/Stories | AI (fresh) | Gera PRD + parseia stories. Ou lê issue/PRD existente. |
 | 2. Ralph Loop | AI loop (fresh per story) | Implementa story → valida → próxima. Circuit-breaker 3x. |
 | 2.5. Visual Assets (opcional) | AI (skill 17) | Se PRD/stories mencionam landing/sistema/UI nova → despacha skill 17 pra gerar hero/icones/OG cards. Regra default: grok-imagine (t2i) / gemini-25-flash (edit). |
-| 3. Quality Gates | parallel (4 agents, fresh cada) | code-reviewer + security + tests + anti-ai-writing |
-| 4. Synthesize | AI (fresh) | Agrega reviews em decision matrix (CRITICAL/HIGH/MEDIUM/LOW) |
-| 5. Self-Fix | AI (per finding) | Auto-aplica fixes CRITICAL/HIGH. Re-roda validation. |
-| 6. PR | bash | Rebase main + push + gh pr create + comment synthesis |
-| 7. Report | bash | Resumo + paths dos artifacts + worktree status |
+| 3. Adversarial Verify | parallel (Implementor vs Verifier) | Para cada story: Verifier com goal oposto ao Implementor tenta refutar ("o que está faltando na spec?"). Gaps → Implementor corrige. Spec atualizada em tempo real. |
+| 4. Quality Gates | parallel (4 agents, fresh cada) | code-reviewer + security + tests + anti-ai-writing |
+| 5. Synthesize | AI (fresh) | Agrega reviews em decision matrix (CRITICAL/HIGH/MEDIUM/LOW) |
+| 6. Self-Fix | AI (per finding) | Auto-aplica fixes CRITICAL/HIGH. Re-roda validation. |
+| 7. PR | bash | Rebase main + push + gh pr create + comment synthesis |
+| 8. Report | bash | Resumo + paths dos artifacts + worktree status |
+
+### Phase 3 — Adversarial Verify
+
+Para cada story implementada no Ralph Loop, dois agentes com **goals opostos** rodam em paralelo:
+
+- **Implementor** (fresh context) — foca em completar a story contra a spec
+- **Adversarial Verifier** (fresh context, goal oposto) — foca em refutar:
+  - "O que esta implementação deixa de cobrir nos acceptance criteria?"
+  - "Qual edge case explícito da spec NÃO está sendo testado?"
+  - "Onde a spec diz X mas o código faz Y?"
+  - "O que eu quebraria se tentasse explorar isso?"
+
+O Verifier **não otimiza pra aprovar**. Seu job é achar onde spec e código divergem. Se encontra gap → Implementor corrige → Verifier re-verifica (max 2 rounds). A spec é atualizada em tempo real com o que for descoberto durante esta phase (spec gaps viram novos acceptance criteria).
+
+**Inspiração:** "Adversarial Agent Pattern" do artigo "Spec-Driven Development with AI Coding Agents: The Definitive Guide" (pramodchandrayan, May 2026). Citado: *"Forces the spec to include explicit verification criteria, improving the spec itself."*
+
+**Pular com:** `--skip-adversarial` (pula esta phase; útil quando spec já tem cobertura total de criteria verificáveis).
 
 ### Phase 2.5 — Visual Assets (quando aplicável)
 
@@ -112,14 +131,15 @@ Default automático (skill 17 aplica): **grok-imagine pra text-to-image** (~$0.0
    Branch:   swarm/auth-social
 
    Phases executed:
-   ✓ 0. Setup           (2s)
-   ✓ 1. PRD/Stories     (45s)   5 stories detected
-   ✓ 2. Ralph Loop      (8m12s) 5/5 stories DONE, 0 aborted
-   ✓ 3. Quality Gates   (2m45s) 4 agents parallel
-   ✓ 4. Synthesize      (30s)   3 CRITICAL, 5 HIGH, 4 MEDIUM, 8 LOW
-   ✓ 5. Self-Fix        (1m20s) 8 fixes applied (3 CRITICAL + 5 HIGH)
-   ✓ 6. PR              (5s)    PR #142 created
-   ✓ 7. Report          (1s)
+   ✓ 0. Setup              (2s)
+   ✓ 1. PRD/Stories        (45s)    5 stories detected
+   ✓ 2. Ralph Loop         (8m12s)  5/5 stories DONE, 0 aborted
+   ✓ 3. Adversarial Verify (1m30s)  3 gaps encontrados e corrigidos, spec atualizada
+   ✓ 4. Quality Gates      (2m45s)  4 agents parallel
+   ✓ 5. Synthesize         (30s)    2 CRITICAL, 4 HIGH, 3 MEDIUM, 6 LOW
+   ✓ 6. Self-Fix           (1m20s)  6 fixes applied (2 CRITICAL + 4 HIGH)
+   ✓ 7. PR                 (5s)     PR #142 created
+   ✓ 8. Report             (1s)
 
    PR: https://github.com/felvieira/projeto/pull/142
    Synthesis comment: https://github.com/felvieira/projeto/pull/142#issuecomment-...

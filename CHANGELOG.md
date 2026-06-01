@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.28.0-sdd-absorption] - 2026-06-01
+
+Absorção de padrões SDD de dois artigos Medium (Nitin Gavhane + pramodchandrayan). Três adições que fecham gaps reais vs GitHub Spec Kit (88k stars) e o padrão Adversarial Agent.
+
+### Added
+
+- **`commands/spec-kit.md`** — `/spec-kit`: pipeline SDD unificado (specify → plan → tasks → implement) com checkpoints explícitos entre fases e Adversarial Verifier inline na fase 4. Inspirado no GitHub Spec Kit. Flags: `--phase <fase>`, `--from-issue`, `--from-prd`, `--skip-checkpoints`. Integra com `/detective-spec` (brownfield) e `/swarm` (entrega spec → executor).
+- **`commands/insights.md`** — `/insights`: recomendações baseadas em uso real dos hooks. Lê `.bot/*.jsonl` + `.bot/tool-usage.json` (gate decisions, investigate-first blocks, tool repetitions, conflict-resolutions) e sugere o que calibrar, habilitar ou adicionar ao allowlist. Similar ao `/Insights` nativo do Claude Code mas baseado nos dados do próprio kit.
+
+### Changed
+
+- **`commands/swarm.md`** — Phase 3 "Adversarial Verify" inserida entre o Ralph Loop e o Quality Gates. Para cada story: Implementor + Adversarial Verifier com goals opostos rodam em paralelo (Verifier tenta refutar, não aprovar). Spec atualizada em tempo real com gaps descobertos. Inspirado no "Adversarial Agent Pattern" do artigo de pramodchandrayan. Pipeline passa de 7 → 8 phases. Novo flag `--skip-adversarial`.
+- **`AGENTS.md`** — `/spec-kit` e `/insights` adicionados à tabela de slash commands.
+
+---
+
 ## [2.27.0-investigate-first-guard] - 2026-05-29
 
 Princípio **"investigar antes de perguntar"** com enforcement ativo. A IA nunca deve perguntar ao usuário algo que ela mesma pode descobrir rodando um comando, lendo um arquivo ou chamando um MCP. Investigar é barato; interromper o usuário é caro.

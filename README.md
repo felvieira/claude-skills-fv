@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 48 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.27.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.28.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-49-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.28.0** | **SDD absorption from Medium articles** — 3 additions inspired by "Spec-Driven Development with AI Coding Agents" + "Claude Code plugins" articles: (1) `/spec-kit` unified SDD pipeline (specify→plan→tasks→implement with explicit checkpoints + inline Adversarial Verifier); (2) `/swarm` upgraded with Phase 3 Adversarial Verify (Implementor vs Verifier with opposing goals — verifier tries to refute, spec updated in real-time from gaps found); (3) `/insights` usage-based recommendations (reads hook telemetry JSONLs — gate decisions, investigate-first blocks, tool repetitions — recommends what to calibrate). | [`commands/spec-kit.md`](commands/spec-kit.md), [`commands/insights.md`](commands/insights.md), [`commands/swarm.md`](commands/swarm.md) |
 | **v2.27.0** | **Investigate-first guard** — a principle with active enforcement: the AI must never ask the user something it can discover itself. New PreToolUse hook intercepts `AskUserQuestion`, detects self-discoverable questions (github user, gh logged-in, branch, package manager, port, runtime version, stack, MCP account) and tells the model to run the command first (`gh auth status`, `git config`, Glob lockfile, MCP `whoami`) instead of interrupting. Doesn't block — educates. Conservative: preference/intent/trade-off questions pass through. 10/10 discoverable patterns caught, 5/5 legit questions pass. | [`policies/investigate-first.md`](policies/investigate-first.md), [`hooks/scripts/investigate-first-guard.mjs`](hooks/scripts/investigate-first-guard.mjs) |
 | **v2.26.0** | **ECC absorption (round 2)** — `silent-failure-hunter` (16th subagent, review-only: hunts empty catch{}, swallowed errors, dangerous fallbacks, lost stack traces, missing rollback) + skill 49 `context-budget` (audits loaded context weight per component, headroom + overflow alerts; distinct from cost-tracker which tracks runtime completions) + `/context-budget` command. Full count-drift reconciliation across all 8 doc locations. | [`agents/silent-failure-hunter.md`](agents/silent-failure-hunter.md), [`skills/49-context-budget/SKILL.md`](skills/49-context-budget/SKILL.md) |
 | **v2.25.0** | **Path-scoped rules system** (`.claude/rules/` with `paths:` glob — the harness attaches a coding standard only when an edited file matches, common+language layering, inspired by [ECC](https://github.com/affaan-m/ECC)) + debt paydown: fixed the subagent-allowlist bug (15th subagent `anti-ai-writing` was missing from the enumerated allowlist), reconciled pervasive count drift, and rewrote the 5 stub skills (19/21/22/24/27) with real depth. | [`rules/`](rules/), [`policies/rules-system.md`](policies/rules-system.md) |
