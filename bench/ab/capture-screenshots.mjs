@@ -15,8 +15,9 @@ mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 
 for (const [arm, port, color] of [
-  ['vanilla', 3000, '#6e7681'],
-  ['kit',     3002, '#3fb950'],
+  ['vanilla',  3000, '#6e7681'],
+  ['kit',      3002, '#58a6ff'],
+  ['kit-auto', 3003, '#3fb950'],
 ]) {
   let todos = [];
   try {
@@ -45,7 +46,7 @@ for (const [arm, port, color] of [
   .tag.t{background:#1a3a23;color:#3fb950} .tag.f{background:#3a1a1a;color:#f85149}
 </style></head>
 <body>
-<h2>${arm === 'kit' ? '🧰 Claude + Dev Team Kit' : '⬜ Claude puro (vanilla)'}
+<h2>${arm === 'kit-auto' ? '🚀 Kit + /auto (subagent)' : arm === 'kit' ? '🧰 Kit passivo' : '⬜ Claude puro (vanilla)'}
   <span class="badge">${arm.toUpperCase()}</span></h2>
 <div class="url">GET http://localhost:${port}/todos → ${todos.length} itens</div>
 <div class="info">

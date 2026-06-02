@@ -152,7 +152,7 @@ const ARMS = [
     ],
     phases: ["SETUP", "PLAN", ".auto/plan.md criado", "BUILD", "TEST (19 casos)", "VALIDATE", "REVIEW (OWASP)", "COMMIT feat:"],
     autoLoop: true,
-    screenshot: null,
+    screenshot: loadScreenshot("kit-auto"),
   },
 ];
 
@@ -345,8 +345,8 @@ const html = `<!doctype html>
 
 <!-- ══ SCREENSHOTS ══ -->
 <h2>📸 Apps rodando — evidência visual</h2>
-<p class="sub">Screenshots dos servidores vanilla e kit-passivo respondendo <code>GET /todos</code>. Kit-auto não foi deployado (ênfase em qualidade de código, não UI).</p>
-<div class="grid2">
+<p class="sub">Os 3 servidores respondendo <code>GET /todos</code> com dados reais. Capturado via Playwright headless.</p>
+<div class="grid3">
   <div class="card ss-box">
     <h3 style="color:#6e7681">⬜ Vanilla — localhost:3000</h3>
     ${ARMS[0].screenshot
@@ -359,8 +359,14 @@ const html = `<!doctype html>
       ? `<img src="${ARMS[1].screenshot}" alt="kit">`
       : `<p class="muted" style="margin-top:8px">screenshot não disponível</p>`}
   </div>
+  <div class="card ss-box">
+    <h3 style="color:#3fb950">🚀 Kit + /auto — localhost:3003</h3>
+    ${ARMS[2].screenshot
+      ? `<img src="${ARMS[2].screenshot}" alt="kit-auto">`
+      : `<p class="muted" style="margin-top:8px">screenshot não disponível</p>`}
+  </div>
 </div>
-<div class="note">⚠ Encoding: vanilla usou PowerShell (4× no trace) → Windows-1252, corrompendo UTF-8 ("Deploy em produ??o"). Kit-passivo e kit-auto usaram só Bash → encoding correto.</div>
+<div class="note">⚠ Encoding: vanilla usou PowerShell (4×) → Windows-1252, corrompendo UTF-8 ("Escrever testes de integra??o"). Kit-passivo e kit-auto usaram só Bash → UTF-8 correto. (O SQLite guarda bytes literais do SO — o bug é do agente, não do banco.)</div>
 
 <!-- ══ ESTRUTURA DE ARQUIVOS ══ -->
 <h2>📁 Estrutura de arquivos gerada por cada braço</h2>

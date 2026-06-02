@@ -80,17 +80,23 @@ function makeProjectDir(armName) {
 // ─── execução de um braço ─────────────────────────────────────────────────────
 
 function buildArgs(armName, projDir) {
+  // kit-auto: prefixar com /auto ativa o loop autônomo do kit
+  // (PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT)
+  const prompt = armName === "kit-auto" ? `/auto\n\n${TASK}` : TASK;
+  // kit-auto precisa de mais turnos (tem 7 fases)
+  const maxTurns = armName === "kit-auto" ? String(Math.max(Number(MAX_TURNS), 80)) : String(MAX_TURNS);
+
   const a = [
-    "-p", TASK,
+    "-p", prompt,
     "--output-format", "stream-json",
-    "--verbose",                       // stream-json exige verbose
+    "--verbose",
     "--model", MODEL,
     "--no-session-persistence",
-    "--dangerously-skip-permissions",  // headless autônomo
-    "--max-turns", String(MAX_TURNS),
+    "--dangerously-skip-permissions",
+    "--max-turns", maxTurns,
     "--add-dir", projDir,
   ];
-  if (armName === "kit") {
+  if (armName === "kit" || armName === "kit-auto") {
     a.push("--plugin-dir", ROOT);
   }
   return a;
