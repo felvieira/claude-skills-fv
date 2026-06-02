@@ -48,7 +48,7 @@ const ARMS = [
     rework: 0,
     claims: 0,
     files: [
-      "package.json", "package-lock.json", "README.md",
+      "package.json", "README.md",
       "src/app.js", "src/db.js", "src/server.js",
       "test/todos.test.js"
     ],
@@ -86,10 +86,10 @@ const ARMS = [
     rework: 0,
     claims: 0,
     files: [
-      "package.json", "package-lock.json", "README.md",
+      "package.json", "README.md",
       "src/app.js", "src/db.js", "src/server.js",
       "test/todos.test.js",
-      // kit hooks files (observability)
+      // observability files gerados pelos hooks do kit (reais do disco)
       ".bot/.context-turn-counter.json", ".bot/.edit-history.json",
       ".bot/.hook-session.json", ".bot/.tool-usage.json",
       ".bot/claim-verifier.jsonl", ".bot/pre-execution-gate.jsonl",
@@ -130,10 +130,13 @@ const ARMS = [
     rework: 0,
     claims: 0,
     files: [
-      "package.json", "package-lock.json", "README.md",
+      "package.json", "README.md",
       "src/app.js", "src/db.js", "src/server.js",
       "test/todos.test.js",
-      ".auto/session.json"
+      // .auto/ tracking files reais do disco
+      ".auto/env.md", ".auto/plan.md", ".auto/progress.md",
+      // git init automático + WAL sidecars
+      ".git/", "todos.db-shm", "todos.db-wal"
     ],
     securityFindings: [
       { sev: "LOW", text: "X-Powered-By header — DETECTADO e corrigido automaticamente na fase REVIEW" },
@@ -432,6 +435,60 @@ const html = `<!doctype html>
 <div class="card" style="border-color:#3fb95040">
   <div class="phases">${ARMS[2].phases.map(p => `<div class="phase" style="background:#1a301a;color:#3fb950">${safe(p)}</div>`).join("")}</div>
   <p style="margin-top:12px;font-size:13px;color:#8b949e">Kit-auto criou <code>.auto/plan.md</code> com checkboxes antes de escrever uma linha de código, executou security review (OWASP) e fez commit semântico automático (<code>feat:</code>).</p>
+</div>
+
+<!-- ══ GAPS DO KIT ══ -->
+<h2>⚠ Gaps identificados no kit — o que deveria ter acontecido</h2>
+<p class="sub">O bench revelou lacunas reais. Nenhum dos 3 braços fez tudo certo. Análise honesta abaixo.</p>
+<div class="grid3">
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 1 — Sem frontend</h3>
+    <p style="font-size:13px;margin:8px 0">Nenhum braço gerou UI. A task dizia "app de TODO" — um usuário real espera interface.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Kit-auto na Fase 1 (Plan) deveria detectar "app" → inferir UI → invocar skill <code>02-ui-ux-design</code> antes de escrever uma linha de backend.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Classificador de Plan não infere "app implica UI"</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 2 — Sem .gitignore</h3>
+    <p style="font-size:13px;margin:8px 0">Kit-auto fez <code>git init</code> + commit, mas <code>todos.db-shm</code> e <code>todos.db-wal</code> (WAL sidecars do SQLite) ficaram no working tree sem ser ignorados.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Fase BUILD deveria incluir <code>.gitignore</code> como entregável padrão em qualquer projeto Node.js com DB.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Checklist de BUILD não inclui .gitignore obrigatório</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 3 — Sem vitest.config.js</h3>
+    <p style="font-size:13px;margin:8px 0">Os 3 braços passaram nos testes mas nenhum configurou cobertura (<code>coverage: { reporter: ['text','lcov'] }</code>). Em produção isso é blocante em CI.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Skill <code>tdd-engineer</code> deveria gerar <code>vitest.config.js</code> com coverage por padrão.</p>
+    <div class="finding sev-low"><span class="sev">GAP</span> tdd-engineer não configura coverage por default</div>
+  </div>
+
+  <div class="card" style="border-color:#f85149a0">
+    <h3 style="color:#f85149">Gap 4 — PowerShell não prevenido</h3>
+    <p style="font-size:13px;margin:8px 0">Vanilla usou PowerShell 4× → encoding Windows-1252 corrompeu UTF-8. O kit-passivo não impediu (não tem regra sobre isso).</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Hook PreToolUse em Bash deveria detectar <code>PowerShell</code> e recomendar Bash para operações de arquivo em Windows.</p>
+    <div class="finding sev-high"><span class="sev">BUG</span> Sem policy "prefer Bash over PowerShell for file I/O"</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 5 — /auto não funciona headless</h3>
+    <p style="font-size:13px;margin:8px 0">Slash commands não resolvem em <code>claude -p</code> (não-interativo). O kit-auto precisou ser rodado via Agent SDK para funcionar.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Kit deveria documentar que <code>/auto</code> em headless requer Agent SDK ou <code>--append-system-prompt</code>. Hoje não há warning.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Documentação não cobre uso headless de slash commands</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 6 — Design idêntico nos 3</h3>
+    <p style="font-size:13px;margin:8px 0">A task.md não pedia UI, então nenhum gerou. Mas isso prova: <b>o kit respeita a spec literal</b> — não expande scope. É o comportamento correto para uma API task.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Plan deveria perguntar/inferir se o escopo inclui UI antes de começar — não depois.</p>
+    <div class="finding sev-low"><span class="sev">GAP</span> Spec-to-scope inference ausente no classificador do /auto</div>
+  </div>
+
+</div>
+<div class="note" style="border-color:#f0883e40;margin-top:12px">
+  <b>Conclusão dos gaps:</b> O kit-auto entregou o melhor código técnico (WAL, CRUD helpers, OWASP, commit semântico) mas falhou em inferir intenção além da spec literal.
+  Gaps 1, 3 e 6 são melhorias no <code>/auto</code> e skills. Gap 4 é uma nova policy/hook. Gap 5 é documentação. Gap 2 é checklist de BUILD.
+  <b>Nenhum gap é bloqueante para uso atual</b> — são pontos de melhoria identificados empiricamente.
 </div>
 
 <!-- ══ VEREDICTO ══ -->

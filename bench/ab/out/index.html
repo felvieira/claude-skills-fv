@@ -92,7 +92,7 @@
       <tr><td>Testes passando</td><td>22 / 22</td></tr>
       <tr><td>Retrabalho</td><td>0</td></tr>
       <tr><td>Claims sem prova</td><td>0</td></tr>
-      <tr><td>Arquivos gerados</td><td>7</td></tr>
+      <tr><td>Arquivos gerados</td><td>6</td></tr>
     </table>
   </div>
   <div class="card" style="border-color:#58a6ff40;background:#1a2030">
@@ -106,7 +106,7 @@
       <tr><td>Testes passando</td><td>23 / 23</td></tr>
       <tr><td>Retrabalho</td><td>0</td></tr>
       <tr><td>Claims sem prova</td><td>0</td></tr>
-      <tr><td>Arquivos gerados</td><td>16</td></tr>
+      <tr><td>Arquivos gerados</td><td>15</td></tr>
     </table>
   </div>
   <div class="card" style="border-color:#3fb95040;background:#1a301a">
@@ -120,7 +120,7 @@
       <tr><td>Testes passando</td><td>19 / 19</td></tr>
       <tr><td>Retrabalho</td><td>0</td></tr>
       <tr><td>Claims sem prova</td><td>0</td></tr>
-      <tr><td>Arquivos gerados</td><td>8</td></tr>
+      <tr><td>Arquivos gerados</td><td>12</td></tr>
     </table>
   </div>
 </div>
@@ -150,7 +150,7 @@
 <div class="grid3">
   <div><div class="filetree" style="border-color:#6e768140">
     <div class="fthead" style="color:#6e7681">⬜ Claude puro</div>
-    <div class="ftfile">package.json</div><div class="ftfile">package-lock.json</div><div class="ftfile">README.md</div>
+    <div class="ftfile">package.json</div><div class="ftfile">README.md</div>
     <div class="ftgroup"><span style="color:#58a6ff">src/</span>
       <div class="ftfile">  app.js</div><div class="ftfile">  db.js</div><div class="ftfile">  server.js</div>
     </div>
@@ -158,10 +158,10 @@
       <div class="ftfile">  todos.test.js</div>
     </div>
     
-    <div class="ftcount">7 arquivos</div>
+    <div class="ftcount">6 arquivos</div>
   </div></div><div><div class="filetree" style="border-color:#58a6ff40">
     <div class="fthead" style="color:#58a6ff">🧰 Kit passivo</div>
-    <div class="ftfile">package.json</div><div class="ftfile">package-lock.json</div><div class="ftfile">README.md</div>
+    <div class="ftfile">package.json</div><div class="ftfile">README.md</div>
     <div class="ftgroup"><span style="color:#58a6ff">src/</span>
       <div class="ftfile">  app.js</div><div class="ftfile">  db.js</div><div class="ftfile">  server.js</div>
     </div>
@@ -171,10 +171,10 @@
     <div class="ftgroup"><span style="color:#f0883e">.bot / .auto / .swarm/</span>
       <div class="ftfile">  .context-turn-counter.json</div><div class="ftfile">  .edit-history.json</div><div class="ftfile">  .hook-session.json</div><div class="ftfile">  .tool-usage.json</div><div class="ftfile">  claim-verifier.jsonl</div><div class="ftfile">  pre-execution-gate.jsonl</div><div class="ftfile">  classifier.jsonl</div><div class="ftfile">  events.jsonl</div><div class="ftfile">  session.json</div>
     </div>
-    <div class="ftcount">16 arquivos</div>
+    <div class="ftcount">15 arquivos</div>
   </div></div><div><div class="filetree" style="border-color:#3fb95040">
     <div class="fthead" style="color:#3fb950">🚀 Kit + /auto</div>
-    <div class="ftfile">package.json</div><div class="ftfile">package-lock.json</div><div class="ftfile">README.md</div>
+    <div class="ftfile">package.json</div><div class="ftfile">README.md</div><div class="ftfile">.git/</div><div class="ftfile">todos.db-shm</div><div class="ftfile">todos.db-wal</div>
     <div class="ftgroup"><span style="color:#58a6ff">src/</span>
       <div class="ftfile">  app.js</div><div class="ftfile">  db.js</div><div class="ftfile">  server.js</div>
     </div>
@@ -182,9 +182,9 @@
       <div class="ftfile">  todos.test.js</div>
     </div>
     <div class="ftgroup"><span style="color:#f0883e">.bot / .auto / .swarm/</span>
-      <div class="ftfile">  session.json</div>
+      <div class="ftfile">  env.md</div><div class="ftfile">  plan.md</div><div class="ftfile">  progress.md</div>
     </div>
-    <div class="ftcount">8 arquivos</div>
+    <div class="ftcount">12 arquivos</div>
   </div></div>
 </div>
 <div class="note">Kit-auto gerou arquivos de tracking (<code>.auto/</code>) por fase — evidência do loop autônomo. Kit-passivo gerou observability files (<code>.bot/</code>) dos hooks ativos: claim-verifier, context-turn-counter, pre-execution-gate.</div>
@@ -292,6 +292,60 @@ export function getAllTodos(db, filter) {
 <div class="card" style="border-color:#3fb95040">
   <div class="phases"><div class="phase" style="background:#1a301a;color:#3fb950">SETUP</div><div class="phase" style="background:#1a301a;color:#3fb950">PLAN</div><div class="phase" style="background:#1a301a;color:#3fb950">.auto/plan.md criado</div><div class="phase" style="background:#1a301a;color:#3fb950">BUILD</div><div class="phase" style="background:#1a301a;color:#3fb950">TEST (19 casos)</div><div class="phase" style="background:#1a301a;color:#3fb950">VALIDATE</div><div class="phase" style="background:#1a301a;color:#3fb950">REVIEW (OWASP)</div><div class="phase" style="background:#1a301a;color:#3fb950">COMMIT feat:</div></div>
   <p style="margin-top:12px;font-size:13px;color:#8b949e">Kit-auto criou <code>.auto/plan.md</code> com checkboxes antes de escrever uma linha de código, executou security review (OWASP) e fez commit semântico automático (<code>feat:</code>).</p>
+</div>
+
+<!-- ══ GAPS DO KIT ══ -->
+<h2>⚠ Gaps identificados no kit — o que deveria ter acontecido</h2>
+<p class="sub">O bench revelou lacunas reais. Nenhum dos 3 braços fez tudo certo. Análise honesta abaixo.</p>
+<div class="grid3">
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 1 — Sem frontend</h3>
+    <p style="font-size:13px;margin:8px 0">Nenhum braço gerou UI. A task dizia "app de TODO" — um usuário real espera interface.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Kit-auto na Fase 1 (Plan) deveria detectar "app" → inferir UI → invocar skill <code>02-ui-ux-design</code> antes de escrever uma linha de backend.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Classificador de Plan não infere "app implica UI"</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 2 — Sem .gitignore</h3>
+    <p style="font-size:13px;margin:8px 0">Kit-auto fez <code>git init</code> + commit, mas <code>todos.db-shm</code> e <code>todos.db-wal</code> (WAL sidecars do SQLite) ficaram no working tree sem ser ignorados.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Fase BUILD deveria incluir <code>.gitignore</code> como entregável padrão em qualquer projeto Node.js com DB.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Checklist de BUILD não inclui .gitignore obrigatório</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 3 — Sem vitest.config.js</h3>
+    <p style="font-size:13px;margin:8px 0">Os 3 braços passaram nos testes mas nenhum configurou cobertura (<code>coverage: { reporter: ['text','lcov'] }</code>). Em produção isso é blocante em CI.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Skill <code>tdd-engineer</code> deveria gerar <code>vitest.config.js</code> com coverage por padrão.</p>
+    <div class="finding sev-low"><span class="sev">GAP</span> tdd-engineer não configura coverage por default</div>
+  </div>
+
+  <div class="card" style="border-color:#f85149a0">
+    <h3 style="color:#f85149">Gap 4 — PowerShell não prevenido</h3>
+    <p style="font-size:13px;margin:8px 0">Vanilla usou PowerShell 4× → encoding Windows-1252 corrompeu UTF-8. O kit-passivo não impediu (não tem regra sobre isso).</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Hook PreToolUse em Bash deveria detectar <code>PowerShell</code> e recomendar Bash para operações de arquivo em Windows.</p>
+    <div class="finding sev-high"><span class="sev">BUG</span> Sem policy "prefer Bash over PowerShell for file I/O"</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 5 — /auto não funciona headless</h3>
+    <p style="font-size:13px;margin:8px 0">Slash commands não resolvem em <code>claude -p</code> (não-interativo). O kit-auto precisou ser rodado via Agent SDK para funcionar.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Kit deveria documentar que <code>/auto</code> em headless requer Agent SDK ou <code>--append-system-prompt</code>. Hoje não há warning.</p>
+    <div class="finding sev-med"><span class="sev">GAP</span> Documentação não cobre uso headless de slash commands</div>
+  </div>
+
+  <div class="card" style="border-color:#f0883e40">
+    <h3 style="color:#f0883e">Gap 6 — Design idêntico nos 3</h3>
+    <p style="font-size:13px;margin:8px 0">A task.md não pedia UI, então nenhum gerou. Mas isso prova: <b>o kit respeita a spec literal</b> — não expande scope. É o comportamento correto para uma API task.</p>
+    <p style="font-size:12px;color:#8b949e"><b>O que deveria acontecer:</b> Plan deveria perguntar/inferir se o escopo inclui UI antes de começar — não depois.</p>
+    <div class="finding sev-low"><span class="sev">GAP</span> Spec-to-scope inference ausente no classificador do /auto</div>
+  </div>
+
+</div>
+<div class="note" style="border-color:#f0883e40;margin-top:12px">
+  <b>Conclusão dos gaps:</b> O kit-auto entregou o melhor código técnico (WAL, CRUD helpers, OWASP, commit semântico) mas falhou em inferir intenção além da spec literal.
+  Gaps 1, 3 e 6 são melhorias no <code>/auto</code> e skills. Gap 4 é uma nova policy/hook. Gap 5 é documentação. Gap 2 é checklist de BUILD.
+  <b>Nenhum gap é bloqueante para uso atual</b> — são pontos de melhoria identificados empiricamente.
 </div>
 
 <!-- ══ VEREDICTO ══ -->
