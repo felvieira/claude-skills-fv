@@ -1,0 +1,339 @@
+{
+  "vanilla": {
+    "arm": "vanilla",
+    "model": "sonnet",
+    "wallMs": 282010,
+    "exitCode": 0,
+    "projectDir": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+    "tokens": {
+      "input": 13,
+      "output": 12412,
+      "cacheCreate": 24767,
+      "cacheRead": 497438
+    },
+    "totalBilled": 534630,
+    "costReal": 0.42959765000000005,
+    "costDerived": 0.42832665000000003,
+    "numTurns": 12,
+    "resultSubtype": "success",
+    "resultText": "All 22 tests pass, exit code 0.\n\n**What was built:**\n\n| File | Purpose |\n|---|---|\n| `src/db.js` | Creates/migrates SQLite DB (`todos` table auto-created on boot) |\n| `src/app.js` | Express app factory `createApp(db)` — all 5 CRUD routes + validation |\n| `src/server.js` | Calls `createApp` with the real `todos.db` and starts listening |\n| `test/todos.test.js` | 22 Vitest + Supertest tests against ",
+    "tools": {
+      "Bash": 1,
+      "PowerShell": 4,
+      "Write": 6
+    },
+    "rework": {
+      "files": [],
+      "score": 0
+    },
+    "testRunDuringSession": false,
+    "claims": {
+      "all": [],
+      "unverified": []
+    },
+    "timeline": [
+      {
+        "turn": 0,
+        "tool": null,
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 24902
+      },
+      {
+        "turn": 1,
+        "tool": null,
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 24902
+      },
+      {
+        "turn": 2,
+        "tool": "Bash",
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 24902
+      },
+      {
+        "turn": 3,
+        "tool": "PowerShell",
+        "outTokensAcc": 57,
+        "cacheReadThisTurn": 24902
+      },
+      {
+        "turn": 4,
+        "tool": null,
+        "outTokensAcc": 65,
+        "cacheReadThisTurn": 31937
+      },
+      {
+        "turn": 5,
+        "tool": null,
+        "outTokensAcc": 73,
+        "cacheReadThisTurn": 31937
+      },
+      {
+        "turn": 6,
+        "tool": "PowerShell",
+        "outTokensAcc": 81,
+        "cacheReadThisTurn": 31937
+      },
+      {
+        "turn": 7,
+        "tool": "Write",
+        "outTokensAcc": 144,
+        "cacheReadThisTurn": 43684
+      },
+      {
+        "turn": 8,
+        "tool": "Write",
+        "outTokensAcc": 203,
+        "cacheReadThisTurn": 44026
+      },
+      {
+        "turn": 9,
+        "tool": "Write",
+        "outTokensAcc": 262,
+        "cacheReadThisTurn": 44324
+      },
+      {
+        "turn": 10,
+        "tool": "Write",
+        "outTokensAcc": 319,
+        "cacheReadThisTurn": 44592
+      },
+      {
+        "turn": 11,
+        "tool": "Write",
+        "outTokensAcc": 374,
+        "cacheReadThisTurn": 46025
+      },
+      {
+        "turn": 12,
+        "tool": "Write",
+        "outTokensAcc": 429,
+        "cacheReadThisTurn": 46263
+      },
+      {
+        "turn": 13,
+        "tool": null,
+        "outTokensAcc": 431,
+        "cacheReadThisTurn": 48576
+      },
+      {
+        "turn": 14,
+        "tool": "PowerShell",
+        "outTokensAcc": 433,
+        "cacheReadThisTurn": 48576
+      },
+      {
+        "turn": 15,
+        "tool": "PowerShell",
+        "outTokensAcc": 492,
+        "cacheReadThisTurn": 48963
+      },
+      {
+        "turn": 16,
+        "tool": null,
+        "outTokensAcc": 499,
+        "cacheReadThisTurn": 49244
+      }
+    ],
+    "quality": {
+      "fileCount": 8,
+      "hasPackageJson": true,
+      "hasTests": true,
+      "installOk": true,
+      "testsRan": true,
+      "exitZero": true,
+      "passed": 22,
+      "failed": 0,
+      "raw": "\n> todo-api@1.0.0 test\n> vitest run\n\n\n RUN  v2.1.9 C:/Users/ADMINI~1/AppData/Local/Temp/ab-proj-vanilla\n\n ✓ test/todos.test.js (22 tests) 158ms\n\n Test Files  1 passed (1)\n      Tests  22 passed (22)\n   Start at  18:09:14\n   Duration  1.80s (transform 46ms, setup 0ms, collect 382ms, tests 158ms, environment 0ms, prepare 180ms)\n\n"
+    }
+  },
+  "kit": {
+    "arm": "kit",
+    "model": "sonnet",
+    "wallMs": 337170,
+    "exitCode": 0,
+    "projectDir": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-kit",
+    "tokens": {
+      "input": 25,
+      "output": 11863,
+      "cacheCreate": 37820,
+      "cacheRead": 446988
+    },
+    "totalBilled": 496696,
+    "costReal": 0.45394139999999994,
+    "costDerived": 0.4539414,
+    "numTurns": 10,
+    "resultSubtype": "success",
+    "resultText": "Real output from the runner — exit code 0, all 23 tests green:\n\n```\n✓ test/todos.test.js (23 tests) 213ms\n\n Test Files  1 passed (1)\n       Tests  23 passed (23)\n   Duration  1.56s\n```\n\n**Done.** Here's what was built:\n\n| File | Role |\n|---|---|\n| `src/db.js` | `createDb(path)` — opens SQLite, runs `CREATE TABLE IF NOT EXISTS` |\n| `src/app.js` | `createApp(db)` — Express routes + validation + JSON",
+    "tools": {
+      "Write": 6,
+      "Bash": 3
+    },
+    "rework": {
+      "files": [],
+      "score": 0
+    },
+    "testRunDuringSession": true,
+    "claims": {
+      "all": [],
+      "unverified": []
+    },
+    "timeline": [
+      {
+        "turn": 0,
+        "tool": null,
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 17414
+      },
+      {
+        "turn": 1,
+        "tool": null,
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 17414
+      },
+      {
+        "turn": 2,
+        "tool": "Write",
+        "outTokensAcc": 0,
+        "cacheReadThisTurn": 17414
+      },
+      {
+        "turn": 3,
+        "tool": null,
+        "outTokensAcc": 6,
+        "cacheReadThisTurn": 32007
+      },
+      {
+        "turn": 4,
+        "tool": null,
+        "outTokensAcc": 12,
+        "cacheReadThisTurn": 32007
+      },
+      {
+        "turn": 5,
+        "tool": "Bash",
+        "outTokensAcc": 18,
+        "cacheReadThisTurn": 32007
+      },
+      {
+        "turn": 6,
+        "tool": null,
+        "outTokensAcc": 26,
+        "cacheReadThisTurn": 38761
+      },
+      {
+        "turn": 7,
+        "tool": null,
+        "outTokensAcc": 34,
+        "cacheReadThisTurn": 38761
+      },
+      {
+        "turn": 8,
+        "tool": "Write",
+        "outTokensAcc": 42,
+        "cacheReadThisTurn": 38761
+      },
+      {
+        "turn": 9,
+        "tool": null,
+        "outTokensAcc": 48,
+        "cacheReadThisTurn": 47744
+      },
+      {
+        "turn": 10,
+        "tool": null,
+        "outTokensAcc": 54,
+        "cacheReadThisTurn": 47744
+      },
+      {
+        "turn": 11,
+        "tool": "Write",
+        "outTokensAcc": 60,
+        "cacheReadThisTurn": 47744
+      },
+      {
+        "turn": 12,
+        "tool": null,
+        "outTokensAcc": 66,
+        "cacheReadThisTurn": 48329
+      },
+      {
+        "turn": 13,
+        "tool": "Write",
+        "outTokensAcc": 72,
+        "cacheReadThisTurn": 48329
+      },
+      {
+        "turn": 14,
+        "tool": null,
+        "outTokensAcc": 78,
+        "cacheReadThisTurn": 50067
+      },
+      {
+        "turn": 15,
+        "tool": "Write",
+        "outTokensAcc": 84,
+        "cacheReadThisTurn": 50067
+      },
+      {
+        "turn": 16,
+        "tool": null,
+        "outTokensAcc": 90,
+        "cacheReadThisTurn": 50598
+      },
+      {
+        "turn": 17,
+        "tool": "Write",
+        "outTokensAcc": 96,
+        "cacheReadThisTurn": 50598
+      },
+      {
+        "turn": 18,
+        "tool": null,
+        "outTokensAcc": 102,
+        "cacheReadThisTurn": 53435
+      },
+      {
+        "turn": 19,
+        "tool": null,
+        "outTokensAcc": 108,
+        "cacheReadThisTurn": 53435
+      },
+      {
+        "turn": 20,
+        "tool": "Bash",
+        "outTokensAcc": 114,
+        "cacheReadThisTurn": 53435
+      },
+      {
+        "turn": 21,
+        "tool": "Bash",
+        "outTokensAcc": 175,
+        "cacheReadThisTurn": 54086
+      },
+      {
+        "turn": 22,
+        "tool": null,
+        "outTokensAcc": 181,
+        "cacheReadThisTurn": 54547
+      },
+      {
+        "turn": 23,
+        "tool": null,
+        "outTokensAcc": 187,
+        "cacheReadThisTurn": 54547
+      }
+    ],
+    "quality": {
+      "fileCount": 18,
+      "hasPackageJson": true,
+      "hasTests": true,
+      "installOk": true,
+      "testsRan": true,
+      "exitZero": true,
+      "passed": 23,
+      "failed": 0,
+      "raw": "\n> todo-api@1.0.0 test\n> vitest run\n\n\n RUN  v1.6.1 C:/Users/ADMINI~1/AppData/Local/Temp/ab-proj-kit\n\n ✓ test/todos.test.js  (23 tests) 181ms\n\n Test Files  1 passed (1)\n      Tests  23 passed (23)\n   Start at  18:09:19\n   Duration  1.73s (transform 77ms, setup 0ms, collect 670ms, tests 181ms, environment 0ms, prepare 315ms)\n\n"
+    }
+  }
+}
