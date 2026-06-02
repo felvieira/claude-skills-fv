@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.29.0-claim-verifier-context-hygiene] - 2026-06-02
+
+Dois hooks que resolvem falsa confiança no output do agente e contexto inflado em sessões longas.
+
+### Added
+
+- **`hooks/scripts/claim-verifier.mjs`** (PostToolUse) — detecta output após Bash/Edit/Write com afirmações de resultado sem evidência observável: "email enviado", "deploy OK", "teste passou", "migration aplicada", "registro criado", "credencial válida". Passa livre se há evidência inline (exit code 0, HTTP 200/201, query result, curl, docker ps). Tool Write/Edit é evidência por si só. Não bloqueia — injeta hint com comando específico para verificar. Telemetria em `.bot/claim-verifier.jsonl`. 4/4 positivos disparam, 4/4 negativos passam livres.
+- **`hooks/scripts/context-turn-counter.mjs`** (UserPromptSubmit) — compact periódico + handoff inteligente: sugere `/compact` a cada 25 turnos sem compactação; recomenda handoff para nova sessão a cada 50 turnos (salvar em `D:\claude-memory\logs\` e abrir sessão com prompt de retomada). `/compact`, `/clear`, `/handoff` resetam o contador. Inspeções (`/insights`, `/savings`) não contam como turnos produtivos.
+- **`policies/claim-verification.md`** — princípio "verificar antes de afirmar" + tabela de evidências aceitas por domínio (email, deploy, testes, migration, DB, arquivo, credencial).
+
+### Changed
+
+- **`GLOBAL.md`** — dois novos defaults operacionais: "Verificar antes de afirmar" e "Compactar proativamente".
+- **`hooks/hooks.json`** — claim-verifier no PostToolUse, context-turn-counter no UserPromptSubmit (22 scripts total).
+- **`hooks/config.json`** — seções `claim_verifier` + `context_turn_counter` + ambos em `minimal.disabled`.
+
+---
+
 ## [2.28.0-sdd-absorption] - 2026-06-01
 
 Absorção de padrões SDD de dois artigos Medium (Nitin Gavhane + pramodchandrayan). Três adições que fecham gaps reais vs GitHub Spec Kit (88k stars) e o padrão Adversarial Agent.
