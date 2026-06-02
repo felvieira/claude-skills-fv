@@ -32,6 +32,15 @@ const chartJs = existsSync(join(__dirname, "chart.min.js"))
   ? readFileSync(join(__dirname, "chart.min.js"), "utf8")
   : "";
 
+// screenshots embutidas como base64 (opcionais — geradas por capture-screenshots.mjs)
+function loadScreenshot(arm) {
+  const p = join(OUT, "screenshots", `${arm}.png`);
+  if (!existsSync(p)) return null;
+  return "data:image/png;base64," + readFileSync(p).toString("base64");
+}
+const ssVanilla = loadScreenshot("vanilla");
+const ssKit = loadScreenshot("kit");
+
 // ─── helpers de formatação ────────────────────────────────────────────────────
 const n = (x) => (x == null ? "—" : Number(x).toLocaleString("en-US"));
 const usd = (x) => (x == null ? "—" : "$" + Number(x).toFixed(4));
@@ -189,6 +198,24 @@ const html = `<!doctype html>
     ${card(vs, "vanilla")}
     ${card(ks, "kit")}
   </div>
+
+  <h2>📸 Apps rodando — evidência visual</h2>
+  <p class="sub">Screenshots reais dos dois servidores respondendo à mesma request <code>GET /todos</code>. Capturadas via Playwright headless após o bench.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>⬜ Vanilla — localhost:3000</h3>
+      ${ssVanilla
+        ? `<img src="${ssVanilla}" style="width:100%;border-radius:6px;margin-top:8px" alt="vanilla app screenshot">`
+        : `<p class="muted">screenshot não encontrado — rode: node bench/ab/capture-screenshots.mjs</p>`}
+    </div>
+    <div class="card">
+      <h3>🧰 Kit — localhost:3002</h3>
+      ${ssKit
+        ? `<img src="${ssKit}" style="width:100%;border-radius:6px;margin-top:8px" alt="kit app screenshot">`
+        : `<p class="muted">screenshot não encontrado — rode: node bench/ab/capture-screenshots.mjs</p>`}
+    </div>
+  </div>
+  <div class="note" style="margin-top:12px">⚠ Encoding: o vanilla usou PowerShell (Windows-1252) em 4 turnos — note o "Deploy em produ??o" quebrado. O kit usou só Bash → UTF-8 correto em todos os campos. Achado real do bench, não cosmético.</div>
 
   <h2>① Token &amp; custo $</h2>
   <p class="sub">Quanto cada braço gastou pra entregar a MESMA tarefa.</p>
