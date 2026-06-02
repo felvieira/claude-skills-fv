@@ -1,0 +1,1332 @@
+{
+  "arm": "vanilla",
+  "model": "sonnet",
+  "wallMs": 282010,
+  "exitCode": 0,
+  "projectDir": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+  "events": [
+    {
+      "type": "rate_limit_event",
+      "rate_limit_info": {
+        "status": "allowed",
+        "resetsAt": 1780437600,
+        "rateLimitType": "five_hour",
+        "overageStatus": "rejected",
+        "overageDisabledReason": "out_of_credits",
+        "isUsingOverage": false
+      },
+      "uuid": "a26d2f7f-5df5-4c58-a237-116eb8fb7fa0",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "init",
+      "cwd": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "tools": [
+        "Task",
+        "AskUserQuestion",
+        "Bash",
+        "CronCreate",
+        "CronDelete",
+        "CronList",
+        "Edit",
+        "EnterPlanMode",
+        "EnterWorktree",
+        "ExitPlanMode",
+        "ExitWorktree",
+        "Glob",
+        "Grep",
+        "Monitor",
+        "NotebookEdit",
+        "PowerShell",
+        "PushNotification",
+        "Read",
+        "RemoteTrigger",
+        "ScheduleWakeup",
+        "Skill",
+        "TaskCreate",
+        "TaskGet",
+        "TaskList",
+        "TaskOutput",
+        "TaskStop",
+        "TaskUpdate",
+        "ToolSearch",
+        "WebFetch",
+        "WebSearch",
+        "Write"
+      ],
+      "mcp_servers": [
+        {
+          "name": "supabase",
+          "status": "pending"
+        },
+        {
+          "name": "shadcn",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Firecrawl",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Zernio",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai n8n",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Notion",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Figma",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Gmail",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Google Calendar",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Google Drive",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Canva",
+          "status": "pending"
+        },
+        {
+          "name": "claude.ai Stripe",
+          "status": "pending"
+        }
+      ],
+      "model": "claude-sonnet-4-6",
+      "permissionMode": "bypassPermissions",
+      "slash_commands": [
+        "graphify",
+        "image-generation",
+        "update-config",
+        "verify",
+        "debug",
+        "code-review",
+        "simplify",
+        "batch",
+        "fewer-permission-prompts",
+        "loop",
+        "schedule",
+        "claude-api",
+        "run",
+        "run-skill-generator",
+        "clear",
+        "compact",
+        "context",
+        "heapdump",
+        "init",
+        "reload-skills",
+        "review",
+        "security-review",
+        "usage-credits",
+        "extra-usage",
+        "usage",
+        "insights",
+        "goal",
+        "team-onboarding"
+      ],
+      "apiKeySource": "none",
+      "claude_code_version": "2.1.152",
+      "output_style": "default",
+      "agents": [
+        "claude",
+        "claude-code-guide",
+        "Explore",
+        "general-purpose",
+        "Plan",
+        "statusline-setup"
+      ],
+      "skills": [
+        "graphify",
+        "image-generation",
+        "update-config",
+        "verify",
+        "debug",
+        "code-review",
+        "simplify",
+        "batch",
+        "fewer-permission-prompts",
+        "loop",
+        "schedule",
+        "claude-api",
+        "run",
+        "run-skill-generator"
+      ],
+      "plugins": [],
+      "analytics_disabled": false,
+      "product_feedback_disabled": false,
+      "uuid": "1f04911f-8344-4716-929d-c36572b67543",
+      "memory_paths": {
+        "auto": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-cfg-vanilla\\projects\\C--Users-ADMINI-1-AppData-Local-Temp-ab-proj-vanilla\\memory\\"
+      },
+      "fast_mode_state": "off"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01ARPgAidDynPKKJNA79rLd2",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "Let me build this TODO List API from scratch. I'll plan the implementation first, then create all the files, and finally run the tests to verify everything works.\n\nLet me start by creating all the necessary files:\n\n1. `package.json` - with ESM, scripts, and dependencies\n2. `src/db.js` - SQLite database setup with better-sqlite3\n3. `src/app.js` - Express app with routes and validation\n4. `src/server.js` - server entry point\n5. `test/todos.test.js` - Vitest + Supertest tests\n\nLet me think through the implementation carefully:\n\n\nSetting up the package configuration with ESM support, installing express and better-sqlite3, and adding vitest with supertest for testing. The database module will handle both in-memory and persistent SQLite instances, creating the necessary tables and managing timestamps as ISO strings. The Express app will export the configured application without starting the server, accepting a database instance as a parameter.\n\nNow I'm thinking through the test strategy—using an in-memory database for isolation and passing it to the app factory function ensures clean test runs. I'll structure `app.js` to export a factory function that accepts the database, while `server.js` handles creating the real database and starting the server. For the database module, I'm writing code that initializes the connection...\n\nWriting database initialization... Setting up route handlers... Writing API endpoints... Writing the update and delete handlers... Writing test cases... Adding more test cases... Writing test cases... Writing test cases... Adding test cases...\n\nI'm counting up the total test coverage across all endpoints—twenty tests in total, which comfortably exceeds the minimum requirement. Now I'm thinking through the edge cases, particularly around the id validation logic and how Express handles non-numeric values when they're coerced to numbers.\n\nFor the configuration, I need to make sure supertest works properly with ESM imports and that vitest is set up correctly. Since supertest supports ESM imports and vitest defaults to the node environment, I should be able to configure everything in the package.json under a vitest section for simplicity. Vitest defaults to the `node` environment, so I don't need to add extra configuration for that. My test file at `test/todos.test.js` matches Vitest's default file pattern, so it should be discovered automatically without needing a separate config file.\n\nLooking at the directory structure, I need to handle a potential issue where `req.body` could be `undefined` if the content-type isn't set correctly or no body is sent, so I should use a fallback pattern like `req.body ?? {}` to ensure I'm always working with an object.\n\nNow I'm refining the validation logic to be more explicit about what constitutes a valid title—checking that it's actually a string and not just any truthy value, since the requirement specifies it should be a string type. Adding validation checks...\n\nNow I'm thinking through the edge case where the request body might not be a proper object—someone could send an array or primitive value, so I need to normalize that to an empty object if it's not valid. Then I'll run the full test suite to make sure everything works. the case where someone sends `GET /todos/1.5` — the validation correctly rejects it since 1.5 isn't an integer. Now for the PUT endpoint, I'm checking that if a title is provided, it must be a non-empty string and not exceed 200 characters, which matches the requirements.\n\nI should verify that `better-sqlite3` works with ESM imports since it's a CommonJS module — but Node.js handles that transparently, so `import Database from 'better-sqlite3'` will work fine. Same goes for Express. I don't need a special Vitest config either; adding `\"test\": \"vitest run\"` to the scripts will let Vitest auto-discover the test file. Now I'll create all the project files. I'm concerned about native module compatibility with Vitest in ESM, but `better-sqlite3` is widely used this way so it should work fine. For the tests, I'll use `supertest` to pass the Express app directly without calling `listen`, and I'm mapping out the test cases now—covering POST validation for title length, done field type, JSON parsing, and GET retrieval.\n\nI've enumerated all 20 test cases across the CRUD endpoints with various validation and error scenarios, which exceeds the minimum requirement. Now I'll write out all the implementation files and documentation.",
+            "signature": "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"
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 2,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 24902,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 0,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "9fcc88a3-2c14-456a-ac4d-7bbcb55a9742",
+      "request_id": "req_011Cbf77fr6caXB9S1n1Lgju"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01ARPgAidDynPKKJNA79rLd2",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Vou construir a API do zero — criando todos os arquivos e rodando os testes para confirmar exit 0."
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 2,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 24902,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 0,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "2fe8ef37-e3d1-4e03-8f67-de8e09ebf336",
+      "request_id": "req_011Cbf77fr6caXB9S1n1Lgju"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01ARPgAidDynPKKJNA79rLd2",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01A8rExCt3ocP2JyGGJc4mZz",
+            "name": "Bash",
+            "input": {
+              "command": "ls C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+              "description": "Check working directory contents"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 2,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 24902,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 0,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "a36ea924-0812-468a-a97e-04d8ded49c7d",
+      "request_id": "req_011Cbf77fr6caXB9S1n1Lgju"
+    },
+    {
+      "type": "system",
+      "subtype": "task_started",
+      "task_id": "bcsza88dm",
+      "tool_use_id": "toolu_01A8rExCt3ocP2JyGGJc4mZz",
+      "description": "Check working directory contents",
+      "task_type": "local_bash",
+      "uuid": "533269c0-91a1-465b-ae01-e3232d01dd50",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "task_notification",
+      "task_id": "bcsza88dm",
+      "tool_use_id": "toolu_01A8rExCt3ocP2JyGGJc4mZz",
+      "status": "failed",
+      "output_file": "",
+      "summary": "Check working directory contents",
+      "uuid": "fab30d78-20e4-4af5-b6c0-6b8011fd0596",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "content": "Exit code 2\nls: cannot access 'C:UsersADMINI~1AppDataLocalTempab-proj-vanilla': No such file or directory",
+            "is_error": true,
+            "tool_use_id": "toolu_01A8rExCt3ocP2JyGGJc4mZz"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "37c8dafd-695b-4f0c-88a8-ac8e71b637a2",
+      "timestamp": "2026-06-02T21:02:23.978Z",
+      "tool_use_result": "Error: Exit code 2\nls: cannot access 'C:UsersADMINI~1AppDataLocalTempab-proj-vanilla': No such file or directory"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_012zFhEEfypaFCdCaRbbqSBL",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01AZR5uuPEWAgPKdeBq9nVBu",
+            "name": "PowerShell",
+            "input": {
+              "command": "Get-ChildItem \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\"",
+              "description": "List working directory"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 7035,
+          "cache_read_input_tokens": 24902,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 7035
+          },
+          "output_tokens": 57,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "7c763832-625c-4fdf-b559-6b5ff83c6928",
+      "request_id": "req_011Cbf7GawgDEwtHgDmYCvPz"
+    },
+    {
+      "type": "system",
+      "subtype": "task_started",
+      "task_id": "bgyrn1mdy",
+      "tool_use_id": "toolu_01AZR5uuPEWAgPKdeBq9nVBu",
+      "description": "List working directory",
+      "task_type": "local_bash",
+      "uuid": "f934237d-3b10-4754-a446-42e73feb24b3",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "task_notification",
+      "task_id": "bgyrn1mdy",
+      "tool_use_id": "toolu_01AZR5uuPEWAgPKdeBq9nVBu",
+      "status": "completed",
+      "output_file": "",
+      "summary": "List working directory",
+      "uuid": "afb7a911-e8e9-46b0-9174-d4a0c514baf7",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_01AZR5uuPEWAgPKdeBq9nVBu",
+            "type": "tool_result",
+            "content": "    Directory: C:\\Users\\Administrador\\AppData\\Local\\Temp\\ab-proj-vanilla\r\n\r\n\r\nMode                 LastWriteTime         Length Name                                                                 \r\n----                 -------------         ------ ----                                                                 \r\n-a----        02/06/2026     18:00              0 CLAUDE.md\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+            "is_error": false
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "db0a8c2f-462f-4fcd-907e-49ff2ddaf218",
+      "timestamp": "2026-06-02T21:02:42.940Z",
+      "tool_use_result": {
+        "stdout": "    Directory: C:\\Users\\Administrador\\AppData\\Local\\Temp\\ab-proj-vanilla\r\n\r\n\r\nMode                 LastWriteTime         Length Name                                                                 \r\n----                 -------------         ------ ----                                                                 \r\n-a----        02/06/2026     18:00              0 CLAUDE.md",
+        "stderr": "\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+        "interrupted": false,
+        "isImage": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01Jo52U6vGFzRq9cV9kYTDye",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "Now I'll create all the files for the TODO List API. Let me create them all in parallel:\n\n1. `package.json`\n2. `src/db.js`\n3. `src/app.js`\n4. `src/server.js`\n5. `test/todos.test.js`\n6. `README.md`\n\nFirst I need to create the `src` and `test` directories.",
+            "signature": "EscDCmUIDhgCKkDDNN1km9mKbb/BR+atzH3MEpMc56nbRzNZMBJJIz2vQ5P6dkCuLAcbZVsMJSTJD4aGMVb+PzoxVo3L2ya7hBc7MhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIM20swdtjeMFUZ1p7JGgzXsJGYq6hnhKn0bHQiMEFThVLS/FKMa1X6dgA0OmrVij7TpIL8E5OaTFSU4pvi/CAcGpJcPdUQ6iQntAIOSCqPAiFNNlmlhTUKk80xWHpAd4VXlu6GLPibGccdNKtggo4LC4UZOh18+nIkcSYEJd8prEsr4fvv75S5nA0uQ2cJMj3ixuP568wtBmmbOSaUoyEGoHB/qFHIFrxbEoxOgSrWzXDcFxxGy1Y0L87gEvvRKL8hxNWmTtmUYUdva7Qj8KbxrSnr3AqrfdbthEu89Pk87iK3PdP0azV9gAzV2U4Q+VYl1FuotYOQfZ6anwXAwh00LypswiXgzQHQ4uTgEuB/GGiUsxj+rJYO91KIss12+jliTkXOtUlhx2+4rjTvda/c9/R4vACzLthOohlDnk6W1slxcXROoRQV1vonDJMsni7f/oQNXRyc9wIiWUw7L5kYAQ=="
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 11747,
+          "cache_read_input_tokens": 31937,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 11747
+          },
+          "output_tokens": 8,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "d49534f7-7416-49b3-9a4d-bd42f9e477c1",
+      "request_id": "req_011Cbf7HyyHqSx9yCEA7NEiA"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01Jo52U6vGFzRq9cV9kYTDye",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "The directory is empty (except for CLAUDE.md). I'll create all files in parallel now."
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 11747,
+          "cache_read_input_tokens": 31937,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 11747
+          },
+          "output_tokens": 8,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "d041e50d-d643-445a-8b88-e2f12ff86f20",
+      "request_id": "req_011Cbf7HyyHqSx9yCEA7NEiA"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01Jo52U6vGFzRq9cV9kYTDye",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_0134MTgzAqUswrs2hy7Ggk4p",
+            "name": "PowerShell",
+            "input": {
+              "command": "New-Item -ItemType Directory -Force \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\" | Out-Null; New-Item -ItemType Directory -Force \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\test\" | Out-Null; Write-Output \"dirs created\"",
+              "description": "Create src/ and test/ directories"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 11747,
+          "cache_read_input_tokens": 31937,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 11747
+          },
+          "output_tokens": 8,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "4156e0c2-06af-414c-ac30-9592f1173ede",
+      "request_id": "req_011Cbf7HyyHqSx9yCEA7NEiA"
+    },
+    {
+      "type": "system",
+      "subtype": "task_started",
+      "task_id": "bi2pxsjqu",
+      "tool_use_id": "toolu_0134MTgzAqUswrs2hy7Ggk4p",
+      "description": "Create src/ and test/ directories",
+      "task_type": "local_bash",
+      "uuid": "aa72bd6f-a1e7-4712-b10e-751227624473",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "task_notification",
+      "task_id": "bi2pxsjqu",
+      "tool_use_id": "toolu_0134MTgzAqUswrs2hy7Ggk4p",
+      "status": "completed",
+      "output_file": "",
+      "summary": "Create src/ and test/ directories",
+      "uuid": "413c7bec-5983-41e3-a685-0ed5d9222b68",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_0134MTgzAqUswrs2hy7Ggk4p",
+            "type": "tool_result",
+            "content": "dirs created\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+            "is_error": false
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "283f7a00-7c50-4cd2-80da-0660bca718f0",
+      "timestamp": "2026-06-02T21:03:07.113Z",
+      "tool_use_result": {
+        "stdout": "dirs created",
+        "stderr": "\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+        "interrupted": false,
+        "isImage": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_017Ramw5fviouTL6L1cxY53G",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01Rn1EgNDLTdavGC8D92YkDs",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\package.json",
+              "content": "{\n  \"name\": \"todo-api\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"start\": \"node src/server.js\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"better-sqlite3\": \"^11.0.0\",\n    \"express\": \"^4.19.2\"\n  },\n  \"devDependencies\": {\n    \"supertest\": \"^7.0.0\",\n    \"vitest\": \"^2.0.0\"\n  }\n}\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 342,
+          "cache_read_input_tokens": 43684,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 342
+          },
+          "output_tokens": 63,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "c7fd01b3-d780-42d0-9eba-c950cc86a0f5",
+      "request_id": "req_011Cbf7KmZyPVhV2CC74sDDa"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_01Rn1EgNDLTdavGC8D92YkDs",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\package.json (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "a0e57f18-f753-4688-a8ab-7ab9e9e187b9",
+      "timestamp": "2026-06-02T21:03:16.095Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\package.json",
+        "content": "{\n  \"name\": \"todo-api\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"start\": \"node src/server.js\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"better-sqlite3\": \"^11.0.0\",\n    \"express\": \"^4.19.2\"\n  },\n  \"devDependencies\": {\n    \"supertest\": \"^7.0.0\",\n    \"vitest\": \"^2.0.0\"\n  }\n}\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01HvadXwhvEd4p4uCkkjHyYm",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01HN6NsGFBwc8Kniuf4DymDa",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\db.js",
+              "content": "import Database from 'better-sqlite3';\n\nexport function createDb(path = 'todos.db') {\n  const db = new Database(path);\n  db.exec(`\n    CREATE TABLE IF NOT EXISTS todos (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      title TEXT NOT NULL,\n      done INTEGER NOT NULL DEFAULT 0,\n      createdAt TEXT NOT NULL,\n      updatedAt TEXT NOT NULL\n    )\n  `);\n  return db;\n}\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 298,
+          "cache_read_input_tokens": 44026,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 298
+          },
+          "output_tokens": 59,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "53346704-ba24-4d15-9d96-2b00adcc9fe0",
+      "request_id": "req_011Cbf7LRtL5SuanF2qoQwAn"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_01HN6NsGFBwc8Kniuf4DymDa",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\db.js (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "715c470a-f85c-46b6-b997-597d060063c9",
+      "timestamp": "2026-06-02T21:03:19.754Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\db.js",
+        "content": "import Database from 'better-sqlite3';\n\nexport function createDb(path = 'todos.db') {\n  const db = new Database(path);\n  db.exec(`\n    CREATE TABLE IF NOT EXISTS todos (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      title TEXT NOT NULL,\n      done INTEGER NOT NULL DEFAULT 0,\n      createdAt TEXT NOT NULL,\n      updatedAt TEXT NOT NULL\n    )\n  `);\n  return db;\n}\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01M94ukqsAdLX4Ce7GxAdjzJ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_014EkfyW7Vcv3PpbXj64eBYc",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\app.js",
+              "content": "import express from 'express';\n\nexport function createApp(db) {\n  const app = express();\n\n  app.use((req, res, next) => {\n    express.json()(req, res, (err) => {\n      if (err) return res.status(400).json({ error: 'Invalid JSON' });\n      next();\n    });\n  });\n\n  app.param('id', (req, res, next, value) => {\n    const id = Number(value);\n    if (!Number.isInteger(id) || id <= 0) {\n      return res.status(400).json({ error: 'id must be a positive integer' });\n    }\n    req.todoId = id;\n    next();\n  });\n\n  app.post('/todos', (req, res) => {\n    const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};\n    const { title, done = false } = body;\n\n    if (typeof title !== 'string' || title.trim().length === 0) {\n      return res.status(400).json({ error: 'title is required' });\n    }\n    if (title.length > 200) {\n      return res.status(400).json({ error: 'title must be 200 characters or less' });\n    }\n    if ('done' in body && typeof body.done !== 'boolean') {\n      return res.status(400).json({ error: 'done must be a boolean' });\n    }\n\n    const now = new Date().toISOString();\n    const result = db.prepare(\n      'INSERT INTO todos (title, done, createdAt, updatedAt) VALUES (?, ?, ?, ?)'\n    ).run(title.trim(), done ? 1 : 0, now, now);\n\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(result.lastInsertRowid);\n    return res.status(201).json(format(todo));\n  });\n\n  app.get('/todos', (req, res) => {\n    const { done } = req.query;\n    let todos;\n    if (done === 'true') {\n      todos = db.prepare('SELECT * FROM todos WHERE done = 1').all();\n    } else if (done === 'false') {\n      todos = db.prepare('SELECT * FROM todos WHERE done = 0').all();\n    } else {\n      todos = db.prepare('SELECT * FROM todos').all();\n    }\n    return res.json(todos.map(format));\n  });\n\n  app.get('/todos/:id', (req, res) => {\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!todo) return res.status(404).json({ error: 'Todo not found' });\n    return res.json(format(todo));\n  });\n\n  app.put('/todos/:id', (req, res) => {\n    const existing = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!existing) return res.status(404).json({ error: 'Todo not found' });\n\n    const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};\n    const { title, done } = body;\n\n    if (title !== undefined) {\n      if (typeof title !== 'string' || title.trim().length === 0) {\n        return res.status(400).json({ error: 'title is required' });\n      }\n      if (title.length > 200) {\n        return res.status(400).json({ error: 'title must be 200 characters or less' });\n      }\n    }\n    if (done !== undefined && typeof done !== 'boolean') {\n      return res.status(400).json({ error: 'done must be a boolean' });\n    }\n\n    const updatedTitle = title !== undefined ? title.trim() : existing.title;\n    const updatedDone = done !== undefined ? (done ? 1 : 0) : existing.done;\n    const now = new Date().toISOString();\n\n    db.prepare('UPDATE todos SET title = ?, done = ?, updatedAt = ? WHERE id = ?')\n      .run(updatedTitle, updatedDone, now, req.todoId);\n\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    return res.json(format(todo));\n  });\n\n  app.delete('/todos/:id', (req, res) => {\n    const existing = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!existing) return res.status(404).json({ error: 'Todo not found' });\n    db.prepare('DELETE FROM todos WHERE id = ?').run(req.todoId);\n    return res.status(204).send();\n  });\n\n  return app;\n}\n\nfunction format(todo) {\n  return {\n    id: todo.id,\n    title: todo.title,\n    done: todo.done === 1,\n    createdAt: todo.createdAt,\n    updatedAt: todo.updatedAt,\n  };\n}\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 268,
+          "cache_read_input_tokens": 44324,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 268
+          },
+          "output_tokens": 59,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "009589a9-338b-49f4-8e79-5290207b4626",
+      "request_id": "req_011Cbf7LhPyaGhJ4uHqQQqNE"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_014EkfyW7Vcv3PpbXj64eBYc",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\app.js (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "00ba257c-42f3-457a-85e8-319843bfda83",
+      "timestamp": "2026-06-02T21:03:34.150Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\app.js",
+        "content": "import express from 'express';\n\nexport function createApp(db) {\n  const app = express();\n\n  app.use((req, res, next) => {\n    express.json()(req, res, (err) => {\n      if (err) return res.status(400).json({ error: 'Invalid JSON' });\n      next();\n    });\n  });\n\n  app.param('id', (req, res, next, value) => {\n    const id = Number(value);\n    if (!Number.isInteger(id) || id <= 0) {\n      return res.status(400).json({ error: 'id must be a positive integer' });\n    }\n    req.todoId = id;\n    next();\n  });\n\n  app.post('/todos', (req, res) => {\n    const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};\n    const { title, done = false } = body;\n\n    if (typeof title !== 'string' || title.trim().length === 0) {\n      return res.status(400).json({ error: 'title is required' });\n    }\n    if (title.length > 200) {\n      return res.status(400).json({ error: 'title must be 200 characters or less' });\n    }\n    if ('done' in body && typeof body.done !== 'boolean') {\n      return res.status(400).json({ error: 'done must be a boolean' });\n    }\n\n    const now = new Date().toISOString();\n    const result = db.prepare(\n      'INSERT INTO todos (title, done, createdAt, updatedAt) VALUES (?, ?, ?, ?)'\n    ).run(title.trim(), done ? 1 : 0, now, now);\n\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(result.lastInsertRowid);\n    return res.status(201).json(format(todo));\n  });\n\n  app.get('/todos', (req, res) => {\n    const { done } = req.query;\n    let todos;\n    if (done === 'true') {\n      todos = db.prepare('SELECT * FROM todos WHERE done = 1').all();\n    } else if (done === 'false') {\n      todos = db.prepare('SELECT * FROM todos WHERE done = 0').all();\n    } else {\n      todos = db.prepare('SELECT * FROM todos').all();\n    }\n    return res.json(todos.map(format));\n  });\n\n  app.get('/todos/:id', (req, res) => {\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!todo) return res.status(404).json({ error: 'Todo not found' });\n    return res.json(format(todo));\n  });\n\n  app.put('/todos/:id', (req, res) => {\n    const existing = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!existing) return res.status(404).json({ error: 'Todo not found' });\n\n    const body = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};\n    const { title, done } = body;\n\n    if (title !== undefined) {\n      if (typeof title !== 'string' || title.trim().length === 0) {\n        return res.status(400).json({ error: 'title is required' });\n      }\n      if (title.length > 200) {\n        return res.status(400).json({ error: 'title must be 200 characters or less' });\n      }\n    }\n    if (done !== undefined && typeof done !== 'boolean') {\n      return res.status(400).json({ error: 'done must be a boolean' });\n    }\n\n    const updatedTitle = title !== undefined ? title.trim() : existing.title;\n    const updatedDone = done !== undefined ? (done ? 1 : 0) : existing.done;\n    const now = new Date().toISOString();\n\n    db.prepare('UPDATE todos SET title = ?, done = ?, updatedAt = ? WHERE id = ?')\n      .run(updatedTitle, updatedDone, now, req.todoId);\n\n    const todo = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    return res.json(format(todo));\n  });\n\n  app.delete('/todos/:id', (req, res) => {\n    const existing = db.prepare('SELECT * FROM todos WHERE id = ?').get(req.todoId);\n    if (!existing) return res.status(404).json({ error: 'Todo not found' });\n    db.prepare('DELETE FROM todos WHERE id = ?').run(req.todoId);\n    return res.status(204).send();\n  });\n\n  return app;\n}\n\nfunction format(todo) {\n  return {\n    id: todo.id,\n    title: todo.title,\n    done: todo.done === 1,\n    createdAt: todo.createdAt,\n    updatedAt: todo.updatedAt,\n  };\n}\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_019kPQ5heJ2xChrmbvV5mDMY",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_018Li7UMNaGaah1F6J2UbFxh",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\server.js",
+              "content": "import { createApp } from './app.js';\nimport { createDb } from './db.js';\n\nconst db = createDb();\nconst app = createApp(db);\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 1433,
+          "cache_read_input_tokens": 44592,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1433
+          },
+          "output_tokens": 57,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "951d59ef-ba2e-4dfe-9672-f5c9f02e1b6a",
+      "request_id": "req_011Cbf7Mm6FmyW9nqFAjjv8x"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_018Li7UMNaGaah1F6J2UbFxh",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\server.js (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "6da6fb0a-0ed2-4d69-bc13-7d1e26a32fb0",
+      "timestamp": "2026-06-02T21:03:40.763Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\src\\server.js",
+        "content": "import { createApp } from './app.js';\nimport { createDb } from './db.js';\n\nconst db = createDb();\nconst app = createApp(db);\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01LAFJCLBuWWyQkDLEX8Ecu3",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_012YBZPS3wk1uDpAfk9pHNN3",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\test\\todos.test.js",
+              "content": "import { describe, it, expect, beforeEach, afterEach } from 'vitest';\nimport request from 'supertest';\nimport { createApp } from '../src/app.js';\nimport { createDb } from '../src/db.js';\n\nlet db;\nlet app;\n\nbeforeEach(() => {\n  db = createDb(':memory:');\n  app = createApp(db);\n});\n\nafterEach(() => {\n  db.close();\n});\n\ndescribe('POST /todos', () => {\n  it('creates a todo and returns 201 with all fields', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Buy milk' });\n    expect(res.status).toBe(201);\n    expect(res.body.id).toBeDefined();\n    expect(res.body.title).toBe('Buy milk');\n    expect(res.body.done).toBe(false);\n    expect(res.body.createdAt).toBeDefined();\n    expect(res.body.updatedAt).toBeDefined();\n  });\n\n  it('creates a todo with done=true', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Done task', done: true });\n    expect(res.status).toBe(201);\n    expect(res.body.done).toBe(true);\n  });\n\n  it('returns 400 when title is missing', async () => {\n    const res = await request(app).post('/todos').send({});\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('title is required');\n  });\n\n  it('returns 400 when title is empty string', async () => {\n    const res = await request(app).post('/todos').send({ title: '' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('title is required');\n  });\n\n  it('returns 400 when title exceeds 200 characters', async () => {\n    const res = await request(app).post('/todos').send({ title: 'a'.repeat(201) });\n    expect(res.status).toBe(400);\n  });\n\n  it('returns 400 when done is not a boolean', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Test', done: 'yes' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('done must be a boolean');\n  });\n\n  it('returns 400 for malformed JSON', async () => {\n    const res = await request(app)\n      .post('/todos')\n      .set('Content-Type', 'application/json')\n      .send('{ invalid json }');\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('GET /todos', () => {\n  it('returns all todos', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(2);\n  });\n\n  it('filters by ?done=true', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos?done=true');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(1);\n    expect(res.body[0].done).toBe(true);\n  });\n\n  it('filters by ?done=false', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos?done=false');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(1);\n    expect(res.body[0].done).toBe(false);\n  });\n});\n\ndescribe('GET /todos/:id', () => {\n  it('returns a todo by id', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Buy milk' });\n    const res = await request(app).get(`/todos/${created.body.id}`);\n    expect(res.status).toBe(200);\n    expect(res.body.title).toBe('Buy milk');\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).get('/todos/9999');\n    expect(res.status).toBe(404);\n    expect(res.body.error).toBe('Todo not found');\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).get('/todos/abc');\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('PUT /todos/:id', () => {\n  it('updates title and done', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Old' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ title: 'New', done: true });\n    expect(res.status).toBe(200);\n    expect(res.body.title).toBe('New');\n    expect(res.body.done).toBe(true);\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).put('/todos/9999').send({ title: 'Test' });\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).put('/todos/abc').send({ title: 'Test' });\n    expect(res.status).toBe(400);\n  });\n\n  it('returns 400 when done is not a boolean on update', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Test' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ done: 'yes' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('done must be a boolean');\n  });\n\n  it('returns 400 when title is empty on update', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Test' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ title: '' });\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('DELETE /todos/:id', () => {\n  it('deletes a todo and returns 204', async () => {\n    const created = await request(app).post('/todos').send({ title: 'To delete' });\n    const res = await request(app).delete(`/todos/${created.body.id}`);\n    expect(res.status).toBe(204);\n  });\n\n  it('confirms the todo is gone after deletion', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Gone' });\n    await request(app).delete(`/todos/${created.body.id}`);\n    const res = await request(app).get(`/todos/${created.body.id}`);\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).delete('/todos/9999');\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).delete('/todos/abc');\n    expect(res.status).toBe(400);\n  });\n});\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 238,
+          "cache_read_input_tokens": 46025,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 238
+          },
+          "output_tokens": 55,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "d8ff166c-c0ef-4303-887a-e9ac36030e91",
+      "request_id": "req_011Cbf7NFATjsyohYLGMNraB"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_012YBZPS3wk1uDpAfk9pHNN3",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\test\\todos.test.js (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "8bcf6b2a-94b4-442f-96c6-9a49384a3cef",
+      "timestamp": "2026-06-02T21:04:01.979Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\test\\todos.test.js",
+        "content": "import { describe, it, expect, beforeEach, afterEach } from 'vitest';\nimport request from 'supertest';\nimport { createApp } from '../src/app.js';\nimport { createDb } from '../src/db.js';\n\nlet db;\nlet app;\n\nbeforeEach(() => {\n  db = createDb(':memory:');\n  app = createApp(db);\n});\n\nafterEach(() => {\n  db.close();\n});\n\ndescribe('POST /todos', () => {\n  it('creates a todo and returns 201 with all fields', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Buy milk' });\n    expect(res.status).toBe(201);\n    expect(res.body.id).toBeDefined();\n    expect(res.body.title).toBe('Buy milk');\n    expect(res.body.done).toBe(false);\n    expect(res.body.createdAt).toBeDefined();\n    expect(res.body.updatedAt).toBeDefined();\n  });\n\n  it('creates a todo with done=true', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Done task', done: true });\n    expect(res.status).toBe(201);\n    expect(res.body.done).toBe(true);\n  });\n\n  it('returns 400 when title is missing', async () => {\n    const res = await request(app).post('/todos').send({});\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('title is required');\n  });\n\n  it('returns 400 when title is empty string', async () => {\n    const res = await request(app).post('/todos').send({ title: '' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('title is required');\n  });\n\n  it('returns 400 when title exceeds 200 characters', async () => {\n    const res = await request(app).post('/todos').send({ title: 'a'.repeat(201) });\n    expect(res.status).toBe(400);\n  });\n\n  it('returns 400 when done is not a boolean', async () => {\n    const res = await request(app).post('/todos').send({ title: 'Test', done: 'yes' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('done must be a boolean');\n  });\n\n  it('returns 400 for malformed JSON', async () => {\n    const res = await request(app)\n      .post('/todos')\n      .set('Content-Type', 'application/json')\n      .send('{ invalid json }');\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('GET /todos', () => {\n  it('returns all todos', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(2);\n  });\n\n  it('filters by ?done=true', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos?done=true');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(1);\n    expect(res.body[0].done).toBe(true);\n  });\n\n  it('filters by ?done=false', async () => {\n    await request(app).post('/todos').send({ title: 'Todo 1' });\n    await request(app).post('/todos').send({ title: 'Todo 2', done: true });\n    const res = await request(app).get('/todos?done=false');\n    expect(res.status).toBe(200);\n    expect(res.body).toHaveLength(1);\n    expect(res.body[0].done).toBe(false);\n  });\n});\n\ndescribe('GET /todos/:id', () => {\n  it('returns a todo by id', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Buy milk' });\n    const res = await request(app).get(`/todos/${created.body.id}`);\n    expect(res.status).toBe(200);\n    expect(res.body.title).toBe('Buy milk');\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).get('/todos/9999');\n    expect(res.status).toBe(404);\n    expect(res.body.error).toBe('Todo not found');\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).get('/todos/abc');\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('PUT /todos/:id', () => {\n  it('updates title and done', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Old' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ title: 'New', done: true });\n    expect(res.status).toBe(200);\n    expect(res.body.title).toBe('New');\n    expect(res.body.done).toBe(true);\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).put('/todos/9999').send({ title: 'Test' });\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).put('/todos/abc').send({ title: 'Test' });\n    expect(res.status).toBe(400);\n  });\n\n  it('returns 400 when done is not a boolean on update', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Test' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ done: 'yes' });\n    expect(res.status).toBe(400);\n    expect(res.body.error).toBe('done must be a boolean');\n  });\n\n  it('returns 400 when title is empty on update', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Test' });\n    const res = await request(app)\n      .put(`/todos/${created.body.id}`)\n      .send({ title: '' });\n    expect(res.status).toBe(400);\n  });\n});\n\ndescribe('DELETE /todos/:id', () => {\n  it('deletes a todo and returns 204', async () => {\n    const created = await request(app).post('/todos').send({ title: 'To delete' });\n    const res = await request(app).delete(`/todos/${created.body.id}`);\n    expect(res.status).toBe(204);\n  });\n\n  it('confirms the todo is gone after deletion', async () => {\n    const created = await request(app).post('/todos').send({ title: 'Gone' });\n    await request(app).delete(`/todos/${created.body.id}`);\n    const res = await request(app).get(`/todos/${created.body.id}`);\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 404 for a non-existent id', async () => {\n    const res = await request(app).delete('/todos/9999');\n    expect(res.status).toBe(404);\n  });\n\n  it('returns 400 for a non-numeric id', async () => {\n    const res = await request(app).delete('/todos/abc');\n    expect(res.status).toBe(400);\n  });\n});\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01VnuLJRtALqrguk7MNadTdR",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01RBi5VuCEJT7RHMUjaWPYUW",
+            "name": "Write",
+            "input": {
+              "file_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\README.md",
+              "content": "# TODO List API\n\nREST API for managing todos. Node.js + Express + SQLite (better-sqlite3).\n\n## Install\n\n```bash\nnpm install\n```\n\n## Run\n\n```bash\nnpm start          # listens on port 3000 (override with PORT env var)\n```\n\n## Test\n\n```bash\nnpm test           # runs Vitest against an in-memory DB (exit 0 = all green)\n```\n\n## Endpoints\n\n| Method | Path         | Description                                      |\n|--------|--------------|--------------------------------------------------|\n| POST   | /todos       | Create a todo `{ title, done? }`                 |\n| GET    | /todos       | List todos (optional `?done=true\\|false` filter) |\n| GET    | /todos/:id   | Get one todo                                     |\n| PUT    | /todos/:id   | Update `title` and/or `done`                     |\n| DELETE | /todos/:id   | Delete a todo (204 on success)                   |\n"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 2313,
+          "cache_read_input_tokens": 46263,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 2313
+          },
+          "output_tokens": 55,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "7c389f04-acfc-45fb-bfdb-6c73e896b496",
+      "request_id": "req_011Cbf7PpH3y4ZxsRZ8eGiGa"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_01RBi5VuCEJT7RHMUjaWPYUW",
+            "type": "tool_result",
+            "content": "File created successfully at: C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\README.md (file state is current in your context — no need to Read it back)"
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "fbc77964-5ec5-4b73-b7ac-7e927b743ecd",
+      "timestamp": "2026-06-02T21:04:08.037Z",
+      "tool_use_result": {
+        "type": "create",
+        "filePath": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\\README.md",
+        "content": "# TODO List API\n\nREST API for managing todos. Node.js + Express + SQLite (better-sqlite3).\n\n## Install\n\n```bash\nnpm install\n```\n\n## Run\n\n```bash\nnpm start          # listens on port 3000 (override with PORT env var)\n```\n\n## Test\n\n```bash\nnpm test           # runs Vitest against an in-memory DB (exit 0 = all green)\n```\n\n## Endpoints\n\n| Method | Path         | Description                                      |\n|--------|--------------|--------------------------------------------------|\n| POST   | /todos       | Create a todo `{ title, done? }`                 |\n| GET    | /todos       | List todos (optional `?done=true\\|false` filter) |\n| GET    | /todos/:id   | Get one todo                                     |\n| PUT    | /todos/:id   | Update `title` and/or `done`                     |\n| DELETE | /todos/:id   | Delete a todo (204 on success)                   |\n",
+        "structuredPatch": [],
+        "originalFile": null,
+        "userModified": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_017AeBuj2h8JHtD67kN1FbSf",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Now install and run the tests:"
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 387,
+          "cache_read_input_tokens": 48576,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 387
+          },
+          "output_tokens": 2,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "378f0afb-02ef-439e-8e5b-8d6749332a44",
+      "request_id": "req_011Cbf7QFw9WLZNwbhViR3Yv"
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_017AeBuj2h8JHtD67kN1FbSf",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_011x56AQWDLzGQuxWYyhCxeB",
+            "name": "PowerShell",
+            "input": {
+              "command": "cd \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\"; npm install 2>&1",
+              "description": "Install npm dependencies",
+              "timeout": 120000
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 387,
+          "cache_read_input_tokens": 48576,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 387
+          },
+          "output_tokens": 2,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "ef924dcb-bc3d-40e1-b2a5-be2ac6bf3466",
+      "request_id": "req_011Cbf7QFw9WLZNwbhViR3Yv"
+    },
+    {
+      "type": "system",
+      "subtype": "task_started",
+      "task_id": "b0p15niya",
+      "tool_use_id": "toolu_011x56AQWDLzGQuxWYyhCxeB",
+      "description": "Install npm dependencies",
+      "task_type": "local_bash",
+      "uuid": "38a2a02c-413c-442e-a565-5efb8fad41d1",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "task_notification",
+      "task_id": "b0p15niya",
+      "tool_use_id": "toolu_011x56AQWDLzGQuxWYyhCxeB",
+      "status": "completed",
+      "output_file": "",
+      "summary": "Install npm dependencies",
+      "uuid": "407521d5-5463-4593-b7f5-68fb6a39d26f",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_011x56AQWDLzGQuxWYyhCxeB",
+            "type": "tool_result",
+            "content": "npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.\n\nadded 170 packages, and audited 171 packages in 11s\n\n39 packages are looking for funding\n  run `npm fund` for details\n\n5 vulnerabilities (4 moderate, 1 critical)\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force\n\nRun `npm audit` for details.\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+            "is_error": false
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "d580f4db-d609-49ca-8f19-e8c1615dc6e2",
+      "timestamp": "2026-06-02T21:04:30.063Z",
+      "tool_use_result": {
+        "stdout": "npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.\n\nadded 170 packages, and audited 171 packages in 11s\n\n39 packages are looking for funding\n  run `npm fund` for details\n\n5 vulnerabilities (4 moderate, 1 critical)\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force\n\nRun `npm audit` for details.",
+        "stderr": "\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+        "interrupted": false,
+        "isImage": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01LczeZL4bPNtJeJrfDhS334",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01AvJx5JA3FFo11UPmXwLnPw",
+            "name": "PowerShell",
+            "input": {
+              "command": "cd \"C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla\"; npm test 2>&1",
+              "description": "Run Vitest test suite",
+              "timeout": 60000
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 281,
+          "cache_read_input_tokens": 48963,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 281
+          },
+          "output_tokens": 59,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "60d27265-0fec-4932-90be-1656e477422e",
+      "request_id": "req_011Cbf7Rsx84djw1PHG3qsve"
+    },
+    {
+      "type": "system",
+      "subtype": "task_started",
+      "task_id": "bonzw9ke2",
+      "tool_use_id": "toolu_01AvJx5JA3FFo11UPmXwLnPw",
+      "description": "Run Vitest test suite",
+      "task_type": "local_bash",
+      "uuid": "4763e1be-033d-408d-ae01-1e032ba256a2",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "system",
+      "subtype": "task_notification",
+      "task_id": "bonzw9ke2",
+      "tool_use_id": "toolu_01AvJx5JA3FFo11UPmXwLnPw",
+      "status": "completed",
+      "output_file": "",
+      "summary": "Run Vitest test suite",
+      "uuid": "bbcfb562-c47b-4fbc-8ce4-8f26b2accfcd",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "user",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "tool_use_id": "toolu_01AvJx5JA3FFo11UPmXwLnPw",
+            "type": "tool_result",
+            "content": "> todo-api@1.0.0 test\n> vitest run\n\n\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90mC:/Users/Administrador/AppData/Local/Temp/ab-proj-vanilla\u001b[39m\n\n \u001b[32m✓\u001b[39m test/todos.test.js \u001b[2m(\u001b[22m\u001b[2m22 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[90m 253\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m22 passed\u001b[39m\u001b[22m\u001b[90m (22)\u001b[39m\n\u001b[2m   Start at \u001b[22m 18:04:37\n\u001b[2m   Duration \u001b[22m 1.67s\u001b[2m (transform 52ms, setup 0ms, collect 530ms, tests 253ms, environment 0ms, prepare 219ms)\u001b[22m\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+            "is_error": false
+          }
+        ]
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "efcd24e9-3b7f-4340-9205-1d0939f9328a",
+      "timestamp": "2026-06-02T21:04:42.723Z",
+      "tool_use_result": {
+        "stdout": "> todo-api@1.0.0 test\n> vitest run\n\n\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90mC:/Users/Administrador/AppData/Local/Temp/ab-proj-vanilla\u001b[39m\n\n \u001b[32m✓\u001b[39m test/todos.test.js \u001b[2m(\u001b[22m\u001b[2m22 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[90m 253\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m22 passed\u001b[39m\u001b[22m\u001b[90m (22)\u001b[39m\n\u001b[2m   Start at \u001b[22m 18:04:37\n\u001b[2m   Duration \u001b[22m 1.67s\u001b[2m (transform 52ms, setup 0ms, collect 530ms, tests 253ms, environment 0ms, prepare 219ms)\u001b[22m",
+        "stderr": "\nShell cwd was reset to C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\ab-proj-vanilla",
+        "interrupted": false,
+        "isImage": false
+      }
+    },
+    {
+      "type": "assistant",
+      "message": {
+        "model": "claude-sonnet-4-6",
+        "id": "msg_01RMKRVpJaPjDEsuaMbdYGf3",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "All 22 tests pass, exit code 0.\n\n**What was built:**\n\n| File | Purpose |\n|---|---|\n| `src/db.js` | Creates/migrates SQLite DB (`todos` table auto-created on boot) |\n| `src/app.js` | Express app factory `createApp(db)` — all 5 CRUD routes + validation |\n| `src/server.js` | Calls `createApp` with the real `todos.db` and starts listening |\n| `test/todos.test.js` | 22 Vitest + Supertest tests against isolated in-memory DBs |\n| `package.json` | ESM (`\"type\":\"module\"`), `start` + `test` scripts |\n\n**Test coverage (22 cases):**\n- POST: happy path, `done=true`, missing title, empty title, title > 200 chars, non-boolean done, malformed JSON\n- GET list: all todos, `?done=true` filter, `?done=false` filter\n- GET /:id: found, 404, 400 non-numeric id\n- PUT: full update, 404, 400 non-numeric id, non-boolean done, empty title on update\n- DELETE: success 204, confirms deletion via GET, 404, 400 non-numeric id"
+          }
+        ],
+        "stop_reason": null,
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1,
+          "cache_creation_input_tokens": 425,
+          "cache_read_input_tokens": 49244,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 425
+          },
+          "output_tokens": 7,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        },
+        "diagnostics": null,
+        "context_management": null
+      },
+      "parent_tool_use_id": null,
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "uuid": "2c70aede-ed4d-4ff6-9837-b7c1dbadb803",
+      "request_id": "req_011Cbf7Sp6iazJMuHzt5CZMv"
+    },
+    {
+      "type": "system",
+      "subtype": "post_turn_summary",
+      "summarizes_uuid": "2c70aede-ed4d-4ff6-9837-b7c1dbadb803",
+      "status_category": "review_ready",
+      "status_detail": "TODO List API built and tested: 22 tests pass (exit 0)",
+      "needs_action": "",
+      "uuid": "a699c228-fcc3-4f1f-87d5-184c54515426",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6"
+    },
+    {
+      "type": "result",
+      "subtype": "success",
+      "is_error": false,
+      "api_error_status": null,
+      "duration_ms": 269411,
+      "duration_api_ms": 175927,
+      "ttft_ms": 87290,
+      "num_turns": 12,
+      "result": "All 22 tests pass, exit code 0.\n\n**What was built:**\n\n| File | Purpose |\n|---|---|\n| `src/db.js` | Creates/migrates SQLite DB (`todos` table auto-created on boot) |\n| `src/app.js` | Express app factory `createApp(db)` — all 5 CRUD routes + validation |\n| `src/server.js` | Calls `createApp` with the real `todos.db` and starts listening |\n| `test/todos.test.js` | 22 Vitest + Supertest tests against isolated in-memory DBs |\n| `package.json` | ESM (`\"type\":\"module\"`), `start` + `test` scripts |\n\n**Test coverage (22 cases):**\n- POST: happy path, `done=true`, missing title, empty title, title > 200 chars, non-boolean done, malformed JSON\n- GET list: all todos, `?done=true` filter, `?done=false` filter\n- GET /:id: found, 404, 400 non-numeric id\n- PUT: full update, 404, 400 non-numeric id, non-boolean done, empty title on update\n- DELETE: success 204, confirms deletion via GET, 404, 400 non-numeric id",
+      "stop_reason": "end_turn",
+      "session_id": "3124f8f0-86b4-4cf4-9142-a142f0bb8cf6",
+      "total_cost_usd": 0.42959765000000005,
+      "usage": {
+        "input_tokens": 13,
+        "cache_creation_input_tokens": 24767,
+        "cache_read_input_tokens": 497438,
+        "output_tokens": 12412,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 24767,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 1,
+            "output_tokens": 310,
+            "cache_read_input_tokens": 49244,
+            "cache_creation_input_tokens": 425,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 425
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "modelUsage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 1181,
+          "outputTokens": 18,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0,
+          "webSearchRequests": 0,
+          "costUSD": 0.001271,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        },
+        "claude-sonnet-4-6": {
+          "inputTokens": 13,
+          "outputTokens": 12412,
+          "cacheReadInputTokens": 497438,
+          "cacheCreationInputTokens": 24767,
+          "webSearchRequests": 0,
+          "costUSD": 0.42832665000000003,
+          "contextWindow": 200000,
+          "maxOutputTokens": 32000
+        }
+      },
+      "permission_denials": [],
+      "terminal_reason": "completed",
+      "fast_mode_state": "off",
+      "uuid": "6b523c2b-e527-4709-8e12-3834cc91a489"
+    }
+  ]
+}

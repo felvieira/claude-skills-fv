@@ -38,8 +38,12 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
 6. Snapshot inicial: rodar `git diff --stat` para baseline
 
 ### Fase 1 — Plan (máx 2 iterações)
-1. Classificar a task (feature/bugfix/refactor) e montar pipeline mínimo
-2. Escrever plano em `.auto/plan.md` com checkboxes:
+1. Classificar a task e inferir escopo completo — **não só o que foi pedido explicitamente**:
+   - Contém "app", "sistema", "plataforma", "interface", "tela", "dashboard", "UI", "frontend"? → incluir frontend no escopo; invocar skill `02-ui-ux-design` antes do backend
+   - Contém "API", "endpoint", "backend", "serviço"? → backend only, skip UI
+   - Ambíguo ("app de TODO")? → assumir fullstack (UI + API) e anotar a assunção no `.auto/plan.md`
+2. Montar pipeline mínimo baseado no escopo inferido
+3. Escrever plano em `.auto/plan.md` com checkboxes:
    ```markdown
    ## Plano Autônomo
    **Task:** [descrição]
@@ -64,7 +68,11 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
 
 ### Fase 2 — Build (budget dinâmico)
 1. Para cada task, implementar e marcar `[x]` no `.auto/plan.md`
-2. Rodar testes existentes após cada arquivo como sanity check
+2. **Entregáveis obrigatórios em TODO projeto** (incluir no plano se não existirem):
+   - `.gitignore` — com entradas para o stack detectado (Node: `node_modules/`, `*.db`, `*.db-shm`, `*.db-wal`, `coverage/`, `dist/`; Python: `__pycache__/`, `*.pyc`, `.venv/`, `.env`)
+   - `vitest.config.js` / `jest.config.js` — com `coverage` configurado (provider, reporters, thresholds) se o projeto usa testes
+   - `README.md` — install, run, test, env vars necessárias
+3. Rodar testes existentes após cada arquivo como sanity check
 3. Append em `.auto/progress.md` após cada task:
    ```
    ## Iteração N — [fase]
@@ -139,7 +147,14 @@ Parar imediatamente se:
 **Plan status:** [N/M tasks — ver .auto/plan.md]
 ```
 
-## Uso
+## Uso headless (Agent SDK / claude -p)
+
+Slash commands **não resolvem** em modo `claude -p` não-interativo. Para usar `/auto` headless:
+- **Via Agent SDK (recomendado):** spawn subagent com este conteúdo injetado via system prompt — é a forma mais fiel
+- **Via `--append-system-prompt`:** `claude -p "<task>" --plugin-dir <kit> --append-system-prompt "$(cat commands/auto.md)"`
+- `/auto` em sessão interativa funciona normalmente
+
+## Uso interativo
 
 ```
 /auto [descrição completa da task]

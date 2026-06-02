@@ -1,0 +1,14 @@
+══════════════════════════════════════════════════════════════════════
+  A/B REAL — Claude vanilla vs Dev Team Kit
+  Tarefa: D:\Repos\claude-skills-fv\bench\ab\task.md
+  Braços: vanilla | model=sonnet | max-turns=60
+══════════════════════════════════════════════════════════════════════
+
+▶ [vanilla] iniciando (model=sonnet, max-turns=60)…
+..........................................
+✔ [vanilla] terminou em 282.0s, exit=0, eventos=42
+  trace → D:\Repos\claude-skills-fv\bench\ab\out\vanilla-trace.json
+
+✅ Braços concluídos. Próximo passo:
+   node bench/ab/instrument.mjs   # extrai métricas dos traces
+   node bench/ab/report/generate.mjs  # gera o HTML
