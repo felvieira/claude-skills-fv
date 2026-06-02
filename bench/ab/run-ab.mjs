@@ -46,8 +46,10 @@ const ARM_FILTER = val("--arm", null);             // "vanilla" | "kit" | null(a
 const MAX_TURNS = Number(val("--max-turns", 60));
 const MODEL = val("--model", "sonnet");
 const DRY = has("--dry");
+const TASK_FILE = val("--task", "task.md");        // task-v2.md, etc.
+const RUN_SUFFIX = val("--suffix", "");            // "-v2" → ab-proj-vanilla-v2
 
-const TASK = readFileSync(join(__dirname, "task.md"), "utf8");
+const TASK = readFileSync(join(__dirname, TASK_FILE), "utf8");
 
 // ─── isolamento de config ────────────────────────────────────────────────────
 
@@ -62,14 +64,26 @@ function makeIsolatedConfig(armName) {
 
   // CLAUDE.md VAZIO → zero instruções globais vazando pro vanilla
   writeFileSync(join(cfg, "CLAUDE.md"), "");
-  // settings mínimo: sem hooks, sem nada
-  writeFileSync(join(cfg, "settings.json"), JSON.stringify({}, null, 2));
+  // copiar settings do ~/.claude para preservar bypassPermissionsModeAccepted e outros campos críticos
+  // mas remover hooks e plugins para isolamento real
+  const realSettings = join(homedir(), ".claude", "settings.json");
+  let settings = {};
+  if (existsSync(realSettings)) {
+    try {
+      settings = JSON.parse(readFileSync(realSettings, "utf8"));
+    } catch {}
+  }
+  // remover hooks, plugins e instruções globais — manter só auth/permissions
+  delete settings.hooks;
+  delete settings.plugins;
+  delete settings.mcpServers;
+  writeFileSync(join(cfg, "settings.json"), JSON.stringify(settings, null, 2));
 
   return cfg;
 }
 
 function makeProjectDir(armName) {
-  const proj = join(tmpdir(), `ab-proj-${armName}`);
+  const proj = join(tmpdir(), `ab-proj-${armName}${RUN_SUFFIX}`);
   rmSync(proj, { recursive: true, force: true });
   mkdirSync(proj, { recursive: true });
   // CLAUDE.md de projeto também vazio (não dar pista de stack pré-mastigada)
@@ -155,8 +169,9 @@ function runArm(armName) {
         projectDir: proj,
         events,
       };
-      const outFile = join(OUT, `${armName}-trace.json`);
-      mkdirSync(OUT, { recursive: true });
+      const runOut = RUN_SUFFIX ? join(OUT, `run${RUN_SUFFIX}`) : OUT;
+      const outFile = join(runOut, `${armName}-trace.json`);
+      mkdirSync(runOut, { recursive: true });
       writeFileSync(outFile, JSON.stringify(trace, null, 2));
       console.log(`  trace → ${outFile}`);
       resolve(trace);
@@ -169,7 +184,7 @@ function runArm(armName) {
 const arms = ARM_FILTER ? [ARM_FILTER] : ["vanilla", "kit"];
 console.log("═".repeat(70));
 console.log("  A/B REAL — Claude vanilla vs Dev Team Kit");
-console.log(`  Tarefa: ${join(__dirname, "task.md")}`);
+console.log(`  Tarefa: ${join(__dirname, TASK_FILE)}`);
 console.log(`  Braços: ${arms.join(", ")} | model=${MODEL} | max-turns=${MAX_TURNS}`);
 console.log("═".repeat(70));
 
