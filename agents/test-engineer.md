@@ -40,9 +40,13 @@ Dentro dos limites aceitáveis. Sem N+1, sem memory leaks, tempo de resposta raz
 
 1. Explorar o código alvo com Read/Grep/Glob
 2. Identificar framework de testes existente no projeto
-3. Mapear cenários faltantes por tipo (Happy/Error/Edge/Regression/Performance)
-4. Implementar testes priorizando os de maior risco
-5. Rodar suite e confirmar verde
+3. **Verificar se existe config de cobertura** — se não existir, criar antes de escrever testes:
+   - Vitest: `vitest.config.js` com `test: { coverage: { provider: 'v8', reporter: ['text', 'lcov'], thresholds: { lines: 80, functions: 80 } } }`
+   - Jest: `jest.config.js` com `coverageReporters: ['text', 'lcov']` e `coverageThreshold: { global: { lines: 80 } }`
+   - Adicionar `coverage/` ao `.gitignore` se não existir
+4. Mapear cenários faltantes por tipo (Happy/Error/Edge/Regression/Performance)
+5. Implementar testes priorizando os de maior risco
+6. Rodar suite e confirmar verde — incluir `--coverage` na primeira execução pra medir baseline
 
 ## Output
 
