@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.32.0-pre-build-gate] - 2026-06-03
+
+Leva o "pare e decida antes de codar" de cada disciplina — que o `/auto` tem nas suas fases — para o **modo passivo** (sem `/auto`). Antes, o passivo dependia 100% de rules path-scoped que só ativam quando você já está editando o arquivo; a decisão de contrato/schema/design precisa acontecer *antes* da primeira linha. Este gate resolve o timing.
+
+### Adicionado
+- **Hook `pre-build-gate.mjs`** (UserPromptSubmit): detecta intenção de criação no prompt e injeta o checklist de decisão da disciplina certa — uma vez por disciplina por sessão, ignorando prompts informacionais. Aponta para a rule profunda em vez de duplicar conteúdo. Disciplinas: acceptance-criteria, ui-design, api-contract, schema-integrity, deploy-readiness.
+- **4 rules de decisão por disciplina:**
+  - `rules/common/acceptance-criteria.md` — defina "done" (critérios observáveis, 4 caminhos) antes de implementar; não invente nem corte escopo.
+  - `rules/backend/api-contract.md` — formato de erro padrão + mapa de status codes + serializer consistente antes da primeira rota.
+  - `rules/backend/deploy-readiness.md` — healthcheck, env vars documentadas, graceful shutdown, logs estruturados antes de "done".
+  - `rules/database/schema-integrity.md` — constraints (NOT NULL/CHECK/FK/UNIQUE), índices, FK enforcement, migrations versionadas antes do primeiro INSERT.
+- **Novas categorias de rules** `backend/`, `database/`, `frontend/` (disciplina, não linguagem) documentadas em `rules/README.md`.
+
+### Por quê
+O bench A/B (v2.31.0) mostrou que cada app inventava seu próprio formato de erro, schema sem constraints, e escopo extra que ninguém pediu — porque nenhuma decisão era tomada antes de codar. O `/auto` já força isso nas fases; o modo passivo não tinha equivalente. Agora tem.
+
+---
+
 ## [2.31.0-design-aware-auto] - 2026-06-02
 
 Melhorias descobertas e validadas por um bench A/B real (`bench/ab/`, 3 rounds executando "crie um app completo todo list com crud" em Claude puro vs kit-passivo vs kit+/auto). O bench expôs que os 3 braços geravam a mesma UI genérica (indigo + system-ui) porque nenhum tomava decisão de design.

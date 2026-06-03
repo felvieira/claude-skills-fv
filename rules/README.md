@@ -49,14 +49,22 @@ cp -r rules/react .claude/rules/dev-team-kit/
 
 > **Do NOT flatten** (`rules/*/`) into one directory. `common/` and language dirs share filenames (`security.md`, `testing.md`...); flattening makes language files clobber common and breaks the `../common/` references.
 
-## Languages shipped (MVP)
+## Categories shipped
 
-- `common/` — 8 agnostic files (always apply)
+**By language** (path-scoped to file extensions):
+- `common/` — agnostic principles (always apply): coding-style, testing, security, patterns, performance, git-workflow, code-review, development-workflow, acceptance-criteria
 - `typescript/` — TS/JS
 - `python/` — Python
 - `react/` — React/Next.js (`.tsx`/`.jsx`)
 
-## Adding a language
+**By discipline** (path-scoped to the files where the decision matters — the "decide before you code" rules that bring the `/auto` phase gates into passive mode):
+- `frontend/` — `ui-design.md` (aesthetic anchor before styling; scoped to `.css`/`.tsx`/`public/**`)
+- `backend/` — `api-contract.md` (error shape + status codes before the first route), `deploy-readiness.md` (healthcheck/env/graceful-shutdown before "done")
+- `database/` — `schema-integrity.md` (constraints/indexes/FK before the first INSERT)
+
+These discipline rules pair with the `pre-build-gate` hook (UserPromptSubmit), which detects creation intent in the prompt and injects the matching checklist *before* coding starts — even without `/auto`.
+
+## Adding a language or discipline
 
 1. `mkdir rules/<lang>/`
 2. Add the files you have content for: `coding-style.md`, `testing.md`, `patterns.md`, `security.md` (only what's worth saying — don't pad).
