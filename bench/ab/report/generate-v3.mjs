@@ -151,6 +151,10 @@ table.cmp th{color:var(--mut);font-weight:600;background:#0d1117}
 .memrow.win{background:#0f1f0f}
 .memrow.lose{background:#1f1010}
 .memnote{font-size:11px;color:#8b949e;margin-top:8px;line-height:1.5;font-style:italic}
+.badge-m,.badge-e,.badge-n{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;vertical-align:middle;margin-left:6px}
+.badge-m{background:#0f2f1a;color:#3fb950;border:1px solid #3fb95055}
+.badge-e{background:#2f1f0f;color:#f0883e;border:1px solid #f0883e55}
+.badge-n{background:#1a1a2f;color:#58a6ff;border:1px solid #58a6ff55}
 code{background:#21262d;padding:1px 5px;border-radius:4px;font-size:11px;font-family:monospace}
 .ftree{background:#0d1117;border:1px solid;border-radius:8px;padding:10px;font:11px monospace;line-height:1.7}
 .fth{font-weight:700;margin-bottom:4px;font-size:12px}
@@ -173,7 +177,17 @@ canvas{max-height:200px}
   vanilla → node:test + in-memory | kit-passivo → Vitest + SQLite + WAL + security headers (via rules) | kit-auto → tudo + ESLint + git commit
 </div>
 
-<h2>📸 Apps gerados — frontends reais no browser</h2>
+<div class="note" style="border-color:#f0883e66">
+  <b>⚠ Metodologia — o que é MEDIDO vs ESTIMADO (honestidade):</b>
+  <ul style="margin:6px 0 0 18px;font-size:12px">
+    <li><span class="badge-m">MEDIDO</span> Arquivos gerados, testes passando, stack escolhida, UI (screenshots) — lidos do disco / capturados do browser real.</li>
+    <li><span class="badge-e">ESTIMADO</span> Custos em $ — os 3 braços rodaram via Agent SDK (subagent), que reporta <code>subagent_tokens</code> mas não <code>total_cost_usd</code>. O $ é <code>tokens × tarifa Sonnet</code>, aproximação ±15%.</li>
+    <li><span class="badge-e">SIMULADO</span> Seções de Memória e Contexto/compact abaixo — modelo de 800 tok/turno, não uma sessão real de 100 turnos. Os parâmetros são reais; a projeção é um modelo.</li>
+    <li><span class="badge-n">NOTA</span> Round 1/2 rodaram via <code>claude -p</code> headless (custo real). Round 3 via Agent SDK (401 de auth bloqueou headless). Rounds não são 100% comparáveis em metodologia de execução.</li>
+  </ul>
+</div>
+
+<h2>📸 Apps gerados — frontends reais no browser <span class="badge-m">MEDIDO</span></h2>
 <p class="sub">Screenshots reais capturados via Playwright. Cada UI foi criada pelo agente sem nenhuma instrução de design.</p>
 <div class="g3">
   ${ARMS.map(armCard).join("")}
@@ -212,7 +226,7 @@ canvas{max-height:200px}
 
 
 <!-- ══ CUSTO ACUMULADO — 3 ROUNDS ══ -->
-<h2>💰 Custo real — todos os rounds</h2>
+<h2>💰 Custo — todos os rounds <span class="badge-e">ESTIMADO</span></h2>
 <p class="sub">Dados reais capturados dos traces. Round 1 = spec detalhada. Round 2 = spec + .gitignore obrigatório. Round 3 = prompt natural.</p>
 <div class="chartbox"><canvas id="costChart"></canvas></div>
 <table class="cmp" style="margin-top:12px">
@@ -227,7 +241,7 @@ canvas{max-height:200px}
 </div>
 
 <!-- ══ MEMÓRIA — O QUE PERSISTE ALÉM DA SESSÃO ══ -->
-<h2>🧠 Memória — o que persiste quando a sessão acaba</h2>
+<h2>🧠 Memória — o que persiste quando a sessão acaba <span class="badge-m">MEDIDO</span></h2>
 <p class="sub">Esta é a diferença invisível nos screenshots: o que cada braço "lembra" na próxima sessão.</p>
 <div class="g3">
   <div class="card" style="border-color:#6e767140">
@@ -257,7 +271,7 @@ canvas{max-height:200px}
 </div>
 
 <!-- ══ CONTEXTO — JANELA E COMPACT ══ -->
-<h2>📐 Contexto — janela de tokens e comportamento de compact</h2>
+<h2>📐 Contexto — janela de tokens e comportamento de compact <span class="badge-e">SIMULADO</span></h2>
 <p class="sub">Modelo: ~800 tokens/turno acumulados. Janela: 200k tokens. Dados simulados com parâmetros reais medidos.</p>
 <div class="chartbox"><canvas id="ctxChart"></canvas></div>
 <table class="cmp" style="margin-top:12px">
@@ -275,7 +289,7 @@ canvas{max-height:200px}
 </div>
 
 <!-- ══ CUSTO COMPARATIVO COM COMPACT ══ -->
-<h2>📊 Custo acumulado — com e sem compact periódico</h2>
+<h2>📊 Custo acumulado — com e sem compact periódico <span class="badge-e">SIMULADO</span></h2>
 <p class="sub">Custo total de 100 turnos de desenvolvimento. Cada turno: ~800 tokens de histórico acumulado.</p>
 <div class="chartbox"><canvas id="cumChart"></canvas></div>
 <div class="note">

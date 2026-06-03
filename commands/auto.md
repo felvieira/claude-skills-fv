@@ -24,10 +24,12 @@ Leia o guia com o Read tool agora. Depois execute o loop completo sem parar para
 ## Loop Autônomo
 
 ```
-PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
-  ↑                              |
-  └──────── se falhar ───────────┘
+PLAN → [UI-DESIGN] → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
+  ↑                                          |
+  └──────────────── se falhar ──────────────┘
 ```
+
+`UI-DESIGN` só roda quando o escopo inclui frontend (ver Fase 1). É um **gate**: o BUILD de qualquer arquivo visual não começa antes de a âncora estética estar escolhida e os tokens definidos.
 
 ### Fase 0 — Setup
 1. Criar diretório `.auto/` para tracking de progresso
@@ -57,14 +59,33 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
    - [ ] [validação — lint/typecheck/build]
    - [ ] [review — self-review]
 
-   ### Critérios de Done
-   - [ ] Testes passando
+   ### Critérios de Done (gates HARD — não é "se der tempo")
+   - [ ] Testes passando (saída real do runner colada, exit 0)
+   - [ ] **Coverage config existe** (`vitest.config.js`/`jest.config.js` com `coverage` + threshold) — obrigatório em todo projeto com testes, sem exceção
+   - [ ] **`.gitignore` existe** com entradas do stack
    - [ ] Lint passando
+   - [ ] Se fullstack: seção `## UI Design` preenchida com âncora ≠ genérica
    - [ ] Zero findings críticos no review
    - [ ] Commit criado
    ```
 3. Se ambíguo: resolver via codebase — **não perguntar**
 4. Budget: 1-2 tasks = 8 iterações, 3-4 tasks = 12, 5+ = 15
+
+### Fase 1.5 — UI-Design (GATE — só se o escopo inclui frontend)
+
+Pular esta fase inteira se o escopo é backend-only (API, CLI, lib). Caso contrário, é **obrigatória antes do BUILD** de qualquer arquivo visual (`.css`, `.tsx`, `public/`, componentes):
+
+1. **Invocar a skill de design**: `Skill({ skill: "dev-team-kit-fv:02-ui-ux-design" })` — não improvisar o frontend. A skill define âncora estética, tokens e acessibilidade.
+2. **Escolher UMA âncora estética** e registrar em `.auto/plan.md` na seção `## UI Design`:
+   ```markdown
+   ## UI Design
+   **Âncora estética:** [Brutally minimal | Editorial | Warm/organic | Technical | Playful | Refined dark]
+   **Paleta:** bg=[hex] surface=[hex] accent=[hex] text=[hex] danger=[hex]
+   **Tipografia:** [família escolhida — NÃO system-ui sozinho]
+   **Idioma da UI:** [match com a linguagem do prompt/spec]
+   ```
+3. **Proibido o default genérico:** se a paleta tem indigo `#4f46e5`/`#6366f1` e a fonte é só `system-ui`, a decisão NÃO foi tomada — voltar e escolher de verdade. (Ver `rules/frontend/ui-design.md`.)
+4. Só depois de a seção `## UI Design` estar preenchida o BUILD de arquivos visuais pode começar.
 
 ### Fase 2 — Build (budget dinâmico)
 1. Para cada task, implementar e marcar `[x]` no `.auto/plan.md`
@@ -93,9 +114,10 @@ PLAN → BUILD → TEST → FIX → VALIDATE → REVIEW → COMMIT
 ### Fase 4 — Validate (tiered, máx 2 iterações)
 1. Lint primeiro (~5s) → se falhar, corrigir só lint
 2. Type-check (~15s) → se falhar, corrigir
-3. Build (~60s) apenas quando todas as tasks do plano estão `[x]`
-4. Se build falhar: injetar erro completo como contexto → corrigir → re-rodar → se falhar 2x, extend budget +2 (uma vez só)
-5. Se sem ferramentas: pular com nota
+3. **Coverage gate:** se o projeto tem testes mas não tem `vitest.config.js`/`jest.config.js` com `coverage` configurado → criar AGORA (provider v8/istanbul, reporters `text`+`lcov`, threshold ≥80%). Não é opcional. Rodar `--coverage` uma vez para baseline.
+4. Build (~60s) apenas quando todas as tasks do plano estão `[x]`
+5. Se build falhar: injetar erro completo como contexto → corrigir → re-rodar → se falhar 2x, extend budget +2 (uma vez só)
+6. Se sem ferramentas: pular com nota
 
 ### Fase 5 — Review (1 iteração)
 1. Ler personas de review (tentar em ordem):
