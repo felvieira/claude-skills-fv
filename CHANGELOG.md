@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.33.0-ai-first-memory] - 2026-06-03
+
+Absorção do [obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain) (MIT) — as três técnicas de memória AI-first que faltavam ao nosso vault. Nosso kit já tinha a arquitetura (vault, curator, learned-skills, consolidate); faltavam as **convenções de qualidade da escrita**. Não trouxemos o peso do Obsidian (43 comandos, integrações Grok/YouTube) — só o que encaixa num dev-team-kit.
+
+### Adicionado
+- **`policies/memory-write-rules.md`** — anti-fabricação aplicada ao vault (o `claim-verifier`/`investigate-first` para memória, não código):
+  - **False absence** (o failure mode mais comum): nunca afirme que uma nota/decisão não existe sem busca exaustiva. Enumere, não amostre.
+  - **No fabrication**: `TBD` para o desconhecido; seção vazia é correta — não invente conteúdo de preenchimento.
+  - **Recency markers**: `(as of YYYY-MM, fonte)` em todo claim externo; fontes verbatim; níveis de confiança (`stated`/`high`/`medium`/`speculation`).
+- **`commands/reconcile-memory.md`** (`/reconcile-memory`) — detecta contradições no vault (decisão revertida/superada nunca atualizada) e resolve: mais novo + autoritativo vence com seção `## History`; ambíguo vira `conflicts/*.md` com flag pro usuário; evolução marca `superseded`. Mesmo workflow seguro do `/consolidate-memory` (snapshot → dry-run → confirma → apply → verify). Distingue "mudou de ideia com motivo" (evolução) de contradição real.
+- **Convenção "For future Claude"** no `skill 31 session-summary`: preâmbulo de 2-3 linhas + frontmatter rico (`ai-first: true`) que o futuro-Claude lê em 10s para decidir relevância antes de parsear o resto. Torna o `/resume` mais rápido e a memória retrievável, não só armazenada.
+
+### Por quê
+O vault só vale se o futuro-Claude confiar no que está escrito. O insight central do projeto absorvido: "false absence é o failure mode mais comum — mais que fabricação". Nosso curator fazia decay/dedup mas não tinha regra anti-fabricação nem detecção de contradições. Agora tem.
+
+---
+
 ## [2.32.0-pre-build-gate] - 2026-06-03
 
 Leva o "pare e decida antes de codar" de cada disciplina — que o `/auto` tem nas suas fases — para o **modo passivo** (sem `/auto`). Antes, o passivo dependia 100% de rules path-scoped que só ativam quando você já está editando o arquivo; a decisão de contrato/schema/design precisa acontecer *antes* da primeira linha. Este gate resolve o timing.

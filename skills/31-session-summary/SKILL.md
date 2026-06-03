@@ -52,8 +52,21 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 
 ## Formato do Resumo
 
+> Segue `policies/memory-write-rules.md`: preâmbulo "For future Claude", frontmatter rico, recency markers em claims externos, anti-fabricação (seção vazia é correta — não invente conteúdo de preenchimento).
+
 ```markdown
+---
+date: YYYY-MM-DD
+type: session-summary
+project: <slug>
+tags: [session, <projeto>, <temas>]
+ai-first: true
+---
+
 # Resumo de Sessao — YYYY-MM-DD
+
+## For future Claude
+Este resumo é de uma sessão sobre [tema] em [projeto], salvo em [data]. Cobre [o que foi feito] e deixa [pendência principal]. [Caveat de staleness se houver — ex: "decisões de stack podem ter mudado depois".]
 
 ## Pipeline Executado
 [nome do pipeline ou descricao]

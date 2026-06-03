@@ -2,6 +2,8 @@
 
 **Objetivo:** rotina periódica de manutenção do vault de memória persistente — merge de duplicatas, fix de fatos stale, prune do índice. Complementa `policies/memory-tiers.md` (que define a hierarquia 4-tier).
 
+> **Como escrever no vault:** toda nota produzida/atualizada na consolidação segue `policies/memory-write-rules.md` (anti-fabricação, false-absence, recency markers, preâmbulo "For future Claude"). **Contradições** entre notas (decisão revertida não atualizada) não são tarefa deste command — são do `/reconcile-memory`.
+
 **Quando rodar:**
 - semanalmente (cron / schedule)
 - após período de uso intenso (50+ sessions logadas)
