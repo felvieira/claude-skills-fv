@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# pre-commit — salvaguarda: dados de VAULT de memória nunca entram no kit.
+#
+# O kit (claude-skills-fv) é o MOTOR genérico e público. O vault de memória
+# (~/.claude-memory) é a memória PESSOAL do usuário — logs de sessão, decisões,
+# secrets. Estes NUNCA devem ser commitados no kit, mesmo com `git add -f`.
+#
+# Este hook aborta o commit se detectar arquivos com cara de vault no staging.
+# Instale com: bash scripts/git-hooks/install.sh
+#
+# Bypass intencional (raro, sob sua responsabilidade): git commit --no-verify
+
+set -euo pipefail
+
+# arquivos staged (Added/Copied/Modified/Renamed)
+staged=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true)
+[ -z "$staged" ] && exit 0
+
+violations=""
+
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  case "$f" in
+    secrets/*|*/secrets/*) violations+="  $f  (secrets/ — credenciais)\n" ;;
+    logs/20[0-9][0-9]-*-*.md) violations+="  $f  (log de sessão do vault)\n" ;;
+    */logs/20[0-9][0-9]-*-*.md) violations+="  $f  (log de sessão do vault)\n" ;;
+    architecture/*/decisions.md) violations+="  $f  (decisões do vault)\n" ;;
+    CRITICAL_FACTS.md|*/CRITICAL_FACTS.md) violations+="  $f  (identity do vault)\n" ;;
+    persona.md|*/persona.md) violations+="  $f  (persona L3 do vault)\n" ;;
+    .curator-state.json|.curator-pending.md) violations+="  $f  (estado do curador)\n" ;;
+    .index/*|*/.index/*) violations+="  $f  (índice semântico do vault)\n" ;;
+  esac
+done <<< "$staged"
+
+if [ -n "$violations" ]; then
+  echo ""
+  echo "🛑 pre-commit ABORTADO — dados de VAULT de memória no staging do kit."
+  echo ""
+  echo "O kit é público e genérico. Estes arquivos são memória PESSOAL e privada:"
+  echo -e "$violations"
+  echo "Eles pertencem ao seu vault (~/.claude-memory), não ao kit."
+  echo ""
+  echo "Como resolver:"
+  echo "  git reset HEAD <arquivo>      # tira do staging"
+  echo "  (ou mova o arquivo para o vault, fora deste repo)"
+  echo ""
+  echo "Se você REALMENTE quer commitar (raríssimo): git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0

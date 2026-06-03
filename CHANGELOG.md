@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.34.1-vault-leak-guard] - 2026-06-03
+
+Salvaguarda: dados de vault de memória **nunca** vazam para o kit (que é público). Complementa a unificação da v2.34.0 — agora que o kit cria/opera o vault, é crítico garantir que a memória PESSOAL (logs, decisões, secrets) não seja commitada acidentalmente no repo público do kit.
+
+### Adicionado
+- **`.gitignore`** do kit agora bloqueia padrões de vault: `secrets/`, `logs/20*-*.md`, `architecture/*/decisions.md`, `inbox/`, `.index/`, `.curator-*`, `CRITICAL_FACTS.md`, `persona.md`.
+- **`scripts/git-hooks/pre-commit`** — segunda camada (mais forte que `.gitignore`, que pode ser furado com `git add -f`): aborta o commit se detectar arquivos com cara de vault no staging, com mensagem explicando o porquê e como resolver. Bypass intencional: `git commit --no-verify`.
+- **`scripts/git-hooks/install.sh`** — instala o pre-commit no repo do kit (idempotente, faz backup de hook existente).
+
+### Validação
+- Teste 1: `git add -f logs/2026-01-01-fake-session.md && git commit` → **abortado** com mensagem clara.
+- Teste 2: arquivos legítimos do kit (`.gitignore`, scripts) → **passam** sem falso positivo.
+
+### Por quê
+Você perguntou: "minhas memórias não foram pro kit, né?". Não foram — e esta salvaguarda garante que nunca vão, nem por acidente. O kit é o motor genérico público; o vault é seu, privado.
+
+---
+
 ## [2.34.0-unified-vault] - 2026-06-03
 
 Unifica kit + memória. Antes, o vault de memória era um sistema **separado** que o usuário montava à mão (git init, scripts, CLAUDE.md) e o kit assumia um path hardcoded (`D:/claude-memory` — o path pessoal do autor). Agora **instalar o kit cria o vault automaticamente**, num path **portável**.
