@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.31.0-design-aware-auto] - 2026-06-02
+
+Melhorias descobertas e validadas por um bench A/B real (`bench/ab/`, 3 rounds executando "crie um app completo todo list com crud" em Claude puro vs kit-passivo vs kit+/auto). O bench expôs que os 3 braços geravam a mesma UI genérica (indigo + system-ui) porque nenhum tomava decisão de design.
+
+### Adicionado
+- **Fase UI-DESIGN no `/auto`** como gate: `PLAN → [UI-DESIGN] → BUILD`. Quando o escopo inclui frontend, o build de qualquer arquivo visual fica bloqueado até a âncora estética estar escolhida. Invoca `Skill(02-ui-ux-design)` de verdade — antes só improvisava frontend genérico.
+- **`rules/frontend/ui-design.md`** — nova categoria de rule path-scoped (`**/*.css`, `**/*.tsx`, `**/public/**`, etc.). Força escolher 1 âncora estética antes de estilizar e **proíbe o default genérico** (`#4f46e5`/`#6366f1` indigo + `system-ui` sozinho). Cobre o modo passivo também, não só `/auto`.
+
+### Mudado
+- **Coverage config virou gate HARD** no `/auto` (Fase 4 Validate + Critérios de Done). Cria `vitest.config.js`/`jest.config.js` com coverage+threshold se não existir. Era inconsistente entre execuções — agora determinístico.
+- **Scope inference movido para `rules/common/development-workflow.md`**: "app/sistema/plataforma" → fullstack. O kit-passivo herda a inferência, não só o `/auto`.
+
+### Validação
+- Subagent rodou `/auto` v2.31.0 com o mesmo prompt que gerava UI genérica: desta vez escolheu âncora **Refined dark**, accent **teal `#00d4aa`** (não indigo), tipografia **Inter + Geist Mono** (não system-ui), invocou a skill de design, criou coverage config + `.gitignore`, 27 testes passando. Prova visual em `bench/ab/out/screenshots-v3/kit-v231-refined-dark.png`.
+
+---
+
 ## [2.29.0-claim-verifier-context-hygiene] - 2026-06-02
 
 Dois hooks que resolvem falsa confiança no output do agente e contexto inflado em sessões longas.
