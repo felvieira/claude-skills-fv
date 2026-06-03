@@ -698,5 +698,23 @@ for s in "${MANUAL_STEPS[@]}"; do
 done
 
 echo ""
+
+# ---------------------------------------------------------------------------
+# Step: criar o vault de memória persistente (portável: ~/.claude-memory)
+# ---------------------------------------------------------------------------
+# Unifica kit + memória: instalar o kit já cria o vault. Idempotente — se já
+# existe (ou $CLAUDE_MEMORY_VAULT aponta pra um), não sobrescreve nada.
+VAULT_INIT="$SCRIPT_DIR/scripts/init-vault.mjs"
+[[ -f "$VAULT_INIT" ]] || VAULT_INIT="$TARGET_DIR/.bot/scripts/init-vault.mjs"
+if command -v node >/dev/null 2>&1 && [[ -f "$VAULT_INIT" ]]; then
+  echo " ${GREEN}Vault de memória:${RESET}"
+  node "$VAULT_INIT" 2>&1 | sed 's/^/   /'
+  echo ""
+else
+  echo " ${YELLOW}Vault de memória:${RESET} pulado (Node não encontrado ou script ausente)."
+  echo "   Crie manualmente depois: ${BOLD}node .bot/scripts/init-vault.mjs${RESET}"
+  echo ""
+fi
+
 ok "Kit instalado em $TARGET_DIR/.bot/"
 echo ""

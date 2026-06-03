@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.34.0-unified-vault] - 2026-06-03
+
+Unifica kit + memória. Antes, o vault de memória era um sistema **separado** que o usuário montava à mão (git init, scripts, CLAUDE.md) e o kit assumia um path hardcoded (`D:/claude-memory` — o path pessoal do autor). Agora **instalar o kit cria o vault automaticamente**, num path **portável**.
+
+### Adicionado
+- **`scripts/init-vault.mjs`** — cria o vault se não existir: estrutura (`logs/`, `architecture/`, `secrets/`, `templates/`, `inbox/`), `CLAUDE.md` com as regras de escrita (preâmbulo For-future-Claude + anti-fabricação), `.gitignore` protegendo `secrets/`/`.index/`/caches, e `git init` + commit inicial. **Idempotente** — se o vault já existe, não sobrescreve nada.
+- **`scripts/vault-resolver.mjs`** — fonte canônica do path do vault, resolução **portável**: `$CLAUDE_MEMORY_VAULT` → `~/.claude-memory` (novo padrão, Windows/Mac/Linux) → `D:/claude-memory` (legado) → `~/claude-memory` (legado). Usável como lib e CLI.
+- **`setup/install.sh`** agora chama `init-vault.mjs` no final — instalar o kit já deixa a memória pronta para o primeiro SessionStart.
+
+### Mudado
+- **`hooks/scripts/memory-curator.mjs`**: resolução de vault agora prioriza `$CLAUDE_MEMORY_VAULT` e `~/.claude-memory` antes do legado `D:/claude-memory`.
+- **`hooks/config.json`**: `memory_curator.vault_path` mudou de `"D:/claude-memory"` (hardcoded) para `null` (auto-resolve pelo resolver portável).
+
+### Por quê
+Quem instalava o kit não ganhava a memória — tinha que montar o vault manualmente, e o path pessoal do autor estava hardcoded em 10 lugares. Agora kit e memória são uma coisa só: `bash setup/install.sh` deixa tudo funcionando, em qualquer máquina. O vault existente (`D:/claude-memory`) continua sendo detectado e usado — nada quebra.
+
+---
+
 ## [2.33.0-ai-first-memory] - 2026-06-03
 
 Absorção do [obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain) (MIT) — as três técnicas de memória AI-first que faltavam ao nosso vault. Nosso kit já tinha a arquitetura (vault, curator, learned-skills, consolidate); faltavam as **convenções de qualidade da escrita**. Não trouxemos o peso do Obsidian (43 comandos, integrações Grok/YouTube) — só o que encaixa num dev-team-kit.

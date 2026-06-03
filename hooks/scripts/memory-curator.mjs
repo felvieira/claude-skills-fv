@@ -55,18 +55,22 @@ const SILENT = !!arg("--silent");
 const FORCE = !!arg("--force");
 function log(...a) { if (!SILENT) console.log(...a); }
 
-// ---------- vault resolution ----------
-function resolveVault(explicit) {
+// ---------- vault resolution (canônica: scripts/vault-resolver.mjs) ----------
+// Ordem portável: $CLAUDE_MEMORY_VAULT → ~/.claude-memory → D:/claude-memory (legado).
+// Mantém um fallback inline caso o resolver não esteja no path (kit instalado em .bot/).
+function resolveVaultFallback(explicit) {
   const candidates = [
     explicit,
-    "D:/claude-memory",
-    join(homedir(), "claude-memory"),
+    process.env.CLAUDE_MEMORY_VAULT,
+    join(homedir(), ".claude-memory"),   // novo padrão portável
+    "D:/claude-memory",                  // legado Windows
+    join(homedir(), "claude-memory"),    // legado sem ponto
     ".bot/docs/memory",
   ].filter(Boolean);
   return candidates.find((p) => existsSync(p)) || null;
 }
 const EXPLICIT_VAULT = arg("--vault"); // se setado, isola: NAO toca .bot/ do CWD
-const VAULT = resolveVault(EXPLICIT_VAULT);
+const VAULT = resolveVaultFallback(EXPLICIT_VAULT);
 
 // ---------- config (mirror dos defaults do hook) ----------
 function loadConfig() {
