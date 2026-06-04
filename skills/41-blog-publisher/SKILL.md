@@ -172,7 +172,7 @@ Salvar como arquivo temporário: `{blog_repo_path}/.tmp-body-{slug}.html`
 Post fala sobre URL/site/dashboard navegável? 
 ├── SIM → Skill 42 (blog-screenshot) gera prints reais
 └── NÃO → Skill 17 (image-generator) gera via fal.ai
-            ├── default model: gemini-25-flash ($0.039/img)
+            ├── default model: flux-2-flash ($0.005/MP ≈ $0.002-0.012/img) — text-to-image
             ├── 1 cover image obrigatória (1500×750)
             └── inline images opcionais conforme o post
 ```
@@ -255,12 +255,15 @@ Source: {github_user_repo_url}/blob/main/posts/YYYY-MM-DD-{slug}.html
 | Cenário | Provider | Modelo |
 |---|---|---|
 | Post sobre URL existente | Skill 42 (Playwright) | screenshot 1400×900 |
-| Post sobre código/abstrato | Skill 17 (fal.ai) | `gemini-25-flash` (default) |
-| Post precisa muita imagem | Skill 17 | `gpt-image-1-mini` (mais barato) |
+| Post sobre código/abstrato (text-to-image) | Skill 17 (fal.ai) | `flux-2-flash` (default) |
+| Editar/refinar imagem existente (com referência) | Skill 17 | `gemini-25-flash` ($0.039/img) |
 | Post premium / hero importante | Skill 17 | `gemini-3-pro` ($0.15) |
 | Tipografia/layout específicos | Skill 17 | `gpt-image-1.5` |
 
-Default: **`gemini-25-flash` $0.039/img** — boa qualidade, custo previsível.
+Default: **`flux-2-flash` $0.005/MP (≈ $0.002-0.012/img)** — modelo mais barato pra
+text-to-image, ~4-10x mais barato que as alternativas, realismo decente, ótimo pra
+escala. Para **editar** imagem (refine/inpaint com referência), usar `gemini-25-flash`.
+Segue a regra canônica de geração de imagem do `GLOBAL.md`.
 
 ## Entradas Esperadas
 
