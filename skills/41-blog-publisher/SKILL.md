@@ -20,26 +20,36 @@ requires:
 
 # Blog Publisher — Skill 41
 
-> **Compositora ENRIQUECEDORA.** Recebe input (link/texto/assunto) → lê fonte → pesquisa contexto adicional → produz post ORIGINAL em **PT-BR por default** → publica no GitHub Pages → retorna URL.
+> **Compositora AUTORAL.** Recebe input (link/texto/assunto) → lê fonte → pesquisa contexto adicional → produz post 100% ORIGINAL e AUTORAL em **PT-BR por default** → publica no GitHub Pages → retorna URL.
 
-## Princípio fundador — ENRIQUECEDORA, NÃO TRADUTORA
+## Princípio fundador — AUTORAL, NÃO ADAPTAÇÃO
 
-Esta skill **nunca** copia ou traduz textualmente uma fonte. Ela:
+Esta skill **nunca** copia, traduz, nem se apresenta como adaptação de uma fonte. O post final deve soar como se o autor do blog (o dono do repo) tivesse escrito do zero, com conhecimento próprio. Ela:
 
-1. **Lê a fonte completa** (URL via WebFetch, texto colado, ou assunto livre)
+1. **Lê a fonte completa** (URL via WebFetch, texto colado, ou assunto livre) — a fonte é insumo de pesquisa, não um texto a ser creditado
 2. **Identifica os pontos centrais** que a fonte cobre
-3. **Pesquisa contexto adicional** (3+ fontes externas relacionadas — docs oficiais, repos, outros artigos)
-4. **Escreve um post ORIGINAL** que dialoga com a fonte:
-   - Resume os pontos centrais com palavras próprias
+3. **Pesquisa contexto adicional** (3+ fontes externas relacionadas — docs oficiais, repos, papers)
+4. **Escreve um post AUTORAL** com voz própria, em primeira pessoa quando fizer sentido:
+   - Afirma os pontos com palavras próprias, como conhecimento do autor
    - Adiciona o que a fonte NÃO cobriu
-   - Adiciona links externos com contexto extra
-   - Conecta com o que faz sentido pro nosso domínio (kit, ferramentas, opiniões)
-5. **Atribui a fonte sempre** (link no início + parágrafo "Inspirado em...")
-6. **Default sempre PT-BR** — mesmo se a fonte for em outra língua. Só escreve em outra língua se o user pedir explicitamente.
+   - Adiciona links externos técnicos com contexto extra
+   - Conecta com o domínio do autor (kit, ferramentas, opiniões reais)
+5. **Default sempre PT-BR** — mesmo se a fonte for em outra língua. Só outra língua se pedido explícito.
 
-Saída: post **original**, que cita a fonte com respeito, mas agrega valor.
+### REGRA DE ABSTRAÇÃO DE FONTE (crítico — nenhum vínculo ao texto-fonte)
 
-> **Anti-padrão:** copiar/traduzir verbatim. Mesmo "adaptação livre" é arriscada. Sempre escrever do zero usando a fonte como inspiração.
+O post **NÃO PODE** revelar que é baseado em outro texto. Aplique:
+
+- ❌ **NUNCA** escreva "o autor", "o texto diz", "o post original", "a newsletter aponta", "segundo {nome de quem escreveu a fonte}", "como {fulano} mostra" quando {fulano} é apenas **quem escreveu a fonte**. Vire afirmação direta e autoral. Ex: "como Neo Kim aponta, X" → "X".
+- ❌ **NUNCA** inclua footer "Fonte original", parágrafo "adaptação enriquecida/tradução de", "Inspirado em...", "Crédito a...", "Post N/15 da série", ou link pra newsletter/artigo-fonte.
+- ❌ **ABSTRAIA** qualquer coisa pessoal do autor da fonte que não pertence ao assunto: plugs de "meu canal", "meu curso", "meu livro", "assine a newsletter", recomendação do trabalho/YouTube/produto da pessoa que escreveu o original. Isso SOME.
+- ✅ **MANTENHA** nomes APENAS quando a pessoa é fonte técnica **verificável e independente** do conceito: autor de um paper citado, criador de um framework/modelo/empresa (ex: "o paper de Lewis et al. (2020) introduziu RAG", "DeepSeek-R1 usa GRPO", "a Anthropic definiu esses patterns"). Na **DÚVIDA, abstraia** (remove o nome, afirma direto).
+- ✅ **MANTENHA** links técnicos úteis (arxiv, docs oficiais, repos, ferramentas reais) — só tire os que são plug pessoal do autor da fonte.
+- ✅ **MANTENHA** referências ao trabalho do PRÓPRIO autor do blog (Dev Team Kit, benchmarks próprios, ferramentas dele) — isso é voz autoral legítima.
+
+Critério-mestre: *"essa menção é um fato do assunto, ou é um vínculo ao texto-fonte / à pessoa que o escreveu?"* — Fato do assunto fica; vínculo à fonte some.
+
+> **Anti-padrão:** creditar a fonte, copiar/traduzir verbatim, ou deixar pistas de que é adaptação. O post é AUTORAL.
 
 ## Governança Global
 
@@ -152,6 +162,8 @@ Se input é texto pronto:
 1. Converter de markdown/texto plano pra HTML semântico (`<h2>`, `<h3>`, `<p>`, `<ul>`, `<pre>`, `<code>`, `<table>`, `<blockquote>`)
 2. Aplicar mesma policy anti-ai-writing pra revisar (não reescrever — só sinalizar)
 
+**Em AMBOS os casos, aplicar a REGRA DE ABSTRAÇÃO DE FONTE** (ver Princípio fundador): zero footer "Fonte original", zero parágrafo de atribuição, zero "segundo {autor da fonte}". O post sai autoral.
+
 Salvar como arquivo temporário: `{blog_repo_path}/.tmp-body-{slug}.html`
 
 ### 3. Decidir geração de imagens (decision tree)
@@ -184,6 +196,17 @@ Post fala sobre URL/site/dashboard navegável?
 
 **Posts curtos (<1000 palavras):** só cover é OK, inline pode pular.
 
+### 3.5. Escrever o bloco de compartilhamento LinkedIn (OBRIGATÓRIO)
+
+Todo post termina com um bloco que facilita o repost no LinkedIn. São dois textos:
+
+- **`--share-hook`**: hook curto (1-2 frases) com **TOM DE MISTÉRIO/curiosidade** sobre o que o post revela — faz a pessoa QUERER ler, sem entregar a resposta. Aparece VISÍVEL na página. Ex: *"Todo LLM que você usou já mentiu pra você com confiança. Existe um padrão que resolve isso — e quase ninguém implementa direito."*
+- **`--linkedin`**: o texto PRONTO pra colar no LinkedIn (o botão copia). Formato: hook de abertura forte + 2-3 linhas (com quebras de linha reais) do que a pessoa vai aprender + 1 linha de CTA + 3-5 hashtags relevantes. **NÃO cite fonte/autor.** A URL do post é anexada automaticamente pelo script — não precisa incluir.
+
+Ambos em PT-BR (ou a língua do post). Tom: profissional mas com a curiosidade misteriosa. Aplicar anti-ai-writing (sem hype vazio).
+
+O template do blog já tem o markup (`.share-block` + botão copiar + `share.js`). A skill só fornece os dois textos via args.
+
 ### 4. Invocar scaffold
 
 ```bash
@@ -193,8 +216,12 @@ cd {blog_repo_path} && node scripts/new-post.mjs \
   --lang={lang} \
   --excerpt="{excerpt}" \
   --cover=assets/images/{slug}-cover.png \
+  --share-hook="{hook misterioso de 1-2 frases}" \
+  --linkedin="{texto pronto pro LinkedIn com hashtags}" \
   --body=.tmp-body-{slug}.html
 ```
+
+> Se `--share-hook`/`--linkedin` forem omitidos, o script cai pro excerpt como fallback — mas o ideal é SEMPRE fornecer os dois, com o hook misterioso próprio.
 
 O script:
 - Lê `TEMPLATE.html` e substitui placeholders
@@ -261,6 +288,8 @@ Default: **`gemini-25-flash` $0.039/img** — boa qualidade, custo previsível.
 | Hardcode de paths absolutos no HTML do post | Quebra Pages. Sempre paths relativos (`../assets/...`) |
 | Commit sem rodar update-index.mjs antes | README e index.html ficam desatualizados |
 | Esquecer de aplicar anti-ai-writing.md | Vira marketing genérico, perde credibilidade |
+| Creditar a fonte / footer "Fonte original" / "segundo {autor}" | Quebra o princípio AUTORAL. O post é do dono do blog. Ver REGRA DE ABSTRAÇÃO DE FONTE. |
+| Publicar sem o bloco LinkedIn (`--share-hook`/`--linkedin`) | Perde o gancho de distribuição. Todo post deve facilitar o repost. |
 
 ## Composição com outras skills
 
@@ -274,6 +303,8 @@ Default: **`gemini-25-flash` $0.039/img** — boa qualidade, custo previsível.
 
 - [ ] Arquivo `posts/YYYY-MM-DD-{slug}.html` existe e é HTML válido
 - [ ] Cover image em `assets/images/{slug}-cover.*` existe
+- [ ] **Zero atribuição de fonte** no post (sem "Fonte original", sem "segundo {autor}", sem link pra newsletter) — `grep -iE "fonte original|adaptaç" {post}` retorna vazio
+- [ ] **Bloco LinkedIn presente** (`.share-block` com hook misterioso + texto copiável)
 - [ ] `index.html` lista o post novo
 - [ ] `README.md` lista o post novo
 - [ ] `git status` está clean após commit+push
