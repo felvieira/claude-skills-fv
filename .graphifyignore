@@ -1,0 +1,6 @@
+# Exclui do knowledge graph: benchmarks (outputs, vendor minificado) e scaffolding de template.
+# O grafo deve refletir a lógica do KIT, não artefatos de teste nem código de exemplo.
+bench
+templates/stack-default
+*.min.js
+graphify-out

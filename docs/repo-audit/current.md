@@ -1,9 +1,11 @@
 # Repo Audit
-- Status: inicial preenchido
-- Ultima revisao: 2026-03-10
-- Stack real: kit de skills em markdown para Claude/OpenCode, com `GLOBAL.md`, `policies/`, `templates/`, `skills/`, `docs/` e `evals/`
-- Convencoes detectadas: governanca global persistida, skills numeradas por papel, guides sob demanda, templates curtos, evals versionados e auditoria reutilizavel do proprio repo
+- Status: atualizado pós-auditoria geral
+- Ultima revisao: 2026-06-10 (v2.35.0)
+- Stack real: kit de skills em markdown para Claude/OpenCode — `GLOBAL.md`, `policies/`, `templates/`, `skills/` (49 numeradas, 16 reservado), `agents/` (16 subagents), `commands/` (43 slash commands), `hooks/` (27 scripts .mjs registrados em hooks.json), `programs/` (7 pipelines YAML), `evals/`, `bench/`
+- Convencoes detectadas: governanca global persistida, skills numeradas por papel, guides sob demanda, templates curtos, evals versionados (48/48 PASS), auditoria reutilizavel do proprio repo, CHANGELOG em Keep a Changelog (`## [X.Y.Z] - data — slug`)
 - Assets e contexto visual: ha `Image Generator`, `Asset Librarian` e `docs/repo-audit/assets.md`; o sistema espera reutilizacao de contexto visual antes de gerar novos assets
-- Testes e qualidade: o repo usa evals documentais em `evals/` e quality gates via policies; nao ha suite automatizada de app, pois o repo e um kit de instrucoes e artefatos
-- Deploy e observabilidade: ha skill dedicada de deploy e skill dedicada de observabilidade; orientacoes operacionais vivem em skills, guides e templates
-- Riscos/Gaps: README ainda carrega exemplos e trechos historicos mais longos que poderiam ser enxugados; algumas skills tecnicas ainda sao extensas; a qualidade do uso depende de manter `docs/repo-audit/current.md` e `docs/repo-audit/assets.md` atualizados
+- Testes e qualidade: evals documentais em `evals/` (triggers + skills, cobertura ate skill 49) e quality gates via policies; nao ha suite automatizada de app, pois o repo e um kit de instrucoes e artefatos
+- Deploy e observabilidade: skills dedicadas de deploy (07), observabilidade (20) e canary (43/46); orientacoes operacionais vivem em skills, guides e templates
+- Knowledge graph: `graphify-out/` (local-only, gitignored) com `.graphifyignore` excluindo `bench/`, `templates/stack-default/` e `*.min.js` — 185 nos / 230 edges focados na logica do kit
+- Higiene: `bench/ab/out/` e gitignored (so scripts do bench sao versionados); vault de memoria protegido por `.gitignore` + pre-commit hook (v2.34.1)
+- Riscos/Gaps: README carrega tabela historica longa de versoes (943 linhas, candidata a enxugar); README.pt-BR.md tende a defasar do README.md (sincronizar a cada release); contagens em plugin.json devem ser revisadas a cada skill/command novo

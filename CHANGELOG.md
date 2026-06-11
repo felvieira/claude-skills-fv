@@ -5,7 +5,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
-## [2.35.0-auto-skillify] - 2026-06-11
+## [2.35.0] - 2026-06-10 — auto-skillify
 
 Absorção parcial de [activeloopai/hivemind](https://github.com/activeloopai/hivemind) — o "skillify a cada N turnos". A maior parte do hivemind já tínhamos (codebase graph = Graphify, semantic search = `.index/vault.db`, memory compound = `memory-curator`, traces = `.bot/*.jsonl`). A única ideia genuinamente nova: **codificar memória numa cadência própria**, não só no fim da sessão.
 
@@ -21,7 +21,7 @@ Antes, learned-skills nasciam do `post-tool-verifier` (reativo, no momento da ed
 
 ---
 
-## [2.34.1-vault-leak-guard] - 2026-06-03
+## [2.34.1] - 2026-06-03 — vault-leak-guard
 
 Salvaguarda: dados de vault de memória **nunca** vazam para o kit (que é público). Complementa a unificação da v2.34.0 — agora que o kit cria/opera o vault, é crítico garantir que a memória PESSOAL (logs, decisões, secrets) não seja commitada acidentalmente no repo público do kit.
 
@@ -39,7 +39,7 @@ Você perguntou: "minhas memórias não foram pro kit, né?". Não foram — e e
 
 ---
 
-## [2.34.0-unified-vault] - 2026-06-03
+## [2.34.0] - 2026-06-03 — unified-vault
 
 Unifica kit + memória. Antes, o vault de memória era um sistema **separado** que o usuário montava à mão (git init, scripts, CLAUDE.md) e o kit assumia um path hardcoded (`D:/claude-memory` — o path pessoal do autor). Agora **instalar o kit cria o vault automaticamente**, num path **portável**.
 
@@ -57,7 +57,7 @@ Quem instalava o kit não ganhava a memória — tinha que montar o vault manual
 
 ---
 
-## [2.33.0-ai-first-memory] - 2026-06-03
+## [2.33.0] - 2026-06-03 — ai-first-memory
 
 Absorção do [obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain) (MIT) — as três técnicas de memória AI-first que faltavam ao nosso vault. Nosso kit já tinha a arquitetura (vault, curator, learned-skills, consolidate); faltavam as **convenções de qualidade da escrita**. Não trouxemos o peso do Obsidian (43 comandos, integrações Grok/YouTube) — só o que encaixa num dev-team-kit.
 
@@ -74,7 +74,7 @@ O vault só vale se o futuro-Claude confiar no que está escrito. O insight cent
 
 ---
 
-## [2.32.0-pre-build-gate] - 2026-06-03
+## [2.32.0] - 2026-06-03 — pre-build-gate
 
 Leva o "pare e decida antes de codar" de cada disciplina — que o `/auto` tem nas suas fases — para o **modo passivo** (sem `/auto`). Antes, o passivo dependia 100% de rules path-scoped que só ativam quando você já está editando o arquivo; a decisão de contrato/schema/design precisa acontecer *antes* da primeira linha. Este gate resolve o timing.
 
@@ -92,7 +92,7 @@ O bench A/B (v2.31.0) mostrou que cada app inventava seu próprio formato de err
 
 ---
 
-## [2.31.0-design-aware-auto] - 2026-06-02
+## [2.31.0] - 2026-06-02 — design-aware-auto
 
 Melhorias descobertas e validadas por um bench A/B real (`bench/ab/`, 3 rounds executando "crie um app completo todo list com crud" em Claude puro vs kit-passivo vs kit+/auto). O bench expôs que os 3 braços geravam a mesma UI genérica (indigo + system-ui) porque nenhum tomava decisão de design.
 
@@ -109,7 +109,7 @@ Melhorias descobertas e validadas por um bench A/B real (`bench/ab/`, 3 rounds e
 
 ---
 
-## [2.29.0-claim-verifier-context-hygiene] - 2026-06-02
+## [2.29.0] - 2026-06-02 — claim-verifier-context-hygiene
 
 Dois hooks que resolvem falsa confiança no output do agente e contexto inflado em sessões longas.
 
@@ -127,7 +127,7 @@ Dois hooks que resolvem falsa confiança no output do agente e contexto inflado 
 
 ---
 
-## [2.28.0-sdd-absorption] - 2026-06-01
+## [2.28.0] - 2026-06-01 — sdd-absorption
 
 Absorção de padrões SDD de dois artigos Medium (Nitin Gavhane + pramodchandrayan). Três adições que fecham gaps reais vs GitHub Spec Kit (88k stars) e o padrão Adversarial Agent.
 
@@ -143,7 +143,7 @@ Absorção de padrões SDD de dois artigos Medium (Nitin Gavhane + pramodchandra
 
 ---
 
-## [2.27.0-investigate-first-guard] - 2026-05-29
+## [2.27.0] - 2026-05-29 — investigate-first-guard
 
 Princípio **"investigar antes de perguntar"** com enforcement ativo. A IA nunca deve perguntar ao usuário algo que ela mesma pode descobrir rodando um comando, lendo um arquivo ou chamando um MCP. Investigar é barato; interromper o usuário é caro.
 
@@ -162,7 +162,7 @@ Princípio **"investigar antes de perguntar"** com enforcement ativo. A IA nunca
 
 ---
 
-## [2.26.0-ecc-absorption-silent-failure-context-budget] - 2026-05-28
+## [2.26.0] - 2026-05-28 — ecc-absorption-silent-failure-context-budget
 
 Rodada de **absorção do ECC (segunda metade)**. Adiciona o 16º subagent (`silent-failure-hunter`) e a skill 49 (`context-budget`), além do comando `/context-budget`. Inclui também as correções finais de count drift em todos os docs (WIKI.md/WIKI.pt-BR.md ainda reportavam counts de v2.17 em vários pontos).
 
@@ -179,7 +179,7 @@ Rodada de **absorção do ECC (segunda metade)**. Adiciona o 16º subagent (`sil
 
 ---
 
-## [2.25.0-rules-system-and-debt-paydown] - 2026-05-28
+## [2.25.0] - 2026-05-28 — rules-system-and-debt-paydown
 
 Rodada de **dívida + absorção curada do ECC**. Paga drift acumulado nas docs, corrige um bug funcional na allowlist de subagents, adiciona o **rules system path-scoped** (maior gap identificado vs [affaan-m/ECC](https://github.com/affaan-m/ECC)), e reescreve os 5 skills stub que a `evals/skill-audit` já marcava como NEEDS-REWRITE.
 
@@ -212,7 +212,7 @@ Rodada de **dívida + absorção curada do ECC**. Paga drift acumulado nas docs,
 
 ---
 
-## [2.24.0-autonomous-memory-curator] - 2026-05-28
+## [2.24.0] - 2026-05-28 — autonomous-memory-curator
 
 Eleva o memory curator de **sugestão** (v2.22.0) para **autonomia real**: o agente cura a própria memória sozinho, sem o usuário decidir quando. Gerenciar memória é tarefa de fundo — não faz sentido pedir permissão.
 
@@ -239,7 +239,7 @@ O `curator.py` do Hermes forka um agente auxiliar (gasta LLM separado). No nosso
 
 ---
 
-## [2.23.0-addozhang-absorption] - 2026-05-28
+## [2.23.0] - 2026-05-28 — addozhang-absorption
 
 Absorção de 3 repos HIGH VALUE de [addozhang](https://github.com/addozhang): Spring Boot migration playbook, skill 48 research-prep, e padrões de memória do mem9.
 
@@ -268,7 +268,7 @@ Absorção de 3 repos HIGH VALUE de [addozhang](https://github.com/addozhang): S
 
 ---
 
-## [2.22.0-memory-curator] - 2026-05-28
+## [2.22.0] - 2026-05-28 — memory-curator
 
 Auto-lapidação de memória inspirada no `curator.py` de [nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT). O Hermes roda um curador disparado por inatividade que forka um agente auxiliar para revisar/consolidar/arquivar a memória. Adaptamos o **gatilho** (não a autonomia total): ao fim de uma sessão, se o vault cresceu sem curadoria, o kit sugere `/consolidate-memory` — que já existe e faz todo o trabalho com snapshot+dry-run+nunca-deletar.
 
@@ -292,7 +292,7 @@ Auto-lapidação de memória inspirada no `curator.py` de [nousresearch/hermes-a
 
 ---
 
-## [2.21.0-context-cost-guards] - 2026-05-28
+## [2.21.0] - 2026-05-28 — context-cost-guards
 
 Automacao das 9 taticas de economia de plano (inspirado em "Nunca mais fique sem creditos no Claude", D. Folloni). 2 hooks novos/estendidos que avisam — de forma nao-vinculante e conservadora — sobre os 3 maiores desperdicios silenciosos de contexto.
 
@@ -314,7 +314,7 @@ Automacao das 9 taticas de economia de plano (inspirado em "Nunca mais fique sem
 
 ---
 
-## [2.20.0-pattern-conformity] - 2026-05-28
+## [2.20.0] - 2026-05-28 — pattern-conformity
 
 Skill 47 `pattern-conformity` — o agente detecta e codifica os padrões de coding do projeto existente antes de escrever código novo. Produz `memory/patterns.md` com 8 categorias de padrões (P1-P8). 46/46 eval-triggers PASS, 0 overlaps, 0 dead policies.
 
@@ -331,7 +331,7 @@ Skill 47 `pattern-conformity` — o agente detecta e codifica os padrões de cod
 
 ---
 
-## [2.19.1-portfolio-polish] - 2026-05-27
+## [2.19.1] - 2026-05-27 — portfolio-polish
 
 Polish pass pós-v2.19.0: corrigir bugs no `skill-health.mjs` (parser de frontmatter `description: |` multiline + extensão de detecção cross-section). Resultado: portfolio com **zero overlaps · zero dead policies · zero descriptions curtas · 100% cobertura de fixture · 45/45 eval-triggers PASS**.
 
@@ -371,7 +371,7 @@ Pure bug-fix em tooling + refinamento de descriptions. Zero breaking changes, ze
 
 ---
 
-## [2.19.0-absorption-ecc-gstack-mattpocock-ruflo] - 2026-05-27
+## [2.19.0] - 2026-05-27 — absorption-ecc-gstack-mattpocock-ruflo
 
 Sessão de **absorção curada** de 6 repos externos (ECC, gstack, mattpocock/skills, ruvnet/ruflo, anthropics/knowledge-work-plugins, mukul975 cybersec). Não copiamos plataformas — extraímos conceitos pontuais que **se encaixam no nosso modelo** (markdown-first, policies governam, skills numeradas). Counts: **42→45 skills · 33→39 commands · 47→48 policies**.
 
@@ -436,7 +436,7 @@ Sessão de **absorção curada** de 6 repos externos (ECC, gstack, mattpocock/sk
 
 ---
 
-## [2.18.0-insights-dashboard-6-tabs] - 2026-05-25
+## [2.18.0] - 2026-05-25 — insights-dashboard-6-tabs
 
 Dashboard web interativo entregue (antecipado do roadmap v2.18.x candidato em `docs/patterns/insights-dashboard-future.md` por demanda explícita do user). 6 tabs cobrindo grafo, bench, savings, drift, qualidade das skills e cobertura de trigger eval. Zero-build, zero-dep, single-file HTML + CDN.
 
@@ -481,7 +481,7 @@ node scripts/build-dashboard.mjs                    # gera 6 snapshots
 
 ---
 
-## [2.17.0-diff-impact-and-graph-auto-update] - 2026-05-25
+## [2.17.0] - 2026-05-25 — diff-impact-and-graph-auto-update
 
 Inspirado em `Lum1104/Understand-Anything` (MIT, 24.7k stars). Implementa as 2 ideias verdes (diff impact analysis + graph auto-update) e documenta as 2 amarelas (dashboard web + pipeline multi-agent) como roadmap futuro. Zero código copiado — implementação própria em cima do `graphify-out/` que já existia.
 
@@ -510,7 +510,7 @@ Inspirado em `Lum1104/Understand-Anything` (MIT, 24.7k stars). Implementa as 2 i
 
 ---
 
-## [2.16.2-acknowledgements-tone] - 2026-05-24
+## [2.16.2] - 2026-05-24 — acknowledgements-tone
 
 **Docs-only patch** ajustando o tom das atribuições públicas. Substitui "absorved X (paths, linhas, detalhes mecânicos)" por "inspired by X" em todos os entry points públicos do kit, sem perder a atribuição legal.
 
@@ -534,7 +534,7 @@ Procedente. O texto antigo listava paths de arquivos, números de linhas e "we a
 
 ---
 
-## [2.16.1-docs-kit-wide-usage-update] - 2026-05-24
+## [2.16.1] - 2026-05-24 — docs-kit-wide-usage-update
 
 **Docs-only patch** atualizando os 5 entry points (README, quickstart, WIKI, SKILLS-OVERVIEW, AGENTS) com "como usar" das mudanças v2.14-v2.16. Sem alteração de código.
 
@@ -552,7 +552,7 @@ Procedente. O texto antigo listava paths de arquivos, números de linhas e "we a
 
 ---
 
-## [2.16.0-skill-17-portable-and-default-rule] - 2026-05-24
+## [2.16.0] - 2026-05-24 — skill-17-portable-and-default-rule
 
 **Skill 17 (image-generator) agora funciona em qualquer máquina** + regra default canônica do kit (grok-imagine t2i / gemini-25-flash edit) + integração explícita com `/swarm` e 6 skills consumidoras (02, 04, 09, 14, 29, 36).
 
@@ -603,7 +603,7 @@ Esta release resolve os 3.
 
 ---
 
-## [2.15.1-fal-adapter-and-model-routing-enforcement] - 2026-05-24
+## [2.15.1] - 2026-05-24 — fal-adapter-and-model-routing-enforcement
 
 Patch da v2.15.0 com 3 itens: FAL.AI adapter no template stack-default, exemplos com `model:` explícito nas skills 09/40, e warning não-bloqueante no hook quando Agent() sem `model:`.
 
@@ -639,7 +639,7 @@ Resposta documentada em [`policies/model-routing-real.md`](policies/model-routin
 
 ---
 
-## [2.15.0-stack-default-template] - 2026-05-24
+## [2.15.0] - 2026-05-24 — stack-default-template
 
 **Template de stack completo para novos projetos** — elimina Write×130 de scaffolding repetitivo em futuros `/swarm` greenfield. Decisões de infra/auth/DB/LLM já tomadas; `/swarm` começa direto no código da feature. + policy honesta sobre model routing (enforcement real vs. sugestão).
 
@@ -697,7 +697,7 @@ Resposta documentada em [`policies/model-routing-real.md`](policies/model-routin
 
 ---
 
-## [2.14.0-tencentdb-agent-memory-absorptions] - 2026-05-24
+## [2.14.0] - 2026-05-24 — tencentdb-agent-memory-absorptions
 
 **3 absorções idea-level de [Tencent/TencentDB-Agent-Memory](https://github.com/Tencent/TencentDB-Agent-Memory)** (3.9k stars, abril/2026, NOASSERTION license) — sem absorver código do runtime TypeScript deles. Foco em padrões que cobrem 2 lacunas reais do kit: compressão de context em long-horizon agents e destilação de persona cross-session.
 
@@ -742,7 +742,7 @@ Padrão "idea-level absorption" mantido (igual DeerFlow v2.10.0, optillm v2.x): 
 
 ---
 
-## [2.13.0-trigger-eval-full-coverage] - 2026-05-24
+## [2.13.0] - 2026-05-24 — trigger-eval-full-coverage
 
 **Cobertura 100% de trigger eval fixtures** (42/42 skills) + accent-folding no matcher. Skill discovery agora é mensurável programaticamente em todo o catálogo.
 
@@ -773,7 +773,7 @@ Skill discovery deixou de ser hipótese ("a description triggera bem?") e virou 
 
 ---
 
-## [2.12.2-submodule-pattern-and-6-trigger-fixtures] - 2026-05-24
+## [2.12.2] - 2026-05-24 — submodule-pattern-and-6-trigger-fixtures
 
 Fecha 2 itens v3-deferred do log de v2.12.1: o pattern de submodule do `antfu/skills` e a expansão de `evals/triggers/` pra mais skills.
 
@@ -813,7 +813,7 @@ Bug detectado durante fixture do 11-reviewer: matcher é case-insensitive substr
 
 ---
 
-## [2.12.1-eval-triggers-runtime-and-docs-catchup] - 2026-05-23
+## [2.12.1] - 2026-05-23 — eval-triggers-runtime-and-docs-catchup
 
 Fecha a única dívida real da v2.12.0 (runtime dos fixtures de trigger) e cobre 3 docs que ficaram stale.
 
@@ -839,7 +839,7 @@ Primeira versão do extrator de triggers parou no header `description:` porque o
 
 ---
 
-## [2.12.0-24-tools-audit-absorptions] - 2026-05-23
+## [2.12.0] - 2026-05-23 — 24-tools-audit-absorptions
 
 Auditoria dos 24 itens da lista LinkedIn "things actually worth adding to Claude Code". Resolvi 24 shortlinks `lnkd.in/*`, abri todos os repos, comparei com o kit, absorvi 7 patterns que valiam. 15 itens reportados como skip.
 
@@ -876,7 +876,7 @@ Os 18 outros itens da lista LinkedIn foram reportados como skip (10 user-side MC
 
 ---
 
-## [2.11.1-blog-multi-user] - 2026-05-23
+## [2.11.1] - 2026-05-23 — blog-multi-user
 
 **Skill 41 (blog-publisher) agora é multi-user.** Pergunta legítima do usuário ("e se outra pessoa usar?") expôs que a v2.11.0 tinha `felvieira/blog` hardcoded em vários lugares. Refatoração completa:
 
@@ -938,7 +938,7 @@ node scripts/init-blog-repo.mjs --path=D:/Repos/blog --user=felvieira --repo=blo
 
 ---
 
-## [2.11.0-blog-publishing-skills] - 2026-05-23
+## [2.11.0] - 2026-05-23 — blog-publishing-skills
 
 **2 skills novas pra automação de blog publishing.** Skill 41 (blog-publisher) compõe um pipeline completo: texto/assunto → HTML → imagens → commit/push → URL pública. Skill 42 (blog-screenshot) é especialista Playwright pra capturas. Repo separado `felvieira/blog` criado com Pages habilitado.
 
@@ -981,7 +981,7 @@ Kit:
 
 ---
 
-## [2.10.2-analyze-doc-and-goal-driven] - 2026-05-23
+## [2.10.2] - 2026-05-23 — analyze-doc-and-goal-driven
 
 **Public bench reports + Goal-Driven Execution policy (4th Karpathy pillar).**
 
@@ -1016,7 +1016,7 @@ Also: user wanted public bench reports in a dedicated folder visible from README
 
 ---
 
-## [2.10.1-eval-bench-driven-fixes] - 2026-05-23
+## [2.10.1] - 2026-05-23 — eval-bench-driven-fixes
 
 **Fixes derivados do eval-bench** — 6 melhorias concretas baseadas em achados reais dos 53 cenários testados nesta sessão. Pass rate esperado sobe de 88.9% (48/54) pra ~92.6% após próximo bench.
 
@@ -1051,7 +1051,7 @@ Skill 39 (program-router) re-avaliada em sessão isolada nesta janela: **PASS +2
 
 ---
 
-## [2.10.0-deerflow-conventions-absorbed] - 2026-05-23
+## [2.10.0] - 2026-05-23 — deerflow-conventions-absorbed
 
 **Três convenções de [bytedance/deer-flow](https://github.com/bytedance/deer-flow) 2.0 absorvidas como policies + código mínimo, sem virar runtime.** DeerFlow é um harness Python + LangGraph + Docker — opostíssimo do nosso modelo parasitário em skills MD. Mas o vocabulário deles pra **observability tags**, **skill manifest** e **progressive loading** é melhor que o nosso (que era implícito). Adotar a nomenclatura deles padroniza nossa telemetria com qualquer downstream LangSmith/Langfuse e prepara terreno pra skills publicáveis por terceiros sem fork.
 
@@ -1091,7 +1091,7 @@ Custo de absorção: 2 arquivos de código (`session-event-logger.mjs`, `file-re
 
 ---
 
-## [2.9.1-dedup-surfaced-and-bench-gated] - 2026-05-22
+## [2.9.1] - 2026-05-22 — dedup-surfaced-and-bench-gated
 
 **Hardening da v2.9.0.** Cross-call dedup ganha tool MCP dedicada (`devkit_dedup_status`) e parâmetros opt-in no `devkit_compress_output`. CI ganha gate de regressão de bench. Documentação alinhada (tool count 36 → 37, policy de cost-optimization atualizada, novo cenário em USE-CASES + marketing).
 
@@ -1127,7 +1127,7 @@ Custo de absorção: 2 arquivos de código (`session-event-logger.mjs`, `file-re
 
 ---
 
-## [2.9.0-attribution-and-cross-call-dedup] - 2026-05-22
+## [2.9.0] - 2026-05-22 — attribution-and-cross-call-dedup
 
 **Licença trocada de MIT para Apache-2.0 com arquivo `NOTICE` obrigatório**, primeira ideia técnica do `claudioemmanuel/squeez` absorvida (cross-call dedup via MinHash), e benchmark público reproduzível em `bench/`. Decisão de design: atribuição passa a ser exigência legal, não convenção.
 
@@ -1167,7 +1167,7 @@ A licença MIT permite que qualquer um repackage o kit, remova a linha de copyri
 
 ---
 
-## [2.8.0-self-correcting-sensors-complete] - 2026-05-21
+## [2.8.0] - 2026-05-21 — self-correcting-sensors-complete
 
 **Backlog `🟡` de `policies/self-correcting-sensors.md` zerado.** Os 4 hooks medium-impact (`context-guard-stop`, `pre-tool-enforcer`, `persistent-mode`, `keyword-detector`) foram refatorados pro padrão canônico (Where/Why/Fix/References) e o padrão virou **invariante mantido por eval no CI**.
 
@@ -1210,7 +1210,7 @@ Nenhuma. Aditivo + textual. Mensagens dos hooks ficaram mais longas (estimativa:
 
 ---
 
-## [2.7.3-self-correcting-sensors-batch-2] - 2026-05-21
+## [2.7.3] - 2026-05-21 — self-correcting-sensors-batch-2
 
 Continuação do v2.7.2 — fecha os 2 itens high-impact restantes da auditoria em `policies/self-correcting-sensors.md` (`post-tool-verifier` 🟡 e `constitution-watcher` 🟡) e adiciona um **novo sensor** que cobre o gap mais crítico do v2.7.1 (telemetria de conflict-decisions vazia porque modelo esquecia de chamar o script).
 
@@ -1265,7 +1265,7 @@ Nenhuma. Aditivo. Sensores existentes continuam funcionando — output deles fic
 
 ---
 
-## [2.7.2-self-correcting-ai-writing-detector] - 2026-05-20
+## [2.7.2] - 2026-05-20 — self-correcting-ai-writing-detector
 
 Upgrade do `ai-writing-detector` para o padrão self-correcting estabelecido em `policies/self-correcting-sensors.md` (v2.6.0). Fecha o item 🔴 "insuficiente" da auditoria.
 
@@ -1290,7 +1290,7 @@ Upgrade do `ai-writing-detector` para o padrão self-correcting estabelecido em 
 
 ---
 
-## [2.7.1-conflict-telemetry] - 2026-05-20
+## [2.7.1] - 2026-05-20 — conflict-telemetry
 
 User opted to implement only the conflict telemetry item from the v2.7.0 roadmap — low-risk, high-future-value. Starts accumulating data so v2.8.0 can surface conflict-resolution health.
 
@@ -1369,7 +1369,7 @@ CI green (check-consistency, check-harness-coherence, schema-validator, check-ho
 
 ---
 
-## [2.7.0-trade-off-resolution-and-runtime-feedback] - 2026-05-20
+## [2.7.0] - 2026-05-20 — trade-off-resolution-and-runtime-feedback
 
 Fecha os 2 gaps restantes da re-leitura do artigo da Birgitta Böckeler. Junto com v2.5.0 + v2.6.0, **todos os 6 gaps identificados foram fechados**.
 
@@ -1434,7 +1434,7 @@ A pergunta da Birgitta sobre conflitos de instruções não tem resposta única 
 
 ---
 
-## [2.6.0-harness-coherence-and-self-correcting] - 2026-05-20
+## [2.6.0] - 2026-05-20 — harness-coherence-and-self-correcting
 
 Continuação do v2.5.0. Implementa os 4 itens de alto valor restantes identificados na re-leitura do artigo da Birgitta Böckeler.
 
@@ -1509,7 +1509,7 @@ Adiciona feature nova (`check-harness-coherence` runnable + integrado ao CI), no
 
 ---
 
-## [2.5.0-harness-engineering] - 2026-05-20
+## [2.5.0] - 2026-05-20 — harness-engineering
 
 Major absorption release. Integrates concepts from Birgitta Böckeler's *"Harness engineering for coding agent users"* (Thoughtworks, 2026-04-02). The kit already had most pieces; v2.5.0 gives them shared vocabulary, fills gaps, and adds the missing pieces.
 
@@ -1583,7 +1583,7 @@ Conceitos centrais absorvidos de Birgitta Böckeler (Thoughtworks). Ver `docs/in
 
 ---
 
-## [2.4.2-stop-hook-pollution-fix] - 2026-05-20
+## [2.4.2] - 2026-05-20 — stop-hook-pollution-fix
 
 UX fix: Stop hooks (`context-guard-stop`, `stop-savings-summary`) were firing **during** inspection commands like `/savings`, polluting their output. User repro: ran `/savings`, saw the report but with two extra `Stop says:` lines appended that belonged to the meta-command itself, not to a real session end.
 
@@ -1616,7 +1616,7 @@ Schema validator still green (16/16).
 
 ---
 
-## [2.4.1-stop-sessionstart-schema-fix] - 2026-05-20
+## [2.4.1] - 2026-05-20 — stop-sessionstart-schema-fix
 
 Critical schema fix. v2.2.2 thought the bug was "missing hookEventName" — wrong diagnosis. The real bug: **Stop and SessionStart hooks DO NOT support `hookSpecificOutput` at all**. Claude Code's schema only allows it for 4 events: `PreToolUse`, `UserPromptSubmit`, `PostToolUse`, `PostToolBatch`.
 
@@ -1686,7 +1686,7 @@ $ node evals/hooks/schema-validator.mjs
 
 ---
 
-## [2.4.0-savings-report] - 2026-05-20
+## [2.4.0] - 2026-05-20 — savings-report
 
 User-facing feature: visibility into what the kit actually saves. Aggregates telemetry from 5 hook sources into a single actionable report — tokens economizados, USD, bugs prevented, dev hours equivalent, hot files, gate decisions.
 
@@ -1747,7 +1747,7 @@ Métricas de "savings" facilmente viram marketing. Esta release foca em **honest
 
 ---
 
-## [2.3.0-pre-execution-gate-active-enrichment] - 2026-05-20
+## [2.3.0] - 2026-05-20 — pre-execution-gate-active-enrichment
 
 Completes the `pre-execution-gate` story. v2.2.3 stopped the hook from silently dropping prompts. v2.3.0 makes the hook actually **do** what `skills/09-orchestrator/SKILL.md` line 329-336 has prescribed since v1.0: **ENRICH** (infer + offer 3 options) and **GUIDED ENRICH** (ask one focused question via AskUserQuestion).
 
@@ -1795,7 +1795,7 @@ Answer: yes. Now it does.
 
 ---
 
-## [2.2.3-pre-execution-gate-no-block] - 2026-05-20
+## [2.2.3] - 2026-05-20 — pre-execution-gate-no-block
 
 Critical UX fix: `pre-execution-gate` was emitting `continue: false` on UserPromptSubmit for vague prompts (score > 0.70), causing Claude Code to render "Operation stopped by hook" with no visible feedback. Hostile UX — user had no idea why their prompt was discarded.
 
@@ -1831,7 +1831,7 @@ Prompt "fix bug em src/auth.ts:42"
 
 ---
 
-## [2.2.2-hook-schema-fix] - 2026-05-20
+## [2.2.2] - 2026-05-20 — hook-schema-fix
 
 Patch fix for hook output validation. Claude Code recently tightened the hook output schema and started rejecting `hookSpecificOutput` blocks that omit the `hookEventName` field. 8 of our hooks were emitting outputs without this field, producing red error blocks at the end of every session (e.g. `Stop hook error: Hook JSON output validation failed — hookSpecificOutput is missing required field "hookEventName"`).
 
@@ -1864,13 +1864,13 @@ Pre-existing hooks predate Claude Code's stricter schema enforcement. The `agent
 
 ---
 
-## [2.2.1-skills-vs-agents-disambiguation] - 2026-05-20
+## [2.2.1] - 2026-05-20 — skills-vs-agents-disambiguation
 
 Same content as planned for v2.2.0 (skills-vs-agents disambiguation). Version bumped to 2.2.1 because the v2.2.0 tag was already claimed by an earlier dense-output-mode policy release. Functional release notes below remain unchanged.
 
 ---
 
-## [2.2.0-skills-vs-agents-disambiguation] - 2026-05-19
+## [2.2.0] - 2026-05-19 — skills-vs-agents-disambiguation
 
 Fecha gap estrutural identificado quando o modelo passou skill numerada como `subagent_type` do tool `Agent`, gerando `InputValidationError` em 5 dispatches paralelos (case real). A v2.2.0 elimina a ambiguidade entre o universo das **skills** (`skills/NN-*/`, invocadas via `Skill` tool) e o universo dos **subagents** (`agents/*.md`, invocados via `Agent` tool) que compartilham o prefixo `dev-team-kit-fv:`.
 
@@ -1939,7 +1939,7 @@ ou em `~/.claude/dev-team-kit-config.json`:
 
 ---
 
-## [2.1.1-refactor-safely-docs] - 2026-05-20
+## [2.1.1] - 2026-05-20 — refactor-safely-docs
 
 ### Changed
 - **`programs/README.md`** — `refactor-safely` adicionado na tabela Index (estava faltando).
@@ -1952,7 +1952,7 @@ Patch fechando gaps de documentação do v2.1.0. O program `refactor-safely` foi
 
 ---
 
-## [2.1.0-smart-routing] - 2026-05-20
+## [2.1.0] - 2026-05-20 — smart-routing
 
 Fecha gaps reais identificados na auditoria dos modos autônomos. Hook intent-classifier v2: opcional LLM, regex fallback ampliado pra cobrir 9 categorias de intent.
 
@@ -2019,7 +2019,7 @@ Auditoria mostrou 5 gaps reais — hook v1.x não classificava bug/issue/refacto
 
 ---
 
-## [2.0.0-swarm] - 2026-05-20
+## [2.0.0] - 2026-05-20 — swarm
 
 **MAJOR.** Novo modo `/swarm` — total autonomy: do prompt ao PR mergeable sem intervenção humana.
 
@@ -2072,7 +2072,7 @@ Hook agora vai sugerir `/swarm` (não programs separados) quando detectar intent
 
 ---
 
-## [1.9.1-user-config-override] - 2026-05-20
+## [1.9.1] - 2026-05-20 — user-config-override
 
 ### Added
 - **User-wide config override** em `~/.claude/dev-team-kit-config.json`. Sobrescreve seções de `hooks/config.json` do repo. Permite ativar Autonomous (ou outro nível) **só na sua máquina** sem alterar o default do repo.
@@ -2091,7 +2091,7 @@ v1.9.0 fez Active default, mas usuário queria ativar Autonomous na **própria m
 
 ---
 
-## [1.9.0-active-default] - 2026-05-20
+## [1.9.0] - 2026-05-20 — active-default
 
 **Breaking-ish:** Default mudou de Passive (Nível 1) → **Active (Nível 2)**. Gates humanos no program continuam pausando — segurança preservada. Quem quiser comportamento antigo deve setar `auto_dry_run: false`.
 
@@ -2116,7 +2116,7 @@ Quem prefere o comportamento antigo (Passive — só sugere, espera você decidi
 
 ---
 
-## [1.8.1-autonomy-docs] - 2026-05-20
+## [1.8.1] - 2026-05-20 — autonomy-docs
 
 ### Changed
 - **`README.md`** + **`README.pt-BR.md`** — nova seção dedicada "Auto-Orchestration (v1.8.0+)" com:
@@ -2132,7 +2132,7 @@ v1.8.0 mencionou "4 níveis" mas a tabela completa só estava em `policies/auto-
 
 ---
 
-## [1.8.0-auto-orchestration] - 2026-05-20
+## [1.8.0] - 2026-05-20 — auto-orchestration
 
 Fecha o loop: agora o kit **detecta intent** do prompt e **sugere program apropriado automaticamente** — sem usuário precisar invocar `/run-program` manualmente.
 
@@ -2177,7 +2177,7 @@ v1.7.0 deu engine profissional de programs, mas usuário ainda precisava invocar
 
 ---
 
-## [1.7.1-engine-v2-docs] - 2026-05-20
+## [1.7.1] - 2026-05-20 — engine-v2-docs
 
 ### Changed
 - **`docs/SKILLS-OVERVIEW.md`** — entrada `/run-program` atualizada com 7 step types, programs novos (adversarial-dev, comprehensive-review), crédito Archon.
@@ -2186,7 +2186,7 @@ v1.7.0 deu engine profissional de programs, mas usuário ainda precisava invocar
 
 ---
 
-## [1.7.0-program-engine-v2] - 2026-05-20
+## [1.7.0] - 2026-05-20 — program-engine-v2
 
 Absorve 6 primitives + 2 patterns avançados de [coleam00/archon](https://github.com/coleam00/archon) (21k stars, "harness builder for AI coding"). Engine de programs sobe pra nível profissional.
 
@@ -2223,7 +2223,7 @@ v1.6.0 dava skeleton de programs (command/gate/parallel/conditional). v1.7.0 dá
 
 ---
 
-## [1.6.1-programs-gaps] - 2026-05-18
+## [1.6.1] - 2026-05-18 — programs-gaps
 
 ### Changed
 - **`README.md`** + **`README.pt-BR.md`** — tabela de versões atualizada com v1.5.1, v1.5.2, v1.6.0 (estavam parando em v1.5.0).
@@ -2232,7 +2232,7 @@ v1.6.0 dava skeleton de programs (command/gate/parallel/conditional). v1.7.0 dá
 
 ---
 
-## [1.6.0-executable-programs] - 2026-05-18
+## [1.6.0] - 2026-05-18 — executable-programs
 
 ### Added — Executable YAML pipeline programs
 - **`policies/programs-schema.md`** (new) — schema canônico do formato declarativo `programs/*.yml`. Define inputs, steps (command/gate/parallel/conditional), variable substitution (`${inputs.X}`, `${steps.X.output}`, `${date}`, `${env.X}`), conditional expressions (subset seguro: `==`, `!=`, `contains`, `file_exists`, `and`, `or`, `not`), validador, executor, anti-padrões.
@@ -2269,7 +2269,7 @@ Nosso schema estende o `workflows/speckit/workflow.yml` do github/spec-kit com:
 
 ---
 
-## [1.5.2-plugin-layout] - 2026-05-16
+## [1.5.2] - 2026-05-16 — plugin-layout
 
 Reorganização de layout para que **Claude Code 2.x autodiscovery** detecte todos os componentes via `claude plugin install`.
 
@@ -2290,7 +2290,7 @@ v1.5.1 instalava parcialmente — só 43 skills detectadas, 0 agents/hooks/MCP. 
 
 ---
 
-## [1.5.1-absorb-gaps] - 2026-05-15
+## [1.5.1] - 2026-05-15 — absorb-gaps
 
 ### Changed
 - **`README.md`** + **`README.pt-BR.md`** — version table updated with v1.5.0 entry; Acknowledgements section updated with 5 new sources (Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management, blader/humanizer).
@@ -2298,7 +2298,7 @@ v1.5.1 instalava parcialmente — só 43 skills detectadas, 0 agents/hooks/MCP. 
 
 ---
 
-## [1.5.0-absorb-skills] - 2026-05-15
+## [1.5.0] - 2026-05-15 — absorb-skills
 
 Absorve 6 padrões valiosos de skills externas (Anthropic Skills, Superpowers, Claude Code Setup, Claude MD Management) **integrando ao kit** — não citando.
 
@@ -2340,7 +2340,7 @@ O usuário está consolidando o stack de skills no nosso pacote — vai remover 
 
 ---
 
-## [1.4.2-humanize-gaps] - 2026-05-15
+## [1.4.2] - 2026-05-15 — humanize-gaps
 
 ### Added
 - **`evals/commands/humanize/golden.json`** — 5 golden cases: full AI pattern removal, file path input, voice calibration, quick depth, clean-but-soulless detection.
@@ -2352,7 +2352,7 @@ O usuário está consolidando o stack de skills no nosso pacote — vai remover 
 
 ---
 
-## [1.4.1-humanizer] - 2026-05-15
+## [1.4.1] - 2026-05-15 — humanizer
 
 ### Added
 - **`policies/anti-ai-writing.md`** (new) — catálogo de 29 padrões de AI-generated writing organizados em 5 categorias (Content, Language/Grammar, Style, Communication, Filler), cada um com example Before/After e palavras-gatilho. Inclui checklist final anti-IA e seção "personalidade e alma".
@@ -2373,7 +2373,7 @@ O usuário está consolidando o stack de skills no nosso pacote — vai remover 
 
 ---
 
-## [1.4.0-release-hygiene] - 2026-05-15
+## [1.4.0] - 2026-05-15 — release-hygiene
 
 ### Added
 - **`hooks/scripts/constitution-watcher.mjs`** (new) — PostToolUse hook that detects edits to `memory/constitution.md` and emits advisory recommending `/analyze --strict` to find invalidated artifacts. Registered in `hooks/hooks.json`.
@@ -2400,7 +2400,7 @@ Closes all remaining gaps from the spec-driven development series (1.3.0–1.3.2
 
 ---
 
-## [1.3.2-spec-kit-polish] - 2026-05-15
+## [1.3.2] - 2026-05-15 — spec-kit-polish
 
 ### Added
 - **`programs/spec-driven-development.md`** (new) — declarative pipeline program with constitution authority + `/checklist` + `/analyze` gates. Documents differences vs `pipeline-discovery`. Registered in `programs/README.md` index.
@@ -2423,7 +2423,7 @@ Closes polish gaps from 1.3.1: spec-kit ideas now wired into the **internal kit 
 
 ---
 
-## [1.3.1-spec-kit-integration] - 2026-05-15
+## [1.3.1] - 2026-05-15 — spec-kit-integration
 
 ### Changed
 - **`skills/09-orchestrator/SKILL.md`** — added `policies/constitution.md` as hierarchical authority and explicit guidance: pipeline must include `/analyze` before `/build` when there are 3+ artifacts (spec + plan + issues).
@@ -2446,7 +2446,7 @@ This patch closes integration gaps from 1.3.0: the new commands existed but skil
 
 ---
 
-## [1.3.0-spec-kit-ideas] - 2026-05-15
+## [1.3.0] - 2026-05-15 — spec-kit-ideas
 
 ### Added
 - **`policies/constitution.md`** (new) — project governing principles (Code Quality, Testing, UX, Performance, Security) with hierarchical authority over PRD/plan/ADRs. Conflict resolution: constitution wins.
@@ -2465,7 +2465,7 @@ This patch closes integration gaps from 1.3.0: the new commands existed but skil
 
 ---
 
-## [1.2.1-prd-validation] - 2026-05-13
+## [1.2.1] - 2026-05-13 — prd-validation
 
 ### Added
 - **`policies/prd-validation.md`** (new) — 13-check PRD quality checklist (structure, testability, language, technical) with EXCELLENT/GOOD/ACCEPTABLE/NEEDS_WORK grading and 3-option auto-fix flow. Inspired by [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster) `script.py validate-prd`, decoupled from Taskmaster.
@@ -2479,7 +2479,7 @@ This patch closes integration gaps from 1.3.0: the new commands existed but skil
 
 ---
 
-## [1.2.0-agent-prompting] - 2026-05-13
+## [1.2.0] - 2026-05-13 — agent-prompting
 
 ### Added
 - **`templates/agent-spec.md`** (new) — standalone spec-drafting template for new agents/subagents. Covers Job, Inputs/Outputs tables, Constraints (min 3), Fallback rules, Layering A→B→C, multi-shot example, YAML output schema, skill/protocol-shell refs. Inspired by ClickUp Agent Prompting Guide Five Building Block framework.
@@ -2499,7 +2499,7 @@ This patch closes integration gaps from 1.3.0: the new commands existed but skil
 
 ---
 
-## [1.1.0-context-engineering] - 2026-05-09
+## [1.1.0] - 2026-05-09 — context-engineering
 
 ### Added
 - **Protocol Shells (Pareto-lang):** `templates/protocol-shell.md` + `policies/protocol-shells.md` — formal typed I/O format for subagents, inspired by [davidkimai/Context-Engineering](https://github.com/davidkimai/Context-Engineering). Authoring guide at `docs/skill-guides/protocol-shells.md`.
@@ -2526,7 +2526,7 @@ This patch closes integration gaps from 1.3.0: the new commands existed but skil
 
 ---
 
-## [2.0.0-auto-loop] - 2026-04-30
+## [2.0.0] - 2026-04-30 — auto-loop
 
 ### Added
 - Auto-loop v2: multi-agent (claude + codex), integrated worktree, parallel mode (`--worktree --parallel N`).
