@@ -85,7 +85,7 @@ process.stdin.on('end', () => {
         `Where: input_tokens=${inputTokens} / context_window=${contextWindow}`,
         ``,
         `Why this matters: continuing past ${Math.round(cfg.block_threshold * 100)}% risks auto-compaction during a critical edit, which silently drops earlier context and breaks multi-file refactors. Compacting NOW preserves what matters.`,
-        `(see policies/context-economy.md, GLOBAL.md "Context Decay Awareness")`,
+        `(see policies/token-efficiency.md, GLOBAL.md "Context Decay Awareness")`,
         ``,
         `Fix — run /compact with this preservation list:`,
         ``,
@@ -132,7 +132,7 @@ process.stdin.on('end', () => {
       parts.push(``);
       parts.push(`Alternative: if you're at a natural stopping point, end the session — context restarts fresh next turn.`);
       parts.push(``);
-      parts.push(`References: policies/context-economy.md, policies/self-correcting-sensors.md, GLOBAL.md`);
+      parts.push(`References: policies/token-efficiency.md, policies/self-correcting-sensors.md, GLOBAL.md`);
       const message = parts.join('\n');
 
       try {
@@ -167,7 +167,7 @@ process.stdin.on('end', () => {
         ``,
         `Fix: run /compact at the next natural pause. Preserve current focus; discard prior exploration.`,
         ``,
-        `References: policies/context-economy.md`,
+        `References: policies/token-efficiency.md`,
       ].join('\n');
 
       process.stdout.write(JSON.stringify({
@@ -186,7 +186,7 @@ process.stdin.on('end', () => {
     ``,
     `Fix: if pipeline is active, finish the current stage first. Then /compact if context feels heavy.`,
     ``,
-    `References: policies/context-economy.md`,
+    `References: policies/token-efficiency.md`,
   ].join('\n');
 
   process.stdout.write(JSON.stringify({

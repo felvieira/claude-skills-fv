@@ -138,7 +138,7 @@ function registerUsage(toolName, toolInput) {
         `  (c) Extract: if a recurring decision lives in this file, save a learned skill in .bot/learned-skills/<name>.md so future sessions skip the read entirely.`,
         `  (d) Working set: check .bot/.working-set.json — relevant decisions may already be summarized there.`,
         ``,
-        `References: policies/context-economy.md, policies/learned-skills.md, policies/self-correcting-sensors.md`,
+        `References: policies/token-efficiency.md, policies/learned-skills.md, policies/self-correcting-sensors.md`,
       ].join("\n");
     }
   }
@@ -160,7 +160,7 @@ function registerUsage(toolName, toolInput) {
         `  (b) Refine: widen or narrow the pattern (e.g., add file glob, switch to multiline, change regex anchor) instead of repeating verbatim.`,
         `  (c) Switch tool: if you need symbol semantics (callers/definitions), prefer code-intel tools over Grep (see policies/code-exploration.md).`,
         ``,
-        `References: policies/code-exploration.md, policies/context-economy.md, policies/self-correcting-sensors.md`,
+        `References: policies/code-exploration.md, policies/token-efficiency.md, policies/self-correcting-sensors.md`,
       ].join("\n");
     }
   }
