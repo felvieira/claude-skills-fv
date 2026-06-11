@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.35.0-auto-skillify] - 2026-06-11
+
+Absorção parcial de [activeloopai/hivemind](https://github.com/activeloopai/hivemind) — o "skillify a cada N turnos". A maior parte do hivemind já tínhamos (codebase graph = Graphify, semantic search = `.index/vault.db`, memory compound = `memory-curator`, traces = `.bot/*.jsonl`). A única ideia genuinamente nova: **codificar memória numa cadência própria**, não só no fim da sessão.
+
+### Adicionado
+- **`hooks/scripts/auto-skillify.mjs`** (UserPromptSubmit) — a cada `every_n_turns` (default 20) turnos produtivos, injeta um checkpoint perguntando ao agente "a atividade recente vale virar learned-skill?" (os 3 critérios: não-googleável, específico do codebase, custou debugging real). Se sim, o agente cria o `.bot/learned-skills/<slug>.md`. Uma vez por janela; reseta com `/compact`/`/clear`/`/handoff`.
+- Config `auto_skillify` em `hooks/config.json` (`every_n_turns`, `min_turns_first`) + entrada no perfil `minimal`.
+
+### Adaptação ao runtime (não copiamos o hivemind literal)
+O hivemind roda um worker que chama **Haiku** pra decidir "vale guardar?". Hooks `.mjs` são determinísticos e não chamam API — então adaptamos ao padrão do `memory-curator`: o hook detecta a **cadência** e **delega a decisão ao agente da sessão** (que já está pago na assinatura corrente). Forkar Haiku gastaria tokens novos pra fazer o que o agente presente faz de graça.
+
+### Por quê
+Antes, learned-skills nasciam do `post-tool-verifier` (reativo, no momento da edição) ou manualmente. Faltava uma **cadência proativa** — "a cada 20 turnos, pare e destile". O `auto-skillify` lê a contagem do `context-turn-counter` (fonte única de turnos) e fecha esse gap.
+
+---
+
 ## [2.34.1-vault-leak-guard] - 2026-06-03
 
 Salvaguarda: dados de vault de memória **nunca** vazam para o kit (que é público). Complementa a unificação da v2.34.0 — agora que o kit cria/opera o vault, é crítico garantir que a memória PESSOAL (logs, decisões, secrets) não seja commitada acidentalmente no repo público do kit.
