@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 49 skills · 16 subagents · 39 slash commands · 51 policies
-> **Last updated:** 2026-05-29 (v2.27.0 — investigate-first guard: hook que impede a IA de perguntar o que ela mesma pode descobrir (gh user, branch, package manager, porta) + policy investigate-first)
+> **Version:** 48 skills · 16 subagents · 43 slash commands · 53 policies · 27 hooks · 22 rules
+> **Last updated:** 2026-06-11 (v2.35.0 — auto-skillify: codification cadence absorbed from activeloopai/hivemind. Recent line: v2.31 design-aware /auto · v2.32 pre-build-gate · v2.33 AI-first memory · v2.34 unified+portable vault · v2.34.1 vault-leak guard · v2.35 auto-skillify)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 

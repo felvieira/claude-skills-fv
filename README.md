@@ -356,6 +356,16 @@ flowchart LR
 | `post-tool-verifier` | PostToolUse | detects debugging patterns, suggests extracting a learned skill | standard, strict |
 | `model-routing-hook` | PreToolUse | suggests model swap on plan mode and validates subagent spawns | standard, strict |
 | `simplify-ignore` | PreToolUse + PostToolUse | protects `simplify-ignore-start/end` blocks from auto-simplification | standard, strict |
+| `claim-verifier` | PostToolUse | detects unverified result claims ("email sent", "deploy OK", "tests passed") — passes free if there's exit code 0 / HTTP 200 / query result | standard, strict |
+| `context-turn-counter` | UserPromptSubmit | suggests `/compact` every 25 turns, intelligent handoff at 50 using the memory vault | standard, strict |
+| `pre-build-gate` | UserPromptSubmit | detects creation intent and injects the "decide before you code" checklist per discipline (acceptance / api-contract / schema / ui-design / deploy) — brings the `/auto` phase gates to passive mode | standard, strict |
+| `auto-skillify` | UserPromptSubmit | every 20 turns, asks whether recent activity is worth a learned-skill (3 criteria) — codification cadence, absorbed from hivemind | standard, strict |
+| `topic-shift-detector` | UserPromptSubmit | warns when the subject changed (infra→data) so the old topic doesn't inflate token cost silently | standard, strict |
+| `intent-classifier` | UserPromptSubmit | classifies prompt intent to route enrichment | standard, strict |
+| `memory-curator` | SessionStart (async) | autonomous vault maintenance: decay/archive/dedup in pure JS, delegates the semantic part to the present agent | standard, strict |
+| `session-event-logger` | multiple | telemetry of hook events to `.bot/*.jsonl` for `/insights` | standard, strict |
+
+> 27 hook scripts total in `hooks/scripts/` — the table above lists the user-facing ones. Toggle any via `DEVKIT_DISABLED_HOOKS` or the `minimal` profile.
 
 ### Hook Profiles
 
