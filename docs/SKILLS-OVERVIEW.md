@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 49 skills + 16 subagents + 39 commands + 51 policies + rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 48 skills + 16 subagents + 43 commands + 53 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 49 skills, 16 subagents, 39 slash commands, 51 policies, rules path-scoped (TS/Python/React + common)
-> **Última atualização:** 2026-05-28 (v2.25.0 — rules system path-scoped + fix do 15º subagent + 5 skills stub reescritos com profundidade)
+> **Versão:** 48 skills, 16 subagents, 43 slash commands, 53 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-06-11 (v2.35.0 — auto-skillify: cadência de codificação de memória absorvida do activeloopai/hivemind)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
