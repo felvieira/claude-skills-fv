@@ -1,7 +1,7 @@
 # Repo Audit
 - Status: atualizado pós-auditoria geral
 - Ultima revisao: 2026-06-10 (v2.35.0)
-- Stack real: kit de skills em markdown para Claude/OpenCode — `GLOBAL.md`, `policies/`, `templates/`, `skills/` (49 numeradas, 16 reservado), `agents/` (16 subagents), `commands/` (43 slash commands), `hooks/` (27 scripts .mjs registrados em hooks.json), `programs/` (7 pipelines YAML), `evals/`, `bench/`
+- Stack real: kit de skills em markdown para Claude/OpenCode — `GLOBAL.md`, `policies/`, `templates/`, `skills/` (48 skills, numeradas 01-49 com gap no 16), `agents/` (16 subagents), `commands/` (43 slash commands), `hooks/` (27 scripts .mjs registrados em hooks.json), `programs/` (7 pipelines YAML), `evals/`, `bench/`
 - Convencoes detectadas: governanca global persistida, skills numeradas por papel, guides sob demanda, templates curtos, evals versionados (48/48 PASS), auditoria reutilizavel do proprio repo, CHANGELOG em Keep a Changelog (`## [X.Y.Z] - data — slug`)
 - Assets e contexto visual: ha `Image Generator`, `Asset Librarian` e `docs/repo-audit/assets.md`; o sistema espera reutilizacao de contexto visual antes de gerar novos assets
 - Testes e qualidade: evals documentais em `evals/` (triggers + skills, cobertura ate skill 49) e quality gates via policies; nao ha suite automatizada de app, pois o repo e um kit de instrucoes e artefatos
