@@ -13,6 +13,9 @@ __pycache__/
 
 # Graphify knowledge graph (local only)
 graphify-out/
+
+# Bench A/B outputs (logs, traces, screenshots) — só os scripts são versionados
+bench/ab/out/
 .swarm/
 .claude/worktrees/
 .playwright-mcp/
