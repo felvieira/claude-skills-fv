@@ -86,6 +86,9 @@ Nao deslizar para "component", "service", "API", "boundary". Definicoes:
 - **Adapter** — coisa concreta satisfazendo uma interface em um seam.
 - **Leverage** — o que callers ganham com depth.
 - **Locality** — o que mantenedores ganham com depth: mudanca, bugs, conhecimento concentrados em um lugar.
+- **Cohesion** — sinal de que um Module merece ser deep: suas responsabilidades fazem sentido juntas e mudam pela mesma razao. Alta coesao = candidato a deep. (Nao e termo novo — e o *gatilho* para aplicar deletion test.)
+- **Coupling leak** — quando a Implementation de um Module vaza pela Interface, forcando callers a saber detalhes internos. Sintoma de shallow: a Interface nao esconde o que devia.
+- **Contract** — a Interface de um Module *distribuido* (schema, classe de mensagem, media type). Vale a definicao estrita de Interface: tudo que o outro sistema precisa saber — nao apenas o formato do payload, mas modos de erro, versionamento e compatibilidade.
 
 ## Quando Usar
 
@@ -179,11 +182,51 @@ Side effects acontecem inline conforme decisoes cristalizam:
 | Multiplos modulos sabem como chamar Y na ordem certa | seam errado / shallow | esconder ordem dentro de modulo deep |
 | Refactor pequeno quebra muitos testes | testes acoplados a implementacao | reescrever testes pela interface; modulo provavelmente shallow |
 | God file (>1000 linhas, >20 callers) | falta de seam | identificar sub-responsabilidades, criar seams |
+| Detalhe de impl (conexao, driver, ordem de chamada) aparece na assinatura | coupling leak / shallow | esconder atras do seam; expor Interface menor |
+| Adicionar campo a mensagem/schema quebra consumidores que nao usam o campo | Contract rigido demais / acoplamento desnecessario | aplicar Must-Ignore; validar so o que se usa |
+| Layer/tier so repassa chamadas sem encapsular decisao | shallow / pass-through distribuido | deletion test; mover complexidade real para dentro ou eliminar o tier |
 
 Coordenar com graphify quando disponivel:
 - god nodes do `graphify-out/GRAPH_REPORT.md` = candidatos prioritarios
 - bridges entre comunidades = seams ja existentes (boas ou ruins)
 - comunidades coesas = candidates a virar deep modules (interface unica, implementacao concentrada)
+
+## Lentes Adicionais — Coesao, Integracao e Camadas
+
+> Inspirado em Silveira et al., *Introducao a Arquitetura e Design de Software* (Casa do Codigo), cap. 4, 6.1, 6.5, 7. Principios atemporais cross-linguagem — a parte JVM-especifica do livro (GC, classloaders, JIT) e ignorada de proposito; nao e o dominio desta skill.
+
+Tres reformulacoes do mesmo nucleo (depth, deletion test, leverage, locality) aplicadas a contextos que a Fase 1 ja varre, mas que ganham vocabulario aqui. **Nao sao novos passos do processo** — sao lentes para nomear friccao durante a exploracao.
+
+### Coesao/acoplamento como heuristica de profundidade
+
+Coesao e acoplamento nao sao metas em si nesta skill — sao **sinais** que apontam para candidatos:
+
+- **Modulo coeso** (responsabilidades que mudam pela mesma razao — SRP, "uma razao para mudar") e candidato natural a **deep**: ja concentra uma decisao, falta so esconder a Implementation atras de Interface menor. Rode o deletion test para confirmar.
+- **Acoplamento que vaza pelo seam** (callers sabem *como* chamar Y na ordem certa, ou um detalhe de persistencia aparece na assinatura) e **coupling leak** = shallow. A acao e a de sempre: mover comportamento para dentro, expor menos.
+- SRP mapeia direto em **locality**: se voce consegue pensar em dois motivos para mudar um Module, ele tem duas responsabilidades e a mudanca/bug nao esta concentrada em um lugar.
+
+Cuidado simetrico: **baixo acoplamento != zero acoplamento**. Sempre havera uma ligacao entre dois Modules que cooperam; a meta e que ela seja a menor e mais simples possivel (a Interface), nao que desapareca. Extrair um Module so para "desacoplar" sem deletion test e mover complexidade, nao remover.
+
+### Seam distribuido — REST vs async vs RPC como escolha de Interface
+
+A fronteira entre dois sistemas e um **seam** como qualquer outro; o estilo de integracao e a escolha de *que tipo de seam*:
+
+- **RPC/SOAP** — acopla o caller a operacoes e tipos especificos (WSDL gera stubs; mudanca no contrato => regerar). Seam rigido: tende a shallow quando cada metodo remoto faz so 1 coisa e o caller orquestra a ordem.
+- **Async/mensageria (broker)** — o seam e a *classe + formato da mensagem*. Quem envia nao conhece quem recebe — desacoplamento alto, mas o formato da mensagem **e** o Contract: adicionar um campo quebra consumidores rigidos. Deep aqui = consumidor **Must-Ignore** (ignora o que nao conhece), que mantem a Interface estavel sob evolucao.
+- **REST orientado a recurso** — poucas operacoes (verbos HTTP) sobre muitos recursos; capilaridade no lugar de N operacoes ad-hoc. Interface uniforme = menos superficie para o caller aprender.
+
+Em todos os casos, **o Contract e a Interface no sentido estrito da 38**: nao so o shape do payload, mas modos de erro, ordering e compatibilidade. Validar o schema inteiro quando voce usa so parte dele e auto-imposicao de acoplamento — o equivalente distribuido de um caller que importa detalhes internos.
+
+**HATEOAS como Interface profunda.** Hipermidia (links com `rel`, media types, content negotiation) e exemplo limpo de deep interface: o caller acopla ao *significado* do link (`rel="pagamentos"`), nao a URI. O servidor pode trocar a URI, a maquina, ate o fornecedor por tras — a Implementation muda, a Interface (o significado) nao. Versionamento e re-roteamento ficam escondidos atras do seam.
+
+### Camadas/tiers sob a mesma lente
+
+Uma camada se avalia pela leverage que oferece, igual a qualquer Module:
+
+- **Layer/tier que so repassa** ("apenas uma ponte" entre cliente e dados, repassando chamadas sem encapsular decisao) e **shallow** — passa no deletion test como pass-through. Suspeito classico: um tier intermediario cuja unica funcao e relay gera round-trips extras sem esconder complexidade.
+- **Layer que encapsula complexidade real** (regra de negocio, orquestracao de workflow, traducao de protocolo que de fato esconde detalhe) e **deep** — concentra decisao e da locality. Mover logica de negocio de um relay burro para um business tier coeso *e* uma deepening opportunity valida.
+
+Distinguir **layer** (separacao logica — reduz acoplamento no codigo) de **tier** (separacao fisica — roda em maquina separada). Adicionar layer/tier so porque "fica organizado", sem encapsular complexidade, e o mesmo anti-padrao de extrair Module sem deletion test.
 
 ## Output
 

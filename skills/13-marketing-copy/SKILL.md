@@ -28,6 +28,7 @@ Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-g
 
 - para decidir SEO tecnico, schema ou implementacao de UI
 - para substituir definicao de regra de negocio
+- copy de direct response (anuncio, pagina de vendas de infoproduto, e-mail de venda, legenda de Instagram, gatilhos mentais) → skill 50 (direct-response-copy)
 
 ## Entradas Esperadas
 

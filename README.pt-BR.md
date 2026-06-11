@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 48 Skills Especialistas para Coding Agents
+# Dev Team Kit — 50 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.35.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-48-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.37.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-50-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -14,6 +14,8 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.37.0** | **Absorção de 7 ebooks (Casa do Código)** — só o gap real virou skill nova: **skill 51 `ux-research`** (discovery qualitativo — entrevista com usuário, persona baseada em pesquisa, journey map, teste de usabilidade, arquitetura de informação; fica *antes* do PO 01 e do UI/UX 02). O resto virou incremento cirúrgico: 3 policies de XP (`pair-programming`, `continuous-integration`, `sustainable-pace`, ligadas à skill 37); skill 01 ganha **Fundamento de Negócio** (validação de hipótese, MVP, monetização, AARRR, product-market fit — do *Guia da Startup*); skill 14 ganha **Keyword Research** (KEI, intent, cauda longa) + **Off-Page/Link Building**; skill 07 ganha **Infrastructure as Code** (provisionamento declarativo, idempotência, drift — princípios de DevOps mapeados pra Terraform/Ansible); skill 38 ganha lentes de coesão/acoplamento, seam distribuído (REST/async/RPC, HATEOAS) e camadas. Jogos HTML5 Canvas descartado (nicho <2%). | [`skills/51-ux-research/SKILL.md`](skills/51-ux-research/SKILL.md), [`policies/pair-programming.md`](policies/pair-programming.md) |
+| **v2.36.0** | **Skill 50 `direct-response-copy`** — copy de direct response destilada de 3 ebooks clássicos de copy PT-BR: biblioteca de fórmulas de headline em 20 categorias de gatilho (357 modelos destilados em fórmulas parametrizadas), os 8 gatilhos mentais + estrutura de storytelling de venda, copy de Instagram (legenda/engajamento). Gate de integridade obrigatório: sem claim não-verificável, sem depoimento fabricado, escassez só real. Complementa a skill 13 (copy de produto) — 13 cobre landing/microcopy/brand voice, 50 cobre ads/página de vendas/e-mail/social. | [`skills/50-direct-response-copy/SKILL.md`](skills/50-direct-response-copy/SKILL.md), [`skills/50-direct-response-copy/references/headline-formulas.md`](skills/50-direct-response-copy/references/headline-formulas.md) |
 | **v2.27.0** | **Investigate-first guard** — princípio com enforcement ativo: a IA nunca deve perguntar ao usuário algo que ela mesma pode descobrir. Hook PreToolUse intercepta `AskUserQuestion`, detecta pergunta auto-descobrível (user do github, gh logado, branch, package manager, porta, versão de runtime, stack, conta de MCP) e manda rodar o comando primeiro (`gh auth status`, `git config`, Glob lockfile, MCP `whoami`) em vez de interromper. Não bloqueia — educa. Conservador: preferência/intenção/trade-off passam livres. 10/10 padrões descobríveis pegos, 5/5 perguntas legítimas passam. | [`policies/investigate-first.md`](policies/investigate-first.md), [`hooks/scripts/investigate-first-guard.mjs`](hooks/scripts/investigate-first-guard.mjs) |
 | **v2.26.0** | **Absorção ECC (rodada 2)** — `silent-failure-hunter` (16º subagent, review-only: caça `catch{}` vazio, erros engolidos, fallbacks perigosos, stack traces perdidos, rollback faltando) + skill 49 `context-budget` (audita peso de contexto carregado por componente, headroom + alertas de overflow; distinto do cost-tracker que mede completions runtime) + comando `/context-budget`. | [`agents/silent-failure-hunter.md`](agents/silent-failure-hunter.md), [`skills/49-context-budget/SKILL.md`](skills/49-context-budget/SKILL.md) |
 | **v2.25.0** | **Rules system path-scoped** (`.claude/rules/` com `paths:` glob — o harness anexa um padrão de codificação só quando um arquivo editado casa o glob, layering common+linguagem, inspirado no [ECC](https://github.com/affaan-m/ECC)) + paydown de dívida: corrigido o bug da allowlist de subagents (o 15º subagent `anti-ai-writing` faltava na allowlist enumerada), reconciliado o count drift, e reescritos os 5 skills stub (19/21/22/24/27) com profundidade real. | [`rules/`](rules/), [`policies/rules-system.md`](policies/rules-system.md) |

@@ -60,6 +60,48 @@ Para exemplos completos de Dockerfile, compose, CI/CD e estrategias de release, 
 
 Para exemplos completos de Dockerfile, compose e pipelines, consultar `docs/skill-guides/deploy-docker.md`.
 
+## Infrastructure as Code (IaC)
+
+Tratar infraestrutura como código: o estado de servidores, redes e recursos cloud vive em arquivos versionados, revisáveis e reproduzíveis — nunca em passos manuais ou conhecimento tribal. Os princípios abaixo são atemporais (destilados de "DevOps na prática", Casa do Código); o ferramental moderno (Terraform, OpenTofu, Ansible, Pulumi) substitui o ferramental datado da literatura original (Puppet, Vagrant, Chef).
+
+### Princípios (atemporais)
+
+1. **Provisionamento declarativo, não imperativo.** Não escreva "instale o pacote X". Declare o estado final desejado — "o pacote X deve estar instalado", "deve existir uma VM com este tamanho". A ferramenta calcula o diff entre o estado atual e o declarado e aplica só o necessário. O arquivo descreve o destino, não a sequência de passos.
+2. **Idempotência.** Aplicar o mesmo código N vezes converge sempre pro mesmo estado. Pacote já instalado não reinstala, serviço já rodando não reinicia. Isso distingue IaC de shell script proprietário, que normalmente só funciona na primeira execução (este kit já aplica idempotência pontual em `ssl-init.sh` — IaC é a mesma ideia no nível de servidor/infra inteira).
+3. **Ambientes reproduzíveis.** dev, staging e prod nascem do mesmo código, parametrizado por ambiente. "Funciona na minha máquina" deixa de existir porque a máquina é descrita em código. Server provisionado a partir de manifesto é descartável e recriável — gado, não bicho de estimação.
+4. **Convergência por dependência, não por ordem de linha.** O grafo de dependências entre recursos (banco antes da app, config antes do restart) é declarado explicitamente. Mudança em config notifica e dispara o restart do serviço dependente.
+5. **Combater drift.** Drift é a divergência entre o estado declarado e o real (alguém deu `ssh` e mudou à mão). IaC detecta e corrige drift reaplicando o estado declarado. Mudança em produção que não passa pelo código é dívida — o próximo `apply` a reverte ou o `plan` a denuncia.
+6. **Reuso de módulos.** Padrões de infra (web server, banco, VPC) viram módulos parametrizados e versionados, não copy-paste. Equivalente moderno do Puppet Forge: Terraform Registry, Ansible Galaxy.
+
+### Mapeamento ferramental (livro datado → moderno)
+
+| Conceito do livro | Ferramenta datada | Equivalente moderno |
+|---|---|---|
+| Provisionar VM / recurso cloud | Vagrant + VirtualBox | Terraform / OpenTofu / Pulumi |
+| Configuration management (estado do SO/serviços) | Puppet, Chef | Ansible (agentless), cloud-init |
+| Manifesto / recurso declarativo | `.pp` (Puppet) | `.tf` (HCL), playbook YAML |
+| Reuso comunitário | Puppet Forge | Terraform Registry, Ansible Galaxy |
+| Idempotência | core do Puppet | core de Terraform (`plan`/`apply`) e Ansible |
+
+Regra de bolso atual: **Terraform/OpenTofu provisiona** (cria VM, rede, bucket, cluster); **Ansible configura** (instala pacote, ajusta arquivo, sobe serviço). Em ambiente totalmente container/Kubernetes, boa parte do config management migra pro Dockerfile + manifesto K8s + GitOps (Argo CD / Flux) — o princípio declarativo é o mesmo, o `apply` muda de dono.
+
+### Fronteira de responsabilidade
+
+- **IaC (esta skill, 07):** *forma* da infra. Provisionar recursos, configurar SO e serviços base, garantir estado declarado e reproduzível. "Como o ambiente é construído e mantido idempotente."
+- **Observabilidade / SRE (skill 20):** *saúde* da infra em execução. Logs, métricas, SLO, probes, alertas. IaC declara o probe; a 20 define o que ele significa e o alerta.
+- **Release orchestration (skill 24):** *promoção* de versões de aplicação sobre a infra existente. O ciclo de vida do servidor (IaC) é mais lento que o da aplicação (release) — o mesmo servidor recebe dezenas de releases.
+
+Em resumo: **IaC constrói o palco (07), a 24 troca o ator em cena, a 20 vigia o espetáculo.** Drift de infra é da 07; degradação em runtime é da 20; deploy da versão errada é da 24.
+
+### Quando aplicar
+
+- ambiente novo (greenfield) onde servidores/recursos cloud precisam nascer reproduzíveis
+- divergência staging↔prod → codificar o ambiente
+- onboarding de servidor manual existente → importar pro estado declarado (`terraform import`)
+- suspeita de drift → `plan`/`--check` pra detectar antes de reaplicar
+
+Para um único servidor descartável com docker-compose, IaC pesado é overkill — o compose já é declarativo no nível de containers. IaC entra quando a *infra abaixo* dos containers (VM, rede, DNS, certificado, cluster) também precisa ser versionada e recriável.
+
 ## Dockerfile - Backend (Node.js/Express)
 
 ```dockerfile

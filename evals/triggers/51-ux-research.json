@@ -1,0 +1,22 @@
+{
+  "skill": "51-ux-research",
+  "should_trigger": [
+    "preciso fazer pesquisa com usuario antes de especificar a feature",
+    "roteiriza uma entrevista em profundidade com os usuarios",
+    "cria uma persona baseada na pesquisa que fizemos",
+    "mapeia a jornada do usuario nesse fluxo de checkout",
+    "planeja um teste de usabilidade do prototipo",
+    "como valido se esse problema vale a pena resolver",
+    "monta a arquitetura de informacao do menu do site",
+    "card sorting pra descobrir como o usuario agrupa as categorias",
+    "escreve a proposicao de valor do produto novo",
+    "to com medo de construir um produto que ninguem usa"
+  ],
+  "shouldnt_trigger": [
+    "desenha o wireframe da tela de login",
+    "define os tokens do design system",
+    "revisa o contraste de cor pra WCAG",
+    "faz o benchmark visual dos concorrentes pra moodboard",
+    "instrumenta os eventos de analytics do funil"
+  ]
+}

@@ -4,10 +4,15 @@ description: |
   Skill do Especialista SEO para otimização de páginas e sistemas para motores de busca tradicionais e
   também para otimização para ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews).
   Use quando precisar otimizar meta tags, Open Graph, sitemap, schema markup, Core Web Vitals, performance,
-  imagens, fontes, acessibilidade para SEO, ou qualquer decisão de ranqueamento e citação por motores
+  imagens, fontes, acessibilidade para SEO, fazer pesquisa de palavra-chave (keyword research, intent,
+  cauda longa), priorizar termos por volume/dificuldade, ou planejar estratégia de backlinks e autoridade
+  de domínio, ou qualquer decisão de ranqueamento e citação por motores
   generativos. Trigger em: "SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals",
   "performance", "LCP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine",
-  "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization".
+  "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization",
+  "keyword research", "pesquisa de palavra-chave", "palavra-chave", "keyword", "cauda longa", "long tail",
+  "search intent", "volume de busca", "KEI", "link building", "backlink", "off-page", "guest posting",
+  "autoridade de domínio", "anchor text", "nofollow".
 ---
 
 # SEO Specialist - Otimização para Motores de Busca
@@ -53,6 +58,99 @@ Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-
 5. Otimizar imagens e fontes para performance máxima
 6. Garantir acessibilidade (impacta diretamente o SEO)
 7. Assegurar HTML semântico em toda a aplicação
+8. Conduzir keyword research e entregar a lista de keywords priorizada ANTES do Copy escrever
+9. Definir o brief técnico de link building (off-page) — execução fica com Marketing/Conteúdo
+
+## Keyword Research
+
+A pesquisa de palavra-chave é o passo 0 de qualquer projeto de SEO: descobrir como o usuário vai procurar pelo produto/serviço antes de escrever uma linha de conteúdo ou definir uma URL. Fonte: "SEO Prático" (Adriano Almeida, Casa do Código), cap. 4.
+
+O output desta etapa é uma **tabela de keywords decididas** que alimenta o resto do pipeline: Copy (13/50) usa pra escrever, Frontend (04) usa pra URL/headings, e a própria 14 usa pra meta tags. SEO fornece as keywords; não inventa o produto.
+
+### Workflow de descoberta
+
+1. **Brainstorm bruto.** Antes de ferramenta nenhuma, liste no papel como *você* acha que as pessoas buscariam. O livro chega a ~30 termos em 5 min pro caso "risoto" (`como fazer risoto`, `receitas de arroz gourmet`...). Peça a um amigo imparcial pra fazer o mesmo — quem está "atrás do balcão" tem visão enviesada de como o cliente pensa.
+2. **Entenda a cabeça do usuário (intent).** A busca "perfeita" raramente é a que o usuário digita. Quem procura "risoto" pode procurar "arroz cremoso". Mapeie variações que vão *além* da descrição literal do produto.
+3. **Pesquise no próprio buscador (análise de concorrente).** Busque cada termo no Google. Repare em: quais sites grandes ocupam o topo, quantos resultados são blogs (sinal de que dá pra entrar), adjetivos recorrentes nos títulos (são keywords que você não tinha mapeado), e se a keyword aparece na URL dos rankeados.
+4. **Explore a cauda longa.** Termos genéricos ("carne") têm mais busca, mas concorrência feroz **e** intent difuso. Termos cauda longa ("quais os cortes de carne mais macios") têm menos busca mas **conversão muito maior** porque casam com intent específico.
+5. **Expanda com ferramentas.** Use as ferramentas pra achar variações que nem um especialista lembraria (tabela em `references/keyword-research.md`).
+6. **Agrupe em dois baldes: conteúdo vs. negócio/venda.** Keywords de conteúdo → pauta de blog pra atrair tráfego amplo. Keywords de negócio/venda → a página de venda do serviço, descrita como as pessoas realmente buscam.
+7. **Priorize por volume × dificuldade (KEI).** Quando o conhecimento de negócio não basta, use o **KEI (Keyword Effectiveness Index)** — balanço entre volume e competitividade:
+   ```
+   KEI = (buscas por dia) ^ 2 / número de resultados
+   ```
+   Ex. ("chef em casa": 720 buscas/mês, 1,5M resultados): `KEI = (720/30)^2 / 1.500.000 = 0,000384`. **Quanto maior o KEI, melhor.** Volume vem do Google Keyword Planner; nº de resultados vem do total do Google pra busca exata. Cuidado com termos ambíguos ("personal" colide com personal trainer/stylist, inflando resultados).
+
+> Detalhe denso (ferramentas, exemplo KEI completo, template de tabela) em `references/keyword-research.md` — abrir só ao executar um keyword research de fato.
+
+### Como documentar as keywords decididas
+
+| Keyword | Intent | Balde | Volume/mês | Dificuldade | KEI | Prioridade |
+|---------|--------|-------|-----------|-------------|-----|-----------|
+| chef a domicílio sp | transacional | negócio | 480 | média | 0,000342 | P0 |
+| como fazer risoto | informacional | conteúdo | alto | alta | — | P1 (blog) |
+
+A coluna **Intent** classifica: `informacional` (tutorial, "como"), `transacional` (compra/contratação), `navegacional` (marca). Isso direciona o tipo de página e o tom do Copy.
+
+### Nota sobre densidade de keyword
+
+Keyword research **decide** os termos; não autoriza repeti-los. **Keyword stuffing** (repetir à exaustão) é penalizado pelo Penguin desde 2012 — 2 a 3 ocorrências naturais por página bastam. O aviso vive aqui porque é onde a tentação nasce; o tuning de conteúdo é do Copy.
+
+### Handoff de Keyword Research
+
+- **→ Copy (13/50):** recebe a tabela de keywords (intent + balde) ANTES de escrever.
+- **→ Frontend (04):** keyword principal vai pra URL (slug) e pra `<h1>`/headings. A 14 só especifica *qual* termo.
+- **→ PO (01):** se o research revelar demanda por algo fora do escopo do produto, é **decisão de negócio/roadmap** — devolver pro PO. SEO mapeia a demanda, PO decide se persegue.
+
+## Off-Page / Link Building
+
+On-page não é tudo. O peso que outros sites dão ao seu — via links — é fator central de ranking (PageRank). Fonte: "SEO Prático", cap. 9-10.
+
+**Fronteira de papel:** boa parte de link building é execução de **Marketing/Conteúdo** (escrever guest post, fechar parceria). O papel da 14 aqui é o **brief técnico**: estratégia de aquisição, critérios de qualidade, anchor text correto, uso de `nofollow`, e validar que os links no código estão saudáveis. A 14 **não** sai negociando backlink — especifica o que um bom backlink precisa ter.
+
+### Princípio: qualidade > quantidade, relevância contextual
+
+Volume de links não importa — relevância importa. O link tem que vir de quem é **autoridade no seu assunto**. Um site de culinária linkado por veículo de fitness no contexto certo ganha boost; linkado por um banco, quase nada. Comprar links de diretórios sem conteúdo é o que o Penguin (2012) pune.
+
+Critérios que os buscadores avaliam (vão no brief):
+- A página que linka tem relevância maior que a minha?
+- Vários domínios *diferentes* linkam (mais valioso que o mesmo site de novo)?
+- Os conteúdos das duas páginas têm relação temática?
+- Qual o anchor text e a posição do link (conteúdo > rodapé/sidebar)?
+
+### Anchor text e posicionamento (brief técnico — responsabilidade da 14)
+
+- **Anchor natural, nunca "clique aqui".** O texto do link deve ser a keyword no contexto.
+- **Diversifique o anchor.** Repetição idêntica em massa parece artificial.
+- **Posição importa.** Link no começo/centro do conteúdo > rodapé/sidebar.
+- **`rel="nofollow"` onde não há controle.** Comentários, UGC, links não-endossados não passam autoridade. Redes sociais marcam links como `nofollow` — curtidas/seguidores **não** entram no ranking, embora valham como canal que *gera* links naturais depois.
+- **Links internos contam.** Mesmas regras (natural, bem descrito).
+
+### Estratégias de aquisição natural (execução de Marketing/Conteúdo)
+
+A 14 documenta *que* se aplicam e *qual* o brief; quem escreve/negocia é Marketing:
+1. **Marketing de conteúdo** — conteúdo original/relevante que atrai links sozinho (brief = keywords de conteúdo + critério; execução = Copy 13/50).
+2. **Guest blogging** — escrever pra site terceiro relevante com link de volta.
+3. **Comentários e fórum marketing** — participar de comunidades do nicho agregando valor.
+4. **Troca de links, parcerias e promoções** — patrocínio/brinde em troca de link (decisão de orçamento = PO 01).
+5. **Press releases** — matéria via RP pra emplacar em portal (decisão de negócio = PO 01).
+
+### Checklist de Link Building (brief técnico)
+
+- [ ] Estratégia de aquisição definida e atribuída (dono: Marketing vs. PO)
+- [ ] Critério de qualidade do backlink documentado (domínio relevante, autoridade > a nossa)
+- [ ] Meta de diversidade de domínios referenciadores
+- [ ] Anchor text natural e variado, keyword no contexto — nunca "clique aqui"
+- [ ] Links de autoridade no conteúdo principal (não rodapé/sidebar)
+- [ ] `rel="nofollow"` em comentários, UGC e links não-endossados
+- [ ] Links internos descritivos e sem quebra (404 interno derruba ranking)
+- [ ] Conteúdo original (Penguin penaliza duplicação e diretórios de link)
+
+### Handoff de Off-Page
+
+- **→ Marketing Copy (13/50):** executa guest posts, marketing de conteúdo, outreach.
+- **→ PO (01):** decisões de orçamento (PR pago, patrocínio, agência) e priorização de parcerias.
+- **→ Frontend (04):** implementa anchor text, posicionamento, `nofollow`.
 
 ## Meta Tags - Template Padrão
 

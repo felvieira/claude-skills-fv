@@ -295,6 +295,17 @@ Apos conclusao:
 - **Architecture Deepener (38):** coordena para identificar deep modules antes do RED
 - **`/build`:** pode ativar TDD se task descrita como "TDD" ou "test-first"
 
+## XP — TDD no contexto da metodologia completa
+
+TDD não é uma técnica isolada: é o **núcleo técnico do eXtreme Programming**, e o livro *eXtreme Programming — práticas para o dia a dia* (Casa do Código) é enfático em que as práticas só funcionam em sinergia — "muitas vezes uma prática só funciona porque depende das outras". Esta skill cobre o red-green-refactor; o **resto do XP é processo compartilhado e vive nas policies**:
+
+- **Pareamento e posse coletiva** → `policies/pair-programming.md`. Revezar piloto/copiloto **por ciclo de TDD** (um escreve o RED, o outro faz o GREEN e refatora) é a forma canônica de parear no kit.
+- **Integração contínua / trunk-based** → `policies/continuous-integration.md`. O GREEN só "conta" quando o build verde integra no trunk — "não quebre o build" é o análogo XP do `verification-before-completion`.
+- **Ritmo sustentável** → `policies/sustainable-pace.md`. Não pular testes para "agilizar": defeito vira retrabalho que quebra o ritmo das próximas iterações.
+- **Simplicidade / YAGNI** → não há policy dedicada (seria redundante). Vive na tríade `policies/vertical-slices.md` + `policies/boil-the-lake.md` + Senior Dev Override do `GLOBAL.md`. O "código mínimo para passar o teste atual" da Fase 3 desta skill *é* YAGNI aplicado ao ciclo.
+
+Se for adotar XP num projeto, o livro recomenda começar pelo **teste automatizado** ("se tiver que escolher uma prática para começar, escolha o teste automatizado") — ou seja, por esta skill — e ir incorporando as policies acima.
+
 ## Material Adicional
 
 Para deep dives consultar:

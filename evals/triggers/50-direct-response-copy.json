@@ -1,0 +1,22 @@
+{
+  "skill": "50-direct-response-copy",
+  "should_trigger": [
+    "escreve uma headline pro meu anuncio de emagrecimento",
+    "preciso de copy de venda pro lancamento do meu curso",
+    "qual gatilho mental usar pra um publico cetico",
+    "cria 5 variacoes de headline pro criativo de ads",
+    "escreve a legenda do post de instagram com CTA de comentario",
+    "monta a sequencia de email de venda do lead magnet",
+    "copy pra pagina de vendas do infoproduto",
+    "roteiro de VSL com storytelling de dor e prazer",
+    "revisa essa copy de anuncio, ta convertendo pouco",
+    "headline com prova social pro meu caso de cliente"
+  ],
+  "shouldnt_trigger": [
+    "escreve o microcopy do botao de salvar",
+    "define a brand voice do produto",
+    "estrutura a landing page do SaaS com hero e pricing",
+    "otimiza as meta tags da pagina",
+    "escreve um post de blog sobre arquitetura"
+  ]
+}

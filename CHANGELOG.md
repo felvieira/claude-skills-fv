@@ -5,6 +5,45 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.37.0] - 2026-06-11 — absorção de 7 ebooks Casa do Código
+
+Avaliação de gap de 7 livros técnicos (Arquitetura e Design, eXtreme Programming, SEO Prático, DevOps na prática, UX Design, Guia da Startup, Jogos HTML5 Canvas). Princípio aplicado: **criar o que não temos, incrementar o que temos** — só 1 dos 7 virou skill nova; o resto foi incremento cirúrgico nas skills existentes. Análise de gap rodada por 7 agentes em paralelo, cada um lendo seu livro + as skills do domínio.
+
+### Adicionado
+- **`skills/51-ux-research/SKILL.md`** + 2 references (`metodos-pesquisa.md`, `personas-jornada.md`) — único gap real: UX Research / Discovery qualitativo (entrevista, persona baseada em pesquisa, journey map, teste de usabilidade qualitativo, arquitetura de informação, card sorting, proposição de valor). Antecede o PO (01) e o UI/UX (02) no pipeline. Fronteira explícita com 02/22/29/21/01. Fonte: Fabricio Teixeira, *UX Design* (Casa do Código).
+- **`policies/pair-programming.md`**, **`policies/continuous-integration.md`**, **`policies/sustainable-pace.md`** — XP é metodologia: o núcleo técnico (TDD) já é a skill 37; o resto vira policy de processo. Cada uma com princípio + por quê + como aplicar + mapeamento pro contexto agente. Fonte: *eXtreme Programming* (Casa do Código).
+- **`evals/triggers/51-ux-research.json`** — 10 should / 5 shouldn't (fronteira contra 02/22/29/21).
+
+### Incrementado (cirúrgico, sem duplicar)
+- **Skill 01 (po-feature-spec)** ganha seção **Fundamento de Negócio (Discovery & Validação)**: validação de hipótese antes de especificar, problema vs. necessidade, MVP de verdade, modelo de monetização/pricing, métricas pirata (AARRR), product-market fit como critério de priorização. Templates em `docs/skill-guides/po-feature-spec.md`. Fonte: *Guia da Startup*.
+- **Skill 14 (seo-specialist)** ganha **Keyword Research** (workflow, intent, cauda longa, KEI) + **Off-Page/Link Building** (anchor text, nofollow, brief técnico) + reference `keyword-research.md`. Fonte: *SEO Prático*. Não duplica o que a 14 já tinha (meta tags, schema, CWV, GEO/AEO).
+- **Skill 07 (deploy-docker)** ganha **Infrastructure as Code**: provisionamento declarativo, idempotência, ambientes reproduzíveis, drift — princípios atemporais (Puppet/Vagrant) traduzidos pro ferramental moderno (Terraform/OpenTofu/Ansible). Fronteira IaC (07) vs SRE (20) vs release (24). Fonte: *DevOps na prática*.
+- **Skill 38 (architecture-deepener)** ganha lentes alinhadas ao vocabulário existente: coesão/acoplamento como heurística de profundidade, seam distribuído (REST/async/RPC, Contract como Interface, HATEOAS), camadas/tiers sob deletion test. 3 termos no glossário, 3 linhas na tabela. Fonte: *Introdução à Arquitetura e Design de Software*.
+
+### Decisões de escopo (não-absorção justificada)
+- **Guia da Startup** — não virou skill: validação de negócio é fundamento que o **PO precisa saber**, então incrementou a skill 01. Não é capability separada num kit de coding.
+- **Jogos HTML5 Canvas** — descartado: game dev com Canvas puro é nicho <2% num kit dev-team genérico. Reverte pra skill se 3+ projetos pedirem.
+- **Policy de cultura DevOps** e **YAGNI como policy** — rejeitadas: a primeira é prática organizacional humana sem gancho de execução; a segunda é redundante com a tríade `vertical-slices` + `boil-the-lake` + Senior Dev Override.
+
+---
+
+## [2.36.0] - 2026-06-11 — skill 50 direct-response-copy
+
+Nova skill de copy de **direct response**, destilada de 3 ebooks clássicos de copy PT-BR ("300 Modelos de Copys Milionárias", "Copy Predadora", "Mestre do Instagram"). Complementa a skill 13 (marketing-copy): a 13 cobre copy de produto (landing estrutural, microcopy, brand voice); a 50 cobre copy que pede ação imediata (anúncio, página de vendas, e-mail de venda, legenda de Instagram, VSL).
+
+### Adicionado
+- **`skills/50-direct-response-copy/SKILL.md`** — protocolo: pesquisa de avatar obrigatória → escolha de gatilho pelo estado de consciência (frio/morno/quente) → peça com gatilho declarado → gate duplo (integridade + anti-AI). Fronteira explícita com skills 13/14/41/21.
+- **`references/headline-formulas.md`** — 357 modelos de headline destilados em fórmulas parametrizadas (`{resultado}`, `{objeção}`, `{N}`, `{tempo}`) em 20 categorias de gatilho + tabela de escolha por estado do avatar.
+- **`references/gatilhos-mentais.md`** — os 8 gatilhos (escassez, urgência, autoridade, reciprocidade, prova social, porquê, antecipação, dor×prazer), estrutura de storytelling de venda em 5 atos, checklist de objeções universais.
+- **`references/instagram-engagement.md`** — copy social: primeira linha da legenda como headline, CTA de interação (20 comentários/20 min), comentário-isca 5x5x5, mix de hashtags por volume, reciprocidade 4x3x1. Com seção explícita "o que NÃO absorver da fonte".
+- **`evals/triggers/50-direct-response-copy.json`** — 10 should / 5 shouldn't (fronteira contra skill 13 e 14).
+
+### Decisão de design
+- **Gate de integridade obrigatório**: o material-fonte é agressivo ("100% garantido", promessas de renda). A skill absorve as *estruturas* e rejeita as *promessas vazias* — claim sem prova é cortado ou reformulado, depoimento fabricado nunca entra, escassez declarada precisa ser real. Alinha com `policies/anti-ai-writing.md` e regras de ads (Meta/Google).
+- Fórmulas destiladas em vez de 357 exemplos colados — ~85% menos tokens carregados, mesmo poder de geração.
+
+---
+
 ## [2.35.0] - 2026-06-10 — auto-skillify
 
 Absorção parcial de [activeloopai/hivemind](https://github.com/activeloopai/hivemind) — o "skillify a cada N turnos". A maior parte do hivemind já tínhamos (codebase graph = Graphify, semantic search = `.index/vault.db`, memory compound = `memory-curator`, traces = `.bot/*.jsonl`). A única ideia genuinamente nova: **codificar memória numa cadência própria**, não só no fim da sessão.

@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 48 Specialist Skills for Coding Agents
+# Dev Team Kit — 50 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.35.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-48-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.37.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-50-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,8 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.37.0** | **7-ebook absorption (Casa do Código)** — only the real gap became a new skill: **skill 51 `ux-research`** (qualitative discovery — user interview, research-based persona, journey map, usability testing, information architecture; sits *before* PO 01 and UI/UX 02). The rest became surgical increments: 3 XP policies (`pair-programming`, `continuous-integration`, `sustainable-pace`, wired to skill 37); skill 01 gains a **Business Foundation** section (hypothesis validation, MVP, monetization, AARRR, product-market fit — from *Guia da Startup*); skill 14 gains **Keyword Research** (KEI, intent, long-tail) + **Off-Page/Link Building**; skill 07 gains **Infrastructure as Code** (declarative provisioning, idempotency, drift — DevOps principles mapped to Terraform/Ansible); skill 38 gains cohesion/coupling, distributed-seam (REST/async/RPC, HATEOAS) and layer lenses. HTML5 Canvas game-dev dropped (niche <2%). | [`skills/51-ux-research/SKILL.md`](skills/51-ux-research/SKILL.md), [`policies/pair-programming.md`](policies/pair-programming.md) |
+| **v2.36.0** | **Skill 50 `direct-response-copy`** — direct response copywriting distilled from 3 classic PT-BR copy ebooks: headline formula library in 20 trigger categories (357 models distilled into parameterized formulas), the 8 mental triggers + sales storytelling structure, Instagram caption/engagement copy. Hard integrity gate: no unverifiable claims, no fabricated testimonials, real scarcity only. Complements skill 13 (product copy) — 13 covers landing/microcopy/brand voice, 50 covers ads/sales pages/email/social. | [`skills/50-direct-response-copy/SKILL.md`](skills/50-direct-response-copy/SKILL.md), [`skills/50-direct-response-copy/references/headline-formulas.md`](skills/50-direct-response-copy/references/headline-formulas.md) |
 | **v2.29.0** | **Claim verifier + context hygiene** — two PostToolUse/UserPromptSubmit hooks: (1) `claim-verifier` detects output with unverified result claims ("email sent", "deploy OK", "tests passed", "migration ran") and injects the specific command to verify before asserting — passes free if inline evidence present (exit code 0, HTTP 200, query result); (2) `context-turn-counter` suggests `/compact` every 25 turns and recommends full session handoff at 50 turns (save to `D:\claude-memory\logs\`, open new session with resumption prompt). New policy: `claim-verification.md`. Two new GLOBAL.md defaults: "verify before asserting" + "compact proactively". | [`hooks/scripts/claim-verifier.mjs`](hooks/scripts/claim-verifier.mjs), [`hooks/scripts/context-turn-counter.mjs`](hooks/scripts/context-turn-counter.mjs), [`policies/claim-verification.md`](policies/claim-verification.md) |
 | **v2.28.0** | **SDD absorption from Medium articles** — 3 additions inspired by "Spec-Driven Development with AI Coding Agents" + "Claude Code plugins" articles: (1) `/spec-kit` unified SDD pipeline (specify→plan→tasks→implement with explicit checkpoints + inline Adversarial Verifier); (2) `/swarm` upgraded with Phase 3 Adversarial Verify (Implementor vs Verifier with opposing goals — verifier tries to refute, spec updated in real-time from gaps found); (3) `/insights` usage-based recommendations (reads hook telemetry JSONLs — gate decisions, investigate-first blocks, tool repetitions — recommends what to calibrate). | [`commands/spec-kit.md`](commands/spec-kit.md), [`commands/insights.md`](commands/insights.md), [`commands/swarm.md`](commands/swarm.md) |
 | **v2.27.0** | **Investigate-first guard** — a principle with active enforcement: the AI must never ask the user something it can discover itself. New PreToolUse hook intercepts `AskUserQuestion`, detects self-discoverable questions (github user, gh logged-in, branch, package manager, port, runtime version, stack, MCP account) and tells the model to run the command first (`gh auth status`, `git config`, Glob lockfile, MCP `whoami`) instead of interrupting. Doesn't block — educates. Conservative: preference/intent/trade-off questions pass through. 10/10 discoverable patterns caught, 5/5 legit questions pass. | [`policies/investigate-first.md`](policies/investigate-first.md), [`hooks/scripts/investigate-first-guard.mjs`](hooks/scripts/investigate-first-guard.mjs) |
@@ -128,7 +130,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 48 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 50 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -165,14 +167,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 37 tools backed by the 48 skills.
+In the table below, treat `dev-team-kit` as 37 tools backed by the 50 skills.
 The MCP exposes 37 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 48 skills | ✅ | ✅ | ✅ |
+| 50 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |

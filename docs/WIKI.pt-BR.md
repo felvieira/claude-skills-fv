@@ -1,11 +1,13 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 49 skills · 16 subagents · 39 slash commands · 51 policies
-> **Última atualização:** 2026-05-29 (v2.27.0 — investigate-first guard: hook que impede a IA de perguntar o que ela mesma pode descobrir (gh user, branch, package manager, porta) + policy investigate-first)
+> **Versão:** 50 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
+> **Última atualização:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 policies de XP + incrementos em 01/07/14/38, absorvidos de 7 ebooks Casa do Código)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 > 🌎 **English version:** [`docs/WIKI.md`](./WIKI.md)
+>
+> ⚠️ **Nota:** este espelho PT cobre os conceitos e fluxos do kit, mas o detalhe item-por-item das skills mais recentes (44-51) vive completo na [WIKI.md (EN)](./WIKI.md) e no [SKILLS-OVERVIEW.md](./SKILLS-OVERVIEW.md). Em caso de divergência, a contagem de base é a do `scripts/check-consistency.mjs`.
 
 Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day) — **nome, o que faz, quando usar, problema que resolve, exemplo concreto, takeaway** —, mas aqui temos **tudo** (skills + subagents + commands + policies + plugin).
 

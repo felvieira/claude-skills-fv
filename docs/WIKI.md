@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 48 skills · 16 subagents · 43 slash commands · 53 policies · 27 hooks · 22 rules
-> **Last updated:** 2026-06-11 (v2.35.0 — auto-skillify: codification cadence absorbed from activeloopai/hivemind. Recent line: v2.31 design-aware /auto · v2.32 pre-build-gate · v2.33 AI-first memory · v2.34 unified+portable vault · v2.34.1 vault-leak guard · v2.35 auto-skillify)
+> **Version:** 50 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
+> **Last updated:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 XP policies + surgical increments to skills 01/07/14/38, absorbed from 7 Casa do Código ebooks. Recent line: v2.33 AI-first memory · v2.34 unified+portable vault · v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -16,10 +16,10 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 1. [How the kit works in 60 seconds](#1-how-the-kit-works-in-60-seconds)
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
-4. [Slash commands (23) — shortcuts by phase](#4-slash-commands-23)
-5. [Skills (49) — specialists by category](#5-skills-49)
+4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
+5. [Skills (50) — specialists by category](#5-skills-50)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
-7. [Policies (22) — shared rules](#7-policies-22)
+7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
 9. [MCP server: 37 tools under the hood](#9-mcp-server-37-tools-under-the-hood)
 10. [When to use what: decision tree](#10-when-to-use-what-decision-tree)
@@ -145,7 +145,7 @@ Worker C: password reset (DB + back + front + e2e test) → mergeable on its own
 
 ---
 
-## 4. Slash commands (23)
+## 4. Slash commands (43)
 
 These are phase shortcuts. No need to memorize skill names — call the shortcut, it routes.
 
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (49)
+## 5. Skills (50)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -650,6 +650,22 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Distinct from:** Skill 30 (Cost Tracker) tracks runtime completion costs; Context Budget tracks what's loaded before any completion.
 **Takeaway:** agents/*.md descriptions are often the biggest fixed cost — 16 agents × ~500 tokens each = 8k tokens always present.
 
+#### Skill 50 — Direct Response Copy
+
+**What it does:** direct response copywriting — ads, sales pages, sales emails, Instagram captions, VSL scripts. Ships a headline formula library in 20 trigger categories (357 classic PT-BR models distilled into parameterized formulas), the 8 mental triggers (scarcity, urgency, authority, reciprocity, social proof, reason-why, anticipation, pain×pleasure) with sales storytelling structure, and Instagram engagement copy. Hard integrity gate: every claim must be verifiable, no fabricated testimonials, scarcity/urgency only when real.
+**When to activate:** writing ad headlines/creatives, launch email sequences, info-product sales pages, Instagram captions with interaction CTAs; choosing the right mental trigger for the avatar's awareness stage.
+**Problem it solves:** sales copy written straight from the offer with no avatar research and no trigger strategy — generic headlines that convert nothing, or worse, unverifiable claims that burn the brand.
+**Distinct from:** Skill 13 (Marketing Copy) covers product copy — structural landing pages, microcopy, brand voice. Skill 50 covers direct response — the reader clicks/signs up/buys now or the piece failed.
+**Takeaway:** **the formula is the skeleton, the avatar research is the flesh, and the integrity gate is non-negotiable** — a `{slot}` filled with an unprovable claim doesn't ship.
+
+#### Skill 51 — UX Research
+
+**What it does:** qualitative discovery — user interviews, research-based personas, journey/empathy maps, qualitative usability testing, information architecture, card sorting, value proposition. Produces the research artifacts that feed the PO (01) and UI/UX (02). Distilled from Fabricio Teixeira's *UX Design* (Casa do Código).
+**When to activate:** uncertainty about who the user is or whether a problem is worth solving; scripting an interview; building a persona from real data; mapping a journey; planning a usability test.
+**Problem it solves:** the team designs from its own intuition — but "you are not the user." Personas get invented as decorative fiction; features get built for nobody.
+**Distinct from:** Skill 02 (UI/UX) draws the interface *from* research; 51 produces the research. Skill 22 (a11y technical), 29 (visual competitive), 21 (quantitative instrumentation) are explicit non-goals.
+**Takeaway:** **research that can't change a decision is theater** — and a persona with no interview behind it is a proto-persona, flagged as hypothesis, not fact. Pipeline: Problem → [51] → PO (01) → UI/UX (02).
+
 ---
 
 ## 6. Subagents (16)
@@ -716,7 +732,7 @@ Review-only agent with zero tolerance for silent failures: empty `catch{}`, erro
 
 ---
 
-## 7. Policies (51)
+## 7. Policies (57)
 
 Policies are shared rules that govern skill behavior. Every skill cites the policies it follows. **Top 5 most important:**
 

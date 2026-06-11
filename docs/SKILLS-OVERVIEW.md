@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 48 skills + 16 subagents + 43 commands + 53 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 50 skills + 16 subagents + 43 commands + 57 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 48 skills, 16 subagents, 43 slash commands, 53 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-06-11 (v2.35.0 — auto-skillify: cadência de codificação de memória absorvida do activeloopai/hivemind)
+> **Versão:** 50 skills, 16 subagents, 43 slash commands, 57 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 policies de XP + incrementos em 01/07/14/38, absorvidos de 7 ebooks Casa do Código)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -20,7 +20,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
 - [Skills por categoria](#skills-por-categoria) — 37 especialistas
-- [Subagents dispatcháveis](#subagents-dispatcháveis) — 14 agentes via Task tool
+- [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
 
@@ -366,7 +366,9 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | # | Skill | Quando ativar |
 |---|---|---|
 | 13 | **Marketing Copy** | copy de landing, CTAs, brand voice |
-| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap |
+| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap, keyword research, link building |
+| 50 | **Direct Response Copy** | headline com gatilho mental, anúncio, página de vendas, e-mail de venda, legenda de Instagram |
+| 51 | **UX Research** | discovery qualitativo: entrevista, persona, journey map, teste de usabilidade, arquitetura de informação |
 
 ### Quality & Delivery
 
@@ -418,7 +420,7 @@ Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devol
 
 ## Policies que governam tudo
 
-51 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+57 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
 
 ### `tool-safety.md`
 Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.
