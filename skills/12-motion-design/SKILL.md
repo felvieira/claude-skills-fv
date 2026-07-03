@@ -17,6 +17,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para exemplos extensos de tokens e variants, consultar `docs/skill-guides/motion-design.md` apenas quando necessario.
 
+Para ajustes pontuais de acabamento (scale on press, animacao contextual de icone, skip animation on load, split/stagger de entrada, saida sutil), ver `skills/52-ui-polish/SKILL.md` — esta skill (12) e dona do sistema de motion tokens; a 52 cobre o detalhe fino que faz o motion parecer refinado.
+
 ## Quando Usar
 
 - adicionar movimento significativo a componentes e fluxos

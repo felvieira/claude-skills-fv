@@ -19,6 +19,8 @@ Para exemplos longos de tokens, heuristicas e acessibilidade, consultar `docs/sk
 
 Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar `docs/skill-guides/ui-component-mcps.md`.
 
+Para checklist de acabamento fino (border radius concentrico, alinhamento optico, sombra vs borda, tabular numbers, hit area minima), ver `skills/52-ui-polish/SKILL.md` — despachar apos Frontend implementar, antes do Reviewer final.
+
 ## Quando Usar
 
 - definir interface, fluxo e comportamento responsivo

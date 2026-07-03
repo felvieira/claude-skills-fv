@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.38.0] - 2026-07-03 — skill 52 ui-polish (make-interfaces-feel-better)
+
+Absorção do agent skill externo [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT). Skill agent-consumable de verdade (não blog post) — encaixou direto no kit sem adaptação de formato.
+
+### Adicionado
+- **`skills/52-ui-polish/SKILL.md`** — 16 princípios de acabamento visual: border radius concêntrico, alinhamento óptico, sombra vs borda, animações interrompíveis, split/stagger de entrada, saída sutil, animação contextual de ícone (valores exatos: scale 0.25→1, blur 4px→0, bounce 0), font smoothing, tabular numbers, text wrapping (balance/pretty), image outline (preto/branco puro, nunca tintado), scale on press (0.96), skip animation on load, proibição de `transition: all`, `will-change` moderado, hit area mínima (40×40px). Formato de output Before/After em tabela markdown + checklist de revisão.
+- **`docs/skill-guides/ui-polish.md`** — guia estendido com código CSS/Tailwind/Motion por categoria (tipografia, superfícies, animações, performance), carregado sob demanda no mesmo padrão de `motion-design.md`.
+
+### Incrementado (referência cruzada, sem duplicar)
+- **Skill 12 (motion-design)** ganha pointer para a 52 — 12 continua dona do sistema de motion tokens; 52 cobre o detalhe fino de acabamento.
+- **Skill 02 (ui-ux-design)** ganha pointer para a 52 como checklist pós-Frontend, pré-Reviewer.
+
+### Fronteira
+- 52 não substitui 12 (sistema de motion) nem 02 (estrutura/fluxo) nem 04 (lógica de componente) — atua só no acabamento visual pontual, depois que o componente já existe.
+
+---
+
 ## [2.37.0] - 2026-06-11 — absorção de 7 ebooks Casa do Código
 
 Avaliação de gap de 7 livros técnicos (Arquitetura e Design, eXtreme Programming, SEO Prático, DevOps na prática, UX Design, Guia da Startup, Jogos HTML5 Canvas). Princípio aplicado: **criar o que não temos, incrementar o que temos** — só 1 dos 7 virou skill nova; o resto foi incremento cirúrgico nas skills existentes. Análise de gap rodada por 7 agentes em paralelo, cada um lendo seu livro + as skills do domínio.

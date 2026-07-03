@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 50 skills + 16 subagents + 43 commands + 57 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 52 skills + 16 subagents + 43 commands + 57 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 50 skills, 16 subagents, 43 slash commands, 57 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 policies de XP + incrementos em 01/07/14/38, absorvidos de 7 ebooks Casa do Código)
+> **Versão:** 52 skills, 16 subagents, 43 slash commands, 57 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-07-03 (skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -360,6 +360,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 04 | **Frontend Engineer** | React/Next.js, estado, performance, integração com API |
 | 12 | **Motion Designer** | animações, transições, micro-interações |
 | 15 | **Mobile / Tauri** | apps desktop e mobile com Tauri + React Native |
+| 52 | **UI Polish** | border radius concêntrico, alinhamento óptico, sombra vs borda, tabular numbers, scale on press, hit area |
 
 ### Content & Discovery
 

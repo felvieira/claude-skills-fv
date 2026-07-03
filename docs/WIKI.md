@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 50 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
-> **Last updated:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 XP policies + surgical increments to skills 01/07/14/38, absorbed from 7 Casa do Código ebooks. Recent line: v2.33 AI-first memory · v2.34 unified+portable vault · v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption)
+> **Version:** 52 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
+> **Last updated:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorbed from jakubkrehel/make-interfaces-feel-better. Recent line: v2.33 AI-first memory · v2.34 unified+portable vault · v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -665,6 +665,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Problem it solves:** the team designs from its own intuition — but "you are not the user." Personas get invented as decorative fiction; features get built for nobody.
 **Distinct from:** Skill 02 (UI/UX) draws the interface *from* research; 51 produces the research. Skill 22 (a11y technical), 29 (visual competitive), 21 (quantitative instrumentation) are explicit non-goals.
 **Takeaway:** **research that can't change a decision is theater** — and a persona with no interview behind it is a proto-persona, flagged as hypothesis, not fact. Pipeline: Problem → [51] → PO (01) → UI/UX (02).
+
+#### Skill 52 — UI Polish
+
+**What it does:** the small visual-detail pass that makes a built component feel refined instead of "fine" — concentric border radius, optical alignment, shadows over borders, interruptible animations, split/stagger enter, subtle exit, contextual icon animation (exact values: scale 0.25→1, blur 4px→0, spring bounce 0), font smoothing, tabular numbers, text wrapping (balance/pretty), image outlines (pure black/white, never tinted), scale-on-press (0.96), skip-animation-on-load, no `transition: all`, sparing `will-change`, 40×40px minimum hit area. Absorbed from the external agent skill [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT).
+**When to activate:** reviewing or polishing a component after Frontend (04) and/or Motion Design (12) already built it; subjective feedback like "feels off" or "needs polish"; final pass before Reviewer (11).
+**Problem it solves:** components that are functionally correct but feel generic — mismatched nested radii, borders that don't adapt to backgrounds, jarring enter/exit animations, layout-shifting numbers, tiny hit targets.
+**Distinct from:** Skill 12 (Motion Design) owns the animation token system and orchestration at scale; 52 is pointed, pass/fail detail fixes, including on motion. Skill 02 (UI/UX) defines structure and aesthetic anchor; 52 checks execution didn't drift from it. Skill 04 (Frontend) owns component logic/state; 52 never touches it.
+**Takeaway:** **interfaces rarely fail from one big thing — they fail from a dozen small mismatches compounding.** Output is always a Before/After markdown table grouped by principle, plus a review checklist.
 
 ---
 

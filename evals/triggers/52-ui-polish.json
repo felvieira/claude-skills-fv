@@ -1,0 +1,23 @@
+{
+  "skill": "52-ui-polish",
+  "should_trigger": [
+    "revisa esse componente e deixa o acabamento mais refinado",
+    "esse card parece meio off, ajusta o polish",
+    "corrige o border radius aninhado desse modal",
+    "aplica alinhamento optico nesse botao com icone",
+    "troca essa borda por sombra pra dar profundidade",
+    "adiciona stagger na animacao de entrada dessa lista",
+    "revisa a animacao de saida, ta muito abrupta",
+    "aplica tabular numbers nesse contador",
+    "adiciona font smoothing no layout",
+    "faz o scale on press nesse botao",
+    "checklist final de detalhes visuais antes do review"
+  ],
+  "shouldnt_trigger": [
+    "cria o sistema de motion tokens do zero",
+    "define a arquitetura de informacao da tela",
+    "implementa a logica de estado do componente",
+    "escreve o teste E2E do fluxo de checkout",
+    "revisa contraste de cor pra WCAG"
+  ]
+}

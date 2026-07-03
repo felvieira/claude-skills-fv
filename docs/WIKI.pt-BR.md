@@ -1,7 +1,8 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 50 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
-> **Última atualização:** 2026-06-11 (v2.37.0 — skill 51 ux-research + 3 policies de XP + incrementos em 01/07/14/38, absorvidos de 7 ebooks Casa do Código)
+> **Versão:** 52 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
+> **Última atualização:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better)
+> **Nota de manutenção:** as seções detalhadas de skill 50 (`direct-response-copy`) e 51 (`ux-research`) ainda não foram portadas pra este arquivo pt-BR — ver `docs/WIKI.md` (inglês) pra conteúdo completo até skill 52.
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
