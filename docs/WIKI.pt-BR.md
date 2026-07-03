@@ -1,8 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
 > **Versão:** 52 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
-> **Última atualização:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better)
-> **Nota de manutenção:** as seções detalhadas de skill 50 (`direct-response-copy`) e 51 (`ux-research`) ainda não foram portadas pra este arquivo pt-BR — ver `docs/WIKI.md` (inglês) pra conteúdo completo até skill 52.
+> **Última atualização:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better; paridade completa com a WIKI em inglês, portadas as seções de skills 39-52 que faltavam)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -20,7 +19,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (49) — especialistas por categoria](#5-skills-49)
+5. [Skills (52) — especialistas por categoria](#5-skills-52)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
@@ -393,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (49)
+## 5. Skills (52)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -622,6 +621,118 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** semanalmente; antes de delegar manutenção a agente em módulo complexo; pós-Detective em legado; review de PR que adiciona módulo.
 **Problema que resolve:** módulos shallow (interface tão complexa quanto implementação) que viram god files e bloqueiam evolução.
 **Takeaway:** **deletion test é o coração.** Se deletar concentra complexidade, módulo estava ganhando seu lugar. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture).
+
+#### Skill 39 — Program Router
+
+**O que faz:** decide qual program declarativo (`programs/*.yml`) rodar baseado na classificação da task — um match heurístico contra um catálogo (pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, adversarial-dev, comprehensive-review). Trabalha em par com o hook `intent-classifier` (que sugere) e consulta `memory/constitution.md`, que pode forçar um pipeline específico.
+**Quando ativar:** usuário pergunta "qual program pra X"; usuário pede feature/review/discovery sem invocar slash explícito; hook `intent-classifier` já sugeriu e usuário quer confirmação; entre tasks, ao planejar o próximo passo.
+**Problema que resolve:** pipelines ad-hoc improvisados para tasks que já batem com um program declarativo comprovado — desperdiçando a estrutura (gates, dry-run, inputs definidos) que esses programs já encapsulam.
+**Diferente de:** Skill 09 (Orchestrator) monta pipelines informais quando nenhum program serve; Skill 39 só roteia para um program existente e devolve para 09 em caso de baixa confiança ou decline. O hook `intent-classifier` só sugere — Skill 39 confirma ou refuta e dispatcha.
+**Takeaway:** **nunca force um program numa task exploratória** — decline-and-ask é melhor que match errado, e a constitution sempre sobrepõe a classificação heurística quando declara um pipeline obrigatório.
+
+#### Skill 40 — Parallel Dispatcher
+
+**O que faz:** playbook para despachar N slices, reviews ou tarefas independentes via subagents em paralelo sem cair na armadilha skill-vs-agent. Define 3 caminhos canônicos — subagents nativos (Caminho A), worktree + general-purpose com skill invocada dentro do prompt (Caminho B), ou `/swarm` para autonomia total (Caminho C) — além de decision tree, template de prompt self-contained e 6 anti-padrões registrados (passar nome de skill como `subagent_type`, mencionar skill sem invocar, split layer-first, mensagens sequenciais em vez de fan-out single-message, esquecer `model:`, esquecer `isolation: "worktree"`).
+**Quando ativar:** despachar N slices verticais de uma feature, N reviews em paralelo (code/security/test/prosa), pipeline de static analysis (semgrep + codeql), ou qualquer cenário scatter-gather com trabalho independente.
+**Problema que resolve:** confusão do modelo entre "skill" (playbook) e "subagent" (turno isolado) — passar uma skill numerada direto como `subagent_type` gera `InputValidationError`, e esquecer `model:` ou `isolation: "worktree"` causa desperdício de budget ou race conditions entre worktrees.
+**Diferente de:** Skill 09 (Orchestrator) decide *qual* pipeline rodar; Skill 40 decide *como* paralelizar corretamente N unidades independentes desse pipeline. Skill 39 (Program Router) escolhe um `programs/*.yml`; Skill 40 é a mecânica de dispatch depois que o trabalho paralelo já foi decidido.
+**Takeaway:** nunca passe nome de skill como `subagent_type` — skills carregam playbooks, agents executam turnos isolados; paralelizar uma skill significa N agents `general-purpose` (cada um em seu worktree) cujo prompt instrui invocar a skill internamente.
+
+#### Skill 41 — Publicador de Blog
+
+**O que faz:** compositora ponta a ponta que transforma um assunto, URL ou texto pronto em um post de blog HTML totalmente original — escreve o corpo (via skill 13 para voz/tom), providencia cover e imagens inline (skill 17 fal.ai ou screenshots Playwright da skill 42), gera um bloco de LinkedIn obrigatório, monta o post via `new-post.mjs`, comita, dá push no repo de blog configurado e retorna a URL pública no GitHub Pages.
+**Quando ativar:** usuário pede "publica um post sobre X," cola uma URL e diz "cria um post baseado nisso," ou cola um texto pronto e diz "vira post."
+**Problema que resolve:** publicar um post hoje significa escrever, buscar imagens, montar o copy de distribuição no LinkedIn e dar push no repo como passos manuais separados — isso comprime tudo em um único comando que termina com uma URL pública.
+**Diferente de:** skill 13 (Marketing Copy) só escreve o texto, sem publicar; skill 42 fornece screenshots mas não compõe nem publica; editar um post existente usa a Edit tool diretamente, não esta skill.
+**Takeaway:** **autoral, nunca adaptação** — o post precisa soar como se o dono do blog tivesse escrito do zero; creditar a fonte ou deixar qualquer rastro de adaptação (ex.: "fonte original," "segundo {autor}") é anti-padrão duro, checado via grep antes de declarar a conclusão.
+
+#### Skill 42 — Blog Screenshot
+
+**O que faz:** captura screenshots reais de URLs/elementos navegáveis via Playwright MCP (já presente no harness padrão do kit) — cuida de viewport, dispensa de cookie banners, captura full-page vs. viewport vs. elemento, scroll até âncora e saída em PNG/JPG.
+**Quando ativar:** a skill 41 (blog-publisher) precisa de imagem real de algo navegável em vez de gerada; documentação técnica precisa mostrar a UI real de um site/dashboard; comparação visual antes/depois de mudança em landing page; captura de relatório HTML renderizado (ex.: `analyze-doc/index.html`).
+**Problema que resolve:** posts e docs que referenciam uma UI real mas acabam ilustrados com mockups falsos ou genéricos em vez do que a página realmente mostra.
+**Diferente de:** skill 17 (image-generator), usada para imagens conceituais/abstratas que não existem pra serem navegadas; skill 36 (web-asset-generator), usada pra logos/ícones/favicons — nenhuma das duas captura uma página já renderizada.
+**Takeaway:** sempre ajustar o viewport antes de capturar (o padrão do Playwright é 1280×720, errado pra um cover de blog 1500×750) e limpar cookie banners antes — um overlay não removido num screenshot público é um erro bobo e constrangedor.
+
+#### Skill 43 — Canary Deployment
+
+**O que faz:** cobre rollout gradual de release em produção com observação contínua de métricas e rollback automático. Suporta três estratégias — traffic-based (roteamento com peso via service mesh/ALB), feature flag (código gated em runtime) e blue-green (switch entre ambientes paralelos) — mais uma tabela padrão de métricas (error rate, p95/p99 latency, conversão, saturação, custo por request) com thresholds e gatilhos de abort. Estratégia e thresholds adaptados do slash command `/canary` do repositório [garrytan/gstack](https://github.com/garrytan/gstack) (MIT), além de conceitos do Google SRE Book.
+**Quando ativar:** promover em produção uma release já aprovada com risco não trivial de regressão; validar mudança de comportamento em tráfego real antes do rollout completo; liberar uma feature gradualmente por percentual de usuários ou segmento.
+**Problema que resolve:** um artefato aprovado ainda carrega risco de blast radius — canary limita a exposição fatiando o tráfego e revertendo automaticamente assim que uma métrica cruza o threshold, em vez de um corte tudo-ou-nada.
+**Diferente de:** Skill 24 (Release Manager) decide *o quê* vai ao ar e publica o changelog; Skill 07 (Deploy/Docker) builda e publica o artefato; Canary Deployment só manipula roteamento/flags sobre um artefato já buildado e já aprovado, cuidando do "como" da exposição. Skill 20 (Observability SRE) fornece os dashboards/SLOs dos quais o canary depende e lidera o postmortem em caso de rollback.
+**Takeaway:** rollback não é limpeza opcional — é acionado por runbooks pré-testados (< 5 min) e gatilhos automáticos (2+ amostras consecutivas quebradas, alarme externo de paginação, abort manual, timeout de step); um canary sem observabilidade com lag < 60s vira aposta cega.
+
+#### Skill 44 — Zoom Out
+
+**O que faz:** produz um mapa de módulos e callers antes de tocar código numa área desconhecida — "visão de bairro" em vez de mergulhar direto nos arquivos. Prioriza `graphify-out/graph.json` + `GRAPH_REPORT.md` em vez de Grep/Read brutos (política global de graph-first); sem graph, cai para descoberta estrutural via Glob (entry points, agrupamentos por pasta, arquivos grandes/hub) mais rastreamento de callers/callees via Grep. Adaptado de [mattpocock/skills/engineering/zoom-out](https://github.com/mattpocock/skills/tree/main/skills/engineering/zoom-out) (MIT).
+**Quando ativar:** ao iniciar trabalho em módulo que o agente não conhece bem; usuário diz "estou perdido nesse código"; antes de propor refactor ou architecture change (alimenta skill 38); antes de explorar com Grep/Read direto; como prelúdio da skill 33 (Detective Spec) em código legado.
+**Problema que resolve:** agentes que começam a editar um módulo desconhecido direto tendem a perder callers, duplicar lógica já existente ou quebrar convenções — porque nunca construíram um mapa mental de como a área se encaixa antes de tocar nela.
+**Diferente de:** skill 18 (Repo Auditor) perfila o repositório inteiro uma vez (stack/convenções/risco); skill 44 mapeia uma área específica sob demanda, usando o vocabulário de domínio da constitution/audit em vez de termos genéricos. Skill 38 (Architecture Deepener) propõe fixes estruturais; 44 só mapeia, não julga nem refatora.
+**Takeaway:** **produza o mapa enquanto explora, não depois** — um dump completo de `find . -name "*.ts"` não é mapa, é fuga; o mapa precisa falar a língua do próprio projeto, não termos genéricos.
+
+#### Skill 45 — Handoff Context
+
+**O que faz:** produz um pacote prospectivo de handoff para outro agente, modelo ou dev humano pegar a task de onde parou sem contexto da sessão atual — snapshot do estado git, pendências verificadas (testes/build/TODOs), um próximo passo concreto e armadilhas conhecidas. Adaptado de [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff) (MIT), distinguido explicitamente da skill 31 (retrospectiva).
+**Quando ativar:** você vai parar e outra pessoa continua amanhã; o contexto está se esgotando e uma sessão fresca é iminente; a task será delegada para um agente externo (codex:rescue, freelancer, outro time); handoff entre skills do pipeline.
+**Problema que resolve:** "continue de onde parei" sem dizer onde parou — quem chega depois reexplora um estado que já era conhecido, ou repete um caminho morto já descartado.
+**Diferente de:** skill 31 (session-summary) é retrospectiva (o que foi feito, para o mesmo modelo/sessão); a skill 45 é prospectiva (o que falta + como continuar, para quem chega cego) — session-summary registra, handoff-context delega.
+**Takeaway:** **um próximo passo, não um roadmap** — o output é um único comando/edição acionável com resultado esperado e critério de sucesso, salvo em `docs/handoffs/YYYY-MM-DD-<slug>.md`.
+
+#### Skill 46 — Monitor de Canário Pós-Deploy
+
+**O que faz:** vigia a produção depois que o deploy fecha 100%, comparando métricas e screenshots ao vivo contra um baseline pré-deploy para pegar regressões silenciosas (console errors, queda de performance, páginas quebradas). Adaptado de [gstack/canary](https://github.com/garrytan/gstack/tree/main/canary) (MIT, Garry Tan), redirecionado para a janela pós-rollout em vez da janela de rollout gradual.
+**Quando ativar:** logo depois que o deploy atinge 100% de rollout, nas primeiras 2-24h; mudanças de alto risco (migration, refactor, upgrade de framework); projetos sem observability robusta que já cubra esse gap.
+**Problema que resolve:** "passou no canary com 5%" não significa "saudável com 100%" — regressões silenciosas que só aparecem sob tráfego completo passam despercebidas sem uma vigilância ativa pós-deploy.
+**Diferente de:** a skill 43 (canary-deployment) atua *durante* o rollout de 0%→100% e decide promover-ou-abortar o próprio deploy; esta skill só começa quando o rollout já terminou e decide manter-ou-rollback a produção, escalando pra skill 43 ou skill 24 (release-manager) em caso de abort.
+**Takeaway:** nunca faz rollback automático por padrão — reverter produção é decisão humana; esta skill só detecta, registra em `docs/canary-runs/` e escala após 2 falhas consecutivas.
+
+#### Skill 47 — Conformidade de Padrões
+
+**O que faz:** Extrai as convenções de codificação concretas do codebase existente — naming, estrutura de arquivos, tratamento de erros, estilo de testes, imports, design de API, padrões assíncronos, DI — a partir de amostras representativas, e salva como um "mapa de estilo de código" em `memory/patterns.md` (cache de 14 dias, renovado com `--update`). Toda skill de geração de código passa a consultar esse mapa como restrição obrigatória antes de escrever código novo.
+**Quando ativar:** Ao iniciar uma feature em codebase existente com convenções estabelecidas; antes de gerar novo módulo, service, teste, hook ou componente; quando o usuário diz "coda igual ao resto", "segue o padrão", "não reinventa"; como pré-requisito das skills 01, 02, 03.
+**Problema que resolve:** Um agente que ignora as convenções do projeto produz código tecnicamente correto mas arquiteturalmente dissonante — acumulando dívida técnica silenciosa. Esta skill impõe "código com sotaque do projeto" em vez do estilo padrão do agente.
+**Diferente de:** Skill 18 (repo-auditor) captura stack/frameworks/riscos em `docs/repo-audit/current.md` — uma fotografia, não regras de estilo aplicáveis. Skill 33 (detective-spec) extrai regras de negócio implícitas, não convenções de código. Skill 44 (zoom-out) mapeia módulos e callers, não estilo de código. Só a skill 47 produz restrições de estilo concretas e consultáveis (`memory/patterns.md`).
+**Takeaway:** Skill 18 diz "o projeto usa NestJS + TypeORM"; a skill 47 diz "services injetam repositórios via constructor, métodos públicos são sempre `async`, erros são lançados como `AppException(code, message)`" — e bloqueia código novo que desvie sem uma exceção justificada e comentada.
+
+#### Skill 48 — Research Prep (Preparação de Pesquisa)
+
+**O que faz:** coleta e organiza informação técnica multi-fonte antes de escrever docs, PRDs, ADRs ou artigos — busca em docs oficiais, GitHub (repos + issues), Stack Overflow, papers e blogs de engenharia de referência. Ranqueia as fontes por um score de autoridade (oficial 40% + recência 30% + profundidade 20% + comunidade 10%) e descarta o que pontuar abaixo de 4.0. Output é um dossiê estruturado em `memory/research/<slug>.md`. Adaptada de [addozhang/openclaw-forge](https://github.com/addozhang/openclaw-forge) (MIT).
+**Quando ativar:** antes de escrever doc técnico, ADR, artigo ou PRD sobre tecnologia não dominada; ao comparar alternativas (frameworks, libs, abordagens arquiteturais); em due diligence técnica ("vamos adotar X?"); como prerequisito das skills 10 (documenter), 01 (po-feature-spec), 26 (prompt-engineer), 41 (blog-publisher).
+**Problema que resolve:** escrever sem pesquisar é opinar sem evidência — esta skill garante que exista uma base de fontes citadas e ranqueadas antes de qualquer skill de produção começar a redigir.
+**Diferente de:** Skill 18 (repo-auditor) mapeia o stack do projeto atual; Skill 29 (design-intelligence) faz benchmark competitivo de produto/UX, não fontes técnicas; Skill 33 (detective-spec) extrai regras de negócio de código legado, não referências externas. A Skill 48 é a única que ranqueia fontes técnicas externas por autoridade.
+**Takeaway:** fonte com score abaixo de 4.0 é ruído, não sinal — cachear resultados por 7 dias evita repesquisar o mesmo tópico a cada pedido.
+
+#### Skill 49 — Context Budget
+
+**O que faz:** audita o peso de contexto carregado — CLAUDE.md (global + projeto), descrições de agents/*.md, descrições de MCP servers ativos, rules path-scoped disparadas, skills invocadas na sessão, e histórico de conversa acumulado. Estima tokens por componente, reporta headroom disponível e emite alertas de overflow em 80%/95%.
+**Quando ativar:** sessão parece lenta ou respostas degradam (possível overflow de contexto); depois de habilitar um MCP server novo; antes de `/swarm` ou `/loop --parallel`; repo com `.bot/` instalado.
+**Problema que resolve:** bloat de contexto invisível — você não sabe qual componente está comendo 40% da sua janela até as respostas começarem a degradar.
+**Diferente de:** Skill 30 (Cost Tracker) rastreia custo de completions em runtime; Context Budget rastreia o que já está carregado antes de qualquer completion.
+**Takeaway:** descrições de agents/*.md costumam ser o maior custo fixo — 16 agents × ~500 tokens cada = 8k tokens sempre presentes.
+
+#### Skill 50 — Direct Response Copy
+
+**O que faz:** copywriting de direct response — anúncios, páginas de vendas, e-mails de venda, legendas de Instagram, roteiros de VSL. Traz uma biblioteca de fórmulas de headline em 20 categorias de gatilho (357 modelos clássicos PT-BR destilados em fórmulas parametrizadas), os 8 gatilhos mentais (escassez, urgência, autoridade, reciprocidade, prova social, razão-por-quê, antecipação, dor×prazer) com estrutura de storytelling de venda, e copy de engajamento pro Instagram. Gate de integridade obrigatório: todo claim precisa ser verificável, sem depoimento fabricado, escassez/urgência só quando real.
+**Quando ativar:** escrever headline/criativo de anúncio, sequência de e-mail de lançamento, página de vendas de infoproduto, legenda de Instagram com CTA de interação; escolher o gatilho mental certo pro estágio de consciência do avatar.
+**Problema que resolve:** copy de venda escrita direto da oferta, sem pesquisa de avatar e sem estratégia de gatilho — headline genérica que não converte nada, ou pior, claim não-verificável que queima a marca.
+**Diferente de:** Skill 13 (Marketing Copy) cobre copy de produto — landing page estrutural, microcopy, brand voice. Skill 50 cobre direct response — o leitor clica/assina/compra agora ou a peça falhou.
+**Takeaway:** **a fórmula é o esqueleto, a pesquisa de avatar é a carne, e o gate de integridade não é negociável** — um `{slot}` preenchido com claim improvável não vai ao ar.
+
+#### Skill 51 — UX Research
+
+**O que faz:** discovery qualitativo — entrevista com usuário, persona baseada em pesquisa, journey/empathy map, teste de usabilidade qualitativo, arquitetura de informação, card sorting, proposição de valor. Produz os artefatos de pesquisa que alimentam o PO (01) e o UI/UX (02). Destilado de *UX Design* de Fabricio Teixeira (Casa do Código).
+**Quando ativar:** incerteza sobre quem é o usuário ou se um problema vale a pena resolver; roteirizar uma entrevista; construir uma persona a partir de dados reais; mapear uma jornada; planejar um teste de usabilidade.
+**Problema que resolve:** o time projeta a partir da própria intuição — mas "você não é o usuário". Personas viram ficção decorativa; features são construídas pra ninguém.
+**Diferente de:** Skill 02 (UI/UX) desenha a interface *a partir* da pesquisa; 51 produz a pesquisa. Skill 22 (a11y técnico), 29 (competitivo visual), 21 (instrumentação quantitativa) são não-objetivos explícitos.
+**Takeaway:** **pesquisa que não pode mudar uma decisão é teatro** — e uma persona sem entrevista por trás é proto-persona, marcada como hipótese, não fato. Pipeline: Problema → [51] → PO (01) → UI/UX (02).
+
+#### Skill 52 — UI Polish
+
+**O que faz:** o passo de detalhe visual que faz um componente já construído parecer refinado em vez de "ok" — border radius concêntrico, alinhamento óptico, sombra em vez de borda, animações interrompíveis, split/stagger de entrada, saída sutil, animação contextual de ícone (valores exatos: scale 0.25→1, blur 4px→0, spring bounce 0), font smoothing, tabular numbers, text wrapping (balance/pretty), image outline (preto/branco puro, nunca tintado), scale on press (0.96), skip animation on load, sem `transition: all`, `will-change` moderado, hit area mínima de 40×40px. Absorvida do agent skill externo [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT).
+**Quando ativar:** revisar ou polir um componente depois que Frontend (04) e/ou Motion Design (12) já construíram; feedback subjetivo tipo "parece off" ou "precisa de polish"; passo final antes do Reviewer (11).
+**Problema que resolve:** componentes funcionalmente corretos mas que parecem genéricos — raios aninhados desencontrados, bordas que não se adaptam ao fundo, animações de entrada/saída abruptas, números que causam layout shift, hit targets minúsculos.
+**Diferente de:** Skill 12 (Motion Design) é dona do sistema de tokens de animação e da orquestração em escala; 52 é ajuste pontual de detalhe, inclusive em motion. Skill 02 (UI/UX) define estrutura e âncora estética; 52 checa se a execução não desviou dela. Skill 04 (Frontend) é dona da lógica/estado do componente; 52 nunca toca nisso.
+**Takeaway:** **interfaces raramente falham por uma coisa grande — falham por uma dúzia de pequenos desencontros somados.** Output sempre é uma tabela Before/After em markdown agrupada por princípio, mais um checklist de revisão.
 
 ---
 

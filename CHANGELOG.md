@@ -20,6 +20,10 @@ Absorção do agent skill externo [jakubkrehel/make-interfaces-feel-better](http
 ### Fronteira
 - 52 não substitui 12 (sistema de motion) nem 02 (estrutura/fluxo) nem 04 (lógica de componente) — atua só no acabamento visual pontual, depois que o componente já existe.
 
+### Corrigido (doc parity)
+- **`docs/WIKI.pt-BR.md`** estava parada na skill 38 — faltavam as seções 39 a 52 (14 skills: program-router, parallel-dispatcher, blog-publisher, blog-screenshot, canary-deployment, zoom-out, handoff-context, post-deploy-canary-monitor, pattern-conformity, research-prep, context-budget, direct-response-copy, ux-research, ui-polish). Portadas todas no formato aihero padrão (What it does/When to activate/Problem it solves/Distinct from/Takeaway), com paridade de conteúdo confirmada contra `docs/WIKI.md` (51 entradas em cada arquivo).
+- Headers/TOC de `docs/WIKI.md` e `docs/WIKI.pt-BR.md` corrigidos de "Skills (50)"/"Skills (49)" pra "Skills (52)" (contagem estava desatualizada em ambos antes desta sessão).
+
 ---
 
 ## [2.37.0] - 2026-06-11 — absorção de 7 ebooks Casa do Código

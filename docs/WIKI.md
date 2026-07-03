@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (50) — specialists by category](#5-skills-50)
+5. [Skills (52) — specialists by category](#5-skills-52)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (50)
+## 5. Skills (52)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -641,6 +641,86 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** weekly; before delegating maintenance to an agent in a complex module; post-Detective in legacy; PR review adding a new module.
 **Problem it solves:** shallow modules (interface as complex as implementation) that become god files and block evolution.
 **Takeaway:** **deletion test is the core.** If deleting concentrates complexity, the module was earning its place. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture).
+
+#### Skill 39 — Program Router
+
+**What it does:** decides which declarative program (`programs/*.yml`) to run based on task classification — a heuristic match against a catalog (pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, adversarial-dev, comprehensive-review). Works in tandem with the `intent-classifier` hook (which suggests) and consults `memory/constitution.md`, which can force a specific pipeline.
+**When to activate:** user asks "which program for X"; user requests a feature/review/discovery without an explicit slash command; hook `intent-classifier` already suggested and user wants confirmation; between tasks, when planning the next step.
+**Problem it solves:** ad-hoc pipelines get improvised for tasks that already match a proven, declarative program — wasting the structure (gates, dry-run, defined inputs) those programs already encode.
+**Distinct from:** Skill 09 (Orchestrator) builds informal pipelines when no program fits; Skill 39 only routes to an existing program and hands off to 09 on low-confidence or decline. The `intent-classifier` hook only suggests — Skill 39 confirms or refutes and dispatches.
+**Takeaway:** **never force a program onto an exploratory task** — decline-and-ask beats a wrong match, and the constitution always overrides heuristic classification when it declares a mandatory pipeline.
+
+#### Skill 40 — Parallel Dispatcher
+
+**What it does:** playbook for dispatching N independent slices, reviews, or tasks via parallel subagents without falling into the skill-vs-agent trap. Defines 3 canonical paths — native subagents (Path A), worktree + general-purpose with a skill invoked inside the prompt (Path B), or `/swarm` for full autonomy (Path C) — plus a decision tree, a self-contained prompt template, and 6 registered anti-patterns (passing a skill name as `subagent_type`, mentioning a skill without invoking it, layer-first splitting, sequential messages instead of single-message fan-out, missing `model:` override, missing `isolation: "worktree"`).
+**When to activate:** dispatching N vertical slices of a feature, N parallel reviews (code/security/test/prose), a static-analysis pipeline (semgrep + codeql), or any scatter-gather scenario with independent work.
+**Problem it solves:** models conflating "skill" (playbook) with "subagent" (isolated turn) — passing a numbered skill directly as `subagent_type` throws `InputValidationError`, and forgetting `model:` or `isolation: "worktree"` causes budget waste or race conditions across worktrees.
+**Distinct from:** Skill 09 (Orchestrator) decides *what* pipeline to run; Skill 40 decides *how* to fan out N independent units of that pipeline correctly. Skill 39 (Program Router) picks a `programs/*.yml`; Skill 40 is the dispatch mechanics once parallel work is already decided.
+**Takeaway:** never pass a skill name as `subagent_type` — skills load playbooks, agents execute isolated turns; parallelizing a skill means N `general-purpose` agents (each in its own worktree) whose prompt instructs them to invoke the skill internally.
+
+#### Skill 41 — Blog Publisher
+
+**What it does:** end-to-end composer that turns a subject, URL, or raw text into a fully original HTML blog post — writes the body (via skill 13 for voice/tone), sources cover + inline images (skill 17 fal.ai or skill 42 Playwright screenshots), generates a mandatory LinkedIn share block, scaffolds the post via `new-post.mjs`, commits, pushes to the configured blog repo, and returns the live GitHub Pages URL.
+**When to activate:** user says "publish a post about X," pastes a URL and says "make a post from this," or pastes finished text and says "turn this into a post."
+**Problem it solves:** publishing a post today means writing, sourcing images, wiring up LinkedIn distribution copy, and pushing to the repo as separate manual steps — this collapses all of it into one command with a public URL at the end.
+**Distinct from:** skill 13 (Marketing Copy) writes copy only, no publishing; skill 42 supplies screenshots but doesn't compose or publish; editing an existing post uses the Edit tool directly, not this skill.
+**Takeaway:** **authorial, never adaptation** — the post must read as if the blog owner wrote it from scratch; crediting the source or leaving any trace of adaptation (e.g. "original source," "according to {author}") is a hard anti-pattern, checked by grep before completion is declared.
+
+#### Skill 42 — Blog Screenshot
+
+**What it does:** captures real screenshots of navigable URLs/elements via Playwright MCP (already in the kit's standard harness) — handles viewport sizing, cookie-banner dismissal, full-page vs. viewport vs. element capture, anchor scrolling, and PNG/JPG output.
+**When to activate:** skill 41 (blog-publisher) needs a real image of something browsable rather than a generated one; technical docs need to show an actual site/dashboard UI; before/after visual comparison of a landing page change; capturing a rendered HTML report (e.g. an `analyze-doc/index.html`).
+**Problem it solves:** blog posts and docs that reference real UI but end up illustrated with fake or generic mockups instead of what the page actually looks like.
+**Distinct from:** skill 17 (image-generator), used for conceptual/abstract images that don't exist to be navigated to; skill 36 (web-asset-generator), used for logos/icons/favicons — neither captures an existing rendered page.
+**Takeaway:** always resize the viewport before shooting (Playwright defaults to 1280×720, wrong for a 1500×750 blog cover) and strip cookie banners first — an uncleared overlay in a public screenshot is an easy, embarrassing miss.
+
+#### Skill 43 — Canary Deployment
+
+**What it does:** covers gradual production rollout with continuous metric observation and automatic rollback. Supports three strategies — traffic-based (weighted routing via service mesh/ALB), feature flag (runtime-gated code paths), and blue-green (parallel environment switch) — plus a default metrics table (error rate, p95/p99 latency, conversion, saturation, cost-per-request) with thresholds and abort triggers. Strategy and thresholds adapted from the `/canary` slash command in [garrytan/gstack](https://github.com/garrytan/gstack) (MIT), plus Google SRE Book concepts.
+**When to activate:** promoting an already-approved release to production with non-trivial regression risk; validating behavior change on real traffic before full rollout; releasing a feature gradually by user percentage or segment.
+**Problem it solves:** deploying an approved artifact still risks blast radius — canary limits exposure by slicing traffic and auto-reverting the moment metrics cross a threshold, instead of an all-or-nothing cutover.
+**Distinct from:** Skill 24 (Release Manager) decides *what* ships and writes the changelog; Skill 07 (Deploy/Docker) builds and publishes the artifact; Canary Deployment only manipulates routing/flags on an already-built, already-approved artifact and owns the "how" of exposure. Skill 20 (Observability SRE) supplies the dashboards/SLOs canary depends on and leads postmortems after a rollback.
+**Takeaway:** rollback is not optional cleanup — it's gated by pre-tested runbooks (< 5 min) and automatic triggers (2+ consecutive broken samples, external page, manual abort, step timeout); a canary without observability lag < 60s degrades into a blind bet.
+
+#### Skill 44 — Zoom Out
+
+**What it does:** produces a module-and-caller map before touching code in an unfamiliar area — "neighborhood view" instead of diving straight into files. Prefers `graphify-out/graph.json` + `GRAPH_REPORT.md` over raw Grep/Read (per the global graph-first policy); falls back to Glob-based structural discovery (entry points, folder groupings, large hub files) plus caller/callee tracing via Grep when no graph exists. Adapted from [mattpocock/skills/engineering/zoom-out](https://github.com/mattpocock/skills/tree/main/skills/engineering/zoom-out) (MIT).
+**When to activate:** starting work in a module the agent doesn't know well; the user says "I'm lost in this code"; before proposing a refactor or architecture change (feeds skill 38); before raw Grep/Read exploration; as a prelude to skill 33 (Detective Spec) in legacy code.
+**Problem it solves:** agents that start editing an unfamiliar module immediately tend to miss callers, duplicate existing logic, or break conventions — because they never built a mental map of how the area fits together before touching it.
+**Distinct from:** skill 18 (Repo Auditor) profiles the whole repo once for stack/conventions/risk; skill 44 maps one specific area on demand, using the domain vocabulary from the constitution/audit rather than generic terms. Skill 38 (Architecture Deepener) proposes structural fixes; 44 only maps, it doesn't judge or refactor.
+**Takeaway:** **produce the map while exploring, not after** — a full `find . -name "*.ts"` dump is not a map, it's avoidance; the map must speak the project's own vocabulary, not generic terms.
+
+#### Skill 45 — Handoff Context
+
+**What it does:** produces a prospective handoff package for another agent, model, or human dev to pick up the task with zero session context — snapshot of git state, verified pendencies (tests/build/TODOs), one concrete next step, and known pitfalls. Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff) (MIT), explicitly distinguished from skill 31 (retrospective).
+**When to activate:** stopping work with someone else continuing tomorrow; context is running out and a fresh session is imminent; delegating to an external agent (codex:rescue, freelancer, another team); handing off between skills in the pipeline.
+**Problem it solves:** "continue where I left off" with no stated destination — the next person re-explores state that was already known, or repeats a dead end already ruled out.
+**Distinct from:** skill 31 (session-summary) is retrospective (what was done, for the same model/session); skill 45 is prospective (what's left + how to continue, for a blind reader) — session-summary logs, handoff-context delegates.
+**Takeaway:** **one next step, not a roadmap** — output is a single actionable command/edit with expected result and success criterion, saved to `docs/handoffs/YYYY-MM-DD-<slug>.md`.
+
+#### Skill 46 — Post-Deploy Canary Monitor
+
+**What it does:** watches production after a deploy closes 100%, comparing live metrics and screenshots against a pre-deploy baseline to catch silent regressions (console errors, perf drops, broken pages). Adapted from [gstack/canary](https://github.com/garrytan/gstack/tree/main/canary) (MIT, Garry Tan), retargeted to the post-rollout window instead of the gradual-rollout window.
+**When to activate:** immediately after a deploy hits 100% rollout, for the first 2-24h; large-risk changes (migration, refactor, framework upgrade); projects without robust observability already covering this gap.
+**Problem it solves:** "passed canary at 5%" does not mean "healthy at 100%" — silent regressions that only show up under full traffic go undetected without an active post-deploy watch.
+**Distinct from:** Skill 43 (canary-deployment) operates *during* the 0%→100% rollout and decides promote-vs-abort on the deploy itself; this skill starts only once rollout is complete and decides keep-vs-rollback on production, escalating to skill 43 or skill 24 (release-manager) if it aborts.
+**Takeaway:** never auto-rollback by default — production reversal is a human decision; this skill only detects, logs to `docs/canary-runs/`, and escalates after 2 consecutive failed checks.
+
+#### Skill 47 — Pattern Conformity
+
+**What it does:** Extracts the existing codebase's concrete coding conventions — naming, file structure, error handling, testing style, imports, API design, async patterns, DI — from representative sample files, and saves them as a "code style map" in `memory/patterns.md` (14-day cache, refreshed with `--update`). Every code-generation skill then consults this map as a hard constraint before writing new code.
+**When to activate:** Starting a feature in an established codebase with existing conventions; before generating a new module, service, test, hook, or component; when the user says "code like the rest," "follow the pattern," "don't reinvent"; as a prerequisite for skills 01, 02, 03.
+**Problem it solves:** Agents that ignore existing project conventions produce code that is technically correct but architecturally dissonant — quietly accumulating soft technical debt. This skill forces "code with the project's accent" instead of the agent's default style.
+**Distinct from:** Skill 18 (repo-auditor) captures stack/frameworks/risks in `docs/repo-audit/current.md` — a snapshot, not enforceable style rules. Skill 33 (detective-spec) extracts implicit business rules, not coding conventions. Skill 44 (zoom-out) maps modules and callers, not code style. Only skill 47 outputs concrete, consultable style constraints (`memory/patterns.md`).
+**Takeaway:** Skill 18 tells you "the project uses NestJS + TypeORM"; skill 47 tells you "services inject repositories via constructor, public methods are always `async`, errors are thrown as `AppException(code, message)`" — and blocks new code that deviates without a justified, commented exception.
+
+#### Skill 48 — Research Prep
+
+**What it does:** collects and organizes multi-source technical information before writing docs, PRDs, ADRs or articles — searches official docs, GitHub (repos + issues), Stack Overflow, papers and reference engineering blogs. Ranks sources by an authority score (official 40% + recency 30% + depth 20% + community 10%) and discards anything scoring below 4.0. Output is a structured `memory/research/<slug>.md` dossier. Adapted from [addozhang/openclaw-forge](https://github.com/addozhang/openclaw-forge) (MIT).
+**When to activate:** before writing a technical doc, ADR, article or PRD about an unfamiliar technology; when comparing alternatives (frameworks, libs, architectural approaches); during technical due diligence ("should we adopt X?"); as a prerequisite for skills 10 (documenter), 01 (po-feature-spec), 26 (prompt-engineer), 41 (blog-publisher).
+**Problem it solves:** writing without researching is opinion without evidence — this skill forces a cited, ranked source base to exist before any production skill starts drafting.
+**Distinct from:** Skill 18 (repo-auditor) maps the current project's own stack; Skill 29 (design-intelligence) benchmarks competitor product/UX, not technical sources; Skill 33 (detective-spec) extracts business rules from legacy code, not external references. Skill 48 is the only one ranking external technical sources by authority.
+**Takeaway:** a source with score below 4.0 is noise, not signal — cache results for 7 days to avoid re-researching the same topic on every request.
 
 #### Skill 49 — Context Budget
 
