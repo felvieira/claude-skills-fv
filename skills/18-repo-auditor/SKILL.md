@@ -31,6 +31,23 @@ Junto com a auditoria, calcule e reporte o **harnessability score** do projeto (
 | Constitution definida | +5 | `memory/constitution.md` existe |
 | Dependency scanner | +5 | dependabot config, `.snyk`, renovate config |
 
+**Deduções por Risco:**
+
+Além dos sinais positivos acima, certos marcadores de risco SUBTRAEM pontos quando detectados. Este é um modelo conceitual — os pesos abaixo são pontos de partida heurísticos a calibrar por projeto, não números empiricamente validados.
+
+| Sinal de risco | Pontos | Como detectar |
+|---|---|---|
+| TODO/FIXME mencionando segurança sem issue rastreada | -10 | grep `TODO`/`FIXME` + termos de security/auth sem link de issue |
+| Funções >100 linhas sem cobertura de teste | -5 (por instância, com cap) | análise de tamanho de função cruzada com coverage report |
+| Dependência com CVE conhecido não tratado | -10 | `npm audit`, `pip-audit`, dependabot alerts abertos |
+| God-file/god-class acima do threshold sem dono/doc | -5 | tamanho de arquivo + ausência de `CODEOWNERS`/doc de módulo |
+
+**Cap por categoria:** nenhuma categoria de dedução sozinha pode subtrair mais que -20 pontos do total de 100 — isso evita que um único tipo de risco zere o score sozinho e preserva o sinal das outras categorias.
+
+Score final = `max(0, soma dos sinais positivos + soma das deduções, cada categoria capada)`.
+
+**Fontes:** modelo de dedução-com-cap inspirado na abordagem de health-scoring calibrado do projeto [repowise-dev/repowise](https://github.com/repowise-dev/repowise) (AGPL-3.0) — só o modelo conceitual foi adaptado, nenhum código ou peso específico de marcador foi copiado (a licença AGPL é o motivo de não herdar código).
+
 **Interpretação:**
 
 | Score | Nível | Recomendação |

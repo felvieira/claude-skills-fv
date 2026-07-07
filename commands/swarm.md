@@ -81,7 +81,7 @@ Ver [`policies/swarm-protocol.md`](../policies/swarm-protocol.md) para detalhes.
 |---|---|---|
 | 0. Setup | bash | Cria worktree isolado, detecta tools (npm/cargo/etc) |
 | 1. PRD/Stories | AI (fresh) | Gera PRD + parseia stories. Ou lê issue/PRD existente. |
-| 2. Ralph Loop | AI loop (fresh per story) | Implementa story → valida → próxima. Circuit-breaker 3x. |
+| 2. Ralph Loop | AI loop (fresh per story) | Implementa story → valida → próxima. Circuit-breaker 3x. Anti-parada-prematura: antes de marcar DONE na 1ª passada totalmente verde, se `--max-iter-per-story` ainda tem margem, insere uma checagem "essa foi a exploração mais completa, ou paramos no primeiro verde?". |
 | 2.5. Visual Assets (opcional) | AI (skill 17) | Se PRD/stories mencionam landing/sistema/UI nova → despacha skill 17 pra gerar hero/icones/OG cards. Regra default: grok-imagine (t2i) / gemini-25-flash (edit). |
 | 3. Adversarial Verify | parallel (Implementor vs Verifier) | Para cada story: Verifier com goal oposto ao Implementor tenta refutar ("o que está faltando na spec?"). Gaps → Implementor corrige. Spec atualizada em tempo real. |
 | 4. Quality Gates | parallel (4 agents, fresh cada) | code-reviewer + security + tests + anti-ai-writing |
@@ -147,6 +147,20 @@ Default automático (skill 17 aplica): **grok-imagine pra text-to-image** (~$0.0
    Worktree: KEPT — run `git worktree remove .swarm/2026-05-19T15-30-22-auth-social/workspace` to clean up
    Logs:     .swarm/2026-05-19T15-30-22-auth-social/log.jsonl
 ```
+
+## Feedback Categorizado
+
+Cada iteração do Ralph Loop loga, ao lado das tiers de validação (lint/typecheck/test/build) e do hash de dedup de erro, uma das 5 categorias:
+
+| Categoria | Significado |
+|---|---|
+| `invalid-input` | Comando/args malformados |
+| `blocked-by-constraint` | Violou regra/lint/dependência |
+| `tool-failure` | Erro de ambiente/ferramenta, não da lógica da story |
+| `crash` | Falha não classificada |
+| `success-with-metric` | Passou + métrica objetiva (testes verdes, delta de coverage, lint limpo) |
+
+**Fontes:** anti-parada-prematura e feedback categorizado adaptados de COMPILOT (Merouani, Kara Bernou, Baghdadi — PACT 2025, "Agentic Auto-Scheduling: An Experimental Study of LLM-Guided Loop Optimization") — RQ6 do paper mostra ablation com +23-40% de resultado ao dar feedback empírico vs. rodar sem feedback; o paper também documenta o padrão de parada prematura (após ganho grande ou após falhas repetidas) que motivou a checagem extra acima.
 
 ## Anti-padrões (também em swarm-protocol.md)
 

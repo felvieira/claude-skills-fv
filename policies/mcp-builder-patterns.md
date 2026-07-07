@@ -96,6 +96,27 @@ description: "Searches GitHub."
   - Lista completa de tools com 1 linha de descrição
   - Troubleshooting (auth fails, rate limit, conexão)
 
+## Truncamento reversível (_meta.omitted)
+
+Quando uma resposta de tool é truncada por tamanho, **nunca cortar silenciosamente**. Incluir um campo de metadado explicando o que foi omitido e como recuperar:
+
+```json
+{
+  "result": "... conteúdo truncado ...",
+  "_meta": {
+    "omitted": 214,
+    "reason": "response exceeds max_lines (40)",
+    "how_to_get_more": "chame de novo com max_lines maior ou strategy: 'tail'"
+  }
+}
+```
+
+Isso evita o agente tratar uma resposta truncada como completa — o campo `_meta.omitted` é o sinal explícito de "há mais dados, aqui está como pegar".
+
+**Onde já se aplica no nosso `mcp-server/`:** `src/lib/output-compressor.ts` já trunca (`truncateLines`) e já retorna `dropped_lines` no resultado de `compressOutput` — é o ponto natural para adotar o campo `_meta.omitted` de forma consistente em vez de um campo solto `dropped_lines`, quando essa função for revisada. Não é uma mudança urgente: `dropped_lines` já cumpre o papel de sinalizar omissão, só não segue o formato `_meta.*` namespaced. Ao tocar essa função de novo por outro motivo, alinhar o output a este padrão.
+
+**Fontes:** convenção adaptada do padrão de truncamento reversível do projeto [repowise-dev/repowise](https://github.com/repowise-dev/repowise) (AGPL-3.0) — só a convenção foi adotada, nenhum código copiado (a licença AGPL é o motivo de não herdar código).
+
 ## Anti-padrões
 
 - **Tool genérica `execute(command)`** — bypassa todo o sistema de tipos. Quebrar em N tools específicas.

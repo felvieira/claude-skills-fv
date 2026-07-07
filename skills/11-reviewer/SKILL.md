@@ -165,11 +165,14 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ```
 1. Receber entrega do pipeline
 2. Executar checklist completo (todas as seções acima)
-3. Para cada item: marcar OK ou FAIL
-4. Se TODOS os itens OK → APPROVED
-5. Se QUALQUER item FAIL → REJECTED com detalhes
-6. Gerar relatório final
+3. Se graphify-out/graph.json existir: rodar /diff-impact e ler a risk band (baixo/médio/alto — ver diff-impact.md → "Risk Banding")
+4. Para cada item: marcar OK ou FAIL
+5. Se TODOS os itens OK → APPROVED
+6. Se QUALQUER item FAIL → REJECTED com detalhes
+7. Gerar relatório final
 ```
+
+**Risk banding pré-aprovação:** se `graphify-out/graph.json` não existir no projeto, pular este passo silenciosamente (artefato opcional, não bloqueia review). Se existir e a risk band do `/diff-impact` for **alto**, aplicar escrutínio extra antes de aprovar: re-checar explicitamente que todos os caminhos de código no ripple/dependentes foram considerados na revisão, e considerar escalar pra uma segunda passada de review ou sinalizar isso com destaque no relatório final.
 
 ## Workflow de Rejeição
 

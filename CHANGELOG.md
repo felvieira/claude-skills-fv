@@ -5,6 +5,28 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.39.0] - 2026-07-07 — ponytail + repowise + COMPILOT (7 workstreams)
+
+Absorção de ideias (não código) de 2 repos externos + 1 paper acadêmico, avaliados em sessão anterior. **ponytail** (github.com/DietrichGebert/ponytail, MIT) contribuiu a escada de decisão pré-código e o delete-list review. **repowise** (github.com/repowise-dev/repowise, AGPL-3.0) contribuiu conceitos de scoring/risk-banding — só o modelo, nunca código (licença incompatível). **COMPILOT** (Merouani, Kara Bernou, Baghdadi — PACT 2025) validou o padrão de feedback empírico já usado no kit e sugeriu anti-parada-prematura + feedback categorizado.
+
+### Adicionado
+- **`policies/pre-code-ladder.md`** + **`hooks/scripts/pre-code-ladder-guard.mjs`** — escada de 7 degraus antes de escrever código novo (YAGNI → já existe no repo → stdlib → feature nativa → dependência instalada → one-liner → só então código novo). Carve-out: segurança/trust-boundary/data-loss/a11y nunca minimizados. Hook educacional (não bloqueia), session-gated, registrado em `UserPromptSubmit`.
+- **Modo `/simplify --delete-list`** — gera tabela de candidatos a remoção (código morto, imports não usados, variáveis não referenciadas, funções não chamadas, branches inalcançáveis) sem editar o arquivo. Skill 23 ganha seção "Delete-List Review" com o mesmo carve-out de constraints imutáveis.
+
+### Incrementado (referências cruzadas, sem duplicar)
+- **`/loop` e `/swarm`** ganham anti-parada-prematura (1 checagem extra antes de aceitar parada após sucesso na 1ª iteração ou após falhas repetidas) e feedback categorizado (5 categorias: invalid-input/blocked-by-constraint/tool-failure/crash/success-with-metric, metadado ao lado dos exit codes/tiers de validação existentes).
+- **Skill 18 (repo-auditor)** ganha seção "Deduções por Risco" — modelo conceitual de dedução-com-cap complementar ao scoring de pontos positivos existente.
+- **Skill 11 (reviewer)** ganha passo de risk banding pré-aprovação usando `/diff-impact` (se `graphify-out/graph.json` existir).
+- **`commands/diff-impact.md`** ganha seção "Risk Banding" (3 faixas qualitativas: baixo/médio/alto por ripple count) + exemplo de uso como pre-commit hook.
+- **`policies/mcp-builder-patterns.md`** ganha convenção de truncamento reversível (`_meta.omitted`), com nota de que `mcp-server/src/lib/output-compressor.ts` é o ponto natural de adoção na próxima revisão dessa função.
+
+### Fronteira
+- Nenhum código do repowise foi copiado (AGPL-3.0) — só modelos conceituais, com atribuição explícita em cada arquivo tocado.
+- Nenhum score numérico 0-100 fabricado sem calibração real foi introduzido — risk banding usa faixas qualitativas, não um número de falsa precisão.
+- Pesagem semântica por tipo de nó (auth/schema/crypto) no diff-impact foi explicitamente deixada como trabalho futuro.
+
+---
+
 ## [2.38.0] - 2026-07-03 — skill 52 ui-polish (make-interfaces-feel-better)
 
 Absorção do agent skill externo [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT). Skill agent-consumable de verdade (não blog post) — encaixou direto no kit sem adaptação de formato.

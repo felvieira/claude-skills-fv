@@ -73,9 +73,35 @@ Ripple — who depends on the touched code (depth 2):
     ...
 ```
 
+## Risk Banding
+
+A partir de `dependents_count` (ripple), 3 faixas qualitativas — ponto de partida a calibrar por projeto, não constantes universais:
+
+| Ripple (dependents_count) | Faixa |
+|---|---|
+| ≤ 5 | baixo |
+| 6-20 | médio |
+| > 20 | alto |
+
+**Fora de escopo por ora:** pesagem semântica por tipo de nó (ex: ripple em código de auth/schema/crypto valer mais que em um comentário) fica como trabalho futuro — implementar sem dados reais de calibração adicionaria complexidade sem sinal real.
+
+### Uso como pre-commit hook (exemplo)
+
+```bash
+# pre-commit: avisa (não bloqueia) se ripple cruzar o threshold "alto"
+RIPPLE=$(node scripts/diff-impact.mjs --staged --json | node -e "
+  let d=''; process.stdin.on('data',c=>d+=c); process.stdin.on('end',()=>{
+    console.log(JSON.parse(d).summary.dependents_count);
+  });
+")
+if [ "$RIPPLE" -gt 20 ]; then
+  echo "⚠ diff-impact: ripple de $RIPPLE nós (faixa alta) — revise com atenção antes de commitar."
+fi
+```
+
 ## Como integrar no fluxo
 
-1. **Skill 11 (reviewer)** roda `/diff-impact` antes de aprovar PR. Se ripple > N nós, escalar pra security review.
+1. **Skill 11 (reviewer)** roda `/diff-impact` antes de aprovar PR e lê a risk band (ver "Risk Banding" acima). Se faixa **alta**, escrutínio extra antes de aprovar.
 2. **Skill 23 (migration-refactor)** roda antes de cada step de refactor pra validar escopo.
 3. **Pre-commit hook opcional**: bloqueia commit se ripple > threshold (cuidado: pode irritar).
 

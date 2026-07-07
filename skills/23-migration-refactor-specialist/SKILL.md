@@ -65,6 +65,20 @@ Referências de suporte em `playbooks/references/`:
 - `common-fixes.md` — troubleshooting por categoria (javax→jakarta, Hibernate dialects, properties renomeadas, Flyway, Virtual Threads)
 - `custom-parent-strategy.md` — projetos com parent POM próprio: 3 estratégias (atualizar parent, BOM import, migrar JARs internos)
 
+## Delete-List Review
+
+Quando invocada via `/simplify --delete-list`, esta skill NÃO edita — só lista candidatos a remoção, cobrindo 5 categorias:
+
+1. **Código morto** — branches/funções inalcançáveis
+2. **Imports não usados** — sem referência no arquivo
+3. **Variáveis não referenciadas** — declaradas e nunca lidas
+4. **Funções não chamadas** — sem caller em todo o codebase (não só no arquivo)
+5. **Branches inalcançáveis** — condição sempre falsa/verdadeira, dead code após return/throw
+
+Para cada item, citar `arquivo:linha` e a justificativa concreta de por que é seguro remover — não basta "parece não usado": mostre a evidência (grep/symbol search sem match, sem export, sem import em nenhum outro arquivo).
+
+**Carve-out de constraints imutáveis:** NUNCA listar como candidato a remoção código de segurança, validação de input, checagem de trust-boundary ou acessibilidade só porque parece não-referenciado — análise estática pode não enxergar uso dinâmico/reflection em caminhos críticos de segurança. Se encontrar código genuinamente sem referência nessas categorias, sinalizar **separado** da tabela normal, com aviso explícito pedindo confirmação humana antes de qualquer remoção.
+
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/migration-plan.md`.

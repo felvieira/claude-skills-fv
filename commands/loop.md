@@ -114,7 +114,7 @@ node scripts/auto-loop.mjs "task original" --worktree
 | Context narrowing | 3 tiers: full → focused → minimal |
 | Tiered validation | lint → typecheck → test → build |
 | Error dedup | MD5 hash normalizado (sem line numbers/timestamps) |
-| Completion override | Re-lê plano antes de parar — `[ ]` aberto = não done |
+| Completion override | Re-lê plano antes de parar — `[ ]` aberto = não done. Anti-parada-prematura: se a parada foi disparada por (a) sucesso já na 1ª iteração ou (b) 2+ falhas consecutivas do mesmo erro normalizado, insere 1 rodada extra perguntando "há mais melhorias/transformações promissoras a explorar?" antes de aceitar a parada como final. |
 | Dynamic budget | 8 / 12 / 15 conforme complexidade |
 | Validation feedback loop | Erro vira contexto da próxima iteração |
 | Stall detection | 3 iterações sem `git diff` = stuck |
@@ -145,6 +145,20 @@ Para automaticamente quando:
 - Token cap atingido (exit 6)
 - Erro permanente do agente (low credits, auth) (exit 2)
 - Retry exhausted após backoff exponencial (exit 3)
+
+## Feedback Categorizado
+
+Cada iteração loga, ao lado do exit code existente, uma das 5 categorias de feedback (metadado adicional, não substitui os exit codes):
+
+| Categoria | Significado |
+|---|---|
+| `invalid-input` | Comando/args malformados |
+| `blocked-by-constraint` | Violou regra/lint/dependência |
+| `tool-failure` | Erro de ambiente/ferramenta, não da lógica da task |
+| `crash` | Falha não classificada |
+| `success-with-metric` | Passou + métrica objetiva (testes verdes, delta de coverage, lint limpo) |
+
+**Fontes:** anti-parada-prematura e feedback categorizado adaptados de COMPILOT (Merouani, Kara Bernou, Baghdadi — PACT 2025, "Agentic Auto-Scheduling: An Experimental Study of LLM-Guided Loop Optimization") — RQ6 do paper mostra ablation com +23-40% de resultado ao dar feedback empírico vs. rodar sem feedback; o paper também documenta o padrão de parada prematura (após ganho grande ou após falhas repetidas) que motivou a rodada extra acima.
 
 ## Arquivos gerados
 
