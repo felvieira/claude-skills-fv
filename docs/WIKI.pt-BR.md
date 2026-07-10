@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 52 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
-> **Última atualização:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better; paridade completa com a WIKI em inglês, portadas as seções de skills 39-52 que faltavam)
+> **Versão:** 53 skills · 16 subagents · 43 slash commands · 57 policies · 28 hooks · 22 rules
+> **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -19,7 +19,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (52) — especialistas por categoria](#5-skills-52)
+5. [Skills (53) — especialistas por categoria](#5-skills-53)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (52)
+## 5. Skills (53)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -733,6 +733,14 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Problema que resolve:** componentes funcionalmente corretos mas que parecem genéricos — raios aninhados desencontrados, bordas que não se adaptam ao fundo, animações de entrada/saída abruptas, números que causam layout shift, hit targets minúsculos.
 **Diferente de:** Skill 12 (Motion Design) é dona do sistema de tokens de animação e da orquestração em escala; 52 é ajuste pontual de detalhe, inclusive em motion. Skill 02 (UI/UX) define estrutura e âncora estética; 52 checa se a execução não desviou dela. Skill 04 (Frontend) é dona da lógica/estado do componente; 52 nunca toca nisso.
 **Takeaway:** **interfaces raramente falham por uma coisa grande — falham por uma dúzia de pequenos desencontros somados.** Output sempre é uma tabela Before/After em markdown agrupada por princípio, mais um checklist de revisão.
+
+#### Skill 53 — Doubt-Driven Review
+
+**O que faz:** revisão adversarial **em voo** para decisão não-trivial — diferente do gate pós-hoc de PR/deploy da skill 11. Loop limitado em 5 passos: CLAIM (nomear a decisão + por que importa, 2-3 linhas) → EXTRACT (menor unidade revisável — artefato + contrato, sem o raciocínio) → DÚVIDA (despachar revisor de contexto fresco via `Agent` tool com prompt adversarial — "encontre problemas", nunca "isso tá bom?") → RECONCILIA (classificar cada finding em ordem de precedência: contrato mal-lido / válido-acionável / trade-off válido / ruído) → PARA (findings triviais, 3 ciclos, ou override explícito do usuário). Regra dura: nunca passar a CLAIM ao revisor — só ARTEFATO + CONTRATO, ou a independência do revisor fica viesada em direção à concordância. Absorvida de [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars), skill `doubt-driven-development`.
+**Quando ativar:** prestes a tomar decisão arquitetural sob incerteza; prestes a commitar código não-trivial (lógica de branching, fronteira de módulo/service, propriedade não-verificável tipo thread-safety); prestes a afirmar um fato não-óbvio ("isso é seguro", "isso escala"); trabalhando em código desconhecido.
+**Problema que resolve:** resposta confiante não é resposta correta — sessões longas silenciosamente transformam suposições em "fatos", e na hora do PR (gate da skill 11) corrigir rota já é caro. Esta skill pega direção errada cedo, quando ainda é barato consertar.
+**Diferente de:** Skill 11 (Reviewer) é veredito sobre artefato pronto; 53 é postura aplicada por decisão, em voo. Skill 40 (Parallel Dispatcher) fornece a mecânica de dispatch que 53 consome (`Agent` tool, `subagent_type: code-reviewer`) — 53 nunca invoca uma skill de dentro do subagent despachado, e é explicitamente restrita ao orquestrador da sessão principal, não pra ser chamada de dentro de outro subagent (nested-spawn é o anti-padrão que `policies/skills-vs-agents.md` proíbe).
+**Takeaway:** **o output do revisor é dado, não veredito — você ainda é o orquestrador.** Reclassificar cada finding contra o texto do artefato (não carimbar sem questionar) é o que separa dúvida real de teatro de dúvida; três ciclos não-resolvidos são informação sobre o artefato, não motivo pra moer um quarto sozinho.
 
 ---
 

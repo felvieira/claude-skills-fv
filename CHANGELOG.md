@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.40.0] - 2026-07-10 — skill 53 doubt-driven-review (addyosmani/agent-skills)
+
+Absorção de 2 ideias específicas do repo externo [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars, 24 skills). O resto do repo mapeia quase 1:1 com skills já existentes no kit (spec-driven≈01, frontend≈02/04, API≈03, security≈06, CI/CD≈07, TDD≈37, docs/ADR≈10, code-review≈11, deprecation≈23) — absorver o repo inteiro seria bloat redundante. Duas ideias se destacaram como mais afiadas que os equivalentes atuais.
+
+### Adicionado
+- **`skills/53-doubt-driven-review/SKILL.md`** — revisão adversarial **em voo**, distinta do gate pós-hoc da skill 11. Processo em 5 passos: CLAIM (nomear a decisão + por que importa) → EXTRACT (menor unidade revisável — artefato + contrato, sem o raciocínio) → DÚVIDA (despachar revisor de contexto fresco via `Agent` tool com prompt adversarial "encontre problemas", nunca "isso tá bom?") → RECONCILIA (classificar cada finding: contrato mal-lido / válido+acionável / trade-off válido / ruído) → PARA (findings triviais, 3 ciclos, ou override do usuário). Regra dura: nunca passar a CLAIM ao revisor (vicia em concordância), só ARTEFATO + CONTRATO.
+- **`evals/triggers/53-doubt-driven-review.json`** — 8 should / 5 shouldn't.
+
+### Incrementado (referência cruzada, sem duplicar)
+- **Skill 11 (reviewer)** ganha pointer pra 53 — 11 continua o veredito pós-hoc de PR/deploy; 53 cobre decisão não-trivial em voo, enquanto corrigir rota ainda é barato. As duas se complementam.
+- **Skill 01 (po-feature-spec) + `templates/deep-interview.md`** ganham a disciplina `interview-me` do mesmo repo: pergunta com palpite anexado (guess) + raciocínio, sonda "want vs. should-want" ("se não precisasse justificar pra ninguém, o que você realmente quer?"), linha "fora de escopo" obrigatória no restate final, e gate de confirmação mais rígido — "beleza"/"manda ver"/"confio em você" não contam como sim explícito.
+
+### Fronteira
+- 53 não substitui 11 (pós-hoc) nem 40 (mecânica de dispatch — 53 a consome via `Agent`/`subagent_type: code-reviewer`, nunca invoca skill de dentro do subagent). Restrição de uso: 53 é desenhada pro orquestrador da sessão principal, não pra rodar de dentro de outro subagent (nested-spawn é anti-padrão).
+
+---
+
 ## [2.39.0] - 2026-07-07 — ponytail + repowise + COMPILOT (7 workstreams)
 
 Absorção de ideias (não código) de 2 repos externos + 1 paper acadêmico, avaliados em sessão anterior. **ponytail** (github.com/DietrichGebert/ponytail, MIT) contribuiu a escada de decisão pré-código e o delete-list review. **repowise** (github.com/repowise-dev/repowise, AGPL-3.0) contribuiu conceitos de scoring/risk-banding — só o modelo, nunca código (licença incompatível). **COMPILOT** (Merouani, Kara Bernou, Baghdadi — PACT 2025) validou o padrão de feedback empírico já usado no kit e sugeriu anti-parada-prematura + feedback categorizado.

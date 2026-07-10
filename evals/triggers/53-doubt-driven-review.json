@@ -1,0 +1,20 @@
+{
+  "skill": "53-doubt-driven-review",
+  "should_trigger": [
+    "tem certeza que essa migration nao vai quebrar nada em producao",
+    "duvida dessa decisao de arquitetura antes de eu commitar",
+    "revisa isso adversarialmente antes de eu seguir",
+    "acho que ta certo mas quero uma segunda opiniao antes de aplicar",
+    "questiona essa suposicao de que o cache e thread-safe",
+    "isso ta certo mesmo? quero um revisor cetico antes de mergear",
+    "faz um doubt driven review dessa mudanca critica",
+    "antes de eu declarar isso seguro, refuta essa claim"
+  ],
+  "shouldnt_trigger": [
+    "renomeia essa variavel",
+    "roda os testes existentes",
+    "resume o que esse arquivo faz",
+    "aprova o PR pra deploy final",
+    "formata esse arquivo com prettier"
+  ]
+}

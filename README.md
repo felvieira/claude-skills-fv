@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 52 Specialist Skills for Coding Agents
+# Dev Team Kit — 53 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.38.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-52-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.40.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-53-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,8 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.40.0** | **Skill 53 `doubt-driven-review`** — absorbed from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars). In-flight adversarial review — distinct from skill 11's post-hoc PR gate — for non-trivial decisions while course-correction is still cheap: CLAIM (name the decision) → EXTRACT (smallest reviewable unit, no reasoning) → DOUBT (fresh-context reviewer, adversarial prompt, biased to refute) → RECONCILE (classify findings: contract-misread / actionable / trade-off / noise) → STOP (bounded at 3 cycles). Cross-referenced from skill 11 (reviewer). Also tightened skill 01's Deep Interview protocol (`templates/deep-interview.md`) with the same repo's `interview-me` discipline: guess-attached questions, "want vs. should-want" probing, mandatory "out of scope" line in the restate, and a stricter explicit-yes confirmation gate. | [`skills/53-doubt-driven-review/SKILL.md`](skills/53-doubt-driven-review/SKILL.md), [`templates/deep-interview.md`](templates/deep-interview.md) |
+| **v2.39.0** | **Idea absorption (not code) from ponytail + repowise + COMPILOT paper** — ponytail's 7-rung pre-code ladder (YAGNI → already-in-codebase → stdlib → native feature → installed dependency → one-liner → only then new code) as a policy + PreToolUse hook gate before code generation, plus a delete-list mode for `/simplify` and skill 23; repowise's risk-weighted deductions in skill 18's harnessability score, qualitative risk banding in `/diff-impact` and skill 11, and the reversible `_meta.omitted` truncation pattern documented in `mcp-builder-patterns.md` (concepts only — repowise itself is AGPL); the COMPILOT PACT 2025 paper's anti-premature-stopping and categorized feedback taxonomy applied to `/loop` and `/swarm`. | [`policies/`](policies/), [`hooks/scripts/pre-code-ladder-guard.mjs`](hooks/scripts/pre-code-ladder-guard.mjs) |
 | **v2.38.0** | **Skill 52 `ui-polish`** — absorbed from the external agent skill [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT). 16 visual-polish principles: concentric border radius, optical alignment, shadows over borders, interruptible animations, split/stagger enter, subtle exit, contextual icon animation (exact values: scale 0.25→1, blur 4px→0, spring bounce 0), font smoothing, tabular numbers, text wrapping (balance/pretty), image outlines (pure black/white, never tinted), scale-on-press (0.96), skip-animation-on-load, no `transition: all`, sparing `will-change`, 40×40px minimum hit area. Cross-referenced from skill 12 (motion-design, owns the token system) and skill 02 (ui-ux-design, post-Frontend polish checklist). | [`skills/52-ui-polish/SKILL.md`](skills/52-ui-polish/SKILL.md), [`docs/skill-guides/ui-polish.md`](docs/skill-guides/ui-polish.md) |
 | **v2.37.0** | **7-ebook absorption (Casa do Código)** — only the real gap became a new skill: **skill 51 `ux-research`** (qualitative discovery — user interview, research-based persona, journey map, usability testing, information architecture; sits *before* PO 01 and UI/UX 02). The rest became surgical increments: 3 XP policies (`pair-programming`, `continuous-integration`, `sustainable-pace`, wired to skill 37); skill 01 gains a **Business Foundation** section (hypothesis validation, MVP, monetization, AARRR, product-market fit — from *Guia da Startup*); skill 14 gains **Keyword Research** (KEI, intent, long-tail) + **Off-Page/Link Building**; skill 07 gains **Infrastructure as Code** (declarative provisioning, idempotency, drift — DevOps principles mapped to Terraform/Ansible); skill 38 gains cohesion/coupling, distributed-seam (REST/async/RPC, HATEOAS) and layer lenses. HTML5 Canvas game-dev dropped (niche <2%). | [`skills/51-ux-research/SKILL.md`](skills/51-ux-research/SKILL.md), [`policies/pair-programming.md`](policies/pair-programming.md) |
 | **v2.36.0** | **Skill 50 `direct-response-copy`** — direct response copywriting distilled from 3 classic PT-BR copy ebooks: headline formula library in 20 trigger categories (357 models distilled into parameterized formulas), the 8 mental triggers + sales storytelling structure, Instagram caption/engagement copy. Hard integrity gate: no unverifiable claims, no fabricated testimonials, real scarcity only. Complements skill 13 (product copy) — 13 covers landing/microcopy/brand voice, 50 covers ads/sales pages/email/social. | [`skills/50-direct-response-copy/SKILL.md`](skills/50-direct-response-copy/SKILL.md), [`skills/50-direct-response-copy/references/headline-formulas.md`](skills/50-direct-response-copy/references/headline-formulas.md) |
@@ -131,7 +133,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 52 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 53 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -168,14 +170,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 37 tools backed by the 52 skills.
+In the table below, treat `dev-team-kit` as 37 tools backed by the 53 skills.
 The MCP exposes 37 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 52 skills | ✅ | ✅ | ✅ |
+| 53 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |

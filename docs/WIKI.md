@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 52 skills · 16 subagents · 43 slash commands · 57 policies · 27 hooks · 22 rules
-> **Last updated:** 2026-07-03 (v2.38.0 — skill 52 ui-polish, absorbed from jakubkrehel/make-interfaces-feel-better. Recent line: v2.33 AI-first memory · v2.34 unified+portable vault · v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish)
+> **Version:** 53 skills · 16 subagents · 43 slash commands · 57 policies · 28 hooks · 22 rules
+> **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (52) — specialists by category](#5-skills-52)
+5. [Skills (53) — specialists by category](#5-skills-53)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (52)
+## 5. Skills (53)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -753,6 +753,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Problem it solves:** components that are functionally correct but feel generic — mismatched nested radii, borders that don't adapt to backgrounds, jarring enter/exit animations, layout-shifting numbers, tiny hit targets.
 **Distinct from:** Skill 12 (Motion Design) owns the animation token system and orchestration at scale; 52 is pointed, pass/fail detail fixes, including on motion. Skill 02 (UI/UX) defines structure and aesthetic anchor; 52 checks execution didn't drift from it. Skill 04 (Frontend) owns component logic/state; 52 never touches it.
 **Takeaway:** **interfaces rarely fail from one big thing — they fail from a dozen small mismatches compounding.** Output is always a Before/After markdown table grouped by principle, plus a review checklist.
+
+#### Skill 53 — Doubt-Driven Review
+
+**What it does:** in-flight adversarial review for non-trivial decisions — distinct from Skill 11's post-hoc PR/deploy gate. Five-step bounded loop: CLAIM (name the decision + why it matters, 2-3 lines) → EXTRACT (smallest reviewable unit — artifact + contract, stripped of reasoning) → DOUBT (dispatch a fresh-context reviewer via the `Agent` tool with an adversarial prompt — "find issues," never "is this good?") → RECONCILE (classify every finding in precedence order: contract-misread / valid-actionable / valid-trade-off / noise) → STOP (trivial findings, 3 cycles, or explicit user override). Hard rule: never pass the CLAIM to the reviewer — only ARTIFACT + CONTRACT, or the reviewer's independence is biased toward agreement. Absorbed from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars), skill `doubt-driven-development`.
+**When to activate:** about to make an architectural decision under uncertainty; about to commit non-trivial code (branching logic, module/service boundary crossing, unverifiable properties like thread-safety); about to assert a non-obvious fact ("this is safe," "this scales"); working in unfamiliar code.
+**Problem it solves:** a confident answer is not a correct one — long sessions quietly turn assumptions into "facts," and by PR time (Skill 11's gate) course-correction is expensive. This skill catches wrong directions early, while they're still cheap to fix.
+**Distinct from:** Skill 11 (Reviewer) is a verdict on a finished artifact; 53 is a posture applied per-decision, mid-flight. Skill 40 (Parallel Dispatcher) supplies the dispatch mechanics 53 consumes (`Agent` tool, `subagent_type: code-reviewer`) — 53 never invokes a skill from inside the spawned subagent, and is explicitly scoped to the main-session orchestrator, not to be called from inside another subagent (nested-spawn is the anti-pattern `policies/skills-vs-agents.md` forbids).
+**Takeaway:** **the reviewer's output is data, not verdict — you're still the orchestrator.** Reclassifying every finding against the artifact text (not rubber-stamping) is what separates real doubt from doubt theater; three unresolved cycles is information about the artifact, not a reason to grind a fourth alone.
 
 ---
 

@@ -51,6 +51,34 @@ Score pos-rodada: [recalcular]
 6. Se score < 0.4 em qualquer rodada → parar, briefing suficiente
 7. Apos 5 rodadas sem estabilidade → avisar que escopo precisa de mais trabalho
 
+## Disciplina de Pergunta Unica (want vs. should-want)
+
+Cada rodada, alem da pergunta, anexar um **palpite** (guess) com o raciocinio que o gerou — nao so a pergunta nua:
+
+```
+Pergunta: [pergunta focada]
+Palpite: [sua hipotese pra resposta + por que voce chegou nela]
+```
+
+Reagir a um palpite errado e mais rapido que gerar resposta do zero — isso acelera a rodada e expoe suas suposicoes. Risco: usuario concordar com o palpite so por educacao — mitigar sendo visivelmente disposto a estar errado, e ocasionalmente palpitando numa direcao que o usuario provavelmente vai contestar.
+
+**Sinal de "want vs. should-want":** desconfiar de resposta que soa como boa pratica em vez de necessidade real — "quero que seja escalavel", "do jeito que a maioria dos apps faz", "acho que deveria ser assim". Quando aparecer, perguntar:
+
+> "Se voce nao precisasse justificar isso pra ninguem, o que voce realmente quer?"
+
+Essa pergunta sozinha costuma resolver mais que as tres anteriores.
+
+**Restate obrigatorio com "Fora de escopo":** ao concluir (score < 0.4 ou stability > 0.8), o restate final pro usuario SEMPRE inclui uma linha "Fora de escopo" — metade do desalinhamento e discordancia silenciosa sobre o que NAO esta sendo construido:
+
+```
+Outcome:      [uma linha]
+Fora de escopo: [uma linha — o que explicitamente nao estamos fazendo]
+
+Confirma? / ajusta algo?
+```
+
+**Gate de confirmacao explicito:** "beleza", "manda ver", "confio em voce" NAO contam como confirmacao — sao delegacao ou saida educada, nao endosso. Re-perguntar: "tem algo que voce ajustaria?". Silencio nao e confirmacao.
+
 ## Exemplo de Rodada
 
 ```

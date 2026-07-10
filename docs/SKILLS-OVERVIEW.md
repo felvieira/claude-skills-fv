@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 52 skills + 16 subagents + 43 commands + 57 policies + 27 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 53 skills + 16 subagents + 43 commands + 57 policies + 28 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 52 skills, 16 subagents, 43 slash commands, 57 policies, 27 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-07-03 (skill 52 ui-polish, absorvida de jakubkrehel/make-interfaces-feel-better)
+> **Versão:** 53 skills, 16 subagents, 43 slash commands, 57 policies, 28 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -381,6 +381,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 33 | **Detective Spec** | engenharia reversa de spec em legado (zero writes no projeto) |
 | 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF |
 | 37 | **TDD Engineer** | red-green-refactor enforced, anti horizontal slicing (1 teste → 1 impl → repete) |
+| 53 | **Doubt-Driven Review** | revisão adversarial EM VOO antes de decisão não-trivial ficar de pé — complementa a 11, não substitui |
 
 ---
 

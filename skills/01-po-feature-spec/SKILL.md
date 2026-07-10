@@ -250,10 +250,12 @@ Usar `devkit_ambiguity_score` (MCP) para calcular programaticamente.
 Acionar quando `score > 0.7`. Seguir `templates/deep-interview.md`.
 
 **Principios:**
-- Uma pergunta por rodada, preferencialmente multipla escolha
+- Uma pergunta por rodada, preferencialmente multipla escolha, com um palpite (guess) anexado à pergunta
 - Sistema infere e confirma — nunca devolve "escreva mais"
 - Max 5 rodadas, parar quando stability ratio > 0.8 por 2 rodadas
 - Fail-forward: apos 5 rodadas sem estabilidade, prosseguir com melhor entendimento
+- Desconfiar de resposta que soa "boa prática" em vez de necessidade real ("escalável", "do jeito que todo app faz") — sondar com "se não precisasse justificar pra ninguém, o que você realmente quer?"
+- Restate final SEMPRE inclui linha "Fora de escopo" — e "beleza"/"manda ver"/"confio em você" não contam como confirmação (ver `templates/deep-interview.md`)
 
 **Enrich Mode** (score 0.4-0.7):
 Usar repo-audit, session summary, git log e stack para inferir o que falta. Apresentar:
@@ -270,6 +272,10 @@ Usar repo-audit, session summary, git log e stack para inferir o que falta. Apre
 ## Código Limpo
 
 Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
+
+## Fontes
+
+- Disciplina de palpite-anexado, sonda "want vs. should-want" e restate com "fora de escopo" (em `templates/deep-interview.md`) adaptados de [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), skill `interview-me` (MIT).
 
 ## Integração com Pipeline
 

@@ -17,6 +17,8 @@ description: |
 
 O Reviewer é o portão final antes do deploy. Valida TUDO. Não documenta — valida que a documentação existe. Nada passa sem aprovação explícita.
 
+Esta skill é veredito **pós-hoc** sobre artefato pronto (PR, deploy). Para revisão adversarial **em voo** — durante decisão não-trivial, antes de commitar, quando corrigir rota ainda é barato — usar `skills/53-doubt-driven-review/SKILL.md`. As duas se complementam; não se substituem.
+
 ## Governanca Global
 
 Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
