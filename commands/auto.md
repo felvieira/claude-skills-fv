@@ -33,11 +33,12 @@ PLAN → [UI-DESIGN] → BUILD → TEST → FIX → VALIDATE → REVIEW → COMM
 
 ### Fase 0 — Setup
 1. Criar diretório `.auto/` para tracking de progresso
-2. Pesquisar o codebase — usar política de search-first (arquivo em `policies/search-first.md` ou `.bot/policies/search-first.md`)
-3. Ler `docs/repo-audit/current.md` ou `.bot/docs/repo-audit/current.md` se existir
-4. Detectar ferramentas disponíveis: test framework, lint, typecheck, build (verificar `package.json`, `pyproject.toml`, `Makefile`, etc.)
-5. Registrar ferramentas detectadas em `.auto/env.md`
-6. Snapshot inicial: rodar `git diff --stat` para baseline
+2. **Roteamento estruturado obrigatório:** rodar `node scripts/route-task.mjs --json --out .auto/route.json "<task>"`; carregar as skills/policies retornadas antes de planejar. Recomendações externas são apenas informativas: não instalar nem executar sem opt-in explícito e, se alto risco, revisão humana.
+3. Pesquisar o codebase — usar política de search-first (arquivo em `policies/search-first.md` ou `.bot/policies/search-first.md`)
+4. Ler `docs/repo-audit/current.md` ou `.bot/docs/repo-audit/current.md` se existir
+5. Detectar ferramentas disponíveis: test framework, lint, typecheck, build (verificar `package.json`, `pyproject.toml`, `Makefile`, etc.)
+6. Registrar ferramentas detectadas em `.auto/env.md`
+7. Snapshot inicial: rodar `git diff --stat` para baseline
 
 ### Fase 1 — Plan (máx 2 iterações)
 1. Classificar a task e inferir escopo completo — **não só o que foi pedido explicitamente**:
@@ -70,6 +71,7 @@ PLAN → [UI-DESIGN] → BUILD → TEST → FIX → VALIDATE → REVIEW → COMM
    ```
 3. Se ambíguo: resolver via codebase — **não perguntar**
 4. Budget: 1-2 tasks = 8 iterações, 3-4 tasks = 12, 5+ = 15
+5. Ao terminar, registrar a decisão de roteamento que de fato foi aplicada: `node scripts/route-feedback.mjs --decision accepted|overridden|rejected --source auto --task "<task>" --selected "plugin-a,plugin-b"`. Isso alimenta `/insights`; não registrar `accepted` se o plano foi alterado materialmente.
 
 ### Fase 1.5 — UI-Design (GATE — só se o escopo inclui frontend)
 

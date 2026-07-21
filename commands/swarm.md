@@ -77,6 +77,8 @@ Então o hook **sugere `/swarm` automaticamente** quando detecta intent de featu
 
 Ver [`policies/swarm-protocol.md`](../policies/swarm-protocol.md) para detalhes.
 
+Antes da Phase 0, o executor resolve obrigatoriamente o catálogo e salva `.swarm/<run-id>/route.json`. Cada prompt de PRD, implementação e review recebe esse contrato estruturado. Skills bundled podem ser carregadas; plugins externos permanecem recomendações opt-in e itens de risco alto preservam os gates do protocolo. Ao encerrar o run, registrar a decisão efetiva com `scripts/route-feedback.mjs` para calibrar `/insights`.
+
 | Phase | Tipo | O que faz |
 |---|---|---|
 | 0. Setup | bash | Cria worktree isolado, detecta tools (npm/cargo/etc) |

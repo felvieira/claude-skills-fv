@@ -13,8 +13,13 @@ function containsAll(actual, expected) {
 }
 
 export async function runRoutingEvals() {
-  const fixturePath = path.join(root, "evals", "routing", "plugin-routing.json");
-  const cases = JSON.parse(await fs.readFile(fixturePath, "utf8"));
+  const fixturePaths = [
+    path.join(root, "evals", "routing", "plugin-routing.json"),
+    path.join(root, "evals", "routing", "real-scenarios.json"),
+  ];
+  const cases = (await Promise.all(fixturePaths.map(async (fixturePath) =>
+    JSON.parse(await fs.readFile(fixturePath, "utf8")),
+  ))).flat();
   const results = [];
 
   for (const testCase of cases) {
@@ -34,6 +39,12 @@ export async function runRoutingEvals() {
     if (testCase.risk && route.risk !== testCase.risk) failures.push(`risk expected ${testCase.risk}, got ${route.risk}`);
     if (typeof testCase.requires_human_review === "boolean" && route.requires_human_review !== testCase.requires_human_review) {
       failures.push(`requires_human_review expected ${testCase.requires_human_review}, got ${route.requires_human_review}`);
+    }
+    if (typeof testCase.max_skill_count === "number" && route.skill_count > testCase.max_skill_count) {
+      failures.push(`skill_count must be <= ${testCase.max_skill_count}, got ${route.skill_count}`);
+    }
+    if (typeof testCase.max_recommendation_count === "number" && route.recommendation_count > testCase.max_recommendation_count) {
+      failures.push(`recommendation_count must be <= ${testCase.max_recommendation_count}, got ${route.recommendation_count}`);
     }
     results.push({ name: testCase.name, pass: failures.length === 0, failures, route });
   }

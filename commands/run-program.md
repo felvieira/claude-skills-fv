@@ -129,7 +129,11 @@ Resumo no console:
 **Uso:**
 ```
 /run-program spec-driven-development
-/run-program pipeline-discovery --input tracker=github --auto-yes
+/run-program pipeline-discovery --task "nova feature de billing com requisitos vagos" --input tracker=github --auto-yes
 /run-program loop-polishing --dry-run
 /run-program --list
 ```
+
+## Roteamento de composição
+
+Todo plano emitido pelo executor inclui `routing.composition`: plugins bundled, skills, policies, risco e recomendações externas. Informe `--task "<descrição>"` para um roteamento fiel ao pedido; sem ela, o executor usa os metadados do programa e marca `source: program-metadata`. Carregue a composição antes do primeiro step. Plugins externos nunca são instalados automaticamente. Ao fim, registre `accepted`, `overridden` ou `rejected` com `node scripts/route-feedback.mjs --source run-program ...`.

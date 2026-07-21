@@ -38,7 +38,7 @@ export interface PluginRecommendation {
   skills: string[];
   policies: string[];
   commands: string[];
-  matched_capabilities: string[];
+  matchedCapabilities: string[];
   install?: { provider: string; reference: string; action?: string };
   requires_human_review: boolean;
 }
@@ -52,6 +52,8 @@ export interface PluginRoute {
   commands: string[];
   risk: Risk;
   requires_human_review: boolean;
+  skill_count: number;
+  recommendation_count: number;
 }
 
 export interface PluginCatalogEntry {
@@ -139,7 +141,7 @@ export async function routePluginComposition(
       skills: unique(matches.flatMap((match) => match.capability.skills || [])),
       policies: unique(manifest.policies || []),
       commands: unique(matches.flatMap((match) => match.capability.commands || [])),
-      matched_capabilities: matches.map((match) => match.capability.id),
+      matchedCapabilities: matches.map((match) => match.capability.id),
       install: manifest.availability === "external" ? manifest.install : undefined,
       requires_human_review: Boolean(manifest.requires_human_review),
     };
@@ -152,16 +154,19 @@ export async function routePluginComposition(
   const plugins = bundled.slice(0, options.maxPlugins ?? 3);
   const external_plugins = external.slice(0, options.maxExternalPlugins ?? 1);
   const all = [...plugins, ...external_plugins];
+  const skills = unique(plugins.flatMap((plugin) => plugin.skills)).slice(0, options.maxSkills ?? 6);
   const risk = all.reduce<Risk>((current, plugin) => RISK_ORDER[plugin.risk] > RISK_ORDER[current] ? plugin.risk : current, "low");
 
   return {
     schema_version: "1.0",
     plugins,
     external_plugins,
-    skills: unique(plugins.flatMap((plugin) => plugin.skills)).slice(0, options.maxSkills ?? 6),
+    skills,
     policies: unique(all.flatMap((plugin) => plugin.policies)),
     commands: unique(plugins.flatMap((plugin) => plugin.commands)),
     risk,
     requires_human_review: risk === "high" || external_plugins.some((plugin) => plugin.requires_human_review),
+    skill_count: skills.length,
+    recommendation_count: all.length,
   };
 }

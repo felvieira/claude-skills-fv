@@ -68,6 +68,15 @@ Para cenarios extensos e playbook detalhado, consultar `docs/skill-guides/orches
 - artefatos ja produzidos
 - dependencias, riscos e blockers conhecidos
 
+## Contrato de Roteamento (obrigatorio)
+
+Antes de escolher o pipeline, materialize a composição estruturada com `node scripts/route-task.mjs --json "<pedido do usuario>"` (ou a tool MCP `devkit_route_task`). Use apenas as skills bundled retornadas, respeite `policies`, e mantenha a composição mínima: `skill_count` é evidência de custo de contexto, não licença para carregar tudo. Registre o resultado no plano/handoff.
+
+- recomendações `external_plugins` são opt-in; nunca instalar ou chamar automaticamente;
+- `requires_human_review: true` preserva aprovação explícita mesmo em fluxo autônomo;
+- se nenhum catálogo casar, siga o pipeline mínimo desta skill, sem inventar um plugin;
+- ao finalizar, registrar `accepted`, `overridden` ou `rejected` via `scripts/route-feedback.mjs`; use `/insights --focus routing` para calibrar triggers, não para ampliar o foco do kit.
+
 ## Saidas Esperadas
 
 - plano de execucao curto

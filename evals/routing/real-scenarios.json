@@ -1,0 +1,96 @@
+[
+  {
+    "name": "real feature authentication API keeps the engineering loop small",
+    "scenario_type": "feature",
+    "prompt": "implemente uma API de autenticação com refresh token, testes e auditoria de segurança",
+    "plugins": ["development"],
+    "skills": ["03-backend-api", "05-qa-testing", "06-security-review"],
+    "risk": "medium",
+    "requires_human_review": false,
+    "max_skill_count": 6,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "real frontend dashboard adds design and engineering without marketing",
+    "scenario_type": "feature",
+    "prompt": "implemente um componente React para dashboard com UI acessível e testes e2e",
+    "plugins": ["development", "design-quality"],
+    "skills": ["04-frontend-integration", "05-qa-testing", "02-ui-ux-design", "22-accessibility-specialist"],
+    "exclude_plugins": ["product-marketing"],
+    "max_skill_count": 6,
+    "max_recommendation_count": 2
+  },
+  {
+    "name": "real landing launch scopes copy to product work",
+    "scenario_type": "landing",
+    "prompt": "crie uma landing page com headline, CTA, SEO e design e prepare o release para lançar nosso SaaS",
+    "plugins": ["product-marketing", "design-quality", "release-ops"],
+    "skills": ["13-marketing-copy", "14-seo-specialist", "02-ui-ux-design"],
+    "risk": "high",
+    "requires_human_review": true,
+    "max_skill_count": 6,
+    "max_recommendation_count": 3
+  },
+  {
+    "name": "real legacy bug asks for evidence before a fix",
+    "scenario_type": "legacy-bug",
+    "prompt": "investigue um bug em sistema legado sem docs e extraia contratos antes de corrigir",
+    "plugins": ["core-discovery"],
+    "skills": ["33-detective-spec", "18-repo-auditor"],
+    "exclude_plugins": ["release-ops"],
+    "max_skill_count": 3,
+    "max_recommendation_count": 2
+  },
+  {
+    "name": "real AI assistant feature uses architecture and prompts",
+    "scenario_type": "ai-feature",
+    "prompt": "crie um chatbot com LLM e RAG para suporte do produto",
+    "plugins": ["ai-integration"],
+    "skills": ["25-ai-integration-architect", "26-prompt-engineer"],
+    "max_skill_count": 2,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "real production deployment remains a human-review route",
+    "scenario_type": "deploy",
+    "prompt": "faça deploy Docker em produção com monitoramento, alerta e rollback",
+    "plugins": ["release-ops"],
+    "skills": ["07-deploy-docker", "20-observability-sre"],
+    "risk": "high",
+    "requires_human_review": true,
+    "max_skill_count": 5,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "real refactor has review and migration safeguards",
+    "scenario_type": "refactor",
+    "prompt": "refatore o módulo de pagamentos e revise o código para remover duplicação",
+    "plugins": ["development"],
+    "skills": ["11-reviewer", "23-migration-refactor-specialist"],
+    "max_skill_count": 2,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "real version docs use Context7 as a bounded external recommendation",
+    "scenario_type": "documentation",
+    "prompt": "consulte a documentação atualizada da versão do framework antes de implementar o endpoint",
+    "plugins": ["development"],
+    "external_plugins": ["context7-docs"],
+    "skills": ["03-backend-api"],
+    "risk": "medium",
+    "requires_human_review": false,
+    "max_skill_count": 2,
+    "max_recommendation_count": 2
+  },
+  {
+    "name": "small rename does not inflate to a plugin pipeline",
+    "scenario_type": "small-change",
+    "prompt": "renomeie a variável local retryCount para attempts",
+    "exclude_plugins": ["development", "core-discovery", "design-quality", "product-marketing", "ai-integration", "release-ops"],
+    "exclude_external_plugins": ["context7-docs", "finance-workflows", "legal-workflows"],
+    "risk": "low",
+    "requires_human_review": false,
+    "max_skill_count": 0,
+    "max_recommendation_count": 0
+  }
+]

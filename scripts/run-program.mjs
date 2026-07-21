@@ -9,7 +9,7 @@
  * commands diretamente — isso é feito pelo agente que rodou /run-program.
  *
  * Uso:
- *   node scripts/run-program.mjs <name> [--dry-run] [--list]
+ *   node scripts/run-program.mjs <name> [--task "description"] [--input key=value] [--dry-run]
  *   node scripts/run-program.mjs --list
  *   node scripts/run-program.mjs --describe <name>
  *
@@ -19,6 +19,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { routeTask } from "./lib/plugin-catalog.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -188,7 +189,7 @@ function inferType(s) {
   return "unknown";
 }
 
-async function dryRun(nameOrPath, inputs = {}) {
+async function dryRun(nameOrPath, inputs = {}, taskDescription = "") {
   const programPath = nameOrPath.endsWith(".yml")
     ? nameOrPath
     : `programs/${nameOrPath}.yml`;
@@ -228,18 +229,24 @@ async function dryRun(nameOrPath, inputs = {}) {
     if: substitute(s.if),
   }));
 
+  const routePrompt = taskDescription.trim() || [doc.program?.name, doc.program?.description, ...Object.values(resolved).map(String)].filter(Boolean).join("\n");
+  const routing = await routeTask(routePrompt);
   return {
     program: doc.program,
     resolved_inputs: resolved,
     missing_inputs: missing,
     resolved_steps: resolvedSteps,
+    routing: {
+      source: taskDescription.trim() ? "explicit-task" : "program-metadata",
+      composition: routing,
+    },
   };
 }
 
 async function main() {
   const args = process.argv.slice(2);
   if (args.length === 0 || args[0] === "--help") {
-    console.log(JSON.stringify({ usage: "run-program <name> [--dry-run] | --list | --describe <name>" }));
+    console.log(JSON.stringify({ usage: "run-program <name> [--task description] [--input key=value] [--dry-run] | --list | --describe <name>" }));
     process.exit(0);
   }
 
@@ -262,18 +269,22 @@ async function main() {
     const name = args[0];
     const isDryRun = args.includes("--dry-run");
     const inputs = {};
+    let taskDescription = "";
     for (let i = 1; i < args.length; i++) {
       if (args[i] === "--input" && args[i + 1]) {
         const [k, ...v] = args[i + 1].split("=");
         inputs[k] = v.join("=");
         i++;
+      } else if (args[i] === "--task" && args[i + 1]) {
+        taskDescription = args[i + 1];
+        i++;
       }
     }
-    const plan = await dryRun(name, inputs);
+    const plan = await dryRun(name, inputs, taskDescription);
     console.log(JSON.stringify({
       action: isDryRun ? "dry-run" : "plan",
       ...plan,
-      note: "Agent should execute resolved_steps in order. Gates require AskUserQuestion. Parallels dispatch via Task in one message."
+      note: "Agent should execute resolved_steps in order. Load routing.composition before the first step; external recommendations remain opt-in. Gates require AskUserQuestion. Parallels dispatch via Task in one message."
     }, null, 2));
     process.exit(0);
   } catch (e) {

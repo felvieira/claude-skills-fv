@@ -5,6 +5,7 @@
  */
 import fs from "fs/promises";
 import path from "path";
+import { execFileSync } from "node:child_process";
 import { KIT_ROOT } from "../constants.js";
 import { listPluginCatalog, routePluginComposition } from "./plugin-router.js";
 
@@ -18,6 +19,8 @@ interface RoutingFixture {
   exclude_external_plugins?: string[];
   risk?: "low" | "medium" | "high";
   requires_human_review?: boolean;
+  max_skill_count?: number;
+  max_recommendation_count?: number;
 }
 
 let passed = 0;
@@ -45,8 +48,10 @@ function missing(actual: string[], expected: string[]) {
 
 console.log("plugin-router shared routing fixtures");
 
-const fixturePath = path.join(KIT_ROOT, "evals", "routing", "plugin-routing.json");
-const fixtures = JSON.parse(await fs.readFile(fixturePath, "utf8")) as RoutingFixture[];
+const fixturePaths = ["plugin-routing.json", "real-scenarios.json"].map((file) => path.join(KIT_ROOT, "evals", "routing", file));
+const fixtures = (await Promise.all(fixturePaths.map(async (fixturePath) =>
+  JSON.parse(await fs.readFile(fixturePath, "utf8")) as RoutingFixture[],
+))).flat();
 
 await test("lists bundled and external plugins with install metadata", async () => {
   const plugins = await listPluginCatalog();
@@ -83,8 +88,33 @@ for (const fixture of fixtures) {
       assert(route.requires_human_review === fixture.requires_human_review,
         `requires_human_review expected ${fixture.requires_human_review}, got ${route.requires_human_review}`);
     }
+    if (typeof fixture.max_skill_count === "number") {
+      assert(route.skill_count <= fixture.max_skill_count, `skill_count must be <= ${fixture.max_skill_count}, got ${route.skill_count}`);
+    }
+    if (typeof fixture.max_recommendation_count === "number") {
+      assert(route.recommendation_count <= fixture.max_recommendation_count, `recommendation_count must be <= ${fixture.max_recommendation_count}, got ${route.recommendation_count}`);
+    }
   });
 }
+
+await test("CLI and MCP route contract stay in parity", async () => {
+  for (const fixture of fixtures) {
+    const cli = JSON.parse(execFileSync(process.execPath, [path.join(KIT_ROOT, "scripts", "route-task.mjs"), "--json", fixture.prompt], { encoding: "utf8" }));
+    const mcp = await routePluginComposition(fixture.prompt);
+    const project = (route: typeof mcp) => ({
+      plugins: route.plugins.map((plugin) => ({ id: plugin.id, matchedCapabilities: plugin.matchedCapabilities, trust: plugin.trust })),
+      external_plugins: route.external_plugins.map((plugin) => ({ id: plugin.id, matchedCapabilities: plugin.matchedCapabilities, trust: plugin.trust })),
+      skills: route.skills,
+      policies: route.policies,
+      commands: route.commands,
+      risk: route.risk,
+      requires_human_review: route.requires_human_review,
+      skill_count: route.skill_count,
+      recommendation_count: route.recommendation_count,
+    });
+    assert(JSON.stringify(project(cli)) === JSON.stringify(project(mcp)), `CLI/MCP mismatch for ${fixture.name}`);
+  }
+});
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed === 0 ? 0 : 1);

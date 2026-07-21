@@ -200,5 +200,7 @@ export async function routeTask(prompt, options = {}) {
     commands,
     risk,
     requires_human_review: risk === "high" || external_plugins.some((plugin) => plugin.requires_human_review),
+    skill_count: skills.length,
+    recommendation_count: allRecommendations.length,
   };
 }

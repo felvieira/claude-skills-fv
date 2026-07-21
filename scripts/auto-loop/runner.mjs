@@ -43,12 +43,14 @@ import { startPreventSleep, stopPreventSleep } from './prevent-sleep.mjs';
 import { withBackoff } from './backoff.mjs';
 import { injectStopWhen, checkStopWhen } from './stop-when.mjs';
 import { getAgent } from './agents/index.mjs';
+import { routeTask } from '../lib/plugin-catalog.mjs';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const AUTO_DIR = '.auto';
 const ENV_FILE = join(AUTO_DIR, 'env.md');
 const PROGRESS_FILE = join(AUTO_DIR, 'progress.md');
+const ROUTE_FILE = join(AUTO_DIR, 'route.json');
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -208,6 +210,17 @@ export async function runOnce(opts, _testAgent = null) {
 
   const tools = detectTools();
   writeEnvFile(tools, opts.task);
+  let routing = null;
+  try {
+    const composition = await routeTask(opts.task);
+    routing = { source: 'auto-loop', composition };
+    writeFileSync(ROUTE_FILE, `${JSON.stringify(routing, null, 2)}\n`);
+    log(`Routing: ${composition.skills.length ? composition.skills.join(', ') : 'no catalog match'} (risk=${composition.risk})`);
+    logEvent('route.resolved', { skills: composition.skills, plugins: composition.plugins.map(plugin => plugin.id), risk: composition.risk });
+  } catch (error) {
+    log(`Routing unavailable; continuing with core governance: ${error.message}`, '⚠️');
+    logEvent('route.error', { error: serializeError(error) });
+  }
   log(`Model: ${opts.model}`);
   log(`Tools: test=${tools.test || 'none'}, lint=${tools.lint || 'none'}, build=${tools.build || 'none'}`);
 
@@ -261,7 +274,7 @@ export async function runOnce(opts, _testAgent = null) {
   let validationExtensions = 0;
 
   log(`Max iterations: ${maxIterations}`);
-  writeProgress(`# Auto-Loop Started\n**Task:** ${opts.task}\n**Max iterations:** ${maxIterations}`);
+  writeProgress(`# Auto-Loop Started\n**Task:** ${opts.task}\n**Max iterations:** ${maxIterations}${routing ? `\n**Routing:** ${routing.composition.skills.join(', ') || 'no catalog match'}` : ''}`);
 
   // ── Main loop ──────────────────────────────────────────────────────────────
   while (iteration < maxIterations && !isGracefulStop() && !isForceStop()) {

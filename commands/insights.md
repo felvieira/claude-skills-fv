@@ -27,6 +27,7 @@ description: Analisa telemetria de uso dos hooks e sessions para recomendar pró
 | `.bot/session-events.jsonl` | PostToolUse | eventos de sessão (tool calls, stops, errors) |
 | `.bot/hook-session.json` | vários | estado da sessão atual |
 | `D:\claude-memory\logs\*.md` | Stop hook | logs das últimas sessões (se vault configurado) |
+| `.bot/route-feedback.jsonl` | executores / decisão explícita | recomendações de composição aceitas, alteradas ou rejeitadas |
 
 ## Protocolo de execução
 
@@ -43,6 +44,7 @@ Ler cada arquivo existente e agregar:
 - Labels de perguntas bloqueadas pelo investigate-first-guard
 - Tools mais chamados e com mais repetições
 - Conflitos de policy mais frequentes
+- Decisões de roteamento e plugins mais aceitos/alterados, via `node scripts/routing-insights.mjs --root . --json`
 
 ### Fase 2 — Calcular métricas-chave
 
@@ -68,6 +70,15 @@ Zero bloqueios = guard não está sendo testado (normal em projetos sem interaç
 ```
 reads_3x = arquivos lidos 3+ vezes (sinalizados pelo pre-tool-enforcer)
 Alto (>5 arquivos): contexto mal gerenciado — usar /compact mais cedo
+```
+
+**Calibração de roteamento:**
+```
+accepted_rate = accepted / (accepted + overridden + rejected)
+
+Sem dados: pedir feedback explícito ao encerrar /auto, /swarm ou /run-program.
+Overrides/rejeições >=30%: revisar triggers do catálogo antes de criar mais skills.
+Alta aceitação por plugin: manter o agrupamento; não transformar em skill global sem um novo trigger de engenharia.
 ```
 
 ### Fase 3 — Gerar recomendações
@@ -169,6 +180,7 @@ RECOMENDAÇÕES (3 encontradas)
 /insights --focus gate       # só análise do pre-execution-gate
 /insights --focus tools      # só tool usage
 /insights --focus hooks      # todos os hooks
+/insights --focus routing    # decisions aceitas/alteradas/rejeitadas do catálogo
 ```
 
 ## Integração com o kit

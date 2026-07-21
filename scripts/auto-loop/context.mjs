@@ -19,6 +19,7 @@ function safeCountPlanTasks() {
 const AUTO_DIR = '.auto';
 const PLAN_FILE = join(AUTO_DIR, 'plan.md');
 const PROGRESS_FILE = join(AUTO_DIR, 'progress.md');
+const ROUTE_FILE = join(AUTO_DIR, 'route.json');
 
 function readFile(path) {
   try { return readFileSync(path, 'utf-8'); } catch { return ''; }
@@ -41,12 +42,14 @@ export function buildContext(opts, state) {
   const plan = readFile(PLAN_FILE);
   const progress = readFile(PROGRESS_FILE);
   const repoAudit = readFile('docs/repo-audit/current.md') || readFile('.bot/docs/repo-audit/current.md');
+  const route = readFile(ROUTE_FILE);
 
   // Tier 1: first 2 iterations — full context
   if (iteration <= 2) {
     return [
       `# Autonomous Task\n\n${task}`,
       KIT_INSTRUCTIONS,
+      route ? `## Routing Contract\n${route}` : '',
       repoAudit ? `## Repo Context\n${repoAudit.slice(0, 2000)}` : '',
       plan
         ? `## Current Plan\n${plan}`
@@ -62,6 +65,7 @@ export function buildContext(opts, state) {
     return [
       `# Autonomous Task (iteration ${iteration}/${maxIterations})\n\n${task}`,
       KIT_INSTRUCTIONS,
+      route ? `## Routing Contract\n${route}` : '',
       plan ? `## Plan Status (${done}/${total} done)\n${plan}` : '',
       progress ? `## Recent Progress\n${progress.split('\n').slice(-30).join('\n')}` : '',
       lastError ? `## Error to Fix\n\`\`\`\n${lastError.slice(0, 2000)}\n\`\`\`` : '',

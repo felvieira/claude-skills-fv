@@ -26,6 +26,7 @@ import fs from "fs/promises";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import { routeTask } from "../lib/plugin-catalog.mjs";
 import { fileURLToPath } from "url";
 import { homedir } from "os";
 
@@ -210,7 +211,26 @@ function slugify(s) {
 
 // ============ Plan generation ============
 
-function buildPlan(args, config, runId, runDir, workspace, tools) {
+function routingPrompt(args) {
+  if (args.task) return args.task;
+  if (args.issue) return `GitHub issue #${args.issue}`;
+  if (args.prd) return `Implement the PRD at ${args.prd}`;
+  return "Autonomous software delivery";
+}
+
+function routingInstructions(route) {
+  const composition = route.composition;
+  const skills = composition.skills.length ? composition.skills.join(", ") : "none matched; use the orchestrator's minimal pipeline";
+  const policies = composition.policies.length ? composition.policies.join(", ") : "standard kit governance";
+  const external = composition.external_plugins.length
+    ? ` External recommendations (${composition.external_plugins.map((plugin) => plugin.id).join(", ")}) are opt-in and must not be installed automatically.`
+    : "";
+  return `Routing contract: load bundled skills [${skills}]; follow [${policies}]. Risk=${composition.risk}.${external}`;
+}
+
+async function buildPlan(args, config, runId, runDir, workspace, tools) {
+  const composition = await routeTask(routingPrompt(args));
+  const routing = { source: "swarm-executor", composition };
   return {
     swarm_version: "2.0.0",
     run_id: runId,
@@ -224,6 +244,7 @@ function buildPlan(args, config, runId, runDir, workspace, tools) {
       prd: args.prd,
     },
     tools,
+    routing,
     phases: [
       {
         id: "setup",
@@ -236,7 +257,7 @@ function buildPlan(args, config, runId, runDir, workspace, tools) {
         type: "ai",
         context: "fresh",
         description: "Generate PRD + parse stories from input",
-        instructions: buildPRDInstructions(args, runDir, workspace.workspacePath),
+        instructions: `${routingInstructions(routing)}\n\n${buildPRDInstructions(args, runDir, workspace.workspacePath)}`,
         output: `${runDir}/plan.md + ${runDir}/stories.json`,
       },
       {
@@ -244,7 +265,7 @@ function buildPlan(args, config, runId, runDir, workspace, tools) {
         type: "ai-loop",
         context: "fresh-per-story",
         description: "Implement each story with fresh context",
-        instructions: buildRalphInstructions(runDir, workspace.workspacePath, tools, config),
+        instructions: `${routingInstructions(routing)}\n\n${buildRalphInstructions(runDir, workspace.workspacePath, tools, config)}`,
         max_iter_per_story: args.maxIterPerStory || config.max_iter_per_story,
         max_stories: args.maxStories || config.max_stories_per_run,
         circuit_breaker_threshold: config.circuit_breaker_threshold,
@@ -255,7 +276,7 @@ function buildPlan(args, config, runId, runDir, workspace, tools) {
         context: "fresh",
         agents: config.review_agents,
         description: `Despachar ${config.review_agents.length} agentes em paralelo`,
-        instructions: buildReviewInstructions(runDir, workspace.workspacePath, config.review_agents),
+        instructions: `${routingInstructions(routing)}\n\n${buildReviewInstructions(runDir, workspace.workspacePath, config.review_agents)}`,
       }, {
         id: "synthesize",
         type: "ai",
@@ -451,7 +472,7 @@ async function main() {
     const workspace = createWorktree(runDir, slug);
     const tools = detectTools(workspace.workspacePath);
 
-    const plan = buildPlan(args, config, runId, runDir, workspace, tools);
+    const plan = await buildPlan(args, config, runId, runDir, workspace, tools);
 
     if (args.dryRun) {
       console.log(JSON.stringify({ action: "dry-run", plan }, null, 2));
@@ -463,6 +484,7 @@ async function main() {
       path.join(runDir, "plan-execution.json"),
       JSON.stringify(plan, null, 2),
     );
+    writeFileSync(path.join(runDir, "route.json"), `${JSON.stringify(plan.routing, null, 2)}\n`);
 
     console.log(JSON.stringify({
       action: "plan-ready",
