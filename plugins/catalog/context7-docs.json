@@ -5,6 +5,7 @@
   "description": "External documentation-retrieval integration for current, version-specific framework and library references.",
   "availability": "external",
   "risk": "low",
+  "trust": "verified-upstream",
   "requires_human_review": false,
   "install": {
     "provider": "Context7 MCP",

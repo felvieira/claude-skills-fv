@@ -15,6 +15,8 @@ node .bot/scripts/print-kimi-mcp-setup.mjs --json
 
 The adapter intentionally uses MCP only. Do not assume Kimi's marketplace plugin or hook formats are compatible with this repository's Claude plugin format. Kimi can manage its own plugins and hooks separately.
 
+When the router recommends an external integration, it shows its provenance (`official`, `verified-upstream`, or `community`) before installation guidance. This follows Kimi's useful trust-before-install pattern without treating provenance as authorization.
+
 ## What becomes available
 
 - `devkit_route_task` for the legacy pipeline plus minimal skill/plugin composition

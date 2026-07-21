@@ -5,6 +5,7 @@
   "description": "External, high-risk legal workflow plugin for contracts, NDAs, compliance reviews, and document triage.",
   "availability": "external",
   "risk": "high",
+  "trust": "official",
   "requires_human_review": true,
   "install": {
     "provider": "Claude Plugins",

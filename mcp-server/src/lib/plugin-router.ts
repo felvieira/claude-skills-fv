@@ -3,6 +3,7 @@ import path from "path";
 import { KIT_ROOT } from "../constants.js";
 
 type Risk = "low" | "medium" | "high";
+type Trust = "core" | "official" | "verified-upstream" | "community";
 
 interface CapabilityManifest {
   id: string;
@@ -20,6 +21,7 @@ interface PluginManifest {
   description: string;
   availability?: "bundled" | "external";
   risk: Risk;
+  trust: Trust;
   requires_human_review?: boolean;
   install?: { provider: string; reference: string; action?: string };
   policies?: string[];
@@ -31,6 +33,7 @@ export interface PluginRecommendation {
   name: string;
   description: string;
   risk: Risk;
+  trust: Trust;
   score: number;
   skills: string[];
   policies: string[];
@@ -57,6 +60,7 @@ export interface PluginCatalogEntry {
   description: string;
   availability: "bundled" | "external";
   risk: Risk;
+  trust: Trust;
   requires_human_review: boolean;
   install?: { provider: string; reference: string; action?: string };
   capabilities: Array<{ id: string; skills: string[] }>;
@@ -95,6 +99,7 @@ export async function listPluginCatalog(): Promise<PluginCatalogEntry[]> {
     description: manifest.description,
     availability: manifest.availability || "bundled",
     risk: manifest.risk,
+    trust: manifest.trust,
     requires_human_review: Boolean(manifest.requires_human_review) || manifest.risk === "high",
     install: manifest.availability === "external" ? manifest.install : undefined,
     capabilities: manifest.capabilities.map((capability) => ({
@@ -129,6 +134,7 @@ export async function routePluginComposition(
       name: manifest.name,
       description: manifest.description,
       risk: manifest.risk,
+      trust: manifest.trust,
       score: matches.reduce((total, match) => total + match.score, 0),
       skills: unique(matches.flatMap((match) => match.capability.skills || [])),
       policies: unique(manifest.policies || []),

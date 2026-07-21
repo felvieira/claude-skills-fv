@@ -5,6 +5,7 @@
   "description": "Designs and audits usable, accessible, distinctive interfaces instead of generic visual output.",
   "availability": "bundled",
   "risk": "low",
+  "trust": "core",
   "policies": ["policies/evals.md"],
   "capabilities": [
     {"id": "ui-ux", "when_any": ["ui", "ux", "design system", "paleta", "wireframe", "layout"], "skills": ["02-ui-ux-design", "29-design-intelligence"]},

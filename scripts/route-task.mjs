@@ -20,7 +20,7 @@ try {
   } else {
     if (route.plugins.length) console.log(`Plugins: ${route.plugins.map((plugin) => plugin.id).join(", ")}`);
     if (route.external_plugins.length) {
-      console.log(`External plugins (not installed): ${route.external_plugins.map((plugin) => `${plugin.id} via ${plugin.install.provider}`).join(", ")}`);
+      console.log(`External plugins (not installed): ${route.external_plugins.map((plugin) => `${plugin.id} [${plugin.trust}] via ${plugin.install.provider}`).join(", ")}`);
     }
     if (route.skills.length) console.log(`Skills: ${route.skills.join(", ")}`);
     if (route.policies.length) console.log(`Policies: ${route.policies.join(", ")}`);

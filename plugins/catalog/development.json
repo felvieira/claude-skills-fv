@@ -5,6 +5,7 @@
   "description": "Builds, tests, reviews, and secures application changes with an evidence-first engineering loop.",
   "availability": "bundled",
   "risk": "medium",
+  "trust": "core",
   "policies": ["policies/evals.md", "policies/tool-safety.md"],
   "capabilities": [
     {"id": "backend-api", "when_any": ["api", "backend", "endpoint", "banco de dados", "database", "webhook"], "skills": ["03-backend-api", "05-qa-testing"]},

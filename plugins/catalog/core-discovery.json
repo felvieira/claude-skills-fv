@@ -5,6 +5,7 @@
   "description": "Clarifies product intent, specifications, legacy behavior, and architectural decisions before implementation.",
   "availability": "bundled",
   "risk": "medium",
+  "trust": "core",
   "policies": ["policies/evals.md", "policies/investigate-first.md"],
   "capabilities": [
     {"id": "feature-spec", "when_any": ["nova feature", "criar feature", "requisitos", "user story", "prd", "especificacao"], "skills": ["01-po-feature-spec", "09-orchestrator"]},

@@ -54,6 +54,7 @@ await test("lists bundled and external plugins with install metadata", async () 
   const legal = plugins.find((plugin) => plugin.id === "legal-workflows");
   if (!legal) throw new Error("missing legal-workflows");
   assert(legal.availability === "external", "legal-workflows must be external");
+  assert(legal.trust === "official", "legal-workflows must expose official provenance");
   assert(Boolean(legal.install?.reference), "external plugin needs an install reference");
 });
 

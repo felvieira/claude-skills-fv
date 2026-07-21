@@ -476,7 +476,7 @@ async function main() {
       "",
       pluginRoute.plugins.length ? `**Plugin composition:** ${pluginRoute.plugins.map((plugin) => plugin.id).join(", ")}` : null,
       pluginRoute.external_plugins.length
-        ? `**External plugins (not installed):** ${pluginRoute.external_plugins.map((plugin) => `${plugin.id} via ${plugin.install.provider}`).join(", ")}`
+        ? `**External plugins (not installed):** ${pluginRoute.external_plugins.map((plugin) => `${plugin.id} [${plugin.trust}] via ${plugin.install.provider}`).join(", ")}`
         : null,
       pluginRoute.skills.length ? `**Load only these skills:** ${pluginRoute.skills.join(", ")}` : null,
       pluginRoute.policies.length ? `**Policies:** ${pluginRoute.policies.join(", ")}` : null,

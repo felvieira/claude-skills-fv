@@ -5,6 +5,7 @@
   "description": "Creates accurate product positioning, landing-page copy, SEO content, conversion assets, and publishable articles.",
   "availability": "bundled",
   "risk": "medium",
+  "trust": "core",
   "policies": ["policies/evals.md", "policies/tool-safety.md"],
   "capabilities": [
     {"id": "product-copy", "when_any": ["copy", "cta", "headline", "proposta de valor", "mensagem de produto"], "skills": ["13-marketing-copy"]},

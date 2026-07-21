@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 export const kitRoot = path.resolve(__dirname, "../..");
 
 const RISK_ORDER = { low: 0, medium: 1, high: 2 };
+const TRUST_LEVELS = new Set(["core", "official", "verified-upstream", "community"]);
 
 function isStringArray(value) {
   return Array.isArray(value) && value.every((item) => typeof item === "string" && item.trim().length > 0);
@@ -59,6 +60,7 @@ export async function validatePluginCatalog(root = kitRoot) {
     seenIds.add(data.id);
     if (!data.name || !data.description) errors.push(`${prefix}: name and description are required`);
     if (!(data.risk in RISK_ORDER)) errors.push(`${prefix}: risk must be low, medium, or high`);
+    if (!TRUST_LEVELS.has(data.trust)) errors.push(`${prefix}: trust must be core, official, verified-upstream, or community`);
     if (!["bundled", "external"].includes(data.availability || "bundled")) {
       errors.push(`${prefix}: availability must be bundled or external`);
     }
@@ -165,6 +167,7 @@ export async function routeTask(prompt, options = {}) {
       name: data.name,
       description: data.description,
       risk: data.risk,
+      trust: data.trust,
       score,
       skills: unique(matches.flatMap((match) => match.capability.skills || [])),
       policies: unique(data.policies || []),

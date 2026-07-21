@@ -5,6 +5,7 @@
   "description": "External, high-risk finance workflow plugin for statements, reconciliation, cash-flow, invoices, and audit preparation.",
   "availability": "external",
   "risk": "high",
+  "trust": "official",
   "requires_human_review": true,
   "install": {
     "provider": "Claude Plugins",

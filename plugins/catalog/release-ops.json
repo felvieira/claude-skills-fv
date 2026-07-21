@@ -5,6 +5,7 @@
   "description": "Prepares releases, deployment safety, observability, and reversible rollout decisions.",
   "availability": "bundled",
   "risk": "high",
+  "trust": "core",
   "policies": ["policies/tool-safety.md", "policies/evals.md"],
   "capabilities": [
     {"id": "deploy", "when_any": ["deploy", "docker", "kubernetes", "producao", "production"], "skills": ["07-deploy-docker", "24-release-manager"]},

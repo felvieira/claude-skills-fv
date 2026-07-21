@@ -8,7 +8,7 @@ Make the kit select the smallest useful composition of existing skills for a tas
 
 Each `plugins/catalog/*.json` manifest declares:
 
-- `id`, `name`, `description`, `risk`
+- `id`, `name`, `description`, `risk`, `trust`
 - `capabilities[]`, each with `id`, `when_any`, and existing `skills[]`
 - optional `policies` and per-capability `commands`
 - `availability` when a plugin is not bundled
@@ -16,6 +16,8 @@ Each `plugins/catalog/*.json` manifest declares:
 
 Skill identifiers must point to `skills/<id>/SKILL.md`. The catalog never copies, moves, or silently installs skills.
 Every referenced policy must be an existing `policies/*.md` file.
+
+`trust` is displayed before an external recommendation: `core` (maintained here), `official` (first-party provider), `verified-upstream` (maintained upstream integration), or `community` (third-party). Trust is provenance, not permission: risk gates still apply.
 
 ## Routing Rules
 
