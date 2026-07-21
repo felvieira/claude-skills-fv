@@ -5,7 +5,8 @@ description: |
   construir componentes, revisar codigo frontend, implementar animacoes, hover states, sombras, bordas, tipografia
   ou qualquer trabalho de detalhe visual. Trigger em: "polish", "deixar mais refinado", "parece meio off",
   "acabamento", "border radius", "alinhamento optico", "font smoothing", "tabular numbers", "shadow em vez de
-  border", "scale on press", "stagger animation", "hit area", "image outline", "revisar detalhes visuais".
+  border", "sombra pra dar profundidade", "stagger na animacao de entrada", "animacao de saida",
+  "scale on press", "stagger animation", "hit area", "image outline", "revisar detalhes visuais".
 ---
 
 # UI Polish - Detalhes que Fazem a Interface Parecer Melhor

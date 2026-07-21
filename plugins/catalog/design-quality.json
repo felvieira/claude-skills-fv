@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "design-quality",
+  "name": "Design Quality",
+  "description": "Designs and audits usable, accessible, distinctive interfaces instead of generic visual output.",
+  "availability": "bundled",
+  "risk": "low",
+  "policies": ["policies/evals.md"],
+  "capabilities": [
+    {"id": "ui-ux", "when_any": ["ui", "ux", "design system", "paleta", "wireframe", "layout"], "skills": ["02-ui-ux-design", "29-design-intelligence"]},
+    {"id": "landing-design", "when_any": ["landing page", "landing", "pagina de vendas", "pagina de produto"], "skills": ["02-ui-ux-design", "52-ui-polish", "22-accessibility-specialist"]},
+    {"id": "accessibility", "when_any": ["acessibilidade", "a11y", "wcag", "leitor de tela"], "skills": ["22-accessibility-specialist"]},
+    {"id": "motion", "when_any": ["animacao", "transicao", "microinteracao", "reduced motion"], "skills": ["12-motion-design"]},
+    {"id": "user-research", "when_any": ["pesquisa com usuario", "entrevista", "journey map", "teste de usabilidade"], "skills": ["51-ux-research"]}
+  ]
+}

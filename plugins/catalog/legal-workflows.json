@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "legal-workflows",
+  "name": "Legal Workflows",
+  "description": "External, high-risk legal workflow plugin for contracts, NDAs, compliance reviews, and document triage.",
+  "availability": "external",
+  "risk": "high",
+  "requires_human_review": true,
+  "install": {
+    "provider": "Claude Plugins",
+    "reference": "https://claude.com/plugins/legal",
+    "action": "Ask the user to install the plugin and require qualified legal review; never present output as legal advice or execute filings."
+  },
+  "policies": ["policies/tool-safety.md", "policies/evals.md"],
+  "capabilities": [
+    {"id": "contract-review", "when_any": ["contrato", "contract review", "clausula", "clausula contratual", "redline"], "when_none": ["contrato da api", "contrato de api", "api contract", "contrato do endpoint"], "skills": []},
+    {"id": "nda", "when_any": ["nda", "acordo de confidencialidade", "non disclosure"], "skills": []},
+    {"id": "compliance", "when_any": ["compliance legal", "conformidade legal", "regulacao", "regulatorio"], "skills": []}
+  ]
+}

@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe 37 tools do Dev Team Kit, apoiadas pelas 39 skills, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 38 tools do Dev Team Kit, apoiadas pelas 52 skills instaladas, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
@@ -72,17 +72,18 @@ The 26 slash commands (including `/constitution`, `/analyze`, `/checklist`) are 
 - **Slash commands** are interactive workflows that take freeform input, ask follow-up questions, and produce artifacts (files in the consumer repo). They belong in the agent's slash-command interface, not in the tool-use loop.
 - **MCP tools** are programmatic, single-call functions with structured I/O. They are invoked transparently as part of agent reasoning, not as explicit user-driven workflows.
 
-The 37 tools below are infrastructure (routing, context packs, image generation, scraping, session intelligence) — building blocks used by skills and commands. Adding `/constitution` as a tool would break the user-facing interaction model (the agent calling it without user intent).
+The 38 tools below are infrastructure (routing, context packs, image generation, scraping, session intelligence) — building blocks used by skills and commands. Adding `/constitution` as a tool would break the user-facing interaction model (the agent calling it without user intent).
 
 If a slash command needs programmatic access from another tool, expose a **dedicated helper tool** (not the whole command). Currently none of the spec-driven commands need this.
 
-## Tools (37)
+## Tools (38)
 
-### Knowledge (14)
+### Knowledge (15)
 
 | Tool | O que faz |
 |------|-----------|
-| `devkit_route_task` | Classifica pedido e retorna pipeline com skills |
+| `devkit_route_task` | Classifica pedido, preserva o pipeline legado e retorna a composicao minima de plugins/skills; recomenda plugins externos sem invoca-los |
+| `devkit_list_plugins` | Lista plugins bundlados e externos, capacidades, risco e instrucao de instalacao |
 | `devkit_get_skill` | Retorna SKILL.md + guide + template |
 | `devkit_next_step` | Proxima skill no pipeline |
 | `devkit_list_skills` | Lista 31 skills |
@@ -96,6 +97,8 @@ If a slash command needs programmatic access from another tool, expose a **dedic
 | `devkit_get_eval_cases` | Casos de teste |
 | `devkit_context_pack` | Monta contexto minimo por task com audit, focus, git status e previews |
 | `devkit_diff_brief` | Resume diff atual, status e working set para retomada ou review |
+
+The MCP router runs the same fixtures as `scripts/eval-plugin-routing.mjs`, so a route must remain consistent across CLI, hooks and MCP clients.
 
 ### Execution (6)
 

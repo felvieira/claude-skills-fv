@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "product-marketing",
+  "name": "Product Marketing",
+  "description": "Creates accurate product positioning, landing-page copy, SEO content, conversion assets, and publishable articles.",
+  "availability": "bundled",
+  "risk": "medium",
+  "policies": ["policies/evals.md", "policies/tool-safety.md"],
+  "capabilities": [
+    {"id": "product-copy", "when_any": ["copy", "cta", "headline", "proposta de valor", "mensagem de produto"], "skills": ["13-marketing-copy"]},
+    {"id": "landing-copy", "when_any": ["landing page", "landing", "pagina de vendas", "pagina de produto"], "skills": ["13-marketing-copy", "52-ui-polish"]},
+    {"id": "seo", "when_any": ["seo", "palavra-chave", "keyword", "trafego organico", "meta description"], "skills": ["14-seo-specialist"]},
+    {"id": "content", "when_any": ["post de blog", "artigo", "blog post", "publicar conteudo"], "skills": ["41-blog-publisher", "42-blog-screenshot", "14-seo-specialist"]},
+    {"id": "direct-response", "when_any": ["anuncio", "ads", "email de vendas", "direct response", "campanha", "copy de vendas"], "skills": ["50-direct-response-copy"]}
+  ]
+}

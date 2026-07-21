@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "development",
+  "name": "Development Quality",
+  "description": "Builds, tests, reviews, and secures application changes with an evidence-first engineering loop.",
+  "availability": "bundled",
+  "risk": "medium",
+  "policies": ["policies/evals.md", "policies/tool-safety.md"],
+  "capabilities": [
+    {"id": "backend-api", "when_any": ["api", "backend", "endpoint", "banco de dados", "database", "webhook"], "skills": ["03-backend-api", "05-qa-testing"]},
+    {"id": "frontend-build", "when_any": ["componente", "react", "frontend", "tela", "implementar interface"], "skills": ["04-frontend-integration", "05-qa-testing"]},
+    {"id": "testing", "when_any": ["testes", "testar", "coverage", "tdd", "e2e"], "skills": ["05-qa-testing", "37-tdd-engineer"]},
+    {"id": "security-review", "when_any": ["seguranca", "security", "owasp", "vulnerabilidade", "auth"], "skills": ["06-security-review", "34-static-analysis"]},
+    {"id": "code-review", "when_any": ["code review", "revisar codigo", "clean code", "refatorar"], "skills": ["11-reviewer", "23-migration-refactor-specialist"]}
+  ]
+}

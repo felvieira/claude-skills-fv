@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "core-discovery",
+  "name": "Core Discovery",
+  "description": "Clarifies product intent, specifications, legacy behavior, and architectural decisions before implementation.",
+  "availability": "bundled",
+  "risk": "medium",
+  "policies": ["policies/evals.md", "policies/investigate-first.md"],
+  "capabilities": [
+    {"id": "feature-spec", "when_any": ["nova feature", "criar feature", "requisitos", "user story", "prd", "especificacao"], "skills": ["01-po-feature-spec", "09-orchestrator"]},
+    {"id": "legacy-discovery", "when_any": ["legado", "engenharia reversa", "sem docs", "extrair contratos"], "skills": ["33-detective-spec", "18-repo-auditor"]},
+    {"id": "architecture", "when_any": ["arquitetura", "adr", "acoplamento", "limites do modulo"], "skills": ["38-architecture-deepener"]},
+    {"id": "research", "when_any": ["pesquisar", "pesquise", "pesquisa de mercado", "comparar solucoes", "benchmark"], "skills": ["48-research-prep"]}
+  ]
+}

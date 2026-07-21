@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "ai-integration",
+  "name": "AI Integration",
+  "description": "Builds AI features and produces visual assets with explicit model, prompt, and cost choices.",
+  "availability": "bundled",
+  "risk": "medium",
+  "policies": ["policies/tool-safety.md", "policies/evals.md"],
+  "capabilities": [
+    {"id": "image-asset", "when_any": ["gerar imagem", "hero image", "og card", "favicon", "asset visual"], "skills": ["36-web-asset-generator", "17-image-generator"]},
+    {"id": "llm-feature", "when_any": ["llm", "ia generativa", "chatbot", "rag", "agente de ia"], "skills": ["25-ai-integration-architect", "26-prompt-engineer"]},
+    {"id": "prompt-work", "when_any": ["prompt", "system prompt", "avaliar prompt", "prompt engineering"], "skills": ["26-prompt-engineer"]},
+    {"id": "video", "when_any": ["video", "reel", "video generativo"], "skills": ["27-video-integration-specialist"]}
+  ]
+}

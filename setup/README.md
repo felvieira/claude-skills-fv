@@ -2,7 +2,7 @@
 
 ![Installer](https://img.shields.io/badge/installer-.bot-ready-0f766e)
 ![MCP](https://img.shields.io/badge/MCP-context7%20%7C%20playwright-1d4ed8)
-![Platforms](https://img.shields.io/badge/platforms-5-f59e0b)
+![Platforms](https://img.shields.io/badge/platforms-6-f59e0b)
 
 ## O que faz
 
@@ -54,6 +54,11 @@ O script detecta automaticamente as plataformas instaladas, gera os arquivos de 
 | **Windsurf** | `.windsurf/rules/dev-team-kit.md` | `.windsurf/mcp.json` |
 | **Gemini CLI** | `GEMINI.md` | `.gemini/settings.json` |
 | **Antigravity** | `.agent/skills/*/SKILL.md` + `GEMINI.md` | `.gemini/settings.json` |
+| **Kimi Code** | `AGENTS.md` | configurar interativamente com `/mcp-config` |
+
+### Kimi Code
+
+Kimi Code configura servidores MCP de forma conversacional. Depois de instalar o kit em `.bot/`, rode `node .bot/scripts/print-kimi-mcp-setup.mjs --json`, abra Kimi Code e use `/mcp-config` para adicionar o servidor emitido. Ver `docs/integrations/kimi-code.md`.
 
 ## MCPs Essenciais
 

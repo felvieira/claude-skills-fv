@@ -1,146 +1,77 @@
 ---
 name: program-router
 description: |
-  Skill que decide qual program (programs/*.yml) rodar baseado em classificação da task. Funciona em paralelo
-  com o hook intent-classifier (que sugere) e a skill 09 (orchestrator, que monta pipelines ad-hoc). Use
-  quando o usuário pede algo que pode mapear pra um program existente — antes de improvisar pipeline.
-  Trigger em: "qual program", "rodar program", "auto orchestrate", "program apropriado", "qual workflow",
-  "what program", "feature grande", "build app", "review PR", "discovery", "legacy", "from scratch",
-  "greenfield", "constitution", "spec driven", "adversarial".
-allowed-tools: Read, Glob, AskUserQuestion, Bash(node scripts/run-program.mjs *)
+  Decide a composicao minima de plugins, skills e, quando necessario, programs declarativos para uma task.
+  Use antes de improvisar um pipeline ou quando o usuario perguntar qual skill, plugin, workflow ou program usar.
+  Trigger em: "qual skill", "qual plugin", "qual program", "qual workflow", "roteie essa task",
+  "auto orchestrate", "feature grande", "build app", "review PR", "discovery", "legacy", "greenfield".
+allowed-tools: Read, Glob, AskUserQuestion, Bash(node scripts/route-task.mjs *), Bash(node scripts/run-program.mjs *)
 ---
 
 # Program Router
 
-Decide qual program declarativo rodar baseado em classificação da task. Trabalha em par com:
-- **Hook `intent-classifier`** (auto-sugere antes do agente começar)
-- **Skill 09 (orchestrator)** (monta pipelines ad-hoc quando não há program adequado)
+Escolha o menor conjunto capaz de resolver a task. O router possui duas camadas complementares:
 
-## Governanca Global
+1. **Composicao**: `plugins/catalog/*.json` mapeia a linguagem da task para skills existentes.
+2. **Execucao estruturada**: `programs/*.yml` entra apenas quando a task precisa de um pipeline completo.
 
-Esta skill segue `GLOBAL.md`, `policies/auto-orchestration.md`, `policies/handoffs.md`, `policies/execution.md` e `policies/programs-schema.md`.
+O hook `intent-classifier` aplica a mesma composicao automaticamente em prompts nao triviais. Esta skill confirma, ajusta ou explica a decisao.
 
-### Hierarquia de decisão
+## Ordem de decisao
 
-1. **Usuário invocou `/run-program <nome>` explícito** → rodar exatamente isso. Skill não interfere.
-2. **Hook `intent-classifier` sugeriu program e usuário concordou** → essa skill confirma e dispatcha.
-3. **Hook não sugeriu mas task parece grande/estruturada** → essa skill classifica e propõe.
-4. **Task é simples/ad-hoc** → essa skill recusa, devolve para skill 09 (orchestrator) montar pipeline informal.
+1. Um comando, skill ou program explicitamente pedido pelo usuario vence o catalogo.
+2. Rode `node scripts/route-task.mjs "<task>"` para obter plugins, skills, policies e risco.
+3. Carregue somente as skills retornadas, ate tres plugins e seis skills por padrao.
+4. Se houver um sinal forte de pipeline, selecione um program. Caso contrario, execute a composicao diretamente.
+5. Sem rota confiavel, entregue para a skill 09 (`orchestrator`) montar um fluxo ad-hoc.
 
-## Quando Usar
+## Programs
 
-- usuário pergunta "qual program devo rodar pra X"
-- usuário pede feature/review/discovery sem invocar slash explícito
-- hook intent-classifier sugeriu e usuário pediu confirmação
-- entre tasks, ao planejar próximo passo
+| Program | Quando usar |
+|---|---|
+| `pipeline-discovery` | ideia vaga, PRD ou discovery formal |
+| `spec-driven-development` | feature nova com criterios e gates |
+| `loop-polishing` | trabalho autonomo com polishing pre-commit |
+| `detective-spec` | legado, contratos desconhecidos, sem documentacao |
+| `adversarial-dev` | aplicativo greenfield do zero |
+| `comprehensive-review` | review profundo de PR |
+| `refactor-safely` | refactor com preservacao de comportamento |
 
-## Quando Nao Usar
+## Composicoes bundladas
 
-- usuário já invocou `/run-program` explícito
-- task trivial (typo, rename, format) — devolve para skill 09 ou ação direta
-- pergunta informacional ("o que é X program") — devolve para WIKI
+| Plugin | Cobertura |
+|---|---|
+| `core-discovery` | especificacao, legado, arquitetura, pesquisa |
+| `development` | backend, frontend, testes, seguranca, review |
+| `design-quality` | UI/UX, acessibilidade, motion, acabamento visual |
+| `product-marketing` | copy, landing, SEO, blog e conversao |
+| `ai-integration` | LLM, prompts, imagens, assets e video |
+| `release-ops` | deploy, release, observabilidade e canary |
 
-## Entradas Esperadas
+## Recomendacoes externas
 
-- descrição da task (pode estar implícita no contexto)
-- (opcional) confidence do hook intent-classifier (se já disparou)
-- (opcional) `memory/constitution.md` — pode forçar pipeline específico
-
-## Saidas Esperadas
-
-- decisão `routed`: program + inputs sugeridos
-- OU decisão `decline`: razão + handoff para skill 09 ou ação direta
-
-## Catálogo de programs (atualizado pra v1.8.0)
-
-| Program | Use case | Confidence sinais |
+| Plugin | Quando recomendar | Limite |
 |---|---|---|
-| `pipeline-discovery` | Ideia vaga → discovery formal → issues | "ideia vaga", "preciso de PRD", "grill-me" |
-| `spec-driven-development` | Feature em projeto maduro com constitution | "nova feature", "constitution", "spec-driven" |
-| `loop-polishing` | Task autônoma com polish pré-commit | "auto-loop", "autônomo", "fire and forget" |
-| `detective-spec` | Reverse-engineering de legado | "legacy", "sem docs", "extrair contratos" |
-| `adversarial-dev` | App from-scratch com GAN-style adversarial loop | "from scratch", "greenfield", "construir app" |
-| `comprehensive-review` | PR review profundo (5 agents) | "review crítico", "5-agent", "comprehensive review" |
+| `finance-workflows` | demonstracoes, conciliacao, faturamento, payroll, auditoria financeira | usuario instala o plugin; revisao humana obrigatoria |
+| `legal-workflows` | contratos, NDA e compliance legal | usuario instala o plugin; revisao juridica qualificada obrigatoria |
+| `context7-docs` | documentacao atualizada, API reference e versao de framework/biblioteca | usuario instala ou autoriza o MCP; citar a fonte retornada |
 
-## Processo
+Esses dois itens sao metadados de descoberta, nao dependencias do kit. O router pode sugeri-los, mas nunca tenta invoca-los, instala-los ou apresenta seu resultado como conselho profissional.
 
-### Passo 1 — Coletar sinais
+Marketing e design sao composicoes de primeira classe: uma landing normalmente combina `product-marketing` e `design-quality`, e so inclui `development` quando houver implementacao de codigo.
 
-- Ler último prompt do usuário
-- Verificar se há `additionalContext` do hook `intent-classifier` (geralmente sim, então a decisão é confirmar)
-- Detectar palavras-gatilho na conversa atual + repo audit + git log recente
+## Safety gates
 
-### Passo 2 — Classificar
+- `release-ops` e qualquer rota `high` exigem revisao humana antes de acao externa.
+- O catalogo nao instala plugins externos nem autoriza conectores.
+- Nao carregue skills extras por precaucao; use o catalogo e `policies/progressive-skill-loading.md`.
+- Respeite `policies/tool-safety.md` e `policies/evals.md` quando a task usa tools ou muda comportamento.
 
-Match heurístico em ordem de prioridade:
+## Verificacao
 
-1. **Constitution força pipeline?** — Ler `memory/constitution.md`. Se declara "todo feature passa por spec-driven-development", forçar.
-2. **Task tipo "build greenfield"** — sinais: "from scratch", repo vazio, sem ADRs → `adversarial-dev`
-3. **Task tipo "feature em projeto existente"** — sinais: ADRs presentes, codebase > 100 files, palavras "feature" + "criar" → `spec-driven-development`
-4. **Task tipo "ideia vaga"** — sinais: "não sei", "talvez", < 100 chars no prompt → `pipeline-discovery`
-5. **Task tipo "review PR"** — sinais: número de PR mencionado, "review", "auto-fix" → `comprehensive-review`
-6. **Task tipo "reverse engineering"** — sinais: codebase sem CLAUDE.md, sem testes, "legacy" → `detective-spec`
-7. **Task tipo "autônoma"** — sinais: "rodar até funcionar", "deixa ele trabalhar", "auto" → `loop-polishing`
-
-Se nenhum match: `decline` → handoff skill 09.
-
-### Passo 3 — Confirmar com usuário (via AskUserQuestion)
-
-```
-Vou rotear esta task para o program `<nome>` porque <razão concreta>.
-
-Opções:
-- ✅ Rodar dry-run primeiro (recomendado) — mostra plano antes de executar
-- ▶️  Rodar direto (gates humanos pausam mid-flow)
-- 🛠️  Pipeline ad-hoc (devolve para skill 09 montar fluxo custom)
-- ❌ Cancelar
-```
-
-### Passo 4 — Dispatch
-
-**Se "dry-run":**
 ```bash
-node scripts/run-program.mjs <program-id> --dry-run --input key=value
-```
-Apresentar plano resolvido. Esperar nova confirmação.
-
-**Se "direto":**
-Invocar `/run-program <program-id>` com inputs colhidos.
-
-**Se "ad-hoc":**
-Handoff para skill 09 (orchestrator). Skill 09 monta pipeline informal.
-
-**Se "cancelar":**
-Devolver controle para conversa normal.
-
-## Anti-padrões
-
-- **Forçar program quando task é exploratória** — exploração merece skill 09 informal
-- **Sugerir program sem contexto suficiente** — preferir "decline + pergunta" do que "match errado"
-- **Múltiplos programs em sequência sem gate** — gates entre programs são essenciais
-- **Roteamento sem ler constitution** — pode propor program que viola princípio do projeto
-
-## Handoff
-
-- **Para `/run-program <name>`** — caminho default quando match high confidence
-- **Para skill 09** — quando match low/decline; orchestrator monta fluxo informal
-- **Para conversa** — quando user cancela ou task realmente é trivial
-
-## Integração com Pipeline
-
-- **Skill 09 (Orchestrator)** — para tasks sem program adequado, devolve aqui
-- **Skill 18 (Repo Auditor)** — input sobre maturidade do codebase ajuda decidir greenfield vs spec-driven
-- **Hook intent-classifier** — sugestão pre-skill; aqui confirma ou refuta
-- **Constitution** — pode forçar pipeline; skill 39 respeita
-
-## Verificação
-
-Listar programs disponíveis sem rotear:
-```bash
-node scripts/run-program.mjs --list
-```
-
-Inspecionar program específico antes de propor:
-```bash
-node scripts/run-program.mjs --describe <program-id>
+node scripts/route-task.mjs "crie a copy e o design de uma landing page"
+node scripts/validate-plugin-catalog.mjs
+node scripts/eval-plugin-routing.mjs --strict
+node scripts/devkit-doctor.mjs --strict
 ```

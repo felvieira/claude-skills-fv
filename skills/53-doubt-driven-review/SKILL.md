@@ -6,8 +6,10 @@ description: |
   em PR pronta), esta skill entra EM VOO, enquanto corrigir rota ainda é barato. Use antes de decisão
   arquitetural sob incerteza, antes de commitar código não-trivial, antes de afirmar um fato não-óbvio
   ("isso é seguro", "isso escala"), ou trabalhando em código que você não entende totalmente. Trigger em:
-  "tem certeza disso", "duvida isso", "revisa antes de eu commitar", "isso ta certo mesmo", "questiona essa
-  decisao", "adversarial review", "doubt driven", "segunda opiniao antes de seguir", "acho que ta certo mas".
+  "tem certeza disso", "migration nao vai quebrar", "duvida isso", "decisao de arquitetura antes de eu commitar",
+  "revisa antes de eu commitar", "revisa isso adversarialmente", "isso ta certo mesmo", "questiona essa
+  suposicao", "declarar isso seguro", "refuta essa claim", "decisao", "adversarial review", "doubt driven",
+  "segunda opiniao antes de seguir", "acho que ta certo mas".
 ---
 
 # Doubt-Driven Review - Revisão Adversarial em Tempo Real

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "release-ops",
+  "name": "Release Operations",
+  "description": "Prepares releases, deployment safety, observability, and reversible rollout decisions.",
+  "availability": "bundled",
+  "risk": "high",
+  "policies": ["policies/tool-safety.md", "policies/evals.md"],
+  "capabilities": [
+    {"id": "deploy", "when_any": ["deploy", "docker", "kubernetes", "producao", "production"], "skills": ["07-deploy-docker", "24-release-manager"]},
+    {"id": "release", "when_any": ["release", "changelog", "go live", "lancamento"], "skills": ["24-release-manager", "18-repo-auditor"]},
+    {"id": "observability", "when_any": ["observabilidade", "monitoramento", "alerta", "metrics", "sre"], "skills": ["20-observability-sre"]},
+    {"id": "canary", "when_any": ["canary", "rollout", "rollback", "feature flag"], "skills": ["43-canary-deployment", "46-post-deploy-canary-monitor"]}
+  ]
+}

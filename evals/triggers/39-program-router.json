@@ -2,6 +2,8 @@
   "skill": "39-program-router",
   "should_trigger": [
     "qual program faz mais sentido pra essa task?",
+    "qual plugin e quais skills devo usar para copy de uma landing?",
+    "roteie essa task para a composicao minima de skills",
     "rodar program apropriado pra essa demanda",
     "preciso de auto orchestrate antes de improvisar pipeline",
     "qual workflow já existente cobre isso?",

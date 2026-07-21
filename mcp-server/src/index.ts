@@ -24,6 +24,7 @@ import {
 import { compressOutput } from "./lib/output-compressor.js";
 import { getDefaultCache } from "./lib/cross-call-dedup.js";
 import { querySessionEvents, querySeenFiles, querySeenErrors } from "./lib/event-log.js";
+import { listPluginCatalog, routePluginComposition } from "./lib/plugin-router.js";
 
 // Load .env.local fallback
 import fs from "fs";
@@ -70,16 +71,17 @@ server.registerTool(
   "devkit_route_task",
   {
     title: "Route Task",
-    description: "Classifies a task description and returns the recommended pipeline with skills, policies and templates",
+    description: "Classifies a task and returns the legacy pipeline plus the minimal plugin/skill composition, including safe external-plugin recommendations when applicable",
     inputSchema: {
       description: z.string().describe("Task description in natural language"),
       project_context: z.string().optional().describe("Optional project context"),
     },
     annotations: { readOnlyHint: true },
   },
-  async ({ description }) => {
+  async ({ description, project_context }) => {
     const taskType = classifyTask(description);
     const pipeline = buildPipeline(taskType);
+    const composition = await routePluginComposition([description, project_context].filter(Boolean).join("\n"));
     const result = {
       type: pipeline.type,
       pipeline: pipeline.steps.map((s, i) => ({
@@ -90,6 +92,7 @@ server.registerTool(
       })),
       policies: pipeline.policies,
       templates: pipeline.templates,
+      composition,
     };
     return {
       content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
@@ -119,6 +122,22 @@ server.registerTool(
     };
     return {
       content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.registerTool(
+  "devkit_list_plugins",
+  {
+    title: "List Plugins",
+    description: "Lists bundled and external plugin compositions with capabilities, risk, and external install guidance",
+    inputSchema: {},
+    annotations: { readOnlyHint: true },
+  },
+  async () => {
+    const plugins = await listPluginCatalog();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify({ plugins }, null, 2) }],
     };
   },
 );

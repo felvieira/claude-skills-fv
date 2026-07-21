@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "finance-workflows",
+  "name": "Finance Workflows",
+  "description": "External, high-risk finance workflow plugin for statements, reconciliation, cash-flow, invoices, and audit preparation.",
+  "availability": "external",
+  "risk": "high",
+  "requires_human_review": true,
+  "install": {
+    "provider": "Claude Plugins",
+    "reference": "https://claude.com/plugins/finance",
+    "action": "Ask the user to install and connect the plugin before use; do not provide financial advice or submit records automatically."
+  },
+  "policies": ["policies/tool-safety.md", "policies/evals.md"],
+  "capabilities": [
+    {"id": "financial-statements", "when_any": ["demonstracao financeira", "balanco patrimonial", "dre", "financial statements", "cash flow"], "skills": []},
+    {"id": "reconciliation", "when_any": ["conciliacao", "reconciliation", "reconciliar transacoes", "fechamento financeiro"], "skills": []},
+    {"id": "finance-operations", "when_any": ["fatura", "invoicing", "folha de pagamento", "payroll", "auditoria financeira"], "skills": []}
+  ]
+}

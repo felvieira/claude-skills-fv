@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "context7-docs",
+  "name": "Context7 Documentation",
+  "description": "External documentation-retrieval integration for current, version-specific framework and library references.",
+  "availability": "external",
+  "risk": "low",
+  "requires_human_review": false,
+  "install": {
+    "provider": "Context7 MCP",
+    "reference": "https://github.com/upstash/context7",
+    "action": "Ask the user to install or authorize the MCP integration before querying it; cite the retrieved version-specific source in the result."
+  },
+  "policies": ["policies/tool-safety.md", "policies/evals.md"],
+  "capabilities": [
+    {"id": "current-docs", "when_any": ["documentacao atualizada", "docs atualizadas", "documentacao da versao", "documentacao do framework"], "skills": []},
+    {"id": "api-reference", "when_any": ["api docs", "api reference", "referencia da api", "documentacao da biblioteca"], "skills": []},
+    {"id": "version-lookup", "when_any": ["versao do framework", "breaking changes da versao", "context7"], "skills": []}
+  ]
+}

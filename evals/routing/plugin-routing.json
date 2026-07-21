@@ -1,0 +1,90 @@
+[
+  {
+    "name": "landing page combines marketing and design",
+    "prompt": "crie a copy e o design de uma landing page para nosso produto",
+    "plugins": ["product-marketing", "design-quality"],
+    "skills": ["13-marketing-copy", "02-ui-ux-design"]
+  },
+  {
+    "name": "seo stays in product marketing",
+    "prompt": "faça pesquisa de palavra-chave e SEO para esta pagina",
+    "plugins": ["product-marketing"],
+    "skills": ["14-seo-specialist"],
+    "exclude_plugins": ["release-ops"]
+  },
+  {
+    "name": "direct response uses its specialized skill",
+    "prompt": "escreva anuncios e email de vendas para a campanha",
+    "plugins": ["product-marketing"],
+    "skills": ["50-direct-response-copy"]
+  },
+  {
+    "name": "frontend implementation keeps testing",
+    "prompt": "implemente um componente React e os testes e2e",
+    "plugins": ["development"],
+    "skills": ["04-frontend-integration", "05-qa-testing"]
+  },
+  {
+    "name": "security is routed to the security playbook",
+    "prompt": "faça uma auditoria de seguranca OWASP na autenticacao",
+    "plugins": ["development"],
+    "skills": ["06-security-review", "34-static-analysis"]
+  },
+  {
+    "name": "legacy discovery does not imply a release",
+    "prompt": "extraia contratos de um sistema legado sem docs",
+    "plugins": ["core-discovery"],
+    "skills": ["33-detective-spec"],
+    "exclude_plugins": ["release-ops"]
+  },
+  {
+    "name": "image work routes to the asset workflow",
+    "prompt": "gere uma hero image e um OG card para a landing",
+    "plugins": ["ai-integration"],
+    "skills": ["36-web-asset-generator", "17-image-generator"]
+  },
+  {
+    "name": "canary deployment is high risk",
+    "prompt": "prepare um rollout canary com rollback para producao",
+    "plugins": ["release-ops"],
+    "skills": ["43-canary-deployment", "46-post-deploy-canary-monitor"],
+    "risk": "high",
+    "requires_human_review": true
+  },
+  {
+    "name": "research request has a focused discovery route",
+    "prompt": "pesquise e compare solucoes concorrentes antes de decidir",
+    "plugins": ["core-discovery"],
+    "skills": ["48-research-prep"]
+  },
+  {
+    "name": "financial reconciliation is an external high-risk recommendation",
+    "prompt": "faça a conciliacao financeira e prepare o fechamento financeiro",
+    "external_plugins": ["finance-workflows"],
+    "risk": "high",
+    "requires_human_review": true
+  },
+  {
+    "name": "NDA review is an external high-risk recommendation",
+    "prompt": "revise este NDA e as clausulas do contrato",
+    "external_plugins": ["legal-workflows"],
+    "risk": "high",
+    "requires_human_review": true
+  },
+  {
+    "name": "version-specific documentation recommends Context7 without a human gate",
+    "prompt": "consulte a documentacao atualizada da versao do framework",
+    "external_plugins": ["context7-docs"],
+    "risk": "low",
+    "requires_human_review": false
+  },
+  {
+    "name": "API contract is technical, not a legal-contract recommendation",
+    "prompt": "revise o contrato da API e os status codes do endpoint",
+    "plugins": ["development"],
+    "skills": ["03-backend-api"],
+    "exclude_external_plugins": ["legal-workflows"],
+    "risk": "medium",
+    "requires_human_review": false
+  }
+]

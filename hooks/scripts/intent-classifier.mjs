@@ -27,6 +27,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { readHookConfig, isHookDisabled } from "./utils.mjs";
 import { classifyWithLLM, getTelemetryPath } from "./llm-classifier.mjs";
+import { routeTask } from "../../scripts/lib/plugin-catalog.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -261,11 +262,16 @@ async function main() {
     llm_confidence_threshold: 0.7,
     suppress: [],
   });
+  const pluginRoutingCfg = readHookConfig("plugin_routing", {
+    enabled: true,
+    max_plugins: 3,
+    max_skills: 6,
+  });
   if (!cfg.enabled) process.exit(0);
 
   let raw = "";
   process.stdin.on("data", (chunk) => (raw += chunk));
-  process.stdin.on("end", () => {
+  process.stdin.on("end", async () => {
     let payload;
     try {
       payload = JSON.parse(raw);
@@ -279,6 +285,25 @@ async function main() {
     }
 
     if (userPrompt.trim().startsWith("/")) process.exit(0);
+
+    // Keep routing cheap and non-blocking: the catalog only references bundled
+    // skills and a failure here must never stop the intent classifier.
+    let pluginRoute = null;
+    if (pluginRoutingCfg.enabled && !isInformational(userPrompt) && !isTrivial(userPrompt)) {
+      try {
+        const candidate = await routeTask(userPrompt, {
+          maxPlugins: pluginRoutingCfg.max_plugins,
+          maxSkills: pluginRoutingCfg.max_skills,
+        });
+        if (candidate.plugins.length > 0 || candidate.external_plugins.length > 0) pluginRoute = candidate;
+      } catch (error) {
+        logTelemetry({
+          ts: new Date().toISOString(),
+          prompt: userPrompt.slice(0, 200),
+          plugin_routing_error: error.message,
+        });
+      }
+    }
 
     // ===== Phase 1: try LLM classifier first =====
     let llmResult = null;
@@ -311,7 +336,7 @@ async function main() {
     } else {
       // Fallback: regex-based classification (v1.x behavior expanded)
       const intent = classify(userPrompt);
-      if (!intent) {
+      if (!intent && !pluginRoute) {
         logTelemetry({
           ts: new Date().toISOString(),
           prompt: userPrompt.slice(0, 200),
@@ -320,7 +345,14 @@ async function main() {
         });
         process.exit(0);
       }
-      programName = intent.program;
+      if (!intent) {
+        programName = "plugin_routing";
+        command = null;
+        confidence = 0.7;
+        category = "C";
+        reasoning = "Task matches a bundled plugin composition, but not a full declarative program.";
+      } else {
+        programName = intent.program;
       // intent pode ter command direto (ex: /auto) ou program (cai em /run-program X)
       if (intent.command) {
         command = intent.command;
@@ -339,13 +371,14 @@ async function main() {
         category = intent.category;
       } else if (["spec-driven-development", "pipeline-discovery"].includes(intent.program)) {
         category = "A";
-      } else {
-        category = "B";
+        } else {
+          category = "B";
+        }
       }
     }
 
     // Skip se program/command está em suppress list
-    if (cfg.suppress && (cfg.suppress.includes(programName) || cfg.suppress.includes(command))) {
+    if (cfg.suppress && (cfg.suppress.includes(programName) || (command && cfg.suppress.includes(command)))) {
       logTelemetry({
         ts: new Date().toISOString(),
         prompt: userPrompt.slice(0, 200),
@@ -357,7 +390,7 @@ async function main() {
     }
 
     // Category D = conversa, sem sugestão
-    if (category === "D") {
+    if (category === "D" && !pluginRoute) {
       logTelemetry({
         ts: new Date().toISOString(),
         prompt: userPrompt.slice(0, 200),
@@ -376,7 +409,14 @@ async function main() {
     );
 
     let level, levelLabel, action, suggestedCmd;
-    if (cfg.autonomous) {
+    if (!command && pluginRoute) {
+      level = cfg.autonomous ? 3 : cfg.auto_dry_run ? 2 : 1;
+      levelLabel = cfg.autonomous ? "Autonomous" : cfg.auto_dry_run ? "Active" : "Passive";
+      suggestedCmd = "composicao minima de skills";
+      action = pluginRoute.requires_human_review
+        ? "**PARE NO GATE HUMANO**: a composicao envolve risco alto. Planeje e apresente evidencias antes de qualquer acao externa."
+        : "**APLIQUE A COMPOSICAO MINIMA**: carregue somente as skills recomendadas abaixo; nao rode um program inteiro.";
+    } else if (cfg.autonomous) {
       level = 3;
       levelLabel = "Autonomous";
       if (routeToSwarm && category === "A") {
@@ -426,7 +466,22 @@ async function main() {
       confidence,
       level,
       reasoning: reasoning?.slice(0, 200),
+      plugins: [
+        ...(pluginRoute?.plugins.map((plugin) => plugin.id) || []),
+        ...(pluginRoute?.external_plugins.map((plugin) => plugin.id) || []),
+      ],
     });
+
+    const composition = pluginRoute ? [
+      "",
+      pluginRoute.plugins.length ? `**Plugin composition:** ${pluginRoute.plugins.map((plugin) => plugin.id).join(", ")}` : null,
+      pluginRoute.external_plugins.length
+        ? `**External plugins (not installed):** ${pluginRoute.external_plugins.map((plugin) => `${plugin.id} via ${plugin.install.provider}`).join(", ")}`
+        : null,
+      pluginRoute.skills.length ? `**Load only these skills:** ${pluginRoute.skills.join(", ")}` : null,
+      pluginRoute.policies.length ? `**Policies:** ${pluginRoute.policies.join(", ")}` : null,
+      pluginRoute.requires_human_review ? "**Risk gate:** high-risk route; require human review before external action." : null,
+    ].filter(Boolean) : [];
 
     const suggestion = [
       `💡 **Smart routing** (intent-classifier v2 — Level ${level} ${levelLabel}, ${usedLLM ? "LLM" : "regex fallback"}):`,
@@ -435,6 +490,7 @@ async function main() {
       ``,
       `**Reasoning:** ${reasoning || "(no reasoning provided)"}`,
       `**Confidence:** ${confidence.toFixed(2)}`,
+      ...composition,
       ``,
       action,
       ``,

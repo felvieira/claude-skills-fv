@@ -139,7 +139,7 @@ async function main() {
   }
 
   // Check: spec-driven commands exist as files in commands/ (where plugin autodiscovers them)
-  for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory", "run-program"]) {
+  for (const cmd of ["constitution", "analyze", "checklist", "humanize", "consolidate-memory", "run-program", "doctor"]) {
     try {
       await fs.access(path.join(root, "commands", `${cmd}.md`));
     } catch {
@@ -223,6 +223,22 @@ async function main() {
       "WARN: scripts/eval-triggers.mjs --strict failed — algum trigger fixture " +
         "abaixo do threshold. Rode `node scripts/eval-triggers.mjs` pra ver detalhe.",
     );
+  }
+
+  // Plugin catalog: a missing skill reference would make automatic composition
+  // suggest an unavailable capability, so validate it in the main consistency gate.
+  try {
+    const { execSync } = await import("node:child_process");
+    execSync("node scripts/validate-plugin-catalog.mjs", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    execSync("node scripts/eval-plugin-routing.mjs --strict", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch {
+    failures.push("plugin catalog validation or routing eval failed");
   }
 
   if (failures.length > 0) {

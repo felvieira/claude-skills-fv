@@ -206,6 +206,12 @@ Razoes:
 
 Este doc fica como referencia. Se em algum momento aparecer demanda concreta (partner querendo contribuir, usuario reclamando de overhead de install, oportunidade de deploy via Managed Agents), reabrir essa discussao com este doc como ponto de partida.
 
+## Atualizacao de implementacao (2026-07-21)
+
+A primeira etapa pratica foi entregue sem mover skills nem alterar o instalador: `plugins/catalog/` agrupa composicoes por intencao e `scripts/route-task.mjs` retorna a menor combinacao recomendada. O hook `intent-classifier` inclui essa composicao na sugestao automatica e `devkit doctor` valida o catalogo e seus evals.
+
+Isso testa a utilidade de plugins como camada de decisao antes de assumir o custo de empacotamento fisico, install seletivo e conectores. O bundle completo continua sendo o comportamento compativel.
+
 ## Fontes
 
 - `anthropics/financial-services` — https://github.com/anthropics/financial-services (Apache-2.0)
