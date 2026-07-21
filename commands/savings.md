@@ -29,6 +29,7 @@ Não é métrica de marketing. As heurísticas estão declaradas em `policies/sa
 | **📂 Tool Usage** | Reads/searches/writes totais, bytes lidos, hot files (candidatos a learned-skill) |
 | **⚙ Tool Call Activity** | Total calls, error rate, bytes returned, avg bytes/call (eficiência), span da atividade |
 | **🧠 Intent Classifier** | Total classificações, LLM vs regex, distribuição por categoria |
+| **🧭 Routing Feedback** | Composições aceitas, alteradas ou rejeitadas; sinal para calibrar triggers sem inflar skills |
 
 ## Execute
 
@@ -52,6 +53,7 @@ Após o output, **interprete brevemente** os 3 maiores insights:
 | `.bot/agent-dispatch-errors.jsonl` | `agent-dispatch-validator` (PreToolUse, v2.2.1+) | blocked Agent dispatches com skill name como subagent_type |
 | `.bot/pre-execution-gate.jsonl` | `pre-execution-gate` (UserPromptSubmit, v2.4.0+) | decisões do gate: concrete_bypass / open_discussion_bypass / enrich / guided_enrich / force_bypass / pass_through |
 | `.swarm/classifier.jsonl` | `intent-classifier` (UserPromptSubmit) | classificações de intent: categoria, command sugerido, LLM vs regex |
+| `.bot/route-feedback.jsonl` | `route-feedback.mjs` | decisões explícitas accepted/overridden/rejected e plugins selecionados |
 | `.bot/conflict-decisions.jsonl` | `policies/trade-off-resolution.md` via `scripts/log-conflict-decision.mjs` (v2.7.1+) | resoluções de conflito: policies envolvidas, resolution type, outcome |
 
 Todas best-effort. Engine é fail-open: arquivos faltando = seção vazia, sem crash.

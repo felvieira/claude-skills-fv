@@ -237,8 +237,12 @@ async function main() {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
     });
+    execSync("node scripts/tests/route-feedback.mjs", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
   } catch {
-    failures.push("plugin catalog validation or routing eval failed");
+    failures.push("plugin catalog validation, routing eval, or routing feedback test failed");
   }
 
   if (failures.length > 0) {

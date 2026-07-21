@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import fsSync from "node:fs";
 import path from "node:path";
 
 export const ROUTE_DECISIONS = new Set(["accepted", "overridden", "rejected"]);
@@ -42,6 +43,23 @@ export async function summarizeRouteFeedback({ root = process.cwd(), sinceMs = n
     if (error.code !== "ENOENT") throw error;
   }
 
+  return summarizeRecords(source, records);
+}
+
+export function summarizeRouteFeedbackSync({ root = process.cwd(), sinceMs = null } = {}) {
+  const source = feedbackPath(root);
+  let records = [];
+  try {
+    records = fsSync.readFileSync(source, "utf8").split("\n").filter(Boolean).flatMap((line) => {
+      try { return [JSON.parse(line)]; } catch { return []; }
+    }).filter((record) => !sinceMs || !record.ts || new Date(record.ts).getTime() >= sinceMs);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  return summarizeRecords(source, records);
+}
+
+function summarizeRecords(source, records) {
   const byDecision = { accepted: 0, overridden: 0, rejected: 0 };
   const plugins = new Map();
   for (const record of records) {
