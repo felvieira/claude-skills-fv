@@ -86,5 +86,14 @@
     "exclude_external_plugins": ["legal-workflows"],
     "risk": "medium",
     "requires_human_review": false
+  },
+  {
+    "name": "a real legal contract clause still routes when an unrelated API contract is mentioned",
+    "prompt": "preciso de ajuda com contrato de fornecedor e tambem quero saber sobre contrato da api",
+    "plugins": ["development"],
+    "external_plugins": ["legal-workflows"],
+    "skills": ["03-backend-api"],
+    "risk": "high",
+    "requires_human_review": true
   }
 ]

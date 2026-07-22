@@ -24,7 +24,16 @@ try {
   const artifact = JSON.parse(await readFile(path.join(root, "route.json"), "utf8"));
   assert.equal(artifact.plugins[0].id, "development");
   assert.equal(artifact.skill_count, artifact.skills.length);
-  console.log("route-feedback: 8 assertions passed");
+
+  const routedIds = artifact.plugins.map((plugin) => plugin.id);
+  await appendRouteFeedback({ root, decision: "accepted", task: artifact.prompt, source: "route-task", selected: routedIds });
+  const endToEndReport = await summarizeRouteFeedback({ root });
+  assert.equal(endToEndReport.total, 4);
+  const routedStats = endToEndReport.top_plugins.find((entry) => entry.plugin === routedIds[0]);
+  assert.ok(routedStats, "feedback recorded against the plugin id routeTask() actually returned");
+  assert.equal(routedStats.accepted, 2);
+
+  console.log("route-feedback: 11 assertions passed");
 } finally {
   await rm(root, { recursive: true, force: true });
 }

@@ -136,6 +136,28 @@ function phraseScore(text, phrases) {
     .reduce((total, phrase) => total + phrase.split(" ").length, 0);
 }
 
+function splitClauses(text) {
+  return text.split(/[.;\n]| e (?=\w)/).map((clause) => clause.trim()).filter(Boolean);
+}
+
+function matchCapability(text, capability) {
+  const whenAny = capability.when_any || [];
+  const whenNone = capability.when_none || [];
+  const whenAll = capability.when_all || [];
+  const allRequired = whenAll.every((phrase) => text.includes(normalizeText(phrase)));
+  if (!allRequired) return 0;
+
+  if (whenNone.length === 0) return phraseScore(text, whenAny);
+
+  const clauses = splitClauses(text);
+  let score = 0;
+  for (const clause of clauses) {
+    if (whenNone.some((phrase) => clause.includes(normalizeText(phrase)))) continue;
+    score += phraseScore(clause, whenAny);
+  }
+  return score;
+}
+
 function unique(values) {
   return [...new Set(values)];
 }
@@ -154,10 +176,8 @@ export async function routeTask(prompt, options = {}) {
   for (const { data } of entries) {
     const matches = [];
     for (const capability of data.capabilities) {
-      if (capability.when_none?.some((phrase) => text.includes(normalizeText(phrase)))) continue;
-      const score = phraseScore(text, capability.when_any || []);
-      const allRequired = (capability.when_all || []).every((phrase) => text.includes(normalizeText(phrase)));
-      if (score > 0 && allRequired) matches.push({ capability, score });
+      const score = matchCapability(text, capability);
+      if (score > 0) matches.push({ capability, score });
     }
     if (matches.length === 0) continue;
 
@@ -174,7 +194,7 @@ export async function routeTask(prompt, options = {}) {
       commands: unique(matches.flatMap((match) => match.capability.commands || [])),
       matchedCapabilities: matches.map((match) => match.capability.id),
       install: data.availability === "external" ? data.install : undefined,
-      requires_human_review: Boolean(data.requires_human_review),
+      requires_human_review: Boolean(data.requires_human_review) || data.risk === "high",
     };
     (data.availability === "external" ? externalCandidates : bundledCandidates).push(candidate);
   }

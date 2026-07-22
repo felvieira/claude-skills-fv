@@ -385,10 +385,10 @@ if [[ -f "$MCP_TEMPLATE" ]]; then
       Object.entries(incoming.mcpServers || {})
         .filter(([, config]) => config.disabled !== true)
         .map(([name, config]) => {
-          // Project MCPs inherit the Claude process environment. Omitting env
-          // placeholders avoids blocking the whole server when optional keys
-          // (image/search providers) are not configured.
-          const { disabled, env, ...server } = config;
+          // Keep env placeholders so the server can read keys the installer
+          // just saved to .env.local; MCP stdio servers do not inherit the
+          // Claude Code process environment on their own.
+          const { disabled, ...server } = config;
           return [name, { type: server.type || 'stdio', ...server }];
         })
     );

@@ -84,6 +84,28 @@ function phraseScore(text: string, phrases: string[]): number {
     .reduce((total, phrase) => total + phrase.split(" ").length, 0);
 }
 
+function splitClauses(text: string): string[] {
+  return text.split(/[.;\n]| e (?=\w)/).map((clause) => clause.trim()).filter(Boolean);
+}
+
+function matchCapability(text: string, capability: CapabilityManifest): number {
+  const whenAny = capability.when_any || [];
+  const whenNone = capability.when_none || [];
+  const whenAll = capability.when_all || [];
+  const allRequired = whenAll.every((phrase) => text.includes(normalize(phrase)));
+  if (!allRequired) return 0;
+
+  if (whenNone.length === 0) return phraseScore(text, whenAny);
+
+  const clauses = splitClauses(text);
+  let score = 0;
+  for (const clause of clauses) {
+    if (whenNone.some((phrase) => clause.includes(normalize(phrase)))) continue;
+    score += phraseScore(clause, whenAny);
+  }
+  return score;
+}
+
 async function loadCatalog(): Promise<PluginManifest[]> {
   const catalogDir = path.join(KIT_ROOT, "plugins", "catalog");
   const entries = await fs.readdir(catalogDir, { withFileTypes: true });
@@ -123,10 +145,8 @@ export async function routePluginComposition(
   for (const manifest of manifests) {
     const matches = manifest.capabilities
       .map((capability) => {
-        if (capability.when_none?.some((phrase) => text.includes(normalize(phrase)))) return null;
-        const score = phraseScore(text, capability.when_any || []);
-        const allRequired = (capability.when_all || []).every((phrase) => text.includes(normalize(phrase)));
-        return score > 0 && allRequired ? { capability, score } : null;
+        const score = matchCapability(text, capability);
+        return score > 0 ? { capability, score } : null;
       })
       .filter((match): match is { capability: CapabilityManifest; score: number } => match !== null);
     if (matches.length === 0) continue;
@@ -143,7 +163,7 @@ export async function routePluginComposition(
       commands: unique(matches.flatMap((match) => match.capability.commands || [])),
       matchedCapabilities: matches.map((match) => match.capability.id),
       install: manifest.availability === "external" ? manifest.install : undefined,
-      requires_human_review: Boolean(manifest.requires_human_review),
+      requires_human_review: Boolean(manifest.requires_human_review) || manifest.risk === "high",
     };
     (manifest.availability === "external" ? external : bundled).push(recommendation);
   }
