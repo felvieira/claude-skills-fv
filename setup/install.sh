@@ -138,6 +138,13 @@ case "$PROFILE" in
     ;;
 esac
 
+# Non-interactive installs may still install optional dependencies, but must
+# never open browser auth or wait for secrets/tool choices on stdin.
+if [[ "$NO_INPUT" == true ]]; then
+  SKIP_API_PROMPTS=true
+  SKIP_CODE_INTELLIGENCE_PROMPTS=true
+fi
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -195,12 +202,25 @@ register_claude_hooks() {
     const hooksReg = JSON.parse(fs.readFileSync('$hooks_json', 'utf8'));
     const settings = JSON.parse(fs.readFileSync('$claude_cfg', 'utf8'));
     const hooks = settings.hooks || {};
-    for (const [event, scripts] of Object.entries(hooksReg)) {
+    const incoming = hooksReg.hooks || hooksReg;
+    const installedCommand = (command) => String(command || '')
+      .split('\${CLAUDE_PLUGIN_ROOT}/hooks').join('.bot/hooks');
+    const commandsIn = (blocks) => new Set((blocks || []).flatMap((block) => {
+      if (block && Array.isArray(block.hooks)) return block.hooks.map((hook) => hook.command);
+      return block && block.command ? [block.command] : [];
+    }).filter(Boolean));
+    for (const [event, blocks] of Object.entries(incoming)) {
       hooks[event] = hooks[event] || [];
-      for (const script of scripts) {
-        const cmd = { type: 'command', command: 'node .bot/' + script };
-        const exists = hooks[event].some((hook) => hook.command === cmd.command);
-        if (!exists) hooks[event].push(cmd);
+      const existing = commandsIn(hooks[event]);
+      for (const block of blocks) {
+        const registered = (block.hooks || []).map((hook) => ({
+          ...hook,
+          command: installedCommand(hook.command),
+        })).filter((hook) => hook.command && !existing.has(hook.command));
+        if (registered.length > 0) {
+          hooks[event].push({ ...(block.matcher ? { matcher: block.matcher } : {}), hooks: registered });
+          for (const hook of registered) existing.add(hook.command);
+        }
       }
     }
     settings.hooks = hooks;
@@ -219,7 +239,7 @@ for item in GLOBAL.md README.md VERSION; do
   [[ -f "$SCRIPT_DIR/$item" ]] && safe_copy_file "$SCRIPT_DIR/$item" "$BOT_DIR/$item"
 done
 
-for dir in policies templates skills patterns scripts docs commands agents hooks evals setup mcp-server personas; do
+for dir in policies templates skills plugins patterns scripts docs commands agents hooks evals setup mcp-server personas; do
   if [[ -d "$SCRIPT_DIR/$dir" ]]; then
     safe_copy_dir "$SCRIPT_DIR/$dir" "$BOT_DIR/$dir"
   fi
@@ -274,7 +294,7 @@ fi
 
 # Write integrity manifest for installed hooks
 if [[ -f "$BOT_DIR/hooks/scripts/verify-integrity.mjs" ]]; then
-  node "$BOT_DIR/hooks/scripts/verify-integrity.mjs" --write \
+  (cd "$TARGET_DIR" && node ".bot/hooks/scripts/verify-integrity.mjs" --write) \
     && ok "Hook integrity manifest written (.bot/hooks/.integrity.json)" \
     || warn "Failed to write integrity manifest (non-critical)"
 fi
@@ -329,6 +349,7 @@ MCP_TEMPLATE="$SCRIPT_DIR/setup/configs/claude-settings.json"
 
 if [[ -f "$MCP_TEMPLATE" ]]; then
   CLAUDE_CFG="$TARGET_DIR/.claude/settings.json"
+  CLAUDE_MCP_CFG="$TARGET_DIR/.mcp.json"
   mkdir -p "$TARGET_DIR/.claude"
 
   if [[ -f "$CLAUDE_CFG" ]]; then
@@ -351,6 +372,30 @@ if [[ -f "$MCP_TEMPLATE" ]]; then
     cp "$MCP_TEMPLATE" "$CLAUDE_CFG"
     ok "Created .claude/settings.json"
   fi
+
+  # Claude Code reads project-scoped MCP servers from .mcp.json. Keep the
+  # settings.json copy for compatible clients, but write the canonical Claude
+  # project config separately and omit optional servers marked disabled.
+  node -e "
+    const fs = require('fs');
+    const target = '$CLAUDE_MCP_CFG';
+    const incoming = JSON.parse(fs.readFileSync('$MCP_TEMPLATE', 'utf8'));
+    const existing = fs.existsSync(target) ? JSON.parse(fs.readFileSync(target, 'utf8')) : {};
+    const enabled = Object.fromEntries(
+      Object.entries(incoming.mcpServers || {})
+        .filter(([, config]) => config.disabled !== true)
+        .map(([name, config]) => {
+          // Project MCPs inherit the Claude process environment. Omitting env
+          // placeholders avoids blocking the whole server when optional keys
+          // (image/search providers) are not configured.
+          const { disabled, env, ...server } = config;
+          return [name, { type: server.type || 'stdio', ...server }];
+        })
+    );
+    existing.mcpServers = { ...(existing.mcpServers || {}), ...enabled };
+    fs.writeFileSync(target, JSON.stringify(existing, null, 2) + '\n');
+  "
+  ok "Created/merged Claude project MCPs in .mcp.json"
 fi
 
 register_claude_hooks
@@ -420,7 +465,7 @@ if [[ "$HAS_UV" == true ]]; then
       || warn "Failed (run manually: uv tool install notebooklm-mcp-cli)"
   fi
 
-  if command -v nlm &>/dev/null; then
+  if [[ "$NO_INPUT" != true ]] && command -v nlm &>/dev/null; then
     echo ""
     info "NotebookLM MCP requires Google authentication."
     info "A browser window will open. Log in with your Google account."
@@ -677,7 +722,8 @@ echo "   .windsurf/rules/dev-team-kit.md -> Windsurf"
 echo "   .agent/skills/                  -> Antigravity"
 echo ""
 echo " ${GREEN}MCP servers configured in:${RESET}"
-echo "   .claude/settings.json           -> Claude Code"
+echo "   .mcp.json                       -> Claude Code (project MCPs)"
+echo "   .claude/settings.json           -> Claude Code (hooks)"
 echo "   .windsurf/mcp.json              -> Windsurf"
 echo "   .gemini/settings.json           -> Antigravity / Gemini CLI"
 echo ""

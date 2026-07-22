@@ -94,10 +94,14 @@ async function main() {
   }
 
   expect(/for dir in .*setup.*mcp-server/.test(installSh), "setup/install.sh should copy setup/ into .bot/");
+  expect(/for dir in .*plugins.*mcp-server/.test(installSh), "setup/install.sh should copy plugins/catalog into .bot/");
   expect(installSh.includes("register_claude_hooks()"), "setup/install.sh should define register_claude_hooks()");
   expect(installSh.includes("register_claude_hooks"), "setup/install.sh should call register_claude_hooks");
   expect(installSh.includes(".env.local"), "setup/install.sh should protect .env.local");
   expect(installSh.includes("--profile") && installSh.includes("--no-input") && installSh.includes("--yes"), "setup/install.sh should support non-interactive profile flags");
+  expect(installSh.includes('CLAUDE_MCP_CFG="$TARGET_DIR/.mcp.json"'), "setup/install.sh should create Claude project-scoped .mcp.json");
+  expect(installSh.includes("config.disabled !== true"), "Claude project config should omit disabled optional MCPs");
+  expect(installSh.includes("const { disabled, env, ...server }"), "Claude project MCPs should inherit optional environment variables");
 
   const createdClaudeConfigIndex = installSh.indexOf('ok "Created .claude/settings.json"');
   const hookCallIndex = installSh.lastIndexOf("register_claude_hooks");

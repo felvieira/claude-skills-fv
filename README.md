@@ -663,7 +663,8 @@ consumer-repo/
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── GEMINI.md
-├── .claude/settings.json         ← hooks + MCP registered
+├── .mcp.json                     ← Claude Code project MCPs
+├── .claude/settings.json         ← hooks registered
 ├── .claude/commands/             ← slash commands (/spec, /plan, /build, /loop, ...)
 ├── .claude/agents/               ← subagents dispatchable via Task tool
 ├── .github/copilot-instructions.md

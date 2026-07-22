@@ -26,8 +26,10 @@ assert_dir() {
 
 assert_file "$TMP_DIR/.bot/setup/install.sh"
 assert_dir "$TMP_DIR/.bot/hooks"
+assert_dir "$TMP_DIR/.bot/plugins/catalog"
 assert_dir "$TMP_DIR/.bot/learned-skills"
 assert_file "$TMP_DIR/.claude/settings.json"
+assert_file "$TMP_DIR/.mcp.json"
 assert_file "$TMP_DIR/.gitignore"
 assert_file "$TMP_DIR/.bot/.env.tools"
 
@@ -56,14 +58,43 @@ node -e "
   });
 " < "$TMP_DIR/.claude/settings.json"
 
+node -e "
+  let d = '';
+  process.stdin.on('data', c => d += c);
+  process.stdin.on('end', () => {
+    const project = JSON.parse(d);
+    const mcp = project.mcpServers?.['dev-team-kit'];
+    if (!mcp || mcp.type !== 'stdio') throw new Error('Claude project MCP missing or invalid');
+    if (mcp.env) throw new Error('Claude project MCP should inherit optional environment variables');
+    if (project.mcpServers?.fal || project.mcpServers?.fetch || project.mcpServers?.notebooklm) {
+      throw new Error('disabled optional MCPs should not be registered in Claude project config');
+    }
+    console.log('Claude project MCP assertions passed');
+  });
+" < "$TMP_DIR/.mcp.json"
+
 # gitignore — pure bash grep (no node path issues)
 grep -q '\.env\.local' "$TMP_DIR/.gitignore" \
   || { echo "FAIL: .env.local must be gitignored" >&2; exit 1; }
 echo ".gitignore assertions passed"
 
+node "$TMP_DIR/.bot/scripts/route-task.mjs" --json "implemente endpoint com testes" \
+  | node -e "
+      let d = '';
+      process.stdin.on('data', c => d += c);
+      process.stdin.on('end', () => {
+        const route = JSON.parse(d);
+        if (!route.plugins.some(plugin => plugin.id === 'development')) {
+          throw new Error('installed router did not select development');
+        }
+        console.log('installed routing assertions passed');
+      });
+    "
+
 # Hooks: check copied scripts exist and hooks.json declares PostToolUse event-logger
 # (register_claude_hooks may silently skip in --no-input mode; check the source files directly)
 assert_file "$TMP_DIR/.bot/hooks/hooks.json"
+assert_file "$TMP_DIR/.bot/hooks/.integrity.json"
 assert_file "$TMP_DIR/.bot/hooks/scripts/session-event-logger.mjs"
 assert_file "$TMP_DIR/.bot/hooks/scripts/post-tool-verifier.mjs"
 assert_file "$TMP_DIR/.bot/hooks/scripts/pre-tool-enforcer.mjs"
@@ -96,5 +127,22 @@ node -e "
     console.log('hooks.json assertions passed (' + preToolUse.length + ' PreToolUse, ' + postToolUse.length + ' PostToolUse)');
   });
 " < "$TMP_DIR/.bot/hooks/hooks.json"
+
+node -e "
+  let d = '';
+  process.stdin.on('data', c => d += c);
+  process.stdin.on('end', () => {
+    const settings = JSON.parse(d);
+    const blocks = settings.hooks?.PostToolUse || [];
+    const commands = blocks.flatMap(block => block.hooks || (block.command ? [block] : [])).map(hook => hook.command || '');
+    if (!commands.some(command => command.includes('.bot/hooks/scripts/session-event-logger.mjs'))) {
+      throw new Error('installed settings do not register session-event-logger');
+    }
+    if (commands.some(command => command.includes('CLAUDE_PLUGIN_ROOT'))) {
+      throw new Error('installed settings must not depend on CLAUDE_PLUGIN_ROOT');
+    }
+    console.log('installed hook registration assertions passed');
+  });
+" < "$TMP_DIR/.claude/settings.json"
 
 echo "Installer smoke test passed: $TMP_DIR"

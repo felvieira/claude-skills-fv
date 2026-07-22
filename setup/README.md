@@ -43,13 +43,13 @@ Perfis disponiveis:
 - `daily-dev`: fluxo padrao
 - `research`: preserva o fluxo completo para exploracao
 
-O script detecta automaticamente as plataformas instaladas, gera os arquivos de configuracao correspondentes e registra os hooks no `.claude/settings.json` depois de criar ou mesclar a config.
+O script detecta automaticamente as plataformas instaladas, gera os arquivos de configuracao correspondentes, registra os MCPs do Claude em `.mcp.json` e os hooks em `.claude/settings.json`.
 
 ## Plataformas configuradas
 
 | Plataforma | Arquivo de regras | Arquivo de MCPs |
 |------------|-------------------|-----------------|
-| **Claude Code** | `CLAUDE.md` + `AGENTS.md` | `.claude/settings.json` |
+| **Claude Code** | `CLAUDE.md` + `AGENTS.md` | `.mcp.json` (MCPs) + `.claude/settings.json` (hooks) |
 | **Copilot** | `.github/copilot-instructions.md` | N/A (usa MCPs do editor) |
 | **Windsurf** | `.windsurf/rules/dev-team-kit.md` | `.windsurf/mcp.json` |
 | **Gemini CLI** | `GEMINI.md` | `.gemini/settings.json` |
@@ -127,9 +127,9 @@ Pesquisa com fontes citadas, geracao de podcasts e infograficos via Google Noteb
 
 ### Claude Code
 
-Arquivo: `.claude/settings.json`
+Arquivos: `.mcp.json` para os MCPs de projeto e `.claude/settings.json` para hooks.
 
-Os MCPs ficam em `mcpServers`. O setup gera o arquivo completo com essenciais habilitados e opcionais desabilitados.
+Os MCPs ficam em `mcpServers`. O setup registra em `.mcp.json` apenas os essenciais habilitados; os opcionais permanecem documentados na configuração-base até serem ativados explicitamente.
 
 ### Windsurf
 
