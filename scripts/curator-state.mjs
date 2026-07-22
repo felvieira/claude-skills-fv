@@ -2,7 +2,7 @@
 /**
  * curator-state.mjs — escreve/le o .curator-state.json do vault de memoria.
  *
- * Fecha o loop do memory-curator-nudge.mjs: o nudge LE este state pra saber
+ * Fecha o loop do memory-curator.mjs: o curador LE este state pra saber
  * quando foi a ultima consolidacao; o /consolidate-memory ESCREVE este state
  * ao concluir (passo final). Sem o write, o nudge dispararia pra sempre.
  *

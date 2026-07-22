@@ -154,7 +154,7 @@ A persona é **regenerada do zero**, não editada — edits manuais são perdido
 
 ### Passo 7 — Report final + atualizar curator state
 
-**Primeiro**, registrar a conclusão no `.curator-state.json` para resetar o nudge de inatividade (`hooks/scripts/memory-curator-nudge.mjs`). Sem isso, o nudge dispararia para sempre:
+**Primeiro**, registrar a conclusão no `.curator-state.json` para resetar o gatilho de inatividade do curador (`hooks/scripts/memory-curator.mjs`). Sem isso, o curador continuaria considerando o vault pendente de manutenção:
 
 ```bash
 node scripts/curator-state.mjs --write --vault "$VAULT"
