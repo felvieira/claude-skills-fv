@@ -77,6 +77,16 @@ Antes de qualquer wireframe ou token, escolher **uma** âncora estética e compr
 
 **Reforço de atmosfera:** uma vez escolhida a âncora, considerar gradient meshes, noise/grain overlays, padrões geométricos, transparências em camadas, sombras dramáticas, cursors customizados — desde que alinhados à âncora (não como ornamento solto).
 
+**Dials de intensidade (ajuste fino dentro da âncora):**
+
+Depois de escolher a âncora, calibrar 3 dials de 1-10 antes de gerar tokens ou wireframe. Eles não substituem a âncora — modulam o quão longe executá-la:
+
+- **DESIGN_VARIANCE** (1 = execução conservadora e previsível da âncora; 10 = interpretação ousada, quebra convenções do gênero) — subir para produtos que competem em diferenciação visual, baixar para produtos onde familiaridade reduz fricção (formulários financeiros, dashboards operacionais)
+- **VISUAL_DENSITY** (1 = muito espaço em branco, poucos elementos por tela; 10 = denso, muita informação simultânea) — dashboards e ferramentas B2B tendem alto; landing pages e onboarding tendem baixo
+- **MOTION_INTENSITY** (1 = estático ou só feedback essencial; 10 = movimento expressivo e contínuo) — só a referência aqui; a implementação real do dial pertence à skill 12 (`skills/12-motion-design/SKILL.md`), que recebe o valor como contexto de handoff
+
+Registrar os 3 valores escolhidos (com justificativa de 1 frase cada) no handoff para Frontend — eles orientam decisões que o Frontend tomaria sozinho por falta de contexto.
+
 **Anti-padrões a evitar (independente da âncora):**
 
 - Fonts genéricas sem justificativa: Arial, Inter, Roboto, Space Grotesk, system-ui default
@@ -86,6 +96,20 @@ Antes de qualquer wireframe ou token, escolher **uma** âncora estética e compr
 - Border-radius `rounded-2xl` em tudo sem razão estética
 - "Bento grid" como solução padrão para qualquer landing
 - Hero com headline + subhead + 2 CTAs centralizado sem identidade
+- Em-dash (—) como recurso estilístico em copy de interface (headline, CTA, microcopy) — tell reconhecível de texto gerado por IA; usar ponto, vírgula ou quebrar em duas frases
+
+**Anti-padrões por indústria/vertical:**
+
+Quando o projeto se encaixa claramente em uma destas verticais, aplicar também as restrições específicas — além dos anti-padrões gerais acima:
+
+| Vertical | Paleta banida | Tipografia a evitar | Anti-padrão específico |
+| --- | --- | --- | --- |
+| **Banking/fintech tradicional** | Gradiente roxo-rosa, "AI purple" genérico | Sans geométrica sem peso (sinaliza informalidade) | Dashboards com excesso de cor — dados financeiros pedem paleta contida e hierarquia por peso tipográfico, não por cor |
+| **Fintech consumer/neobank** | Verde escuro corporativo tradicional (sinaliza banco legado) | Serif (sinaliza "tradicional demais" pro público) | Copiar 1:1 o layout de app bancário legado — a expectativa do segmento é mobile-first, não desktop-first adaptado |
+| **Saúde/wellness** | Azul clínico frio isolado sem calor (sinaliza hospital impessoal) | Tipografia condensada/técnica como corpo de texto | Ícones médicos genéricos de stock (cruz vermelha, estetoscópio) como atalho visual |
+| **E-commerce** | — (paleta é dirigida pela marca do produto, não pela vertical) | Display font pesada em preço/CTA de compra (reduz legibilidade em decisão rápida) | Grid de produto sem hierarquia de destaque — tudo do mesmo tamanho força o usuário a escolher sem orientação |
+| **SaaS B2B (operacional/dashboard)** | Paleta vibrante multi-cor sem função (cor deve significar estado, não decorar) | Display expressivo em dados tabulares | Onboarding com tour de 10 passos antes de deixar o usuário agir — fricção que a persona B2B não tolera |
+| **Educação/e-learning** | Paleta infantilizada em produto para adulto (erro comum em upskilling B2C) | Tipografia lúdica quando o público é profissional | Gamificação genérica (barra de XP, badges) sem conexão com o resultado real de aprendizagem |
 
 ## Bibliotecas com MCP
 
@@ -342,6 +366,8 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 ## Fontes
 
 - Aesthetic anchors pattern adapted from [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (custom license, see source).
+- Intensity dials (DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY) e em-dash ban inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
+- Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
 
 ## Integração com Pipeline
 

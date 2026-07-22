@@ -120,7 +120,8 @@ Montar super-prompt enriquecido com insights da analise e fazer handoff para o s
 1. Cruzar tendencias do nicho com identidade atual do projeto
 2. Definir recomendacoes: paleta, tipografia, hierarquia, CTAs
 3. Classificar: copiar (padroes que funcionam) / evitar (cliches) / diferenciar (oportunidades)
-4. Montar briefing estruturado para Image Generator (skill 17)
+4. **Checar diversidade estrutural:** antes de fechar a recomendacao de layout, buscar dossies anteriores em `docs/design-intelligence/` (deste workspace ou de outros projetos, se acessiveis) e listar quais estruturas de secao (formato de hero, grid de features, layout de pricing) ja foram recomendadas recentemente. Se a estrutura proposta repete uma ja usada em projeto anterior sem justificativa (ex: o nicho realmente exige aquele padrao), marcar como risco de "mesma forma de novo" na secao 4 do dossie e propor uma variacao estrutural alternativa antes de seguir para o moodboard.
+5. Montar briefing estruturado para Image Generator (skill 17)
 
 **Artefato:** `docs/design-intelligence/03-strategy.md`
 
@@ -217,6 +218,10 @@ Entregar para UI/UX (skill 02):
 - direcao clara: copiar / evitar / diferenciar
 
 Seguir `policies/handoffs.md` e `templates/handoff.md`.
+
+## Fontes
+
+- Checagem de diversidade estrutural (Fase 3) inspirada na função "Redesign" de [usehallmark.com](https://www.usehallmark.com/) — garantir que a mesma forma estrutural não se repita sem justificativa entre projetos.
 
 ## Codigo Limpo
 

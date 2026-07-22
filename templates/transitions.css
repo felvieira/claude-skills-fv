@@ -1,0 +1,139 @@
+/*
+  Transition snippets — copy the class(es) you need directly into the project.
+  Every rule respects prefers-reduced-motion by falling back to an instant
+  state change. Pair with the numeric values already codified in
+  skills/52-ui-polish/SKILL.md — this file is the copy-paste form of those
+  same rules, not a separate source of truth. If a value changes in one
+  place, mirror it here.
+*/
+
+.t-fade {
+  transition: opacity 250ms ease;
+}
+
+.t-fade[data-state="hidden"] {
+  opacity: 0;
+}
+
+.t-scale-press {
+  transition: transform 150ms ease;
+}
+
+.t-scale-press:active {
+  transform: scale(0.96);
+}
+
+.t-icon-swap {
+  transition: opacity 200ms ease, transform 200ms ease, filter 200ms ease;
+}
+
+.t-icon-swap[data-state="hidden"] {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+
+.t-icon-swap[data-state="visible"] {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.t-slide-up-enter {
+  transition: opacity 300ms ease, transform 300ms ease, filter 300ms ease;
+}
+
+.t-slide-up-enter[data-state="hidden"] {
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(4px);
+}
+
+.t-slide-up-enter[data-state="visible"] {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.t-slide-up-exit {
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.t-slide-up-exit[data-state="exiting"] {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.t-hover-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.t-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.t-focus-ring {
+  transition: box-shadow 100ms ease;
+}
+
+.t-focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.t-image-outline {
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .t-image-outline {
+    outline-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.t-skeleton-pulse {
+  animation: t-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes t-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.t-spinner-rotate {
+  animation: t-rotate 800ms linear infinite;
+}
+
+@keyframes t-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-fade,
+  .t-scale-press,
+  .t-icon-swap,
+  .t-slide-up-enter,
+  .t-slide-up-exit,
+  .t-hover-lift,
+  .t-focus-ring {
+    transition-duration: 0.01ms !important;
+  }
+
+  .t-slide-up-enter[data-state="hidden"],
+  .t-slide-up-exit[data-state="exiting"] {
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .t-hover-lift:hover {
+    transform: none !important;
+  }
+
+  .t-skeleton-pulse,
+  .t-spinner-rotate {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

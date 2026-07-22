@@ -13,6 +13,8 @@ description: |
 
 Grandes interfaces raramente vêm de uma coisa só. É uma coleção de pequenos detalhes que se acumulam. Esta skill entra depois que Frontend (04) e/ou Motion Design (12) já produziram o componente — ela revisa e ajusta acabamento, não substitui a estrutura.
 
+Para projetos sem Framer Motion (ou quando a transição é puramente CSS), copiar direto de `templates/transitions.css` em vez de reescrever a regra em prosa — o arquivo tem snippets nomeados (`t-fade`, `t-scale-press`, `t-icon-swap`, etc.) já com guard de `prefers-reduced-motion` embutido. Os valores no CSS espelham os princípios abaixo; se um valor mudar aqui, replicar no arquivo.
+
 ## Governanca Global
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md` e `policies/evals.md`.
@@ -219,6 +221,7 @@ ZERO comentarios explicando o que o codigo faz. Nomes de classes/variaveis autoe
 ## Fontes
 
 - Principios e valores exatos adaptados de [jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) (MIT license).
+- Formato de biblioteca copy-paste (`templates/transitions.css`) inspirado em [Jakubantalik/transitions.dev](https://github.com/Jakubantalik/transitions.dev).
 
 ## Integracao com Pipeline
 
