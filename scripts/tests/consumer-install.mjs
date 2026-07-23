@@ -1,4 +1,19 @@
 #!/usr/bin/env node
+/**
+ * End-to-end check against a fully installed consumer tree (path passed as
+ * argv[1]): asserts installed files/config, and via listMcpTools() below,
+ * performs a real stdio JSON-RPC round trip against the installed MCP
+ * server (initialize + tools/list) plus routing/feedback/Kimi-config
+ * checks. Not currently wired into CI or devkit-doctor.mjs — run manually
+ * against an installed tree, e.g. after scripts/smoke-install.sh, with:
+ *   node scripts/tests/consumer-install.mjs <installed-root>
+ *
+ * For an always-on, no-install-required MCP boot check, see
+ * scripts/verify-mcp-runtime.mjs (wired into devkit-doctor.mjs and CI) —
+ * it covers the same "does the server actually boot and answer tools/list"
+ * guarantee against the in-repo mcp-server/dist build, using the same
+ * stdio JSON-RPC approach as listMcpTools() here.
+ */
 
 import assert from "node:assert/strict";
 import fs from "node:fs";

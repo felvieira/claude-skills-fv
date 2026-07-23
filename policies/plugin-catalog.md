@@ -37,6 +37,22 @@ node scripts/eval-plugin-routing.mjs --strict
 node scripts/devkit-doctor.mjs --strict
 ```
 
+`eval-plugin-routing.mjs` (and the fixtures under `evals/routing/`, `evals/triggers/`) check WHAT
+the router recommends — string/keyword assertions against known prompts. They catch a wrong or
+missing recommendation but cannot catch a broken MCP build.
+
+`scripts/verify-mcp-runtime.mjs` (run automatically inside `devkit-doctor.mjs` when
+`mcp-server/dist` is built, and in CI) checks whether the recommending SYSTEM itself boots: it
+spawns the built MCP server as a real child process and performs a live `initialize` +
+`tools/list` JSON-RPC round trip over stdio, asserting a non-empty tool list within 10s. It
+catches a different failure mode — a broken build, a crashing constructor, a malformed tool
+schema — that no amount of routing-keyword matching can catch. Run it directly with:
+
+```bash
+cd mcp-server && npm run build && cd ..
+node scripts/verify-mcp-runtime.mjs
+```
+
 ## Non-goals of v1
 
 - selective physical installation
