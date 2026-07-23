@@ -37,7 +37,19 @@ while [[ -L "$SOURCE" ]]; do
   SOURCE="$(readlink "$SOURCE")"
   [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
 done
-SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")/.." && pwd)"
+# Git Bash on Windows resolves `pwd` to a POSIX-style path (/d/...). Node.exe
+# on Windows does not understand that form when it's interpolated into JS
+# strings below, so normalize to mixed form (D:/...) when cygpath exists --
+# a no-op on Linux/macOS where cygpath is absent.
+to_node_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -m "$1"
+  else
+    printf '%s' "$1"
+  fi
+}
+
+SCRIPT_DIR="$(to_node_path "$(cd -P "$(dirname "$SOURCE")/.." && pwd)")"
 
 PROFILE="daily-dev"
 NO_INPUT=false
@@ -67,7 +79,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 TARGET_DIR="${POSITIONAL_ARGS[0]:-.}"
-TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
+TARGET_DIR="$(to_node_path "$(cd "$TARGET_DIR" && pwd)")"
 BOT_DIR="$TARGET_DIR/.bot"
 
 echo ""

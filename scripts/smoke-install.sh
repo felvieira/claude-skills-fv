@@ -65,7 +65,7 @@ node -e "
     const project = JSON.parse(d);
     const mcp = project.mcpServers?.['dev-team-kit'];
     if (!mcp || mcp.type !== 'stdio') throw new Error('Claude project MCP missing or invalid');
-    if (mcp.env) throw new Error('Claude project MCP should inherit optional environment variables');
+    if (!mcp.env || !('FAL_KEY' in mcp.env)) throw new Error('Claude project MCP should keep declared env placeholders');
     if (project.mcpServers?.fal || project.mcpServers?.fetch || project.mcpServers?.notebooklm) {
       throw new Error('disabled optional MCPs should not be registered in Claude project config');
     }
