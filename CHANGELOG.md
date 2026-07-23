@@ -5,6 +5,30 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.41.0] - 2026-07-23 — catálogo de roteamento de plugins
+
+Absorção real de mecanismo (não só ideia) a partir de fontes canônicas fornecidas pelo usuário: Akita (harness/evals), MoonshotAI/kimi-code, obra/superpowers, upstash/context7, anthropics/skills, thedotmack/claude-mem, ui-ux-pro-max-skill, taste-skill, transitions.dev, usehallmark.com, Claude SEO, e os plugins oficiais Finance/Legal da Claude. Implementado incrementalmente ao longo de 2026-07-22 e 2026-07-23, incluindo review adversarial da implementação inicial e correção dos bugs encontrados.
+
+### Adicionado
+- **`plugins/catalog/*.json`** — 9 manifests declarativos (development, design-quality, product-marketing, release-ops, core-discovery, ai-integration, mais 3 externos/alto-risco: finance-workflows, legal-workflows, context7-docs) agrupando as 53 skills em composições por tarefa. Contrato documentado em `policies/plugin-catalog.md`.
+- **`scripts/route-task.mjs`** / **`scripts/lib/plugin-catalog.mjs`** — roteador CLI que casa o prompt contra as `capabilities` do catálogo e retorna a menor composição útil (até 3 plugins, 6 skills), com risco agregado e flag de revisão humana.
+- **`mcp-server/src/lib/plugin-router.ts`** — mesma lógica em TypeScript exposta como tool MCP (`devkit_route_task`, `devkit_list_plugins`), com paridade verificada contra o CLI via suite de fixtures compartilhada (`mcp-server/src/lib/plugin-router.test.ts`).
+- **`scripts/lib/route-feedback.mjs`** — telemetria estruturada de decisão (`accepted`/`overridden`/`rejected`) por rota recomendada, com rotação por tamanho (5 MB) e retenção de 14 dias — mesmo padrão já usado em `hooks/scripts/session-event-logger.mjs`. Alimenta `/insights` e `/savings`.
+- **`scripts/verify-mcp-runtime.mjs`** — boot check real: spawna o MCP server buildado como processo filho, faz round-trip JSON-RPC real (`initialize` + `tools/list`) sobre stdio, e falha se o servidor não responder. Plugado em `scripts/devkit-doctor.mjs` (warning se não buildado, falha dura se buildado e quebrado) e no CI. Fecha o gap entre "os evals de roteamento passam" (o que é recomendado) e "o sistema recomendador de fato sobe" (Akita: testar entrega completa, não função isolada).
+- **`docs/integrations/kimi-code.md`** + **`scripts/print-kimi-mcp-setup.mjs`** — gerador de config MCP stdio para o Kimi Code.
+- **Context7 HTTP transport** (opcional) documentado em `setup/README.md`, como alternativa ao stdio padrão para quem já tem `CONTEXT7_API_KEY`.
+- **`skills/02-ui-ux-design/SKILL.md`** — dials numéricos (`DESIGN_VARIANCE`, `VISUAL_DENSITY`, `MOTION_INTENSITY`), ban de em-dash em copy de UI, e tabela de anti-padrões por indústria/vertical (6 verticais).
+- **`skills/29-design-intelligence/SKILL.md`** — checagem de diversidade estrutural entre dossiês (função "Redesign", inspirada em usehallmark.com).
+- **`templates/transitions.css`** — biblioteca de 20 classes `t-*` copy-paste, valores espelhando exatamente os já documentados em `skills/52-ui-polish/SKILL.md`, todas com fallback `prefers-reduced-motion`.
+- **`skills/14-seo-specialist/SKILL.md`** — seções de SEO Local (NAP, schema por vertical, sinais de GBP, review intelligence), E-commerce (schema Product/Offer, regras de validação), e Internacional (sintaxe hreflang, erros comuns).
+
+### Corrigido
+- Installer (`setup/install.sh`) removia o bloco `env` de todo MCP server ao escrever `.mcp.json`, quebrando chaves (`FAL_KEY` etc.) que o próprio installer acabara de pedir ao usuário.
+- `when_none` do roteamento era avaliado contra o prompt inteiro em vez da cláusula que disparou o match — um prompt misto podia suprimir uma recomendação legal/alto-risco real por conter uma frase não relacionada.
+- `requires_human_review` tinha semânticas diferentes entre `listPluginCatalog()` e `routePluginComposition()` (CLI e MCP) — unificado para sempre incluir o fallback `risk === "high"`.
+- `scripts/check-consistency.mjs` e `scripts/smoke-install.sh` tinham asserções travadas validando o comportamento antigo (buggy) do installer — corrigidas para validar o comportamento correto.
+- `setup/install.sh` gerava paths malformados (`D:\d\Repos\...`) em Windows/Git Bash porque `pwd` retorna formato POSIX interpolado direto em `node -e`; corrigido com conversão via `cygpath -m`.
+
 ## [2.40.0] - 2026-07-10 — skill 53 doubt-driven-review (addyosmani/agent-skills)
 
 Absorção de 2 ideias específicas do repo externo [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars, 24 skills). O resto do repo mapeia quase 1:1 com skills já existentes no kit (spec-driven≈01, frontend≈02/04, API≈03, security≈06, CI/CD≈07, TDD≈37, docs/ADR≈10, code-review≈11, deprecation≈23) — absorver o repo inteiro seria bloat redundante. Duas ideias se destacaram como mais afiadas que os equivalentes atuais.
