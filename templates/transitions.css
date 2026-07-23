@@ -40,7 +40,9 @@
 }
 
 .t-slide-up-enter {
+  --t-stagger-delay: 0ms;
   transition: opacity 300ms ease, transform 300ms ease, filter 300ms ease;
+  transition-delay: var(--t-stagger-delay);
 }
 
 .t-slide-up-enter[data-state="hidden"] {
@@ -55,6 +57,9 @@
   filter: blur(0);
 }
 
+/* Stagger: set --t-stagger-delay inline per block, ~100ms apart
+   (e.g. style="--t-stagger-delay: 100ms"), ~80ms apart for split words. */
+
 .t-slide-up-exit {
   transition: opacity 150ms ease, transform 150ms ease;
 }
@@ -64,13 +69,28 @@
   transform: translateY(-12px);
 }
 
+/* Lift shadow reuses the exact --shadow-border layering from SKILL.md
+   principio 3 (sombra em vez de borda) — no invented shadow numbers. */
 .t-hover-lift {
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: box-shadow 200ms ease;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.06);
 }
 
 .t-hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+    0px 1px 2px -1px rgba(0, 0, 0, 0.06),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  .t-hover-lift {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .t-hover-lift:hover {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
 }
 
 .t-focus-ring {
@@ -79,6 +99,19 @@
 
 .t-focus-ring:focus-visible {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.t-shadow-border {
+  box-shadow:
+    0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+    0px 1px 2px -1px rgba(0, 0, 0, 0.06),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  .t-shadow-border {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
 }
 
 .t-image-outline {
@@ -125,10 +158,6 @@
   .t-slide-up-exit[data-state="exiting"] {
     transform: none !important;
     filter: none !important;
-  }
-
-  .t-hover-lift:hover {
-    transform: none !important;
   }
 
   .t-skeleton-pulse,

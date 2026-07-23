@@ -368,6 +368,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - Aesthetic anchors pattern adapted from [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (custom license, see source).
 - Intensity dials (DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY) e em-dash ban inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
 - Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
+- Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
 
 ## Integração com Pipeline
 

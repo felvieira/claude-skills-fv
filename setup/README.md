@@ -86,6 +86,20 @@ Fornece documentacao atualizada de qualquer biblioteca diretamente no contexto d
 }
 ```
 
+#### Context7 — transporte HTTP (opcional)
+
+O padrao acima (stdio via `npx`) e o default deste kit: nao exige API key e funciona out-of-the-box para qualquer usuario. Se voce ja tem uma `CONTEXT7_API_KEY` (obtida em [context7.com](https://context7.com)), o Context7 tambem oferece um transporte HTTP hospedado que evita rodar o processo `npx` local. Para usar, troque a entrada do context7 no seu `.mcp.json` por:
+
+```json
+{
+  "type": "http",
+  "url": "https://mcp.context7.com/mcp",
+  "headers": { "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}" }
+}
+```
+
+Isso e totalmente opcional — o setup automatizado deste kit continua instalando o transporte stdio por padrao, sem exigir nenhuma key. Se quiser usar o transporte HTTP, adicione `CONTEXT7_API_KEY` ao seu `.env.local` manualmente e edite o `.mcp.json` conforme acima.
+
 ### playwright
 
 Automacao de browser para testes E2E. Alinha com a skill 05 (QA Engineer).
