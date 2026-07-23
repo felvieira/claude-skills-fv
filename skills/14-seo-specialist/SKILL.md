@@ -645,6 +645,105 @@ Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado 
 - [ ] `llms.txt` na raiz do site listando conteúdo canônico
 - [ ] Página `/sobre` ou `/about` com missão editorial e bios
 
+## SEO Local (Google Business Profile)
+
+Aplicável quando o projeto representa um negócio com presença física ou área de atendimento (restaurante, clínica, escritório de advocacia, prestador de serviço local).
+
+### NAP Consistency (Name, Address, Phone)
+
+Comparar Nome, Endereço e Telefone em três fontes: HTML visível (rodapé/contato), `LocalBusiness` schema, e Google Business Profile. Qualquer divergência entre as três é **crítica** — resolver antes de qualquer outra otimização local.
+
+Multi-loja: cada página de localização precisa de schema `LocalBusiness` próprio com `@id` único e `branchOf` apontando pra Organization da matriz.
+
+### Schema por vertical (não usar `LocalBusiness` genérico)
+
+| Vertical | Tipo correto | Evitar |
+|---|---|---|
+| Restaurante | `Restaurant` + `Menu`/`MenuItem` | — |
+| Saúde | `MedicalClinic`/`Hospital`/`Dentist` | `MedicalBusiness` (genérico demais) |
+| Jurídico | `LegalService` + `Person`/`Service` por área de atuação | `Attorney` (deprecated) |
+| Serviço em domicílio | subtipo de `Service` + `areaServed` com cidades nomeadas | — |
+| Imobiliária | `RealEstateAgent` + `Person` + `RealEstateListing` por imóvel | — |
+| Concessionária | `AutoDealer`, com schema separado pra vendas/serviço | `VehicleListing` como tipo principal |
+
+Obrigatório em todos: `name`, `address` (com sub-propriedades `PostalAddress`), `geo` com 5+ decimais de precisão. Recomendado: `openingHoursSpecification`, `telephone` com link `tel:`, `aggregateRating`.
+
+### GBP — sinais e anti-padrões
+
+- **Categoria primária** é o sinal individual de maior peso — categoria errada é o principal fator negativo de ranking local.
+- **Nunca** linkar o GBP pra página mais forte do site — risco de suprimir ranqueamento orgânico sob updates de diversidade.
+- Fotos/vídeo aumentam pedidos de rota em ~45%; horário de funcionamento visível é fator relevante.
+- Posts do GBP não têm impacto direto de ranking — não priorizar sobre outras táticas.
+
+### Review intelligence
+
+- Recência pesa mais que volume — cadência de novas reviews é o sinal primário.
+- Limiar de credibilidade: 10+ reviews totais.
+- Sempre responder reviews (impacto de percepção alto), mas **nunca fazer review gating** (pré-filtrar cliente satisfeito antes de direcionar pra plataforma pública) — viola política de engajamento falso do Google e regras da FTC.
+- Setores regulados: saúde não pode confirmar/negar que um reviewer é paciente (HIPAA); jurídico precisa considerar sigilo profissional na resposta.
+
+### Doorway page — detecção rápida
+
+Teste do RicketyRoo: se trocar o nome da cidade no texto e o conteúdo continuar fazendo sentido, é doorway page — penalizado desde o Core Update de março de 2024. Piso de qualidade: cada página de localização precisa de conteúdo substancialmente único (não só o nome da cidade trocado).
+
+## SEO E-commerce
+
+### Schema de produto — `Product` + `Offer`
+
+Campos obrigatórios: `name`, `image` (array com 1+ URL de alta resolução), `offers` do tipo `Offer` (nunca `AggregateOffer` para um produto único).
+
+Campos que habilitam rich results: `sku`, `brand`, `gtin13`/`gtin14`/`mpn`, `aggregateRating`, `review` (mínimo 1), `shippingDetails` (tipo `ShippingDetails`), `hasMerchantReturnPolicy` (tipo `MerchantReturnPolicy`). Produtos adultos exigem `hasAdultConsideration`.
+
+### Regras de validação não-negociáveis
+
+- Preço como string numérica sem símbolo de moeda: `"29.99"`, nunca `"$29.99"`.
+- `priceCurrency` em código ISO 4217 (`USD`, `BRL`, `EUR`).
+- `availability` usa a URL completa do enum do Schema.org.
+- `brand.name` nunca vazio ou `"N/A"`.
+- Se `aggregateRating` estiver presente, `ratingValue` e `reviewCount` são obrigatórios juntos.
+- `priceValidUntil` em ISO 8601.
+
+### Página de produto — checklist
+
+- [ ] Título ≤ 60 caracteres com keyword principal + marca
+- [ ] Meta description ≤ 155 caracteres com preço/benefício + CTA
+- [ ] 3+ imagens, 800px+, alt text descritivo (não genérico)
+- [ ] H1 único correspondendo ao nome do produto
+- [ ] Descrição 200+ palavras, própria (nunca copiar texto do fabricante)
+- [ ] Breadcrumbs: Home > Categoria > Subcategoria > Produto
+
+### Feed de marketplace (Google Merchant Center)
+
+Usar `Offer`, nunca `AggregateOffer`. Manter preço consistente entre listagem orgânica e Shopping Ads. Campos hoje exigidos pelo Merchant Center: `name`, `image`, `offers`.
+
+## SEO Internacional (hreflang)
+
+Aplicável a sites com múltiplas versões de idioma/região.
+
+### Sintaxe correta
+
+```html
+<link rel="alternate" hreflang="pt-BR" href="https://site.com/pt-br/pagina" />
+<link rel="alternate" hreflang="en-US" href="https://site.com/en/pagina" />
+<link rel="alternate" hreflang="x-default" href="https://site.com/pagina" />
+```
+
+- Código de idioma: ISO 639-1 minúsculo (`pt`, `en`) + código de região ISO 3166-1 Alpha-2 maiúsculo (`BR`, `US`) — formato `idioma-REGIÃO`.
+- Protocolo consistente em todo o conjunto (todo HTTPS, nunca misturar com HTTP).
+- URLs devem casar exatamente com a canonical, inclusive barra final.
+
+### Erros mais comuns
+
+| Erro | Correção |
+|---|---|
+| Falta a tag auto-referenciada | Toda página do conjunto deve apontar pra si mesma também |
+| Link unidirecional (A→B sem B→A) | Implementar malha bidirecional completa |
+| Código inválido (`eng`, `jp`, `en-uk`) | Usar estritamente ISO 639-1 + ISO 3166-1 |
+| hreflang em URL não-canonical | Aplicar apenas nas URLs canônicas |
+| Região sem prefixo de idioma | Nunca usar só o código de país |
+
+`x-default`: um único por conjunto, geralmente apontando pra versão em inglês ou seletor de idioma; precisa receber link de retorno de todas as outras versões.
+
 ## Quando precisar de imagem (Open Graph card, Twitter card, hero pra blog post)
 
 Não use templates genéricos. **Despache skill 17 (`image-generator`)** pra OG card alinhado ao branding:
@@ -687,6 +786,7 @@ Meta descriptions: SEO NAO reescreve o copy — apenas otimiza formato, keywords
 ## Fontes Externas
 
 - GEO/AEO patterns inspired by [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) (MIT) — comprehensive SEO skill with deep GEO coverage.
+- Seções de SEO Local (GBP/NAP), E-commerce (schema de produto) e Internacional (hreflang) também inspiradas em AgriciDaniel/claude-seo, que implementa essas verticais como sub-skills executáveis com dispatch paralelo e integrações MCP (DataForSEO, Ahrefs); aqui curado como referência estática, sem replicar a arquitetura de agentes/MCP da fonte.
 
 ## Regra de Código
 
