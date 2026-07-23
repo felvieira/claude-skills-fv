@@ -53,6 +53,9 @@ jobs:
         working-directory: mcp-server
         run: npm test
 
+      - name: Run MCP runtime boot check (real stdio JSON-RPC round trip)
+        run: node scripts/verify-mcp-runtime.mjs
+
       - name: Run bench regression gate
         run: node bench/check-regression.mjs --max-drop=5
 
