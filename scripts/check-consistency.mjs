@@ -101,7 +101,7 @@ async function main() {
   expect(installSh.includes("--profile") && installSh.includes("--no-input") && installSh.includes("--yes"), "setup/install.sh should support non-interactive profile flags");
   expect(installSh.includes('CLAUDE_MCP_CFG="$TARGET_DIR/.mcp.json"'), "setup/install.sh should create Claude project-scoped .mcp.json");
   expect(installSh.includes("config.disabled !== true"), "Claude project config should omit disabled optional MCPs");
-  expect(installSh.includes("const { disabled, env, ...server }"), "Claude project MCPs should inherit optional environment variables");
+  expect(installSh.includes("const { disabled, ...server }"), "Claude project MCPs should keep declared env placeholders, not strip them");
 
   const createdClaudeConfigIndex = installSh.indexOf('ok "Created .claude/settings.json"');
   const hookCallIndex = installSh.lastIndexOf("register_claude_hooks");
