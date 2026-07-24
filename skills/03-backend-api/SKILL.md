@@ -323,6 +323,107 @@ export const errorHandler = (err, req, res, next) => {
 };
 ```
 
+## Resiliência - Chamadas a Serviços Externos
+
+Toda chamada a um serviço externo (API terceira, outro microsserviço) pode falhar de forma lenta ou parcial, não só com erro imediato. Decidir a estratégia de resiliência é parte do contrato, não um detalhe de implementação a adicionar depois.
+
+### Rate Limiting - por endpoint, não global
+
+Rate limit genérico pro app inteiro protege infra mas não previne abuso de endpoint caro (ex: geração de relatório, envio de email). Definir limite por rota, com response `429` e header `Retry-After`.
+
+**src/middleware/rateLimit.ts**
+
+```typescript
+import rateLimit from 'express-rate-limit';
+
+export const rateLimitByRoute = (windowMs: number, max: number) =>
+  rateLimit({
+    windowMs,
+    max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+      res.status(429).json({
+        success: false,
+        error: { code: 'RATE_LIMITED', message: 'Muitas requisições, tente novamente em breve' },
+      });
+    },
+  });
+
+// uso: endpoint caro tem limite mais apertado que endpoint de leitura simples
+router.post('/reports/generate', rateLimitByRoute(60_000, 5), generateReport);
+router.get('/users/:id', rateLimitByRoute(60_000, 100), getUser);
+```
+
+### Retry com backoff exponencial + jitter
+
+Retry sem backoff crescente amplifica falha de serviço já sobrecarregado (thundering herd). Sem jitter, múltiplas instâncias do seu app retentam no mesmo instante e recriam o pico. Retry só em erros transitórios (timeout, 502/503/504) — nunca em 4xx (erro do cliente não se resolve retentando).
+
+```typescript
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const isRetryable = err.status === undefined || [502, 503, 504].includes(err.status);
+      if (!isRetryable || attempt === maxRetries) throw err;
+      const backoff = Math.min(1000 * 2 ** attempt, 10_000);
+      const jitter = Math.random() * backoff * 0.3;
+      await new Promise((resolve) => setTimeout(resolve, backoff + jitter));
+    }
+  }
+  throw new Error('unreachable');
+}
+```
+
+### Circuit Breaker - parar de tentar quando o serviço está fora
+
+Sem circuit breaker, cada requisição concorrente continua tentando (e esperando timeout) contra um serviço já derrubado, consumindo conexões/threads do seu próprio app até ele também cair. Três estados: `closed` (normal) → `open` (falhas acima do limiar, rejeita na hora sem chamar o serviço) → `half-open` (após cooldown, deixa 1 requisição de teste passar).
+
+```typescript
+type CircuitState = 'closed' | 'open' | 'half-open';
+
+class CircuitBreaker {
+  private state: CircuitState = 'closed';
+  private failures = 0;
+  private nextAttempt = 0;
+
+  constructor(private threshold = 5, private cooldownMs = 30_000) {}
+
+  async call<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() < this.nextAttempt) throw new Error('CIRCUIT_OPEN');
+      this.state = 'half-open';
+    }
+    try {
+      const result = await fn();
+      this.failures = 0;
+      this.state = 'closed';
+      return result;
+    } catch (err) {
+      this.failures++;
+      if (this.failures >= this.threshold) {
+        this.state = 'open';
+        this.nextAttempt = Date.now() + this.cooldownMs;
+      }
+      throw err;
+    }
+  }
+}
+```
+
+Não implementar circuit breaker do zero em produção sem necessidade comprovada — se o projeto já usa uma lib HTTP com suporte nativo (ex: `undici`, `got` com plugin), preferir a implementação testada. O padrão acima é a referência mental, não o único código aceitável.
+
+### Cache Invalidation - nomear a estratégia, não confiar em TTL sozinho
+
+TTL curto demais anula o cache; TTL longo demais serve dado obsoleto. Decidir explicitamente qual estratégia se aplica a cada recurso:
+
+- **Write-through**: invalida/atualiza o cache no mesmo commit que escreve no banco — dado nunca fica obsoleto, mas toda escrita paga o custo de atualizar cache.
+- **TTL curto + stale-while-revalidate**: serve o valor em cache mesmo vencido enquanto busca o novo em background — bom para dado que tolera alguns segundos de atraso (listagens, contadores).
+- **Invalidação por evento**: ao mudar o recurso, publicar evento que derruba as chaves de cache relacionadas — necessário quando o mesmo dado aparece em múltiplas chaves derivadas (ex: cache de listagem E de detalhe).
+
+Nunca cachear resposta de endpoint autenticado sem incluir o identificador do usuário na chave do cache — vaza dado de um usuário pra outro.
+
 ## Service Pattern - DRY
 
 **src/services/base.service.ts**
@@ -546,3 +647,7 @@ Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/
 | "É só um endpoint simples" | Endpoints simples sem rate limit, validação e auth são vetores de ataque |
 | "ORM protege contra SQL injection" | ORM protege queries normais. Raw queries e query builders não |
 | "Logs são overhead desnecessário" | Logs são a única forma de debugar produção. Sem logs = voo cego |
+
+## Fontes Externas
+
+- Padrões de resiliência (rate limiting por rota, retry com backoff+jitter, circuit breaker, estratégias de cache invalidation) inspirados em conceitos consolidados em [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer) — curados aqui como decisão de contrato de API acionável, não como material de estudo teórico.
