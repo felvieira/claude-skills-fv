@@ -1,0 +1,22 @@
+{
+  "skill": "55-marketing-reporting-analytics",
+  "should_trigger": [
+    "montar relatório de performance do Google Ads pro cliente",
+    "preciso configurar o GA4 do zero nesse projeto",
+    "migrar de Universal Analytics pra GA4",
+    "auditar a infraestrutura de dados de marketing desse projeto",
+    "calcular o CAC payback period do time de vendas",
+    "qual o ROI da campanha de Meta Ads do último trimestre",
+    "configurar Google Tag Manager e validar os eventos",
+    "checklist de setup do GA4 antes de lançar o site",
+    "calculadora de ROAS pra comparar os canais de aquisição",
+    "relatório mensal de campanha pro executivo"
+  ],
+  "shouldnt_trigger": [
+    "definir tracking plan de eventos da feature de onboarding",
+    "escrever a headline da landing page",
+    "pesquisa de palavra-chave pra SEO",
+    "configurar Dockerfile de produção",
+    "revisar acessibilidade do formulário de cadastro"
+  ]
+}

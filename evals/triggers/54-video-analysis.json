@@ -1,0 +1,22 @@
+{
+  "skill": "54-video-analysis",
+  "should_trigger": [
+    "preciso transcrever esse video de reuniao",
+    "baixar video do youtube e pegar a legenda",
+    "extrair frames desse video pra analisar",
+    "resumir esse video de 40 minutos",
+    "o que acontece nesse video, pode analisar",
+    "gerar legenda automatica pra esse podcast em video",
+    "transcription video usando whisper local",
+    "quero rodar yt-dlp nesse link e ver o transcript",
+    "analisar o conteudo desse video gravado",
+    "extract frames from this recorded lecture"
+  ],
+  "shouldnt_trigger": [
+    "gerar video promocional com Veo",
+    "criar clip de text-to-video pro anuncio",
+    "fazer image-to-video do produto novo",
+    "avatar video falando o roteiro da campanha",
+    "motion explainer generativo pro onboarding"
+  ]
+}

@@ -11,6 +11,7 @@
     {"id": "image-asset", "when_any": ["gerar imagem", "hero image", "og card", "favicon", "asset visual"], "skills": ["36-web-asset-generator", "17-image-generator"]},
     {"id": "llm-feature", "when_any": ["llm", "ia generativa", "chatbot", "rag", "agente de ia"], "skills": ["25-ai-integration-architect", "26-prompt-engineer"]},
     {"id": "prompt-work", "when_any": ["prompt", "system prompt", "avaliar prompt", "prompt engineering"], "skills": ["26-prompt-engineer"]},
-    {"id": "video", "when_any": ["video", "reel", "video generativo"], "skills": ["27-video-integration-specialist"]}
+    {"id": "video", "when_any": ["video", "reel", "video generativo"], "skills": ["27-video-integration-specialist"]},
+    {"id": "video-analysis", "when_any": ["transcrever video", "baixar video", "extrair frames", "legenda automatica", "resumir video", "analisar video", "whisper", "yt-dlp"], "when_none": ["gerar", "text-to-video", "video generativo"], "skills": ["54-video-analysis"]}
   ]
 }

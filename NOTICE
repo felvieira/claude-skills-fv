@@ -179,3 +179,12 @@ Tencent/TencentDB-Agent-Memory
   drill-down for long-horizon agents) and memory pyramid (L0→L3 layering
   on top of the existing 4-tier model). Both reimplemented from scratch as
   policies + zero-dep Node scripts to fit the kit's no-runtime model.
+
+bradautomates/claude-video
+  https://github.com/bradautomates/claude-video
+  License: MIT
+  Inspired the video-analysis skill's download → native-caption-or-frame →
+  transcribe flow. The kit implementation defaults to local, offline
+  transcription via faster-whisper (zero cost, audio never leaves the
+  machine) with hosted Groq/OpenAI Whisper as an opt-in override — the
+  upstream project only offers the hosted path.

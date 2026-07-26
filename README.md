@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 53 Specialist Skills for Coding Agents
+# Dev Team Kit — 55 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.41.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-53-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.42.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-55-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.42.0** | **Skill 55 `marketing-reporting-analytics`** — marketing analytics ops, distinct from skill 21's product-tracking scope: Ads/GA4 performance report structure (ROAS/CPA/CTR formulas, audience-adapted sections), a 4-phase GA4+GTM technical setup checklist ("configured" only after Phase 4 validation, not just tag install), an 8-category marketing data-infrastructure audit with PASS/FAIL/PARTIAL + severity, and CAC-payback/ROI/ROAS financial calculators (fully-loaded cost, churn-adjusted payback). | [`skills/55-marketing-reporting-analytics/SKILL.md`](skills/55-marketing-reporting-analytics/SKILL.md) |
 | **v2.41.0** | **Plugin routing catalog** — `plugins/catalog/*.json` groups the 53 skills into 9 task-oriented compositions (development, design-quality, product-marketing, release-ops, core-discovery, ai-integration, plus 3 external/high-risk plugins: finance, legal, Context7 docs). `node scripts/route-task.mjs "<task>"` (and the MCP tool `devkit_route_task`) return the smallest useful composition, with risk level and human-review flag surfaced for external recommendations — CLI and MCP routers verified in parity via a shared fixture suite. Structured routing feedback (`accepted`/`overridden`/`rejected`) feeds `/insights` and `/savings`, with size-based rotation so the log doesn't grow unbounded. Also: a Kimi Code MCP config generator, an optional Context7 HTTP transport (alongside the default stdio), a real stdio JSON-RPC boot check for the MCP server wired into `devkit doctor` + CI (routing evals check *what* gets recommended; this checks that the *recommender* actually boots), an installer fix for Windows/Git Bash path handling, and expanded design/SEO skills (numeric intensity dials + industry anti-patterns in skill 02, a copy-paste `templates/transitions.css`, and local/e-commerce/international sections in skill 14). | [`plugins/catalog/`](plugins/catalog/), [`policies/plugin-catalog.md`](policies/plugin-catalog.md), [`scripts/route-task.mjs`](scripts/route-task.mjs) |
 | **v2.40.0** | **Skill 53 `doubt-driven-review`** — absorbed from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT, 76.7k stars). In-flight adversarial review — distinct from skill 11's post-hoc PR gate — for non-trivial decisions while course-correction is still cheap: CLAIM (name the decision) → EXTRACT (smallest reviewable unit, no reasoning) → DOUBT (fresh-context reviewer, adversarial prompt, biased to refute) → RECONCILE (classify findings: contract-misread / actionable / trade-off / noise) → STOP (bounded at 3 cycles). Cross-referenced from skill 11 (reviewer). Also tightened skill 01's Deep Interview protocol (`templates/deep-interview.md`) with the same repo's `interview-me` discipline: guess-attached questions, "want vs. should-want" probing, mandatory "out of scope" line in the restate, and a stricter explicit-yes confirmation gate. | [`skills/53-doubt-driven-review/SKILL.md`](skills/53-doubt-driven-review/SKILL.md), [`templates/deep-interview.md`](templates/deep-interview.md) |
 | **v2.39.0** | **Idea absorption (not code) from ponytail + repowise + COMPILOT paper** — ponytail's 7-rung pre-code ladder (YAGNI → already-in-codebase → stdlib → native feature → installed dependency → one-liner → only then new code) as a policy + PreToolUse hook gate before code generation, plus a delete-list mode for `/simplify` and skill 23; repowise's risk-weighted deductions in skill 18's harnessability score, qualitative risk banding in `/diff-impact` and skill 11, and the reversible `_meta.omitted` truncation pattern documented in `mcp-builder-patterns.md` (concepts only — repowise itself is AGPL); the COMPILOT PACT 2025 paper's anti-premature-stopping and categorized feedback taxonomy applied to `/loop` and `/swarm`. | [`policies/`](policies/), [`hooks/scripts/pre-code-ladder-guard.mjs`](hooks/scripts/pre-code-ladder-guard.mjs) |
@@ -134,7 +135,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 53 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 55 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -171,14 +172,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 52 skills (52 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 54 skills (54 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 53 skills | ✅ | ✅ | ✅ |
+| 55 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |

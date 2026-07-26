@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.42.0] - 2026-07-26 — skill 55 marketing-reporting-analytics
+
+Absorção avaliada a partir de `cogny.com/resources` (6 recursos gratuitos de marketing). Avaliação inicial (agente) classificou os 6 como conteúdo de marketing genérico para consumo humano, sem lacuna mecânica — decisão revertida a pedido explícito do usuário, que quis a cobertura completa como skill nova em vez de absorção seletiva por gap.
+
+### Adicionado
+- **`skills/55-marketing-reporting-analytics/SKILL.md`** — skill de Marketing Analytics Ops cobrindo 4 blocos: (1) relatório de performance de campanha (Google Ads/Meta Ads) com estrutura de seções, fórmulas de ROAS/CPA/CTR e adaptação por público; (2) checklist de setup técnico GA4 + GTM em 4 fases (estrutura, eventos, integração, validação — "configurado" só depois da Fase 4); (3) auditoria de infraestrutura de dados de marketing em 8 categorias com veredito PASS/FAIL/PARTIAL + severidade; (4) calculadoras financeiras (CAC payback period ajustado por churn, ROI/ROAS com custo fully-loaded). Fronteira explícita com a skill 21 (data-analytics): 21 define *o que* trackear em produto (tracking plan, eventos, funil); 55 cobre *como configurar/auditar* a ferramenta de terceiro e o retorno financeiro de aquisição.
+- **`plugins/catalog/product-marketing.json`** — capability `marketing-reporting` roteando para a skill 55.
+
+### Alterado
+- Contagem de skills 53 → 55 em `README.md`, `README.pt-BR.md`, `.claude-plugin/plugin.json` (skill 54 `video-analysis` já existia no disco mas estava ausente das contagens/índices — corrigido de passagem; ver nota abaixo).
+
+### Corrigido
+- **Drift pré-existente:** `skills/54-video-analysis/SKILL.md` existe no repo (com scripts `video-transcribe*.mjs/py`, `video-frames.mjs`, `video-download.mjs` e `docs/skill-guides/video-analysis.md`) mas nunca tinha sido contado no README/plugin.json/badges — descoberto ao checar colisão de número antes de criar a skill 55. Não investigado a fundo (fora do escopo desta sessão); os números agora refletem as 55 skills reais em disco.
+
+---
+
 ## [2.41.0] - 2026-07-23 — catálogo de roteamento de plugins
 
 Absorção real de mecanismo (não só ideia) a partir de fontes canônicas fornecidas pelo usuário: Akita (harness/evals), MoonshotAI/kimi-code, obra/superpowers, upstash/context7, anthropics/skills, thedotmack/claude-mem, ui-ux-pro-max-skill, taste-skill, transitions.dev, usehallmark.com, Claude SEO, e os plugins oficiais Finance/Legal da Claude. Implementado incrementalmente ao longo de 2026-07-22 e 2026-07-23, incluindo review adversarial da implementação inicial e correção dos bugs encontrados.

@@ -1,15 +1,15 @@
 # Skill Portfolio Health
 
-> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-05-28T23:37:25.269Z.
+> Regenerado automaticamente por `scripts/skill-health.mjs` em 2026-07-26T18:30:09.873Z.
 > Não editar manualmente — alterações são sobrescritas.
 
 ## Sumário
 
-- **Skills:** 47
-- **Subagents:** 15
-- **Commands:** 39
-- **Eval fixtures:** 47
-- **Overlaps detectados (cross-section):** 0
+- **Skills:** 54
+- **Subagents:** 16
+- **Commands:** 44
+- **Eval fixtures:** 54
+- **Overlaps detectados (cross-section):** 2
 - **Dead policies (zero refs externas):** 0
 
 ## Flags
@@ -36,7 +36,8 @@
 
 ### Triggers compartilhados cross-section (overlap)
 
-- (sem overlaps detectados)
+- `discovery` → skill:01-po-feature-spec, skill:39-program-router, skill:51-ux-research
+- `headline` → skill:13-marketing-copy, skill:50-direct-response-copy
 
 ### Dead policies (zero referências externas)
 
@@ -46,17 +47,16 @@
 
 | Skill | Chars | Triggers | Fixture |
 |-------|-------|----------|---------|
+| 14-seo-specialist | 1159 | 36 | 15 prompts |
 | 48-research-prep | 952 | 20 | 15 prompts |
 | 47-pattern-conformity | 937 | 20 | 15 prompts |
+| 53-doubt-driven-review | 894 | 15 | 13 prompts |
+| 51-ux-research | 838 | 21 | 15 prompts |
 | 46-post-deploy-canary-monitor | 768 | 18 | 15 prompts |
-| 14-seo-specialist | 726 | 20 | 15 prompts |
+| 55-marketing-reporting-analytics | 745 | 19 | 15 prompts |
+| 49-context-budget | 679 | 15 | 15 prompts |
 | 23-migration-refactor-specialist | 660 | 21 | 15 prompts |
-| 44-zoom-out | 594 | 13 | 15 prompts |
-| 38-architecture-deepener | 577 | 9 | 15 prompts |
-| 39-program-router | 573 | 16 | 15 prompts |
-| 45-handoff-context | 546 | 14 | 15 prompts |
-| 18-repo-auditor | 519 | 10 | 15 prompts |
+| 01-po-feature-spec | 649 | 16 | 15 prompts |
 
 ## Ações sugeridas
 
-- Portfolio saudável. Continue assim.
