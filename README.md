@@ -7,7 +7,7 @@
 # Dev Team Kit — 55 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.42.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-55-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-54-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -135,7 +135,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 55 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 54 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -179,7 +179,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 55 skills | ✅ | ✅ | ✅ |
+| 54 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
