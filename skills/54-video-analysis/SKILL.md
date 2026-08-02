@@ -35,6 +35,10 @@ Para comandos completos de ffmpeg por estratégia e exemplos de payload de trans
 - edição de pós-produção tradicional (corte, mux, efeitos) — isso é pipeline de mídia, não análise
 - baixar conteúdo protegido por DRM ou de plataforma que proíbe download nos termos de uso — ver nota de ToS abaixo
 
+## Setup de Dependências
+
+`ffmpeg` e `yt-dlp` são binários de sistema (não pacotes Node) — rodar `node scripts/setup-video-analysis.mjs` uma vez detecta o que falta e tenta instalar automaticamente via o gerenciador de pacote já disponível na máquina (winget/choco/scoop no Windows, brew no macOS, apt/dnf no Linux; `pip` para `yt-dlp` e `faster-whisper` em qualquer SO). Se não conseguir instalar sozinho, o script imprime o comando manual exato. Rodar `--check-only` só verifica, sem tentar instalar nada.
+
 ## Entradas Esperadas
 
 - URL de vídeo público (YouTube, Vimeo, etc.) ou caminho de arquivo local
