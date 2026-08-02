@@ -188,3 +188,20 @@ bradautomates/claude-video
   transcription via faster-whisper (zero cost, audio never leaves the
   machine) with hosted Groq/OpenAI Whisper as an opt-in override — the
   upstream project only offers the hosted path.
+
+Leonxlnx/taste-skill
+  https://github.com/Leonxlnx/taste-skill
+  License: not declared upstream (treated as idea attribution only).
+  Inspired the DESIGN_VARIANCE/VISUAL_DENSITY/MOTION_INTENSITY intensity
+  dials and the em-dash ban in the UI/UX skill; the GSAP ScrollTrigger
+  skeletons (sticky-stack, horizontal-pan) in the Motion Design skill; and
+  the Scan → Diagnose → Fix redesign-audit protocol with its 7-dimension
+  checklist in the Design Intelligence skill's "Modo Redesign".
+
+nextlevelbuilder/ui-ux-pro-max-skill
+  https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+  License: not declared upstream (treated as idea attribution only).
+  Inspired the industry/vertical anti-pattern table (banned palettes,
+  typography, and schema per vertical) in the UI/UX skill — curated to the
+  6 most common verticals in this kit, not a literal port of the
+  upstream's 161 industry mappings.

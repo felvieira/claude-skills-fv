@@ -95,7 +95,37 @@ Montar super-prompt enriquecido com insights da analise e fazer handoff para o s
 
 **Regra default da skill 17** (aplica automaticamente): moodboard sem referência → `grok-imagine` ($0.020/img × 4 painéis = $0.080). Com screenshots de referência → `gemini-25-flash` ($0.039/img). Override só se moodboard precisar de tipografia complexa (`--model gemini-3-pro`).
 
-## Fases de Execucao
+## Modo Redesign — Auditoria de UI Existente
+
+Ponto de entrada 2 (linha "Melhoria de UI existente") usa este protocolo em vez das Fases 1-2 abaixo — aqui não há concorrente pra pesquisar, a UI existente É o material de análise. Aplica-se quando o usuário pede pra melhorar/redesenhar algo que já está construído.
+
+### Scan → Diagnose → Fix
+
+1. **Scan**: ler o código da UI existente — framework, método de estilização (Tailwind, CSS vanilla, styled-components), estrutura de componentes.
+2. **Diagnose**: rodar o checklist de 7 dimensões abaixo, listando todo padrão genérico, ponto fraco e estado faltante encontrado.
+3. **Fix**: aplicar upgrades na ordem de prioridade, trabalhando com a stack existente (não trocar framework/lib no meio do redesign).
+
+### Checklist de 7 dimensões
+
+| Dimensão | O que checar |
+|---|---|
+| Tipografia | fontes default do browser, hierarquia fraca, variação de peso insuficiente, largura de linha excessiva, palavra órfã |
+| Cor e superfície | paleta inconsistente, saturação, fundo genérico, qualidade de sombra — sinal clássico: "gradiente roxo/azul de IA" |
+| Layout | viés de centralização, grid de cards genérico, unidades de viewport, alinhamento e espaçamento inconsistentes |
+| Interatividade e estados | hover state ausente, foco sem indicador, falta de estado de loading/empty/error, feedback de navegação |
+| Conteúdo | nomes repetitivos, dados irreais, tom de copy genérico ("Elevate", "Seamless"), avatares idênticos |
+| Componentes | cards genéricos, badges em formato pill, carrossel de 3 cards, modal-para-tudo, círculos de avatar padronizados |
+| Código e omissões | HTML não-semântico, estilo inline, dimensões hardcoded, gaps de acessibilidade, ausência estratégica (link legal, página 404, validação de formulário) |
+
+### Ordem de execução dos upgrades
+
+`troca de fonte → limpeza de cor → estados interativos → layout/espaçamento → substituição de componente → design de estados → polimento tipográfico`
+
+Preservar estrutura de URL, labels de navegação e nomes de campo de formulário existentes, salvo aprovação explícita do usuário — redesign visual não é desculpa pra quebrar link externo ou integração já em uso.
+
+**Artefato:** `docs/design-intelligence/redesign-audit.md`, seguindo a mesma estrutura de dossiê da Fase 5, com a seção "7 dimensões" substituindo a análise competitiva.
+
+## Fases de Execucao (pesquisa competitiva — ponto de entrada 1)
 
 ### Fase 1: Discovery
 
@@ -222,6 +252,7 @@ Seguir `policies/handoffs.md` e `templates/handoff.md`.
 ## Fontes
 
 - Checagem de diversidade estrutural (Fase 3) inspirada na função "Redesign" de [usehallmark.com](https://www.usehallmark.com/) — garantir que a mesma forma estrutural não se repita sem justificativa entre projetos.
+- Protocolo Scan → Diagnose → Fix e checklist de 7 dimensões ("Modo Redesign") inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (redesign-skill).
 
 ## Codigo Limpo
 

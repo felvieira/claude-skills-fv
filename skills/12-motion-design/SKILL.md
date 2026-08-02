@@ -366,6 +366,73 @@ function ScrollFadeIn({ children }: { children: React.ReactNode }) {
 }
 ```
 
+## Scroll-Driven Complexo — GSAP ScrollTrigger
+
+Framer Motion `whileInView` cobre fade/slide-on-scroll simples (ver `ScrollFadeIn` acima). Para scroll-driven **coreografado** (pin de seção, scrub vinculado ao progresso do scroll, transições entre cards empilhados), GSAP + ScrollTrigger é a ferramenta certa — Framer Motion não tem `pin`/`scrub` nativos com o mesmo controle.
+
+**Regra dura:** nunca escutar scroll manualmente (`window.addEventListener('scroll')` em estado React) para dirigir animação — sempre `ScrollTrigger` (ou `useScroll`/`IntersectionObserver` para o caso simples). Listener manual perde sincronia de frame e não limpa corretamente.
+
+### Sticky-stack (cards empilhando ao rolar)
+
+```typescript
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function useStickyStack(cardRefs: React.RefObject<HTMLElement>[]) {
+  useEffect(() => {
+    const triggers = cardRefs.map((ref, i) => {
+      if (!ref.current) return null;
+      return ScrollTrigger.create({
+        trigger: ref.current,
+        start: 'top top',
+        pin: true,
+        pinSpacing: false,
+        animation: gsap.to(ref.current, {
+          scale: 0.92,
+          opacity: 0.6,
+          ease: 'none',
+        }),
+        endTrigger: cardRefs[i + 1]?.current || undefined,
+        end: 'top top',
+        scrub: true,
+      });
+    });
+    return () => triggers.forEach((t) => t?.kill());
+  }, [cardRefs]);
+}
+```
+
+### Horizontal-pan (seção que rola na horizontal)
+
+```typescript
+export function useHorizontalPan(containerRef: React.RefObject<HTMLElement>, distance: number) {
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const panel = containerRef.current;
+    const track = panel.querySelector<HTMLElement>('[data-pan-track]');
+    if (!track) return;
+
+    const tween = gsap.to(track, {
+      x: -distance,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: panel,
+        start: 'top top',
+        pin: true,
+        scrub: 1,
+        end: `+=${distance}`,
+      },
+    });
+    return () => tween.scrollTrigger?.kill();
+  }, [containerRef, distance]);
+}
+```
+
+Sempre limpar (`.kill()`) no cleanup do `useEffect` — trigger órfão continua calculando em resize/unmount e vaza memória. Isolar GSAP em Client Components (`"use client"`), nunca em Server Components.
+
 ## Regras de Performance
 
 1. **NUNCA** animar `width`, `height`, `top`, `left`, `margin`, `padding`
@@ -509,3 +576,7 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 - Separação clara de responsabilidades por arquivo
 - Tipos TypeScript expressivos
 - Estrutura previsível e consistente
+
+## Fontes Externas
+
+- Skeletons de GSAP ScrollTrigger (sticky-stack, horizontal-pan) inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
