@@ -44,7 +44,18 @@ function extractPostMeta(filename) {
   const lang  = html.match(/<html lang="([^"]+)"/)?.[1] ?? "en";
   const desc  = html.match(/<meta name="description" content="([^"]+)"/)?.[1] ?? "";
   const date  = filename.match(/^(\d{4}-\d{2}-\d{2})/)?.[1] ?? "";
-  return { filename, title, lang, excerpt: desc, date };
+  // Cover: prefer the body <img> src (relative), fall back to og:image (absolute URL).
+  // Body <img> gives a repo-relative path we can reuse as posts/<img> from the index root.
+  let cover = "";
+  const bodyImg = html.match(/<img[^>]+src="\.\.\/(assets\/images\/[^"]+)"/);
+  if (bodyImg) cover = bodyImg[1];
+  else {
+    const og = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1] ?? "";
+    // og:image may be an absolute Pages URL — keep only the assets/... tail if present
+    const tail = og.match(/(assets\/images\/[^"]+)$/);
+    cover = tail ? tail[1] : og;
+  }
+  return { filename, title, lang, excerpt: desc, date, cover };
 }
 
 const posts = readdirSync(POSTS_DIR)
@@ -52,12 +63,60 @@ const posts = readdirSync(POSTS_DIR)
   .map(extractPostMeta)
   .sort((a, b) => b.date.localeCompare(a.date));
 
-// Build index.html HTML block
-const indexHtml = posts.map(p => `    <a class="index-item" href="posts/${p.filename}">
-      <h2>${escapeHtml(p.title)}</h2>
-      <p class="meta">${p.date} · ${p.lang === "pt-BR" ? "🇧🇷 Português" : "🌎 English"}</p>
-      ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
-    </a>`).join("\n");
+const langLabel = p => (p.lang === "pt-BR" ? "🇧🇷 Português" : "🌎 English");
+
+// Featured = up to 3 newest (1 hero + 2 secondary); rest = compact list with thumbnail.
+const featured = posts.slice(0, 3);
+const rest     = posts.slice(3);
+
+function heroCard(p) {
+  return `      <a class="feat-hero${p.cover ? "" : " no-img"}" href="posts/${p.filename}">
+        ${p.cover ? `<div class="feat-hero-img" style="background-image:url('${p.cover}')"></div>` : ""}
+        <div class="feat-hero-body">
+          <p class="meta">${p.date} · ${langLabel(p)}</p>
+          <h2>${escapeHtml(p.title)}</h2>
+          ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
+        </div>
+      </a>`;
+}
+
+function secondaryCard(p) {
+  return `        <a class="feat-sec${p.cover ? "" : " no-img"}" href="posts/${p.filename}">
+          ${p.cover ? `<div class="feat-sec-img" style="background-image:url('${p.cover}')"></div>` : ""}
+          <div class="feat-sec-body">
+            <p class="meta">${p.date} · ${langLabel(p)}</p>
+            <h3>${escapeHtml(p.title)}</h3>
+          </div>
+        </a>`;
+}
+
+function listItem(p) {
+  return `      <a class="list-item${p.cover ? "" : " no-img"}" href="posts/${p.filename}">
+        ${p.cover ? `<div class="list-thumb" style="background-image:url('${p.cover}')"></div>` : ""}
+        <div class="list-body">
+          <h3>${escapeHtml(p.title)}</h3>
+          <p class="meta">${p.date} · ${langLabel(p)}</p>
+          ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
+        </div>
+      </a>`;
+}
+
+const featuredHtml = featured.length
+  ? `    <section class="featured">
+${featured[0] ? heroCard(featured[0]) : ""}
+${featured.length > 1 ? `      <div class="feat-secondary">
+${featured.slice(1).map(secondaryCard).join("\n")}
+      </div>` : ""}
+    </section>`
+  : "";
+
+const restHtml = rest.length
+  ? `    <section class="post-list">
+${rest.map(listItem).join("\n")}
+    </section>`
+  : "";
+
+const indexHtml = [featuredHtml, restHtml].filter(Boolean).join("\n");
 
 const indexFile = readFileSync(INDEX, "utf8");
 const indexUpdated = indexFile.replace(
