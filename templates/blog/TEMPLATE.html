@@ -32,10 +32,21 @@
 {{BODY_HTML}}
   </article>
 
+  <section class="share-block">
+    <p class="share-label">📣 Gostou? Compartilha no LinkedIn</p>
+    <p class="share-hook">{{SHARE_HOOK}}</p>
+    <div class="share-actions">
+      <button type="button" class="copy-share">📋 Copiar texto do post</button>
+      <a class="share-linkedin" href="https://www.linkedin.com/feed/?shareActive=true" target="_blank" rel="noopener">in Abrir LinkedIn</a>
+    </div>
+    <div class="share-text">{{LINKEDIN_TEXT}}</div>
+  </section>
+
   <footer class="post">
-    <span>Published {{DATE_ISO}} · CC-BY-4.0</span>
-    <span><a href="{{SOURCE_URL}}">View source</a> · <a href="https://github.com/{{GITHUB_USER}}/{{BLOG_REPO}}">All posts</a></span>
+    <span>{{DATE_HUMAN}}</span>
+    <span><a href="https://github.com/{{GITHUB_USER}}/{{BLOG_REPO}}">{{GITHUB_USER}}'s blog</a></span>
   </footer>
 </main>
+<script src="../assets/js/share.js"></script>
 </body>
 </html>

@@ -13,6 +13,50 @@ O post não pode revelar que é baseado em outro texto. Regras de aplicação:
 
 Critério-mestre: *"essa menção é um fato do assunto, ou é um vínculo ao texto-fonte / à pessoa que o escreveu?"* — Fato do assunto fica; vínculo some.
 
+## Setup para novos usuários (open source) — passo a passo humano
+
+> O kit é open source. **A skill nunca publica no blog do felvieira para outra pessoa** —
+> ela resolve o repo destino dinamicamente via `~/.dev-team-kit/blog-config.json`. Cada
+> usuário aponta para o próprio blog. Se o config não existir, a skill pausa e pede este setup.
+
+**Pré-requisitos:** Node.js, `git`, e a [GitHub CLI (`gh`)](https://cli.github.com/) autenticada
+(`gh auth login`). Uma conta GitHub própria.
+
+**Passo 1 — Rodar o init script** (uma vez, na sua máquina):
+
+```bash
+node /caminho/para/claude-skills-fv/scripts/init-blog-repo.mjs \
+  --path=/caminho/onde/quer/o/blog \
+  --user=SEU_USUARIO_GITHUB \
+  --repo=blog \
+  --create-github
+```
+
+- `--path` — onde o repo do blog vai viver localmente (ex: `~/Repos/blog` ou `D:/Repos/blog`).
+- `--user` — **seu** username do GitHub (vira `SEU_USUARIO.github.io/blog` e preenche os templates).
+- `--repo` — nome do repo (default `blog`).
+- `--create-github` — cria o repo no GitHub e habilita Pages automaticamente. Omita se quiser
+  criar o repo manualmente depois.
+
+**O que o script faz:**
+1. Cria o diretório e copia os templates de `templates/blog/*` (substituindo `{{GITHUB_USER}}`/`{{BLOG_REPO}}` pelos SEUS dados).
+2. `git init` no destino.
+3. Escreve `~/.dev-team-kit/blog-config.json` com os seus paths/URL.
+4. (com `--create-github`) `gh repo create` público + habilita GitHub Pages na branch `main`.
+5. Commit inicial.
+
+**Passo 2 — Chaves necessárias:**
+- `FAL_AI_API_KEY` no ambiente (para gerar imagens via fal.ai). Sem ela, a skill avisa e você
+  pode publicar sem imagem ou configurar a chave. Ver `GLOBAL.md` para onde a chave é lida.
+- `gh` já autenticado cobre o push (não precisa de PAT manual).
+
+**Passo 3 — Usar:** dali em diante, é só pedir ao Claude *"publica um post sobre X"*. A skill 41
+lê o SEU config, escreve no SEU repo, faz push e retorna a SUA URL pública. Nenhuma configuração
+adicional por post.
+
+> Trocar de blog / reconfigurar: rode o init de novo com outro `--path`/`--user`, ou edite
+> `~/.dev-team-kit/blog-config.json` à mão. Override pontual via env `DEVKIT_BLOG_CONFIG=/outro/config.json`.
+
 ## Multi-user — resolução do repo destino
 
 A skill lê `~/.dev-team-kit/blog-config.json` (override via env `DEVKIT_BLOG_CONFIG`):

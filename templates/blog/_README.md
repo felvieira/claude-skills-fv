@@ -6,7 +6,24 @@ Auto-generated technical posts via Dev Team Kit skill 41 (blog-publisher).
 
 ## How it works
 
-I send text or a topic to Claude → skill 41 generates HTML + images (via skill 17 fal.ai or skill 42 Playwright) → commits/pushes here → publishes via GitHub Pages → returns the URL.
+I send text or a topic to Claude → skill 41 writes an original authorial post → generates HTML + images (via skill 17 fal.ai or skill 42 Playwright) → adds a LinkedIn share block → commits/pushes here → publishes via GitHub Pages → returns the URL.
+
+## Setup (fork / reuse this)
+
+This blog is scaffolded by the Dev Team Kit. To run your own, don't clone this repo —
+run the kit's init script pointing at YOUR GitHub account:
+
+```bash
+node /path/to/claude-skills-fv/scripts/init-blog-repo.mjs \
+  --path=/where/you/want/the/blog \
+  --user=YOUR_GITHUB_USERNAME \
+  --repo=blog \
+  --create-github
+```
+
+It creates the repo, enables Pages, and writes `~/.dev-team-kit/blog-config.json` so skill 41
+publishes to YOUR blog — never anyone else's. Needs `gh` authenticated and `FAL_AI_API_KEY` set
+for images. Full guide: `docs/skill-guides/blog-publisher.md` in the kit.
 
 ## Posts
 

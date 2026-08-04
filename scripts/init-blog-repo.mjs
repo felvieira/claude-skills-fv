@@ -104,6 +104,7 @@ substituteAndWrite("_gitignore",       ".gitignore");
 
 // Verbatim copies (no substitution)
 copyBinary("assets/css/post.css",      "assets/css/post.css");
+copyBinary("assets/js/share.js",       "assets/js/share.js");
 copyBinary("scripts/new-post.mjs",     "scripts/new-post.mjs");
 copyBinary("scripts/update-index.mjs", "scripts/update-index.mjs");
 

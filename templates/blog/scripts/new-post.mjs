@@ -95,6 +95,20 @@ const coverImgTag = args.cover
   ? `<img src="../${args.cover}" alt="${(args.title || "").replace(/"/g, "&quot;")} — cover" style="width:100%; height:auto; border-radius:8px; margin: 24px 0 32px; border: 1px solid var(--border)">`
   : "";
 
+// LinkedIn share block. --share-hook is the mysterious teaser shown on-page;
+// --linkedin is the full ready-to-paste post copied by the button. Both fall
+// back to the excerpt + URL so the block is never left with raw placeholders.
+function htmlEscape(s) {
+  return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+}
+const postUrl   = pagesBase ? `${pagesBase}/posts/${filename}` : "";
+const shareHook = htmlEscape(args["share-hook"] || args.excerpt);
+const linkedinText = htmlEscape(
+  args.linkedin
+    ? `${args.linkedin}${postUrl ? `\n\n${postUrl}` : ""}`
+    : `${args["share-hook"] || args.excerpt}${postUrl ? `\n\nLeia o post completo: ${postUrl}` : ""}`,
+);
+
 const html = tmpl
   .replaceAll("{{LANG}}", args.lang)
   .replaceAll("{{TITLE}}", args.title)
@@ -109,6 +123,8 @@ const html = tmpl
   .replaceAll("{{SOURCE_URL}}", sourceUrl)
   .replaceAll("{{GITHUB_USER}}", config.github_user ?? "user")
   .replaceAll("{{BLOG_REPO}}", config.blog_repo ?? "blog")
+  .replaceAll("{{SHARE_HOOK}}", shareHook)
+  .replaceAll("{{LINKEDIN_TEXT}}", linkedinText)
   .replace("{{BODY_HTML}}", bodyHtml);
 
 writeFileSync(outPath, html);

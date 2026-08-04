@@ -185,6 +185,54 @@ footer.post {
 
 footer.post a { color: var(--link); }
 
+/* Share / LinkedIn block */
+.share-block {
+  margin-top: 56px;
+  padding: 24px 26px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.share-block .share-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.share-block .share-hook {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 18px;
+  white-space: pre-wrap;
+}
+.share-block .share-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.share-block button.copy-share,
+.share-block a.share-linkedin {
+  appearance: none;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: filter 0.15s, background 0.15s;
+}
+.share-block button.copy-share:hover,
+.share-block a.share-linkedin:hover { filter: brightness(1.1); }
+.share-block button.copy-share { background: var(--surface2); border-color: var(--border); }
+.share-block button.copy-share.copied { background: var(--accent2); border-color: var(--accent2); color: #052e1a; }
+.share-block .share-text { display: none; }
+
 /* Landing index */
 .index-list { display: flex; flex-direction: column; gap: 24px; }
 .index-item {
