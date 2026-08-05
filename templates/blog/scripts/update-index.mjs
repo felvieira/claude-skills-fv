@@ -64,6 +64,11 @@ const posts = readdirSync(POSTS_DIR)
   .sort((a, b) => b.date.localeCompare(a.date));
 
 const langLabel = p => (p.lang === "pt-BR" ? "🇧🇷 Português" : "🌎 English");
+// ISO date (YYYY-MM-DD) -> short BR format (DD/MM/YYYY) for landing cards.
+const dateShort = p => {
+  const [y, m, d] = p.date.split("-");
+  return y && m && d ? `${d}/${m}/${y}` : p.date;
+};
 
 // Featured = up to 3 newest (1 hero + 2 secondary); rest = compact list with thumbnail.
 const featured = posts.slice(0, 3);
@@ -73,7 +78,7 @@ function heroCard(p) {
   return `      <a class="feat-hero${p.cover ? "" : " no-img"}" href="posts/${p.filename}">
         ${p.cover ? `<div class="feat-hero-img" style="background-image:url('${p.cover}')"></div>` : ""}
         <div class="feat-hero-body">
-          <p class="meta">${p.date} · ${langLabel(p)}</p>
+          <p class="meta">${dateShort(p)} · ${langLabel(p)}</p>
           <h2>${escapeHtml(p.title)}</h2>
           ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
         </div>
@@ -84,7 +89,7 @@ function secondaryCard(p) {
   return `        <a class="feat-sec${p.cover ? "" : " no-img"}" href="posts/${p.filename}">
           ${p.cover ? `<div class="feat-sec-img" style="background-image:url('${p.cover}')"></div>` : ""}
           <div class="feat-sec-body">
-            <p class="meta">${p.date} · ${langLabel(p)}</p>
+            <p class="meta">${dateShort(p)} · ${langLabel(p)}</p>
             <h3>${escapeHtml(p.title)}</h3>
           </div>
         </a>`;
@@ -95,7 +100,7 @@ function listItem(p) {
         ${p.cover ? `<div class="list-thumb" style="background-image:url('${p.cover}')"></div>` : ""}
         <div class="list-body">
           <h3>${escapeHtml(p.title)}</h3>
-          <p class="meta">${p.date} · ${langLabel(p)}</p>
+          <p class="meta">${dateShort(p)} · ${langLabel(p)}</p>
           ${p.excerpt ? `<p class="excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
         </div>
       </a>`;
