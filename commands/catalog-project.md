@@ -11,6 +11,10 @@ Fluxo:
 - se `docs/repo-audit/current.md` não existir ou estiver desatualizado → disparar `Repo Auditor` primeiro
 - se `_detective_sdd/00-overview.md` não existir → disparar `Detective Spec` primeiro (ou usar o que já existir)
 - procurar conteúdo de produto no repo consumidor: `README.md`, `docs/pricing*`, `docs/landing*`, páginas de marketing/landing dentro de `app/`/`src/` (ex. seção hero, FAQ, tabela de planos), `CHANGELOG.md` para funcionalidades recentes — usar o que existir, nunca inventar
+- procurar histórico de sessões em `docs/context/session-*.md` do repo consumidor (formato gerado por `31-session-summary`) — se existirem, sintetizar cada arquivo numa entrada de `sessions:` (ver schema abaixo); se não existir nenhum, omitir a seção inteira (nunca inventar sessão)
+- procurar dados operacionais no repo consumidor: `.env`, `.env.example`, `.env.production` (para envVars), `docker-compose.yml`/`vercel.json`/`README.md`/`DEPLOY.md` (para addresses de produção — domínio, URL da API, dashboard), e qualquer doc com métricas já coletadas (ex. `docs/metrics.md`, seção de analytics no README) — sintetizar em `operations:` (ver schema abaixo)
+  - **AVISO DE SEGURANÇA — decisão explícita do usuário, não default do kit**: `operations.envVars[].value` grava o VALOR REAL de cada variável, incluindo secrets (API keys, senhas de banco, tokens), lido diretamente do `.env` do repo consumidor. Isso deixa credenciais em texto puro dentro de `manifest.yaml`, versionado no git do repo consumidor, e visível a qualquer agente de IA que consultar o project-brain (UI ou MCP). Só prossiga com valores reais se o usuário já confirmou esse tradeoff nesta conversa — se não tiver certeza, pare e confirme antes de ler qualquer `.env`. Se o usuário preferir a opção segura, grave só `name` (sem `value`) por variável, extraído de `.env.example`
+  - **antes de gravar qualquer valor real de env var**: rodar `git remote -v` no repo consumidor. Se houver QUALQUER remote configurado (GitHub, GitLab, servidor próprio, não importa se privado ou público) — avisar o usuário explicitamente ("este repo tem remote configurado: `<url>`; secrets gravados no manifest vão junto no próximo push, mesmo que o repo seja privado hoje") e aguardar confirmação antes de prosseguir com valores reais. Sem remote (`git remote -v` vazio) → repo é só local, pode prosseguir sem essa pausa adicional (mas o aviso do item acima ainda vale)
 - sintetizar tudo em `.project-memory/manifest.yaml` seguindo o schema:
 
 ```yaml
@@ -56,6 +60,29 @@ product:
     - question: <pergunta>
       answer: <resposta>
 
+sessions:
+  # OPCIONAL — só preencher a partir de docs/context/session-YYYY-MM-DD.md existentes no repo consumidor.
+  # Nunca inventar sessão; nunca puxar de D:\claude-memory\logs\ (vault pessoal) — só do repo local,
+  # pra manter o manifest portável entre usuários/máquinas.
+  - agent: <de onde a sessão foi rodada, se identificável no arquivo — ex. "Claude Code"; "desconhecido" se não indicado>
+    date: <data do arquivo session-YYYY-MM-DD.md>
+    summary: <1 frase resumindo "O que foi feito", extraída do próprio arquivo>
+    commit: <opcional — hash de commit associado, só se explicitamente citado no arquivo>
+
+operations:
+  # OPCIONAL — só preencher com evidência real do repo consumidor (.env*, docker-compose, README, docs de deploy/métricas).
+  envVars:
+    - name: <NOME_DA_VAR>
+      value: <valor real lido do .env, ou omitir este campo se o usuário optou pela versão segura>
+      source: <qual arquivo, ex. ".env", ".env.production">
+  addresses:
+    - label: <ex. "Produção", "API", "Dashboard admin">
+      url: <URL real citada no repo>
+  metrics:
+    - name: <ex. "MRR", "usuários ativos">
+      value: <valor tal como documentado — nunca consultar API externa, só o que já está escrito no repo>
+      asOf: <opcional — data/fonte do dado, ex. "docs/metrics.md, 2026-07">
+
 sources:
   repoAudit: docs/repo-audit/current.md
   detectiveSpec: _detective_sdd/
@@ -63,6 +90,6 @@ sources:
   lastSyncedCommit: <hash do commit HEAD atual>
   lastSyncedAt: <timestamp ISO atual>
 ```
-- regra crítica: nenhuma capacidade, integração ou campo de `product` pode aparecer no manifesto sem estar rastreável a uma fonte em `sources` — nunca inferir/inventar sem evidência. Se o repo não tem README/landing/pricing/FAQ, a seção `product` correspondente fica de fora (nunca gerar copy de marketing genérica pra preencher o vazio)
+- regra crítica: nenhuma capacidade, integração, campo de `product`, entrada de `sessions` ou campo de `operations` pode aparecer no manifesto sem estar rastreável a uma fonte real no repo consumidor — nunca inferir/inventar sem evidência. Se o repo não tem README/landing/pricing/FAQ, a seção `product` correspondente fica de fora (nunca gerar copy de marketing genérica pra preencher o vazio). Se não houver `docs/context/session-*.md`, a seção `sessions` fica de fora. Se não houver `.env*`/deploy config/métricas documentadas, a seção `operations` fica de fora — nunca inventar URL de produção ou métrica que não esteja escrita em algum arquivo do repo
 - `internalDependency` só é preenchido quando a integração detectada corresponde ao `id` de outro projeto que já está listado em `project-brain.config.json` (não adivinhar — checar esse arquivo se ele existir no ambiente)
 - `.project-memory/manifest.yaml` fica versionado no git do repo consumidor — nunca fora dele, nunca centralizado em outro lugar

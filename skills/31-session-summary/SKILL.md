@@ -39,7 +39,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`
 
 ## Saidas Esperadas
 
-- resumo em `docs/context/session-YYYY-MM-DD.md`
+- resumo em `docs/context/session-YYYY-MM-DD.md` **dentro do repo consumidor** (mesmo diretorio do projeto, versionavel/portavel — sem depender de vault pessoal de nenhum usuario)
+- copia identica em `D:\claude-memory\logs\YYYY-MM-DD-<projeto>-session.md` quando o vault pessoal (`D:\claude-memory\`) existir na maquina (ver `policies/memory-write-rules.md`) — os dois arquivos tem o mesmo conteudo, o local do repo e a fonte canonica que outras skills do kit (ex: `/catalog-project`) devem ler
 - atualizacao de `docs/context/current-focus.md`
 
 ## Responsabilidades
@@ -105,7 +106,8 @@ Este resumo é de uma sessão sobre [tema] em [projeto], salvo em [data]. Cobre 
 
 ## Evidencia de Conclusao
 
-- resumo salvo em `docs/context/session-YYYY-MM-DD.md`
+- resumo salvo em `docs/context/session-YYYY-MM-DD.md` (repo consumidor)
+- copia salva em `D:\claude-memory\logs\` quando o vault existir na maquina
 - `docs/context/current-focus.md` atualizado
 - pendencias e proximos passos claros e priorizados
 
