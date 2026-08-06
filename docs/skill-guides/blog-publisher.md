@@ -105,12 +105,12 @@ blog/
 | Cenário | Provider | Modelo |
 |---|---|---|
 | Post sobre URL existente | Skill 42 (Playwright) | screenshot 1400×900 |
-| Post sobre código/abstrato (text-to-image) | Skill 17 (fal.ai) | `flux-2-flash` |
+| Post sobre código/abstrato (text-to-image) | Skill 17 (fal.ai) | `gpt-image-1-mini` |
 | Editar/refinar imagem com referência | Skill 17 | `gemini-25-flash` ($0.039/img) |
 | Post premium / hero importante | Skill 17 | `gemini-3-pro` ($0.15) |
 | Tipografia/layout específicos | Skill 17 | `gpt-image-1.5` |
 
-Default text-to-image: `flux-2-flash` ($0.005/MP). Para editar imagem com referência: `gemini-25-flash`.
+Default text-to-image: `gpt-image-1-mini`. Para editar imagem com referência: `gemini-25-flash`.
 
 ## Bloco LinkedIn — formato
 

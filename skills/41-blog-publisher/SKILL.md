@@ -86,7 +86,7 @@ Salvar em `{blog_repo_path}/.tmp-body-{slug}.html`.
 ### 3. Imagens
 
 - URL/dashboard navegável: Skill 42 (screenshots Playwright)
-- Texto/abstrato: Skill 17 com `flux-2-flash` (default text-to-image)
+- Texto/abstrato: Skill 17 com `gpt-image-1-mini` (default text-to-image)
 - Cover obrigatória (1500×750), salva em `assets/images/{slug}-cover.{png|jpg}`
 - Posts >1000 palavras: mínimo 2-3 imagens inline distribuídas nas seções
 
