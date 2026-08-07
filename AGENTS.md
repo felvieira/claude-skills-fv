@@ -53,7 +53,7 @@ Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
 | `/loop` | Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass (`node scripts/auto-loop.mjs "task"`) |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
 | `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem tocar no código (skill 33) |
-| `/catalog-project` | Sintetiza `docs/repo-audit/current.md` + `_detective_sdd/00-overview.md` em `.project-memory/manifest.yaml` versionado no repo consumidor — stack, capacidades e integrações sempre rastreáveis a evidência |
+| `/catalog-project` | Sintetiza repo-audit + detective-spec + narrativa de produto (resumo/planos/FAQ) + histórico de sessões + dados operacionais (envs/endereços/métricas) em `.project-memory/manifest.yaml` versionado no repo consumidor — tudo sempre rastreável a evidência, alimenta o catálogo cross-repo `project-brain` |
 | `/grill-me` | Interrogatório relentless de plano até convergência (uma pergunta + resposta sugerida por turno) |
 | `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) |
 | `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker |

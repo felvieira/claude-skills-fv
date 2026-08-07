@@ -479,6 +479,7 @@ O instalador solicita cada key e salva em `.env.local` do projeto.
 | `/loop` | Orquestrador autônomo multi-agente (auto-loop v2) — claude + codex, paralelo via worktree, polishing pass | `scripts/auto-loop/` |
 | `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background | — |
 | `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem modificar o código | Detective Spec (33) |
+| `/catalog-project` | Sintetiza repo-audit + detective-spec + narrativa de produto (resumo/planos/FAQ) + histórico de sessões + dados operacionais (envs/endereços/métricas) em `.project-memory/manifest.yaml` — alimenta o catálogo cross-repo `project-brain` | Repo Auditor (18) + Detective Spec (33) |
 | `/grill-me` | Interrogatório relentless de uma ideia/plano — uma pergunta + resposta sugerida por turno | PO (01) Deep Interview |
 | `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) | PO (01) modo PRD |
 | `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker | Orchestrator (09) + vertical-slices |
@@ -678,6 +679,7 @@ Histórico completo em **[CHANGELOG.md](./CHANGELOG.md)**.
 
 | Versão | Data | Destaques |
 |---|---|---|
+| **v2.43.0** | 2026-08-06 | `/catalog-project` agora sintetiza `product` (resumo/planos/FAQ), `sessions` (a partir de `docs/context/session-*.md`) e `operations` (envs, endereços, métricas) no manifesto — alimenta o app companheiro `project-brain`, catálogo cross-repo. Confere `git remote -v` antes de gravar valor real de secret e avisa se o repo tem remote configurado |
 | **v2.1.0** | 2026-05-20 | **Smart routing**: hook intent-classifier v2 (regex expandido + LLM Haiku opcional), 9 patterns novos (bug/issue/refactor/test/spike/etc), telemetry em .swarm/classifier.jsonl. Novo program `refactor-safely` com baseline tests + behavior preservation. `docs/USE-CASES.md` mapeia 17 cenarios |
 | **v2.0.0** | 2026-05-20 | **MAJOR: modo `/swarm`** — autonomia total: prompt → PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4 agentes paralelos de review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous, intent-classifier roteia prompts de feature pra /swarm. Inspirado em Ralph/fix-issue/comprehensive-review do coleam00/archon |
 | **v1.9.0** | 2026-05-20 | **Active mode agora é default**. Hook auto-roda `--dry-run` mostrando plano, gates dentro do program ainda pausam. Tutorial de setup do Nível 3 (Autonomous) adicionado ao README com checklist de segurança |

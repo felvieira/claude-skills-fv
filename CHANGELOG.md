@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.43.0] - 2026-08-06 — catalog-project sintetiza produto, sessões e dados operacionais
+
+Trabalho feito em paralelo com o desenvolvimento do app companheiro `project-brain` (catálogo cross-repo, repositório separado) — cada extensão de schema no manifesto nasceu de uma necessidade concreta de exibição no `project-brain`.
+
+### Adicionado
+- **`commands/catalog-project.md`** — três novas seções sintetizadas no `.project-memory/manifest.yaml`:
+  - `product` — resumo, proposta de valor, funcionalidades, valores, planos e FAQ extraídos de README/landing/pricing do repo consumidor (nunca copy inventado; seção omitida por completo se não houver fonte real)
+  - `sessions` — histórico sintetizado de `docs/context/session-*.md` (formato gerado pela skill 31), nunca do vault pessoal (`D:\claude-memory\logs\`) — mantém o manifesto portável entre usuários/máquinas
+  - `operations` — variáveis de ambiente, endereços de produção e métricas já documentadas, extraídas de `.env*`/deploy config/docs do repo consumidor
+- **Checagem de segurança antes de gravar secret real**: o comando roda `git remote -v` no repo consumidor antes de gravar `operations.envVars[].value` com valor real — se houver qualquer remote configurado, avisa explicitamente que o secret vai versionado no próximo push (mesmo em repo privado) e aguarda confirmação
+- **`skills/31-session-summary/SKILL.md`** — clarifica que `docs/context/session-YYYY-MM-DD.md` no repo consumidor (não o vault pessoal) é a fonte canônica que `/catalog-project` lê para a seção `sessions`
+
+### Alterado
+- `AGENTS.md`, `README.md`, `README.pt-BR.md` — entrada de `/catalog-project` atualizada para refletir as três seções novas (antes só mencionava stack/capacidades/integrações)
+
+---
+
 ## [2.42.0] - 2026-07-26 — skill 55 marketing-reporting-analytics
 
 Absorção avaliada a partir de `cogny.com/resources` (6 recursos gratuitos de marketing). Avaliação inicial (agente) classificou os 6 como conteúdo de marketing genérico para consumo humano, sem lacuna mecânica — decisão revertida a pedido explícito do usuário, que quis a cobertura completa como skill nova em vez de absorção seletiva por gap.
