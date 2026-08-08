@@ -203,7 +203,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 37 Especialistas
+## Os 55 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -240,6 +240,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 | 02 | **UI/UX Designer** | define layout, sistema de tokens, responsividade e heurísticas de uso |
 | 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph e Twitter card images, manifest e snippets de meta tags — derivados de logo ou texto da marca |
+| 56 | **Responsive Conversion** | converte UI desktop-first em mobile, corrige layout quebrado (por que filho de flex/grid não pega 100%, `dvh` vs `vh`, safe area, scroll horizontal) e é dona dos padrões de modal/bottom sheet e confirmação destrutiva |
 
 ### Desenvolvimento
 

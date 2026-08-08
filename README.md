@@ -209,7 +209,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 48 Specialists
+## The 55 Specialists
 
 ### Management and Coordination
 
@@ -250,6 +250,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 02 | **UI/UX Designer** | defines layout, token system, responsiveness and usage heuristics |
 | 29 | **Design Intelligence** | researches competitors, captures screenshots, analyzes visual trends and ships a strategic dossier for UI/UX |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph and Twitter card images, manifest and meta tag snippets — derived from a logo or brand text |
+| 56 | **Responsive Conversion** | converts desktop-first UI to working mobile, fixes broken layout (why a flex/grid child won't fill 100%, `dvh` vs `vh`, safe area, horizontal scroll), and owns modal/bottom-sheet and destructive-confirmation patterns |
 
 ### Development
 
