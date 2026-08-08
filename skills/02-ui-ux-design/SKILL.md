@@ -23,6 +23,8 @@ Para checklist de acabamento fino (border radius concentrico, alinhamento optico
 
 Esta skill decide como a interface **vai** parecer, antes de existir. Para converter interface ja implementada em versao mobile, ou corrigir layout quebrado (componente que nao ocupa 100%, corta na tela, scroll horizontal, modal estourando viewport), ver `skills/56-responsive-conversion/SKILL.md` — inclui tambem os padroes de modal/bottom sheet e de confirmacao de acao destrutiva, que esta skill so cita como heuristica de Nielsen.
 
+Se o produto pode receber outro idioma — mesmo que hoje seja so pt-BR — ver `skills/58-i18n-localization/SKILL.md` antes de fixar largura de botao, alinhamento ou formato de data: texto traduzido cresce ate 30% e RTL inverte o layout inteiro. Preparar depois custa muito mais que projetar assim desde o inicio.
+
 Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — zona do polegar (onde a navegacao pode morar), superficie base do dark mode (`#121212`, nunca preto puro) e contraste minimo verificado nos dois temas — ver `skills/57-mobile-ux-foundations/SKILL.md`. Essa skill tambem cobre percepcao de espera (skeleton vs. spinner por faixa de duracao) e UX de login/onboarding/permissao.
 
 ## Quando Usar
@@ -114,6 +116,46 @@ Quando o projeto se encaixa claramente em uma destas verticais, aplicar também 
 | **E-commerce** | — (paleta é dirigida pela marca do produto, não pela vertical) | Display font pesada em preço/CTA de compra (reduz legibilidade em decisão rápida) | Grid de produto sem hierarquia de destaque — tudo do mesmo tamanho força o usuário a escolher sem orientação |
 | **SaaS B2B (operacional/dashboard)** | Paleta vibrante multi-cor sem função (cor deve significar estado, não decorar) | Display expressivo em dados tabulares | Onboarding com tour de 10 passos antes de deixar o usuário agir — fricção que a persona B2B não tolera |
 | **Educação/e-learning** | Paleta infantilizada em produto para adulto (erro comum em upskilling B2C) | Tipografia lúdica quando o público é profissional | Gamificação genérica (barra de XP, badges) sem conexão com o resultado real de aprendizagem |
+
+## Adotar um Design System Existente
+
+Antes de derivar tokens do zero, decidir se um design system maduro resolve. Adotar um DS existente entrega componentes, tokens, acessibilidade e documentação já resolvidos — inventar do zero só se justifica quando diferenciação visual é o produto.
+
+**A âncora estética e o design system são decisões separadas.** O DS define componentes e estrutura; a âncora define a pele. Carbon com paleta e tipografia próprias continua Carbon na estrutura.
+
+| Design system | Dono | Melhor encaixe | Custo |
+| --- | --- | --- | --- |
+| **Material 3** | Google | Android nativo, produto consumer, quando dynamic color agrega | Alto no Android (nativo no Compose); na web, avaliar o estado de manutenção da implementação escolhida |
+| **Apple HIG** | Apple | iOS/iPadOS/macOS | Baixo se usar componentes nativos — o sistema aplica a linguagem atual sozinho |
+| **Fluent 2** | Microsoft | Ferramenta de produtividade, ecossistema Microsoft, densidade média-alta | Médio, biblioteca React ampla |
+| **Carbon** | IBM | Enterprise com muita tabela, formulário e dado denso | Médio, forte em padrão de dados |
+| **Shadcn/Radix + tokens próprios** | — | Quando a marca precisa mandar, mas acessibilidade de primitiva não pode ser reinventada | Baixo, mas exige construir o sistema visual |
+
+Regra de decisão por tipo de produto:
+
+- **Enterprise / muito dado** → Carbon ou Fluent. Tabela densa é o caso onde card não substitui: comparar registros exige linha e coluna
+- **Mobile nativo** → o DS da plataforma (M3 no Android, HIG no iOS). Forçar visual idêntico entre as duas quebra a expectativa adquirida do usuário de cada uma
+- **Landing / marca forte** → primitiva acessível + tokens próprios; DS completo engessa sem devolver benefício
+- **Dashboard** → Carbon/Fluent para diagnóstico; layout modular em cards para visão executiva
+
+**Compartilhar entre plataformas:** regra de negócio, conteúdo, hierarquia e tokens semânticos. **Não compartilhar:** componente e interação onde a convenção nativa diverge — navegação, seletor de data, ação de linha, sheet.
+
+A ordem de construção não é negociável: **semântica → tokens → primitivas → componentes → estados → dados → responsivo → estilo visual → motion**. Design que só funciona depois que a decoração entra está escondendo problema de hierarquia ou de arquitetura da informação.
+
+## Componente de Feedback — Escolher pela Gravidade
+
+O componente de mensagem é escolhido por **urgência × persistência × necessidade de ação**, não pelo que é mais fácil implementar:
+
+| Padrão | Quando | Evitar |
+| --- | --- | --- |
+| **Inline** (junto do elemento) | Erro de campo, estado de uma seção | Abrir modal para problema que se resolve no próprio contexto |
+| **Snackbar / toast** | Resultado breve e não bloqueante, com ação opcional ("Desfazer") | Informação que precisa continuar visível até ser resolvida — some antes de ser lida |
+| **Banner** | Condição relevante que deve permanecer visível (offline, conta suspensa, manutenção) | Sucesso rotineiro; ruído permanente |
+| **Sheet / drawer** | Subtarefa focal que preserva relação com a tela anterior | Empilhar sheet sobre sheet |
+| **Dialog / alert** | Decisão que justifica interromper, confirmação destrutiva | "Salvo com sucesso" — isso é snackbar |
+| **Push** | Informação útil quando o app está fechado | Reengajamento sem valor para quem recebe |
+
+Erro que exige ação nunca é toast: some sozinho e leva a informação junto.
 
 ## Bibliotecas com MCP
 

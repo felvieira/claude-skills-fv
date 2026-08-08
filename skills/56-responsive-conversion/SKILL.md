@@ -27,6 +27,7 @@ Fronteira com skills vizinhas:
 - **52-ui-polish** cuida do acabamento micro (border radius concentrico, alinhamento optico) **depois** que o layout esta correto — layout quebrado nao se resolve com polish
 - **22-accessibility-specialist** e dona de WCAG completo — esta skill cobre so o subconjunto que colide com mobile (hit area, focus trap em modal, zoom de input)
 - **57-mobile-ux-foundations** define, **antes** desta, onde o elemento deve morar pela zona do polegar, como o tema escuro se comporta, como tratar espera acima de 1s e como desenhar login/onboarding — esta skill executa o layout dentro dessas restricoes
+- **58-i18n-localization** trata a quebra causada pelo **conteudo** (texto traduzido cresce, RTL inverte a direcao); esta skill trata a quebra causada pela **largura da tela**. A raiz costuma ser a mesma — container que se recusa a crescer — entao o fix de `min-w-0` daqui frequentemente resolve os dois
 
 ## Quando Usar
 

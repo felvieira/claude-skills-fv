@@ -5,6 +5,28 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.46.0] - 2026-08-08 — skill 58 i18n-localization + adoção de design system
+
+Quarta rodada de material de UI/UX (dois relatórios: diretrizes mobile iOS/Android/Material, e vertentes visuais de 2026). A medição expôs o gap mais surpreendente até agora: **i18n aparecia exatamente uma vez em todo o kit** — o item de checklist "locales suportados" em `policies/constitution.md` — com zero ocorrência de `pseudolocale`, `RTL`, `internacionalização`, expansão de texto ou formatter por locale. Não é buraco de UI; é buraco de kit de dev. Também tinham zero cobertura: `Carbon`, `Fluent`, `Liquid Glass`, `snackbar`, `supporting text`, `container queries`, `Shneiderman`, `macrobenchmark` e `Credential Manager`.
+
+O material dos relatórios que já estava coberto (heurísticas de Nielsen, contraste, targets 44/48, Dynamic Type, passkeys, skeleton vs. spinner, validação inline, label vs. placeholder, safe area, reduced motion) veio das rodadas anteriores — v2.44.0, v2.45.0 e v2.45.1 — e não foi reescrito.
+
+### Adicionado
+- **`skills/58-i18n-localization/SKILL.md`** — internacionalização como trabalho de arquitetura, feito antes de existir tradutor no projeto:
+  - **Por que não pode ficar para depois** — tabela de decisões tomadas sem pensar em i18n e o que cada uma quebra. Frase concatenada fixa a ordem de palavras do português no código; largura fixa corta o alemão; `${dia}/${mes}` faz os EUA lerem 08/03 como 3 de agosto; `if (n === 1)` erra em russo e árabe. Nenhuma é resolvida por tradutor
+  - **Protocolo de auditoria em 4 fases** — grep por string presa ao código/concatenação/direção física/largura fixa, teste em pseudolocale (que expõe hardcode, falta de espaço, concatenação e encoding de uma vez), teste RTL, correção pela causa
+  - **Catálogo de 9 problemas** com causa e correção: externalização com chave semântica, plural via API da plataforma, formatters com armazenamento canônico (ISO 8601 + código de moeda), expansão de +30% como piso, propriedades lógicas, texto em bitmap, ordenação com `Intl.Collator`, formulário que não presume um país, `lang`/`dir` corretos
+  - **O que não espelha em RTL** — números, logo, ícone de mídia, gráfico com eixo temporal: espelhar o layout não significa espelhar o conteúdo
+- **`docs/skill-guides/i18n-localization.md`** — tabela de expansão por idioma, gerador de pseudolocale que preserva placeholders, tabela físico→lógico (incluindo equivalentes Tailwind `ms-*`/`me-*`), armadilha de data sem fuso na virada da meia-noite, validação de nome com `\p{L}` em vez de `[a-zA-Z]`, e teste automatizado que detecta truncamento via `scrollWidth > clientWidth`
+
+### Alterado
+- **`skills/02-ui-ux-design`** — seção "Adotar um Design System Existente": tabela Carbon/Fluent/M3/HIG/primitivas com melhor encaixe e custo, regra de decisão por tipo de produto, e a distinção que o kit não fazia — **a âncora estética e o design system são decisões separadas**. Também a ordem de construção não-negociável (semântica → tokens → primitivas → componentes → estados → dados → responsivo → estilo → motion): design que só funciona depois da decoração está escondendo problema de hierarquia
+- **`skills/02-ui-ux-design`** — matriz de componente de feedback por gravidade (inline / snackbar / banner / sheet / dialog / push). A regra que faltava: erro que exige ação nunca é toast, porque some sozinho e leva a informação junto
+- `skills/56-responsive-conversion` — declara a fronteira com a 58: aquela trata quebra por **conteúdo** (texto traduzido), esta por **largura de tela**; a raiz costuma ser a mesma, e o `min-w-0` daqui frequentemente resolve as duas
+- `plugins/catalog/development.json` e `design-quality.json` — 3 capabilities novas de roteamento: `i18n`, `design-system-choice`, `feedback-components`
+
+---
+
 ## [2.45.1] - 2026-08-08 — enxertos de UI web nas skills existentes
 
 Terceira rodada de material de UI/UX. Diferente das duas anteriores, a medição mostrou que **~80% já estava coberto** — hover/focus/disabled (02 e 22), LCP/CLS (14), `prefers-reduced-motion` (12 e 22), contraste, grade de 8pt, label vs. placeholder, validação inline. Skill nova teria sobreposição alta com 02/22/56/57 e faria o roteador hesitar entre elas, então o material entrou como quatro adições cirúrgicas onde cada uma pertence.

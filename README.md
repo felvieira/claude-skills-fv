@@ -4,7 +4,7 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 55 Specialist Skills for Coding Agents
+# Dev Team Kit — 57 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.42.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-54-1d4ed8)
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.46.0** | **Skill 58 `i18n-localization`** — the kit's most surprising gap: i18n appeared exactly **once** across every skill, policy and rule (as the checklist line "supported locales"), with zero coverage of pseudolocale, RTL, text expansion or locale formatters. i18n is architecture work, not translator work — a concatenated sentence, a fixed-width button, a hand-built date and `margin-left` all break on contact with another language, and no translator can fix any of them. Covers string externalization with semantic keys, plural via platform API (2 forms works in pt/en and breaks in Russian/Arabic), locale formatters with canonical storage, +30% expansion as the test floor, logical properties for RTL (with the list of what must **not** mirror: numbers, logos, media icons), and pseudolocale/RTL as regression tests rather than one-off manual checks. Also: skill 02 gains a design-system adoption table (Carbon/Fluent/M3/HIG/primitives, chosen by product type — the aesthetic anchor and the design system are separate decisions) and a feedback-component matrix by severity (an error needing action is never a toast: it disappears and takes the information with it). | [`skills/58-i18n-localization/SKILL.md`](skills/58-i18n-localization/SKILL.md), [`docs/skill-guides/i18n-localization.md`](docs/skill-guides/i18n-localization.md) |
 | **v2.45.0** | **Skill 57 `mobile-ux-foundations`** — the decisions that precede layout, each grounded in biometric, physiological or behavioral data rather than taste. **Thumb zone**: ~75% navigate by thumb and ~49% one-handed, with touch precision dropping to ~61% in the top third — which is why primary navigation belongs at the bottom, and why a destructive action in the hard-to-reach corner is a feature, not a bug. **Dark mode physiology**: pure `#000000` is an error (halation against astigmatism, OLED smearing on scroll, and it kills elevation since shadow needs residual light), so `#121212` is the base surface and elevation is expressed by *lighter* surfaces. **Perceived performance**: the 100ms/1s/10s thresholds, why a skeleton beats a spinner between 1–10s, and why a loader below 1s is worse than nothing. **Auth/onboarding UX**: passkeys first-class with bootstrap keys and a ~30-day warm handover, NIST SP 800-63B against draconian password rules (no "confirm password", allow paste), floating labels over placeholders, inline validation on blur, and permission priming before any native dialog. | [`skills/57-mobile-ux-foundations/SKILL.md`](skills/57-mobile-ux-foundations/SKILL.md), [`docs/skill-guides/mobile-ux-foundations.md`](docs/skill-guides/mobile-ux-foundations.md) |
 | **v2.44.0** | **Skill 56 `responsive-conversion`** — converts desktop-first UI into working mobile UI, and owns the interaction patterns that conversion exposes. Fills a real gap: responsiveness was 9 lines in skill 02, and modal/confirmation existed only as a Nielsen checklist question. Includes a symptom→root-cause→fix catalog (`min-width: auto` as the actual reason a flex/grid child "won't fill 100%", `dvh` vs `vh`, `env(safe-area-inset-*)` for notch/gesture bar, horizontal-scroll hunting), a 4-phase audit protocol tested at 320/390/768px, modal vs. bottom-sheet decision table with non-negotiable requirements (focus trap, focus return, iOS-safe scroll lock), and destructive-action patterns keyed to reversibility (prefer Undo over Confirm; typed-name confirmation for catastrophic actions). | [`skills/56-responsive-conversion/SKILL.md`](skills/56-responsive-conversion/SKILL.md), [`docs/skill-guides/responsive-conversion.md`](docs/skill-guides/responsive-conversion.md) |
 | **v2.43.0** | `/catalog-project` now synthesizes `product`, `sessions` and `operations` into the manifest, feeding the companion `project-brain` cross-repo catalog. Checks `git remote -v` before writing real secret values. | [`commands/catalog-project.md`](commands/catalog-project.md) |
@@ -138,7 +139,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 54 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 57 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -175,14 +176,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 56 skills (56 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 57 skills (57 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 54 skills | ✅ | ✅ | ✅ |
+| 57 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -210,7 +211,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 56 Specialists
+## The 57 Specialists
 
 ### Management and Coordination
 
@@ -253,6 +254,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph and Twitter card images, manifest and meta tag snippets — derived from a logo or brand text |
 | 56 | **Responsive Conversion** | converts desktop-first UI to working mobile, fixes broken layout (why a flex/grid child won't fill 100%, `dvh` vs `vh`, safe area, horizontal scroll), and owns modal/bottom-sheet and destructive-confirmation patterns |
 | 57 | **Mobile UX Foundations** | thumb-zone ergonomics (where navigation may live), dark mode physiology (`#121212`, never pure black), perceived performance (skeleton vs. spinner by duration band), and auth/onboarding/permission UX (passkeys, NIST password rules, permission priming) |
+| 58 | **i18n & Localization** | prepares a product for another language, region or writing direction *before* a translator exists: string externalization, plural via platform API, locale formatters, +30% text expansion, RTL with logical properties, and pseudolocale/RTL as regression tests |
 
 ### Development
 
