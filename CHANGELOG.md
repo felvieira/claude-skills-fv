@@ -5,6 +5,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.47.0] - 2026-08-08 — skill 59 closed-loop-revenue + profundidade de motion
+
+Quinta rodada de material (dois relatórios: animação em interfaces com identidade própria, e arquitetura de competências para IA construir/lançar/monetizar software). O segundo relatório é majoritariamente sobre **treinar um modelo** (SFT, DPO, RL, datasets, benchmarks) — fora do escopo de um kit de skills em markdown, e deliberadamente não absorvido. O que aproveitou foi a camada de pipeline comercial.
+
+Medição: `GCLID`, `measurement plan`, `margem de contribuição`, `conversão offline`, `smart bidding`, `target ROAS`, `SSDF`, `ASVS`, `SBOM` e `SPDX` tinham **zero** ocorrência. Do lado de motion, a skill 12 já tinha 582 linhas cobrindo tokens/easing/spring/stagger, mas `shared element`, `FLIP`, `haptic`, `flash` e `vestibular` também estavam em zero.
+
+### Adicionado
+- **`skills/59-closed-loop-revenue/SKILL.md`** — a cadeia clique pago → evento → venda → margem, que nenhuma skill cobria (a 21 define *o que* trackear no produto; a 55 monta relatório de campanha):
+  - **Cadeia de identidade** — GCLID, UTM, `transaction_id` e ID de CRM têm funções distintas e não são intercambiáveis; tratá-los como equivalentes é a causa mais comum de dado que não reconcilia. GCLID precisa ser persistido **junto do lead/pedido no backend**, não só no analytics — é o ponto de falha que impede fechar o loop depois
+  - **Backend como fonte de verdade** — o evento `purchase` do cliente não é receita: não dispara em pagamento assíncrono (PIX, boleto), dispara duas vezes em refresh e morre com bloqueador. Reconciliação compara backend × analytics × plataforma com **tolerância declarada**, e divergência acima dela bloqueia escala de mídia
+  - **A conta que muda a decisão** — break-even ROAS = 1 / margem de contribuição. Com margem de 40%, o equilíbrio é 2,5: um ROAS de 2,0 aparece verde no painel e destrói valor. Tabela de referência por faixa de margem no guia
+  - **Sinal econômico para o bidder** — em lead gen com qualidade variável, otimizar para `generate_lead` ensina o algoritmo a comprar lead ruim barato; o que fecha o loop é enviar o desfecho real (fechou? de quanto?)
+- **`docs/skill-guides/closed-loop-revenue.md`** — contrato de evento campo a campo, funis de e-commerce/lead gen/assinatura, fórmulas, receita de auditoria com diagnóstico por padrão de divergência, tratamento de pagamento assíncrono, e testes de regressão para duplicidade e consent
+
+### Alterado
+- **`skills/12-motion-design`** — quatro seções novas:
+  - **Continuidade de objeto** (shared element / FLIP) — quando o mesmo objeto aparece em dois estados, preservar a identidade em vez de destruir e recriar. Stagger em lista que reordena precisa ser mínimo (~15ms): 50–100ms numa lista de 10 faz o último item esperar quase um segundo
+  - **Feedback multimodal** — visual/háptico/som como um único evento, com **regra de redundância**: nenhum erro, sucesso ou alerta crítico pode existir só em som ou só em háptico. Háptico de "concluído" vai no resultado, nunca no press
+  - **Limites de segurança** — flash acima de 3×/segundo é risco de convulsão fotossensitiva (WCAG 2.3.1); parallax e deslocamento grande causam sintoma vestibular. `prefers-reduced-motion` preserva a informação e remove o deslocamento, não é `animation: none` global
+  - **Quando NÃO animar** — o critério que faltava: tarefa repetitiva onde animação virou latência, movimento que esconde dado, usuário digitando, erro crítico, e "fica premium" como única justificativa. Teste final: removido o motion o produto continua claro; restaurado, parece inequivocamente ele mesmo
+- `skills/21-data-analytics` e `skills/55-marketing-reporting-analytics` — declaram a fronteira com a 59
+- `plugins/catalog/product-marketing.json` e `design-quality.json` — capability `closed-loop-revenue` e gatilhos novos de motion
+
+---
+
 ## [2.46.0] - 2026-08-08 — skill 58 i18n-localization + adoção de design system
 
 Quarta rodada de material de UI/UX (dois relatórios: diretrizes mobile iOS/Android/Material, e vertentes visuais de 2026). A medição expôs o gap mais surpreendente até agora: **i18n aparecia exatamente uma vez em todo o kit** — o item de checklist "locales suportados" em `policies/constitution.md` — com zero ocorrência de `pseudolocale`, `RTL`, `internacionalização`, expansão de texto ou formatter por locale. Não é buraco de UI; é buraco de kit de dev. Também tinham zero cobertura: `Carbon`, `Fluent`, `Liquid Glass`, `snackbar`, `supporting text`, `container queries`, `Shneiderman`, `macrobenchmark` e `Credential Manager`.

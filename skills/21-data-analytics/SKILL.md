@@ -34,6 +34,7 @@ Tracking toca dados de usuario — trate como tal:
 - implementar analytics sem criterio de negocio ("trackear tudo" gera ruido caro e ilegivel)
 - substituir observabilidade operacional (logs/metricas de sistema → skill 20) — analytics e comportamento de usuario, nao saude de servico
 - substituir SEO/atribuicao de marketing (canal, campanha) sem o contexto de produto
+- fechar o loop de identidade e dinheiro — GCLID/UTM/transaction_id, reconciliacao com o backend, margem de contribuicao, conversao offline (isso e 59-closed-loop-revenue). Esta skill define **o que** trackear no produto; a 59 garante que o numero bate com a receita real
 
 ## Entradas Esperadas
 

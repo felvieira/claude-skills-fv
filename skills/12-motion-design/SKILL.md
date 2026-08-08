@@ -4,7 +4,9 @@ description: |
   Skill de Motion Design para animações, transições e micro-interações. Use quando precisar definir ou implementar
   animações de interface, transições entre páginas, efeitos de hover/click/focus, loading states animados, ou
   qualquer interação visual com movimento. Trigger em: "animacao", "transicao", "motion", "micro-interacao",
-  "framer motion", "spring", "easing", "parallax", "scroll animation", "hover effect".
+  "framer motion", "spring", "easing", "parallax", "scroll animation", "hover effect",
+  "shared element", "flip", "layout animation", "haptic", "vibracao", "som de interface",
+  "reduced motion", "flash", "piscando", "quando nao animar", "animacao demais".
 ---
 
 # Motion Design - Animações, Transições e Micro-Interações
@@ -544,6 +546,97 @@ const contentVariants: Variants = {
   },
 };
 ```
+
+## Continuidade de Objeto — Shared Element e FLIP
+
+Quando o **mesmo objeto** aparece em dois estados (card na lista → detalhe; thumbnail → player; item que muda de posição ao filtrar), a animação certa preserva a identidade dele em vez de destruir e recriar. O usuario acompanha o objeto com os olhos e nao perde o contexto de origem.
+
+| Situacao | Padrao | Por que |
+| --- | --- | --- |
+| Card → tela de detalhe | Shared element / container transform | O card **vira** a tela; a origem fica óbvia |
+| Item muda de posicao (filtro, ordenacao, reorder) | FLIP / layout animation | Preserva a identidade; fade+remount faz parecer lista nova |
+| Thumbnail → media em tela cheia | Shared element na imagem | A imagem é o objeto; o resto é moldura |
+| Troca de contexto sem relacao | Crossfade curto | Nao existe objeto compartilhado para preservar |
+
+FLIP (First, Last, Invert, Play) mede a posicao antes e depois da mudanca no DOM e anima a diferenca — o layout real acontece instantaneamente, so a percepcao é animada. Em React com `motion`, a prop `layout` faz isso automaticamente; em DOM puro, GSAP Flip ou `getBoundingClientRect` manual.
+
+**Stagger em lista que reordena precisa ser mínimo** — algo em torno de 15ms entre itens. Stagger de 50-100ms numa lista de 10 itens faz o ultimo esperar quase um segundo e transforma uma operacao de dados em apresentacao.
+
+A direcao da transicao deve codificar a estrutura, nao ser sempre "de baixo pra cima": aprofundar segue a arquitetura da navegacao, voltar é a inversao exata da entrada, abrir a partir de um elemento nasce **naquele elemento**.
+
+## Feedback Multimodal — Haptic e Som
+
+Visual, haptic e som devem parecer **um unico evento**, nao tres. Feedback dessincronizado é percebido como defeito de hardware.
+
+```
+visual  → onde e o que mudou
+haptic  → que um evento discreto aconteceu
+som     → evento relevante mesmo fora do foco visual
+```
+
+**Regra de redundancia (nao negociavel):** nenhum erro, sucesso ou alerta critico pode existir **so** em som ou **so** em haptic. Quem esta no silencioso, com deficiencia auditiva, ou com haptic desligado precisa receber a mesma informacao.
+
+Haptic — "menos é mais". Vibracao demais irrita, distrai e produz habituacao (o usuario para de perceber):
+
+| Evento | Haptic |
+| --- | --- |
+| Botao comum | Nenhum |
+| Toggle importante, snap de slider | Leve e preciso |
+| Conclusao de operacao | Sucesso |
+| Erro destrutivo | Padrao de alerta/erro |
+| Drag cruzando threshold | Impacto discreto |
+| Scroll, navegacao comum, animacao decorativa | Nenhum |
+
+Preferir a constante semantica da plataforma (`HapticFeedbackConstants` no Android, `sensoryFeedback` no SwiftUI) a inventar padrao de vibracao proprio — a plataforma mantem consistencia e tem fallback por hardware. Haptic ruim é pior que nenhum.
+
+**Timing:** haptic de "input recebido" vai no press; haptic de "acao concluida" vai no **resultado**, nunca no press — senao mente sobre o que aconteceu.
+
+Som serve quando a informacao precisa sobreviver a ausencia de foco visual, o evento é raro e importante, e existe metafora clara. Nunca em hover, navegacao comum ou ambiente continuo. Audio que inicia sozinho e dura mais de 3s precisa de controle de pausa/volume (WCAG 1.4.2), e audio concorrente atrapalha leitor de tela.
+
+## Limites de Seguranca — Flash e Movimento Vestibular
+
+Estes nao sao preferencia estetica; sao risco de saude.
+
+**Flash (WCAG 2.3.1, nivel A):** nada pode piscar mais de **3 vezes por segundo**, salvo abaixo dos limiares de flash geral e vermelho. Acima disso ha risco de convulsao fotossensitiva. Afeta: transicao piscante, loading que alterna cor rapido, video/GIF autoplay, efeito estroboscopico.
+
+**Movimento vestibular:** parallax, zoom grande, rotacao e deslocamento de tela inteira podem causar tontura, nausea e enxaqueca em quem tem disturbio vestibular. Por isso `prefers-reduced-motion` nao é opcional em produto que usa esses efeitos.
+
+**Reduced motion nao é `animation: none` global.** A implementacao correta preserva a **informacao** e remove o **deslocamento**:
+
+```css
+.modal { animation: modal-enter 260ms cubic-bezier(.16,1,.3,1); }
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: translateY(18px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Mantem o "apareceu", remove o deslocamento espacial */
+  .modal { animation: modal-reduced 90ms linear; }
+  @keyframes modal-reduced { from { opacity: 0 } to { opacity: 1 } }
+}
+```
+
+Asset animado (Lottie, Rive, video) tambem precisa respeitar: em reduced motion, mostrar o **frame final** em vez de tocar a trajetoria. A preferencia deve virar um token global que a aplicacao inteira le, incluindo bibliotecas externas.
+
+## Quando NAO Animar
+
+O criterio mais importante desta skill. Animação tem custo — de atencao, de tempo e de frame budget.
+
+Nao animar quando:
+
+- **A tarefa é repetitiva e o usuario é experiente.** Animacao que "explica" o mesmo evento pela centesima vez virou latencia pura. 300ms numa operacao feita 100 vezes ao dia é meia hora de espera por mes
+- **A animacao esconde dado.** Reordenar tabela justifica continuidade; fazer cada celula entrar com stagger, nao
+- **Varios elementos ja competem por atencao.** Movimento tem saliencia alta — animar tudo é nao priorizar nada
+- **O usuario esta digitando ou decidindo algo critico.** Nunca deslocar layout sob o cursor ou o foco
+- **O sistema esta em erro critico.** Primeiro torne a mensagem legivel; erro nao é espetaculo
+- **A unica justificativa é "fica premium".** Isso nao é hipotese testavel
+- **A animacao causa jank ou layout shift.** Transicao simples e estavel comunica mais qualidade que animacao sofisticada a 30fps
+
+**Regra de bloqueio:** animacao ornamental nunca pode impedir a proxima interacao. Em tarefa frequente, o movimento precisa ser interrompivel — o input do usuario tem prioridade sobre a animacao em curso.
+
+**Teste final da linguagem de motion:** quando o movimento é removido, o produto continua claro; quando é restaurado, passa a parecer inequivocamente ele mesmo. Se remover quebra o entendimento, o motion esta carregando informacao que deveria estar na estrutura. Se restaurar nao muda nada, o motion é decoracao.
 
 ## Evidencia de Conclusao
 

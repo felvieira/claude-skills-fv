@@ -23,7 +23,7 @@
     {"id": "auth-onboarding-ux", "when_any": ["passkey", "passwordless", "login sem senha", "webauthn", "onboarding", "tutorial inicial", "pedir permissao", "permission priming", "formulario de cadastro"], "skills": ["57-mobile-ux-foundations", "06-security-review"]},
     {"id": "interaction-patterns", "when_any": ["modal", "bottom sheet", "confirmacao", "confirmação", "excluir", "acao destrutiva", "ação destrutiva", "undo", "desfazer"], "skills": ["56-responsive-conversion", "22-accessibility-specialist"]},
     {"id": "accessibility", "when_any": ["acessibilidade", "acessível", "a11y", "wcag", "leitor de tela"], "skills": ["22-accessibility-specialist"]},
-    {"id": "motion", "when_any": ["animacao", "transicao", "microinteracao", "reduced motion"], "skills": ["12-motion-design"]},
+    {"id": "motion", "when_any": ["animacao", "transicao", "microinteracao", "reduced motion", "shared element", "layout animation", "haptic", "vibracao", "quando nao animar", "animacao demais", "piscando"], "skills": ["12-motion-design", "52-ui-polish"]},
     {"id": "user-research", "when_any": ["pesquisa com usuario", "entrevista", "journey map", "teste de usabilidade"], "skills": ["51-ux-research"]}
   ]
 }

@@ -41,6 +41,7 @@ Setup de tracking de terceiro (GA4, GTM, Meta Pixel) e auditoria de dados tocam 
 - SEO tecnico ou keyword research → skill 14 (seo-specialist)
 - observabilidade de sistema (uptime, latencia, erro de servico) → skill 20 (observability-sre) — isto e comportamento de usuario e gasto de midia, nao saude de servico
 - decisao de budget/pricing de negocio sem dados (isto e input pra skill 01, nao saida desta skill)
+- reconciliar analytics com a receita do backend, definir cadeia de identidade (GCLID/transaction_id), calcular break-even ROAS a partir da margem real ou enviar conversao offline → skill 59 (closed-loop-revenue). Esta skill monta o relatorio; a 59 garante que o dado dentro dele bate com o financeiro
 
 ## Entradas Esperadas
 
