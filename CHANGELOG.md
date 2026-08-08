@@ -5,6 +5,28 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.45.0] - 2026-08-08 — skill 57 mobile-ux-foundations
+
+Continuação direta da 56: se aquela conserta layout já implementado, esta cobre as decisões que vêm **antes** do layout — onde a mão alcança, como o olho lê no escuro, como o cérebro mede espera, e como o usuário entra no app. Cada regra ancorada em dado biométrico, fisiológico ou comportamental, não em preferência estética.
+
+Medição antes de escrever, como na 56: `thumb zone`, `#121212`, `passkey`/`webauthn`, `permission priming`, `haptic`, `inline validation` e `floating label` tinham **zero** ocorrência no kit inteiro (skills, policies e rules). As menções existentes de `dark mode` na skill 52 eram duas linhas de acabamento (ring de sombra e outline de imagem), não sistema de cor; `spinner` na 02 era uma célula de tabela de props. Autenticação já existia nas skills 03 e 06, mas do lado de backend e segurança — nunca como UX do fluxo.
+
+### Adicionado
+- **`skills/57-mobile-ux-foundations/SKILL.md`** — quatro blocos:
+  - **Ergonomia da zona do polegar** — ~75% navegam com o polegar, ~49% com uma mão só, e a precisão de toque cai de quase total (terço inferior) para ~61% (terço superior). Daí a navegação primária embaixo e o menu hambúrguer no topo como herança de desktop na pior posição possível. Corolário útil: ação destrutiva no canto difícil vira prevenção de erro, o único caso em que a zona ruim é a escolha certa. Inclui limiares de gesto (80–120px, 200–250px/s, ≤25°) e mapa de haptics por significado
+  - **Fisiologia do dark mode** — por que `#000000` puro é erro em três frentes (halation contra astigmatismo, smearing OLED no scroll, e morte da elevação já que sombra precisa de luz residual), com `#121212` como superfície base e elevação expressa por superfícies *mais claras*. Escala `--surface-0..3`, dessaturação obrigatória de cor de marca/estado no tema escuro, e contraste verificado nos **dois** temas
+  - **Performance percebida** — limiares 100ms/1s/10s; skeleton entre 1–10s (spinner concentra atenção na própria espera e faz a operação parecer o dobro), nada abaixo de 1s (flash de loader é pior que ausência), progresso determinado acima de 10s. Easing com física coerente: `ease-out` entrando, `ease-in` saindo, `linear` só em loop
+  - **Auth e onboarding** — passkeys em primeiro plano com bootstrap key e warm handover de ~30 dias (o calcanhar de Aquiles não é criar a passkey, é perder o dispositivo); NIST SP 800-63B contra matriz rígida de senha, sem campo "confirmar senha", colagem permitida; label flutuante em vez de placeholder; validação inline no blur; permission priming antes de todo diálogo nativo, com o app seguindo útil se a permissão for negada
+- **`docs/skill-guides/mobile-ux-foundations.md`** — tabelas de referência (alvos de toque por norma, grade 8dp, microtipografia), escala de superfície do dark mode, fluxo completo de passkey incluindo recuperação, e snippet de label flutuante
+
+### Alterado
+- `skills/56-responsive-conversion` — declara que a 57 roda antes (define onde o elemento mora, a 56 executa o layout); tabela de formulário ganha validação no blur e label flutuante
+- `skills/02-ui-ux-design` — aponta para a 57 como as restrições fisiológicas que os tokens têm de respeitar
+- `skills/22-accessibility-specialist` — registra o recorte de a11y que a 57 aplica (contraste nos dois temas, erro que não depende só de cor, alvo tátil por norma)
+- `plugins/catalog/design-quality.json` — 4 capabilities novas para roteamento: `mobile-ergonomics`, `dark-mode`, `perceived-performance`, `auth-onboarding-ux`
+
+---
+
 ## [2.44.0] - 2026-08-08 — skill 56 responsive-conversion
 
 Nasceu de uma auditoria das 6 skills de UI/UX existentes (~1750 linhas) que expôs um buraco no meio: o kit tinha direção estética forte (skill 02) e acabamento micro forte (skill 52), mas quase nada sobre layout responsivo real e padrões de fluxo destrutivo. Medição concreta antes de escrever: `safe-area`, `overflow`, `z-index` (fora da tabela de tokens), `100vh`/`dvh` e `bottom sheet` tinham **zero** ocorrência nas skills de UI; "modal" aparecia só como o número `1040` numa tabela de z-index; e confirmação de ação destrutiva existia apenas como pergunta retórica no checklist de Nielsen.

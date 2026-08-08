@@ -14,6 +14,7 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.45.0** | **Skill 57 `mobile-ux-foundations`** — as decisões que antecedem o layout, cada uma ancorada em dado biométrico, fisiológico ou comportamental, não em gosto. **Zona do polegar**: ~75% navegam com o polegar e ~49% com uma mão só, com precisão caindo para ~61% no terço superior — por isso a navegação primária mora embaixo, e por isso uma ação destrutiva no canto difícil é recurso, não defeito. **Fisiologia do dark mode**: `#000000` puro é erro (halation contra astigmatismo, smearing OLED no scroll, e mata elevação porque sombra precisa de luz residual), então `#121212` é a superfície base e elevação se expressa por superfícies *mais claras*. **Performance percebida**: os limiares 100ms/1s/10s, por que skeleton vence spinner entre 1–10s, e por que loader abaixo de 1s é pior que nada. **UX de auth/onboarding**: passkeys em primeiro plano com bootstrap key e warm handover de ~30 dias, NIST SP 800-63B contra regras draconianas de senha (sem "confirmar senha", colagem permitida), label flutuante em vez de placeholder, validação inline no blur, e permission priming antes de todo diálogo nativo. | [`skills/57-mobile-ux-foundations/SKILL.md`](skills/57-mobile-ux-foundations/SKILL.md), [`docs/skill-guides/mobile-ux-foundations.md`](docs/skill-guides/mobile-ux-foundations.md) |
 | **v2.44.0** | **Skill 56 `responsive-conversion`** — converte UI pensada pra desktop em UI que funciona de verdade no mobile, e é dona dos padrões de interação que a conversão expõe. Preenche um buraco real: responsividade eram 9 linhas na skill 02, e modal/confirmação existiam só como pergunta do checklist de Nielsen. Inclui catálogo sintoma→causa raiz→fix (`min-width: auto` como o motivo real de um filho de flex/grid "não pegar 100%", `dvh` vs `vh`, `env(safe-area-inset-*)` pro notch e barra de gestos, caça a scroll horizontal), protocolo de auditoria em 4 fases testado em 320/390/768px, tabela de decisão modal vs. bottom sheet com requisitos não-negociáveis (focus trap, retorno de foco, scroll lock que funciona no iOS), e padrões de ação destrutiva por reversibilidade (preferir Desfazer a Confirmar; confirmação por digitação em ação catastrófica). | [`skills/56-responsive-conversion/SKILL.md`](skills/56-responsive-conversion/SKILL.md), [`docs/skill-guides/responsive-conversion.md`](docs/skill-guides/responsive-conversion.md) |
 | **v2.43.0** | `/catalog-project` agora sintetiza `product`, `sessions` e `operations` no manifesto, alimentando o app companheiro `project-brain` (catálogo cross-repo). Confere `git remote -v` antes de gravar valor real de secret. | [`commands/catalog-project.md`](commands/catalog-project.md) |
 | **v2.42.0** | **Skill 55 `marketing-reporting-analytics`** — operações de marketing analytics, distinta do escopo de tracking de produto da skill 21: estrutura de relatório de performance de Ads/GA4 (fórmulas de ROAS/CPA/CTR, seções adaptadas por audiência), checklist técnico de setup GA4+GTM em 4 fases ("configurado" só após validação da Fase 4, não apenas instalação da tag), auditoria de infraestrutura de dados de marketing em 8 categorias com PASS/FAIL/PARTIAL + severidade, e calculadoras financeiras de CAC-payback/ROI/ROAS (custo totalmente carregado, payback ajustado por churn). | [`skills/55-marketing-reporting-analytics/SKILL.md`](skills/55-marketing-reporting-analytics/SKILL.md) |
@@ -203,7 +204,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 55 Especialistas
+## Os 56 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -241,6 +242,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 | 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph e Twitter card images, manifest e snippets de meta tags — derivados de logo ou texto da marca |
 | 56 | **Responsive Conversion** | converte UI desktop-first em mobile, corrige layout quebrado (por que filho de flex/grid não pega 100%, `dvh` vs `vh`, safe area, scroll horizontal) e é dona dos padrões de modal/bottom sheet e confirmação destrutiva |
+| 57 | **Mobile UX Foundations** | ergonomia da zona do polegar (onde a navegação pode morar), fisiologia do dark mode (`#121212`, nunca preto puro), performance percebida (skeleton vs. spinner por faixa de duração) e UX de auth/onboarding/permissão (passkeys, regras NIST de senha, permission priming) |
 
 ### Desenvolvimento
 

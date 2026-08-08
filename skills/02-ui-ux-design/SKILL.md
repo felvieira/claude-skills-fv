@@ -23,6 +23,8 @@ Para checklist de acabamento fino (border radius concentrico, alinhamento optico
 
 Esta skill decide como a interface **vai** parecer, antes de existir. Para converter interface ja implementada em versao mobile, ou corrigir layout quebrado (componente que nao ocupa 100%, corta na tela, scroll horizontal, modal estourando viewport), ver `skills/56-responsive-conversion/SKILL.md` — inclui tambem os padroes de modal/bottom sheet e de confirmacao de acao destrutiva, que esta skill so cita como heuristica de Nielsen.
 
+Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — zona do polegar (onde a navegacao pode morar), superficie base do dark mode (`#121212`, nunca preto puro) e contraste minimo verificado nos dois temas — ver `skills/57-mobile-ux-foundations/SKILL.md`. Essa skill tambem cobre percepcao de espera (skeleton vs. spinner por faixa de duracao) e UX de login/onboarding/permissao.
+
 ## Quando Usar
 
 - definir interface, fluxo e comportamento responsivo

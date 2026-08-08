@@ -26,6 +26,7 @@ Fronteira com skills vizinhas:
 - **02-ui-ux-design** define ancora estetica, tokens e wireframe **antes** de codar — esta skill nao redefine estetica, herda a que ja existe
 - **52-ui-polish** cuida do acabamento micro (border radius concentrico, alinhamento optico) **depois** que o layout esta correto — layout quebrado nao se resolve com polish
 - **22-accessibility-specialist** e dona de WCAG completo — esta skill cobre so o subconjunto que colide com mobile (hit area, focus trap em modal, zoom de input)
+- **57-mobile-ux-foundations** define, **antes** desta, onde o elemento deve morar pela zona do polegar, como o tema escuro se comporta, como tratar espera acima de 1s e como desenhar login/onboarding — esta skill executa o layout dentro dessas restricoes
 
 ## Quando Usar
 
@@ -191,6 +192,8 @@ Nunca "resolver" com `overflow-x: hidden` no `body` — isso esconde o sintoma, 
 | Campos lado a lado ilegiveis | Empilhar sempre em mobile — `grid-cols-1 md:grid-cols-2` |
 | Botao de submit fora do alcance | Fixar no rodape com `env(safe-area-inset-bottom)` |
 | Erro so no topo do form | Erro inline no campo **e** foco programatico no primeiro invalido |
+| Erro so aparece no submit | Validar no `blur` de cada campo — no submit, o usuario ja perdeu o contexto do que digitou (ver skill 57) |
+| Label vira placeholder e some ao digitar | Label flutuante — placeholder sozinho quebra leitor de tela e apaga a instrucao (ver skill 57) |
 
 ## Modais, Drawers e Bottom Sheets
 
