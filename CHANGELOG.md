@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.44.0] - 2026-08-08 — skill 56 responsive-conversion
+
+Nasceu de uma auditoria das 6 skills de UI/UX existentes (~1750 linhas) que expôs um buraco no meio: o kit tinha direção estética forte (skill 02) e acabamento micro forte (skill 52), mas quase nada sobre layout responsivo real e padrões de fluxo destrutivo. Medição concreta antes de escrever: `safe-area`, `overflow`, `z-index` (fora da tabela de tokens), `100vh`/`dvh` e `bottom sheet` tinham **zero** ocorrência nas skills de UI; "modal" aparecia só como o número `1040` numa tabela de z-index; e confirmação de ação destrutiva existia apenas como pergunta retórica no checklist de Nielsen.
+
+### Adicionado
+- **`skills/56-responsive-conversion/SKILL.md`** — converte interface desktop-first em mobile e é dona dos padrões de interação que a conversão expõe:
+  - **Catálogo sintoma → causa raiz → fix**: `min-width: auto` como a causa real de "componente não pega 100%" (e por que `truncate` não funciona sem `min-w-0`), `dvh`/`svh`/`lvh` vs `vh`, `env(safe-area-inset-*)` + `viewport-fit=cover` para notch e barra de gestos, caça a scroll horizontal ordenada por frequência real
+  - **Protocolo de auditoria em 4 fases** — inventário por grep, reprodução em 320/390/768px, correção pela causa raiz, verificação sem regressão no desktop original
+  - **Modal vs. bottom sheet** — tabela de decisão por situação, e requisitos não-negociáveis (focus trap, retorno de foco, Escape, scroll lock que preserva posição no iOS, backdrop que *não* fecha confirmação destrutiva)
+  - **Confirmação por reversibilidade** — Desfazer para ação reversível, modal nomeando alvo e consequência para irreversível comum, digitação do nome do recurso para catastrófica; os 4 estados obrigatórios de toda ação com API
+- **`docs/skill-guides/responsive-conversion.md`** — snippets por framework (Tailwind/CSS puro), scroll lock iOS-safe, teste de viewport com Playwright para converter os fixes em regressão
+
+### Alterado
+- `skills/02-ui-ux-design` — seção de responsividade ganha `dvh` e safe area, e aponta para a 56 para a execução (a 02 segue dona da decisão de design, não da auditoria de layout pronto)
+- `skills/52-ui-polish` — "Quando Não Usar" e integração explicitam que a 56 roda **antes**: acabamento sobre layout quebrado é desperdício
+- `skills/22-accessibility-specialist` — handoff registra que a 56 aplica o subconjunto de a11y que colide com mobile (hit area, focus trap, zoom de input), mantendo a 22 dona do WCAG completo
+
+---
+
 ## [2.43.0] - 2026-08-06 — catalog-project sintetiza produto, sessões e dados operacionais
 
 Trabalho feito em paralelo com o desenvolvimento do app companheiro `project-brain` (catálogo cross-repo, repositório separado) — cada extensão de schema no manifesto nasceu de uma necessidade concreta de exibição no `project-brain`.

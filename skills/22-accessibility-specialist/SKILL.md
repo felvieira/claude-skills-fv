@@ -137,4 +137,5 @@ Ferramentas automaticas pegam ~30-40% das violacoes WCAG. As outras exigem mao e
 - **Frontend (04)** implementa as correcoes de codigo/ARIA
 - **QA (05)** adiciona teste `jest-axe`/`@axe-core/playwright` para regredir
 - **UI/UX (02)** repensa o design quando o problema e estrutural (contraste de paleta, alvo pequeno)
+- **Responsive Conversion (56)** cobre o recorte de a11y que colide com mobile — hit area em tela de toque, focus trap e scroll lock de modal/bottom sheet, zoom de input no iOS. Esta skill continua dona do WCAG completo; a 56 aplica esse subconjunto durante a conversao para mobile
 - Seguir `policies/handoffs.md` e, quando util, `templates/accessibility-check.md`

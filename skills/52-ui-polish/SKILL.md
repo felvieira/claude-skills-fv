@@ -31,6 +31,7 @@ Para exemplos extensos de CSS/Tailwind/Motion por categoria, consultar `docs/ski
 ## Quando Nao Usar
 
 - para definir estrutura, layout ou fluxo de tela do zero (isso e 02-ui-ux-design)
+- para corrigir layout quebrado em mobile — componente que nao ocupa 100%, corta na tela, scroll horizontal, modal estourando viewport (isso e 56-responsive-conversion). Polish sobre layout quebrado e desperdicio: corrigir a estrutura primeiro, refinar o acabamento depois
 - para sistema de motion tokens ou orquestracao de animacao em escala (isso e 12-motion-design — esta skill foca em detalhes pontuais, nao no sistema)
 - para logica de componente, estado ou integracao com API (isso e 04-frontend-integration)
 
@@ -229,3 +230,4 @@ ZERO comentarios explicando o que o codigo faz. Nomes de classes/variaveis autoe
 - **UI/UX Design (skill 02):** aesthetic anchors definem direcao; esta skill garante que a execucao nao destoa em detalhe
 - **Motion Design (skill 12):** dono do sistema de motion tokens/orquestracao; esta skill foca em ajustes pontuais de acabamento, incluindo animacao
 - **Accessibility Specialist (skill 22):** consultar quando ajuste de polish tocar contraste, motion ou hit area
+- **Responsive Conversion (skill 56):** roda **antes** desta — corrige layout e responsividade; esta skill assume que a estrutura ja esta correta

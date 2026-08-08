@@ -21,6 +21,8 @@ Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar
 
 Para checklist de acabamento fino (border radius concentrico, alinhamento optico, sombra vs borda, tabular numbers, hit area minima), ver `skills/52-ui-polish/SKILL.md` — despachar apos Frontend implementar, antes do Reviewer final.
 
+Esta skill decide como a interface **vai** parecer, antes de existir. Para converter interface ja implementada em versao mobile, ou corrigir layout quebrado (componente que nao ocupa 100%, corta na tela, scroll horizontal, modal estourando viewport), ver `skills/56-responsive-conversion/SKILL.md` — inclui tambem os padroes de modal/bottom sheet e de confirmacao de acao destrutiva, que esta skill so cita como heuristica de Nielsen.
+
 ## Quando Usar
 
 - definir interface, fluxo e comportamento responsivo
@@ -251,6 +253,10 @@ Regras de responsividade:
 - Formulários: inputs full-width em mobile, grid em desktop
 - Touch targets: mínimo 44x44px em mobile
 - Font-size mínimo: 16px em inputs (evita zoom no iOS)
+- Altura de tela cheia: `dvh`, nunca `vh` puro (`vh` corta conteúdo atrás da barra do browser)
+- Elementos na borda: `viewport-fit=cover` + `env(safe-area-inset-*)` (notch e barra de gestos)
+
+Estas regras orientam a **decisão de design**. A execução — auditar layout já implementado, achar a causa raiz de "não pega 100%", converter grid/modal/formulário para mobile — pertence à skill 56 (`skills/56-responsive-conversion/SKILL.md`), que tem o catálogo de bugs com fix por caso.
 
 ## Componentes - Padrão de Especificação
 

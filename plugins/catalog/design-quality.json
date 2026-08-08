@@ -10,6 +10,8 @@
   "capabilities": [
     {"id": "ui-ux", "when_any": ["ui", "ux", "design system", "paleta", "wireframe", "layout"], "skills": ["02-ui-ux-design", "29-design-intelligence"]},
     {"id": "landing-design", "when_any": ["landing page", "landing", "pagina de vendas", "pagina de produto"], "skills": ["02-ui-ux-design", "52-ui-polish", "22-accessibility-specialist"]},
+    {"id": "responsive-mobile", "when_any": ["responsivo", "mobile", "celular", "nao pega 100%", "cortando na tela", "quebrou no mobile", "scroll horizontal", "safe area", "notch", "bottom sheet", "viewport", "converter para mobile", "adaptar layout"], "skills": ["56-responsive-conversion", "52-ui-polish"]},
+    {"id": "interaction-patterns", "when_any": ["modal", "bottom sheet", "confirmacao", "confirmação", "excluir", "acao destrutiva", "ação destrutiva", "undo", "desfazer"], "skills": ["56-responsive-conversion", "22-accessibility-specialist"]},
     {"id": "accessibility", "when_any": ["acessibilidade", "acessível", "a11y", "wcag", "leitor de tela"], "skills": ["22-accessibility-specialist"]},
     {"id": "motion", "when_any": ["animacao", "transicao", "microinteracao", "reduced motion"], "skills": ["12-motion-design"]},
     {"id": "user-research", "when_any": ["pesquisa com usuario", "entrevista", "journey map", "teste de usabilidade"], "skills": ["51-ux-research"]}
