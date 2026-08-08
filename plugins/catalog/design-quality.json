@@ -9,6 +9,7 @@
   "policies": ["policies/evals.md"],
   "capabilities": [
     {"id": "ui-ux", "when_any": ["ui", "ux", "design system", "paleta", "wireframe", "layout"], "skills": ["02-ui-ux-design", "29-design-intelligence"]},
+    {"id": "ui-refresh", "when_any": ["modernizar o design", "modernizar a interface", "modernizar a ui", "modernizar o visual", "redesign", "repaginar", "refresh da ui", "refresh de ui", "refresh na ui", "dar um refresh", "interface antiga", "interface datada", "design datado", "deixar mais moderno o visual", "atualizar o visual", "renovar a interface", "cara nova pro app", "cara nova pro site"], "skills": ["02-ui-ux-design", "56-responsive-conversion", "29-design-intelligence"]},
     {"id": "landing-design", "when_any": ["landing page", "landing", "pagina de vendas", "pagina de produto"], "skills": ["02-ui-ux-design", "52-ui-polish", "22-accessibility-specialist"]},
     {"id": "responsive-mobile", "when_any": ["responsivo", "mobile", "celular", "nao pega 100%", "cortando na tela", "quebrou no mobile", "scroll horizontal", "safe area", "notch", "bottom sheet", "viewport", "converter para mobile", "adaptar layout"], "skills": ["56-responsive-conversion", "57-mobile-ux-foundations", "52-ui-polish"]},
     {"id": "mobile-ergonomics", "when_any": ["thumb zone", "zona do polegar", "navegacao inferior", "bottom nav", "onde por o menu", "haptic", "vibracao", "gesto", "swipe"], "skills": ["57-mobile-ux-foundations"]},
