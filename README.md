@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 58 Specialist Skills for Coding Agents
+# Dev Team Kit — 59 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.42.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-54-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.48.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-60-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.48.0** | **Skill 60 `app-reference-architecture`** — reverse-engineered from 3 of the author's real production apps (Next.js + Tauri v2, dual web/APK) into a reusable blueprint so a new app starts on tested structure instead of re-deriving it. Covers dual auth (cookie session for web, Bearer JWT or Supabase token for the Tauri app, resolved by one central function per API route — never duplicated per-route), the static-export build problem (a script that renames — never deletes — Server Actions and `getServerSession()` layouts before `next build --output export`, restores everything in a `finally`), dual payment (Stripe + Google Play Billing, mandatory by Play Store policy for in-APK digital subscriptions, unified into one `Subscription` table with `platform`/`status`, RTDN reconciled by a daily cron since push delivery isn't guaranteed), dual push (Web Push/VAPID + FCM via a base64 service-account env var), and a decision table (JWT vs Supabase auth, Prisma vs raw `pg`, single-app vs monorepo, subscription vs credit ledger, sync vs BullMQ worker) so the 3 source apps' *divergences* become explicit choices instead of copy-paste guesses. Full reference split across 10 guide files (`docs/skill-guides/app-reference-architecture/`). | [`skills/60-app-reference-architecture/SKILL.md`](skills/60-app-reference-architecture/SKILL.md), [`docs/skill-guides/app-reference-architecture.md`](docs/skill-guides/app-reference-architecture.md) |
 | **v2.47.0** | **Skill 59 `closed-loop-revenue`** + motion depth in skill 12. The kit could report on campaigns (skill 55) and instrument product events (skill 21), but nothing connected an ad click to money that actually landed: `GCLID`, `measurement plan`, `contribution margin`, `offline conversion` and `smart bidding` all had **zero** coverage. Skill 59 owns that chain — identity (GCLID/UTM/`transaction_id`/CRM, each with one job and not interchangeable), backend as the source of revenue truth (a client-side `purchase` misses async payments, double-fires on refresh, and dies to blockers), reconciliation with a **declared tolerance** that blocks media scaling when exceeded, and the arithmetic that changes decisions: break-even ROAS = 1 / contribution margin, so at 40% margin a ROAS of 2.0 looks green on the dashboard and destroys value. For lead gen, send the closed deal back — not the submitted form. Skill 12 gains shared-element/FLIP object continuity, multimodal feedback with a redundancy rule (no critical signal may exist *only* in sound or haptics), WCAG 2.3.1 flash limits (seizure risk — previously uncovered) and vestibular safety, plus an explicit **when not to animate** section. | [`skills/59-closed-loop-revenue/SKILL.md`](skills/59-closed-loop-revenue/SKILL.md), [`skills/12-motion-design/SKILL.md`](skills/12-motion-design/SKILL.md) |
 | **v2.46.0** | **Skill 58 `i18n-localization`** — the kit's most surprising gap: i18n appeared exactly **once** across every skill, policy and rule (as the checklist line "supported locales"), with zero coverage of pseudolocale, RTL, text expansion or locale formatters. i18n is architecture work, not translator work — a concatenated sentence, a fixed-width button, a hand-built date and `margin-left` all break on contact with another language, and no translator can fix any of them. Covers string externalization with semantic keys, plural via platform API (2 forms works in pt/en and breaks in Russian/Arabic), locale formatters with canonical storage, +30% expansion as the test floor, logical properties for RTL (with the list of what must **not** mirror: numbers, logos, media icons), and pseudolocale/RTL as regression tests rather than one-off manual checks. Also: skill 02 gains a design-system adoption table (Carbon/Fluent/M3/HIG/primitives, chosen by product type — the aesthetic anchor and the design system are separate decisions) and a feedback-component matrix by severity (an error needing action is never a toast: it disappears and takes the information with it). | [`skills/58-i18n-localization/SKILL.md`](skills/58-i18n-localization/SKILL.md), [`docs/skill-guides/i18n-localization.md`](docs/skill-guides/i18n-localization.md) |
 | **v2.45.0** | **Skill 57 `mobile-ux-foundations`** — the decisions that precede layout, each grounded in biometric, physiological or behavioral data rather than taste. **Thumb zone**: ~75% navigate by thumb and ~49% one-handed, with touch precision dropping to ~61% in the top third — which is why primary navigation belongs at the bottom, and why a destructive action in the hard-to-reach corner is a feature, not a bug. **Dark mode physiology**: pure `#000000` is an error (halation against astigmatism, OLED smearing on scroll, and it kills elevation since shadow needs residual light), so `#121212` is the base surface and elevation is expressed by *lighter* surfaces. **Perceived performance**: the 100ms/1s/10s thresholds, why a skeleton beats a spinner between 1–10s, and why a loader below 1s is worse than nothing. **Auth/onboarding UX**: passkeys first-class with bootstrap keys and a ~30-day warm handover, NIST SP 800-63B against draconian password rules (no "confirm password", allow paste), floating labels over placeholders, inline validation on blur, and permission priming before any native dialog. | [`skills/57-mobile-ux-foundations/SKILL.md`](skills/57-mobile-ux-foundations/SKILL.md), [`docs/skill-guides/mobile-ux-foundations.md`](docs/skill-guides/mobile-ux-foundations.md) |
@@ -140,7 +141,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 58 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 59 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -177,14 +178,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 58 skills (58 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 59 skills (59 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 58 skills | ✅ | ✅ | ✅ |
+| 59 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -212,7 +213,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 58 Specialists
+## The 59 Specialists
 
 ### Management and Coordination
 
@@ -266,6 +267,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 04 | **Frontend Engineer** | React/Next.js, state, API calls, performance and app experience |
 | 12 | **Motion Designer** | animations, transitions, micro-interactions and coherent visual behavior |
 | 15 | **Mobile / Tauri** | optional extension for desktop and mobile apps with Tauri + React Native |
+| 60 | **App Reference Architecture** | blueprint for new apps needing login + payment + push + web app + Android APK from one Next.js + Tauri codebase — dual auth, dual payment (Stripe + Google Play IAP), dual push, static-export build script, Docker/CI-CD, distilled from 3 real production apps |
 | 47 | **Pattern Conformity** | detects and codifies an existing codebase's coding conventions (naming, structure, error handling, testing, async, DI, API design) into `memory/patterns.md` so new code matches house style |
 
 ### Content and Discovery

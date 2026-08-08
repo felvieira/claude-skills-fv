@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 58 Skills Especialistas para Coding Agents
+# Dev Team Kit — 59 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.42.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-54-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.48.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-60-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -14,6 +14,7 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.48.0** | **Skill 60 `app-reference-architecture`** — extraída por engenharia reversa de 3 apps reais em produção do autor (Next.js + Tauri v2, web + APK Android) num molde reutilizável, pra um app novo nascer em estrutura já testada em vez de rederivar tudo do zero. Cobre auth dual (cookie de sessão pra web, Bearer JWT ou token Supabase pro app Tauri, resolvido por uma única função central por rota de API — nunca duplicada rota a rota), o problema do build estático (script que renomeia — nunca deleta — Server Actions e layouts com `getServerSession()` antes do `next build --output export`, restaura tudo num `finally`), pagamento dual (Stripe + Google Play Billing, obrigatório pela política da Play Store pra assinatura digital dentro de APK, convergindo numa única tabela `Subscription` com `platform`/`status`, RTDN reconciliado por cron diário já que push não garante entrega), push dual (Web Push/VAPID + FCM via credencial base64 em env var), e uma tabela de decisão (JWT vs Supabase, Prisma vs `pg` puro, single-app vs monorepo, assinatura vs ledger de créditos, síncrono vs worker BullMQ) que transforma as divergências dos 3 apps de origem em escolha consciente em vez de copy-paste. Referência completa dividida em 10 arquivos (`docs/skill-guides/app-reference-architecture/`). | [`skills/60-app-reference-architecture/SKILL.md`](skills/60-app-reference-architecture/SKILL.md), [`docs/skill-guides/app-reference-architecture.md`](docs/skill-guides/app-reference-architecture.md) |
 | **v2.47.0** | **Skill 59 `closed-loop-revenue`** + profundidade de motion na skill 12. O kit sabia reportar campanha (skill 55) e instrumentar evento de produto (skill 21), mas nada ligava clique pago ao dinheiro que de fato entrou: `GCLID`, `measurement plan`, `margem de contribuição`, `conversão offline` e `smart bidding` tinham **zero** cobertura. A skill 59 é dona dessa cadeia — identidade (GCLID/UTM/`transaction_id`/CRM, cada um com uma função e não intercambiáveis), backend como fonte de verdade da receita (o `purchase` client-side perde pagamento assíncrono, dispara duas vezes no refresh e morre com bloqueador), reconciliação com **tolerância declarada** que bloqueia escala de mídia quando estourada, e a conta que muda decisão: break-even ROAS = 1 / margem de contribuição, então com margem de 40% um ROAS de 2,0 aparece verde no painel e destrói valor. Para lead gen, enviar de volta a venda fechada — não o formulário preenchido. A skill 12 ganha continuidade de objeto (shared element/FLIP), feedback multimodal com regra de redundância (nenhum sinal crítico pode existir *só* em som ou háptico), limite de flash da WCAG 2.3.1 (risco de convulsão — antes sem cobertura) e segurança vestibular, mais uma seção explícita de **quando não animar**. | [`skills/59-closed-loop-revenue/SKILL.md`](skills/59-closed-loop-revenue/SKILL.md), [`skills/12-motion-design/SKILL.md`](skills/12-motion-design/SKILL.md) |
 | **v2.46.0** | **Skill 58 `i18n-localization`** — o buraco mais surpreendente do kit: i18n aparecia exatamente **uma vez** em todas as skills, policies e rules (como o item de checklist "locales suportados"), com zero cobertura de pseudolocale, RTL, expansão de texto ou formatters por locale. i18n é trabalho de arquitetura, não de tradutor — frase concatenada, botão de largura fixa, data montada à mão e `margin-left` quebram no contato com outro idioma, e nenhum tradutor conserta isso. Cobre externalização com chave semântica, plural via API da plataforma (2 formas funciona em pt/en e quebra em russo/árabe), formatters com armazenamento canônico, +30% de expansão como piso de teste, propriedades lógicas para RTL (com a lista do que **não** espelha: números, logo, ícone de mídia), e pseudolocale/RTL como regressão em vez de verificação manual única. Também: skill 02 ganha tabela de adoção de design system (Carbon/Fluent/M3/HIG/primitivas, escolhido por tipo de produto — a âncora estética e o design system são decisões separadas) e matriz de componente de feedback por gravidade (erro que exige ação nunca é toast: some e leva a informação junto). | [`skills/58-i18n-localization/SKILL.md`](skills/58-i18n-localization/SKILL.md), [`docs/skill-guides/i18n-localization.md`](docs/skill-guides/i18n-localization.md) |
 | **v2.45.0** | **Skill 57 `mobile-ux-foundations`** — as decisões que antecedem o layout, cada uma ancorada em dado biométrico, fisiológico ou comportamental, não em gosto. **Zona do polegar**: ~75% navegam com o polegar e ~49% com uma mão só, com precisão caindo para ~61% no terço superior — por isso a navegação primária mora embaixo, e por isso uma ação destrutiva no canto difícil é recurso, não defeito. **Fisiologia do dark mode**: `#000000` puro é erro (halation contra astigmatismo, smearing OLED no scroll, e mata elevação porque sombra precisa de luz residual), então `#121212` é a superfície base e elevação se expressa por superfícies *mais claras*. **Performance percebida**: os limiares 100ms/1s/10s, por que skeleton vence spinner entre 1–10s, e por que loader abaixo de 1s é pior que nada. **UX de auth/onboarding**: passkeys em primeiro plano com bootstrap key e warm handover de ~30 dias, NIST SP 800-63B contra regras draconianas de senha (sem "confirmar senha", colagem permitida), label flutuante em vez de placeholder, validação inline no blur, e permission priming antes de todo diálogo nativo. | [`skills/57-mobile-ux-foundations/SKILL.md`](skills/57-mobile-ux-foundations/SKILL.md), [`docs/skill-guides/mobile-ux-foundations.md`](docs/skill-guides/mobile-ux-foundations.md) |
@@ -110,7 +111,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 58 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 59 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -178,7 +179,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 37 skills | ✅ | ✅ | ✅ |
+| 59 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -206,7 +207,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 58 Especialistas
+## Os 59 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -256,6 +257,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 | 04 | **Frontend Engineer** | React/Next.js, estado, chamadas de API, performance e experiência do app |
 | 12 | **Motion Designer** | animações, transições, micro-interações e comportamento visual coeso |
 | 15 | **Mobile / Tauri** | extensão opcional para apps desktop e mobile com Tauri + React Native |
+| 60 | **App Reference Architecture** | molde para apps novos que precisam de login + pagamento + push + web app + APK Android a partir de um único código-fonte Next.js + Tauri — auth dual, pagamento dual (Stripe + Google Play IAP), push dual, script de build estático, Docker/CI-CD, destilado de 3 apps reais em produção |
 
 ### Conteudo e Descoberta
 

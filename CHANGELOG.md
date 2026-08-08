@@ -5,6 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.48.0] - 2026-08-08 — skill 60 app-reference-architecture
+
+Engenharia reversa de 3 apps reais em produção do autor (gastos-app/Cadê o Dinheiro, memrapp/Memra, personal-styslist-ai/VisaLab — todos Next.js + Tauri v2, web + APK Android a partir do mesmo código-fonte) numa skill de arquitetura de referência, para que um app novo do mesmo perfil (login + pagamento + push + landing + web app + APK) nasça na estrutura já testada em vez de rederivar auth dual, build estático Tauri, multi-pagamento e push multi-canal a cada projeto novo.
+
+### Adicionado
+- **`skills/60-app-reference-architecture/SKILL.md`** — molde arquitetural completo, não um domínio de negócio isolado:
+  - **Auth dual** — cookie de sessão pra web, Bearer token (JWT custom com secret compartilhado do NextAuth, ou access token do Supabase com resolução em cascata) pro app Tauri, sempre resolvido por **uma única função central** chamada por toda rota de API protegida — nunca duplicada rota a rota. CORS allowlist explícita pras origens Tauri (`tauri://localhost`, `http://tauri.localhost`), inclusive em respostas de erro
+  - **Build estático do Tauri sobre o App Router** — o problema técnico mais recorrente dos 3 apps: um script que faz backup/swap de config e env, **renomeia (nunca deleta)** tudo que não sobrevive a `output: 'export'` (API routes, Server Actions, layouts com `getServerSession()`), builda, e restaura tudo num `finally` — mesmo se o processo for interrompido no meio. Server Action sem rota de API irmã é a causa mais comum de o build Tauri quebrar meses depois
+  - **Pagamento dual** — Google Play Billing não é opcional quando o app vende assinatura dentro de um APK publicado na Play Store, é exigência de política da plataforma. Modelo de dados sempre unificado numa única tabela `Subscription` com `platform`/`status` cobrindo `grace_period`/`trialing`/`account_hold` — nunca um campo `isPremium` solto que dessincroniza. RTDN do Google Play é push-only sem garantia de entrega, por isso sempre com cron de reconciliação diário
+  - **Push dual** — Web Push/VAPID pra PWA, FCM (Firebase Admin SDK, credencial JSON base64 numa env var) pro Android via Tauri, função central que envia pros dois canais em paralelo e limpa token inválido automaticamente
+  - **Tabela de decisão** — JWT custom vs Supabase Auth, Prisma vs `pg` puro, single-app vs monorepo pnpm workspaces, assinatura pura vs sistema de créditos (ledger append-only), processamento síncrono vs worker BullMQ separado — cada trade-off com recomendação por tipo de app (SaaS simples / conteúdo com IA leve / IA pesada)
+- **`docs/skill-guides/app-reference-architecture.md`** (índice) + **`docs/skill-guides/app-reference-architecture/`** (10 arquivos, ~2500 linhas) — guia modularizado por volume: overview, stack/estrutura, auth dual, build Tauri, pagamentos, push, Docker/CI-CD, analytics/observability, worker/filas, guia de decisão. Cópia espelhada em `~/Downloads/arquitetura-referencia-apps/` para consulta fora do contexto de skill
+
+---
+
 ## [2.47.0] - 2026-08-08 — skill 59 closed-loop-revenue + profundidade de motion
 
 Quinta rodada de material (dois relatórios: animação em interfaces com identidade própria, e arquitetura de competências para IA construir/lançar/monetizar software). O segundo relatório é majoritariamente sobre **treinar um modelo** (SFT, DPO, RL, datasets, benchmarks) — fora do escopo de um kit de skills em markdown, e deliberadamente não absorvido. O que aproveitou foi a camada de pipeline comercial.
