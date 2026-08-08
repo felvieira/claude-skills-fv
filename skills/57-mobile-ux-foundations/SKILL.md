@@ -10,7 +10,8 @@ description: |
   "dark mode", "modo escuro", "tema escuro", "preto puro", "OLED", "skeleton", "spinner", "loading",
   "tempo de carregamento", "app parece lento", "passkey", "passwordless", "login sem senha",
   "webauthn", "biometria", "onboarding", "tutorial inicial", "pedir permissao", "permission priming",
-  "haptic", "vibracao", "feedback tatil".
+  "haptic", "vibracao", "feedback tatil", "dynamic type", "escala de fonte", "zoom 200%",
+  "texto ampliado", "fonte do sistema".
 argument-hint: "[--focus=ergonomics|dark-mode|perceived-perf|auth|onboarding]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
@@ -151,6 +152,17 @@ Nunca reaproveitar o mesmo hex nos dois temas — o significado sobrevive, o val
 | Logo, texto decorativo | Isento |
 
 Verificar racio nos **dois** temas — passar no claro nao garante passar no escuro.
+
+### Tipografia que respeita o sistema (Dynamic Type)
+
+Tamanho de fonte nunca e fixo em px. O usuario que aumentou o texto nas configuracoes do sistema — parcela grande e crescente — precisa ver o app inteiro acompanhar:
+
+- Usar unidade que escala: `sp` (Android), Dynamic Type (iOS), `rem` na web. `px` fixo ignora a preferencia e e falha de acessibilidade, nao escolha estetica
+- **Container tambem escala.** Altura fixa em botao ou card corta o texto ampliado; usar `min-height` com padding, deixando a altura crescer
+- **Testar a 200% de zoom** e no maior passo de fonte do sistema. O layout tem de refluir sem scroll horizontal e sem texto truncado
+- Acima de ~200%, layout de duas colunas deve colapsar em uma — o mesmo comportamento do breakpoint estreito
+
+Reflow quebrado sob fonte ampliada e o mesmo bug de `min-width: auto` da skill 56, so que disparado pela preferencia do usuario em vez do tamanho da tela.
 
 ## 3. Performance Percebida
 
@@ -294,6 +306,9 @@ Dark mode:
 - [ ] Elevacao por superficie mais clara, nao por sombra
 - [ ] Cores de marca e de estado dessaturadas na versao escura
 - [ ] Contraste 4.5:1 (corpo) e 3:1 (texto grande/icone) verificado **nos dois temas**
+- [ ] Fonte em unidade que escala (`sp`/`rem`/Dynamic Type), nunca `px` fixo
+- [ ] Container com `min-height` em vez de altura fixa, para nao cortar texto ampliado
+- [ ] Testado a 200% de zoom e no maior passo de fonte do sistema, sem scroll horizontal
 
 Percepcao:
 - [ ] Feedback de toque em ate 100ms

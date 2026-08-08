@@ -113,6 +113,39 @@ Preto puro só em: economia extrema de bateria e consumo de mídia em tela cheia
 
 Verificar nos **dois** temas. Cor que passa no claro frequentemente falha no escuro, e vice-versa.
 
+## Dynamic Type — escala de fonte do sistema
+
+| Plataforma | Unidade | Observação |
+| --- | --- | --- |
+| Android | `sp` | Escala com a preferência de fonte; `dp` **não** escala |
+| iOS | Dynamic Type / `UIFontMetrics` | Tamanho fixo em pt ignora a preferência |
+| Web | `rem` | `px` fixo em `font-size` ignora o zoom de texto do navegador |
+
+```css
+/* Container que sobrevive a fonte ampliada */
+.botao {
+  min-height: 44px;   /* piso, não teto */
+  padding: 12px 20px; /* a altura cresce com o texto */
+}
+
+/* Errado: corta o texto quando o usuário amplia a fonte */
+.botao-quebrado { height: 44px; overflow: hidden; }
+```
+
+Teste obrigatório: maior passo de fonte do sistema + zoom de 200% no navegador. O layout deve refluir sem scroll horizontal e sem truncar texto. Acima de ~200%, layout de duas colunas colapsa em uma — mesmo comportamento do breakpoint estreito.
+
+Quebra sob fonte ampliada tem a mesma raiz do bug de `min-width: auto` (skill 56): o container se recusa a crescer. Só que aqui o gatilho é a preferência do usuário, não o tamanho da tela.
+
+## Contraste em visualização de dados
+
+Gráfico tem regra própria, além do contraste de texto:
+
+- Barra, linha ou fatia: **≥ 3:1** contra o fundo **e** contra a série vizinha
+- Série distinguível **sem depender de cor** — rótulo direto no dado, padrão de preenchimento, espessura ou marcador diferente
+- Legenda colorida ao lado não resolve daltonismo: exige o usuário casar cor com item, que é justamente o que ele não consegue fazer
+
+Rótulo direto na série costuma ser melhor que legenda, para qualquer usuário — elimina o ir-e-voltar entre gráfico e legenda.
+
 ## Tempo e percepção
 
 | Limiar | Percepção | Tratamento |
@@ -231,7 +264,9 @@ Alvo de toque       44–48px  (piso WCAG: 24px)
 Grade               8dp estrutura / 4dp refino
 Corpo de texto      16sp mín. (18sp leitura longa)
 Line-height         ≥ 1.5×
-Contraste           4.5:1 corpo / 3:1 grande
+Contraste           4.5:1 corpo / 3:1 grande / 3:1 série de gráfico
+Fonte               sp / rem / Dynamic Type (nunca px fixo)
+Container           min-height, nunca height fixa
 Superfície escura   #121212 (nunca #000000)
 Feedback de toque   ≤ 100ms
 Skeleton            1s–10s

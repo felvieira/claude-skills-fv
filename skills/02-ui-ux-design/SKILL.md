@@ -291,6 +291,32 @@ Cada componente deve ter:
 - Dimensões devem refletir o conteúdo final (evitar layout shift)
 ```
 
+## Comportamento dos Estados Interativos
+
+Listar os estados não basta — cada um tem comportamento e propósito próprios. Especificar todos antes do handoff, porque o que fica indefinido o Frontend inventa.
+
+| Estado | Comportamento | Regra |
+| --- | --- | --- |
+| **Default** | Legível como clicável sem depender de hover — cor, sombra, borda ou sublinhado | Se só o cursor revela que é clicável, o mobile perde a affordance |
+| **Hover** | Mudança sutil de cor ou elevação | **Só desktop.** Nunca colocar informação exclusiva em hover (tooltip crítico não existe em touch) |
+| **Focus** | Anel de foco visível, contraste ≥ 3:1 contra o fundo adjacente | Usar `:focus-visible` (teclado sim, clique de mouse não). `outline: none` sem substituto quebra navegação por teclado |
+| **Active** | Feedback imediato do toque — leve escurecimento ou `scale(0.96)` | Precisa aparecer em até 100ms, senão a ação parece ignorada |
+| **Disabled** | Contraste reduzido e cursor bloqueado | **Sempre dizer por quê** (tooltip ou texto ao lado). Alternativa melhor: manter habilitado e responder com erro específico no clique |
+| **Loading** | Substituir o rótulo por indicador, mantendo a largura do botão | Precisa desabilitar o clique — senão o usuário envia duas vezes. Largura fixa evita o layout pular |
+| **Error** | Mensagem específica + ícone, preservando o que foi digitado | Nunca só cor; nunca limpar o formulário |
+
+Sobre `disabled` em botão de submit: desabilitar até o formulário estar válido esconde do usuário *o que* falta. Manter habilitado e, no clique, focar o primeiro campo inválido com a mensagem costuma converter mais — a exceção é ação destrutiva ou cobrança, onde bloquear é mais seguro.
+
+## Orçamento de Design para Performance
+
+Decisão visual tem custo de carregamento, e o custo é decidido aqui — não no Frontend. Antes de fechar a direção, verificar o impacto nas Core Web Vitals (a skill 14 é dona das métricas e da medição; esta skill é dona das escolhas que as afetam):
+
+- **LCP** — a maior imagem ou bloco de texto acima da dobra é o gargalo. Hero em vídeo, imagem não comprimida ou fonte que bloqueia render empurram o LCP para além dos 2,5s
+- **CLS** — todo elemento que carrega depois precisa de espaço reservado (`aspect-ratio` em imagem, altura fixa em banner/anúncio). Skeleton com dimensão diferente do conteúdo final é causa de layout shift, não a cura
+- **Fontes** — cada peso/família extra é um arquivo. Duas famílias com 2-3 pesos é o teto saudável; usar `font-display: swap` e pré-carregar só a fonte da dobra
+
+Estas escolhas cabem no handoff junto com os tokens, não como otimização posterior.
+
 ## Skeleton Loading - Padrões
 
 Skeleton é obrigatório em toda tela que faz fetch de dados:
@@ -357,6 +383,8 @@ Entregar:
 6. Skeleton patterns para cada tela
 7. Micro-interações e animações especificadas
 8. Acessibilidade: roles ARIA, tab order, screen reader labels
+9. Comportamento dos 7 estados interativos por componente clicável — não só a lista de nomes
+10. Orçamento de performance: qual é o elemento de LCP da tela, o que reserva espaço para não gerar CLS, e quantos pesos de fonte a direção exige
 
 ## Handoff para Backend
 

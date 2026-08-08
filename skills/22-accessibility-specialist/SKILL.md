@@ -63,6 +63,7 @@ Ferramentas automaticas pegam ~30-40% das violacoes WCAG. As outras exigem mao e
 - [ ] **1.1.1** Todo `<img>` com `alt` (decorativa → `alt=""`); icone-botao com label acessivel
 - [ ] **1.4.3** Contraste texto ≥ 4.5:1 (≥ 3:1 para ≥ 24px ou ≥ 19px bold)
 - [ ] **1.4.11** Contraste de UI nao-texto (borda de input, icone, foco) ≥ 3:1
+- [ ] **1.4.11 (grafico)** Barra, linha e fatia ≥ 3:1 contra o fundo **e** contra a serie vizinha; serie distinguivel sem depender de cor (rotulo direto, padrao de preenchimento, espessura ou marcador diferente) — legenda colorida ao lado do grafico nao resolve para daltonismo
 - [ ] **1.4.4 / 1.4.10** Texto escala a 200% e faz reflow a 320px sem scroll horizontal
 - [ ] **1.3.1** Estrutura semantica: headings hierarquicos (sem pular de h1 → h4), listas reais, `<table>` com `<th>`
 

@@ -5,6 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.45.1] - 2026-08-08 — enxertos de UI web nas skills existentes
+
+Terceira rodada de material de UI/UX. Diferente das duas anteriores, a medição mostrou que **~80% já estava coberto** — hover/focus/disabled (02 e 22), LCP/CLS (14), `prefers-reduced-motion` (12 e 22), contraste, grade de 8pt, label vs. placeholder, validação inline. Skill nova teria sobreposição alta com 02/22/56/57 e faria o roteador hesitar entre elas, então o material entrou como quatro adições cirúrgicas onde cada uma pertence.
+
+### Adicionado
+- **`skills/02-ui-ux-design`** — seção "Comportamento dos Estados Interativos": a skill listava os 7 estados como nomes numa linha; agora cada um tem comportamento e regra (hover só desktop e nunca com informação exclusiva; `:focus-visible` com anel ≥3:1; active em até 100ms; loading com largura fixa e clique desabilitado para impedir submit duplo; disabled que sempre diz *por quê* — com a observação de que manter habilitado e focar o campo inválido costuma converter mais, exceto em ação destrutiva ou cobrança)
+- **`skills/02-ui-ux-design`** — seção "Orçamento de Design para Performance": decisão visual tem custo de carregamento e o custo é decidido no design, não no Frontend. Qual elemento é o LCP da tela, o que reserva espaço para não gerar CLS, quantos pesos de fonte a direção exige. A skill 14 segue dona das métricas; esta passa a ser dona das escolhas que as afetam
+- **`skills/22-accessibility-specialist`** — critério de contraste específico para visualização de dados: série ≥3:1 contra o fundo **e** contra a série vizinha, distinguível sem depender de cor. Legenda colorida ao lado não resolve daltonismo, porque exige casar cor com item — exatamente o que o usuário não consegue fazer
+- **`skills/57-mobile-ux-foundations`** — seção "Dynamic Type": unidade que escala (`sp`/`rem`/Dynamic Type, nunca `px` fixo), `min-height` em vez de altura fixa para não cortar texto ampliado, e teste a 200% de zoom. Mesma raiz do bug de `min-width: auto` da skill 56 — container que se recusa a crescer — só que disparado pela preferência do usuário em vez do tamanho da tela
+
+### Corrigido
+- `plugins/catalog/design-quality.json` — 5 capabilities novas de roteamento. Teste real expôs que "estados de hover e focus do botão" e "site lento por causa da imagem do hero" **não roteavam para lugar nenhum**, e "texto ampliado quebra o layout" ia para a 02 em vez da 57: o conteúdo existia mas não era descoberto
+
+---
+
 ## [2.45.0] - 2026-08-08 — skill 57 mobile-ux-foundations
 
 Continuação direta da 56: se aquela conserta layout já implementado, esta cobre as decisões que vêm **antes** do layout — onde a mão alcança, como o olho lê no escuro, como o cérebro mede espera, e como o usuário entra no app. Cada regra ancorada em dado biométrico, fisiológico ou comportamental, não em preferência estética.
