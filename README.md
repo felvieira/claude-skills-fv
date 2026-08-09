@@ -717,6 +717,20 @@ cd mcp-server && npm run build
 bash scripts/smoke-install.sh
 ```
 
+### Design checkers — run these in the consumer repo
+
+These verify the design rules instead of merely stating them. Point them at the app you're building, not at this kit:
+
+```bash
+node scripts/check-design-generic.mjs src/    # indigo default, system-ui, AI gradient, pure black, 100vh
+node scripts/check-contrast.mjs src/          # WCAG ratio computed, in BOTH themes
+node bench/ab/score-design.mjs <arm-dirs...>  # 0–100 score per arm, to compare across kit versions
+```
+
+Both exit `1` on failure (`--warn` reports only, `--json` for programmatic use). The `design-anchor-guard` hook applies the first set at write time and **blocks** a visual file carrying the statistical-default signature — escape hatch is a `design-anchor: allow` comment in the file.
+
+Caveat worth knowing: `check-contrast` reads `#hex` and `rgb()` tokens. Colours declared in `hsl()`, `oklch()` or `var()` are skipped and still need manual verification.
+
 ---
 
 ## Contributing
