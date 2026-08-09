@@ -11,7 +11,9 @@ description: |
   "tempo de carregamento", "app parece lento", "passkey", "passwordless", "login sem senha",
   "webauthn", "biometria", "onboarding", "tutorial inicial", "pedir permissao", "permission priming",
   "haptic", "vibracao", "feedback tatil", "dynamic type", "escala de fonte", "zoom 200%",
-  "texto ampliado", "fonte do sistema".
+  "texto ampliado", "fonte do sistema", "momento aha", "ativacao do usuario", "primeiro uso",
+  "product tour", "tour guiado", "checklist de onboarding", "barra de progresso de onboarding",
+  "usuario abandona no primeiro uso", "tela de boas-vindas", "walkthrough".
 argument-hint: "[--focus=ergonomics|dark-mode|perceived-perf|auth|onboarding]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
@@ -257,6 +259,30 @@ Detalhes de teclado, `inputmode` e zoom do iOS ficam na skill 56.
 
 Aprender fazendo fixa; ler tutorial antes de poder tocar, nao.
 
+### O objetivo e o momento "aha", nao a tela de boas-vindas
+
+Onboarding bem-sucedido nao e o usuario ver todas as telas — e ele **chegar na primeira vez que o produto entrega valor**. Duolingo comeca uma licao; Slack manda voce escrever uma mensagem. Ambos ensinam usando, nao explicando.
+
+Regra de projeto: identifique a acao que representa esse momento (a "north-star action") e trate **cada tela antes dela como custo**. Carrossel de 5 slides de marketing e fricção posta antes de qualquer valor — e boa parte do abandono de primeiro uso acontece exatamente ai.
+
+A skill 21 mede se esse momento foi atingido (`activation_reached`, `time_to_activate`); esta skill decide o caminho ate ele.
+
+### Qual padrao usar
+
+"Faca progressivo" nao diz **com que componente**. Cada padrao resolve um problema diferente:
+
+| Padrao | Serve para | Nao serve para |
+| --- | --- | --- |
+| **Barra de progresso** | Fluxo **linear e finito** (cadastro em 3 passos) — reduz a ansiedade de "quanto falta" | Tarefa opcional ou sem ordem definida; barra que nunca completa vira divida visivel |
+| **Checklist** | Tarefas **independentes**, feitas fora de ordem e ao longo do tempo ("conecte o banco", "convide alguem") | Fluxo obrigatorio sequencial — vira lista de dever de casa |
+| **Mensagem de boas-vindas** | Dar contexto em 1 tela e sair do caminho | Substituir a descoberta do produto; nao ensina nada sozinha |
+| **Product tour** | Interface densa cuja estrutura nao e obvia | App simples — tour aqui e ruido. **Sempre pulavel, em qualquer passo** |
+| **Persona-based** (pergunta antes de entrar) | Quando a resposta **muda de verdade** a experiencia (template, conteudo, limites) | Coletar dado de marketing disfarcado de personalizacao — o usuario percebe |
+
+Combinacoes funcionam: persona-based curto definindo o setup, depois checklist para o resto. O erro e empilhar tudo.
+
+**Nao existe onboarding "pronto".** Ele evolui com o produto e deve ser medido: onde o usuario para, quanto tempo leva ate a acao de ativacao, quantos pulam. Sem isso, onboarding vira decoracao com opiniao.
+
 ### Permission priming
 
 Nunca disparar o dialogo nativo de permissao na abertura do app. Negacao e quase sempre definitiva — e recuperar exige mandar o usuario para as configuracoes do sistema.
@@ -290,6 +316,12 @@ Ajuda mora dentro do fluxo — painel expansivel, bottom sheet, tooltip contextu
 - Placeholder no lugar de label
 - Validar formulario inteiro so no submit
 - Dialogo nativo de permissao na abertura do app, sem contexto
+- Carrossel de slides de marketing antes do usuario poder tocar em qualquer coisa
+- Product tour sem botao de pular visivel em todos os passos
+- Barra de progresso em fluxo que nao tem fim definido — vira divida visivel
+- Checklist para etapa obrigatoria e sequencial (vira dever de casa, nao guia)
+- Perguntar dado de personalizacao que nao muda nada na experiencia
+- Onboarding sem instrumentacao — sem saber onde o usuario para, e opiniao com tela
 - Haptic em scroll ou navegacao comum
 
 ## Checklist
@@ -327,9 +359,15 @@ Entrada:
 
 Onboarding:
 - [ ] Onboarding contextual em vez de carrossel bloqueante
+- [ ] Acao de ativacao ("momento aha") identificada por nome
+- [ ] Cada tela antes dela justificada — o resto e fricção posta antes do valor
+- [ ] Padrao escolhido pelo tipo de tarefa (barra = linear finito; checklist = independente)
+- [ ] Product tour, se existir, pulavel em qualquer passo
+- [ ] Pergunta de personalizacao muda a experiencia de verdade — nao e coleta disfarçada
 - [ ] Permission priming antes de todo dialogo nativo
 - [ ] App continua util quando a permissao e negada
 - [ ] Ajuda acessivel dentro do fluxo
+- [ ] Onboarding instrumentado: onde para, tempo ate ativacao, taxa de pulo (skill 21)
 
 ## Evidencia de Conclusao
 
