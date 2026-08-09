@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.50.0] - 2026-08-09 — o que decide o design antes do layout: paleta, leis cognitivas e estado vazio
+
+A área de design já sabia **auditar** (Nielsen, checkers, âncoras estéticas) e **verificar** (v2.49.0). Faltava a camada anterior: as decisões que produzem a interface antes de existir layout. Buraco medido por grep no kit inteiro, não suposto — `lei de Hick`, `Fitts`, `Gestalt`, `Von Restorff`, `carga cognitiva`, `teoria da cor`, `roda de cores`, `complementar`, `análogo`, `tríade` e `OKLCH`: **zero ocorrência**. `estado vazio` aparecia em exatamente uma linha de checklist (`rules/frontend/ui-design.md`).
+
+O sintoma disso na prática: o bloco de tokens da skill 02 traz uma nota séria sobre tipografia ("NEVER default to Inter/Roboto/Arial without justification") e, logo abaixo, entrega uma escala pronta de azul Tailwind **sem nenhuma nota equivalente**. A skill mandava decidir a fonte e servia a cor decidida — que é exatamente a origem da UI genérica que a v2.49.0 aprendeu a detectar depois de pronta.
+
+### Adicionado
+- **`skills/02-ui-ux-design` — "Derivar a Paleta"** — o caminho de um hue de marca até a escala: escolher o esquema (mono/análogo/complementar/tríade, cada um com o caso de uso e o cuidado — complementar nunca em texto sobre o hue oposto, tríade dividida 60/30/10), gerar em **OKLCH e não HSL** (em HSL a mesma `lightness` produz brilho percebido diferente por hue, e a escala sai inconsistente), separar cor de marca de cor semântica, e validar contraste **antes** de fechar — paleta bonita que reprova em 4.5:1 vira remendo com cinza aleatório depois. Inclui os sinais de paleta genérica e a regra 60/30/10 (acento em mais de ~10% da tela deixa de ser acento). CMYK entra só se o entregável for impresso
+- **`skills/02-ui-ux-design` — "Leis Cognitivas"** — 17 leis e vieses nomeados (Hick-Hyman, Fitts, Miller, Jakob, Gestalt de proximidade/similaridade/fechamento, Von Restorff, estética-usabilidade, Tesler, gradiente de meta, ancoragem, modelo mental, feedforward, adaptação sensorial, fadiga de decisão, ilusão de trabalho), cada uma com **a decisão que ela força**, não só a definição. Complementa Nielsen em vez de duplicar: Nielsen audita a interface pronta, estas decidem a estrutura antes de desenhar — e dão vocabulário para defender a escolha em review sem apelar a "achei mais bonito". Regra explícita de não aplicar as 17 em toda tela: entram quando a decisão está em disputa
+- **`skills/02-ui-ux-design` — "Estado Vazio"** — taxonomia de 6 tipos que não se resolvem com a mesma mensagem (primeiro uso, busca sem resultado, limpo por conclusão, erro de carga, sem permissão, 404), cada um com o que a tela deve fazer e o erro comum. A regra operacional: **todo empty state precisa do que aconteceu + ação clicável** — sem CTA é tela morta, e ilustração não substitui ação. Distinguir vazio de erro de carregando (mascarar falha como lista vazia é o `.catch(() => [])` que o `silent-failure-hunter` já caça)
+- **`scripts/check-design-generic.mjs` — regra `raw-hex-sprawl`** — `warn` acima de 15 hex crus no mesmo arquivo: sinal de paleta ad-hoc em vez de escala derivada. Testada nos três cenários antes de entrar: acusa o arquivo com 16 hex soltos, passa limpo no arquivo com OKLCH + tokens, e reporta o `docs/preview/dashboard.html` do próprio kit (achado legítimo — 16 hex, nenhum token). Fica em `warn` porque hex cru tem uso legítimo e checker ruidoso o time desliga
+- **3 capabilities de roteamento** em `plugins/catalog/design-quality.json` — `color-palette`, `empty-states`, `cognitive-load`. Cada trigger novo passou por sonda de substring contra 6 prompts de controle (banco de dados, cache, arquitetura de backend, parser, testes, deploy) antes do commit — o teste que faltou nas três regressões de roteamento anteriores
+
+### Alterado
+- `skills/02-ui-ux-design` — frontmatter e handoff para Frontend ganham os dois itens novos: paleta entregue com o **esquema declarado e o hue de origem**, não só a lista de hex; e empty state especificado **por tipo** para toda tela que lista dados
+- `.claude-plugin/marketplace.json` — versão estava em 2.42.0 enquanto o plugin já ia em 2.49.0; ressincronizada
+
 ## [2.49.0] - 2026-08-08 — qualidade de design vira verificação, não só descrição
 
 A área de design tinha 8 skills e muito conteúdo bom, mas uma lacuna estrutural: o kit **descrevia** qualidade sem **provar**. Medição antes de agir: nenhum eval para as 5 skills que produzem pixel (02, 12, 52, 56, 57); `rules/frontend/ui-design.md` proibindo indigo genérico em prosa; o `pre-build-gate` saindo com `process.exit(0)` — sempre passa, nunca bloqueia; e "gate de UI-DESIGN" no `/auto` sendo markdown, não código.

@@ -81,6 +81,15 @@ const RULES = [
     fix: "use #121212 ou equivalente da ancora; elevacao no escuro e superficie mais clara (skill 57)",
   },
   {
+    id: "raw-hex-sprawl",
+    severity: "warn",
+    // Hex solto espalhado no arquivo = paleta ad-hoc, sem escala derivada nem token.
+    pattern: /#[0-9a-f]{6}\b/gi,
+    threshold: 15,
+    why: "muitos hex crus no mesmo arquivo — paleta ad-hoc em vez de escala derivada",
+    fix: "centralize em tokens e derive a escala do hue de marca em OKLCH (skill 02, 'Derivar a Paleta')",
+  },
+  {
     id: "vh-fullscreen",
     severity: "warn",
     // 100vh sem dvh na sequencia: corta atras da barra do browser mobile (skill 56).

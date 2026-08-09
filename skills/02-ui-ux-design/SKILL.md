@@ -3,8 +3,11 @@ name: ui-ux-design
 description: |
   Skill do Designer UI/UX para definição de interfaces e experiência do usuário. Use quando precisar criar
   wireframes, design system tokens, componentes de UI, fluxos de navegação, acessibilidade, ou qualquer
-  decisão de interface. Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
-  "layout", "responsivo", "mobile first", "acessibilidade básica", "design system", "protótipo", "Figma".
+  decisão de interface. Cobre também derivação de paleta (esquema de cor, OKLCH, 60/30/10), leis
+  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo.
+  Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
+  "layout", "responsivo", "mobile first", "acessibilidade básica", "design system", "protótipo", "Figma",
+  "paleta", "esquema de cores", "estado vazio", "empty state", "quantas opções mostrar".
 ---
 
 # UI/UX Designer - Interface e Usabilidade
@@ -166,6 +169,30 @@ Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, e
 - o componente seja adaptado ao contexto visual real do app
 
 Se o projeto ja tiver componentes, branding ou linguagem visual estabelecidos, o MCP serve como referencia ou acelerador, nunca como desculpa para destoar do produto.
+
+## Derivar a Paleta — Não Copiar a Padrão
+
+O azul `#3b82f6` do bloco abaixo é **placeholder**, não default. Paleta herdada sem decisão é a marca registrada de interface genérica — junto com Inter e `border-radius: 8px`. A paleta se deriva da âncora estética, nesta ordem:
+
+1. **Uma cor de marca** (hue primário). Vem do produto, do setor ou da âncora — não do framework. Se o produto já tem marca, ela manda.
+2. **Escolher o esquema** a partir do hue primário:
+
+| Esquema | Como | Serve para | Cuidado |
+| --- | --- | --- | --- |
+| **Monocromático** | um hue, variando luminosidade e saturação | produto operacional, dashboard, ferramenta — cor fica livre para significar estado | precisa de tipografia e espaçamento fortes, senão fica sem hierarquia |
+| **Análogo** (hues vizinhos, ±30°) | primário + 1-2 vizinhos | interface calma, wellness, conteúdo, marca coesa | contraste baixo entre os hues — a separação tem que vir de luminosidade |
+| **Complementar** (oposto, ~180°) | primário + oposto **só como acento** | destacar CTA e alertas contra a base | nunca em texto sobre fundo do hue oposto (vibração ótica); nunca em áreas grandes lado a lado |
+| **Tríade** (3 hues a ~120°) | um domina, dois em papel de apoio | marca expressiva, produto lúdico, ilustração | dividir 60/30/10 — três cores em proporção igual não tem foco |
+
+3. **Gerar a escala em OKLCH, não em HSL.** Em HSL, mesma `lightness` em hues diferentes produz cores com brilho percebido diferente — é por isso que amarelo `hsl(50 90% 50%)` parece muito mais claro que azul `hsl(240 90% 50%)`, e a escala fica inconsistente. OKLCH é perceptualmente uniforme: fixar `L` entrega contraste equivalente entre hues. Em CSS moderno: `oklch(0.65 0.15 250)`.
+4. **Separar cor de marca de cor semântica.** `success`/`warning`/`error`/`info` são canais de significado. Se o primário da marca for vermelho, o `error` precisa de outro sinal (ícone, peso, posição) — senão erro e marca se confundem.
+5. **Validar contraste antes de fechar** — a paleta bonita que reprova em 4.5:1 vai ser remendada depois com cinza aleatório. Rodar `scripts/check-contrast.mjs`; regras em `skills/22-accessibility-specialist/SKILL.md`.
+
+**Regra dos 60/30/10** — 60% neutro dominante (fundo/superfície), 30% secundário (blocos, bordas, estados), 10% acento (CTA, foco, destaque). Acento em mais de ~10% da tela deixa de ser acento.
+
+**Sinais de paleta genérica:** azul-500 do Tailwind sem justificativa; gradiente roxo→rosa como "identidade"; cor de marca aplicada em toda superfície em vez de reservada ao acento; `success` verde / `error` vermelho como única distinção (falha para daltonismo — ver skill 22).
+
+**RGB é o único modelo relevante aqui.** CMYK só entra se o entregável for impresso (material de marca, embalagem) — nesse caso, cor de tela e cor impressa divergem e a marca precisa dos dois valores especificados.
 
 ## Design System - Tokens Base
 
@@ -379,6 +406,49 @@ Regras:
 - Cor: gray-200 com pulse para gray-300
 - Nunca mostrar skeleton por mais de 3s — se demorar, mostrar mensagem
 
+## Estado Vazio — Tela Sem Dado É Tela, Não Ausência de Tela
+
+Empty state é onde o produto perde o usuário em silêncio: ele chegou, não entendeu se está quebrado ou se é assim mesmo, e saiu. **Todo empty state precisa de: o que aconteceu + o que fazer agora (ação clicável).** Sem a ação, é tela morta.
+
+Os tipos não se resolvem com a mesma mensagem:
+
+| Tipo | Situação | O que a tela deve fazer | Erro comum |
+| --- | --- | --- | --- |
+| **Primeiro uso** (zero data) | conta nova, ainda não existe nada | explicar o valor + CTA para criar o primeiro item — é o melhor momento de onboarding do produto | tratar como erro ("Nada encontrado") e desperdiçar a única tela que ensina |
+| **Busca sem resultado** | filtro/termo não casou | mostrar o termo buscado, oferecer limpar filtro e sugerir alternativa | "0 resultados" seco, deixando o usuário sem saber se o filtro ou o dado é o problema |
+| **Limpo por conclusão** | inbox zerada, fila vazia, tudo concluído | reconhecer como sucesso — o tom aqui é positivo, não neutro | usar a mesma tela de "não há nada", transformando conquista em vazio |
+| **Erro / falha de carga** | request falhou | dizer que falhou e oferecer **tentar de novo**; nunca fingir lista vazia | mascarar erro como vazio (`.catch(() => [])`) — ver `agents/silent-failure-hunter.md` |
+| **Sem permissão** | existe dado, o usuário não pode ver | explicar a restrição e como pedir acesso | mostrar vazio genérico, sugerindo que o dado não existe |
+| **404 / rota inexistente** | destino não existe | rota de volta para um lugar útil (home, busca), preservando a navegação | beco sem saída sem link |
+
+Regras: distinguir **vazio** de **erro** de **carregando** — os três são estados diferentes e nunca compartilham a mesma tela. Um destaque só (Von Restorff): o CTA. Ilustração é opcional e serve ao tom da marca; ela **não substitui** a ação — empty state bonito sem CTA continua sendo tela morta.
+
+## Leis Cognitivas — Justificar a Estrutura, Não o Gosto
+
+Nielsen (abaixo) audita a interface pronta. Estas leis decidem a estrutura **antes** de desenhar — e dão vocabulário para defender a decisão em review sem apelar a "achei mais bonito".
+
+| Lei / viés | O que diz | Decisão que ela força |
+| --- | --- | --- |
+| **Hick-Hyman** | tempo de decisão cresce com o número e a complexidade das opções | menu com 12 itens de peso igual → agrupar, priorizar ou revelar progressivamente. Onboarding não pede 3 decisões na mesma tela |
+| **Fitts** | tempo para atingir um alvo depende do tamanho dele e da distância | alvo primário grande e perto do polegar (ver skill 57); ação destrutiva **longe** da confirmação. Botão de 44px não é só acessibilidade, é velocidade |
+| **Miller / carga cognitiva** | memória de trabalho é curta e frágil | quebrar sequências longas em grupos (telefone, cartão, código); formulário longo em passos com progresso visível |
+| **Jakob** | o usuário passa a maior parte do tempo em *outros* produtos | padrão consagrado (carrinho no topo à direita, logo volta pra home) só se quebra com ganho comprovado. Inovar na navegação cobra caro |
+| **Gestalt: proximidade** | o que está perto é lido como do mesmo grupo | espaçamento é hierarquia. Label colada no campo errado é bug de layout, não de estética |
+| **Gestalt: similaridade** | o que se parece é lido como mesma função | dois botões com o mesmo visual precisam ter o mesmo peso de ação. Link que parece botão gera clique errado |
+| **Gestalt: fechamento/continuidade** | a mente completa formas e segue linhas | card cortado na borda da viewport sinaliza "tem mais, role" — é affordance de carrossel, não defeito |
+| **Von Restorff (isolamento)** | o item que destoa é o lembrado | **um** destaque por tela. Três CTAs em cores diferentes = nenhum destaque |
+| **Estética-usabilidade** | interface percebida como bonita é percebida como mais fácil | polimento visual não é opcional — mas também mascara problema real de usabilidade em teste. Nunca substitui teste com usuário (skill 51) |
+| **Tesler (complexidade irredutível)** | toda operação tem complexidade que não some, só muda de lugar | "simplificar" escondendo campo obrigatório empurra o trabalho pro usuário depois. Decidir conscientemente quem absorve: sistema ou pessoa |
+| **Efeito do gradiente de meta** | motivação cresce perto do fim | mostrar progresso e começar o checklist com um item já concluído aumenta conclusão (aplicação em onboarding: skill 57) |
+| **Ancoragem** | a primeira informação vista enviesa o julgamento seguinte | ordem dos planos de preço não é neutra; primeiro número visto vira régua |
+| **Modelo mental** | o usuário chega com ideia pronta de como aquilo funciona | nomear função pelo que o usuário chama, não pelo nome interno da entidade no banco |
+| **Feedforward** | o usuário quer saber o que vai acontecer **antes** de agir | rótulo diz o resultado ("Excluir 3 arquivos"), não o mecanismo ("Confirmar"). Complementa feedback, não substitui |
+| **Adaptação sensorial** | estímulo repetido deixa de ser percebido | badge de notificação sempre aceso, banner permanente e toast a cada ação viram invisíveis — e junto com eles o alerta que importava |
+| **Fadiga de decisão** | decisões seguidas degradam a qualidade da escolha | fluxo longo precisa de default sensato, não de mais uma pergunta. Todo campo opcional exibido é uma decisão cobrada |
+| **Ilusão de trabalho** | processo visivelmente "trabalhando" é percebido como mais valioso | vale para busca/análise real (mostrar as etapas). Delay artificial em operação instantânea é manipulação — não fazer |
+
+Não aplicar as 17 em toda tela. Elas entram quando a decisão está em disputa: quantas opções mostrar, onde por o botão, o que destacar, o que agrupar.
+
 ## Heurísticas de Nielsen - Checklist
 
 Antes de aprovar qualquer interface, validar:
@@ -440,6 +510,8 @@ Entregar:
 8. Acessibilidade: roles ARIA, tab order, screen reader labels
 9. Comportamento dos 7 estados interativos por componente clicável — não só a lista de nomes
 10. Orçamento de performance: qual é o elemento de LCP da tela, o que reserva espaço para não gerar CLS, e quantos pesos de fonte a direção exige
+11. Paleta com o esquema declarado (mono/análogo/complementar/tríade), o hue de origem e a proporção 60/30/10 — não só a lista de hex
+12. Empty state especificado por tipo para toda tela que lista dados (primeiro uso, busca sem resultado, erro, sem permissão) — cada um com seu CTA
 
 ## Handoff para Backend
 
@@ -459,6 +531,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - Aesthetic anchors pattern adapted from [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (custom license, see source).
 - Intensity dials (DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY) e em-dash ban inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
 - Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
+- Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
 - Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
 
 ## Integração com Pipeline
