@@ -408,6 +408,19 @@ Referências (se houver): paths de assets existentes no projeto
 
 Skill 17 aplica a regra default (grok-imagine pra t2i, gemini-25-flash pra edit) — você só precisa passar contexto, ela escolhe model + executa.
 
+## Verificacao — a ancora foi mesmo aplicada?
+
+Declarar a ancora nao garante que ela chegou no codigo. Dois checkers transformam as regras desta skill em verificacao:
+
+```bash
+node scripts/check-design-generic.mjs <path>   # indigo default, system-ui, gradiente AI, preto puro
+node scripts/check-contrast.mjs <path>         # ratio WCAG calculado, nos DOIS temas
+```
+
+Ambos falham com exit 1 quando encontram problema (`--warn` so reporta, `--json` para consumo programatico). O hook `design-anchor-guard` roda o primeiro conjunto de regras no momento da escrita e **bloqueia** arquivo visual com sinal de default estatistico.
+
+Se o checker acusa indigo, a ancora nao foi aplicada — foi declarada e esquecida.
+
 ## Evidencia de Conclusao
 
 - fluxo principal definido

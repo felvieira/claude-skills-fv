@@ -38,6 +38,13 @@ jobs:
       - name: Validate skill I/O schemas
         run: node scripts/validate-schema.mjs --all schemas/skill-io/
 
+      # O kit em si não tem UI de produto; roda em --warn para provar que os
+      # checkers executam sem erro. Em repo consumidor, rodar sem --warn.
+      - name: Run design checkers (self-check)
+        run: |
+          node scripts/check-design-generic.mjs --warn templates/
+          node scripts/check-contrast.mjs --warn templates/
+
       - name: Run installer smoke test
         run: bash scripts/smoke-install.sh
 

@@ -3,14 +3,17 @@
   --surface: #1a1d27;
   --surface2: #222535;
   --border: #2e3147;
-  --accent: #6366f1;
+  /* Âncora: technical/dev-tool escuro. Ciano-aço em vez do indigo default do
+     Tailwind — o kit não pode pregar "decida o accent" e entregar template
+     com a cor que a IA escolhe quando não escolheu nada. */
+  --accent: #38bdf8;
   --accent2: #10b981;
   --accent3: #f59e0b;
   --red: #ef4444;
   --text: #e2e8f0;
   --muted: #94a3b8;
   --code-bg: #141520;
-  --link: #a5b4fc;
+  --link: #7dd3fc;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,7 +54,7 @@ h1 {
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #e2e8f0, #a5b4fc);
+  background: linear-gradient(135deg, #e2e8f0, #7dd3fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -89,7 +92,7 @@ article h3 {
 
 article p { margin-bottom: 18px; }
 
-article a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(165,180,252,0.4); }
+article a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(125,211,252,0.4); }
 article a:hover { text-decoration-color: var(--link); }
 
 article ul, article ol { margin: 0 0 18px 24px; }
@@ -120,7 +123,7 @@ article pre code { background: transparent; border: 0; padding: 0; color: var(--
 article blockquote {
   border-left: 3px solid var(--accent);
   padding: 8px 18px;
-  background: rgba(99,102,241,0.06);
+  background: rgba(56,189,248,0.06);
   margin: 18px 0;
   color: var(--muted);
   font-style: italic;
@@ -189,7 +192,7 @@ footer.post a { color: var(--link); }
 .share-block {
   margin-top: 56px;
   padding: 24px 26px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.05));
+  background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(16,185,129,0.05));
   border: 1px solid var(--border);
   border-radius: 12px;
 }
@@ -256,7 +259,7 @@ footer.post a { color: var(--link); }
 .feat-hero-body { padding: 22px 24px 26px; }
 .feat-hero h2 {
   font-size: 25px; font-weight: 800; line-height: 1.25; margin: 8px 0 10px;
-  background: linear-gradient(135deg, #e2e8f0, #a5b4fc);
+  background: linear-gradient(135deg, #e2e8f0, #7dd3fc);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .feat-hero .excerpt { color: var(--muted); font-size: 14.5px; margin: 0; }

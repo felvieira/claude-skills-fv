@@ -5,6 +5,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.49.0] - 2026-08-08 — qualidade de design vira verificação, não só descrição
+
+A área de design tinha 8 skills e muito conteúdo bom, mas uma lacuna estrutural: o kit **descrevia** qualidade sem **provar**. Medição antes de agir: nenhum eval para as 5 skills que produzem pixel (02, 12, 52, 56, 57); `rules/frontend/ui-design.md` proibindo indigo genérico em prosa; o `pre-build-gate` saindo com `process.exit(0)` — sempre passa, nunca bloqueia; e "gate de UI-DESIGN" no `/auto` sendo markdown, não código.
+
+O sintoma disso: a própria rule documenta um bench onde 3 agentes produziram 3 UIs indigo quase idênticas. A correção foi escrever a regra — e ninguém rodou o bench de novo para provar que ela mudou alguma coisa.
+
+### Adicionado
+- **`scripts/check-design-generic.mjs`** — detecta a assinatura do default estatístico em arquivos visuais: indigo `#4f46e5`/`#6366f1`, `system-ui` como fonte declarada, gradiente roxo→rosa ("AI SaaS"), preto puro como superfície, `100vh` sem `dvh`, e repetição cega de `rounded-*`/`shadow-*` acima de um limiar. Cada achado traz **por que** é problema e **o que fazer** — mensagem de erro sem saída só gera frustração. Regras com `threshold` só reportam acima de N ocorrências no mesmo arquivo: `rounded-lg` uma vez é escolha, trinta vezes é ausência de hierarquia
+- **`scripts/check-contrast.mjs`** — computa a luminância relativa WCAG e o ratio de cada par texto/superfície, **nos dois temas** (passar no claro não garante o escuro). Superfície semântica (`--status-error-bg`) só pareia com texto da mesma família; parear cegamente gera falso positivo, e checker ruidoso o time desliga
+- **`hooks/scripts/design-anchor-guard.mjs`** (PreToolUse) — **bloqueia** (`permissionDecision: deny`) a escrita de arquivo visual com sinal inequívoco de default. Escopo estreito de propósito: guard que bloqueia demais é desligado, e aí não protege nada. Escape hatch: comentário `design-anchor: allow` no arquivo
+- **5 evals das skills de UI** — `ui-ux-design-anchor`, `responsive-conversion-audit`, `mobile-ux-foundations-basics`, `motion-design-restraint`, `accessibility-contrast-tokens`. Cada um com seção **"Reprova Se"**, que é onde o eval ganha dente
+- **`bench/ab/score-design.mjs`** — pontua 0–100 cada braço do bench A/B rodando os dois checkers, para "a regra funcionou?" ter número em vez de opinião. Validado com dois braços reais: âncora 52 × genérico 37, com os 4 sinais do default nomeados
+
+### Corrigido
+- **`templates/blog/assets/css/post.css`** — o checker encontrou `#6366f1` no template do próprio kit: ele pregava "decida o accent" e entregava exatamente a cor que a IA escolhe quando não escolheu nada. Accent migrado para ciano-aço coerente com a âncora technical/dev-tool, incluindo os resquícios em `rgba(99,102,241,…)` que o regex de hex não pegava
+
+### Alterado
+- `skills/02-ui-ux-design` — nova seção "Verificação": declarar a âncora não garante que ela chegou no código
+- `skills/22-accessibility-specialist` — contraste de token é calculável, não opinável
+- `rules/frontend/ui-design.md` — "Enforced, not just stated", com o comando e o escape hatch
+- `.github/workflows/validate.yml` — checkers rodam em `--warn` no self-check (o kit não tem UI de produto); em repo consumidor, rodar sem `--warn`
+- `hooks/hooks.json` + `hooks/config.json` — guard registrado, com toggle e entrada no perfil `minimal`
+
+---
+
 ## [2.48.0] - 2026-08-08 — skill 60 app-reference-architecture
 
 Engenharia reversa de 3 apps reais em produção do autor (gastos-app/Cadê o Dinheiro, memrapp/Memra, personal-styslist-ai/VisaLab — todos Next.js + Tauri v2, web + APK Android a partir do mesmo código-fonte) numa skill de arquitetura de referência, para que um app novo do mesmo perfil (login + pagamento + push + landing + web app + APK) nasça na estrutura já testada em vez de rederivar auth dual, build estático Tauri, multi-pagamento e push multi-canal a cada projeto novo.

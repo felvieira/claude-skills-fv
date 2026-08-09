@@ -37,4 +37,17 @@ paths:
 
 A bench of "crie um app completo todo list" across 3 agents produced three near-identical indigo-on-grey UIs with `system-ui` — because none picked an anchor. The fix is not "try harder", it's "decide first". One anchor, executed precisely, beats the average of all of them.
 
+That bench ran once, exposed the problem, and the fix was writing this rule — but nobody re-ran it to prove the rule changed anything. `bench/ab/score-design.mjs` closes that loop: it scores each arm objectively so "did the rule work?" has a number, not an opinion.
+
+## Enforced, not just stated
+
+This rule is verified, not only documented:
+
+```bash
+node scripts/check-design-generic.mjs <path>   # indigo default, system-ui, AI gradient, pure black
+node scripts/check-contrast.mjs <path>         # WCAG ratio computed, in BOTH themes
+```
+
+The `design-anchor-guard` hook (PreToolUse) **blocks** a visual file being written with the statistical-default signature. Escape hatch for a genuine false positive: add the comment `design-anchor: allow` to the file. Toggle: `hooks/config.json → design_anchor_guard.enabled=false`.
+
 Deep playbook → skill `02-ui-ux-design` (aesthetic anchors, tokens, accessibility, responsive). Component patterns → skill `04-frontend-integration`.

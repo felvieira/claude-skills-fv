@@ -64,6 +64,8 @@ Ferramentas automaticas pegam ~30-40% das violacoes WCAG. As outras exigem mao e
 - [ ] **1.4.3** Contraste texto ≥ 4.5:1 (≥ 3:1 para ≥ 24px ou ≥ 19px bold)
 - [ ] **1.4.11** Contraste de UI nao-texto (borda de input, icone, foco) ≥ 3:1
 - [ ] **1.4.11 (grafico)** Barra, linha e fatia ≥ 3:1 contra o fundo **e** contra a serie vizinha; serie distinguivel sem depender de cor (rotulo direto, padrao de preenchimento, espessura ou marcador diferente) — legenda colorida ao lado do grafico nao resolve para daltonismo
+
+> Contraste de token e **calculavel**, nao opinavel: `node scripts/check-contrast.mjs <css>` computa o ratio de cada par texto/superficie nos **dois** temas e falha (exit 1) abaixo do minimo. Passar no claro nao garante o escuro. Tokens em `hsl()`/`oklch()`/`var()` ficam fora desse passe e exigem verificacao manual documentada.
 - [ ] **1.4.4 / 1.4.10** Texto escala a 200% e faz reflow a 320px sem scroll horizontal
 - [ ] **1.3.1** Estrutura semantica: headings hierarquicos (sem pular de h1 → h4), listas reais, `<table>` com `<th>`
 
