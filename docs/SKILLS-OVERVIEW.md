@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 54 skills + 16 subagents + 43 commands + 57 policies + 28 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 60 skills + 16 subagents + 45 commands + 59 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,7 +8,7 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 54 skills, 16 subagents, 43 slash commands, 57 policies, 28 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Versão:** 60 skills, 16 subagents, 45 slash commands, 59 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 37 especialistas
+- [Skills por categoria](#skills-por-categoria) — 60 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -422,7 +422,7 @@ Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devol
 
 ## Policies que governam tudo
 
-57 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+59 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
 
 ### `tool-safety.md`
 Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.

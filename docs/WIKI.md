@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 54 skills · 16 subagents · 43 slash commands · 57 policies · 28 hooks · 22 rules
+> **Version:** 60 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (53) — specialists by category](#5-skills-53)
+5. [Skills (60) — specialists by category](#5-skills-60)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (53)
+## 5. Skills (60)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -761,6 +761,53 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Problem it solves:** a confident answer is not a correct one — long sessions quietly turn assumptions into "facts," and by PR time (Skill 11's gate) course-correction is expensive. This skill catches wrong directions early, while they're still cheap to fix.
 **Distinct from:** Skill 11 (Reviewer) is a verdict on a finished artifact; 53 is a posture applied per-decision, mid-flight. Skill 40 (Parallel Dispatcher) supplies the dispatch mechanics 53 consumes (`Agent` tool, `subagent_type: code-reviewer`) — 53 never invokes a skill from inside the spawned subagent, and is explicitly scoped to the main-session orchestrator, not to be called from inside another subagent (nested-spawn is the anti-pattern `policies/skills-vs-agents.md` forbids).
 **Takeaway:** **the reviewer's output is data, not verdict — you're still the orchestrator.** Reclassifying every finding against the artifact text (not rubber-stamping) is what separates real doubt from doubt theater; three unresolved cycles is information about the artifact, not a reason to grind a fourth alone.
+
+#### Skill 54 — Video Analysis
+
+**What it does:** extracts structured information from video — transcript, scene breakdown, on-screen text, UI flows demonstrated in a screen recording — and turns it into something the pipeline can consume (a spec, a bug report, a set of UX findings).
+**When to activate:** a bug arrives as a screen recording; a competitor demo needs analysing; a user-session recording holds the answer to why a flow is abandoned.
+**Problem it solves:** video is opaque to the rest of the kit. Without this step, whoever watches it has to transcribe the findings by hand, and detail is lost between watching and writing.
+
+#### Skill 55 — Marketing Reporting & Analytics
+
+**What it does:** marketing analytics operations — Ads/GA4 performance report structure (ROAS/CPA/CTR formulas, sections adapted to the audience), a 4-phase GA4+GTM technical setup checklist ("configured" only after Phase 4 validation, not at tag install), an 8-category marketing data-infrastructure audit with PASS/FAIL/PARTIAL plus severity, and CAC-payback/ROI/ROAS calculators using fully-loaded cost and churn-adjusted payback.
+**When to activate:** a campaign report is due; GA4/GTM needs configuring or auditing; someone asks whether acquisition spend is paying back.
+**Distinct from:** Skill 21 (Data Analytics) defines what to track *inside the product*; 55 configures and audits the *marketing tool* and the financial return. Skill 59 owns the click→revenue chain end to end.
+
+#### Skill 56 — Responsive Conversion
+
+**What it does:** converts desktop-first UI into working mobile UI, and owns the interaction patterns that conversion exposes. Symptom→root-cause→fix catalogue (`min-width: auto` as the actual reason a flex/grid child "won't fill 100%", `dvh` vs `vh`, `env(safe-area-inset-*)` for notch and gesture bar, horizontal-scroll hunting), a 4-phase audit protocol tested at 320/390/768px, a modal vs. bottom-sheet decision table with non-negotiables (focus trap, focus return, iOS-safe scroll lock), and destructive-action patterns keyed to reversibility.
+**When to activate:** a component doesn't fill its container, content is cut off, horizontal scroll appeared, a modal overflows the viewport, or a web UI needs a mobile version.
+**Distinct from:** Skill 02 decides how an interface *will* look before it exists; 56 fixes one that already exists and broke.
+
+#### Skill 57 — Mobile UX Foundations
+
+**What it does:** the decisions that precede layout, each grounded in biometric or physiological data rather than taste — thumb-zone ergonomics (where navigation may live, why a destructive action belongs in the hard-to-reach corner), dark-mode physiology (`#121212` as base, never pure black: halation, OLED smearing, dead elevation), perceived performance (the 100ms/1s/10s thresholds; skeleton between 1–10s, nothing below 1s), auth/onboarding UX (passkeys, NIST SP 800-63B against draconian password rules, permission priming), and the onboarding-pattern taxonomy keyed to the activation moment.
+**When to activate:** before choosing where navigation goes, before picking dark-mode surfaces, when users abandon on first use, or when the app "feels slow" without being slow.
+
+#### Skill 58 — i18n & Localization
+
+**What it does:** prepares a product for another language, region or writing direction *before* a translator exists — string externalisation with semantic keys, plural via the platform API (two forms work in pt/en and break in Russian and Arabic), locale formatters over canonical storage, +30% text expansion as the test floor, logical properties for RTL (including what must **not** mirror: numbers, logos, media icons), and pseudolocale/RTL as regression tests.
+**When to activate:** before fixing button widths, alignment or date formats — even in a product that is pt-BR only today.
+**Problem it solves:** i18n is architecture work, not translator work. A concatenated sentence, a fixed-width button, a hand-built date and `margin-left` all break on contact with another language, and no translator can fix any of them.
+
+#### Skill 59 — Closed-Loop Revenue
+
+**What it does:** closes the chain from paid click to margin — identity (GCLID/UTM/`transaction_id`/CRM, each with one job and not interchangeable), backend as the source of revenue truth (a client-side `purchase` misses async payments, double-fires on refresh and dies to blockers), reconciliation with a **declared tolerance** that blocks media scaling when exceeded, and the arithmetic that changes decisions: break-even ROAS = 1 / contribution margin.
+**When to activate:** analytics revenue doesn't match the backend; deciding whether a campaign is actually profitable; lead-gen bidding is learning from submitted forms instead of closed deals.
+**Takeaway:** **at a 40% margin, a ROAS of 2.0 looks green on the dashboard and destroys value.**
+
+#### Skill 60 — App Reference Architecture
+
+**What it does:** a blueprint for new apps that need login + payment + push + web + Android APK from a single Next.js + Tauri v2 codebase, reverse-engineered from three of the author's production apps. Covers dual auth (cookie session for web, Bearer JWT or Supabase token for the Tauri app, resolved by one central function per route), the static-export build problem (a script that renames — never deletes — Server Actions and `getServerSession()` layouts before `next build --output export`, restoring in a `finally`), dual payment (Stripe + Google Play Billing, mandatory by Play Store policy for in-APK subscriptions), dual push, and a decision table turning the three source apps' divergences into explicit choices.
+**When to activate:** starting an app of this shape, rather than re-deriving auth, payment, push and Tauri build from scratch.
+
+#### Skill 61 — Content Growth Engine
+
+**What it does:** content strategy as an acquisition system rather than a publishing calendar, in six phases (Discover, Create, Optimise, Parallel, High-impact, Measure). Prioritises by **commercial intent, not search volume** (50 searches from a buying director beat 5,000 from a student — volume sizes the effort, intent sets the order) and **starts at the bottom of the funnel**, where 100 visits convert what 10,000 top-of-funnel visits do not. Includes a reproducible AI-citation baseline (fixed prompt set, clean sessions, dated per model — changing the prompts voids the time series), a reserved 30–40% refresh quota, sales-call objections as the bottom-funnel content source, and cadence sized against real capacity.
+**When to activate:** building a content plan from scratch; prioritising a backlog bigger than production capacity; deciding whether to publish new or refresh old; traffic grew but pipeline didn't.
+**Distinct from:** it decides *what to produce and in what order*. Schema and markup belong to Skill 14, copy to 13/50, publishing to 41, revenue instrumentation to 59.
+**Takeaway:** **traffic is not the product — pipeline is.** Sessions are excluded from the six-month success metrics on purpose: they rise on their own and pay no salaries.
 
 ---
 

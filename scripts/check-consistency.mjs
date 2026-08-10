@@ -20,7 +20,13 @@ async function read(relPath) {
 
 async function main() {
   const skillEntries = await fs.readdir(path.join(root, "skills"), { withFileTypes: true });
-  const skillCount = skillEntries.filter((entry) => entry.isDirectory()).length;
+  const skillDirs = skillEntries.filter((entry) => entry.isDirectory());
+  const skillCount = skillDirs.length;
+  // Ids como string de 2 digitos ("02", "61") — e assim que a wiki referencia.
+  const skillIds = skillDirs
+    .map((entry) => entry.name.match(/^(\d\d)-/)?.[1])
+    .filter(Boolean)
+    .sort();
 
   // Agents live in agents/ (plugin autodiscovery) since v1.5.2
   const agentDir = path.join(root, "agents");
@@ -43,6 +49,10 @@ async function main() {
     preExecutionGate,
     contextGuard,
     keywordDetector,
+    rootReadmePtBr,
+    wikiEn,
+    wikiPt,
+    skillsOverview,
   ] = await Promise.all([
     read("README.md"),
     read("setup/README.md"),
@@ -54,6 +64,10 @@ async function main() {
     read("hooks/scripts/pre-execution-gate.mjs"),
     read("hooks/scripts/context-guard-stop.mjs"),
     read("hooks/scripts/keyword-detector.mjs"),
+    read("README.pt-BR.md"),
+    read("docs/WIKI.md"),
+    read("docs/WIKI.pt-BR.md"),
+    read("docs/SKILLS-OVERVIEW.md"),
   ]);
 
   const toolCount = (mcpIndex.match(/server\.registerTool\(/g) || []).length;
@@ -63,6 +77,32 @@ async function main() {
   expect(rootReadme.includes(`${toolCount} tools exposed`), `README.md should mention ${toolCount} tools`);
   expect(rootReadme.includes(`The MCP exposes ${toolCount} tools`), `README.md should describe the MCP as exposing ${toolCount} tools`);
   expect(rootReadme.includes(`treat \`dev-team-kit\` as ${toolCount} tools backed by the ${skillCount} skills`), "README.md should clarify the dev-team-kit MCP table entry");
+  // Badge de skills nos dois READMEs. O contador do badge ficou em "60" enquanto
+  // o real era 59 por varias versoes: quem atualiza conta pelo MAIOR NUMERO de
+  // skill, mas o id 16 foi descontinuado e nunca reaproveitado — numero maior
+  // nao e quantidade. Aqui a fonte e o diretorio, entao nao ha o que interpretar.
+  for (const [name, body] of [["README.md", rootReadme], ["README.pt-BR.md", rootReadmePtBr]]) {
+    expect(
+      body.includes(`badge/skills-${skillCount}-`),
+      `${name} skills badge should read ${skillCount} (count comes from skills/, not the highest skill id)`,
+    );
+  }
+
+  // Wiki e overview declaram as contagens no cabecalho e no indice; sem esta
+  // assercao elas envelhecem em silencio (estavam em 53/54 com 60 skills reais).
+  for (const [name, body] of [["docs/WIKI.md", wikiEn], ["docs/WIKI.pt-BR.md", wikiPt], ["docs/SKILLS-OVERVIEW.md", skillsOverview]]) {
+    expect(body.includes(`${skillCount} skills`), `${name} should state the current skill count (${skillCount})`);
+    expect(body.includes(`${agentCount} subagents`), `${name} should state the current subagent count (${agentCount})`);
+  }
+
+  // Toda skill precisa de entrada na wiki, nos dois idiomas — a wiki parou na
+  // skill 53 enquanto o kit ia na 61, e nada acusou.
+  for (const [name, body] of [["docs/WIKI.md", wikiEn], ["docs/WIKI.pt-BR.md", wikiPt]]) {
+    const documented = [...body.matchAll(/^#### Skill (\d\d)/gm)].map((m) => m[1]);
+    const missing = skillIds.filter((id) => !documented.includes(id));
+    expect(missing.length === 0, `${name} is missing an entry for skill(s): ${missing.join(", ")}`);
+  }
+
   expect(rootReadme.includes("bash .bot/setup/install.sh"), "README.md should document running .bot/setup/install.sh");
   expect(rootReadme.includes("The installer ships `setup/`"), "README.md should state that setup/ is copied into .bot/");
   expect(rootReadme.includes("--profile lean") && rootReadme.includes("--no-input"), "README.md should document non-interactive setup profiles");
