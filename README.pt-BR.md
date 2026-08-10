@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 59 Skills Especialistas para Coding Agents
+# Dev Team Kit — 60 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.50.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-59-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.51.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-60-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -14,6 +14,7 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.51.0** | **Skill 61 `content-growth-engine`** — estratégia de conteúdo como sistema de aquisição. O kit já sabia escrever copy (13/50), otimizar uma página (14), publicar um post (41), reportar campanha (55) e ligar clique a receita (59) — mas nada decidia **o que produzir, em que ordem e por quê**. Buraco medido por grep: `intenção de busca`, `topic cluster`, `link interno`, `content refresh`, `share of voice`, `ICP`, `calendário editorial` e `objeção de venda` tinham **zero** ocorrência em todas as skills, policies e templates. A skill inverte os dois defaults que fazem programa de conteúdo falhar: prioriza por **intenção comercial e não por volume de busca** (50 buscas de um diretor de compras valem mais que 5.000 de estudante — volume dimensiona o esforço, intenção decide a ordem), e **começa pelo fundo do funil**, onde 100 visitas convertem o que 10.000 de topo não convertem. Inclui baseline reproduzível de citação em IA (conjunto fixo de prompts, sessão limpa, datado por modelo — mudar os prompts invalida a série histórica), cota reservada de refresh (sem ela o novo sempre ganha e o acervo apodrece), objeções de call de vendas como fonte do conteúdo de fundo de funil, e medição honesta: tráfego de IA é parcialmente cego, então o campo aberto "como nos conheceu" é a única captura de um canal que a analytics não vê. | [`skills/61-content-growth-engine/SKILL.md`](skills/61-content-growth-engine/SKILL.md) |
 | **v2.50.0** | **As decisões que vêm *antes* do layout: paleta, leis cognitivas e estado vazio.** A área de design já sabia auditar (Nielsen, checkers) e verificar (v2.49.0) — faltava a camada anterior a existir layout. Buraco medido por grep no kit inteiro, não suposto: `Hick`, `Fitts`, `Gestalt`, `Von Restorff`, `carga cognitiva`, `teoria da cor`, `OKLCH` e todos os esquemas de cor tinham **zero** ocorrência; estado vazio existia em uma única linha de checklist. O sintoma: o bloco de tokens da skill 02 avisa *“NEVER default to Inter/Roboto/Arial without justification”* e logo abaixo entrega uma escala pronta de azul Tailwind **sem nota equivalente** — mandava decidir a fonte e servia a cor decidida, origem exata da UI genérica que a v2.49.0 aprendeu a detectar depois de pronta. A skill 02 ganha três seções: **Derivar a Paleta** (esquema a partir de um hue de marca, escala em **OKLCH e não HSL** — mesma `lightness` em hues diferentes não é mesmo brilho percebido — cor de marca separada de cor semântica, contraste validado *antes* de fechar, 60/30/10); **Leis Cognitivas** (17 leis e vieses nomeados, cada um enunciado como *a decisão que força* e não como definição — complementa Nielsen em vez de duplicar: Nielsen audita o que está pronto, estas decidem a estrutura antes de desenhar); e **Estado Vazio** (6 tipos que não se resolvem com a mesma mensagem, cada um precisando de *o que aconteceu + ação clicável* — sem CTA é tela morta, e ilustração não substitui ação). O checker ganha `raw-hex-sprawl`, testada contra arquivo ruim, bom e real antes de entrar. | [`skills/02-ui-ux-design/SKILL.md`](skills/02-ui-ux-design/SKILL.md), [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs) |
 | **v2.49.0** | **Qualidade de design vira verificação, não descrição.** O kit tinha 8 skills de design e conteúdo bom, mas nada *provava* nada: zero eval para as cinco skills que produzem pixel, `rules/frontend/ui-design.md` proibindo indigo genérico em prosa, e `pre-build-gate` saindo com `process.exit(0)` — sempre passa. A própria rule documenta um bench onde 3 agentes produziram 3 UIs indigo quase idênticas; a correção foi escrever a regra, e ninguém rodou o bench de novo pra provar que mudou algo. Agora: **`check-design-generic.mjs`** detecta a assinatura do default estatístico (indigo `#4f46e5`/`#6366f1`, `system-ui` como fonte declarada, gradiente roxo→rosa "AI SaaS", preto puro como superfície, `100vh` sem `dvh`), cada achado com *por que* e *o que fazer*; **`check-contrast.mjs`** computa o ratio WCAG real por par texto/superfície **nos dois temas**, pareando superfície semântica só com texto da mesma família pra não afogar em falso positivo; **`design-anchor-guard`** (PreToolUse) **bloqueia** escrita de arquivo visual com sinal inequívoco de default, com escape hatch `design-anchor: allow`; **5 evals** para as skills 02/12/22/56/57, cada um com seção "Reprova Se"; e **`bench/ab/score-design.mjs`** pontua cada braço 0–100 pra "a regra funcionou?" ter número. A primeira captura do checker foi `#6366f1` no template de blog do próprio kit — ele pregava "decida o accent" entregando exatamente a cor que o modelo escolhe quando não decidiu nada. | [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs), [`scripts/check-contrast.mjs`](scripts/check-contrast.mjs), [`hooks/scripts/design-anchor-guard.mjs`](hooks/scripts/design-anchor-guard.mjs) |
 | **v2.48.0** | **Skill 60 `app-reference-architecture`** — extraída por engenharia reversa de 3 apps reais em produção do autor (Next.js + Tauri v2, web + APK Android) num molde reutilizável, pra um app novo nascer em estrutura já testada em vez de rederivar tudo do zero. Cobre auth dual (cookie de sessão pra web, Bearer JWT ou token Supabase pro app Tauri, resolvido por uma única função central por rota de API — nunca duplicada rota a rota), o problema do build estático (script que renomeia — nunca deleta — Server Actions e layouts com `getServerSession()` antes do `next build --output export`, restaura tudo num `finally`), pagamento dual (Stripe + Google Play Billing, obrigatório pela política da Play Store pra assinatura digital dentro de APK, convergindo numa única tabela `Subscription` com `platform`/`status`, RTDN reconciliado por cron diário já que push não garante entrega), push dual (Web Push/VAPID + FCM via credencial base64 em env var), e uma tabela de decisão (JWT vs Supabase, Prisma vs `pg` puro, single-app vs monorepo, assinatura vs ledger de créditos, síncrono vs worker BullMQ) que transforma as divergências dos 3 apps de origem em escolha consciente em vez de copy-paste. Referência completa dividida em 10 arquivos (`docs/skill-guides/app-reference-architecture/`). | [`skills/60-app-reference-architecture/SKILL.md`](skills/60-app-reference-architecture/SKILL.md), [`docs/skill-guides/app-reference-architecture.md`](docs/skill-guides/app-reference-architecture.md) |
@@ -113,7 +114,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 59 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 60 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -181,7 +182,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 59 skills | ✅ | ✅ | ✅ |
+| 60 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -209,7 +210,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 59 Especialistas
+## Os 60 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -267,6 +268,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 |---|---|---|
 | 13 | **Marketing Copy** | copy de produto, CTAs, landing pages, brand voice e mensagens de conversão |
 | 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap e discoverability |
+| 61 | **Content Growth Engine** | conteúdo como sistema de aquisição, não calendário de publicação: intenção de busca extraída de call de vendas e ticket de suporte (nunca só do volume), clusters ordenados por intenção comercial, baseline de citação em IA medido contra um conjunto fixo de prompts, cadência dimensionada contra capacidade real, cota de refresh para o acervo não apodrecer, objeção de vendas virando página de fundo de funil, e sucesso medido em pipeline — não em sessão |
 
 ### Qualidade e Entrega
 

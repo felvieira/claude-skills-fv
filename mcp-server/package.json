@@ -1,7 +1,7 @@
 {
   "name": "@felvieira/dev-team-kit-mcp",
   "version": "2.25.0",
-  "description": "MCP server for the Dev Team Kit - 38 tools backed by 59 skills + 43 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development, /canary for gradual rollout, /diff-impact for ripple analysis, /instinct-export|import|promote, /multi-plan, /aside, /skill-health, /pattern-conformity), routing, context packs, working sets, image generation, scraping and session intelligence",
+  "description": "MCP server for the Dev Team Kit - 38 tools backed by 60 skills + 43 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development, /canary for gradual rollout, /diff-impact for ripple analysis, /instinct-export|import|promote, /multi-plan, /aside, /skill-health, /pattern-conformity), routing, context packs, working sets, image generation, scraping and session intelligence",
   "main": "dist/index.js",
   "bin": {
     "dev-team-kit-mcp": "dist/index.js"

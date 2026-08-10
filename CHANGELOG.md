@@ -5,6 +5,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.51.0] - 2026-08-10 — skill 61: conteúdo como sistema de aquisição, não calendário de publicação
+
+O kit sabia escrever copy (13/50), otimizar uma página (14), publicar um post (41), reportar campanha (55) e ligar clique a receita (59). Nada decidia **o que produzir, em que ordem e por quê**.
+
+Buraco medido por grep antes de escrever qualquer linha: de 28 conceitos centrais de um plano de conteúdo, **24 tinham zero ocorrência** em todas as skills, policies e templates — `intenção de busca`, `topic cluster`, `link interno`, `content refresh`, `share of voice`, `ICP`, `calendário editorial`, `objeção de venda`, `pesquisa original`, `pillar page`, `cadência`. O que existia era SEO técnico de página (skill 14, 793 linhas): meta tags, schema, Core Web Vitals, GEO/AEO.
+
+### Adicionado
+- **`skills/61-content-growth-engine`** (342 linhas) — estratégia de conteúdo como motor de aquisição, em 6 fases: Descobrir, Criar, Otimizar, Paralelo, Alto impacto, Medir. Inverte os dois defaults que fazem programa de conteúdo falhar:
+  - **prioriza por intenção comercial, não por volume de busca** — 50 buscas de um diretor de compras valem mais que 5.000 de estudante. Volume dimensiona o esforço; intenção decide a ordem. A tabela de fontes ordena por confiabilidade: gravação de call e ticket de suporte acima de ferramenta de keyword, que entra só para dimensionar
+  - **começa pelo fundo do funil** — o padrão é começar pelo informacional genérico (mais volume, mais fácil escrever) e nunca chegar no comercial. 100 visitas de fundo convertem o que 10.000 de topo não convertem
+- **Baseline reproduzível de citação em IA** — conjunto **fixo** de 20-30 prompts do ICP, sessão limpa (histórico contamina), registro de data e modelo. Mudar os prompts entre medições invalida a série histórica. Mensal, não trimestral — trimestral é tarde para corrigir rota
+- **Cota reservada de refresh (30-40% da capacidade)** — sem cota, o conteúdo novo sempre ganha e o acervo apodrece. Com a regra explícita de que trocar `dateModified` sem mudar conteúdo é fraude editorial
+- **Objeções de call de vendas como fonte do fundo de funil** — o melhor conteúdo já está sendo respondido verbalmente toda semana. Teste declarado: se vendas não usa o material na call, o material errou o alvo
+- **Cadência confrontada com capacidade real** — a tabela dimensiona o que "8-12 artigos + 3 posts/semana de C-level + 1 post/dia + newsletter" exige de time. Metade do volume com o dobro de profundidade vence: artigo raso não é citado por LLM nem convence comprador
+- **`evals/skills/content-growth-engine-priorizacao.md`** — eval com cenário onde os termos de **menor** volume devem ser priorizados; reprova se ordenar por volume, aceitar o volume prometido sem confrontar capacidade, propor ebook, ou listar sessões como métrica de sucesso
+- **`evals/triggers/61-content-growth-engine.json`** — 14 prompts que devem acionar, 11 que não. Primeira rodada reprovou (57%, piso 80%): a description não cobria formulações naturais como "o chatgpt cita os concorrentes e não a gente". Corrigida a partir das falhas reais, fechou em **14/14 acertos e 0/11 falsos positivos**
+- **3 capabilities de roteamento** — `content-strategy`, `content-optimization`, `ai-visibility`, cada trigger sondado contra 7 prompts de controle
+
+### Corrigido
+- **`plugins/catalog/legal-workflows.json`** — o trigger `"nda"` casava por substring dentro de "cale**nda**rio", "age**nda**", "eme**nda**": qualquer frase com "calendário" acionava um plugin de **alto risco com revisão humana obrigatória**. Encontrado pela sonda de substring da skill nova, não por relato. Trocado por formas inequívocas (`"um nda"`, `"assinar nda"`, `"revisar nda"`, `"acordo de confidencialidade"`), com os casos legítimos reverificados
+
+### Alterado
+- Contagem de skills para 60 em `README.md`, `README.pt-BR.md` e `mcp-server/package.json` — o `check-consistency` apontou os dois lugares que faltavam
+- A skill delega explicitamente e não reimplementa: schema/meta/llms.txt na 14, copy na 13/50, publicação na 41, instrumentação de receita na 59
+
 ## [2.50.0] - 2026-08-09 — o que decide o design antes do layout: paleta, leis cognitivas e estado vazio
 
 A área de design já sabia **auditar** (Nielsen, checkers, âncoras estéticas) e **verificar** (v2.49.0). Faltava a camada anterior: as decisões que produzem a interface antes de existir layout. Buraco medido por grep no kit inteiro, não suposto — `lei de Hick`, `Fitts`, `Gestalt`, `Von Restorff`, `carga cognitiva`, `teoria da cor`, `roda de cores`, `complementar`, `análogo`, `tríade` e `OKLCH`: **zero ocorrência**. `estado vazio` aparecia em exatamente uma linha de checklist (`rules/frontend/ui-design.md`).

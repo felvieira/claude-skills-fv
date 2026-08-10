@@ -1,0 +1,33 @@
+{
+  "skill": "61-content-growth-engine",
+  "should_trigger": [
+    "montar um plano de conteudo pro nosso SaaS B2B",
+    "preciso de uma estrategia de conteudo que gere pipeline",
+    "como priorizar a pauta do blog do proximo trimestre",
+    "montar calendario editorial com a equipe que temos",
+    "organizar o blog em clusters de conteudo",
+    "quais paginas de fundo de funil a gente deveria ter",
+    "o chatgpt cita os concorrentes e nao a gente",
+    "como medir se a marca aparece nas respostas de IA",
+    "vale mais atualizar conteudo antigo ou escrever novo",
+    "nosso trafego cresceu mas nao converte em reuniao",
+    "transformar as objecoes de venda em conteudo",
+    "planejar linkagem interna entre os artigos",
+    "que material rico oferecer no lugar de ebook",
+    "devemos publicar a pagina de precos"
+  ],
+  "shouldnt_trigger": [
+    "escrever a headline da landing page de cadastro",
+    "adicionar schema FAQPage nesse post",
+    "publicar esse post no blog e me devolver a URL",
+    "montar relatorio de performance do Google Ads",
+    "configurar o GA4 do zero nesse projeto",
+    "instrumentar a conversao do checkout ate a receita",
+    "pesquisa de palavra-chave com volume e dificuldade",
+    "revisar acessibilidade do formulario de cadastro",
+    "migrar o banco de dados para postgres",
+    "corrigir o bug do parser de datas",
+    "escrever o copy do email de recuperacao de senha"
+  ],
+  "notes": "A fronteira que este eval protege: a 61 decide O QUE produzir e em que ordem. Escrever o texto e da 13/50, marcar schema e da 14, publicar e da 41, relatorio de midia e da 55, ligar conversao a receita e da 59. 'pesquisa de palavra-chave' fica na 14 de proposito — keyword research por volume/dificuldade e execucao tecnica de SEO; a 61 so consome o resultado e reordena por intencao comercial."
+}

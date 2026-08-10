@@ -15,7 +15,7 @@
   "policies": ["policies/tool-safety.md", "policies/evals.md"],
   "capabilities": [
     {"id": "contract-review", "when_any": ["contrato", "contract review", "clausula", "clausula contratual", "redline"], "when_none": ["contrato da api", "contrato de api", "api contract", "contrato do endpoint"], "skills": []},
-    {"id": "nda", "when_any": ["nda", "acordo de confidencialidade", "non disclosure"], "skills": []},
+    {"id": "nda", "when_any": ["um nda", "o nda", "assinar nda", "revisar nda", "clausula de nda", "acordo de confidencialidade", "non disclosure"], "skills": []},
     {"id": "compliance", "when_any": ["compliance legal", "conformidade legal", "regulacao", "regulatorio"], "skills": []}
   ]
 }
