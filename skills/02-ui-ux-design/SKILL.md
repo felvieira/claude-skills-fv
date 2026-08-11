@@ -62,6 +62,8 @@ Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — z
 5. Definir breakpoints e comportamento responsivo
 6. Validar usabilidade com heurísticas de Nielsen
 
+**Wireframe não é um estágio só.** Baixa fidelidade (estrutura, sem cor nem tipografia real) valida conceito, hierarquia e sequência de tela — errar rápido aqui é barato. Alta fidelidade (com âncora estética, tokens e conteúdo real) só entra depois que a direção de baixa fidelidade está validada, porque é onde se testa conteúdo real, estado e entrega ao Frontend. Pular direto para alta fidelidade sem validar a estrutura é decorar um esqueleto que ainda pode mudar.
+
 ## Direção Estética — Aesthetic Anchors
 
 Antes de qualquer wireframe ou token, escolher **uma** âncora estética e comprometer com ela. Interface sem direção vira média genérica — o padrão "SaaS azul com Inter". A âncora orienta paleta, tipografia, textura, densidade, ritmo visual e até a complexidade da implementação. Misturar âncoras dilui o resultado; escolher uma e executar com precisão diferencia.
@@ -193,6 +195,23 @@ O azul `#3b82f6` do bloco abaixo é **placeholder**, não default. Paleta herdad
 **Sinais de paleta genérica:** azul-500 do Tailwind sem justificativa; gradiente roxo→rosa como "identidade"; cor de marca aplicada em toda superfície em vez de reservada ao acento; `success` verde / `error` vermelho como única distinção (falha para daltonismo — ver skill 22).
 
 **RGB é o único modelo relevante aqui.** CMYK só entra se o entregável for impresso (material de marca, embalagem) — nesse caso, cor de tela e cor impressa divergem e a marca precisa dos dois valores especificados.
+
+### Três Camadas de Token — Nunca Pular Direto para o Componente
+
+Cor (e, por extensão, espaçamento e raio) se organiza em três camadas. Pular a camada semântica e ir direto de primitivo para componente é o que torna dark mode, rebranding e diferença de plataforma um refactor em vez de uma troca de valor:
+
+```
+Primitivo   → blue-600, gray-100, space-4, radius-md
+Semântico   → color-surface, color-text, color-border, color-primary,
+              color-success, color-warning, color-danger, color-info, color-focus
+Componente  → button-primary-bg, input-border-focus, card-surface
+```
+
+- **Primitivo** é a paleta crua — não carrega significado, só valor
+- **Semântico** é onde a decisão de produto mora: `color-danger` aponta pra um primitivo hoje, pode apontar pra outro amanhã (dark mode, tema, rebranding) sem tocar em nenhum componente
+- **Componente** consome só o semântico, nunca o primitivo direto — `button-primary-bg: var(--color-primary)`, não `button-primary-bg: #3b82f6`
+
+Produto que estiliza direto em cima de `blue-600` em 40 arquivos não sobrevive a um rebranding sem busca-e-substituição arriscada. Produto em cima de `color-primary` troca uma linha.
 
 ## Design System - Tokens Base
 
@@ -446,8 +465,24 @@ Nielsen (abaixo) audita a interface pronta. Estas leis decidem a estrutura **ant
 | **Adaptação sensorial** | estímulo repetido deixa de ser percebido | badge de notificação sempre aceso, banner permanente e toast a cada ação viram invisíveis — e junto com eles o alerta que importava |
 | **Fadiga de decisão** | decisões seguidas degradam a qualidade da escolha | fluxo longo precisa de default sensato, não de mais uma pergunta. Todo campo opcional exibido é uma decisão cobrada |
 | **Ilusão de trabalho** | processo visivelmente "trabalhando" é percebido como mais valioso | vale para busca/análise real (mostrar as etapas). Delay artificial em operação instantânea é manipulação — não fazer |
+| **Divulgação progressiva** | complexidade não desaparece, mas pode ser adiada até que o usuário sinalize intenção | mostrar só o essencial na primeira tela; opção avançada, campo condicional e configuração rara ficam atrás de um "mostrar mais" explícito — nunca escondidos sem pista de que existem |
 
-Não aplicar as 17 em toda tela. Elas entram quando a decisão está em disputa: quantas opções mostrar, onde por o botão, o que destacar, o que agrupar.
+Não aplicar as 18 em toda tela. Elas entram quando a decisão está em disputa: quantas opções mostrar, onde por o botão, o que destacar, o que agrupar.
+
+### Dark Patterns — Onde a Manipulação Vira Categoria, Não Exceção
+
+A linha de "Ilusão de trabalho" acima cita manipulação como exceção pontual. Dark pattern é o nome para quando isso vira **prática deliberada de UI/copy para extrair uma ação que o usuário não teria tomado com informação completa**. Reconhecer os seis padrões mais comuns evita reintroduzi-los sem perceber que têm nome:
+
+| Padrão | Como aparece | Por que não fazer |
+| --- | --- | --- |
+| **Urgência falsa** | contagem regressiva ou "oferta expira" sem prazo real por trás | some no reload ou reaparece idêntico amanhã — usuário percebe e a marca perde credibilidade acumulada, não só a conversão daquele clique |
+| **Escassez fabricada** | "só 3 restantes" sem estoque real checável | mentira verificável é o pior tipo — uma busca ou uma segunda visita expõe |
+| **Custo escondido** | preço final maior que o anunciado, revelado só no checkout | abandono de carrinho no último passo é caro; a informação tinha que estar na página de preço (skill 61) |
+| **Pré-seleção enganosa** | opt-in de cobrança/newsletter marcado por padrão, opt-out difícil de achar | dado pessoal e cobrança recorrente exigem ação explícita do usuário, não omissão dele |
+| **Dificuldade artificial de cancelar** | assinar é 1 clique, cancelar exige ligação/chat/formulário | fricção assimétrica entre entrar e sair é o antipadrão mais citado em regulação de assinatura |
+| **Confirm-shaming** | botão de recusa com texto que constrange ("Não, prefiro pagar mais") | pressão emocional no texto do próprio controle, não no argumento de venda |
+
+Diferença de escopo com a skill 13: lá a regra é "urgência real, nunca fabricada" aplicada à copy de venda. Aqui a lista cobre o padrão de **interface e fluxo**, não só o texto — pré-seleção e dificuldade de cancelar são decisão de componente e de arquitetura de tela, não de palavra.
 
 ## Heurísticas de Nielsen - Checklist
 
@@ -463,6 +498,20 @@ Antes de aprovar qualquer interface, validar:
 8. **Design minimalista** — Só info relevante na tela?
 9. **Recuperação de erros** — Mensagens claras com ação sugerida?
 10. **Ajuda e documentação** — Tooltips, onboarding?
+
+Nielsen audita a **interação com a interface pronta**. Não cobre se o problema certo foi resolvido, se a arquitetura de informação faz sentido, ou se alguém testou com usuário real — isso é o checklist abaixo.
+
+## Checklist de Fechamento — Além da Interação
+
+Gate mais amplo que Nielsen, para as pontas que ele não cobre: estratégia, estrutura e validação. Rodar antes de considerar a interface pronta para handoff, não durante o desenho.
+
+**Estratégia** — o público e o problema estão definidos (não "quem vai gostar", e sim "quem tem a dor")? Existe uma tarefa principal por tela, não uma lista de possibilidades? Há métrica de sucesso declarada, não só "parece melhor"?
+
+**Estrutura** — a arquitetura de informação foi decidida antes do wireframe, não descoberta desenhando? Os fluxos cobrem erro e caminho alternativo, não só o feliz? Nenhuma página de conversão está órfã de link de entrada (ver "Plano de links internos" na skill 61)?
+
+**Validação** — alguém testou com usuário representativo, ou só com quem já sabia onde clicar (skill 51)? A hipótese da próxima iteração está escrita, ou a interface "está pronta" sem plano do que medir depois de publicada?
+
+Estratégia e estrutura sem checklist formal são o motivo mais comum de retrabalho tarde — a interface fica visualmente correta e resolve o problema errado.
 
 ## Quando precisar de imagem (hero, ilustração, mascote, background)
 
@@ -533,6 +582,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
 - Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
 - Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
+- Três camadas de token, wireframe lo-fi/hi-fi como estágios distintos, divulgação progressiva nomeada, dark patterns como categoria e o checklist de fechamento (estratégia/estrutura/validação) vieram de um estudo do usuário sobre a biblioteca Design Basics da [Figma](https://www.figma.com/resource-library/) — medido por grep contra o kit antes de aplicar; só entrou o que era gap real, não redundante com Nielsen ou com o que a skill já cobria.
 
 ## Integração com Pipeline
 

@@ -5,6 +5,20 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.53.0] - 2026-08-11 — cinco gaps de um estudo Figma aplicados à skill 02
+
+Usuário colou um estudo próprio de 18 seções sobre a biblioteca Design Basics da Figma. Não foi tratado como pedido de ação — foi avaliado como material de referência, igual às rodadas anteriores com o blog da Blush: medir o gap real antes de aplicar qualquer coisa, sem transcrever o estudo inteiro só porque chegou pronto.
+
+Um agente de pesquisa leu as skills 02/22/56/57 por completo e checou 5 candidatos a gap com evidência de arquivo+linha, não suposição. Resultado: **4 gaps reais confirmados** e **1 falso alarme descartado** (o checklist final de 6 categorias do estudo não é redundante com as Heurísticas de Nielsen da skill 02 — Nielsen audita interação de interface pronta; o estudo cobre estratégia/estrutura/validação, que Nielsen não toca — então virou adição, não descarte).
+
+### Adicionado
+- **`skills/02-ui-ux-design` — "Três Camadas de Token"** — a seção "Design System - Tokens Base" já existia, mas era uma escala de cor solta (`primary-50` a `primary-900`) sem a estrutura primitivo → semântico → componente. Sem essa camada intermediária, um rebranding vira busca-e-substituição arriscada em vez de trocar uma linha
+- **"Divulgação progressiva" nomeada** — o conceito já existia disperso em 5 palavras dentro da linha de Hick-Hyman ("revelar progressivamente"); ganhou linha própria na tabela de leis cognitivas, com a regra de nunca esconder opção avançada sem pista de que ela existe
+- **"Dark Patterns" como categoria nomeada** — os itens individuais já apareciam espalhados (urgência sem manipulação na skill 13, "manipulação" isolada numa linha da skill 02), mas sem o conceito guarda-chuva. Tabela com os 6 padrões mais citados em regulação de assinatura (urgência falsa, escassez fabricada, custo escondido, pré-seleção enganosa, dificuldade artificial de cancelar, confirm-shaming), com a fronteira declarada contra a skill 13: lá é regra de texto de venda, aqui é decisão de componente e fluxo
+- **Wireframe baixa fidelidade vs. alta fidelidade como estágios distintos** — a skill usava "wireframe" genérico em toda parte, sem diferenciar o estágio que valida estrutura (barato errar) do que testa conteúdo real e entrega ao Frontend
+- **"Checklist de Fechamento"** — Nielsen cobre interação; não cobre se o problema certo foi resolvido, se a arquitetura de informação foi decidida antes do wireframe, ou se alguém testou com usuário real. Checklist de 3 blocos (estratégia/estrutura/validação) preenche a lacuna sem duplicar Nielsen
+- **3 capabilities de roteamento** — `dark-patterns`, mais termos em `design-system-choice` (token semântico) e `cognitive-load` (divulgação progressiva). O trigger `"cancelar assinatura"` sozinho foi cogitado e descartado depois da sonda: colidia com "implementar o endpoint de cancelar assinatura" e "criar a tela de cancelar assinatura" — trabalho de feature legítimo virando sugestão de dark pattern. Reescrito para exigir o sinal de intenção (`"dificultar o cancelamento"`), verificado nos dois sentidos antes de fechar
+
 ## [2.52.0] - 2026-08-11 — skill 62: auditoria em massa de produto via personas simuladas
 
 Usuário trouxe um case real de time interno: auditoria de produto onde 4 personas simuladas encontraram 100 issues em 1 dia, um agente de análise comentou solução em cada uma, uma frota de 10 agentes abriu 60 PRs, um reviewer aprovou 42, e sobraram 24 issues objetivas para triagem humana — zero teste quebrado, zero merge automático.
