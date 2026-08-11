@@ -10,13 +10,19 @@
     "revisar acessibilidade WCAG AA dos componentes",
     "estruturar componente visual reutilizavel pro botao primario",
     "definir layout mobile first dessa pagina de pricing",
-    "decisao de UX pro fluxo de recuperacao de senha"
+    "decisao de UX pro fluxo de recuperacao de senha",
+    "auditar essa tela de checkout e me dizer o que acha",
+    "revisar o design dessa interface antes do release",
+    "dar um parecer sobre a usabilidade dessa pagina",
+    "quais achados de UX voce encontra nessa tela"
   ],
   "shouldnt_trigger": [
     "rodar migration do banco em producao",
     "configurar webhook do GitHub no Slack",
     "limpar tabelas antigas do warehouse",
     "criar cronjob de backup diario",
-    "ajustar regra de firewall da VPC"
+    "ajustar regra de firewall da VPC",
+    "revisar essa pull request antes do merge",
+    "code review do modulo de autenticacao"
   ]
 }

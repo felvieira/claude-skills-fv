@@ -544,9 +544,9 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 #### Skill 02 — UI/UX Designer
 
-**O que faz:** define layout, sistema de tokens, responsividade, heurísticas de uso.
-**Quando ativar:** feature com interface; rebranding; design system novo.
-**Problema que resolve:** UI inventada por agente sem critério vira inconsistente.
+**O que faz:** define layout, sistema de tokens, responsividade, heurísticas de uso — e audita interface existente em dois modos que nunca se misturam: auditoria (nenhuma alteração de arquivo, produz achados classificados em norma/evidência/heurística/preferência e priorizados por severidade×alcance×frequência×confiança) e implementação (edição restrita à causa do achado, quando explicitamente autorizada). Detalhe do protocolo de auditoria em `references/audit-framework.md`; conteúdo por tipo de superfície em `references/marketing-surfaces.md`, `product-apps.md`, `forms-and-transactions.md`.
+**Quando ativar:** feature com interface; rebranding; design system novo; revisar ou corrigir UI existente.
+**Problema que resolve:** UI inventada por agente sem critério vira inconsistente. Sem o modo dual, pedido de "dá uma olhada nisso" vira edição não autorizada — o erro mais caro do protocolo de auditoria.
 
 #### Skill 29 — Design Intelligence
 

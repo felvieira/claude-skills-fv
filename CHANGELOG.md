@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.54.0] - 2026-08-11 — modo dual auditoria/implementação na skill 02
+
+Usuário trouxe um protocolo de auditoria/implementação UI/UX próprio (fluxo de 9 passos, 7 arquivos de referência modulares, classificação de achado, tabela com 8 colunas) e pediu para avaliar se valia incorporar — não para aplicar cegamente. Um agente de pesquisa checou as 8 peças do protocolo contra skills 02/11/22/56/57 com evidência de arquivo+linha antes de qualquer decisão: **6 peças não existiam em lugar nenhum do kit**, e as outras 2 (dark patterns, estados de componente) estavam fragmentadas em 3-4 skills sem ponto de consolidação.
+
+A skill 02 tinha um modo só: desenhar interface do zero. O protocolo pedia um segundo modo genuinamente diferente — auditar/corrigir o que já existe — com uma regra que não tolera ambiguidade: pedido de análise nunca sai em diff.
+
+### Adicionado
+- **Modo dual Auditoria/Implementação** na skill 02 — auditoria não altera nenhum arquivo, produz achados; implementação edita com escopo restrito à causa identificada, só quando explicitamente autorizada. Se o pedido for ambíguo entre os dois, trata como auditoria e pergunta antes de editar — editar num pedido que só pedia opinião é o erro mais caro do protocolo, não é reversível de graça
+- **`skills/02-ui-ux-design/references/audit-framework.md`** — fluxo de 9 passos (inspecionar → classificar contexto → ler referência aplicável → mapear jornada antes da decoração → classificar achado → priorizar → implementar se autorizado → verificar → entregar); classificação de achado em **norma/evidência/heurística/preferência** (preferência nunca vira bloqueador na tabela); hierarquia de 6 níveis de evidência; priorização por **severidade × alcance × frequência × confiança** (4 eixos combinados, não score único); formato de tabela `ID | severidade | tela/fluxo | achado | evidência | impacto | correção | confiança`; definição de pronto com 7 critérios
+- **`references/marketing-surfaces.md`**, **`references/product-apps.md`**, **`references/forms-and-transactions.md`** — conteúdo específico por tipo de superfície, linkando (não duplicando) as skills 22/56/57/61 já existentes. `product-apps.md` recebeu também a tabela de "Adotar um Design System Existente", extraída do SKILL.md principal para reduzir o peso sempre-carregado
+- **`evals/skills/ui-ux-design-audit-mode-boundary.md`** — 3 cenários: pedido ambíguo (nenhum arquivo pode ser editado), pedido explícito de implementação (escopo restrito ao componente do achado), achado sem dado real disponível (classificado como heurística/preferência, nunca "evidência", e nunca afirmado como "vai aumentar conversão" sem métrica)
+- **Capability `ui-ux-audit`** em `plugins/catalog/design-quality.json`, sondada contra 9 controles incluindo a fronteira com `code-review` (revisar PR de código ≠ auditar UI)
+
+### Corrigido
+- **`evals/triggers/02-ui-ux-design.json`** — 2 dos 10 prompts originais (`"aesthetic anchor"`, `"acessibilidade WCAG AA"`) estavam quebrados desde a criação do eval em `4c85eaf` (v2.12.0), sem que ninguém tivesse rodado `eval-triggers` contra a skill 02 até agora. Corrigido junto com os 4 prompts novos de auditoria: description da skill 02 fechou em 14/14 acertos, 0/9 falsos positivos
+
 ## [2.53.0] - 2026-08-11 — cinco gaps de um estudo Figma aplicados à skill 02
 
 Usuário colou um estudo próprio de 18 seções sobre a biblioteca Design Basics da Figma. Não foi tratado como pedido de ação — foi avaliado como material de referência, igual às rodadas anteriores com o blog da Blush: medir o gap real antes de aplicar qualquer coisa, sem transcrever o estudo inteiro só porque chegou pronto.

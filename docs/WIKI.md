@@ -564,9 +564,9 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 #### Skill 02 — UI/UX Designer
 
-**What it does:** defines layout, token system, responsiveness, usage heuristics.
-**When to activate:** feature with interface; rebranding; new design system.
-**Problem it solves:** UI invented by an agent without criteria becomes inconsistent.
+**What it does:** defines layout, token system, responsiveness, usage heuristics — and audits existing UI in two modes that never mix: audit (no file changes, findings classified as norm/evidence/heuristic/preference, prioritised by severity×reach×frequency×confidence) and implementation (edit scoped to the finding's root cause, only when explicitly authorised). Audit protocol detail in `references/audit-framework.md`; per-surface content in `references/marketing-surfaces.md`, `product-apps.md`, `forms-and-transactions.md`.
+**When to activate:** feature with interface; rebranding; new design system; reviewing or fixing existing UI.
+**Problem it solves:** UI invented by an agent without criteria becomes inconsistent. Without the dual mode, "take a look at this" turns into an unauthorised edit — the costliest mistake the audit protocol exists to prevent.
 
 #### Skill 29 — Design Intelligence
 

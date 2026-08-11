@@ -4,10 +4,16 @@ description: |
   Skill do Designer UI/UX para definição de interfaces e experiência do usuário. Use quando precisar criar
   wireframes, design system tokens, componentes de UI, fluxos de navegação, acessibilidade, ou qualquer
   decisão de interface. Cobre também derivação de paleta (esquema de cor, OKLCH, 60/30/10), leis
-  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo.
+  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo. Cobre ainda
+  auditoria de interface existente: modo dual auditoria/implementação, classificação de achado
+  (norma/evidência/heurística/preferência), priorização por severidade e tabela de achados.
   Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
-  "layout", "responsivo", "mobile first", "acessibilidade básica", "design system", "protótipo", "Figma",
-  "paleta", "esquema de cores", "estado vazio", "empty state", "quantas opções mostrar".
+  "layout", "responsivo", "mobile first", "acessibilidade básica", "acessibilidade dos componentes",
+  "wcag", "design system", "protótipo", "Figma", "aesthetic anchor", "âncora estética",
+  "paleta", "esquema de cores", "estado vazio", "empty state", "quantas opções mostrar",
+  "auditar a interface", "auditar essa tela", "revisar o design", "auditoria de UI",
+  "avaliar a usabilidade", "achados de UX", "review de design", "dar um parecer",
+  "parecer sobre a usabilidade".
 ---
 
 # UI/UX Designer - Interface e Usabilidade
@@ -30,15 +36,24 @@ Se o produto pode receber outro idioma — mesmo que hoje seja so pt-BR — ver 
 
 Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — zona do polegar (onde a navegacao pode morar), superficie base do dark mode (`#121212`, nunca preto puro) e contraste minimo verificado nos dois temas — ver `skills/57-mobile-ux-foundations/SKILL.md`. Essa skill tambem cobre percepcao de espera (skeleton vs. spinner por faixa de duracao) e UX de login/onboarding/permissao.
 
+## Dois Modos: Desenhar vs. Auditar
+
+O corpo deste arquivo (âncora estética, tokens, leis cognitivas) é para **desenhar do zero** — interface que ainda não existe.
+
+Quando o pedido é **revisar, avaliar ou corrigir** uma interface que já existe, o protocolo é outro: carregar `references/audit-framework.md`. Ele define os dois submodos (auditoria = nenhuma alteração de arquivo; implementação = edição com escopo restrito), o fluxo de 9 passos, a classificação de achado em norma/evidência/heurística/preferência, a priorização por severidade×alcance×frequência×confiança, o formato de tabela de achados, e a definição de pronto. Não misturar os dois: pedido de análise nunca sai em diff.
+
 ## Quando Usar
 
-- definir interface, fluxo e comportamento responsivo
+- definir interface, fluxo e comportamento responsivo, do zero
 - transformar spec em estrutura de tela e decisao de usabilidade
+- auditar interface existente (ver "Dois Modos" acima — carrega `references/audit-framework.md`)
+- corrigir interface existente quando explicitamente autorizado a editar
 
 ## Quando Nao Usar
 
 - para decidir regras de negocio ou contrato de API sozinho
-- para substituir implementacao frontend
+- para editar arquivo quando o pedido só autorizou análise — ver modo Auditoria acima
+- para construir feature nova a partir de spec — isso é `skills/04-frontend-integration/SKILL.md`. O modo Implementação desta skill é escopado a corrigir a causa de um achado de auditoria, não a implementar funcionalidade nova
 
 ## Entradas Esperadas
 
@@ -124,26 +139,7 @@ Quando o projeto se encaixa claramente em uma destas verticais, aplicar também 
 
 ## Adotar um Design System Existente
 
-Antes de derivar tokens do zero, decidir se um design system maduro resolve. Adotar um DS existente entrega componentes, tokens, acessibilidade e documentação já resolvidos — inventar do zero só se justifica quando diferenciação visual é o produto.
-
-**A âncora estética e o design system são decisões separadas.** O DS define componentes e estrutura; a âncora define a pele. Carbon com paleta e tipografia próprias continua Carbon na estrutura.
-
-| Design system | Dono | Melhor encaixe | Custo |
-| --- | --- | --- | --- |
-| **Material 3** | Google | Android nativo, produto consumer, quando dynamic color agrega | Alto no Android (nativo no Compose); na web, avaliar o estado de manutenção da implementação escolhida |
-| **Apple HIG** | Apple | iOS/iPadOS/macOS | Baixo se usar componentes nativos — o sistema aplica a linguagem atual sozinho |
-| **Fluent 2** | Microsoft | Ferramenta de produtividade, ecossistema Microsoft, densidade média-alta | Médio, biblioteca React ampla |
-| **Carbon** | IBM | Enterprise com muita tabela, formulário e dado denso | Médio, forte em padrão de dados |
-| **Shadcn/Radix + tokens próprios** | — | Quando a marca precisa mandar, mas acessibilidade de primitiva não pode ser reinventada | Baixo, mas exige construir o sistema visual |
-
-Regra de decisão por tipo de produto:
-
-- **Enterprise / muito dado** → Carbon ou Fluent. Tabela densa é o caso onde card não substitui: comparar registros exige linha e coluna
-- **Mobile nativo** → o DS da plataforma (M3 no Android, HIG no iOS). Forçar visual idêntico entre as duas quebra a expectativa adquirida do usuário de cada uma
-- **Landing / marca forte** → primitiva acessível + tokens próprios; DS completo engessa sem devolver benefício
-- **Dashboard** → Carbon/Fluent para diagnóstico; layout modular em cards para visão executiva
-
-**Compartilhar entre plataformas:** regra de negócio, conteúdo, hierarquia e tokens semânticos. **Não compartilhar:** componente e interação onde a convenção nativa diverge — navegação, seletor de data, ação de linha, sheet.
+Antes de derivar tokens do zero, decidir se um design system maduro resolve — Material 3, Apple HIG, Fluent 2, Carbon, ou primitiva + tokens próprios. Tabela de encaixe por tipo de produto, regra de decisão e o que compartilhar entre plataformas: `references/product-apps.md`.
 
 A ordem de construção não é negociável: **semântica → tokens → primitivas → componentes → estados → dados → responsivo → estilo visual → motion**. Design que só funciona depois que a decoração entra está escondendo problema de hierarquia ou de arquitetura da informação.
 
@@ -583,6 +579,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
 - Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
 - Três camadas de token, wireframe lo-fi/hi-fi como estágios distintos, divulgação progressiva nomeada, dark patterns como categoria e o checklist de fechamento (estratégia/estrutura/validação) vieram de um estudo do usuário sobre a biblioteca Design Basics da [Figma](https://www.figma.com/resource-library/) — medido por grep contra o kit antes de aplicar; só entrou o que era gap real, não redundante com Nielsen ou com o que a skill já cobria.
+- Modo dual auditoria/implementação, fluxo de 9 passos, classificação de achado (norma/evidência/heurística/preferência), priorização por severidade×alcance×frequência×confiança e definição de pronto vieram de um protocolo de auditoria/implementação UI/UX fornecido pelo usuário — extraídos para `references/audit-framework.md` após medir que 6 das 8 peças não existiam em nenhuma skill do kit, e as outras 2 estavam fragmentadas sem ponto de consolidação (`skills/11-reviewer` tinha só 1 eixo de severidade; `skills/22-accessibility-specialist` tinha impacto×esforço, não os 4 eixos do protocolo).
 
 ## Integração com Pipeline
 
