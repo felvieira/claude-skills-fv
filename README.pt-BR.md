@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 60 Skills Especialistas para Coding Agents
+# Dev Team Kit — 61 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.51.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-60-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.52.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-61-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -14,6 +14,7 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.52.0** | **Skill 62 `persona-driven-issue-audit`** — auditoria em massa de produto existente via personas simuladas, destilada de um case real: 4 personas, 100 issues abertas com dedup por rota, um agente de análise de solução comentando causa e trade-offs em cada uma sem corrigir nada, uma frota de 10 agentes cada um pegando uma issue e chegando a PR (confiança alta) ou a um `wontfix` específico, um reviewer aprovando 42 de 60 PRs com a mesma régua de qualquer review, e 24 issues objetivas sobrando para triagem humano+IA depois de filtrar falso positivo e duplicata — zero teste quebrado, zero merge automático. O buraco: nada no kit distinguia isso do `/swarm`, que constrói feature *nova* a partir de spec, story a story. Esta skill audita produto *existente*, persona → issue em vez de story, e o que importa não é a contagem bruta de issues — é o funil: cada fase existe para que a próxima receba menos, com mais contexto. Dedup pela **rota + causa raiz, nunca título** (título varia por persona, o mesmo menu quebrado não). Confiança para PR automática exige causa raiz identificada, fix local, cobertura de teste existente ou trivial, e ficar fora de pagamento/auth/dado pessoal — qualquer coisa aquém disso é `wontfix`/`needs-human` com motivo específico, nunca genérico. PR aprovada é explicitamente diferente de PR mergeada — merge continua humano, mesma regra do `--auto-merge` do `/swarm`. | [`skills/62-persona-driven-issue-audit/SKILL.md`](skills/62-persona-driven-issue-audit/SKILL.md) |
 | **v2.51.0** | **Skill 61 `content-growth-engine`** — estratégia de conteúdo como sistema de aquisição. O kit já sabia escrever copy (13/50), otimizar uma página (14), publicar um post (41), reportar campanha (55) e ligar clique a receita (59) — mas nada decidia **o que produzir, em que ordem e por quê**. Buraco medido por grep: `intenção de busca`, `topic cluster`, `link interno`, `content refresh`, `share of voice`, `ICP`, `calendário editorial` e `objeção de venda` tinham **zero** ocorrência em todas as skills, policies e templates. A skill inverte os dois defaults que fazem programa de conteúdo falhar: prioriza por **intenção comercial e não por volume de busca** (50 buscas de um diretor de compras valem mais que 5.000 de estudante — volume dimensiona o esforço, intenção decide a ordem), e **começa pelo fundo do funil**, onde 100 visitas convertem o que 10.000 de topo não convertem. Inclui baseline reproduzível de citação em IA (conjunto fixo de prompts, sessão limpa, datado por modelo — mudar os prompts invalida a série histórica), cota reservada de refresh (sem ela o novo sempre ganha e o acervo apodrece), objeções de call de vendas como fonte do conteúdo de fundo de funil, e medição honesta: tráfego de IA é parcialmente cego, então o campo aberto "como nos conheceu" é a única captura de um canal que a analytics não vê. | [`skills/61-content-growth-engine/SKILL.md`](skills/61-content-growth-engine/SKILL.md) |
 | **v2.50.0** | **As decisões que vêm *antes* do layout: paleta, leis cognitivas e estado vazio.** A área de design já sabia auditar (Nielsen, checkers) e verificar (v2.49.0) — faltava a camada anterior a existir layout. Buraco medido por grep no kit inteiro, não suposto: `Hick`, `Fitts`, `Gestalt`, `Von Restorff`, `carga cognitiva`, `teoria da cor`, `OKLCH` e todos os esquemas de cor tinham **zero** ocorrência; estado vazio existia em uma única linha de checklist. O sintoma: o bloco de tokens da skill 02 avisa *“NEVER default to Inter/Roboto/Arial without justification”* e logo abaixo entrega uma escala pronta de azul Tailwind **sem nota equivalente** — mandava decidir a fonte e servia a cor decidida, origem exata da UI genérica que a v2.49.0 aprendeu a detectar depois de pronta. A skill 02 ganha três seções: **Derivar a Paleta** (esquema a partir de um hue de marca, escala em **OKLCH e não HSL** — mesma `lightness` em hues diferentes não é mesmo brilho percebido — cor de marca separada de cor semântica, contraste validado *antes* de fechar, 60/30/10); **Leis Cognitivas** (17 leis e vieses nomeados, cada um enunciado como *a decisão que força* e não como definição — complementa Nielsen em vez de duplicar: Nielsen audita o que está pronto, estas decidem a estrutura antes de desenhar); e **Estado Vazio** (6 tipos que não se resolvem com a mesma mensagem, cada um precisando de *o que aconteceu + ação clicável* — sem CTA é tela morta, e ilustração não substitui ação). O checker ganha `raw-hex-sprawl`, testada contra arquivo ruim, bom e real antes de entrar. | [`skills/02-ui-ux-design/SKILL.md`](skills/02-ui-ux-design/SKILL.md), [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs) |
 | **v2.49.0** | **Qualidade de design vira verificação, não descrição.** O kit tinha 8 skills de design e conteúdo bom, mas nada *provava* nada: zero eval para as cinco skills que produzem pixel, `rules/frontend/ui-design.md` proibindo indigo genérico em prosa, e `pre-build-gate` saindo com `process.exit(0)` — sempre passa. A própria rule documenta um bench onde 3 agentes produziram 3 UIs indigo quase idênticas; a correção foi escrever a regra, e ninguém rodou o bench de novo pra provar que mudou algo. Agora: **`check-design-generic.mjs`** detecta a assinatura do default estatístico (indigo `#4f46e5`/`#6366f1`, `system-ui` como fonte declarada, gradiente roxo→rosa "AI SaaS", preto puro como superfície, `100vh` sem `dvh`), cada achado com *por que* e *o que fazer*; **`check-contrast.mjs`** computa o ratio WCAG real por par texto/superfície **nos dois temas**, pareando superfície semântica só com texto da mesma família pra não afogar em falso positivo; **`design-anchor-guard`** (PreToolUse) **bloqueia** escrita de arquivo visual com sinal inequívoco de default, com escape hatch `design-anchor: allow`; **5 evals** para as skills 02/12/22/56/57, cada um com seção "Reprova Se"; e **`bench/ab/score-design.mjs`** pontua cada braço 0–100 pra "a regra funcionou?" ter número. A primeira captura do checker foi `#6366f1` no template de blog do próprio kit — ele pregava "decida o accent" entregando exatamente a cor que o modelo escolhe quando não decidiu nada. | [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs), [`scripts/check-contrast.mjs`](scripts/check-contrast.mjs), [`hooks/scripts/design-anchor-guard.mjs`](hooks/scripts/design-anchor-guard.mjs) |
@@ -114,7 +115,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 60 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 61 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -182,7 +183,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 60 skills | ✅ | ✅ | ✅ |
+| 61 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -210,7 +211,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 60 Especialistas
+## Os 61 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -274,6 +275,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | # | Skill | O que faz |
 |---|---|---|
+| 62 | **Persona-Driven Issue Audit** | audita em massa um produto existente via personas simuladas ponta a ponta até PR: testador com contexto fresco por persona, dedup de issue por rota + causa raiz (nunca título), agente de análise de solução que comenta causa e trade-offs sem corrigir, frota de até 10 agentes cada um pegando uma issue e abrindo PR (confiança alta) ou comentando `wontfix`/`needs-human` com motivo específico, review com a mesma régua de qualquer PR, e triagem humana leve para o que sobra — sem merge automático |
 | 05 | **QA Engineer** | testes unitários, integração, E2E, cobertura e edge cases críticos |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injeção e exposição de dados |
 | 34 | **Static Analysis** | scan automatizado de segurança e bugs via Semgrep + CodeQL com output SARIF, triagem de severidade e integração CI — alimenta findings na skill 06 |

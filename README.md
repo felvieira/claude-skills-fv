@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 60 Specialist Skills for Coding Agents
+# Dev Team Kit — 61 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.51.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-60-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.52.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-61-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.52.0** | **Skill 62 `persona-driven-issue-audit`** — mass audit of an existing product via simulated personas, distilled from a real case: 4 personas, 100 issues opened with route-based dedup, a solution-analysis agent commenting cause and trade-offs on each without fixing anything, a 10-agent fleet each taking one issue to either a PR (high confidence) or a specific `wontfix`, a reviewer approving 42 of 60 PRs with the same bar as any other review, and 24 objective issues left for human+AI triage after false positives and duplicates were filtered out — zero broken tests, zero automatic merges. The gap: nothing in the kit distinguished this from `/swarm`, which builds a *new* feature from spec story by story. This skill audits an *existing* product, persona → issue rather than story, and the point isn't the raw issue count — it's the funnel: each phase exists so the next receives less, with more context. Dedup keys on **route + root cause, never title** (title varies by persona, the same broken menu doesn't). Confidence for auto-PR requires an identified root cause, a local fix, existing or trivial test coverage, and staying out of payment/auth/personal-data territory — anything short of that is `wontfix`/`needs-human` with a specific reason, never a generic one. An approved PR is explicitly not a merged PR — merge stays human, same rule as `/swarm`'s `--auto-merge`. | [`skills/62-persona-driven-issue-audit/SKILL.md`](skills/62-persona-driven-issue-audit/SKILL.md) |
 | **v2.51.0** | **Skill 61 `content-growth-engine`** — content strategy as an acquisition system. The kit could already write copy (13/50), optimise a page (14), publish a post (41), report on campaigns (55) and trace a click to revenue (59) — but nothing decided **what to produce, in what order and why**. Gap measured by grep: `search intent`, `topic cluster`, `internal linking`, `content refresh`, `share of voice`, `ICP`, `editorial calendar` and `sales objection` had **zero** occurrences across every skill, policy and template. The skill inverts the two defaults that make content programmes fail: it prioritises by **commercial intent rather than search volume** (50 searches from a buying director beat 5,000 from a student — volume sizes the effort, intent sets the order), and it **starts at the bottom of the funnel**, where 100 visits convert what 10,000 top-of-funnel visits do not. Includes a reproducible AI-citation baseline (fixed prompt set, clean sessions, dated per model — change the prompts and the time series is void), a reserved refresh quota (without one, new content always wins and the library rots), sales-call objections as the bottom-funnel content source, and honest measurement: AI traffic is partly blind, so the open "how did you hear about us" field is the only capture of a channel analytics cannot see. | [`skills/61-content-growth-engine/SKILL.md`](skills/61-content-growth-engine/SKILL.md) |
 | **v2.50.0** | **The decisions that come *before* layout: palette, cognitive laws and empty states.** Design could already be audited (Nielsen, checkers) and verified (v2.49.0) — what was missing was the layer before any layout exists. Gap measured by grep across the whole kit, not assumed: `Hick`, `Fitts`, `Gestalt`, `Von Restorff`, `cognitive load`, `color theory`, `OKLCH` and every colour scheme had **zero** occurrences; empty states existed as a single checklist line. The tell: skill 02’s token block warns *“NEVER default to Inter/Roboto/Arial without justification”* and then ships a ready-made Tailwind blue scale **with no equivalent note** — it demanded a font decision and served the colour decision pre-made, which is exactly the generic UI v2.49.0 learned to detect after the fact. Now skill 02 carries three sections: **Deriving the palette** (scheme from one brand hue, scale in **OKLCH not HSL** — equal `lightness` across hues does not mean equal perceived brightness — brand colour separated from semantic colour, contrast validated *before* locking, 60/30/10); **Cognitive laws** (17 named laws and biases, each stated as *the decision it forces* rather than a definition — complementing Nielsen instead of duplicating it: Nielsen audits what is built, these decide the structure before it is drawn); and **Empty states** (6 types that do not share one message, each needing *what happened + a clickable action* — no CTA means a dead screen, and an illustration is not a substitute). The checker gains `raw-hex-sprawl`, tested against bad, good and real files before landing. | [`skills/02-ui-ux-design/SKILL.md`](skills/02-ui-ux-design/SKILL.md), [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs) |
 | **v2.49.0** | **Design quality becomes verification, not description.** The kit had 8 design skills and good content, but nothing *proved* any of it: zero evals for the five skills that produce pixels, `rules/frontend/ui-design.md` banning generic indigo in prose, and `pre-build-gate` exiting with `process.exit(0)` — it always passes. The rule itself documents a bench where three agents produced three near-identical indigo UIs; the fix was writing the rule, and nobody re-ran the bench to prove it changed anything. Now: **`check-design-generic.mjs`** flags the statistical-default signature (indigo `#4f46e5`/`#6366f1`, `system-ui` as a declared font, purple→pink "AI SaaS" gradient, pure black as a surface, `100vh` without `dvh`), each finding carrying *why* and *what to do*; **`check-contrast.mjs`** computes the real WCAG ratio per text/surface pair **in both themes**, pairing semantic surfaces only with same-family text so it doesn't drown in false positives; **`design-anchor-guard`** (PreToolUse) **blocks** a visual file being written with an unambiguous default signal, with a `design-anchor: allow` escape hatch; **5 evals** for skills 02/12/22/56/57, each with a "Reprova Se" section; and **`bench/ab/score-design.mjs`** scores each arm 0–100 so "did the rule work?" has a number. The checker's first catch was `#6366f1` in the kit's own blog template — it preached "decide your accent" while shipping the exact colour a model picks when it decided nothing. | [`scripts/check-design-generic.mjs`](scripts/check-design-generic.mjs), [`scripts/check-contrast.mjs`](scripts/check-contrast.mjs), [`hooks/scripts/design-anchor-guard.mjs`](hooks/scripts/design-anchor-guard.mjs) |
@@ -144,7 +145,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 60 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 61 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -181,14 +182,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 60 skills (60 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 61 skills (61 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 60 skills | ✅ | ✅ | ✅ |
+| 61 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -287,6 +288,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 | # | Skill | What it does |
 |---|---|---|
+| 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR: fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 agents each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
 | 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |

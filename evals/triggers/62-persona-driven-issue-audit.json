@@ -1,0 +1,28 @@
+{
+  "skill": "62-persona-driven-issue-audit",
+  "should_trigger": [
+    "quero auditar o produto simulando usuarios reais diferentes",
+    "como fazer a IA impersonar persona e testar o app",
+    "encontrar bugs de usabilidade em massa antes do lancamento",
+    "abrimos 100 issues numa auditoria, como triar tudo isso",
+    "montar frota de agentes paralelos abrindo PR",
+    "regras de dedup de issue quando varios agentes reportam bug",
+    "como decidir quando abrir PR automatica ou comentar wontfix",
+    "escalar QA exploratorio com IA sem virar gargalo de review",
+    "simular usuario nao tecnico testando o produto",
+    "quantas PRs deveriam ser aprovadas automaticamente"
+  ],
+  "shouldnt_trigger": [
+    "implementar autenticacao social com Google e GitHub",
+    "fix issue #142 e abrir PR",
+    "escrever testes unitarios pro modulo de pagamento",
+    "revisar essa PR antes do merge",
+    "entrevistar usuarios reais pra validar a persona",
+    "montar plano de conteudo pro blog",
+    "configurar Dockerfile de producao",
+    "scan de seguranca com semgrep antes do release",
+    "refatorar o modulo de autenticacao com behavior preservation",
+    "montar relatorio de performance do Google Ads"
+  ],
+  "notes": "Fronteira que este eval protege: /swarm implementa feature NOVA a partir de spec, story a story. A 62 audita produto EXISTENTE, persona -> issue. 'fix issue #142 e abrir PR' fica no shouldnt porque e o caso de uso do /swarm (uma issue conhecida, sem persona nem funil de auditoria). 'entrevistar usuarios reais' fica no shouldnt porque e skill 51 (pesquisa real), nao persona simulada."
+}

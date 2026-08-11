@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 60 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
+> **Version:** 61 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (60) — specialists by category](#5-skills-60)
+5. [Skills (61) — specialists by category](#5-skills-61)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (60)
+## 5. Skills (61)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -808,6 +808,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** building a content plan from scratch; prioritising a backlog bigger than production capacity; deciding whether to publish new or refresh old; traffic grew but pipeline didn't.
 **Distinct from:** it decides *what to produce and in what order*. Schema and markup belong to Skill 14, copy to 13/50, publishing to 41, revenue instrumentation to 59.
 **Takeaway:** **traffic is not the product — pipeline is.** Sessions are excluded from the six-month success metrics on purpose: they rise on their own and pay no salaries.
+
+#### Skill 62 — Persona-Driven Issue Audit
+
+**What it does:** mass-audits an existing product via simulated personas, end to end to PR. A tester agent impersonates each persona (technical, non-technical, low-familiarity, adversarial) against a live environment, opens a deduplicated issue per real friction (route + root cause as the dedup key, not title — title varies by persona, route doesn't), a solution-analysis agent comments cause and trade-offs per issue without fixing anything, a fleet of up to 10 fresh-context agents each takes one issue and either opens a PR (high confidence) or comments `wontfix`/`needs-human` with a specific reason (low confidence), a reviewer approves or rejects each PR with the same bar as any other PR, and what survives goes to a light human triage before distribution to the team.
+**When to activate:** a product needs a broad usability/navigation sweep before a milestone; suspicion that UX bugs are being missed because QA only tests the happy path of one technical profile; findings volume would make item-by-item human review the bottleneck.
+**Distinct from:** `/swarm` builds a *new* feature from spec, story by story; this skill audits an *existing* product, persona → issue rather than story. Skill 06 owns any security finding surfaced along the way — never mixed into the same issue as a UX finding. Skill 11's approval criteria apply unchanged in the review phase; this skill only decides the volume and confidence cut that reaches it.
+**Problem it solves:** turning an exploratory audit into 100 tracked issues is easy; turning it into signal without making review the new bottleneck is the actual problem. The funnel — not the raw issue count — is the point: each phase exists so the next one receives less, with more context.
+**Takeaway:** **an approved PR is not a merged PR.** Merge stays a human decision, same rule as `/swarm`'s `--auto-merge`.
 
 ---
 

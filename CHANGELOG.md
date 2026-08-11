@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.52.0] - 2026-08-11 — skill 62: auditoria em massa de produto via personas simuladas
+
+Usuário trouxe um case real de time interno: auditoria de produto onde 4 personas simuladas encontraram 100 issues em 1 dia, um agente de análise comentou solução em cada uma, uma frota de 10 agentes abriu 60 PRs, um reviewer aprovou 42, e sobraram 24 issues objetivas para triagem humana — zero teste quebrado, zero merge automático.
+
+Medido antes de escrever: `impersonar`, `dedup de issue`, `wontfix`, `frota de agentes`, `agent fleet`, `swarm de agentes paralelos` — **zero ocorrência** no kit. O candidato óbvio para reaproveitar era `/swarm`, mas ele resolve o problema oposto: constrói **feature nova a partir de spec**, story a story, com worktree isolado. O case do usuário audita **produto existente**, unidade de trabalho é persona → issue, não story.
+
+### Adicionado
+- **`skills/62-persona-driven-issue-audit`** (176 linhas) — funil de 6 fases: Personas (`.md` com nível técnico, objetivo, contexto, o que a persona não sabe fazer), Persona-Testing (agente com contexto fresco por persona, ambiente isolado de dado real), Análise de Solução (comenta causa e trade-off sem corrigir — separar análise de fix evita que o agente pule alternativas), Fix Paralelo (frota de até 10, mesmo teto do `Workflow`), Review (mesma régua da skill 11) e Triagem Final (falso positivo e duplicata residual, o resto vai pro time com o comentário de análise como ponto de partida)
+- **Dedup pela rota + causa raiz, nunca título** — título varia por persona (cada uma descreve a fricção com suas palavras); duas personas tropeçando na mesma causa por caminhos diferentes geram comentário na issue existente, não issue nova. Sem essa regra, "100 issues" vira issues repetidas que a Fase 3 paga para reprocessar
+- **Critério de confiança para PR automática** — causa raiz identificada, fix local (não atravessa módulo nem muda contrato), coberto por teste existente ou trivial, fora de área sensível (pagamento/auth/dado pessoal). Fora disso é `wontfix`/`needs-human` com motivo específico — motivo genérico não ajuda a triagem final a decidir se vale reabrir
+- **Merge nunca automático** — PR aprovada pela Fase 5 não é PR mergeada; mesma regra do `--auto-merge` do `/swarm`, aplicada ao volume alto em vez de tratá-lo como exceção
+- **`evals/skills/persona-driven-issue-audit-dedup-e-confianca.md`** — cenário com 4 personas encontrando a mesma causa raiz (ícone sem `aria-label`) por 3 caminhos diferentes e uma quinta encontrando vulnerabilidade real; reprova se gerar issues separadas para a mesma causa, se misturar o achado de segurança com os de UX, ou se abrir PR de baixa confiança só porque "compila e os testes passam"
+- **`evals/triggers/62-persona-driven-issue-audit.json`** — reprovou na primeira rodada (50%, piso 80%): a description não cobria "simular usuário não técnico" nem "100 issues numa auditoria". Corrigida a partir das falhas reais: **9/10 acertos, 0/10 falsos positivos**
+- **Capability `persona-issue-audit`** em `plugins/catalog/development.json`, sondada especificamente contra a fronteira mais delicada — "fix issue 142 e abrir PR" (caso de uso do `/swarm`) e "entrevistar usuários reais" (skill 51) não podem colidir, e não colidem
+
+### Alterado
+- Contagem de skills para 61→62 em READMEs, `mcp-server/package.json`, `docs/WIKI.md` e `docs/WIKI.pt-BR.md` — o `check-consistency` blindado ontem (`5233e3c`) já pegou automaticamente a entrada de wiki faltante e as contagens desatualizadas, exatamente o propósito da blindagem
+
 ## [2.51.0] - 2026-08-10 — skill 61: conteúdo como sistema de aquisição, não calendário de publicação
 
 O kit sabia escrever copy (13/50), otimizar uma página (14), publicar um post (41), reportar campanha (55) e ligar clique a receita (59). Nada decidia **o que produzir, em que ordem e por quê**.

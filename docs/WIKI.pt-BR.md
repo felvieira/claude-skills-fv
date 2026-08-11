@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 60 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
+> **Versão:** 61 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -19,7 +19,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (60) — especialistas por categoria](#5-skills-60)
+5. [Skills (61) — especialistas por categoria](#5-skills-61)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (60)
+## 5. Skills (61)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -788,6 +788,14 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** montar plano de conteúdo do zero; priorizar pauta maior que a capacidade de produção; decidir entre publicar novo ou atualizar antigo; o tráfego cresceu mas o pipeline não.
 **Diferente de:** ela decide *o que produzir e em que ordem*. Schema e marcação são da skill 14, copy da 13/50, publicação da 41, instrumentação de receita da 59.
 **Takeaway:** **tráfego não é o produto — pipeline é.** Sessão está de fora das métricas de sucesso de 6 meses de propósito: sobe sozinha e não paga salário.
+
+#### Skill 62 — Persona-Driven Issue Audit
+
+**O que faz:** audita em massa um produto existente via personas simuladas, ponta a ponta até PR. Um agente de teste impersona cada persona (técnica, não-técnica, baixa familiaridade, adversarial) contra um ambiente real, abre issue deduplicada por fricção real (rota + causa raiz como chave de dedup, não título — título varia por persona, rota não), um agente de análise de solução comenta causa e trade-offs por issue sem corrigir nada, uma frota de até 10 agentes com contexto fresco pega uma issue cada e ou abre PR (confiança alta) ou comenta `wontfix`/`needs-human` com motivo específico (confiança baixa), um reviewer aprova ou rejeita cada PR com a mesma régua de qualquer outra PR, e o que sobra vai para uma triagem humana leve antes da distribuição ao time.
+**Quando ativar:** produto precisa de varredura ampla de usabilidade/navegação antes de um marco; suspeita de que bugs de UX estão sendo perdidos porque QA só testa o caminho feliz de um perfil técnico; volume de findings tornaria o review humano item-a-item o gargalo.
+**Diferente de:** o `/swarm` constrói feature *nova* a partir de spec, story a story; esta skill audita produto *existente*, persona → issue em vez de story. A skill 06 é dona de qualquer achado de segurança que apareça no caminho — nunca misturado na mesma issue que um achado de UX. Os critérios de aprovação da skill 11 valem sem alteração na fase de review; esta skill só decide o volume e o corte de confiança que chega até ela.
+**Problema que resolve:** transformar uma auditoria exploratória em 100 issues rastreadas é fácil; transformar isso em sinal sem tornar o review o novo gargalo é o problema de verdade. O funil — não a contagem bruta de issues — é o que importa: cada fase existe para que a próxima receba menos, com mais contexto.
+**Takeaway:** **PR aprovada não é PR mergeada.** Merge continua decisão humana, mesma regra do `--auto-merge` do `/swarm`.
 
 ---
 
