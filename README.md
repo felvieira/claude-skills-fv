@@ -288,7 +288,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 | # | Skill | What it does |
 |---|---|---|
-| 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR: fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 agents each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
+| 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR, and runs even with zero personas pre-written: infers proto-personas from the repo itself (routes, forms, error copy), offers a non-blocking human confirmation window, then a fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 agents each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
 | 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |

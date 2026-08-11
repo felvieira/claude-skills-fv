@@ -10,7 +10,10 @@
     "como decidir quando abrir PR automatica ou comentar wontfix",
     "escalar QA exploratorio com IA sem virar gargalo de review",
     "simular usuario nao tecnico testando o produto",
-    "quantas PRs deveriam ser aprovadas automaticamente"
+    "quantas PRs deveriam ser aprovadas automaticamente",
+    "nao tenho personas escritas, da pra gerar a partir do repo",
+    "quero uma auditoria automatica do produto sem preparar nada antes",
+    "inferir persona a partir do codigo do projeto"
   ],
   "shouldnt_trigger": [
     "implementar autenticacao social com Google e GitHub",
