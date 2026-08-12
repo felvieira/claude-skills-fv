@@ -24,7 +24,7 @@ O Designer é responsável por traduzir user stories em interfaces utilizáveis,
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
 
-Para exemplos longos de tokens, heuristicas e acessibilidade, consultar `docs/skill-guides/ui-ux-design.md` apenas quando necessario.
+Conteúdo sob demanda vive em `references/` (auditoria, marketing, produto, formulário) — não em `docs/skill-guides/`; tokens, breakpoints, componentes, skeleton e Nielsen já estão neste arquivo, não há guia externo duplicado.
 
 Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar `docs/skill-guides/ui-component-mcps.md`.
 
