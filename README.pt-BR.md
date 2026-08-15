@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 61 Skills Especialistas para Coding Agents
+# Dev Team Kit — 62 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.54.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-61-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.55.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-62-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -14,6 +14,7 @@
 
 | Versão | Destaque | Onde |
 |---|---|---|
+| **v2.55.0** | **Skill 63 `mobile-paywall-checkout`** — UI/UX de seleção de plano e checkout de pagamento em apps mobile, destilada do design doc próprio do usuário sobre pricing/checkout Android (estado das fontes: 15/08/2026). Buraco medido antes de escrever: 13 de 16 conceitos-chave — `Play Billing`, `PaymentIntent`, `idempotency key`, `3DS`, `Mercado Pago`, `Checkout Bricks`, `purchase token`, `cupão`, `promo code`, `base plan`, `billing period`, `entitlement`, `Google Pay` — tinham **zero** ocorrência no kit inteiro. A skill 60 já era dona do modelo de dados de backend pra pagamento (tabela `Subscription` unificada, RTDN, reconciliação), mas nada era dono do **lado de UI**: a tela do paywall, o campo de cupão, os estados de pagamento. A decisão central da skill, herdada do documento original: ajudar o usuário a *escolher* um plano antes de pedir que *resolva* o pagamento — o plano-alvo pode ter mais peso visual, mas preço, periodicidade, renovação e alternativas nunca podem ser ocultados ou apresentados de forma enganosa. É dona da decisão de arquitetura de cobrança logo de cara (funcionalidade digital vendida dentro de um APK distribuído pela Play geralmente exige Play Billing — mostrar `[ Pagar com Stripe ]` ali não é decisão puramente visual, é risco de política de plataforma), do modelo de 4 entidades (tier/periodicidade/oferta/método de pagamento nunca fundidos num único card), do **cupão collapsed por padrão** (campo visível sinaliza que existe preço melhor e manda usuário sem código caçar um — pesquisa de checkout da Baymard), e da distinção entre promo code do Play (concede teste grátis, nunca motor genérico de "25% off") e cupão de comerciante — mostrar "25% aplicado" na UI quando o purchase sheet vai cobrar o preço cheio quebra confiança e viola a exigência de consistência de preço do Play. Guia dividido em 8 arquivos em `docs/skill-guides/mobile-paywall-checkout/` (decisão de billing, wireframes de seleção de plano, UX de cupão, estados de pagamento/3DS, acessibilidade, experimentação/métricas, QA/timeline), preservando os wireframes e tabelas de decisão do documento original em vez de resumi-los. | [`skills/63-mobile-paywall-checkout/SKILL.md`](skills/63-mobile-paywall-checkout/SKILL.md) |
 | **v2.54.0** | **Modo dual auditoria/implementação na skill 02.** O usuário trouxe um protocolo próprio de auditoria UI/UX (fluxo de 9 passos, 7 arquivos de referência modulares, classificação de achado, tabela de 8 colunas) e pediu para avaliar se valia incorporar — não para aplicar cegamente. Um agente de pesquisa checou as 8 peças contra as skills 02/11/22/56/57 com evidência de arquivo+linha antes de qualquer decisão: **6 peças não existiam** em lugar nenhum do kit, e as outras 2 (dark patterns, estados de componente) estavam fragmentadas em 3-4 skills sem ponto de consolidação. A skill 02 tinha um modo só: desenhar do zero. Agora tem dois que nunca se misturam — **auditoria** (zero alteração de arquivo, só achados) e **implementação** (edição restrita à causa do achado, só quando autorizada explicitamente); pedido ambíguo é tratado como auditoria e a skill pergunta antes de editar, porque editar num pedido que só pedia análise é o erro mais caro que o protocolo existe para evitar. `references/audit-framework.md` novo traz o fluxo de 9 passos, a classificação de achado em **norma/evidência/heurística/preferência** (preferência nunca vira bloqueador na tabela), hierarquia de 6 níveis de evidência, priorização por **severidade × alcance × frequência × confiança** (4 eixos combinados, não um score único), a tabela de achados de 8 colunas, e definição de pronto com 7 critérios. Mais 3 arquivos de referência cobrem superfície de marketing, produto e formulário/checkout — linkando, não duplicando, as skills 22/56/57/61 já existentes. Achado de passagem: 2 dos 10 prompts do eval de trigger da skill estavam quebrados desde a criação do eval na v2.12.0, sem que ninguém tivesse rodado `eval-triggers` contra a skill 02 até agora. | [`skills/02-ui-ux-design/references/audit-framework.md`](skills/02-ui-ux-design/references/audit-framework.md) |
 | **v2.53.0** | **5 gaps de um estudo Figma aplicados à skill 02.** O usuário colou um estudo próprio da biblioteca Design Basics do Figma (18 seções) como material de referência, não como pedido de ação — mesmo padrão das rodadas anteriores com a Blush: medir o gap real antes de aplicar, não transcrever só porque chegou pronto. Um agente de pesquisa checou 5 candidatos a gap contra as skills 02/22/56/57 com evidência de arquivo+linha: **4 gaps reais confirmados**, **1 falso alarme descartado** (o checklist final de 6 categorias do estudo *não* é redundante com Nielsen — Nielsen audita interação de interface pronta; o estudo cobre estratégia/estrutura/validação, que Nielsen não toca — então virou adição, não descarte). Adicionado: **três camadas de token** (primitivo → semântico → componente — o bloco de tokens existente era escala solta sem essa hierarquia, então um rebranding virava busca-e-substituição arriscada em 40 arquivos em vez de trocar uma linha); **divulgação progressiva** nomeada como conceito próprio (antes 5 palavras soterradas na linha de Hick-Hyman); **dark patterns** como categoria nomeada (os itens individuais já existiam espalhados — urgência sem manipulação na skill 13, "manipulação" isolada na skill 02 — sem conceito guarda-chuva); **wireframe baixa vs. alta fidelidade** como estágios distintos (a skill usava "wireframe" genérico em toda parte); e um **checklist de fechamento** para estratégia/estrutura/validação, as pontas que Nielsen não cobre. O trigger `"cancelar assinatura"` foi cogitado e descartado depois da sonda: colidia com trabalho de feature legítimo como "implementar o endpoint de cancelar assinatura" — reescrito para exigir o sinal real de intenção ("dificultar o cancelamento"), verificado nos dois sentidos antes de fechar. | [`skills/02-ui-ux-design/SKILL.md`](skills/02-ui-ux-design/SKILL.md) |
 | **v2.52.0** | **Skill 62 `persona-driven-issue-audit`** — auditoria em massa de produto existente via personas simuladas, destilada de um case real: 4 personas, 100 issues abertas com dedup por rota, um agente de análise de solução comentando causa e trade-offs em cada uma sem corrigir nada, uma frota de 10 agentes cada um pegando uma issue e chegando a PR (confiança alta) ou a um `wontfix` específico, um reviewer aprovando 42 de 60 PRs com a mesma régua de qualquer review, e 24 issues objetivas sobrando para triagem humano+IA depois de filtrar falso positivo e duplicata — zero teste quebrado, zero merge automático. O buraco: nada no kit distinguia isso do `/swarm`, que constrói feature *nova* a partir de spec, story a story. Esta skill audita produto *existente*, persona → issue em vez de story, e o que importa não é a contagem bruta de issues — é o funil: cada fase existe para que a próxima receba menos, com mais contexto. Dedup pela **rota + causa raiz, nunca título** (título varia por persona, o mesmo menu quebrado não). Confiança para PR automática exige causa raiz identificada, fix local, cobertura de teste existente ou trivial, e ficar fora de pagamento/auth/dado pessoal — qualquer coisa aquém disso é `wontfix`/`needs-human` com motivo específico, nunca genérico. PR aprovada é explicitamente diferente de PR mergeada — merge continua humano, mesma regra do `--auto-merge` do `/swarm`. | [`skills/62-persona-driven-issue-audit/SKILL.md`](skills/62-persona-driven-issue-audit/SKILL.md) |
@@ -117,7 +118,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 61 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 62 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -185,7 +186,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 61 skills | ✅ | ✅ | ✅ |
+| 62 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -213,7 +214,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 61 Especialistas
+## Os 62 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -277,6 +278,7 @@ O MCP expoe 37 tools apoiadas pelas skills instaladas.
 
 | # | Skill | O que faz |
 |---|---|---|
+| 63 | **Mobile Paywall & Checkout** | UI/UX de seleção de plano e checkout de pagamento em apps mobile — decisão de arquitetura de cobrança (Play Billing vs. PSP externo, não é decisão puramente visual), fluxo periodicidade → plano → cupão → pagar → autenticar → confirmar, hierarquia de plano-alvo sem manipulação, estados de pagamento com a regra de que "voltou do 3DS" não é sinônimo de aprovado nem de recusado, e campo de cupão collapsed por padrão — campo visível sinaliza que existe preço melhor e manda usuário sem código caçar um |
 | 62 | **Persona-Driven Issue Audit** | audita em massa um produto existente via personas simuladas ponta a ponta até PR, e roda mesmo sem nenhuma persona pré-escrita: infere proto-personas do próprio repositório (rotas, formulário, texto de erro), oferece janela de confirmação humana sem bloquear, depois testador com contexto fresco por persona, dedup de issue por rota + causa raiz (nunca título), agente de análise de solução que comenta causa e trade-offs sem corrigir, frota de até 10 agentes cada um pegando uma issue e abrindo PR (confiança alta) ou comentando `wontfix`/`needs-human` com motivo específico, review com a mesma régua de qualquer PR, e triagem humana leve para o que sobra — sem merge automático |
 | 05 | **QA Engineer** | testes unitários, integração, E2E, cobertura e edge cases críticos |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injeção e exposição de dados |

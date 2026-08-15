@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 61 Specialist Skills for Coding Agents
+# Dev Team Kit — 62 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.54.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-61-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.55.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-62-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.55.0** | **Skill 63 `mobile-paywall-checkout`** — UI/UX of plan selection and payment checkout in mobile apps, distilled from the user's own design doc on Android pricing/checkout (sources as of 2026-08-15). Gap measured before writing: 13 of 16 key concepts — `Play Billing`, `PaymentIntent`, `idempotency key`, `3DS`, `Mercado Pago`, `Checkout Bricks`, `purchase token`, `coupon`, `promo code`, `base plan`, `billing period`, `entitlement`, `Google Pay` — had **zero** occurrences across the whole kit. Skill 60 already owned the backend data model for payments (unified `Subscription` table, RTDN, reconciliation) but nothing owned the **UI side**: the paywall screen, the coupon field, the payment states. The skill's central decision, inherited from the source doc: help the user *choose* a plan before asking them to *resolve* payment — the target plan can carry more visual weight, but price, periodicity, renewal and alternatives can never be hidden or misleadingly framed. Owns the billing-architecture call up front (a digital feature sold inside a Play-distributed APK generally requires Play Billing — showing `[ Pay with Stripe ]` there isn't a purely visual decision, it's platform-policy risk), the four-entity model (tier/periodicity/offer/payment-method never fused into one card), **coupon collapsed by default** (a visible field signals a better price exists and sends coupon-less users hunting for one — Baymard's checkout research), and the distinction between a Play promo code (grants a free trial, never a generic "25% off" engine) and a merchant coupon — showing "25% applied" in the UI when the purchase sheet is about to charge full price breaks trust and violates Play's price-consistency requirement. Guide split across 8 files in `docs/skill-guides/mobile-paywall-checkout/` (billing decision, plan-selection wireframes, coupon UX, payment states/3DS, accessibility, experimentation/metrics, QA/timeline) preserving the source doc's wireframes and decision tables rather than summarising them away. | [`skills/63-mobile-paywall-checkout/SKILL.md`](skills/63-mobile-paywall-checkout/SKILL.md) |
 | **v2.54.0** | **Dual audit/implementation mode in skill 02.** The user brought their own UI/UX audit protocol (9-step flow, 7 modular reference files, finding classification, 8-column table) and asked whether it was worth adopting — not to apply it blindly. A research agent checked all 8 pieces against skills 02/11/22/56/57 with file+line evidence first: **6 pieces existed nowhere** in the kit, and the other 2 (dark patterns, component states) were fragmented across 3-4 skills with no single point of consolidation. Skill 02 had one mode: design from scratch. Now it has two that never mix — **audit** (zero file changes, findings only) and **implementation** (edit scoped to the finding's root cause, only when explicitly authorised); an ambiguous request is treated as audit and the skill asks before editing, because editing on an analysis-only request is the costliest mistake the protocol exists to prevent. New `references/audit-framework.md` carries the 9-step flow, finding classification into **norm/evidence/heuristic/preference** (preference never becomes a blocker in the table), a 6-level evidence hierarchy, prioritisation by **severity × reach × frequency × confidence** (4 combined axes, not one score), the 8-column finding table, and a 7-point definition of done. Three more reference files cover marketing surfaces, product apps and forms/checkout — linking, not duplicating, the existing skills 22/56/57/61. Caught in passing: 2 of the skill's 10 trigger-eval prompts had been broken since the eval was created in v2.12.0, with nobody running `eval-triggers` against skill 02 until now. | [`skills/02-ui-ux-design/references/audit-framework.md`](skills/02-ui-ux-design/references/audit-framework.md) |
 | **v2.53.0** | **5 gaps from a Figma study applied to skill 02.** The user pasted a personal study of the Figma Design Basics library (18 sections) as reference material, not an action request — same pattern as the earlier Blush rounds: measure the real gap before applying anything, don't transcribe just because it arrived ready-made. A research agent checked 5 candidate gaps against skills 02/22/56/57 with file+line evidence: **4 real gaps confirmed**, **1 false alarm dismissed** (the study's 6-category final checklist is *not* redundant with Nielsen — Nielsen audits interaction on a finished interface; the study covers strategy/structure/validation, which Nielsen doesn't touch — so it became an addition, not a discard). Added: **three-layer tokens** (primitive → semantic → component — the existing token block was a loose colour scale with no such hierarchy, so a rebrand meant risky find-and-replace across 40 files instead of swapping one line); **progressive disclosure** named as its own concept (previously 5 words buried inside the Hick-Hyman row); **dark patterns** as a named category (the individual items already existed scattered — urgency without manipulation in skill 13, isolated "manipulation" in skill 02 — with no umbrella concept); **low-fi vs. hi-fi wireframe** as distinct stages (the skill used generic "wireframe" everywhere); and a **closure checklist** for strategy/structure/validation, the corners Nielsen doesn't cover. The `"cancel subscription"` trigger was considered and dropped after probing: it collided with legitimate feature work like "implement the cancel-subscription endpoint" — rewritten to require actual intent signal ("make cancellation harder"), verified both ways before landing. | [`skills/02-ui-ux-design/SKILL.md`](skills/02-ui-ux-design/SKILL.md) |
 | **v2.52.0** | **Skill 62 `persona-driven-issue-audit`** — mass audit of an existing product via simulated personas, distilled from a real case: 4 personas, 100 issues opened with route-based dedup, a solution-analysis agent commenting cause and trade-offs on each without fixing anything, a 10-agent fleet each taking one issue to either a PR (high confidence) or a specific `wontfix`, a reviewer approving 42 of 60 PRs with the same bar as any other review, and 24 objective issues left for human+AI triage after false positives and duplicates were filtered out — zero broken tests, zero automatic merges. The gap: nothing in the kit distinguished this from `/swarm`, which builds a *new* feature from spec story by story. This skill audits an *existing* product, persona → issue rather than story, and the point isn't the raw issue count — it's the funnel: each phase exists so the next receives less, with more context. Dedup keys on **route + root cause, never title** (title varies by persona, the same broken menu doesn't). Confidence for auto-PR requires an identified root cause, a local fix, existing or trivial test coverage, and staying out of payment/auth/personal-data territory — anything short of that is `wontfix`/`needs-human` with a specific reason, never a generic one. An approved PR is explicitly not a merged PR — merge stays human, same rule as `/swarm`'s `--auto-merge`. | [`skills/62-persona-driven-issue-audit/SKILL.md`](skills/62-persona-driven-issue-audit/SKILL.md) |
@@ -147,7 +148,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 61 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 62 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -184,14 +185,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 61 skills (61 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 62 skills (62 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 61 skills | ✅ | ✅ | ✅ |
+| 62 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -290,6 +291,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 | # | Skill | What it does |
 |---|---|---|
+| 63 | **Mobile Paywall & Checkout** | UI/UX of plan selection and payment checkout in mobile apps — billing-architecture decision (Play Billing vs. external PSP, not purely visual), the flow periodicity → plan → coupon → pay → authenticate → confirm, target-plan hierarchy without manipulation, payment states with the rule that "returned from 3DS" is neither approved nor declined by itself, and a coupon field collapsed by default — a visible field signals a better price exists and sends coupon-less users hunting for one |
 | 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR, and runs even with zero personas pre-written: infers proto-personas from the repo itself (routes, forms, error copy), offers a non-blocking human confirmation window, then a fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 agents each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |

@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 61 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
+> **Version:** 62 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (61) — specialists by category](#5-skills-61)
+5. [Skills (62) — specialists by category](#5-skills-62)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (57) — shared rules](#7-policies-57)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (61)
+## 5. Skills (62)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -816,6 +816,13 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Distinct from:** `/swarm` builds a *new* feature from spec, story by story; this skill audits an *existing* product, persona → issue rather than story. Skill 06 owns any security finding surfaced along the way — never mixed into the same issue as a UX finding. Skill 11's approval criteria apply unchanged in the review phase; this skill only decides the volume and confidence cut that reaches it.
 **Problem it solves:** turning an exploratory audit into 100 tracked issues is easy; turning it into signal without making review the new bottleneck is the actual problem. The funnel — not the raw issue count — is the point: each phase exists so the next one receives less, with more context.
 **Takeaway:** **an approved PR is not a merged PR.** Merge stays a human decision, same rule as `/swarm`'s `--auto-merge`.
+
+#### Skill 63 — Mobile Paywall & Checkout
+
+**What it does:** UI/UX for plan selection and payment checkout in mobile apps — periodicity, plan, coupon, Google Play Billing, Google Pay, and external PSPs (Stripe, Mercado Pago). Owns the billing-architecture decision (when Play Billing is required vs. when an external PSP is allowed — not a purely visual call), the flow periodicity → plan → coupon → pay → authenticate → confirm, target-plan hierarchy without manipulation, payment states (processing/3DS/pending/succeeded/failed) with the rule that "returned from 3DS" is neither approved nor declined by itself, and the coupon field defaulting to collapsed (a visible field signals a better price exists and sends coupon-less users hunting for one — Baymard's checkout research). Detailed guide split across 8 files in `docs/skill-guides/mobile-paywall-checkout/`.
+**When to activate:** designing or reviewing a subscription/plan-selection screen; deciding Play Billing vs. Stripe vs. Mercado Pago; positioning the coupon field; specifying payment states and 3DS recovery.
+**Distinct from:** Skill 60 owns the backend data model (unified `Subscription` table, RTDN, reconciliation) — skill 63 consumes it for UI decisions, never duplicates the schema. `skills/02-ui-ux-design/references/marketing-surfaces.md` covers the *public* pricing page with no real transaction; skill 63 is the in-app paywall with a real `PaymentSheet`/purchase sheet behind it.
+**Takeaway:** **a Google Play promo code and a merchant coupon are not the same thing** — Play promo codes grant a free trial, not a generic "25% off" engine; showing "25% applied" in the UI when the purchase sheet is about to charge full price breaks trust and violates Play's price-consistency requirement.
 
 ---
 

@@ -1,0 +1,27 @@
+{
+  "skill": "63-mobile-paywall-checkout",
+  "should_trigger": [
+    "preciso desenhar a tela de paywall do app android",
+    "como estruturar a selecao de plano com mensal e anual",
+    "onde colocar o campo de cupao no checkout do app",
+    "vamos usar google play billing ou stripe nesse app",
+    "como mostrar o plano recomendado sem parecer manipulativo",
+    "quais estados de pagamento precisamos cobrir com 3ds",
+    "in-app purchase pra assinatura no android",
+    "purchase sheet do google play versus payment sheet do stripe",
+    "checkout de assinatura com mercado pago no app",
+    "preco anual deve aparecer como o mensal ou o total do ano",
+    "plan card com badge de recomendado"
+  ],
+  "shouldnt_trigger": [
+    "landing page publica com tabela de precos do site",
+    "montar o schema de subscription no backend",
+    "configurar webhook de pagamento do stripe",
+    "reconciliar entitlement com a google play developer api",
+    "escrever testes unitarios do modulo de pagamento",
+    "definir o modelo de monetizacao do produto",
+    "revisar acessibilidade WCAG do formulario de cadastro",
+    "deploy com rollback automatico"
+  ],
+  "notes": "Fronteira que este eval protege: skill 60 e dona do MODELO DE DADOS de pagamento (schema, webhook, reconciliacao) -- 'montar schema' e 'reconciliar entitlement' ficam no shouldnt de proposito, pertencem la. skills/02/references/marketing-surfaces.md cobre pagina de preco PUBLICA sem transacao real -- 'landing page com tabela de precos' fica no shouldnt porque nao e paywall in-app com checkout de verdade."
+}

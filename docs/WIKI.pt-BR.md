@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 61 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
+> **Versão:** 62 skills · 16 subagents · 45 slash commands · 59 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -19,7 +19,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (61) — especialistas por categoria](#5-skills-61)
+5. [Skills (62) — especialistas por categoria](#5-skills-62)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (22) — regras compartilhadas](#7-policies-22)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (61)
+## 5. Skills (62)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -796,6 +796,13 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Diferente de:** o `/swarm` constrói feature *nova* a partir de spec, story a story; esta skill audita produto *existente*, persona → issue em vez de story. A skill 06 é dona de qualquer achado de segurança que apareça no caminho — nunca misturado na mesma issue que um achado de UX. Os critérios de aprovação da skill 11 valem sem alteração na fase de review; esta skill só decide o volume e o corte de confiança que chega até ela.
 **Problema que resolve:** transformar uma auditoria exploratória em 100 issues rastreadas é fácil; transformar isso em sinal sem tornar o review o novo gargalo é o problema de verdade. O funil — não a contagem bruta de issues — é o que importa: cada fase existe para que a próxima receba menos, com mais contexto.
 **Takeaway:** **PR aprovada não é PR mergeada.** Merge continua decisão humana, mesma regra do `--auto-merge` do `/swarm`.
+
+#### Skill 63 — Mobile Paywall & Checkout
+
+**O que faz:** UI/UX de seleção de plano e checkout de pagamento em apps mobile — periodicidade, plano, cupão, Google Play Billing, Google Pay e PSPs externos (Stripe, Mercado Pago). É dona da decisão de arquitetura de cobrança (quando Play Billing é obrigatório vs. quando PSP externo é permitido — não é decisão puramente visual), do fluxo periodicidade → plano → cupão → pagar → autenticar → confirmar, da hierarquia de plano-alvo sem manipulação, dos estados de pagamento (processing/3DS/pending/succeeded/failed) com a regra de que "voltou do 3DS" não é sinônimo de aprovado nem de recusado, e do campo de cupão collapsed por padrão (campo visível sinaliza que existe preço melhor e manda usuário sem código caçar um — pesquisa de checkout da Baymard). Guia detalhado dividido em 8 arquivos em `docs/skill-guides/mobile-paywall-checkout/`.
+**Quando ativar:** desenhar ou revisar tela de assinatura/seleção de plano; decidir Play Billing vs. Stripe vs. Mercado Pago; posicionar o campo de cupão; especificar estados de pagamento e recuperação de 3DS.
+**Diferente de:** a skill 60 é dona do modelo de dados de backend (tabela `Subscription` unificada, RTDN, reconciliação) — a 63 consome isso pra decisão de UI, nunca duplica o schema. `skills/02-ui-ux-design/references/marketing-surfaces.md` cobre a página de preço *pública*, sem transação real; a 63 é o paywall in-app com `PaymentSheet`/purchase sheet de verdade por trás.
+**Takeaway:** **código promocional do Google Play e cupão de comerciante não são a mesma coisa** — promo code do Play concede teste grátis, não um motor genérico de "25% off"; mostrar "25% aplicado" na UI quando o purchase sheet vai cobrar o preço cheio quebra confiança e viola a exigência de consistência de preço do Play.
 
 ---
 
