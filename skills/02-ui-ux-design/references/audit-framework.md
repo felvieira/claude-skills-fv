@@ -13,7 +13,7 @@ Se o pedido é ambíguo entre os dois, tratar como auditoria e perguntar antes d
 
 ## Fluxo — 9 Passos, Nesta Ordem
 
-1. **Inspecionar antes de opinar.** Produto real (se acessível), repositório, instruções do projeto (`CLAUDE.md`, design tokens existentes, convenções). Achado sem ter visto o produto de verdade é suposição vestida de auditoria.
+1. **Inspecionar antes de opinar.** Produto real (se acessível), repositório, instruções do projeto (`CLAUDE.md`, design tokens existentes, convenções). Achado sem ter visto o produto de verdade é suposição vestida de auditoria. Se a auditoria é comparação entre dois estados (antes/depois, design/implementação) e o achado depende de medir posicionamento/espaçamento/cor fino, seguir `policies/visual-diff-precision.md` — uma comparação numa passada só captura diferença grande e perde a fina.
 2. **Classificar o contexto.** Tipo de produto, público, tarefa principal da tela, plataforma, restrições técnicas, métrica de sucesso. Toda suposição inevitável (não dá pra descobrir e é preciso seguir) se declara explicitamente — nunca vira fato silencioso no relatório.
 3. **Ler só as referências aplicáveis** (ver tabela abaixo) — carregar as 8 de uma vez é desperdício de contexto quando a tarefa é, por exemplo, só sobre um formulário.
 4. **Mapear a jornada antes de avaliar decoração.** Happy path, exceções, estados, recuperação de erro — nessa ordem. Avaliar cor e tipografia antes de saber se o fluxo fecha é folha em cima de fundação rachada.

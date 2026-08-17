@@ -22,7 +22,7 @@ O Designer é responsável por traduzir user stories em interfaces utilizáveis,
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/visual-diff-precision.md` (comparar dois screenshots/estados para achar diferença fina de posicionamento, espaçamento ou cor — obrigatória no modo Auditoria quando o achado depende de medir, não só descrever).
 
 Conteúdo sob demanda vive em `references/` (auditoria, marketing, produto, formulário) — não em `docs/skill-guides/`; tokens, breakpoints, componentes, skeleton e Nielsen já estão neste arquivo, não há guia externo duplicado.
 

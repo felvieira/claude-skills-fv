@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 62 skills + 16 subagents + 45 commands + 59 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 62 skills + 16 subagents + 45 commands + 60 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,7 +8,7 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 62 skills, 16 subagents, 45 slash commands, 59 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Versão:** 62 skills, 16 subagents, 45 slash commands, 60 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -422,7 +422,7 @@ Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devol
 
 ## Policies que governam tudo
 
-59 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+60 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
 
 ### `tool-safety.md`
 Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.

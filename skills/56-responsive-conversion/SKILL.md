@@ -18,7 +18,7 @@ Converte interface pensada para desktop em interface que funciona de verdade em 
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/visual-diff-precision.md` (validar correção de layout comparando screenshot antes/depois — decompor em passes de zoom, não afirmar "corrigido" a partir de uma olhada única).
 
 Para catalogo completo de bugs com snippet de fix por framework (Tailwind, CSS puro, styled-components), consultar `docs/skill-guides/responsive-conversion.md` apenas quando necessario.
 

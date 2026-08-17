@@ -34,7 +34,7 @@ Testar um produto do ponto de vista de N usuarios reais diferentes, converter ca
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/tool-safety.md`, `policies/verification-before-completion.md` e `policies/swarm-protocol.md` (mecânica de fan-out paralelo e circuit-breaker, herdada — não reimplementada).
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/tool-safety.md`, `policies/verification-before-completion.md`, `policies/swarm-protocol.md` (mecânica de fan-out paralelo e circuit-breaker, herdada — não reimplementada) e `policies/visual-diff-precision.md` (quando o achado da Fase 2 é uma diferença visual fina — ícone deslocado, espaçamento errado — não descrita em texto pela persona, decompor em passes de zoom em vez de afirmar a partir de uma olhada única no screenshot).
 
 **Fronteira com as skills vizinhas** — esta skill decide o **funil de descoberta e triagem**. Ela nao reimplementa:
 

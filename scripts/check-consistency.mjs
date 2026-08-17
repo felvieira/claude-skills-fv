@@ -38,6 +38,9 @@ async function main() {
     // agents/ not found — agentCount stays 0
   }
 
+  const policyEntries = await fs.readdir(path.join(root, "policies"), { withFileTypes: true });
+  const policyCount = policyEntries.filter((e) => e.isFile() && e.name.endsWith(".md")).length;
+
   const [
     rootReadme,
     setupReadme,
@@ -93,6 +96,13 @@ async function main() {
   for (const [name, body] of [["docs/WIKI.md", wikiEn], ["docs/WIKI.pt-BR.md", wikiPt], ["docs/SKILLS-OVERVIEW.md", skillsOverview]]) {
     expect(body.includes(`${skillCount} skills`), `${name} should state the current skill count (${skillCount})`);
     expect(body.includes(`${agentCount} subagents`), `${name} should state the current subagent count (${agentCount})`);
+  }
+
+  // Contagem de policies derrapa toda vez que uma policy nova entra sem
+  // atualizar a prosa (aconteceu com visual-diff-precision.md: ficou em
+  // "59 policies" com 60 reais, e nada acusou ate esta assercao existir).
+  for (const [name, body] of [["docs/WIKI.md", wikiEn], ["docs/WIKI.pt-BR.md", wikiPt], ["docs/SKILLS-OVERVIEW.md", skillsOverview]]) {
+    expect(body.includes(`${policyCount} policies`), `${name} should state the current policy count (${policyCount})`);
   }
 
   // Toda skill precisa de entrada na wiki, nos dois idiomas — a wiki parou na

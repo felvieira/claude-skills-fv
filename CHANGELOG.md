@@ -5,6 +5,18 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.56.0] - 2026-08-17 — policy de precisão em comparação visual (diferença fina de screenshot)
+
+Usuário relatou um problema prático: mandar 2 screenshots pra IA achar diferença de posicionamento ou espaçamento só funciona quando a diferença é "padrão enorme" — mudança sutil de poucos pixels, espaçamento levemente diferente, cor quase igual, passa despercebida.
+
+Antes de escrever qualquer instrução, pesquisei se isso é problema de prompt (corrigível com texto melhor) ou algo mais estrutural. **É estrutural, documentado pela própria Anthropic**: a doc oficial de visão afirma que o raciocínio espacial do modelo é limitado e que coordenadas de localização retornadas são aproximadas. A mitigação validada não é reescrever o prompt — é dar ao modelo uma ferramenta de crop/zoom, porque uma imagem vista numa passada só é limitada pela resolução fixa do encoder, e nenhuma instrução de "seja mais preciso" recupera detalhe que já não estava disponível nessa resolução.
+
+### Adicionado
+- **`policies/visual-diff-precision.md`** — protocolo de 4 passes: (1) decompor a comparação por região **e** por dimensão (posição, espaçamento, cor, tipografia nunca pedidos juntos numa pergunta só — misturar dilui a atenção em cada uma), (2) listar hipóteses de diferença com coordenada em pixel absoluto, sinalizadas como hipótese, não fato, (3) dar zoom/crop em cada região hipotetizada — o passo que a Anthropic documenta como mitigação real, e sem o qual os passes anteriores continuam presos à mesma resolução original, (4) confirmar ou descartar cada hipótese isoladamente contra o crop ampliado — mesma disciplina de `policies/claim-verification.md` aplicada ao domínio visual: sem essa verificação, o modelo relata o padrão plausível ("parece que mudou"), não o que de fato mudou
+- Quando não há ferramenta de crop disponível (usuário manda 2 PNGs direto no chat): a policy instrui declarar a limitação e pedir um crop da região suspeita, em vez de forçar confiança que a resolução da imagem não sustenta
+- Referenciada em 3 skills sem duplicar conteúdo: `skills/02-ui-ux-design` (modo Auditoria, quando o achado depende de medir), `skills/56-responsive-conversion` (validar correção de layout antes/depois), `skills/62-persona-driven-issue-audit` (bug visual fino que uma persona encontrou mas não conseguiu descrever em texto)
+- **`check-consistency` ganha asserção de contagem de policies** — achado de passagem: nenhum checker validava esse número em lugar nenhum, e a prosa já tinha derrapado pra "59 policies" em 3 arquivos com 60 reais antes desta policy nova (a nova entrou e a contagem não foi ajustada em lugar nenhum, silenciosamente). Mesmo padrão de guarda usado no badge de skills — provado nos dois sentidos: reintroduzi a contagem errada, o checker falhou com a mensagem certa, restaurei e voltou a passar
+
 ## [2.55.0] - 2026-08-15 — skill 63: UI/UX de paywall e checkout de pagamento em apps mobile
 
 Usuário trouxe um design doc próprio, denso, sobre seleção de planos e checkout de pagamento em Android (estado das fontes: 15/08/2026) — Google Play Billing, Google Pay, Stripe, Mercado Pago, cupão, 3DS, wireframes, matriz de billing por mercado, plano de A/B testing.
