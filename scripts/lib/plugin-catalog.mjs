@@ -130,9 +130,29 @@ export async function validatePluginCatalog(root = kitRoot) {
   return { errors, warnings, entries };
 }
 
+// Trigger curto ("ui", "ux", "nda", "cac") casa por substring dentro de palavra
+// nao relacionada ("eq-ui-pe", "fl-ux-o", "cale-nda-rio", "ca-c-he") — bug real,
+// achado 3x em catalogos diferentes (ver .bot/learned-skills/catalog-substring-collision.md).
+// Fronteira de palavra (\b) elimina a classe inteira sem exigir when_none manual
+// por palavra colidente. So aplica a frase de ATE UMA palavra — frase multi-palavra
+// ("auditar essa tela") ja e especifica o bastante pra nao precisar de fronteira,
+// e teria custo de regex por combinacao sem ganho real.
+const SINGLE_WORD_BOUNDARY_CACHE = new Map();
+
+function matchesPhrase(text, phrase) {
+  if (phrase.includes(" ")) return text.includes(phrase);
+  let re = SINGLE_WORD_BOUNDARY_CACHE.get(phrase);
+  if (!re) {
+    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    re = new RegExp(`\\b${escaped}\\b`);
+    SINGLE_WORD_BOUNDARY_CACHE.set(phrase, re);
+  }
+  return re.test(text);
+}
+
 function phraseScore(text, phrases) {
   return [...new Set(phrases.map(normalizeText).filter(Boolean))]
-    .filter((phrase) => text.includes(phrase))
+    .filter((phrase) => matchesPhrase(text, phrase))
     .reduce((total, phrase) => total + phrase.split(" ").length, 0);
 }
 
@@ -144,7 +164,7 @@ function matchCapability(text, capability) {
   const whenAny = capability.when_any || [];
   const whenNone = capability.when_none || [];
   const whenAll = capability.when_all || [];
-  const allRequired = whenAll.every((phrase) => text.includes(normalizeText(phrase)));
+  const allRequired = whenAll.every((phrase) => matchesPhrase(text, normalizeText(phrase)));
   if (!allRequired) return 0;
 
   if (whenNone.length === 0) return phraseScore(text, whenAny);
@@ -152,7 +172,7 @@ function matchCapability(text, capability) {
   const clauses = splitClauses(text);
   let score = 0;
   for (const clause of clauses) {
-    if (whenNone.some((phrase) => clause.includes(normalizeText(phrase)))) continue;
+    if (whenNone.some((phrase) => matchesPhrase(clause, normalizeText(phrase)))) continue;
     score += phraseScore(clause, whenAny);
   }
   return score;

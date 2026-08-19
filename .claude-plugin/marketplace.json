@@ -13,7 +13,7 @@
         "repo": "felvieira/claude-skills-fv"
       },
       "description": "61 specialist skills + 16 dispatchable subagents for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, parallel-dispatcher, pattern-conformity, research-prep, context-budget, ux-research, ui-polish, doubt-driven-review, silent-failure-hunter + spec-driven development (/constitution, /analyze, /checklist), path-scoped rules system (.claude/rules/ with paths: glob), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), skills-vs-agents disambiguation hook (prevents InputValidationError when skill names are passed as subagent_type), and more.",
-      "version": "2.57.0",
+      "version": "2.58.0",
       "category": "development",
       "tags": [
         "skills",

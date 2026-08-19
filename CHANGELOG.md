@@ -5,6 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.58.0] - 2026-08-19 — fix estrutural da colisão de substring no roteador de plugins
+
+Pedido de "melhore o kit" sem escopo definido — auditei o estado real (suíte inteira já verde) e revisitei sistematicamente uma classe de bug que já tinha sido encontrada e corrigida pontualmente 4 vezes: trigger curto de uma palavra colidindo por substring dentro de palavra sem relação (`"nda"` em "cale**nda**rio", `"ui"` em "arq**ui**tetura", `"cac"` em "**cac**he", `"alerta"` em "monitoramento e **alerta**" — todas achadas em sessões anteriores, cada uma corrigida com `when_none` pontual).
+
+Sondei sistematicamente **todos** os triggers de até 5 caracteres nos 9 catálogos (`plugins/catalog/*.json`) contra um corpus de frases neutras — não esperei o próximo bug aparecer sozinho. Achei mais 2: `"ui"` casando em "eq**ui**pe" (`"a equipe de operações pediu suporte"` puxava design-quality) e `"ux"` casando em "fl**ux**o" (`"entender esse fluxo"`, mesmo problema).
+
+O padrão de correção anterior (adicionar a palavra colidente ao `when_none`) é whack-a-mole: resolve o caso achado, deixa a classe inteira viva pra próxima palavra do vocabulário que ninguém testou. Desta vez a correção foi na raiz.
+
+### Corrigido
+- **`scripts/lib/plugin-catalog.mjs`** e **`mcp-server/src/lib/plugin-router.ts`** (implementações mantidas em paridade — mesma lógica em JS e TS) — nova função `matchesPhrase()` aplica **fronteira de palavra** (`\b...\b`, regex cacheada) a qualquer trigger de uma palavra só; trigger multi-palavra (`"um nda"`, `"auditar essa tela"`) continua com `includes` puro, já é específico o bastante e fronteira ali seria custo sem ganho. Substituídas as 3 checagens que usavam substring puro: `when_any` (via `phraseScore`), `when_all`, `when_none`
+- Validado contra as funções **reais** de produção (`routeTask()` no CLI, `routePluginComposition()` no MCP), não uma sonda reimplementada à parte: os dois falsos positivos somem com **zero** edição de `when_none`; casos legítimos (`"preciso de ajuda com UI"`, `"assinar NDA com o fornecedor"`) continuam casando normalmente
+- `node scripts/eval-plugin-routing.mjs --strict` — 23/23 sem alteração
+- `node mcp-server/dist/lib/plugin-router.test.js` — 25/25, incluindo o teste dedicado "CLI and MCP route contract stay in parity" que existe exatamente pra pegar divergência entre as duas implementações
+- `.bot/learned-skills/catalog-substring-collision.md` atualizado de "mitigar manualmente com `when_none` a cada caso novo" para "corrigido estruturalmente — não precisa mais de mitigação pontual", com o comando de sonda contra a função real (não reimplementada) para o caso raro de precisar investigar de novo
+
 ## [2.57.0] - 2026-08-19 — readiness gate PASS/CONCERNS/FAIL (adaptado do BMAD-METHOD)
 
 Usuário mandou um link de LinkedIn perguntando se valia aplicar "BMAD" ao kit. O post era teaser raso apontando para dois artigos do autor no Medium — que, na leitura completa, revelaram-se sobre uma sigla própria dele ("Behavior Modeled Agent Design"), sem relação com o BMAD-METHOD real (github.com/bmad-code-org, 52k★, MIT). Confirmado explicitamente com o usuário: **o BMAD-METHOD oficial é a fonte**, não o conceito pessoal do post.
