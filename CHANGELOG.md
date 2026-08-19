@@ -5,6 +5,20 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.57.0] - 2026-08-19 — readiness gate PASS/CONCERNS/FAIL (adaptado do BMAD-METHOD)
+
+Usuário mandou um link de LinkedIn perguntando se valia aplicar "BMAD" ao kit. O post era teaser raso apontando para dois artigos do autor no Medium — que, na leitura completa, revelaram-se sobre uma sigla própria dele ("Behavior Modeled Agent Design"), sem relação com o BMAD-METHOD real (github.com/bmad-code-org, 52k★, MIT). Confirmado explicitamente com o usuário: **o BMAD-METHOD oficial é a fonte**, não o conceito pessoal do post.
+
+Mapeei os 5 agentes nomeados do BMAD-METHOD (Mary/Analyst, John/PM, Sally/UX, Winston/Architect, Amelia/Dev) contra a estrutura do kit — **~80% já coberto**, só com nome diferente: skills 01 (spec/PRD), 02 (UX), 38 (arquitetura), 03-05 (implementação), 09 (orquestração de fase). Três gaps reais confirmados por grep antes de escrever, zero ocorrência cada.
+
+### Adicionado
+- **`policies/readiness-gate.md`** — veredito de prontidão em **três estados, nunca dois**: `PASS` (sem ambiguidade relevante), `CONCERNS` (pronto pra começar, mas com ressalva que precisa virar nota explícita pro Dev — não pode ser silenciada), `FAIL` (ambiguidade real, dependência não resolvida, ou critério não-testável — não libera implementação). Dois estados escondem justamente o caso mais comum na prática, que é "dá pra começar, mas com uma ressalva conhecida"
+- **`docs/context/sprint-status.yaml`** como formato de artefato — estado vivo por slice, relido pela skill 09 antes de cada novo slice, não um relatório escrito uma vez e esquecido
+- **`correct-course`** como processo nomeado — quando um slice já com `PASS`/`CONCERNS` sofre mudança de escopo real depois da implementação já ter começado: pausa o slice, registra a mudança em vez de sobrescrever sem rastro, volta pra skill de origem do artefato afetado, roda o gate de novo. Diferença de correção pequena (resolvida no review normal): aqui a premissa que o Dev estava implementando deixou de ser verdadeira
+- Gate posicionado explicitamente no Pipeline Base da skill 09, entre UI/UX e Backend/Frontend — `Repo Auditor → ... → UI/UX → [Readiness Gate] → Backend → Frontend → ...`
+- Referenciado sem duplicar conteúdo em skill 01 (critério de aceitação não-testável reprova), skill 38 (decisão de arquitetura pendente reprova), e `policies/vertical-slices.md` (dependência de slice não resolvida é um dos critérios)
+- `check-consistency` ganhou asserção de contagem de policies ontem (v2.56.0); pegou automaticamente que a policy nova desatualizou a prosa de 60→61 em 3 arquivos — exatamente o propósito da blindagem
+
 ## [2.56.0] - 2026-08-17 — policy de precisão em comparação visual (diferença fina de screenshot)
 
 Usuário relatou um problema prático: mandar 2 screenshots pra IA achar diferença de posicionamento ou espaçamento só funciona quando a diferença é "padrão enorme" — mudança sutil de poucos pixels, espaçamento levemente diferente, cor quase igual, passa despercebida.

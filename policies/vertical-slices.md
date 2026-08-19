@@ -4,6 +4,8 @@
 
 Paralelizar desenvolvimento **por feature vertical** (front + back + DB + teste de UMA feature ate completar) em vez de **por camada horizontal** (todo o front, depois todo o back, depois todo o DB). Vertical slicing permite testar de ponta a ponta a cada feature concluida e habilita paralelizacao real entre features independentes.
 
+Antes de despachar qualquer slice desta tabela para implementação, `policies/readiness-gate.md` decide se ele está pronto (PASS/CONCERNS/FAIL) — dependência não resolvida entre slices, visível aqui, é um dos critérios que reprova o gate.
+
 ## Principio Fundamental
 
 > **Uma feature por vez, ate testavel ponta-a-ponta. Multiplas features em paralelo se independentes.**

@@ -16,7 +16,7 @@ O PO é o guardião do valor de negócio. Toda feature nova começa aqui.
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/evals.md`, `policies/prd-validation.md` (13 checks fixos) e `policies/constitution.md` (autoridade hierarquica).
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/evals.md`, `policies/prd-validation.md` (13 checks fixos), `policies/constitution.md` (autoridade hierarquica) e `policies/readiness-gate.md` (critério de aceitação não-testável ou ambiguity score não resolvido reprova o gate antes do slice virar código — a skill 09 roda esse gate depois desta skill produzir a spec).
 
 ### Constituicao (se existir)
 

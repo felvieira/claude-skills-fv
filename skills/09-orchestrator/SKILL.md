@@ -21,7 +21,7 @@ O Orquestrador classifica a task, define o pipeline minimo suficiente e coordena
 Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 
 - `policies/constitution.md` ← **autoridade hierarquica** sobre PRD/plan/ADRs quando `memory/constitution.md` existir
-- `policies/constitution.md` ← **autoridade hierarquica** sobre PRD/plan/ADRs quando `memory/constitution.md` existir
+- `policies/readiness-gate.md` ← veredito PASS/CONCERNS/FAIL antes de despachar qualquer slice para Backend/Frontend, e `sprint-status.yaml` como estado vivo consultado a cada novo slice
 - `policies/execution.md`
 - `policies/handoffs.md`
 - `policies/quality-gates.md`
@@ -257,9 +257,11 @@ Anti-padrão registrado em `policies/skills-vs-agents.md#anti-padrão-1` (case r
 
 Fluxo padrao **dentro de UM slice vertical** (uma feature ponta-a-ponta):
 
-`Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy -> [Session Summary + Cost Tracker]`
+`Repo Auditor -> CLAUDE.md Generator -> PO -> Design Intelligence -> UI/UX -> [Readiness Gate] -> Backend -> Frontend -> Motion -> Copy -> SEO -> QA -> Security -> Reviewer -> Deploy -> [Session Summary + Cost Tracker]`
 
 Para spec inicial de varias features, **primeiro** rodar PO + Design Intelligence para producir lista de slices, **depois** rodar o restante por slice.
+
+**Readiness Gate** (`policies/readiness-gate.md`) roda entre "artefatos de entrada prontos" (spec, UI/UX, e arquitetura quando a skill 38 rodou) e "Backend/Frontend começam a implementar". Veredito PASS/CONCERNS/FAIL por slice, registrado em `docs/context/sprint-status.yaml`. FAIL não libera implementação — volta para a skill de origem do artefato. Pular só em hotfix/rename/mudança mecânica de escopo já claro (mesma exceção de `policies/search-first.md`).
 
 - `Documenter` atua de forma transversal quando houver mudanca de regra, contrato, arquitetura ou operacao
 - `Asset Librarian` atua quando a task depender de consistencia visual, inventario de assets ou apoio ao Image Generator

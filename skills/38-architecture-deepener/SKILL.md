@@ -64,7 +64,7 @@ Ao produzir YAML, salvar em `<consumer>/.harness/fitness-functions.yml`. Roadmap
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/source-driven.md`, `policies/writing-clarity.md`, `policies/handoffs.md`.
+Esta skill segue `GLOBAL.md`, `policies/source-driven.md`, `policies/writing-clarity.md`, `policies/handoffs.md` e `policies/readiness-gate.md` (decisão de arquitetura registrada explicitamente, não implícita, é um dos critérios que decide PASS/CONCERNS/FAIL antes do slice ir para implementação — decisão pendente reprova o gate).
 
 ## Filosofia
 
