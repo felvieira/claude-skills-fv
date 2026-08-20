@@ -5,6 +5,19 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.59.0] - 2026-08-19 — taxonomia de citação em IA (skill 61) e 2 gaps do Ahrefs (skill 14)
+
+Usuário trouxe 3 artigos ("tem esses caras tb que podemos melhora rnossas skills noa?"): [Ahrefs — how to use AI in marketing](https://ahrefs.com/blog/how-to-use-ai-in-marketing/), [Backlinko — LLM prompt tracking](https://backlinko.com/llm-prompt-tracking) e um artigo da Sabrina sobre workflow de vídeo faceless de baixo custo. Medido o gap real de cada um contra o kit por grep sistemático antes de decidir o que aplicar — a maior parte do artigo do Ahrefs (37 táticas) é ferramenta específica sem princípio reutilizável; 2 gaps sobreviveram à triagem. Na pergunta de múltipla escolha sobre o que aplicar, o usuário selecionou explicitamente Backlinko + os 2 gaps do Ahrefs — **não** selecionou a mudança da Sabrina (still-antes-de-animar na skill 27, vídeo). Ela foi aplicada por engano numa passada anterior desta sessão e revertida antes deste commit, a pedido do usuário, exatamente porque não estava entre as opções escolhidas.
+
+### Adicionado
+- **`skills/61-content-growth-engine/SKILL.md`** — protocolo de baseline de citação em IA (seção 1.5) ganha taxonomia de 4 tipos de prompt (avaliação/reputação/comparação/lacuna — evita que o conjunto de 20-30 prompts vire só um tipo por ser mais fácil de escrever), 2-3 execuções por prompt por sessão (resposta de LLM varia entre rodadas — uma única rodada mede ruído, não sinal), registro de sentimento por citação, e o conceito de **"ghost ranking"**: a marca é citada como fonte pelo modelo mas quem é recomendado no fim é o concorrente — pior que não aparecer, porque passa como métrica boa numa leitura rápida da planilha (citação = sim) enquanto a decisão de compra vai pro concorrente do mesmo jeito. Cadência de medição trocada de "mensal" para **"medir semanalmente, agir mensalmente com 4 semanas de tendência"** — variância semana a semana é normal, e agir sobre uma leitura isolada reage a ruído
+- **`skills/14-seo-specialist/SKILL.md`** — dois gaps do Ahrefs: (1) **fan-out query mapper** no Keyword Research — decompor a keyword principal nas sub-perguntas que o usuário (ou o fan-out de busca de um LLM) precisaria resolver, comparar contra o conteúdo já publicado, e tratar toda sub-pergunta sem página/seção que a responda como buraco de cobertura; (2) **FAQ pós-artigo com perguntas reais do leitor** na seção GEO/AEO — Backlinko documentou 32% de lift de tráfego orgânico num experimento controlado com 21 posts ao adicionar esse bloco, marcado com o `FAQPage` schema que a skill já tinha como template
+
+### Corrigido
+- **`skills/27-video-integration-specialist/SKILL.md`** — revertida a mudança "still-antes-de-animar" (padrão do artigo da Sabrina) aplicada por engano nesta mesma sessão sem estar entre as opções que o usuário selecionou. `git checkout` limpo — a mudança nunca chegou a ser commitada, então não deixou rastro no histórico
+
+Validado: `check-consistency`, `validate-plugin-catalog`, `eval-plugin-routing --strict` (23/23), `eval-triggers` (57/57), `check-harness-coherence` (1 achado pré-existente, `count-drift` do README, não relacionado a esta mudança).
+
 ## [2.58.0] - 2026-08-19 — fix estrutural da colisão de substring no roteador de plugins
 
 Pedido de "melhore o kit" sem escopo definido — auditei o estado real (suíte inteira já verde) e revisitei sistematicamente uma classe de bug que já tinha sido encontrada e corrigida pontualmente 4 vezes: trigger curto de uma palavra colidindo por substring dentro de palavra sem relação (`"nda"` em "cale**nda**rio", `"ui"` em "arq**ui**tetura", `"cac"` em "**cac**he", `"alerta"` em "monitoramento e **alerta**" — todas achadas em sessões anteriores, cada uma corrigida com `when_none` pontual).

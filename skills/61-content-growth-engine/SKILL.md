@@ -133,14 +133,25 @@ Antes de produzir, medir onde a marca aparece hoje nas respostas geradas.
 
 Protocolo — reproduzivel, nao impressao:
 
-1. Montar 20-30 prompts que o ICP realmente faria ("qual melhor ferramenta de X para empresa de Y", "alternativas ao <concorrente>", "como resolver <dor>")
+1. Montar 20-30 prompts que o ICP realmente faria, distribuidos em 4 tipos — nao deixar o conjunto virar so um tipo por ser mais facil de escrever:
+
+| Tipo | Formulacao | O que revela |
+| --- | --- | --- |
+| **Avaliacao** | "qual melhor ferramenta de X para empresa de Y" | se a marca entra na consideracao inicial |
+| **Reputacao** | "vale a pena pagar por X?", "X e confiavel?" | como a marca e percebida quando ja e conhecida |
+| **Comparacao** | "X vs Y", "diferenca entre X e Y" | se a marca sobrevive a comparacao direta — mesmo formato que a Fase 2 prioriza produzir |
+| **Lacuna** | tema que hoje e territorio do concorrente, sem a marca no radar | onde a marca esta perdendo por ausencia, nao por perder a comparacao |
+
 2. Rodar em ChatGPT, Claude, Perplexity e Google AI Overviews — sessao limpa, sem historico, senao a personalizacao contamina
-3. Registrar por prompt: a marca foi citada? em que posicao? quais concorrentes apareceram? qual fonte o modelo citou?
-4. Guardar data e modelo/versao — a resposta muda com o tempo, e sem data o dado nao serve de baseline
+3. Rodar cada prompt 2-3 vezes por sessao — resposta de LLM varia entre execucoes; uma unica rodada mede ruido, nao sinal
+4. Registrar por prompt: a marca foi citada? em que posicao? quais concorrentes apareceram? qual fonte o modelo citou? qual o sentimento (positivo/neutro/negativo) quando citada?
+5. Guardar data e modelo/versao — a resposta muda com o tempo, e sem data o dado nao serve de baseline
 
-Saida: planilha marca x prompt x modelo, com **taxa de citacao** (% de prompts em que a marca aparece). Repetir mensalmente, sempre com os mesmos prompts. Mudar o conjunto de prompts invalida a serie historica.
+Saida: planilha marca x prompt x modelo, com **taxa de citacao** (% de prompts em que a marca aparece) e **share of voice** contra os concorrentes que aparecem no mesmo conjunto. Repetir semanalmente, sempre com os mesmos prompts. Mudar o conjunto de prompts invalida a serie historica — mas so **agir** sobre uma tendencia de 4 semanas seguidas, nunca sobre uma unica leitura: variancia semana a semana e normal, tendencia e o que importa.
 
-O que fazer com o resultado: se um concorrente e citado e a marca nao, ver **qual pagina o modelo cita** dele. Normalmente e um comparativo, uma pagina de precos publica ou um dado proprietario — os tres formatos que a Fase 2 prioriza.
+**Ghost ranking** — o padrao mais caro de nao notar: a marca *e* citada como fonte (o modelo referencia o artigo, o dado, a pagina), mas quem e **recomendado** no fim e o concorrente. E pior que nao aparecer, porque parece sucesso na leitura rapida da planilha (citacao = sim) enquanto a decisao de compra vai pro concorrente mesmo assim. Verificar sempre os dois campos separados: foi citada != foi recomendada.
+
+O que fazer com o resultado: se um concorrente e citado e a marca nao (ou a marca so aparece em ghost ranking), ver **qual pagina o modelo cita** dele. Normalmente e um comparativo, uma pagina de precos publica ou um dado proprietario — os tres formatos que a Fase 2 prioriza.
 
 ### 1.6 Plano de links internos
 
@@ -265,7 +276,7 @@ Crawler de LLM nao executa JS de forma confiavel: conteudo que so aparece apos h
 Fundo de funil e onde a receita acontece e onde menos se investe. Aplicar `skills/13-marketing-copy/SKILL.md` para copy e `skills/02-ui-ux-design/SKILL.md` para estrutura (incluindo estado vazio e hierarquia de CTA).
 
 ### Monitoramento de citacao em IA
-Metrica recorrente mensal com o mesmo conjunto de prompts da Fase 1.5. Trimestral e tarde demais para corrigir rota.
+Medir semanalmente, agir mensalmente — mesmo conjunto de prompts da Fase 1.5, 4 semanas de tendencia antes de mudar qualquer coisa. Trimestral e tarde demais para corrigir rota.
 
 ---
 
@@ -311,6 +322,8 @@ Horizonte honesto: conteudo de fundo de funil pode converter em semanas; autorid
 - **Instagram por default em B2B** — canal que nao e de compra consome a mesma energia do que funciona
 - **Medir sessao total como sucesso** — sobe sozinho, nao paga salario
 - **Checar citacao em IA uma vez por trimestre** — tarde demais para corrigir
+- **Contar citacao como sucesso sem checar recomendacao** — ghost ranking: a marca e citada como fonte, mas o concorrente e recomendado. Pior que nao aparecer, porque parece metrica boa na planilha
+- **Agir sobre uma unica leitura de citacao em IA** — variancia semana a semana e normal; so a tendencia de 4 semanas seguidas justifica mudar algo
 - **Conteudo com assinatura de IA** — num plano cujo objetivo e autoridade, e autossabotagem (`/humanize`)
 
 ## Evidencia de Conclusao
@@ -333,6 +346,10 @@ Horizonte honesto: conteudo de fundo de funil pode converter em semanas; autorid
 - **Data Analytics (21):** nomeia os eventos do funil de conteudo
 - **UX Research (51):** conduz a entrevista quando a pauta exige pesquisa primaria
 - **Image Generator (17):** produz OG card e ilustracao do artigo
+
+## Fontes
+
+- Taxonomia de 4 tipos de prompt (avaliacao/reputacao/comparacao/lacuna), conceito de "ghost ranking", 2-3 execucoes por prompt por variabilidade, e cadencia "medir semanal, agir mensal com 4 semanas de tendencia" vieram de [Backlinko — LLM Prompt Tracking](https://backlinko.com/llm-prompt-tracking), curados para o protocolo de baseline ja existente na Fase 1.5 (nao substituido, complementado — o protocolo original ja cobria sessao limpa, multi-modelo, e o vinculo com formato de conteudo da Fase 2)
 
 ## Integracao com Pipeline
 

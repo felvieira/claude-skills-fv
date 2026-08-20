@@ -83,6 +83,10 @@ O output desta etapa é uma **tabela de keywords decididas** que alimenta o rest
 
 > Detalhe denso (ferramentas, exemplo KEI completo, template de tabela) em `references/keyword-research.md` — abrir só ao executar um keyword research de fato.
 
+### Fan-out query mapper (cobertura de sub-perguntas)
+
+Antes de fechar a lista de keywords de uma página/pauta, decomponha a keyword principal nas sub-perguntas que um usuário — ou um LLM respondendo por fan-out de busca — precisaria resolver pra considerar o tópico coberto. Ex.: "como fazer risoto" decompõe em "qual arroz usar", "precisa de vinho branco", "como não empapar", "tempo de preparo", "dá pra congelar". Compare a lista de sub-perguntas contra o conteúdo já publicado (próprio e do concorrente que ranqueia): toda sub-pergunta sem página/seção que responda é um buraco de cobertura — vira pauta nova ou seção a adicionar na página existente, priorizado como qualquer outra keyword da tabela (passo 7).
+
 ### Como documentar as keywords decididas
 
 | Keyword | Intent | Balde | Volume/mês | Dificuldade | KEI | Prioridade |
@@ -553,6 +557,7 @@ LLMs extraem trechos curtos e atômicos. Estruture o conteúdo para facilitar es
 Além do schema clássico (Website, Organization), priorize tipos que LLMs consomem para grounding:
 
 - **FAQPage schema** (já tem template em `FAQSchema.tsx` — ver seção `## Schema Markup - JSON-LD` acima): cada par pergunta/resposta vira candidato a citação direta em AI Overviews.
+- **FAQ pós-artigo baseada em pergunta real do leitor:** adicionar um bloco de FAQ ao final de todo artigo, com perguntas extraídas de fontes reais (comentários, suporte, "as pessoas também perguntam" do Google, fan-out do keyword research acima) — não perguntas inventadas pra preencher espaço. Backlinko documentou 32% de lift de tráfego orgânico num experimento controlado com 21 posts ao adicionar esse bloco. Marcar com `FAQPage` schema.
 - **HowTo schema:** para tutoriais e procedimentos. Cada `step` é extraído individualmente.
 - **Article schema com metadados completos:** `author` (com `@type: Person` e `url` para bio), `datePublished`, `dateModified` (LLMs ranqueiam por frescor — conteúdo sem `dateModified` perde relevância em queries que pedem informação atual), `publisher`, `headline`, `description`.
 
@@ -634,6 +639,8 @@ Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado 
 - [ ] Parágrafos com máximo 3-4 frases
 - [ ] Claims atômicos (1 fato por sentença) em conteúdo factual
 - [ ] FAQPage schema implementado em páginas com FAQ
+- [ ] Bloco de FAQ pós-artigo com perguntas reais do leitor (não inventadas)
+- [ ] Fan-out query mapper rodado: sub-perguntas da keyword principal sem cobertura viraram pauta/seção
 - [ ] HowTo schema em tutoriais e procedimentos
 - [ ] Article schema com `author`, `datePublished`, `dateModified`, `publisher`
 - [ ] Bio do autor visível no HTML (não só no schema)
@@ -786,6 +793,7 @@ Meta descriptions: SEO NAO reescreve o copy — apenas otimiza formato, keywords
 ## Fontes Externas
 
 - GEO/AEO patterns inspired by [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) (MIT) — comprehensive SEO skill with deep GEO coverage.
+- FAQ pós-artigo (32% de lift documentado) e fan-out query mapper adaptados de [Backlinko — "How to Track LLM Prompts"](https://backlinko.com/llm-prompt-tracking).
 - Seções de SEO Local (GBP/NAP), E-commerce (schema de produto) e Internacional (hreflang) também inspiradas em AgriciDaniel/claude-seo, que implementa essas verticais como sub-skills executáveis com dispatch paralelo e integrações MCP (DataForSEO, Ahrefs); aqui curado como referência estática, sem replicar a arquitetura de agentes/MCP da fonte.
 
 ## Regra de Código
