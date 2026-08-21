@@ -81,6 +81,8 @@ Para texto pronto: converter para HTML semântico, aplicar policy anti-ai-writin
 
 Em ambos os casos: zero atribuição de fonte, zero "Fonte original", zero "segundo {autor da fonte}".
 
+**Gate obrigatório antes de salvar:** rodar a `## Checklist de estilo para output publicado` de `policies/anti-ai-writing.md` no corpo do post — sem em dash, sem ponto-e-vírgula, sem asteriscos soltos no texto corrido, variação de comprimento/estrutura de frase e parágrafo, sem headings genéricos ("Key Takeaways", "Final Thoughts"), sem transição conversacional falsa. Grep literal na lista de palavras banidas da policy antes de considerar o post pronto.
+
 Salvar em `{blog_repo_path}/.tmp-body-{slug}.html`.
 
 ### 3. Imagens
@@ -99,7 +101,7 @@ Gerar dois textos antes de invocar o scaffold:
 - `--share-hook`: 1-2 frases com tom de mistério/curiosidade, sem entregar a resposta
 - `--linkedin`: texto pronto para colar, com hook + aprendizados + CTA + 3-5 hashtags
 
-Ambos em PT-BR (ou língua do post). Aplicar anti-ai-writing. Ver exemplos em `docs/skill-guides/blog-publisher.md`.
+Ambos em PT-BR (ou língua do post). Aplicar anti-ai-writing, incluindo a checklist de output publicado (sem em dash, sem markdown/asteriscos, variação estrutural). **Exceção deliberada:** hashtags no bloco LinkedIn são convenção da plataforma, não um AI-tell — a regra "sem hashtags" da checklist vale para o corpo do post e copy de landing/app, não para social copy nativo de plataforma que usa hashtag por design. Ver exemplos em `docs/skill-guides/blog-publisher.md`.
 
 ### 4. Scaffold
 
@@ -149,7 +151,7 @@ Index: {pages_url}/
 - **Skill 17** — fal.ai para cover e inline images
 - **Skill 26** — prompt da imagem
 - **Skill 42** — screenshots Playwright para URLs reais
-- **Policy anti-ai-writing.md** — 29 padrões antes de finalizar
+- **Policy anti-ai-writing.md** — 29 padrões + checklist de estilo pra output publicado, gate obrigatório antes de finalizar
 
 ## Evidência de Conclusão
 

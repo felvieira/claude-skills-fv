@@ -11,13 +11,20 @@
  * Output: additionalContext com os padrões detectados e sugestão de /humanize.
  * NÃO bloqueia (exit 0 sempre).
  *
- * Padrões verificados (subset de alto recall dos 29 em policies/anti-ai-writing.md):
+ * Padrões verificados (subset de alto recall dos 29 padrões + checklist de estilo
+ * publicado em policies/anti-ai-writing.md):
  * - Vocabulário AI de alta frequência (delve, pivotal, tapestry, underscore, vibrant...)
  * - Copula avoidance (serves as, stands as, boasts)
  * - Signposting (let's dive in, here's what you need to know)
  * - Conclusões genéricas (future looks bright, exciting times)
  * - Frases de enchimento (in order to, it is important to note)
  * - Sycofância (great question, I hope this helps)
+ * - Transição conversacional falsa (here's the thing, let that sink in)
+ * - Vocabulário de marketing banido (unlock, game-changer, cutting-edge, revolutionize)
+ *
+ * Palavras muito genéricas da lista nomeada da checklist (can, may, just, that,
+ * very, really...) ficam de fora do regex de propósito — alto volume de falso
+ * positivo em texto legítimo. Aplicar via grep manual no /humanize --plain.
  */
 
 import { readHookConfig, isHookDisabled } from "./utils.mjs";
@@ -59,6 +66,16 @@ const AI_PATTERNS = [
     pattern: /\b(pivotal moment|evolving landscape|underscores (its|the) (vital|crucial|important)|reflects broader|setting the stage for)\b/gi,
     category: "significance inflation",
     rewrite_hint: "Cut the inflation. If the thing matters, the reader sees it; if it doesn't, no adjective will save it. 'a pivotal moment in auth' → 'auth change'.",
+  },
+  {
+    pattern: /\b(here'?s the thing|here'?s where it gets interesting|think about it|let that sink in)\b/gi,
+    category: "fake conversational transition",
+    rewrite_hint: "Delete — go straight to the point. 'Here's the thing: X matters' → 'X matters'.",
+  },
+  {
+    pattern: /\b(unlock|revolutioniz\w+|game-changer|cutting-edge|groundbreaking|disruptive|skyrocket\w*|harness the power|dive deep|shed light on|in a world where)\b/gi,
+    category: "banned marketing vocabulary",
+    rewrite_hint: "Replace with the concrete claim: 'unlock growth' → 'grow'; 'game-changer' → what specifically changed; 'cutting-edge' → the actual differentiator; 'harness the power of X' → 'use X'.",
   },
 ];
 

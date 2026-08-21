@@ -1,17 +1,20 @@
 # Anti-AI Writing Patterns
 
-**Objetivo:** catálogo de 29 padrões que sinalizam texto gerado por IA. Aplicar antes de publicar qualquer prosa que humanos vão ler: docs, PRDs, copy, changelogs, release notes, summarys.
+**Objetivo:** catálogo de 29 padrões que sinalizam texto gerado por IA, mais uma checklist de estilo (voz, ritmo, vocabulário banido) para saída publicada — landing pages, apps, posts de blog. Aplicar antes de publicar qualquer prosa que humanos vão ler: docs, PRDs, copy, changelogs, release notes, summarys, texto de UI.
 
 **Quando aplicar (obrigatório):**
 - skill 10 (documenter) — antes de finalizar docs de usuário
 - skill 13 (marketing-copy) — antes de publicar copy
 - skill 14 (seo-specialist) — antes de publicar artigo/blog
+- skill 41 (blog-publisher) — antes de publicar post
+- skill 50 (direct-response-copy) — antes de publicar ads/página de vendas
+- skill 61 (content-growth-engine) — em todo conteúdo produzido pelo pipeline
 - `/to-prd` — antes de publicar PRD no tracker
 - `/humanize` — comando dedicado para revisão completa
 
-**Como usar:** ler cada categoria, identificar ocorrências no texto, reescrever conforme padrão After. Rodar o check final: "O que ainda parece obviamente gerado por IA?" Resolver até não sobrar tells visíveis.
+**Como usar:** ler cada categoria, identificar ocorrências no texto, reescrever conforme padrão After. Rodar o check final: "O que ainda parece obviamente gerado por IA?" Resolver até não sobrar tells visíveis. Para copy publicada em landing/app/blog, rodar também a `## Checklist de estilo para output publicado` no fim deste documento.
 
-**Crédito:** [blader/humanizer](https://github.com/blader/humanizer) + [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (WikiProject AI Cleanup).
+**Crédito:** [blader/humanizer](https://github.com/blader/humanizer) + [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (WikiProject AI Cleanup) + checklist de estilo fornecida pelo usuário (SHOULD/AVOID + lista de palavras banidas), 2026-08-20.
 
 ---
 
@@ -260,6 +263,77 @@
 
 - **Before:** `## Performance\n\nSpeed matters.\n\nWhen users hit a slow page...`
 - **After:** `## Performance\n\nWhen users hit a slow page...`
+
+---
+
+## Checklist de estilo para output publicado (landing, app, blog)
+
+Aplicar em **texto final que vai pro ar**: copy de landing page (skill 13), texto de app/UI, posts de blog (skill 41, skill 14), páginas e READMEs voltados a usuário externo. Complementa os 29 padrões acima — não os substitui. Diferente de `writing-clarity.md` (que rege output de agente: commits, handoffs, erros), esta seção rege prosa publicada que humanos vão ler fora do contexto de dev.
+
+### Regras de forma (SHOULD)
+
+- linguagem clara e simples, frases curtas e diretas
+- voz ativa — evitar passiva
+- foco em insight prático e acionável
+- listas com bullet em posts sociais
+- dado e exemplo concreto sustentando toda afirmação relevante (ver padrão 5, atribuições vagas)
+- "você"/"seu" pra falar direto com o leitor, quando o contexto pedir
+- variar comprimento e estrutura de frase — ver `### Variação estrutural` abaixo
+- preferir substantivo específico, número, exemplo e ação sobre linguagem abstrata
+- soar como alguém com ponto de vista, não um motor de resumo neutro (ver `## Checklist final anti-IA` abaixo — "alma")
+
+### Pontuação e formatação — restrito a contexto plain-text
+
+**Aplica-se quando o output é texto corrido pra ser lido fora de um editor markdown** — copy de landing page, texto de app, legenda de post, e-mail, script de vídeo. **Não se aplica** a documentação técnica (READMEs internos, specs, este próprio repo) onde markdown é o formato esperado e correto — lá, os padrões 15-19 (negrito mecânico, listas com cabeçalho, emojis decorativos) já cobrem o abuso de formatação sem banir a sintaxe em si.
+
+Em contexto plain-text:
+- sem em dash (—) em lugar nenhum — usar vírgula, ponto, parênteses ou outra pontuação padrão (reforça o padrão 14, que já lista em dash como problema geral; aqui é banimento total, não só "menos uso")
+- sem ponto-e-vírgula
+- sem markdown (negrito, itálico, headers) — texto corrido
+- sem asteriscos
+- sem hashtags
+- sem emoji decorativo (mesma regra do padrão 18, aplicada com rigor total nesse contexto)
+
+### Variação estrutural
+
+Além do padrão 10 (regra dos três forçada) e do padrão 11 (synonym cycling), evitar:
+- parágrafos todos do mesmo tamanho
+- frases todas do mesmo comprimento
+- listas onde cada bullet segue exatamente o mesmo padrão gramatical
+- múltiplos parágrafos começando com a mesma estrutura gramatical
+- excesso de headings e subheadings (além do padrão 29, sobre aquecimento de heading)
+
+**Revisão final obrigatória:** se 3+ frases consecutivas têm comprimento ou estrutura parecidos, reescrever pelo menos uma. Preferir variação natural leve sobre consistência estrutural perfeita — estrutura perfeita lê como algoritmo (ver `## Checklist final anti-IA`).
+
+### Construções e transições a evitar (além dos 29 padrões)
+
+- "not just X, but also Y" e "It's not X. It's Y." (reforça o padrão 9, com exemplos adicionais de forma)
+- "While X, Y" repetido como fórmula de contraste ao longo do texto
+- metáforas e clichês
+- generalizações amplas sem exemplo concreto
+- framing de abertura tipo "In conclusion," "In closing," "The key takeaway" (reforça padrão 28/29)
+- headings genéricos: "Key Takeaways", "Why It Matters", "Benefits", "Final Thoughts" — salvo pedido explícito
+- pergunta retórica usada como transição
+- transição conversacional falsa: "Here's the thing," "Here's where it gets interesting," "Think about it," "Let that sink in" (variante do padrão 28, tom mais casual)
+- fragmento dramático de uma linha inserido só pra ênfase
+- explicação de implicação óbvia
+- contexto extra que o leitor não precisa pra entender a resposta
+- tratar dois lados de um argumento como igualmente importantes quando a evidência pesa pra um lado
+- fechar seção com reflexão ou frase inspiracional genérica (variante do padrão 25)
+- repetir a mesma ideia na introdução, corpo e fechamento
+- reafirmar a pergunta do usuário antes de responder
+- resumir a própria resposta no final, salvo pedido
+- transição excessiva entre parágrafos/bullets
+- qualificação e hedging excessivos (reforça padrão 24)
+- linguagem corporativa polida quando linguagem comum já resolve
+
+### Lista de palavras a evitar (quando existe alternativa natural)
+
+can, may, just, that, very, really, literally, actually, certainly, probably, basically, could, maybe, delve, embark, enlightening, esteemed, shed light, craft, crafting, imagine, realm, game-changer, unlock, discover, skyrocket, abyss, not alone, in a world where, revolutionize, disruptive, utilize, utilizing, dive deep, tapestry, illuminate, unveil, pivotal, intricate, elucidate, hence, furthermore, however, harness, exciting, groundbreaking, cutting-edge, remarkable, remains to be seen, glimpse into, navigating, landscape, stark, testament, in summary, in conclusion, moreover, boost, skyrocketing, opened up, powerful, inquiries, ever-evolving
+
+Boa parte já está coberta pelo vocabulário do padrão 7 (`policies/anti-ai-writing.md` §7) — esta lista é mais extensa e nomeada, útil como checklist de busca literal (`grep -iE` das palavras) antes de publicar.
+
+**Não banir cegamente.** Contexto manda: "actually" pode ser a palavra certa numa frase que expressa surpresa genuína; "just" pode servir num sentido temporal ("just shipped"). A regra é "evite quando existe alternativa natural mais simples", não "nunca use".
 
 ---
 

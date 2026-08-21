@@ -5,6 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.60.0] - 2026-08-21 — checklist de estilo pra output publicado, fundida em anti-ai-writing.md
+
+Usuário trouxe uma instrução de estilo (SHOULD/AVOID + lista nomeada de ~50 palavras banidas) usada em outro workflow de escrita e pediu pra virar "skill humanizer" para landing pages, app e blog. O kit já tinha `policies/anti-ai-writing.md` (29 padrões catalogados) e o comando `/humanize` maduros — investigado o overlap antes de decidir: boa parte da instrução já estava coberta (em dash, hedging, conclusões genéricas, listas com cabeçalho). Decisão: fundir só o que era genuinamente novo na policy existente, em vez de criar uma skill duplicada.
+
+### Adicionado
+- **`policies/anti-ai-writing.md`** — nova seção `## Checklist de estilo para output publicado (landing, app, blog)`: banimento total de em dash/ponto-e-vírgula/markdown/asteriscos/hashtags, mas **escopado a contexto plain-text** (copy de landing, texto de app, script de vídeo) — não se aplica a documentação técnica onde markdown é o formato esperado; lista nomeada de ~50 palavras a evitar, útil como checklist de grep literal antes de publicar; regras explícitas de variação estrutural (parágrafos/frases do mesmo tamanho, listas com bullets idênticos, múltiplos parágrafos com a mesma abertura gramatical — "se 3+ frases consecutivas têm estrutura parecida, reescrever pelo menos uma"); transições conversacionais falsas ("here's the thing", "let that sink in") como extensão do signposting já catalogado (padrão 28)
+- **`commands/humanize.md`** ganhou flag `--plain` — aplica a checklist de output publicado, incluindo o banimento total de em dash/markdown, quando o destino é texto corrido fora de contexto markdown
+- **`hooks/scripts/ai-writing-detector.mjs`** ganhou 2 padrões de regex novos (transição conversacional falsa; vocabulário de marketing banido — unlock, game-changer, cutting-edge, revolutionize), testados contra falso positivo em texto técnico limpo antes de landar. As palavras mais genéricas da lista nomeada (can, may, just, that, very...) ficaram deliberadamente fora do regex — alto volume de falso positivo em prosa legítima — e continuam como checklist manual do `/humanize --plain`, não detecção automática
+
+### Alterado
+- **`skills/13-marketing-copy/SKILL.md`** e **`skills/41-blog-publisher/SKILL.md`** — gate de anti-ai-writing atualizado para citar explicitamente a nova checklist de output publicado, não só os 29 padrões
+- **`skills/41-blog-publisher/SKILL.md`** documenta uma exceção deliberada: hashtags no bloco de compartilhamento LinkedIn são convenção de plataforma, não um AI-tell — a regra "sem hashtags" da checklist vale para o corpo do post e copy de landing/app, não para social copy nativo que usa hashtag por design
+
+Validado: `check-consistency`, `eval-plugin-routing --strict` (23/23), `eval-triggers` (57/57), `check-harness-coherence` (1 achado pré-existente, `count-drift` do README, não relacionado a esta mudança). Regex novos do hook testados em isolamento contra texto AI-flavored sintético (detectou) e texto técnico limpo (zero falso positivo).
+
 ## [2.59.0] - 2026-08-19 — taxonomia de citação em IA (skill 61) e 2 gaps do Ahrefs (skill 14)
 
 Usuário trouxe 3 artigos ("tem esses caras tb que podemos melhora rnossas skills noa?"): [Ahrefs — how to use AI in marketing](https://ahrefs.com/blog/how-to-use-ai-in-marketing/), [Backlinko — LLM prompt tracking](https://backlinko.com/llm-prompt-tracking) e um artigo da Sabrina sobre workflow de vídeo faceless de baixo custo. Medido o gap real de cada um contra o kit por grep sistemático antes de decidir o que aplicar — a maior parte do artigo do Ahrefs (37 táticas) é ferramenta específica sem princípio reutilizável; 2 gaps sobreviveram à triagem. Na pergunta de múltipla escolha sobre o que aplicar, o usuário selecionou explicitamente Backlinko + os 2 gaps do Ahrefs — **não** selecionou a mudança da Sabrina (still-antes-de-animar na skill 27, vídeo). Ela foi aplicada por engano numa passada anterior desta sessão e revertida antes deste commit, a pedido do usuário, exatamente porque não estava entre as opções escolhidas.

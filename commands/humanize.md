@@ -1,5 +1,5 @@
 ---
-description: Remove sinais de AI-generated writing de qualquer texto — docs, PRDs, copy, changelogs, release notes. Aplica os 29 padrões de policies/anti-ai-writing.md + adiciona voz e personalidade.
+description: Remove sinais de AI-generated writing de qualquer texto — docs, PRDs, copy, changelogs, release notes. Aplica os 29 padrões de policies/anti-ai-writing.md + a checklist de estilo pra output publicado + adiciona voz e personalidade.
 ---
 
 # /humanize — Remove AI Writing Patterns
@@ -10,7 +10,9 @@ description: Remove sinais de AI-generated writing de qualquer texto — docs, P
 - antes de publicar PRD no tracker (`/to-prd`)
 - ao finalizar docs de usuário (skill 10)
 - ao revisar copy antes de publicar (skill 13)
-- ao revisar artigo/blog (skill 14)
+- ao revisar artigo/blog (skill 14, skill 41)
+- ao revisar página de vendas/ads (skill 50)
+- em todo texto final que vai pro ar: landing page, app, blog, README público
 - ao revisar qualquer prosa que humanos vão ler
 
 **Quando NÃO usar:**
@@ -49,6 +51,8 @@ Aplicar todas as 5 categorias de `policies/anti-ai-writing.md`:
 3. **Estilo** (padrões 14-19): em dash, negrito, listas com cabeçalho inline, title case, emojis, curly quotes
 4. **Comunicação** (padrões 20-22): artefatos de chatbot, disclaimers de cutoff, sycofância
 5. **Enchimento** (padrões 23-29): frases de enchimento, hedging, conclusões genéricas, hifenização excessiva, autoridade persuasiva, signposting, headers com aquecimento
+
+**Se o texto é output publicado (landing, app, blog, README público)** — rodar também a `## Checklist de estilo para output publicado` de `policies/anti-ai-writing.md`: grep literal na lista de palavras banidas, checar variação estrutural (3+ frases seguidas com comprimento/estrutura parecidos → reescrever ao menos uma), e — só quando o destino é texto corrido plain-text (não markdown técnico) — remover em dash/ponto-e-vírgula/markdown/asteriscos/hashtags por completo.
 
 **Preservar:**
 - Significado principal intacto
@@ -121,15 +125,16 @@ Se o texto era um arquivo: oferecer escrever a versão final de volta no arquivo
 - `--sample [path]` — arquivo de amostra para calibração de voz
 - `--lang [pt|en]` — idioma explícito (default: detectar do texto)
 - `--depth [quick|full]` — `quick` remove só os padrões mais comuns (7, 10, 13, 20, 28); `full` aplica todos os 29 (default: `full`)
+- `--plain` — modo output publicado: além dos 29 padrões, aplica a checklist de estilo (`policies/anti-ai-writing.md`, seção "Checklist de estilo para output publicado") incluindo o banimento total de em dash/ponto-e-vírgula/markdown/asteriscos/hashtags. Usar pra copy de landing, texto de app, post de blog — nunca pra docs técnicos onde markdown é o formato esperado.
 
 ## Policies relevantes
 
-- [`policies/anti-ai-writing.md`](../../policies/anti-ai-writing.md) — catálogo completo dos 29 padrões
-- [`policies/writing-clarity.md`](../../policies/writing-clarity.md) — princípios gerais de clareza (complementar)
+- [`policies/anti-ai-writing.md`](../../policies/anti-ai-writing.md) — catálogo completo dos 29 padrões + checklist de estilo pra output publicado (landing/app/blog)
+- [`policies/writing-clarity.md`](../../policies/writing-clarity.md) — princípios gerais de clareza para output de agente (commits, handoffs, erros — complementar, escopo diferente)
 
 ## Handoff
 
 - texto humanizado → publicar no tracker (`gh issue create`) ou finalizar doc
 - se mudanças foram grandes → rodar `/review` para validar coerência técnica
 
-**Uso:** `/humanize [path ou texto] [--sample path] [--depth quick|full]`
+**Uso:** `/humanize [path ou texto] [--sample path] [--depth quick|full] [--plain]`
