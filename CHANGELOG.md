@@ -5,6 +5,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.63.0] - 2026-08-23 — correção da seção Beautiful UI (skill 25): erro de digitação meu, não instabilidade do site
+
+Correção pontual da v2.62.0. O usuário já tinha passado a URL correta (`beautifui.dev`) na sessão anterior, mas todas as tentativas de `WebFetch` continuaram falhando com erro de DNS — documentei isso na skill como "site instável", o que era uma conclusão errada. O usuário apontou o erro direto ("a url que tava errada te passei a correta"): as falhas eram porque eu estava digitando a URL errada em cada nova tentativa (`www.beautifuil.dev`, variações próprias), não porque o domínio estava fora do ar. Confirmado ao copiar o valor exato que o usuário colou.
+
+### Corrigido
+- **`skills/25-ai-integration-architect/SKILL.md`** — seção "Camada Visual dos Padroes de IA" reescrita com o conteúdo real, confirmado ao vivo via `WebFetch` na URL correta: 20 componentes em 6 categorias (Loading & States, Text & Input, Cards & Feedback, Data Display, Navigation & Organization, Code & Advanced — lista completa por nome, não resumo genérico), licença MIT indicada no rodapé, sem link de repositório/pacote/CLI publicado no site (isso continua não confirmado e precisa ser localizado antes de adotar em produção). A seção `## Fontes` também foi atualizada: a ressalva de "site instável, não re-verificado" foi substituída por uma nota factual sobre o próprio erro de digitação, para não generalizar um erro meu como se fosse um problema real do produto de terceiro
+
+Validado: `check-consistency`, `eval-triggers` (skill 25 em PASS).
+
 ## [2.62.0] - 2026-08-22 — 5 fontes externas em 5 skills, via subagents em paralelo
 
 Continuação da mesma sessão de v2.61.0. Usuário mandou 6 links durante o trabalho anterior (extend.ai/ui, Astryx/beautifui.dev, diagram-design, morphicons, boneyard, brownies), pedindo pra usar cada um "quando for" fazer o tipo de tarefa correspondente. Um agente de reconhecimento investigou as 6 antes de qualquer edição — confirmou 5 gaps reais (medidos por grep) e 1 sem gap (boneyard — skill 04 já resolve skeleton loading com um padrão manual próprio, sem dependência). Um sétimo link (beautifui.dev) surgiu depois com URL inicialmente errada (`beautifuil.dev`, sem "i" duplicado) e foi corrigido pelo usuário.
