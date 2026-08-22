@@ -168,6 +168,21 @@ Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, e
 
 Se o projeto ja tiver componentes, branding ou linguagem visual estabelecidos, o MCP serve como referencia ou acelerador, nunca como desculpa para destoar do produto.
 
+## Busca de decisão em catálogo (design_search.py)
+
+Antes de decidir estilo, paleta, tipografia, tipo de gráfico, ícone, animação, ou checar uma guideline de UX/acessibilidade "de cabeça", consultar o catálogo local via `scripts/design_search.py` — 15 catálogos curados (BM25, sem dependência externa) cobrindo 84 estilos visuais, paletas de cor por tipo de produto, 74 pares de tipografia, ícones Phosphor com contexto de acessibilidade, 25 tipos de gráfico (dado → gráfico certo → biblioteca → threshold de volume → risco de a11y), padrões de landing page, snippets de motion/GSAP, 119 guidelines de UX/acessibilidade com exemplo de código bom/ruim, performance de React, e guidelines específicas de 21 stacks (React, Vue, Svelte, Next.js, Nuxt, Angular, Astro, SwiftUI, Flutter, React Native, shadcn, Three.js, e mais).
+
+```bash
+python skills/02-ui-ux-design/scripts/design_search.py "glassmorphism dashboard" --domain style
+python skills/02-ui-ux-design/scripts/design_search.py "time series with many points" --domain chart
+python skills/02-ui-ux-design/scripts/design_search.py "focus trap modal" --domain ux
+python skills/02-ui-ux-design/scripts/design_search.py "useEffect cleanup" --stack react
+```
+
+**Domínios:** `style`, `color`, `chart`, `landing`, `product`, `ux`, `typography`, `icons`, `gsap`, `react`, `web`, `google-fonts`. Sem `--domain`, o domínio é auto-detectado pela query. **Stacks:** ver `--stack --help` ou `data/stacks/*.csv` — 21 disponíveis.
+
+**Sem resultado não é "sem dado que exista" — é "a query não bateu no índice desta base local".** Tentar reformular antes de cair no julgamento genérico, e declarar explicitamente que não houve match na base se cair no genérico mesmo assim (o próprio script já avisa isso na saída). Fonte do dado ainda é a evidência do projeto real (`18-repo-auditor`) e a âncora estética escolhida — o catálogo é um acelerador de decisão, não substitui contexto do produto.
+
 ## Derivar a Paleta — Não Copiar a Padrão
 
 O azul `#3b82f6` do bloco abaixo é **placeholder**, não default. Paleta herdada sem decisão é a marca registrada de interface genérica — junto com Inter e `border-radius: 8px`. A paleta se deriva da âncora estética, nesta ordem:
@@ -578,6 +593,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
 - Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
 - Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
+- `scripts/design_search.py` + `data/*.csv` (2026-08-22): motor de busca BM25 e os 15 catálogos de decisão portados de [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) (MIT) — o repo cresceu bastante desde a absorção acima (jul/2026): 84 estilos, 192 paletas, 74 pares de tipografia, 119 guidelines de UX/a11y com código, 25 tipos de gráfico, 21 stacks. `scripts/design_search_core.py` é o motor original quase inalterado (stdlib puro, já testado, calibrado por domínio); `design_search.py` é um wrapper CLI mais enxuto que o `search.py` original — não porta `--design-system`/`--persist`/`--variance`/`--motion`/`--density` (gerador de design system completo do produto deles), porque essa decisão já é papel desta skill em prosa guiada por contexto do projeto — portar o gerador duplicaria a mesma decisão de dois jeitos.
 - Três camadas de token, wireframe lo-fi/hi-fi como estágios distintos, divulgação progressiva nomeada, dark patterns como categoria e o checklist de fechamento (estratégia/estrutura/validação) vieram de um estudo do usuário sobre a biblioteca Design Basics da [Figma](https://www.figma.com/resource-library/) — medido por grep contra o kit antes de aplicar; só entrou o que era gap real, não redundante com Nielsen ou com o que a skill já cobria.
 - Modo dual auditoria/implementação, fluxo de 9 passos, classificação de achado (norma/evidência/heurística/preferência), priorização por severidade×alcance×frequência×confiança e definição de pronto vieram de um protocolo de auditoria/implementação UI/UX fornecido pelo usuário — extraídos para `references/audit-framework.md` após medir que 6 das 8 peças não existiam em nenhuma skill do kit, e as outras 2 estavam fragmentadas sem ponto de consolidação (`skills/11-reviewer` tinha só 1 eixo de severidade; `skills/22-accessibility-specialist` tinha impacto×esforço, não os 4 eixos do protocolo).
 

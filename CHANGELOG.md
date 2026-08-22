@@ -5,6 +5,20 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.61.0] - 2026-08-22 — busca BM25 + catálogos de decisão de design portados pra skill 02
+
+Usuário perguntou se o `nextlevelbuilder/ui-ux-pro-max-skill` (MIT) — fonte já usada em jul/2026 para os anti-padrões por indústria — tinha sido atualizado e valia trazer mais. O repo cresceu bastante: de uma skill simples pra um produto com CLI, 15+ releases entre agosto/2026, agora com 84 estilos, 192 paletas, 74 pares de tipografia, 119 guidelines de UX/a11y com código, 25 tipos de gráfico e 21 stacks. Investigação prévia (agente dedicado) confirmou fonte legítima (30 contribuidores reais, cadência de commits densa, dados com proveniência rastreada) antes de trazer qualquer coisa.
+
+### Adicionado
+- **`skills/02-ui-ux-design/data/*.csv` + `data/stacks/*.csv`** (2.12MB) — 15 catálogos de decisão portados como uma cópia limpa (o repo original tinha tudo triplicado em 3 pastas espelhadas, bug de duplicação deles): estilos visuais, paletas por tipo de produto, tipografia, ícones (com contexto de acessibilidade), gráficos (dado → tipo certo → biblioteca → threshold → risco de a11y), padrões de landing, motion/GSAP, guidelines de UX/acessibilidade com exemplo de código bom/ruim, performance de React, fontes do Google (dados de terceiro redistribuídos sob licença aberta), e 21 stacks de frontend/desktop (React, Vue, Svelte, Next.js, Nuxt, Angular, Astro, SwiftUI, Flutter, React Native, shadcn, Three.js, Laravel, JavaFX, WPF, WinUI, Avalonia, Uno, UWP)
+- **`skills/02-ui-ux-design/scripts/design_search_core.py`** — motor de busca BM25 portado quase inalterado do original: stdlib puro (`csv`, `re`, `math.log`, sem dependência externa), calibração de score por domínio, resolução de identidade exata, deduplicação de sinônimos, tie-breaking determinístico. Já testado e maduro no upstream — não reimplementado do zero
+- **`skills/02-ui-ux-design/scripts/design_search.py`** — wrapper CLI mais enxuto que o `search.py` original: mantém busca por domínio/stack com auto-detecção, mas **não porta** `--design-system`/`--persist`/`--variance`/`--motion`/`--density` (o gerador de design system completo do produto deles) — essa decisão já é papel da skill 02 em prosa guiada por contexto real do projeto; portar o gerador criaria duas formas de tomar a mesma decisão dentro do kit
+- **`skills/02-ui-ux-design/SKILL.md`** ganhou seção "Busca de decisão em catálogo" instruindo a consultar o catálogo antes de decidir estilo/paleta/tipografia/gráfico/ícone "de cabeça" — com o aviso explícito de que zero resultado significa "não bateu no índice local", não "o dado não existe", para não confundir ausência de match com ausência de conhecimento
+
+Testado com queries reais em todos os domínios antes de commitar (style, chart, ux, typography, stack, auto-detecção, `--json`) — resultados ricos e calibrados; o caso de zero-match retorna aviso anti-fabricação em vez de silêncio.
+
+Validado: `check-consistency`, `validate-plugin-catalog`, `eval-plugin-routing --strict` (23/23), `eval-triggers` (57/57), `check-harness-coherence` (1 achado pré-existente, `count-drift` do README, não relacionado).
+
 ## [2.60.0] - 2026-08-21 — checklist de estilo pra output publicado, fundida em anti-ai-writing.md
 
 Usuário trouxe uma instrução de estilo (SHOULD/AVOID + lista nomeada de ~50 palavras banidas) usada em outro workflow de escrita e pediu pra virar "skill humanizer" para landing pages, app e blog. O kit já tinha `policies/anti-ai-writing.md` (29 padrões catalogados) e o comando `/humanize` maduros — investigado o overlap antes de decidir: boa parte da instrução já estava coberta (em dash, hedging, conclusões genéricas, listas com cabeçalho). Decisão: fundir só o que era genuinamente novo na policy existente, em vez de criar uma skill duplicada.
