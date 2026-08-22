@@ -564,6 +564,25 @@ FLIP (First, Last, Invert, Play) mede a posicao antes e depois da mudanca no DOM
 
 A direcao da transicao deve codificar a estrutura, nao ser sempre "de baixo pra cima": aprofundar segue a arquitetura da navegacao, voltar é a inversao exata da entrada, abrir a partir de um elemento nasce **naquele elemento**.
 
+## Morphing de Ícone-pra-Ícone
+
+Caso especifico de continuidade de objeto (ver tabela acima): quando o icone em si troca de forma pra comunicar mudanca de estado — play↔pause, hamburguer↔X, coracao vazio↔cheio, chevron que gira. So faz sentido quando os dois icones representam **o mesmo conceito em dois estados reconheciveis**; nao use pra trocar entre icones sem relacao semantica (isso e so um crossfade).
+
+Interpolar `d` de um path pro outro manualmente distorce a forma em transito (encolhe, cisalha). Pra esse caso pontual, usar [`morphicons`](https://github.com/guillermolg00/morphicons) (MIT, zero dependencia, ~7KB) em vez de reinventar a interpolacao — ele resolve rotacao e correspondencia de pontos automaticamente (Procrustes 2D + interpolacao polar), funciona com icones stroke-based (Lucide, Tabler, Heroicons, Iconoir):
+
+```tsx
+import { MorphIcon } from "morphicons/react";
+import { Menu, X } from "lucide"; // data, nao componentes — usar o pacote "lucide", nao "lucide-react"
+
+<button onClick={() => setOpen(o => !o)} aria-expanded={open}>
+  <MorphIcon icon={open ? X : Menu} spring="snappy" />
+</button>
+```
+
+Modo uncontrolled (acima) cobre a maioria dos casos: o prop `icon` muda e a lib anima sozinha. Existe tambem modo controlled (`from`/`to`/`progress`, pra scroll/gesture) e imperativo (`ref.current.morphTo(icon)` pra sequencias). Bindings equivalentes existem pra Vue, Svelte, React Native, Astro e web component puro (`<morph-icon>`), alem do driver vanilla `createMorph` sem framework. Spring aceita preset (`"snappy"`, `"gentle"`, etc.) ou `{ stiffness, damping }` customizado.
+
+**Ressalva de acessibilidade — default da lib diverge do padrao desta skill.** Por padrao (`reducedMotion="never"`), a lib anima o morph mesmo com `prefers-reduced-motion: reduce` ativo no SO, sob o argumento de que morph de icone e uma micro-transicao pequena e comunicativa, nao movimento de tela cheia. Isso conflita com a regra geral desta skill (ver "Limites de Seguranca — Flash e Movimento Vestibular" e o hook `useReducedMotion` acima: **sempre respeitar `prefers-reduced-motion`**). Pra manter consistencia com essa regra, passar explicitamente `reducedMotion="user"` em todo uso — isso faz o morph degradar pra troca instantanea quando o SO pede movimento reduzido, sem perder a comunicacao do estado (o icone final ainda aparece, so sem a trajetoria animada).
+
 ## Feedback Multimodal — Haptic e Som
 
 Visual, haptic e som devem parecer **um unico evento**, nao tres. Feedback dessincronizado é percebido como defeito de hardware.
@@ -673,3 +692,4 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 ## Fontes Externas
 
 - Skeletons de GSAP ScrollTrigger (sticky-stack, horizontal-pan) inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
+- API de morphing de icone-pra-icone baseada em [guillermolg00/morphicons](https://github.com/guillermolg00/morphicons) (MIT). Gap real: `skills/12-motion-design/` e `patterns/` nao cobriam morph entre icones (play↔pause, hamburguer↔X) antes desta secao — so transicoes, spring e easing genericos.

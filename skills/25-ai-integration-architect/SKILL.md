@@ -60,6 +60,14 @@ Antes de decidir a arquitetura, consultar:
 
 Seguir `policies/handoffs.md` e, quando util, `templates/ai-integration-plan.md`.
 
+## Camada Visual dos Padroes de IA (componentes prontos)
+
+Esta skill decide a arquitetura de streaming, tool-calling, custo e fallback — nao decide como a tela **parece** enquanto isso acontece. Quando o handoff for para Frontend ou UI/UX Design implementar as telas que expoem esses padroes (chat composer, indicador de "pensando"/streaming de texto, card de aprovacao de acao do agente, card de recomendacao, exibicao de estado do agente), considerar [Beautiful UI](https://www.beautifui.dev/) como opcao de biblioteca de componentes prontos em vez de desenhar cada um do zero.
+
+**O que é** — conforme reconhecimento prévio (não re-verificado ao vivo nesta sessão, ver `## Fontes`): "primitivas para interfaces AI-native", feito pelo estúdio de design Turbo. Cobre categorias como: agent state displays (loading, thinking, streaming text), padrões de interação (chat composer, approval cards, recommendation cards) e componentes de visualização de dado e contexto/conhecimento (tabelas, charts, flowcharts, context cards, insight cards). Licença MIT foi mencionada no rodapé do site no reconhecimento prévio, mas o link de GitHub/npm, a stack exigida (React/Next.js/Tailwind/shadcn) e a existência de CLI de instalação **não foram confirmados** — validar isso na hora de decidir uso real, não assumir a partir desta skill.
+
+**Escopo desta menção:** é sobre a camada visual do padrao (como o card de aprovacao e desenhado), nao sobre a arquitetura por tras dele (como o app decide o que mostrar, quando fazer streaming, como tratar timeout de aprovacao) — essa parte continua sendo desta skill (`patterns/ai-integration/hooks.md`, `patterns/ai-integration/providers.md`). Se o handoff for para `skills/02-ui-ux-design` ou `skills/04-frontend-integration`, citar Beautiful UI la como opcao de aceleracao, nao reimplementar a decisao aqui.
+
 ## Docs upstream via submodule (v2.12.2+, opt-in)
 
 Esta skill pode usar o `anthropics/anthropic-cookbook` como fonte de exemplos vivos via git submodule. Por padrao **nao esta inicializado** (evita ~100MB de clone obrigatorio). Para ativar:
@@ -77,3 +85,7 @@ git add . && git commit -m "chore: bump anthropic-cookbook submodule"
 ```
 
 Pattern documentado em [`docs/patterns/submodule-skills.md`](../../docs/patterns/submodule-skills.md). Inspirado em [antfu/skills](https://github.com/antfu/skills) (MIT).
+
+## Fontes
+
+- [Beautiful UI](https://www.beautifui.dev/) (estúdio Turbo, licença MIT mencionada no site): citado na seção "Camada Visual dos Padroes de IA" como opção de componente pronto para chat composer, indicadores de streaming/thinking, approval cards e recommendation cards. **Confirmado apenas via reconhecimento prévio de outro agente, não via WebFetch ao vivo nesta sessão** — três tentativas de `WebFetch` em `https://www.beautifui.dev/` e `https://beautifui.dev/` retornaram erro de DNS (`ENOTFOUND`) em momentos diferentes. Link de GitHub/npm, stack exigida e CLI de instalação continuam não confirmados. Re-verificar ao vivo quando o site estiver estável antes de recomendar em produção.

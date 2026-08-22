@@ -74,6 +74,34 @@ Para estrutura de pastas e exemplos completos de store, auth e API client, consu
 - server state separado do estado local
 - estados de loading, erro, vazio e retry definidos por tela
 
+## Storage Client-Side Reativo
+
+Para persistir preferencia de UI, filtro de tela ou qualquer estado nao sensivel que precisa sobreviver a reload ou sincronizar entre abas, o default e o middleware `persist` do Zustand (`zustand/middleware`) quando o projeto ja usa Zustand para esse estado — nao adicionar dependencia nova so pra isso.
+
+`brownies` (https://github.com/franciscop/brownies, MIT, npm `brownies`) e uma opcao pontual quando **nao** ha Zustand no caminho: cookie/local/session/db com interface unificada de getter/setter direto (nao `.get()`/`.set()`) e sincronizacao entre abas via `subscribe()`.
+
+```js
+import { cookies, local, session, db, subscribe, unsubscribe } from 'brownies';
+
+local.token = 42;        // set
+const t = local.token;   // get (sincrono para cookies/local/session)
+delete local.token;      // remove
+
+// db (IndexedDB) e assincrono
+db.token = 42;
+const dbVal = await db.token;
+
+// subscribe reage a mudanca feita em outra aba ou via API nativa
+const id = subscribe(local, 'points', (value) => setPoints(value));
+unsubscribe(id); // ou unsubscribe(callback)
+```
+
+Quando usar: state simples fora de um store existente — ex. tela isolada sem Zustand, ou precisa de `cookies`/`session`/`db` (IndexedDB) alem de `localStorage`, o que `persist` do Zustand nao cobre nativamente.
+
+Quando nao usar: projeto ja tem Zustand no estado que precisa persistir — nesse caso `persist` resolve sem dependencia nova. Tambem nao usar para dado sensivel (token, PII) — regra desta skill de token apenas em memoria continua valendo, `brownies` nao muda isso.
+
+Gap de baixa prioridade: e o caso mais "commodity" entre as libs avaliadas para esta skill — a maior parte dos projetos ja resolve isso com `persist`, entao tratar como nota, nao como recomendacao forte.
+
 ## MCPs de Componentes
 
 Esta skill pode instalar ou configurar localmente MCPs de bibliotecas como `Magic UI MCP` e `React Bits MCP` quando isso acelerar a implementacao e o projeto nao tiver equivalente melhor.
@@ -84,6 +112,22 @@ Regras:
 - adaptar componentes ao design system do app
 - nao introduzir visual ou motion que destoem do produto
 - registrar a instalacao/configuracao local no handoff quando houver mudanca no workspace
+
+## Biblioteca de Componentes para Apps Document-Heavy
+
+Quando a feature envolve visualizar ou manipular documentos dentro do app (PDF, DOCX, XLSX, CSV, upload com preview, citação com bounding box sobre o documento, e-signing, schema builder), considerar `extend-hq/ui` (https://github.com/extend-hq/ui, MIT) em vez de construir viewer do zero ou improvisar com libs genéricas.
+
+Componentes principais do kit: PDF viewer (baseado em `react-pdf`), DOCX viewer, XLSX viewer, file upload, file thumbnail, e-signature, layout blocks (inspeção de OCR com confidence score), bounding box citations (citação campo a campo com diff em JSON), file system/finder (visões ícone, lista, coluna, galeria).
+
+Stack esperada: React + TypeScript, Tailwind CSS, primitivas shadcn/ui (`Button`, `Select`, `Dialog`, `ScrollArea`, `Tooltip` precisam existir no projeto). Next.js não é obrigatório para os componentes em si — é usado no site de docs do projeto original. Instalação é via shadcn CLI, componente por componente, como código-fonte copiado para o projeto (não é dependência de pacote fechada):
+
+```bash
+npx shadcn@latest add @extend/pdf-viewer
+```
+
+Quando usar: o produto já tem (ou vai ter) fluxo de revisão/anotação de documentos — contratos, notas fiscais, planilhas importadas, formulários assinados — e precisa de viewer com citação/bounding box ou e-signing nativo.
+
+Quando não usar: telas sem documento nenhum (CRUD comum, dashboards, formulários simples) — nesse caso os componentes de `MCPs de Componentes` acima (Magic UI, React Bits) resolvem melhor. Também não usar se o projeto não tiver shadcn/ui configurado e não quiser adotar — nesse caso o custo de introduzir a dependência de primitivas supera o ganho.
 
 ## MCP de Browser
 
@@ -542,6 +586,11 @@ Entregar:
 ## Código Limpo
 
 Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
+
+## Fontes
+
+- Seção "Biblioteca de Componentes para Apps Document-Heavy" curada a partir de [extend-hq/ui](https://github.com/extend-hq/ui) (MIT, ~1.5k stars) — não é port literal do README, é resumo dos componentes e do modo de instalação relevantes para esta skill. Confirmado por leitura direta do repo (licença, stack, comando de instalação) e da página https://www.extend.ai/ui. O kit já modelava Extend como referência visual em `skills/02-ui-ux-design/data/products.csv` e `ui-reasoning.csv`, mas não tinha nenhuma menção à biblioteca de componentes React em si — esse era o gap real medido antes de adicionar esta seção.
+- Seção "Storage Client-Side Reativo" curada a partir de [franciscop/brownies](https://github.com/franciscop/brownies) (MIT, 2.566 stars, 61 forks, release 4.0.1). API confirmada por leitura direta de `readme.md` e `package.json` do repo: getter/setter direto em `cookies`/`local`/`session`/`db` (não `.get()`/`.set()`), `db` assíncrono, `subscribe(obj, key, cb)`/`unsubscribe()` para reagir a mudanças entre abas. Gap medido: grep por `localStorage|sessionStorage|indexedDB|subscribe()` em skill 04 e `patterns/` não retornava nada — a skill cobria Zustand/React Query para estado de app, mas não tinha padrão para storage local reativo. Tratado como nota de baixa prioridade: o middleware `persist` do Zustand já cobre a maior parte desse caso quando o projeto já usa Zustand.
 
 ## Integração com Pipeline
 

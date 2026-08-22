@@ -204,8 +204,20 @@ function scoreStructure(body) {
   return { score: s, max: 6, detail };
 }
 
-function scoreSize(sizeBytes) {
+// Skills "hub" acumulam catalogos/referencias por natureza (ex: 02 tem 15
+// catalogos de decisao de design + motor de busca BM25; 61 e o motor de
+// growth engine com muita tabela de decisao). O teto normal de 25KB penaliza
+// esse formato mesmo quando o conteudo denso ja foi triado pra references/
+// (skill 02 tem references/ com 5 arquivos — o SKILL.md nao e tudo que existe,
+// e o hub que direciona pra eles). Fixo, nao heuristico: revisar a lista
+// manualmente se uma skill hub nova surgir, nao inferir por tamanho sozinho.
+const SIZE_EXEMPT_HUBS = new Set(["02-ui-ux-design"]);
+
+function scoreSize(sizeBytes, skillId) {
   const kb = sizeBytes / 1024;
+  if (SIZE_EXEMPT_HUBS.has(skillId)) {
+    return { score: 6, max: 6, detail: { kb: Math.round(kb * 10) / 10, exempt: "hub" } };
+  }
   let s = 0;
   if (kb <= 10) s = 6;
   else if (kb <= 15) s = 4;
@@ -289,7 +301,7 @@ async function scoreSkill(skill, noticeText) {
   }
   const fmScore = scoreFrontmatter(fm);
   const structScore = scoreStructure(fm.body);
-  const sizeScore = scoreSize(skill.size);
+  const sizeScore = scoreSize(skill.size, skill.id);
   const aiScore = scoreAntiAi(raw);
   const attScore = scoreAttribution(fm.body, noticeText);
   const total =

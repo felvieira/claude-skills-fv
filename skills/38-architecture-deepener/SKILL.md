@@ -288,7 +288,7 @@ Apos usuario escolher candidato e fase de grilling concluir:
 1. **Skill 23 (Migration & Refactor):** recebe plano de deepening + executa o refactor incremental com feature flags
 2. **Skill 37 (TDD Engineer):** escreve testes contra a NOVA interface antes da migracao (red-green-refactor)
 3. **Skill 28 (CLAUDE.md Generator):** atualiza `CLAUDE.md` se vocabulario novo emergiu
-4. **Documenter (skill 10):** registra ADR se conversa gerou decisao "load-bearing"
+4. **Documenter (skill 10):** registra ADR se conversa gerou decisao "load-bearing" — se o candidato escolhido ganha mais clareza com um diagrama (arquitetura, dependency graph, sequence) do que com prosa, ver `## Diagramas em Docs e ADRs` na skill 10
 
 ## Integracao com Pipeline
 

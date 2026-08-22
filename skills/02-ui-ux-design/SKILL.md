@@ -158,15 +158,17 @@ O componente de mensagem é escolhido por **urgência × persistência × necess
 
 Erro que exige ação nunca é toast: some sozinho e leva a informação junto.
 
-## Bibliotecas com MCP
+## Bibliotecas de Componentes Prontos
 
-Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, esta skill pode consultar ou configurar MCPs como `Magic UI MCP` e `React Bits MCP`, desde que:
+Quando a tarefa se beneficiar de bibliotecas prontas de componentes ou motion, esta skill pode consultar ou configurar bibliotecas via MCP ou via install direto, desde que:
 
 - o projeto seja compativel com a stack exigida
 - a integracao nao conflite com o design system existente
 - o componente seja adaptado ao contexto visual real do app
 
-Se o projeto ja tiver componentes, branding ou linguagem visual estabelecidos, o MCP serve como referencia ou acelerador, nunca como desculpa para destoar do produto.
+Se o projeto ja tiver componentes, branding ou linguagem visual estabelecidos, a biblioteca serve como referencia ou acelerador, nunca como desculpa para destoar do produto.
+
+**Via MCP** — `Magic UI MCP` e `React Bits MCP`. **Via install direto (React 19 + StyleX)** — `Astryx` (Meta, MIT, 150+ componentes, CLI agent-friendly com `--json`/`--dense`). Detalhe de setup e diferencial confirmado em [`references/component-libraries.md`](references/component-libraries.md) — abrir só ao avaliar/configurar uma biblioteca de verdade.
 
 ## Busca de decisão em catálogo (design_search.py)
 
@@ -596,6 +598,7 @@ Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam cont
 - `scripts/design_search.py` + `data/*.csv` (2026-08-22): motor de busca BM25 e os 15 catálogos de decisão portados de [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) (MIT) — o repo cresceu bastante desde a absorção acima (jul/2026): 84 estilos, 192 paletas, 74 pares de tipografia, 119 guidelines de UX/a11y com código, 25 tipos de gráfico, 21 stacks. `scripts/design_search_core.py` é o motor original quase inalterado (stdlib puro, já testado, calibrado por domínio); `design_search.py` é um wrapper CLI mais enxuto que o `search.py` original — não porta `--design-system`/`--persist`/`--variance`/`--motion`/`--density` (gerador de design system completo do produto deles), porque essa decisão já é papel desta skill em prosa guiada por contexto do projeto — portar o gerador duplicaria a mesma decisão de dois jeitos.
 - Três camadas de token, wireframe lo-fi/hi-fi como estágios distintos, divulgação progressiva nomeada, dark patterns como categoria e o checklist de fechamento (estratégia/estrutura/validação) vieram de um estudo do usuário sobre a biblioteca Design Basics da [Figma](https://www.figma.com/resource-library/) — medido por grep contra o kit antes de aplicar; só entrou o que era gap real, não redundante com Nielsen ou com o que a skill já cobria.
 - Modo dual auditoria/implementação, fluxo de 9 passos, classificação de achado (norma/evidência/heurística/preferência), priorização por severidade×alcance×frequência×confiança e definição de pronto vieram de um protocolo de auditoria/implementação UI/UX fornecido pelo usuário — extraídos para `references/audit-framework.md` após medir que 6 das 8 peças não existiam em nenhuma skill do kit, e as outras 2 estavam fragmentadas sem ponto de consolidação (`skills/11-reviewer` tinha só 1 eixo de severidade; `skills/22-accessibility-specialist` tinha impacto×esforço, não os 4 eixos do protocolo).
+- Astryx ([facebook/astryx](https://github.com/facebook/astryx), MIT) citado em "Bibliotecas de Componentes Prontos" (2026-08-22): design system open source do Meta (React 19 + StyleX, 150+ componentes, beta pública desde jan/2026, 12k+ stars), curado por ser o primeiro exemplo verificável de design system com infraestrutura dedicada a consumo por agente — não só claim de marketing, mas CLI com `--json`/`--dense`/error codes estáveis e suíte própria de testes medindo geração de código por LLM a partir da doc (confirmado lendo `README.md`, `packages/cli/README.md` e `CLAUDE.md` do repo real via `gh api`). Citado como referência de biblioteca de componentes, não integrado ao catálogo BM25 de `design_search.py` — são camadas diferentes (decisão de estilo vs. componente pronto).
 
 ## Integração com Pipeline
 
