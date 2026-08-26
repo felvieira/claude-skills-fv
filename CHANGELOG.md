@@ -5,6 +5,20 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.66.0] - 2026-08-26 — skills 66 e 67 novas (game dev), skill 12 ganha gate de decisão + review de animação
+
+Fechamento das 2 investigações que a v2.65.0 tinha deixado pendentes ("game-dev-skills e artigo Snyk" e "busca `animation` no skills.sh"), despachadas como 2 agentes em paralelo.
+
+### Adicionado
+- **`skills/66-game-architecture-design/`** (nova) — arquitetura de sistemas de jogo, design review, balanceamento numérico. Inspirada estruturalmente no gap identificado em `Yuki001/game-dev-skills` (sem licença declarada), mas com texto **inteiramente original** — nenhuma frase copiada ou parafraseada de perto da fonte, porque ela não tem licença que permita reuso de texto. SKILL.md + 5 references (`architecture-paradigms.md`, `system-catalog.md`, `design-review-domains.md`, `balance-playbooks.md`, `project-structure.md`)
+- **`skills/67-game-engine-development/`** (nova) — implementação real em Unity C# e Unreal C++ (ECS, otimização de performance, multiplayer networking). Código **portado quase verbatim** de [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) (MIT, 11k stars — a única fonte candidata com cobertura real de engine), com atribuição explícita. Seção "Cobertura de Godot" avisa que não há profundidade real desse motor em nenhuma fonte avaliada — não finge paridade entre os 3 motores
+- **`skills/12-motion-design/references/decision-gate-and-review.md`** — combina 3 fontes reais de [emilkowalski/skills](https://github.com/emilkowalski/skills) (MIT): gate de decisão de 4 perguntas + varredura por 6 categorias de seam (de `find-animation-opportunities`), glossário reverso de ~30 termos de vocabulário de motion (de `animation-vocabulary`), checklist de review com hierarquia de remediação em cascata — deletar → reduzir → easing → origem → interrompibilidade → GPU → timing assimétrico → polish → acessibilidade, incluindo teto de 300ms e o anti-padrão `scale(0)` (de `review-animations`). `SKILL.md` da skill 12 ganhou um resumo curto apontando pra essa referência
+
+### Corrigido
+- Contagem de skills desatualizada em `README.md`, `README.pt-BR.md`, `docs/WIKI.md`, `docs/WIKI.pt-BR.md`, `docs/SKILLS-OVERVIEW.md`, `mcp-server/package.json`, `.claude-plugin/plugin.json` e `.claude-plugin/marketplace.json` — atualizada para 66 (as skills numeradas reais, incluindo as 2 novas). Entradas `#### Skill 66` e `#### Skill 67` adicionadas em `docs/WIKI.md`/`docs/WIKI.pt-BR.md`
+
+Validado: `check-consistency` (66 skills, 38 tools, 16 agents — limpo), `eval-plugin-routing --strict` (23/23), `eval-triggers` (60/60, skills 66/67 100%/0%), `check-harness-coherence` (2 achados pré-existentes de baixa severidade, não relacionados).
+
 ## [2.65.0] - 2026-08-26 — skills 64 e 65 novas, skill 02 ganha dupla avaliação cega, skill 12 ganha laboratório GSAP do usuário
 
 Continuação da mesma sessão de v2.64.0. Usuário pediu investigação de `skills.sh` (registro oficial da Vercel), depois mandou 11 links específicos do registro em sequência, mais `nateherkai/scroll-craft` e `Yuki001/game-dev-skills`/artigo da Snyk. Após consolidar a investigação das 13 fontes do skills.sh (5 já builtin — família HyperFrames —, 1 descartada por rasa, 4 técnicas mas fora de escopo — vídeo/imagem, candidatas ao repo `video-generation/` separado —, 2 confirmadas), o usuário aprovou "só worktree+critique no kit" e depois "despachar tudo em paralelo" — 3 peças de construção (scroll-craft, worktree, critique) e 3 investigações (game-dev, laboratório GSAP do usuário, busca "animation" no skills.sh) rodaram como 6 agentes simultâneos.

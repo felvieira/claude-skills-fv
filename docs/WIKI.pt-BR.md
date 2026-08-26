@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 64 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Versão:** 66 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -818,6 +818,20 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Diferente de:** `commands/worktree.md` continua sendo o dispatcher enxuto (cria worktree, copia `.env*`, roda install/lint em background) — a skill 65 é o protocolo completo, acionado quando as garantias extras importam: detecção de isolamento com guard de submodule, preferência por ferramenta nativa (`EnterWorktree`/`ExitWorktree` antes de `git worktree add` cru), e baseline de testes obrigatória antes de liberar a task.
 **Takeaway:** **uma baseline suja torna toda falha futura ambígua** — pular o passo de baseline de testes significa que um bug introduzido pela task não pode ser distinguido de um que já existia; detectar isolamento existente primeiro (via `git rev-parse --git-dir` vs `--git-common-dir`, protegido contra falso positivo dentro de submodules) evita aninhar um worktree dentro de outro por engano.
 
+#### Skill 66 — Game Architecture Design
+
+[Omitted long context line]
+**Quando ativar:** desenhar um sistema de jogo novo (combate, skill, IA, narrativa, UI, geração procedural) antes de escrever código de engine; decidir entre paradigmas de arquitetura (entidade rica vs data-driven vs protótipo descartável); revisar criticamente um GDD, mecânica, nível ou economia em busca do que está fraco, arriscado ou insuficientemente validado; modelar números de balance (dano, custo, drop rate, curva de XP) que precisam ser defensáveis, não chutados.
+**Diferente de:** a skill 67 (game-engine-development) é dona do código real Unity C#/Unreal C++ — a skill 66 decide *o que* construir e *por quê*, entregando a decisão arquitetural e os números; nunca gera código de engine sozinha.
+**Takeaway:** **as duas fontes investigadas pra game dev tinham perfis de licença opostos** — a fonte de design/arquitetura tinha profundidade real (17-26 references por skill) mas sem licença declarada, então o conteúdo desta skill é escrita totalmente original inspirada pelo *gap*, não texto portado; a fonte de código de engine (skill 67) era MIT, então essa sim portou código real com atribuição. Mesma investigação, duas regras de absorção diferentes dependendo do que cada fonte realmente permitia.
+
+#### Skill 67 — Game Engine Development
+
+[Omitted long context line]
+**Quando ativar:** implementar um sistema de jogo em Unity (C#) — MonoBehaviour, ScriptableObject, pooling, gerenciamento de estado; implementar em Unreal Engine (C++) — Actor, Component, UPROPERTY/UFUNCTION exposto a Blueprint; aplicar um padrão de design de jogo específico (ECS, state machine, object pooling, spatial partitioning); otimizar performance (draw calls, pressão de garbage collection, LOD/culling, profiling); implementar networking multiplayer (arquitetura servidor-autoritativo, predição de cliente, lag compensation).
+**Diferente de:** a skill 66 (game-architecture-design) é dona da decisão de design e dos números de balance — a skill 67 só constrói; não decide o que construir nem por quê.
+**Takeaway:** **não finja cobertura que a fonte não tem** — a fonte MIT de onde esta skill porta código ([Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills)) cobre Unity e Unreal com código de produção real, mas tem zero conteúdo de Godot em qualquer lugar do repositório; a skill diz isso explicitamente numa seção "Cobertura de Godot" em vez de responder pergunta de Godot silenciosamente com chute com sabor de Unity.
+
 ---
 
 ## 6. Subagents (16)
@@ -933,7 +947,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **64 skills** em `skills/NN-nome/SKILL.md`
+- **66 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -946,7 +960,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 64 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 66 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -971,7 +985,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 64 skills | ✓ | ✓ | ✓ |
+| 66 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -1,0 +1,22 @@
+{
+  "skill": "66-game-architecture-design",
+  "should_trigger": [
+    "preciso desenhar a arquitetura de jogo desse sistema de combate",
+    "quero definir o sistema de skill de jogo do meu RPG",
+    "me ajuda a revisar esse game design document",
+    "essa mecanica de puzzle parece fraca, preciso de uma revisao de design de jogo",
+    "preciso balancear a economia do jogo, moeda tá inflacionando",
+    "qual curva de progressao faz sentido pra esse jogo mobile",
+    "como calcular a taxa de drop e o pity system dessa gacha",
+    "essa classe tá dominando o metagame, preciso diagnosticar desbalanceamento",
+    "ECS vs OOP para jogo nesse sistema de combate, qual paradigma de arquitetura de jogo usar",
+    "avaliar proposta de balance que deveria resolver o problema de dano"
+  ],
+  "shouldnt_trigger": [
+    "implementar esse MonoBehaviour em Unity C#",
+    "escrever o codigo do object pooling em Unreal C++",
+    "otimizar o FPS desse jogo, ta travando",
+    "configurar o multiplayer networking com lag compensation",
+    "gerar uma sprite sheet pro personagem"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "67-game-engine-development",
+  "should_trigger": [
+    "implementar object pooling jogo em Unity C#",
+    "criar um Actor component em Unreal C++ com UPROPERTY e UFUNCTION",
+    "escrever uma state machine jogo pro meu personagem",
+    "otimizar FPS desse jogo, ta alocando garbage no Update",
+    "implementar multiplayer networking jogo com client-side prediction e lag compensation",
+    "como configurar ScriptableObject pra dados de arma no Unity",
+    "preciso de um sistema ECS Unity, entity component system pra esse jogo",
+    "corrigir esse codigo de MonoBehaviour que ta chamando GetComponent no Update",
+    "implementar server reconciliation pro meu jogo multiplayer",
+    "escrever o codigo de spatial partitioning pra colisao"
+  ],
+  "shouldnt_trigger": [
+    "revisar esse game design document e apontar fraquezas",
+    "balancear a curva de progressao de XP desse RPG",
+    "calcular a taxa de drop ideal pro sistema de loot",
+    "decidir entre paradigma de arquitetura de jogo orientado a dominio ou data-driven",
+    "gerar um sprite sheet do personagem principal"
+  ]
+}

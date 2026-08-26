@@ -218,3 +218,31 @@ nateherkai/scroll-craft
   skill format, not a literal port. Full curation detail, including what
   was intentionally left out, is in
   skills/64-scroll-storytelling/references/PROVENANCE.md.
+
+Yuki001/game-dev-skills
+  https://github.com/Yuki001/game-dev-skills
+  License: not declared upstream (no LICENSE file, licenseInfo: null —
+  treated as idea attribution only, no text or code reuse).
+  Inspired the scope of the Game Architecture Design skill (66) — the
+  existence of a real gap in this kit (no coverage of game architecture,
+  design review, or numeric balance) and which topics that coverage would
+  need to address (architecture paradigm selection, game system catalog,
+  design review modes, balance playbooks by domain). All prose, tables,
+  and examples in skill 66 were written from scratch for this kit; no
+  file from the upstream repository was downloaded, copied, or adapted.
+
+Jeffallan/claude-skills
+  https://github.com/Jeffallan/claude-skills
+  License: MIT
+  Source of the Game Engine Development skill (67). The skill's five
+  references (unity-patterns.md, unreal-cpp.md, ecs-patterns.md,
+  performance-optimization.md, multiplayer-networking.md) port the C#/C++
+  code examples from the upstream game-developer skill near-verbatim,
+  permitted under the upstream MIT license — surrounding prose and
+  comments are translated/expanded in Portuguese. The skill format
+  (frontmatter, governance sections, Handoff) is this kit's own structure,
+  not present upstream. Only the game-developer skill was used; the other
+  65 skills in the upstream repository are out of scope (non-game
+  domains). Godot/GDScript has no dedicated reference in skill 67 because
+  the upstream source has no coverage of that engine — documented as a
+  known gap in the skill rather than inferred.
