@@ -153,6 +153,10 @@ Usar `Playwright MCP` quando a tarefa exigir:
 
 Isso complementa os testes e2e formais e ajuda especialmente em verificacoes visuais ou exploratorias.
 
+## Padroes de Teste Playwright (referencia)
+
+`references/playwright-patterns.md` — quando escolher Page Object Model vs Fixtures vs Helper function (e por que fixtures e o ponto de partida padrao), arvore de decisao pra debugar teste flaky (UI-driven, race condition, data/paralelismo, state leak, CI-only), sharding paralelo (`--workers` vs `--shard`) e mock de OAuth/SSO em teste E2E (interceptar callback + endpoint de sessao, nunca o provider real).
+
 ### Pattern: cleanup SQLite WAL no Windows
 
 Windows mantém lock em arquivos SQLite WAL/SHM por alguns ms após `db.close()`. Cleanup síncrono em `afterAll` falha com EBUSY. Use retry diferido:
@@ -223,3 +227,7 @@ Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/
 | "Coverage já está boa o suficiente" | Coverage mede linhas executadas, não cenários cobertos. Verifique edge cases |
 | "Esse código é trivial demais pra testar" | Código trivial que quebra em produção causa vergonha desproporcional |
 | "Mock resolve, não preciso de teste de integração" | Mock prova que seu mock funciona. Integração prova que o sistema funciona |
+
+## Fontes Externas
+
+- Padroes de arquitetura (POM vs fixtures), debug de flaky test, sharding paralelo e mock de OAuth/SSO adaptados de [currents-dev/playwright-best-practices-skill](https://github.com/currents-dev/playwright-best-practices-skill) (MIT). Ver `references/playwright-patterns.md`.

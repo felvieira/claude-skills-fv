@@ -705,6 +705,10 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 
 `references/decision-gate-and-review.md` — gate de 4 perguntas (frequencia, proposito, velocidade, funcao) pra decidir SE algo deve animar, com varredura por categoria de seam; glossario reverso de ~50 termos de motion (rubber-banding, shared element transition, number ticker etc.); e checklist de review com 10 padroes nao-negociaveis e hierarquia de remediacao em cascata (deletar → reduzir → easing → origem → interrompibilidade → GPU → timing assimetrico → polish → acessibilidade), incluindo teto de 300ms em UI e o anti-padrao `scale(0)`.
 
+## View Transition API Nativa (referencia)
+
+`references/view-transitions-api.md` — API nativa do browser exposta pelo React (`<ViewTransition>`, `addTransitionType`, shared element morphing por `name`, integracao `transitionTypes` no `next/link`). Entra quando a mudanca e estrutural (troca de rota, lista→detalhe, reveal pos-Suspense) e nao precisa de Framer Motion/GSAP; nao substitui o sistema de motion tokens desta skill, complementa em cenarios especificos.
+
 ## Fontes Externas
 
 - Skeletons de GSAP ScrollTrigger inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
@@ -712,3 +716,4 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 - 5 efeitos vanilla JS de [naocodei.com/free-code](https://naocodei.com/free-code/) — **licença não declarada, autoria não identificada**. Ver `references/naocodei-vanilla-effects.md`.
 - Laboratorio de 16 padroes (`references/ui-motion-lab-gsap.html`) — autoria do usuario, sem restricao de licenca, colado em 2026-08-26.
 - Gate de decisao, vocabulario e checklist de review adaptados de [emilkowalski/skills](https://github.com/emilkowalski/skills) (MIT): `find-animation-opportunities` → Parte 1-3 (gate de 4 perguntas + varredura por seam), `animation-vocabulary` → Parte 4 (glossario), `review-animations` (+ `STANDARDS.md`) → Parte 5 (checklist com hierarquia de remediacao). Ver `references/decision-gate-and-review.md`.
+- View Transition API nativa adaptada de [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) (MIT), skill `react-view-transitions`. Ver `references/view-transitions-api.md`.

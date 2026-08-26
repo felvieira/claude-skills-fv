@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.67.0] - 2026-08-26 — varredura ampla do skills.sh: idempotência e Postgres avançado na skill 03, Playwright patterns na 05, View Transitions na 12
+
+Usuário perguntou se tinha faltado alguma skill relevante depois da v2.66.0. Em vez de assumir que sim ou que não, despachei 4 agentes em paralelo cobrindo categorias do skills.sh ainda não investigadas nesta sessão: backend/API/database, testing/security, frontend/React, e docs/devops/writing técnico.
+
+### Resultado da varredura
+- **Backend**: 2 gaps reais confirmados — absorvidos (ver abaixo)
+- **Testing/security**: nada de novo além de um playbook de Playwright, o kit já é forte nessa área (skills 05/06/34 + 5 subagents de segurança)
+- **Frontend/React**: só a View Transition API nativa como candidata pontual — nicho, não estrutural
+- **Docs/devops/writing**: bloqueio real do site — a busca por termo (`?q=`) exige token OIDC que a sessão não tem, e não existe rota de categoria pra esses termos. O agente recusou forçar resultado sem filtro genuíno em vez de inventar candidatas
+
+### Adicionado
+- **`skills/03-backend-api/SKILL.md`** — seção "Idempotência - retry não pode duplicar efeito" (chave derivada da intenção, claim atômico via unique constraint, guard de payload divergente, 3 estratégias de resposta a duplicata em voo) e seção "Postgres Avançado - recursos específicos do motor" (Row-Level Security via `CREATE POLICY`, `EXCLUDE USING gist` pra prevenir overlap de intervalo). Conteúdo denso movido pra `references/idempotencia-e-postgres-avancado.md`. Fontes: [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) e [wshobson/agents](https://github.com/wshobson/agents), ambos MIT
+- **`skills/05-qa-testing/references/playwright-patterns.md`** (novo) — Page Object Model vs Fixtures vs Helper, árvore de decisão pra debugar teste flaky, sharding paralelo em CI, mock de OAuth/SSO em E2E. Fonte: [currents-dev/playwright-best-practices-skill](https://github.com/currents-dev/playwright-best-practices-skill), MIT
+- **`skills/12-motion-design/references/view-transitions-api.md`** (novo) — `<ViewTransition>`, `addTransitionType`, shared element morphing nativo, integração `next/link`/`transitionTypes`. Fonte: [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), MIT
+
+Nenhuma skill nova criada nesta versão — só enriquecimento cirúrgico de 3 skills existentes, confirmando que a v2.65.0/v2.66.0 já tinham capturado a maior parte do que valia a pena no registro.
+
+Validado: `check-consistency` (66 skills, 38 tools, 16 agents — limpo, sem mudança de contagem), `eval-plugin-routing --strict` (23/23), `eval-triggers` (60/60), `check-harness-coherence` (2 achados pré-existentes de baixa severidade, não relacionados).
+
 ## [2.66.0] - 2026-08-26 — skills 66 e 67 novas (game dev), skill 12 ganha gate de decisão + review de animação
 
 Fechamento das 2 investigações que a v2.65.0 tinha deixado pendentes ("game-dev-skills e artigo Snyk" e "busca `animation` no skills.sh"), despachadas como 2 agentes em paralelo.

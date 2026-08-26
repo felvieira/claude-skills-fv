@@ -119,6 +119,15 @@ Convenções:
 - Soft delete: `deletedAt` nullable
 - Índices: em todo campo usado em WHERE/JOIN/ORDER BY
 
+### Postgres Avançado - recursos específicos do motor (não genéricos de ORM)
+
+As convenções acima (UUID, timestamps, soft delete) valem para qualquer banco relacional via Prisma. Os dois recursos abaixo são **exclusivos de PostgreSQL** — não têm equivalente direto em MySQL/SQL Server, e usá-los é uma decisão de acoplar o schema ao motor. Confirmar que o projeto roda Postgres antes de aplicar.
+
+- **Row-Level Security (RLS)** — isolamento de tenant/usuário garantido pelo banco, não só pelo filtro da query. `ALTER TABLE orders ENABLE ROW LEVEL SECURITY;` + `CREATE POLICY user_access ON orders FOR SELECT TO app_users USING (user_id = current_user_id());` — mesmo uma query da aplicação que esquece o `WHERE user_id = ...` não vaza linha de outro tenant, porque o Postgres filtra antes de devolver qualquer linha. Cobre a lacuna que nenhuma revisão de código pega 100% das vezes; não substitui autenticação.
+- **`EXCLUDE USING gist`** — previne overlap de intervalo, o que `UNIQUE` não resolve (duas reservas de sala com horários que se cruzam não são "iguais", então `UNIQUE(room_id, periodo)` deixa passar). `ALTER TABLE bookings ADD CONSTRAINT no_overlap EXCLUDE USING gist (room_id WITH =, booking_period WITH &&);` rejeita a sobreposição no INSERT/UPDATE, sem lock manual nem race condition de check-then-act.
+
+Detalhe completo (SQL de RLS, extensão `btree_gist`, tipos de range aceitos) em `references/idempotencia-e-postgres-avancado.md`.
+
 ## API - Padrão de Resposta
 
 Toda resposta da API segue este formato:
@@ -414,6 +423,19 @@ class CircuitBreaker {
 
 Não implementar circuit breaker do zero em produção sem necessidade comprovada — se o projeto já usa uma lib HTTP com suporte nativo (ex: `undici`, `got` com plugin), preferir a implementação testada. O padrão acima é a referência mental, não o único código aceitável.
 
+### Idempotência - retry não pode duplicar efeito
+
+Retry resiliente resolve "a chamada eventualmente funciona". Não resolve "a chamada não aconteceu duas vezes" — são problemas diferentes. Todo endpoint que muda estado (cobrar, criar pedido, enviar email) e é alvo de retry precisa honrar uma `Idempotency-Key`, ou ser documentado explicitamente como inseguro para retentar.
+
+4 pontos que definem se a implementação é real ou só decorativa:
+
+1. **Chave derivada da intenção, não da tentativa.** `crypto.randomUUID()` gerado a cada retry, ou `${orderId}:${Date.now()}`, criam uma chave nova por tentativa — o oposto do que idempotência exige. A chave certa vem do cliente (header `Idempotency-Key`) ou de um identificador imutável do evento (`charge:v1:${orderId}`).
+2. **Claim atômico via unique constraint** — nunca `SELECT` seguido de `INSERT` (isso é race condition: duas tentativas concorrentes leem "não existe" e ambas executam o efeito). Deixar o banco decidir o vencedor com um `INSERT` protegido por índice único.
+3. **Guard contra payload divergente** — mesma chave com corpo de requisição diferente é bug do cliente. Rejeitar com `422`, nunca servir a resposta antiga silenciosamente.
+4. **3 estratégias para duplicata em voo** (a requisição original ainda está processando quando a segunda chega): `reject` (409, mais simples), `wait` (bloqueia com timeout), `pending` (202 + status URL). A retenção da chave deve cobrir a cadeia de retry mais longa do sistema — incluindo DLQ reprocessada dias depois, ou janela de disputa do provedor de pagamento. TTL curto atrás de fila de retry longa é duplicata esperando para acontecer.
+
+Código completo (claim atômico, guard de payload, tabela de estratégias) em `references/idempotencia-e-postgres-avancado.md`.
+
 ### Cache Invalidation - nomear a estratégia, não confiar em TTL sozinho
 
 TTL curto demais anula o cache; TTL longo demais serve dado obsoleto. Decidir explicitamente qual estratégia se aplica a cada recurso:
@@ -651,3 +673,5 @@ Se você reconhece um desses pensamentos, PARE e siga o processo. Ver `policies/
 ## Fontes Externas
 
 - Padrões de resiliência (rate limiting por rota, retry com backoff+jitter, circuit breaker, estratégias de cache invalidation) inspirados em conceitos consolidados em [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer) — curados aqui como decisão de contrato de API acionável, não como material de estudo teórico.
+- Idempotência (chave derivada de intenção, claim atômico via unique constraint, guard de payload divergente, 3 estratégias de resposta a duplicata em voo) adaptada da skill `api-and-interface-design` de [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT) — a lacuna entre "retry funciona" (resiliência de chamada, já coberta acima) e "retry não duplica o efeito" (correção sob retry).
+- Recursos avançados de PostgreSQL (Row-Level Security via `CREATE POLICY`, `EXCLUDE USING gist` para prevenção de overlap) adaptados da skill `postgresql-table-design` (plugin `database-design`) de [wshobson/agents](https://github.com/wshobson/agents) (MIT) — curados como os dois recursos específicos de Postgres com aplicação direta em produto real, deixando de fora tipos geométricos/rede por serem nicho.
