@@ -689,7 +689,14 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 - Tipos TypeScript expressivos
 - Estrutura previsível e consistente
 
+## Efeitos Vanilla — Referência de Código (naocodei.com)
+
+> **Aviso de proveniência.** Código copiado de https://naocodei.com/free-code/, **licença não declarada, autoria não identificada**, risco assumido pelo usuário em 2026-08-23. Ver [`references/naocodei-vanilla-effects.md`](references/naocodei-vanilla-effects.md) — abrir só ao implementar de verdade.
+
+5 efeitos JS puro sem framework: stack cards, rolagem com inércia, partículas em canvas, scramble de texto, shader WebGL fluido. Cobrem o caso que Framer Motion/GSAP não resolvem sozinhos — dependência zero.
+
 ## Fontes Externas
 
 - Skeletons de GSAP ScrollTrigger (sticky-stack, horizontal-pan) inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
 - API de morphing de icone-pra-icone baseada em [guillermolg00/morphicons](https://github.com/guillermolg00/morphicons) (MIT). Gap real: `skills/12-motion-design/` e `patterns/` nao cobriam morph entre icones (play↔pause, hamburguer↔X) antes desta secao — so transicoes, spring e easing genericos.
+- 5 efeitos vanilla JS copiados de [naocodei.com/free-code](https://naocodei.com/free-code/) — **licença não declarada, autoria não identificada** (diferente das entradas acima). Detalhe em `references/naocodei-vanilla-effects.md`. Gap real: skill não tinha exemplo de JS puro sem framework (canvas, WebGL raw, scroll com `lerp`).

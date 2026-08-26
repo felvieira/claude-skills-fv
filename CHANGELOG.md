@@ -5,6 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.64.0] - 2026-08-26 — 5 efeitos vanilla JS na skill 12, com risco de licença assumido explicitamente pelo usuário
+
+Usuário trouxe 3 links pra "fugir do genérico" em animação: `naocodei.com/free-code/`, `pinstack.app/components`, `motionsites.ai`. Investigação (agente dedicado) descartou `pinstack.app` (paywall, clona UIs de marcas reais sob nomes trocados) e `motionsites.ai` (infoproduto vendendo prompt + curso, zero código) — só `naocodei.com` tinha conteúdo real: ~66 animações vanilla JS/CSS funcionais, **sem licença declarada em lugar nenhum do site**.
+
+Alertei o usuário sobre o risco de licença (redistribuir código de terceiro sem autorização clara, dentro de um repo público MIT) via pergunta direta. Resposta explícita: **"copia mesmo assim, aceitando o risco"** — decisão dele, registrada como tal, executada com o risco documentado de forma visível, não escondido.
+
+### Adicionado
+- **`skills/12-motion-design/references/naocodei-vanilla-effects.md`** (novo) — 5 efeitos extraídos direto do runtime do site (via `window.CODIGOS` injetado por JS, não resumo reescrito): cartões que empilham (stack cards), rolagem com inércia, partículas em canvas, embaralhar texto (scramble), fundo com shader WebGL fluido. Aviso de proveniência no topo do arquivo — licença não declarada, autoria não identificada, risco assumido pelo usuário em 2026-08-23
+- **`skills/12-motion-design/SKILL.md`** ganhou um resumo de 3 linhas apontando pra essa referência, e a entrada correspondente em `## Fontes Externas` deixando explícita a diferença desta fonte (sem licença) contra as outras já citadas ali (MIT confirmado)
+
+### Corrigido
+- **`scripts/skill-quality-score.mjs`** não precisou de mudança desta vez — mas a skill 12 quase entrou na mesma armadilha da skill 02 (v2.62.0): a adição bruta dos 5 efeitos levou o `SKILL.md` a 36KB, zerando a nota de tamanho do gate. Diferente da skill 02 (que é um hub por natureza e ganhou allowlist), a skill 12 só tinha acumulado código denso demais no arquivo principal — resolvido movendo o conteúdo pra `references/` (primeira referência que a skill 12 ganha) e deixando um resumo curto no lugar. Tamanho final: 24.9KB, dentro do teto de 25KB, score de qualidade 22/30
+
+Validado: `check-consistency`, `eval-plugin-routing --strict` (23/23), `eval-triggers` (57/57), `check-harness-coherence` (1 achado pré-existente, `count-drift` do README, não relacionado).
+
 ## [2.63.0] - 2026-08-23 — correção da seção Beautiful UI (skill 25): erro de digitação meu, não instabilidade do site
 
 Correção pontual da v2.62.0. O usuário já tinha passado a URL correta (`beautifui.dev`) na sessão anterior, mas todas as tentativas de `WebFetch` continuaram falhando com erro de DNS — documentei isso na skill como "site instável", o que era uma conclusão errada. O usuário apontou o erro direto ("a url que tava errada te passei a correta"): as falhas eram porque eu estava digitando a URL errada em cada nova tentativa (`www.beautifuil.dev`, variações próprias), não porque o domínio estava fora do ar. Confirmado ao copiar o valor exato que o usuário colou.
