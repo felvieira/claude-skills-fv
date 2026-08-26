@@ -111,6 +111,8 @@ MEDIUM findings (P):  [...] → report_only
 LOW findings (Q):     [...] → report_only
 ```
 
+Se dois dos 4 agentes avaliaram o **mesmo trecho** com severidade incompatível (ex: security-auditor marca CRITICAL, code-reviewer marca não-bloqueante no mesmo achado), a synthesis não decide sozinha qual vale — despacha o mecanismo de arbitragem (`skills/40-parallel-dispatcher/SKILL.md` seção "Arbitragem em caso de discordância") antes de consolidar a decision matrix. Enquanto o achado divergente não tiver veredito do árbitro, ele fica fora da matrix como `pending_arbitration` — a Phase 5 (Self-Fix) não aplica fix nem descarta esse achado até resolver.
+
 ### Phase 5 — Self-Fix Aggressive
 
 Pra cada finding `auto_fix`:

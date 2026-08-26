@@ -3,9 +3,11 @@ name: parallel-dispatcher
 description: |
   Skill especializada em paralelizar trabalho via subagents corretamente — sem cair na armadilha
   skill-vs-agent. Use quando precisar despachar N slices verticais, N reviews, ou N tarefas
-  independentes em paralelo. Trigger em: "paralelize", "N slices", "dispatch paralelo",
-  "worktree paralelo", "5 workers", "dispatch em paralelo", "fan-out", "scatter-gather",
-  "comprehensive review", "multi-agent parallel".
+  independentes em paralelo, e quando reviewers/agentes paralelos discordam sobre o mesmo achado
+  e a decisão de arbitrar/bloquear precisa de um critério formal. Trigger em: "paralelize", "N slices",
+  "dispatch paralelo", "worktree paralelo", "5 workers", "dispatch em paralelo", "fan-out",
+  "scatter-gather", "comprehensive review", "multi-agent parallel", "reviewers discordam",
+  "achados divergentes", "arbitragem entre agentes", "quem decide quando os agentes discordam".
 ---
 
 # Parallel Dispatcher — Como Paralelizar sem Quebrar (SKILL 40)
@@ -247,6 +249,33 @@ Após os N subagents retornarem:
 
 ---
 
+## Arbitragem em caso de discordância
+
+Fan-out resolve "N trabalhos independentes rodam ao mesmo tempo". Não resolve o caso onde N reviewers avaliam a **mesma coisa** e chegam a conclusões incompatíveis. Sem etapa explícita, o default é perigoso: reportar os achados lado a lado e seguir, ou ficar com o veredito mais otimista silenciosamente. Detalhamento completo (regras do árbitro, exemplo passo a passo, template de dispatch): `references/arbitration-disagreement.md`.
+
+### Quando aplicar
+
+| Situação | Aplica arbitragem? |
+|---|---|
+| 2+ agentes avaliam o mesmo achado/decisão e chegam a conclusões incompatíveis (aprova vs bloqueia; CRITICAL vs não-issue) | Sim |
+| Divergência é sobre correção, segurança ou risco que afeta o resultado entregue | Sim |
+| Divergência é de fraseado/estilo (mesmo comentário, redação diferente) | Não, ruído |
+| Divergência de preferência subjetiva sem risco associado | Não |
+| Só 1 agente rodou nessa etapa | Não há o que arbitrar |
+| Task pequena/trivial | Overhead desnecessário |
+
+Regra prática: se a divergência muda o que acontece depois, arbitra. Se só muda a redação do relatório, não arbitra.
+
+### Papel de árbitro e gate fail-closed (resumo)
+
+Um terceiro agente recebe os vereditos **anonimizados** (Posição A / Posição B, sem dizer qual agente disse o quê) e decide com base na evidência apresentada, nunca por votação ou média. Veredito fundamentado: decisão final, razão que decidiu, o que a posição perdedora não sustentou. Evidência equivalente entre os lados escala pro humano em vez de forçar decisão.
+
+Sem resolução (concordância original ou veredito do árbitro), a etapa seguinte fica bloqueada: nunca segue com o achado mais otimista, nunca faz média de severidade, nunca ignora a divergência silenciosamente. Espelha `policies/quality-gates.md` (hook que bloqueia vence advisory) aplicado a discordância entre agentes, não entre regras do kit (`policies/trade-off-resolution.md`).
+
+Regras completas, exemplo de achado de segurança e template de dispatch: `references/arbitration-disagreement.md`.
+
+---
+
 ## Long-horizon compression (50+ tool calls)
 
 Quando o trabalho paralelo gera muitas tool calls (caso típico em `/swarm`, `/auto`, e comprehensive reviews 4-5 agents), o histórico de mensagens vira gargalo de context window antes do trabalho terminar.
@@ -303,3 +332,7 @@ Use pra audit: `cat .bot/agent-dispatch-errors.jsonl | jq '.subagent_type' | sor
 - `skills/09-orchestrator/SKILL.md` seção "Como paralelizar slices" — entrypoint do orquestrador
 - `policies/symbolic-memory.md` — Mermaid canvas + drill-down para long-horizon (v2.14.0)
 - `scripts/mmd-canvas-builder.mjs` — builder zero-dep do canvas
+- `references/arbitration-disagreement.md` — detalhamento completo da arbitragem (papel do árbitro, exemplo, template de dispatch)
+- `policies/quality-gates.md` — gate fail-closed como padrão reusável (arbitragem é uma instância dele)
+- `policies/trade-off-resolution.md` — hierarquia de conflito entre **regras do kit**; arbitragem acima resolve conflito entre **agentes**, não entre regras
+- `commands/multi-plan.md` — divergência entre planos de modelos escalada pro humano; arbitragem acima usa um terceiro agente antes de chegar no humano

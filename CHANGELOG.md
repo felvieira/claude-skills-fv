@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.68.0] - 2026-08-26 — skill 40 ganha arbitragem em caso de discordância entre agentes
+
+Continuação da varredura do skills.sh — desta vez pelo topic `agent-workflows` e busca de infra (Kubernetes/Terraform). A maior parte foi descartada por já estar coberta com mais profundidade pelo kit (orquestração própria via skill 09/40/programs, deploy via skill 07/20/43/46), mas surgiu um insight conceitual real: um padrão de **arbitragem por discordância** entre reviewers, com **gate fail-closed**, que o kit não tinha.
+
+A fonte que revelou o padrão não tem licença declarada, então nada foi copiado — o mecanismo foi reimplementado do zero como ideia geral de design de sistemas multi-agente, sem qualquer atribuição a essa fonte.
+
+### Adicionado
+- **`skills/40-parallel-dispatcher/SKILL.md`** — seção "Arbitragem em caso de discordância": quando 2+ agentes avaliam o mesmo achado e chegam a vereditos incompatíveis, um terceiro agente arbitra sem saber qual reviewer disse o quê primeiro (evita viés de ancoragem), e a etapa seguinte do pipeline fica bloqueada (fail-closed) até resolução — nunca prossegue silenciosamente com o achado mais otimista
+- **`skills/40-parallel-dispatcher/references/arbitration-disagreement.md`** — detalhamento completo: regras do papel de árbitro, gate fail-closed, exemplo passo a passo (achado de segurança IDOR marcado CRITICAL por um agente e não-bloqueante por outro), template de dispatch do árbitro
+- **`policies/quality-gates.md`** — formaliza o gate de arbitragem como padrão reusável por qualquer skill/comando, distinto de `policies/trade-off-resolution.md` (que resolve conflito entre regras do kit, não entre agentes)
+- **`policies/swarm-protocol.md`** — achados divergentes entre os 4 agentes de review da Phase 4 (Synthesize) agora viram `pending_arbitration`, fora da decision matrix e do self-fix (Phase 5) até resolvidos
+
+### Investigado, sem absorção
+- React Native/Expo (`callstackincubator/agent-skills`, MIT) confirmado como gap real — a skill 15 é Tauri-only (WebView empacotada), React Native é arquitetura de bridge nativo, frameworks incompatíveis. Construção adiada a pedido do usuário
+
+Validado: `check-consistency` (66 skills, 38 tools, 16 agents — limpo), `eval-plugin-routing --strict` (23/23), `eval-triggers` (60/60, skill 40 100%).
+
 ## [2.67.0] - 2026-08-26 — varredura ampla do skills.sh: idempotência e Postgres avançado na skill 03, Playwright patterns na 05, View Transitions na 12
 
 Usuário perguntou se tinha faltado alguma skill relevante depois da v2.66.0. Em vez de assumir que sim ou que não, despachei 4 agentes em paralelo cobrindo categorias do skills.sh ainda não investigadas nesta sessão: backend/API/database, testing/security, frontend/React, e docs/devops/writing técnico.

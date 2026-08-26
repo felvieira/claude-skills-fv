@@ -66,6 +66,16 @@ Rodar `/humanize` ou checar manualmente os 29 padrões. Prosa com tells de IA vi
 - falta validacao minima essencial
 - falta documentacao obrigatoria do contexto
 
+## Gate de arbitragem entre agentes (discordância)
+
+Quando 2+ agentes/reviewers avaliam o **mesmo** achado, decisão de arquitetura ou veredito de aprovação e chegam a conclusões incompatíveis sobre correção/segurança/risco, a etapa seguinte do pipeline fica **bloqueada** até haver resolução — concordância original entre os agentes, ou veredito de um terceiro agente árbitro que julga a evidência de cada lado sem saber qual agente disse o quê (evita viés de ancoragem).
+
+Fail-closed aqui significa: ausência de decisão nunca vira "segue com o achado mais otimista" nem "consenso por média". Divergência de estilo/preferência não entra nesse gate — só decisões que mudam o resultado entregue.
+
+Mecanismo completo (quando aplicar, papel do árbitro, exemplo) em `skills/40-parallel-dispatcher/SKILL.md` seção "Arbitragem em caso de discordância" — esta entrada só formaliza que o gate é reusável por qualquer skill/comando que despache agentes em paralelo, não só a skill 40.
+
+Diferença de escopo com as demais entradas desta policy: os gates acima tratam de conformidade do artefato final (constituição, prosa, revalidação); este trata especificamente de **discordância entre múltiplos agentes** sobre o mesmo ponto — problema distinto de `policies/trade-off-resolution.md` (que resolve conflito entre **regras do kit**, não entre agentes).
+
 ## Revalidacao
 - repetir QA quando houver mudanca funcional
 - repetir Security quando houver mudanca em auth, dados, validacao ou superficie de ataque
