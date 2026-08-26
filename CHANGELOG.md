@@ -5,6 +5,25 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.65.0] - 2026-08-26 — skills 64 e 65 novas, skill 02 ganha dupla avaliação cega, skill 12 ganha laboratório GSAP do usuário
+
+Continuação da mesma sessão de v2.64.0. Usuário pediu investigação de `skills.sh` (registro oficial da Vercel), depois mandou 11 links específicos do registro em sequência, mais `nateherkai/scroll-craft` e `Yuki001/game-dev-skills`/artigo da Snyk. Após consolidar a investigação das 13 fontes do skills.sh (5 já builtin — família HyperFrames —, 1 descartada por rasa, 4 técnicas mas fora de escopo — vídeo/imagem, candidatas ao repo `video-generation/` separado —, 2 confirmadas), o usuário aprovou "só worktree+critique no kit" e depois "despachar tudo em paralelo" — 3 peças de construção (scroll-craft, worktree, critique) e 3 investigações (game-dev, laboratório GSAP do usuário, busca "animation" no skills.sh) rodaram como 6 agentes simultâneos.
+
+### Adicionado
+- **`skills/64-scroll-storytelling/`** (nova) — adaptada de [nateherkai/scroll-craft](https://github.com/nateherkai/scroll-craft) (MIT, 963 stars). `SKILL.md` com protocolo de entrevista de 8 perguntas, 4 regras centrais de variedade e mundo visual, 8 gramáticas de página; `engine/scrollcraft.js` + `engine/scrollcraft.css` copiados verbatim (motor vanilla zero-dependência); `references/` com devices, worlds, uniqueness, verify, feel, taste, assets e um `PROVENANCE.md` documentando exatamente o que foi lido/copiado/adaptado/pulado da fonte. Cross-referenciada em skill 12 e skill 02 sem duplicar nenhuma
+- **`skills/65-using-git-worktrees/`** (nova) — protocolo completo de [obra/superpowers](https://github.com/obra/superpowers) (MIT): detecção de isolamento existente com guard de submodule, preferência por ferramenta nativa (`EnterWorktree`/`ExitWorktree` do harness, ou o dispatcher do próprio kit) antes de `git worktree add` cru, baseline de testes obrigatória antes de liberar a task. `scripts/worktree.mjs` ganhou `detectIsolation()` e `runBaseline()`; `commands/worktree.md` documenta o comportamento novo e referencia a skill
+- **`skills/02-ui-ux-design/references/audit-framework.md`** — seção "Dupla Avaliação Cega — Quando o Passo 1 Vira Dois Sub-Agentes", com o "Veredito de Especificidade" antes de qualquer evidência técnica, portado de [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (**Apache-2.0**, não MIT — sinalizado explicitamente na entrada de Fontes por divergir do padrão recente)
+- **`skills/12-motion-design/references/ui-motion-lab-gsap.html`** — laboratório de 16 microinterações GSAP do próprio usuário (modal, drawer, dropdown, accordion, tabs, chat com optimistic UI, busca com skeleton, toast, transição de rota, CRUD sem teleporte, botão async, shake de validação, like com partículas, progresso), copiado como referência HTML navegável, sem risco de licença (autoria do usuário). `SKILL.md` ganhou índice curto apontando pra ele
+
+### Investigado, sem absorção nesta versão
+- `Yuki001/game-dev-skills` — raso em código de engine (sem Unity/Unreal/Godot), sem licença declarada. Artigo da Snyk revelou `Jeffallan/claude-skills` (MIT, 11k stars) como fonte mais forte para cobertura de engine real — domínio "game dev" fica como candidato a múltiplas skills focadas, decisão pendente do usuário
+- busca `?q=animation` no skills.sh — 3 candidatas reais de `emilkowalski/skills` (gate de decisão de 4 perguntas, glossário de vocabulário de motion, checklist de review com hierarquia de remediação), mas skill 12 já está no teto de 25KB — qualquer absorção exige novo arquivo em `references/`, decisão pendente
+
+### Corrigido
+- Contagem de skills desatualizada em `README.md`, `README.pt-BR.md`, `docs/WIKI.md`, `docs/WIKI.pt-BR.md`, `docs/SKILLS-OVERVIEW.md`, `mcp-server/package.json`, `.claude-plugin/plugin.json` e `.claude-plugin/marketplace.json` — badges e menções de "61/62 skills" atualizadas para 64 (as 6 skills numeradas reais, incluindo as 2 novas). Entradas `#### Skill 64` e `#### Skill 65` adicionadas em `docs/WIKI.md`/`docs/WIKI.pt-BR.md`
+
+Validado: `check-consistency` (64 skills, 38 tools, 16 agents — limpo), `validate-plugin-catalog` (9 plugins), `eval-plugin-routing --strict` (23/23), `eval-triggers --strict` (58/58, skill 64 100%/0%), `check-harness-coherence` (0 achados novos — só o `count-drift` pré-existente de "10 agents" no README, não relacionado).
+
 ## [2.64.0] - 2026-08-26 — 5 efeitos vanilla JS na skill 12, com risco de licença assumido explicitamente pelo usuário
 
 Usuário trouxe 3 links pra "fugir do genérico" em animação: `naocodei.com/free-code/`, `pinstack.app/components`, `motionsites.ai`. Investigação (agente dedicado) descartou `pinstack.app` (paywall, clona UIs de marcas reais sob nomes trocados) e `motionsites.ai` (infoproduto vendendo prompt + curso, zero código) — só `naocodei.com` tinha conteúdo real: ~66 animações vanilla JS/CSS funcionais, **sem licença declarada em lugar nenhum do site**.

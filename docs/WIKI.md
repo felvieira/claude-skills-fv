@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 62 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Version:** 64 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -824,6 +824,20 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Distinct from:** Skill 60 owns the backend data model (unified `Subscription` table, RTDN, reconciliation) — skill 63 consumes it for UI decisions, never duplicates the schema. `skills/02-ui-ux-design/references/marketing-surfaces.md` covers the *public* pricing page with no real transaction; skill 63 is the in-app paywall with a real `PaymentSheet`/purchase sheet behind it.
 **Takeaway:** **a Google Play promo code and a merchant coupon are not the same thing** — Play promo codes grant a free trial, not a generic "25% off" engine; showing "25% applied" in the UI when the purchase sheet is about to charge full price breaks trust and violates Play's price-consistency requirement.
 
+#### Skill 64 — Scroll Storytelling
+
+[Omitted long context line]
+**When to activate:** a landing page or full site framed as a scroll journey (not just a section with fade-in); "Apple-style landing page" or a cited reference site of that kind; a video/image sequence that must scrub frame-by-frame as the user scrolls; section pinning, horizontal pan, or a continuous "world" the scroll travels through.
+**Distinct from:** skill 12 (motion-design) owns generic easing/spring mechanics and motion tokens — skill 64 consumes them for UI timing but decides the full page architecture (structure, narrative journey, per-section device variety, page grammar). Skill 02 (ui-ux-design) owns palette/typography/aesthetic-anchor decisions from scratch — skill 64 consumes that output to pick the "world" (see `references/worlds.md`).
+**Takeaway:** **five sections that behave identically are one section shown five times** — a page built entirely from one repeated device (same clay diorama, same centered text, same `01/06` counter, same blinking "scroll to explore") is recognizable from across the room; variety per journey beat is the actual product, enforced by a mandatory 8-question interview before generating anything.
+
+#### Skill 65 — Using Git Worktrees
+
+[Omitted long context line]
+**When to activate:** before executing an implementation plan that could conflict with the current branch; the user asks for parallel work without touching the current workspace; uncertainty about whether the session is already inside an isolated worktree (risk of nesting one worktree inside another).
+**Distinct from:** `commands/worktree.md` stays the lean dispatcher (create worktree, copy `.env*`, run install/lint in background) — skill 65 is the full protocol invoked when the extra guarantees matter: isolation detection with a submodule guard, native-tool preference (`EnterWorktree`/`ExitWorktree` before raw `git worktree add`), and a mandatory test baseline before releasing the task.
+**Takeaway:** **a dirty baseline makes every later failure ambiguous** — skipping the baseline-test step means a bug the task introduces can't be told apart from one that was already there; detecting existing isolation first (via `git rev-parse --git-dir` vs `--git-common-dir`, guarded against false positives inside submodules) prevents nesting a worktree inside a worktree by accident.
+
 ---
 
 ## 6. Subagents (16)
@@ -939,7 +953,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **37 skills** in `skills/NN-name/SKILL.md`
+- **64 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -952,7 +966,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 37 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 64 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -962,7 +976,7 @@ With plugin installed, inside the target repo:
 /devkit-install-fv
 ```
 
-Installs complete `.bot/`: MCP server (37 tools), policies, templates, docs, hooks, learned-skills, multi-platform configs (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
+Installs complete `.bot/`: MCP server (38 tools), policies, templates, docs, hooks, learned-skills, multi-platform configs (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
 
 #### Mode 3 — Direct Bash
 
@@ -977,7 +991,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 37 skills | ✓ | ✓ | ✓ |
+| 64 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

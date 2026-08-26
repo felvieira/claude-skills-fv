@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Motion Lab — GSAP</title>
+  <meta name="description" content="Laboratório completo de microinterações e transições de interface usando GSAP." />
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --surface: #11141b;
+      --surface-2: #171b24;
+      --surface-3: #202634;
+      --text: #f4f6fb;
+      --muted: #99a3b5;
+      --line: rgba(255,255,255,.09);
+      --brand: #7c6cff;
+      --brand-2: #a79dff;
+      --success: #30d59a;
+      --danger: #ff647c;
+      --warning: #ffbd55;
+      --shadow: 0 24px 70px rgba(0,0,0,.38);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --fast: 140ms;
+      --normal: 240ms;
+      --slow: 340ms;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(124,108,255,.18), transparent 34rem),
+        radial-gradient(circle at 100% 15%, rgba(48,213,154,.08), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .shell {
+      width: min(1400px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.035);
+      border-radius: 999px;
+      color: var(--brand-2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 5px rgba(48,213,154,.09);
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      max-width: 840px;
+      font-size: clamp(34px, 5.2vw, 68px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .principle {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .principle strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .principle span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px;
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(15,18,24,.82);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.22);
+      scrollbar-width: none;
+    }
+    .toolbar::-webkit-scrollbar { display:none; }
+
+    .tool-link {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 10px;
+      transition: color var(--fast), background var(--fast);
+    }
+    .tool-link:hover { color: var(--text); background: rgba(255,255,255,.055); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .demo {
+      grid-column: span 4;
+      min-height: 340px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px rgba(255,255,255,.025);
+      overflow: hidden;
+    }
+
+    .demo.wide { grid-column: span 8; }
+    .demo.full { grid-column: 1 / -1; }
+
+    .demo-head {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .demo h2 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -.02em;
+    }
+
+    .demo-copy {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .recipe {
+      flex: 0 0 auto;
+      max-width: 50%;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: #b8c0cf;
+      background: rgba(0,0,0,.16);
+      font: 10px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 235px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        linear-gradient(transparent 23px, rgba(255,255,255,.018) 24px),
+        linear-gradient(90deg, transparent 23px, rgba(255,255,255,.018) 24px),
+        rgba(4,6,10,.38);
+      background-size: 24px 24px;
+      overflow: hidden;
+    }
+
+    .row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .stack { display:flex; flex-direction:column; gap:10px; }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface-2);
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      will-change: transform;
+      overflow: hidden;
+    }
+
+    .btn:hover { background: var(--surface-3); }
+    .btn:focus-visible { box-shadow: 0 0 0 3px rgba(124,108,255,.25); border-color: rgba(124,108,255,.55); }
+    .btn.primary { border-color: transparent; background: var(--brand); }
+    .btn.primary:hover { background: #897bff; }
+    .btn.danger { border-color: rgba(255,100,124,.28); color: #ff9bac; background: rgba(255,100,124,.08); }
+    .btn.ghost { background: transparent; }
+    .btn.icon { width: 40px; padding:0; border-radius:50%; }
+    .btn[disabled] { opacity:.55; cursor:not-allowed; }
+
+    .icon-svg { width: 17px; height: 17px; display:block; }
+    .icon-svg path, .icon-svg polyline, .icon-svg line, .icon-svg circle {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .micro-btn { margin-top: 30px; }
+    .ripple {
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+      background: rgba(255,255,255,.34);
+      transform: scale(0);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(1,3,6,.66);
+      backdrop-filter: blur(5px);
+      visibility: hidden;
+      opacity: 0;
+    }
+    .modal {
+      width: min(360px,100%);
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #171b23;
+      box-shadow: var(--shadow);
+      transform-origin: 50% 70%;
+    }
+    .modal h3 { margin:0 0 6px; }
+    .modal p { margin:0 0 16px; color:var(--muted); }
+
+    /* Drawer */
+    .drawer-backdrop {
+      position:absolute; inset:0;
+      background:rgba(2,4,8,.52);
+      opacity:0; visibility:hidden;
+    }
+    .drawer {
+      position:absolute; top:0; right:0; bottom:0;
+      width:min(78%,320px);
+      padding:18px;
+      border-left:1px solid var(--line);
+      background:#151922;
+      box-shadow:-20px 0 50px rgba(0,0,0,.3);
+      transform:translateX(105%);
+      visibility:hidden;
+    }
+    .drawer-item {
+      padding:11px 12px;
+      margin-top:6px;
+      border-radius:10px;
+      color:var(--muted);
+      background:rgba(255,255,255,.025);
+    }
+
+    /* Dropdown */
+    .dropdown-wrap { position:relative; display:inline-block; }
+    .dropdown {
+      position:absolute;
+      top:48px; left:0;
+      width:210px;
+      padding:7px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#171b23;
+      box-shadow:var(--shadow);
+      opacity:0;
+      visibility:hidden;
+      transform-origin:top left;
+      z-index:5;
+    }
+    .drop-item {
+      padding:9px 10px;
+      border-radius:8px;
+      color:#c9cfda;
+    }
+    .drop-item:hover { background:rgba(255,255,255,.055); }
+
+    /* Accordion */
+    .accordion {
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      background:rgba(255,255,255,.025);
+    }
+    .accordion + .accordion { margin-top:8px; }
+    .acc-trigger {
+      width:100%; display:flex; justify-content:space-between; align-items:center;
+      padding:12px 13px; border:0; background:transparent; cursor:pointer; text-align:left;
+    }
+    .acc-chevron { width:18px; height:18px; opacity:.7; }
+    .acc-content { height:0; overflow:hidden; }
+    .acc-inner { padding:0 13px 13px; color:var(--muted); font-size:12px; }
+
+    /* Toggle */
+    .switch {
+      position:relative;
+      width:54px; height:30px;
+      padding:0;
+      border:1px solid var(--line);
+      border-radius:99px;
+      background:#2a303d;
+      cursor:pointer;
+    }
+    .switch-thumb {
+      position:absolute; top:3px; left:3px;
+      width:22px; height:22px;
+      border-radius:50%;
+      background:white;
+      box-shadow:0 3px 10px rgba(0,0,0,.25);
+    }
+
+    /* Tabs */
+    .tabs {
+      position:relative;
+      display:flex;
+      width:max-content;
+      padding:4px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(0,0,0,.18);
+    }
+    .tab {
+      position:relative;
+      z-index:2;
+      padding:8px 12px;
+      border:0;
+      color:var(--muted);
+      background:transparent;
+      cursor:pointer;
+    }
+    .tab.active { color:var(--text); }
+    .tab-indicator {
+      position:absolute;
+      top:4px; bottom:4px;
+      border-radius:8px;
+      background:var(--surface-3);
+      z-index:1;
+    }
+    .tab-panel {
+      margin-top:12px;
+      min-height:90px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--muted);
+      background:rgba(255,255,255,.02);
+    }
+
+    /* Search */
+    .searchbox {
+      display:flex;
+      gap:8px;
+      padding:7px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:rgba(255,255,255,.03);
+    }
+    .searchbox input {
+      min-width:0;
+      flex:1;
+      padding:0 7px;
+      border:0;
+      outline:0;
+      color:var(--text);
+      background:transparent;
+    }
+    .search-results { margin-top:12px; display:grid; gap:7px; }
+    .search-result {
+      display:flex; gap:10px; align-items:center;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:rgba(255,255,255,.025);
+    }
+    .result-icon { width:32px; height:32px; border-radius:9px; background:rgba(124,108,255,.15); }
+    .result-lines { flex:1; display:grid; gap:5px; }
+    .result-lines span { display:block; height:6px; border-radius:4px; background:rgba(255,255,255,.10); }
+    .result-lines span:last-child { width:58%; background:rgba(255,255,255,.055); }
+    .skeleton { position:relative; overflow:hidden; }
+    .skeleton::after {
+      content:"";
+      position:absolute; inset:0;
+      transform:translateX(-110%);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);
+      animation:shimmer 1s infinite;
+    }
+    @keyframes shimmer { to { transform:translateX(110%); } }
+
+    /* send */
+    .chat {
+      display:flex; flex-direction:column; min-height:200px;
+    }
+    .messages { flex:1; display:flex; flex-direction:column; gap:8px; }
+    .bubble {
+      align-self:flex-start;
+      max-width:78%;
+      padding:9px 11px;
+      border-radius:13px 13px 13px 5px;
+      color:#ced4df;
+      background:var(--surface-3);
+    }
+    .bubble.mine {
+      align-self:flex-end;
+      border-radius:13px 13px 5px 13px;
+      color:white;
+      background:var(--brand);
+    }
+    .composer {
+      display:flex; gap:8px;
+      margin-top:12px;
+      padding:6px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:rgba(255,255,255,.03);
+    }
+    .composer input {
+      min-width:0; flex:1;
+      padding:0 8px;
+      border:0; outline:0; color:var(--text); background:transparent;
+    }
+    .send-state {
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      opacity:0;
+    }
+    .spinner {
+      width:16px; height:16px;
+      border:2px solid rgba(255,255,255,.34);
+      border-top-color:white;
+      border-radius:50%;
+    }
+
+    /* toast */
+    .toast-stack {
+      position:absolute;
+      right:12px; bottom:12px;
+      display:grid; gap:8px;
+      width:min(300px,calc(100% - 24px));
+      pointer-events:none;
+    }
+    .toast {
+      position:relative;
+      padding:12px 36px 12px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#181d26;
+      box-shadow:0 18px 45px rgba(0,0,0,.32);
+      overflow:hidden;
+      pointer-events:auto;
+    }
+    .toast strong { display:block; font-size:12px; }
+    .toast span { color:var(--muted); font-size:11px; }
+    .toast-progress {
+      position:absolute; left:0; right:0; bottom:0;
+      height:2px; background:var(--brand);
+      transform-origin:left center;
+    }
+    .toast-x { position:absolute; right:8px; top:7px; border:0; background:transparent; color:var(--muted); cursor:pointer; }
+
+    /* page transition */
+    .mini-browser {
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+      background:#10141b;
+    }
+    .mini-top {
+      display:flex; align-items:center; gap:6px;
+      height:35px;
+      padding:0 10px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.025);
+    }
+    .dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.15); }
+    .mini-nav {
+      display:flex; gap:5px;
+      padding:8px;
+      border-bottom:1px solid var(--line);
+    }
+    .mini-nav button {
+      padding:6px 9px;
+      border:0;
+      border-radius:8px;
+      color:var(--muted);
+      background:transparent;
+      cursor:pointer;
+    }
+    .mini-nav button.active { color:white; background:rgba(124,108,255,.14); }
+    .page-viewport { position:relative; min-height:160px; overflow:hidden; }
+    .mini-page {
+      position:absolute; inset:0;
+      padding:16px;
+    }
+    .page-title { width:42%; height:18px; border-radius:6px; background:rgba(255,255,255,.14); }
+    .page-text { width:70%; height:7px; margin-top:10px; border-radius:5px; background:rgba(255,255,255,.06); }
+    .page-card {
+      width:100%; height:66px; margin-top:16px;
+      border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.025);
+    }
+
+    /* list delete/add */
+    .data-list { display:grid; gap:7px; }
+    .data-row {
+      display:flex; align-items:center; gap:10px;
+      min-height:48px;
+      padding:8px 8px 8px 11px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:rgba(255,255,255,.025);
+      overflow:hidden;
+    }
+    .avatar { flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--brand),#43c8ff); }
+    .data-main { flex:1; min-width:0; }
+    .data-main strong { display:block; font-size:12px; }
+    .data-main span { display:block; color:var(--muted); font-size:10px; }
+
+    /* async button */
+    .async-btn { min-width:135px; }
+    .btn-label { display:flex; align-items:center; gap:7px; }
+    .check {
+      width:17px; height:17px;
+      stroke:currentColor; fill:none; stroke-width:2.2;
+      stroke-linecap:round; stroke-linejoin:round;
+    }
+
+    /* error */
+    .field {
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      outline:0;
+      color:white;
+      background:rgba(255,255,255,.03);
+    }
+    .field.error { border-color:rgba(255,100,124,.65); box-shadow:0 0 0 3px rgba(255,100,124,.08); }
+    .error-text { margin-top:6px; color:#ff92a4; font-size:11px; opacity:0; }
+
+    /* like */
+    .like-wrap { position:relative; display:inline-grid; place-items:center; margin:38px; }
+    .like-btn {
+      width:56px; height:56px; padding:0;
+      border:1px solid var(--line); border-radius:50%;
+      background:rgba(255,255,255,.035); cursor:pointer;
+    }
+    .heart { width:23px; height:23px; fill:transparent; stroke:#b1bac9; stroke-width:2; }
+    .particle {
+      position:absolute;
+      width:6px; height:6px;
+      border-radius:50%;
+      background:var(--brand-2);
+      pointer-events:none;
+    }
+
+    /* progress */
+    .progress-track { height:8px; border-radius:99px; background:rgba(255,255,255,.06); overflow:hidden; }
+    .progress-bar { width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--brand),#45d9bc); transform-origin:left; }
+    .metric {
+      display:flex; justify-content:space-between; gap:12px; margin-bottom:9px;
+    }
+    .metric span { color:var(--muted); }
+
+    /* route cards */
+    .route-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+    .route-card { height:70px; border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.025); }
+
+    .footer-note {
+      margin-top:18px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns:1fr; }
+      .demo, .demo.wide { grid-column:span 6; }
+      .principles { max-width:650px; }
+    }
+    @media (max-width: 680px) {
+      .shell { width:min(100% - 20px, 1400px); padding-top:18px; }
+      .grid { gap:12px; }
+      .demo, .demo.wide, .demo.full { grid-column:1/-1; min-height:auto; }
+      .hero { margin-bottom:18px; }
+      .principles { grid-template-columns:1fr 1fr; }
+      .recipe { max-width:46%; }
+      .route-grid { grid-template-columns:1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      .skeleton::after { animation:none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">GSAP UI Motion Lab</span>
+        <h1>Movimento que explica o que a interface está fazendo.</h1>
+        <p class="lead">
+          Exemplos reais de abrir, fechar, clicar, enviar, buscar, carregar, trocar de página,
+          confirmar, excluir e mudar estado. Tudo em um único HTML, sem framework.
+        </p>
+      </div>
+      <div class="principles">
+        <div class="principle"><strong>100–160 ms</strong><span>press, hover e feedback imediato</span></div>
+        <div class="principle"><strong>220–320 ms</strong><span>entrada de painéis e conteúdo</span></div>
+        <div class="principle"><strong>160–220 ms</strong><span>saídas, normalmente mais rápidas</span></div>
+        <div class="principle"><strong>transform + opacity</strong><span>primeira escolha para fluidez</span></div>
+      </div>
+    </section>
+
+    <nav class="toolbar" aria-label="Exemplos">
+      <a class="tool-link" href="#micro">Clique</a>
+      <a class="tool-link" href="#modal">Modal</a>
+      <a class="tool-link" href="#drawer">Drawer</a>
+      <a class="tool-link" href="#dropdown">Menu</a>
+      <a class="tool-link" href="#accordion">Accordion</a>
+      <a class="tool-link" href="#tabs">Tabs</a>
+      <a class="tool-link" href="#send">Enviar</a>
+      <a class="tool-link" href="#search">Buscar</a>
+      <a class="tool-link" href="#toast">Toast</a>
+      <a class="tool-link" href="#route">Página</a>
+      <a class="tool-link" href="#crud">CRUD</a>
+      <a class="tool-link" href="#async">Async</a>
+      <a class="tool-link" href="#error">Erro</a>
+      <a class="tool-link" href="#like">Like</a>
+      <a class="tool-link" href="#progress">Progresso</a>
+    </nav>
+
+    <section class="grid">
+      <article class="demo" id="micro">
+        <div class="demo-head">
+          <div><h2>1. Clique / press</h2><div class="demo-copy">Resposta tátil visual sem atrasar a ação.</div></div>
+          <code class="recipe">scale .97 → 1<br>90–140ms</code>
+        </div>
+        <div class="stage">
+          <button class="btn primary micro-btn js-press">
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Executar ação
+          </button>
+          <p class="footer-note">Clique várias vezes. Há press + ripple, mas a ação continua imediata.</p>
+        </div>
+      </article>
+
+      <article class="demo" id="modal">
+        <div class="demo-head">
+          <div><h2>2. Abrir / fechar modal</h2><div class="demo-copy">Backdrop + escala curta + deslocamento vertical.</div></div>
+          <code class="recipe">opacity + y 16<br>scale .97</code>
+        </div>
+        <div class="stage">
+          <button class="btn primary" id="openModal">Abrir modal</button>
+          <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="modal" id="modalBox">
+              <h3>Excluir projeto?</h3>
+              <p>Essa ação é permanente. A saída é um pouco mais rápida do que a entrada.</p>
+              <div class="row">
+                <button class="btn ghost" id="cancelModal">Cancelar</button>
+                <button class="btn danger" id="confirmModal">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="drawer">
+        <div class="demo-head">
+          <div><h2>3. Drawer lateral</h2><div class="demo-copy">Bom para filtros, detalhes e navegação mobile.</div></div>
+          <code class="recipe">x 100% → 0<br>260ms</code>
+        </div>
+        <div class="stage">
+          <button class="btn" id="openDrawer">Abrir filtros</button>
+          <div class="drawer-backdrop" id="drawerBackdrop"></div>
+          <aside class="drawer" id="drawerPanel" aria-hidden="true">
+            <div class="row" style="justify-content:space-between">
+              <strong>Filtros</strong>
+              <button class="btn icon ghost" id="closeDrawer" aria-label="Fechar">×</button>
+            </div>
+            <div class="drawer-item">Últimos 30 dias</div>
+            <div class="drawer-item">Somente ativos</div>
+            <div class="drawer-item">Ordenar por receita</div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="demo" id="dropdown">
+        <div class="demo-head">
+          <div><h2>4. Dropdown / menu</h2><div class="demo-copy">Origem visual no gatilho. Evite slides longos.</div></div>
+          <code class="recipe">scale .96<br>y -6 + fade</code>
+        </div>
+        <div class="stage">
+          <div class="dropdown-wrap">
+            <button class="btn" id="menuTrigger" aria-expanded="false">Mais ações ▾</button>
+            <div class="dropdown" id="dropdownMenu">
+              <div class="drop-item">Duplicar</div>
+              <div class="drop-item">Compartilhar</div>
+              <div class="drop-item">Arquivar</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="accordion">
+        <div class="demo-head">
+          <div><h2>5. Accordion</h2><div class="demo-copy">Anime altura só quando a mudança estrutural importa.</div></div>
+          <code class="recipe">height 0 ↔ auto<br>220ms</code>
+        </div>
+        <div class="stage">
+          <div class="accordion">
+            <button class="acc-trigger"><span>Como funciona?</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m7 9 5 5 5-5"/></svg></button>
+            <div class="acc-content"><div class="acc-inner">A altura é medida pelo GSAP e a seta acompanha o estado.</div></div>
+          </div>
+          <div class="accordion">
+            <button class="acc-trigger"><span>Por que é fluido?</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m7 9 5 5 5-5"/></svg></button>
+            <div class="acc-content"><div class="acc-inner">Poucos elementos, duração curta e easing consistente.</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="tabs">
+        <div class="demo-head">
+          <div><h2>6. Tabs / seleção</h2><div class="demo-copy">Indicador preserva continuidade espacial.</div></div>
+          <code class="recipe">indicator FLIP-like<br>content fade+y</code>
+        </div>
+        <div class="stage">
+          <div class="tabs" id="tabsEl">
+            <div class="tab-indicator" id="tabIndicator"></div>
+            <button class="tab active" data-tab="Visão geral">Visão geral</button>
+            <button class="tab" data-tab="Atividade">Atividade</button>
+            <button class="tab" data-tab="Equipe">Equipe</button>
+          </div>
+          <div class="tab-panel" id="tabPanel">Conteúdo da <strong>Visão geral</strong>. A troca é rápida e discreta.</div>
+        </div>
+      </article>
+
+      <article class="demo wide" id="send">
+        <div class="demo-head">
+          <div><h2>7. Enviar mensagem</h2><div class="demo-copy">Press → estado ocupado → mensagem entra → confirmação.</div></div>
+          <code class="recipe">optimistic UI<br>stagger + status</code>
+        </div>
+        <div class="stage">
+          <div class="chat">
+            <div class="messages" id="messages">
+              <div class="bubble">Você consegue resumir meu mês?</div>
+              <div class="bubble mine">Consigo. Vou considerar receitas e despesas.</div>
+            </div>
+            <div class="composer">
+              <input id="messageInput" value="Analise meus gastos com restaurantes" aria-label="Mensagem">
+              <button class="btn primary icon" id="sendButton" aria-label="Enviar">
+                <span class="send-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </span>
+                <span class="send-state"><span class="spinner"></span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="search">
+        <div class="demo-head">
+          <div><h2>8. Busca + loading + resultados</h2><div class="demo-copy">Skeleton mantém geometria, resultados entram em stagger.</div></div>
+          <code class="recipe">skeleton → results<br>stagger 45ms</code>
+        </div>
+        <div class="stage">
+          <div class="searchbox">
+            <input id="searchInput" value="transações" aria-label="Buscar">
+            <button class="btn primary" id="searchBtn">Buscar</button>
+          </div>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </article>
+
+      <article class="demo" id="toast">
+        <div class="demo-head">
+          <div><h2>9. Toast / notificação</h2><div class="demo-copy">Entra perto da origem de leitura e sai sem chamar atenção.</div></div>
+          <code class="recipe">x 24 + fade<br>auto-dismiss</code>
+        </div>
+        <div class="stage">
+          <button class="btn" id="toastBtn">Salvar alterações</button>
+          <div class="toast-stack" id="toastStack"></div>
+        </div>
+      </article>
+
+      <article class="demo wide" id="route">
+        <div class="demo-head">
+          <div><h2>10. Troca de página / rota</h2><div class="demo-copy">Página antiga sai antes da nova assumir foco visual.</div></div>
+          <code class="recipe">out 150ms<br>in 240ms</code>
+        </div>
+        <div class="stage">
+          <div class="mini-browser">
+            <div class="mini-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <div class="mini-nav" id="miniNav">
+              <button class="active" data-page="0">Dashboard</button>
+              <button data-page="1">Relatórios</button>
+              <button data-page="2">Configurações</button>
+            </div>
+            <div class="page-viewport" id="pageViewport">
+              <div class="mini-page" data-page-el="0">
+                <div class="page-title"></div><div class="page-text"></div>
+                <div class="route-grid"><div class="route-card"></div><div class="route-card"></div><div class="route-card"></div></div>
+              </div>
+              <div class="mini-page" data-page-el="1" style="visibility:hidden">
+                <div class="page-title" style="width:34%"></div><div class="page-text" style="width:82%"></div>
+                <div class="page-card"></div>
+              </div>
+              <div class="mini-page" data-page-el="2" style="visibility:hidden">
+                <div class="page-title" style="width:50%"></div><div class="page-text" style="width:62%"></div>
+                <div class="page-card" style="height:42px"></div><div class="page-card" style="height:42px;margin-top:8px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="crud">
+        <div class="demo-head">
+          <div><h2>11. Inserir / excluir item</h2><div class="demo-copy">Colapsar evita o “teleporte” da lista.</div></div>
+          <code class="recipe">remove: x+fade+height<br>add: height+fade</code>
+        </div>
+        <div class="stage">
+          <div class="row" style="margin-bottom:10px">
+            <button class="btn primary" id="addRow">Adicionar</button>
+          </div>
+          <div class="data-list" id="dataList">
+            <div class="data-row">
+              <span class="avatar"></span><div class="data-main"><strong>Marina Costa</strong><span>Admin</span></div>
+              <button class="btn icon danger js-delete" aria-label="Excluir">×</button>
+            </div>
+            <div class="data-row">
+              <span class="avatar"></span><div class="data-main"><strong>Lucas Melo</strong><span>Editor</span></div>
+              <button class="btn icon danger js-delete" aria-label="Excluir">×</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="async">
+        <div class="demo-head">
+          <div><h2>12. Ação assíncrona</h2><div class="demo-copy">Não troque o layout. Troque o estado dentro do mesmo botão.</div></div>
+          <code class="recipe">idle → loading<br>→ success</code>
+        </div>
+        <div class="stage">
+          <button class="btn primary async-btn" id="asyncButton">
+            <span class="btn-label" id="asyncLabel">Publicar</span>
+          </button>
+          <p class="footer-note">O botão preserva largura para impedir “layout shift”.</p>
+        </div>
+      </article>
+
+      <article class="demo" id="error">
+        <div class="demo-head">
+          <div><h2>13. Erro / validação</h2><div class="demo-copy">Shake mínimo, só para reforçar algo que já está explicado.</div></div>
+          <code class="recipe">x ±5px<br>180ms</code>
+        </div>
+        <div class="stage">
+          <input class="field" id="errorField" value="email-invalido" aria-label="Email">
+          <div class="error-text" id="errorText">Digite um e-mail válido.</div>
+          <button class="btn" id="validateBtn" style="margin-top:12px">Validar</button>
+        </div>
+      </article>
+
+      <article class="demo" id="like">
+        <div class="demo-head">
+          <div><h2>14. Favoritar / like</h2><div class="demo-copy">Microcelebração curta para uma ação reversível.</div></div>
+          <code class="recipe">spring-like scale<br>particles 350ms</code>
+        </div>
+        <div class="stage">
+          <div class="like-wrap">
+            <button class="like-btn js-press" id="likeBtn" aria-pressed="false" aria-label="Favoritar">
+              <svg class="heart" id="heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo" id="progress">
+        <div class="demo-head">
+          <div><h2>15. Progresso / conclusão</h2><div class="demo-copy">Movimento comunica avanço; número acompanha a barra.</div></div>
+          <code class="recipe">width + number<br>600ms</code>
+        </div>
+        <div class="stage">
+          <div class="metric"><strong>Importação</strong><span id="progressText">0%</span></div>
+          <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+          <button class="btn" id="progressBtn" style="margin-top:14px">Simular progresso</button>
+        </div>
+      </article>
+
+      <article class="demo full">
+        <div class="demo-head">
+          <div><h2>16. Regras para levar ao sistema real</h2><div class="demo-copy">A biblioteca é só a ferramenta. O que dá qualidade é a gramática.</div></div>
+          <code class="recipe">consistência > efeitos</code>
+        </div>
+        <div class="stage" style="min-height:auto">
+          <div class="principles">
+            <div class="principle"><strong>Entrada</strong><span>fade + 8–16px de deslocamento. Não faça objetos viajarem pela tela.</span></div>
+            <div class="principle"><strong>Saída</strong><span>20–30% mais rápida que a entrada. O usuário já decidiu sair.</span></div>
+            <div class="principle"><strong>Hierarquia</strong><span>elemento principal entra primeiro; filhos podem usar stagger de 30–60ms.</span></div>
+            <div class="principle"><strong>Loading</strong><span>preserve dimensões. Spinner em ações pequenas; skeleton em conteúdo estruturado.</span></div>
+            <div class="principle"><strong>Performance</strong><span>prefira transform e opacity; evite animar box-shadow, blur e layout em massa.</span></div>
+            <div class="principle"><strong>Acessibilidade</strong><span>respeite prefers-reduced-motion e nunca dependa só da animação para informar estado.</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- GSAP core. A documentação oficial também permite npm install gsap -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script>
+    (() => {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const D = {
+        press: reducedMotion ? 0 : .11,
+        exit: reducedMotion ? 0 : .17,
+        normal: reducedMotion ? 0 : .24,
+        enter: reducedMotion ? 0 : .30
+      };
+
+      const q = (sel, root=document) => root.querySelector(sel);
+      const qa = (sel, root=document) => [...root.querySelectorAll(sel)];
+
+      // Shared press microinteraction
+      document.addEventListener('pointerdown', e => {
+        const btn = e.target.closest('.js-press, .btn');
+        if (!btn || btn.disabled) return;
+
+        gsap.to(btn, { scale: .975, duration: D.press, ease: 'power2.out', overwrite: true });
+
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 1.4;
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+        btn.appendChild(ripple);
+
+        gsap.to(ripple, {
+          scale: 1,
+          opacity: 0,
+          duration: reducedMotion ? 0 : .42,
+          ease: 'power2.out',
+          onComplete: () => ripple.remove()
+        });
+      });
+      document.addEventListener('pointerup', e => {
+        const btn = e.target.closest('.js-press, .btn');
+        if (btn) gsap.to(btn, { scale: 1, duration: D.press, ease: 'back.out(2)', overwrite:true });
+      });
+      document.addEventListener('pointercancel', () => gsap.to('.btn', { scale:1, duration:D.press }));
+
+      // Modal
+      const modalBackdrop = q('#modalBackdrop');
+      const modalBox = q('#modalBox');
+      function openModal() {
+        modalBackdrop.style.visibility = 'visible';
+        modalBackdrop.setAttribute('aria-hidden','false');
+        gsap.timeline()
+          .to(modalBackdrop, { opacity:1, duration:D.exit, ease:'power1.out' })
+          .fromTo(modalBox, { opacity:0, y:16, scale:.97 }, { opacity:1, y:0, scale:1, duration:D.enter, ease:'back.out(1.25)' }, '<.02');
+      }
+      function closeModal() {
+        gsap.timeline({
+          onComplete() {
+            modalBackdrop.style.visibility = 'hidden';
+            modalBackdrop.setAttribute('aria-hidden','true');
+          }
+        })
+        .to(modalBox, { opacity:0, y:8, scale:.985, duration:D.exit, ease:'power2.in' })
+        .to(modalBackdrop, { opacity:0, duration:D.exit, ease:'power1.in' }, '<.04');
+      }
+      q('#openModal').onclick = openModal;
+      q('#cancelModal').onclick = closeModal;
+      q('#confirmModal').onclick = closeModal;
+      modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
+
+      // Drawer
+      const drawer = q('#drawerPanel');
+      const drawerBackdrop = q('#drawerBackdrop');
+      function openDrawer() {
+        drawer.style.visibility = drawerBackdrop.style.visibility = 'visible';
+        drawer.setAttribute('aria-hidden','false');
+        gsap.timeline()
+          .to(drawerBackdrop,{opacity:1,duration:D.exit})
+          .to(drawer,{x:'0%',duration:D.enter,ease:'power3.out'},'<');
+      }
+      function closeDrawer() {
+        gsap.timeline({onComplete(){
+          drawer.style.visibility = drawerBackdrop.style.visibility = 'hidden';
+          drawer.setAttribute('aria-hidden','true');
+        }})
+        .to(drawer,{x:'105%',duration:D.normal,ease:'power2.in'})
+        .to(drawerBackdrop,{opacity:0,duration:D.exit},'<.04');
+      }
+      q('#openDrawer').onclick = openDrawer;
+      q('#closeDrawer').onclick = closeDrawer;
+      drawerBackdrop.onclick = closeDrawer;
+
+      // Dropdown
+      const menuTrigger = q('#menuTrigger');
+      const dropdown = q('#dropdownMenu');
+      let menuOpen = false;
+      function toggleMenu(force) {
+        menuOpen = typeof force === 'boolean' ? force : !menuOpen;
+        menuTrigger.setAttribute('aria-expanded', String(menuOpen));
+        if (menuOpen) {
+          dropdown.style.visibility = 'visible';
+          gsap.fromTo(dropdown,{opacity:0,y:-6,scale:.96},{opacity:1,y:0,scale:1,duration:D.normal,ease:'power2.out'});
+        } else {
+          gsap.to(dropdown,{opacity:0,y:-4,scale:.98,duration:D.exit,ease:'power2.in',onComplete(){dropdown.style.visibility='hidden';}});
+        }
+      }
+      menuTrigger.onclick = e => { e.stopPropagation(); toggleMenu(); };
+      document.addEventListener('click', e => { if (menuOpen && !dropdown.contains(e.target)) toggleMenu(false); });
+
+      // Accordion
+      qa('.accordion').forEach(acc => {
+        const trigger = q('.acc-trigger', acc);
+        const content = q('.acc-content', acc);
+        const chevron = q('.acc-chevron', acc);
+        let open = false;
+        trigger.onclick = () => {
+          open = !open;
+          gsap.to(content,{height:open?'auto':0,duration:D.normal,ease:open?'power2.out':'power2.inOut'});
+          gsap.to(chevron,{rotation:open?180:0,duration:D.normal,ease:'power2.out'});
+        };
+      });
+
+      // Tabs
+      const tabsEl = q('#tabsEl');
+      const tabs = qa('.tab', tabsEl);
+      const indicator = q('#tabIndicator');
+      const panel = q('#tabPanel');
+      function positionIndicator(tab, animate=false) {
+        const parentRect = tabsEl.getBoundingClientRect();
+        const r = tab.getBoundingClientRect();
+        const props = { x:r.left-parentRect.left, width:r.width, duration:animate?D.normal:0, ease:'power3.out' };
+        gsap.to(indicator, props);
+      }
+      positionIndicator(tabs[0]);
+      window.addEventListener('resize', () => positionIndicator(q('.tab.active',tabsEl)));
+      tabs.forEach(tab => tab.onclick = () => {
+        if (tab.classList.contains('active')) return;
+        q('.tab.active', tabsEl).classList.remove('active');
+        tab.classList.add('active');
+        positionIndicator(tab,true);
+        gsap.timeline()
+          .to(panel,{opacity:0,y:-5,duration:D.exit,ease:'power2.in'})
+          .call(() => panel.innerHTML = `Conteúdo de <strong>${tab.dataset.tab}</strong>. O indicador se move sem recriar o componente.`)
+          .fromTo(panel,{opacity:0,y:8},{opacity:1,y:0,duration:D.normal,ease:'power2.out'});
+      });
+
+      // Send
+      const sendButton = q('#sendButton');
+      const messageInput = q('#messageInput');
+      const messages = q('#messages');
+      let sending = false;
+      function sendMessage() {
+        const text = messageInput.value.trim();
+        if (!text || sending) return;
+        sending = true;
+        const icon = q('.send-icon',sendButton);
+        const state = q('.send-state',sendButton);
+
+        gsap.timeline()
+          .to(icon,{opacity:0,scale:.7,duration:D.press})
+          .to(state,{opacity:1,duration:D.press},'<');
+        gsap.to(q('.spinner',sendButton),{rotation:360,duration:.7,repeat:-1,ease:'none'});
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble mine';
+        bubble.textContent = text;
+        messages.appendChild(bubble);
+        messageInput.value = '';
+        gsap.fromTo(bubble,{opacity:0,y:10,scale:.97},{opacity:1,y:0,scale:1,duration:D.normal,ease:'back.out(1.3)'});
+
+        setTimeout(() => {
+          const reply = document.createElement('div');
+          reply.className = 'bubble';
+          reply.textContent = 'Pronto. Encontrei 12 lançamentos relacionados e organizei os principais padrões.';
+          messages.appendChild(reply);
+          gsap.fromTo(reply,{opacity:0,y:9},{opacity:1,y:0,duration:D.normal,ease:'power2.out'});
+          gsap.killTweensOf(q('.spinner',sendButton));
+          gsap.timeline()
+            .to(state,{opacity:0,duration:D.press})
+            .to(icon,{opacity:1,scale:1,duration:D.press,ease:'back.out(2)'},'<');
+          sending = false;
+        }, 720);
+      }
+      sendButton.onclick = sendMessage;
+      messageInput.addEventListener('keydown', e => { if(e.key==='Enter') sendMessage(); });
+
+      // Search
+      const searchResults = q('#searchResults');
+      function skeletonRows() {
+        searchResults.innerHTML = Array.from({length:3},()=>`
+          <div class="search-result skeleton">
+            <div class="result-icon"></div>
+            <div class="result-lines"><span></span><span></span></div>
+          </div>`).join('');
+        gsap.fromTo(qa('.search-result',searchResults),{opacity:0,y:6},{opacity:1,y:0,duration:D.normal,stagger:.035,ease:'power2.out'});
+      }
+      function realRows(query) {
+        searchResults.innerHTML = [
+          ['Transações recentes',`8 resultados para “${query}”`],
+          ['Categorias relacionadas','Restaurantes, Mercado e Transporte'],
+          ['Insights','Gasto 18% acima da média mensal']
+        ].map(([title,sub])=>`
+          <div class="search-result">
+            <div class="result-icon"></div>
+            <div class="data-main"><strong>${title}</strong><span>${sub}</span></div>
+          </div>`).join('');
+        gsap.fromTo(qa('.search-result',searchResults),{opacity:0,y:10},{opacity:1,y:0,duration:D.normal,stagger:.055,ease:'power3.out'});
+      }
+      q('#searchBtn').onclick = () => {
+        const term = q('#searchInput').value.trim() || 'tudo';
+        skeletonRows();
+        setTimeout(()=>realRows(term),650);
+      };
+
+      // Toast
+      const toastStack = q('#toastStack');
+      function showToast() {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<button class="toast-x" aria-label="Fechar">×</button><strong>Alterações salvas</strong><span>Seu projeto foi atualizado.</span><div class="toast-progress"></div>`;
+        toastStack.appendChild(toast);
+        const bar = q('.toast-progress',toast);
+        const enter = gsap.fromTo(toast,{opacity:0,x:24,scale:.98},{opacity:1,x:0,scale:1,duration:D.normal,ease:'power3.out'});
+        const timer = gsap.to(bar,{scaleX:0,duration:2.6,ease:'none',delay:.05,onComplete:()=>dismissToast(toast)});
+        q('.toast-x',toast).onclick=()=>{timer.kill();dismissToast(toast);};
+      }
+      function dismissToast(toast) {
+        gsap.to(toast,{opacity:0,x:16,height:0,margin:0,paddingTop:0,paddingBottom:0,duration:D.exit,ease:'power2.in',onComplete:()=>toast.remove()});
+      }
+      q('#toastBtn').onclick = showToast;
+
+      // Route / page transition
+      const navButtons = qa('#miniNav button');
+      let currentPage = 0;
+      let routeBusy = false;
+      navButtons.forEach(btn => btn.onclick = () => {
+        const next = Number(btn.dataset.page);
+        if(next===currentPage || routeBusy) return;
+        routeBusy=true;
+        const oldEl = q(`[data-page-el="${currentPage}"]`);
+        const nextEl = q(`[data-page-el="${next}"]`);
+        const direction = next > currentPage ? 1 : -1;
+
+        navButtons.forEach(b=>b.classList.toggle('active',b===btn));
+
+        gsap.timeline({onComplete(){currentPage=next;routeBusy=false;}})
+          .to(oldEl,{opacity:0,x:-18*direction,duration:D.exit,ease:'power2.in'})
+          .set(oldEl,{visibility:'hidden'})
+          .set(nextEl,{visibility:'visible',x:20*direction,opacity:0})
+          .to(nextEl,{x:0,opacity:1,duration:D.normal,ease:'power3.out'});
+      });
+
+      // CRUD
+      const dataList = q('#dataList');
+      let rowCount = 1;
+      function bindDelete(btn) {
+        btn.onclick = () => {
+          const row = btn.closest('.data-row');
+          const h = row.offsetHeight;
+          gsap.set(row,{height:h});
+          gsap.timeline({onComplete:()=>row.remove()})
+            .to(row,{x:18,opacity:0,duration:D.exit,ease:'power2.in'})
+            .to(row,{height:0,paddingTop:0,paddingBottom:0,margin:0,borderWidth:0,duration:D.normal,ease:'power2.inOut'},'<.04');
+        };
+      }
+      qa('.js-delete').forEach(bindDelete);
+      q('#addRow').onclick = () => {
+        const row = document.createElement('div');
+        row.className='data-row';
+        row.innerHTML=`<span class="avatar"></span><div class="data-main"><strong>Novo usuário ${rowCount++}</strong><span>Viewer</span></div><button class="btn icon danger js-delete" aria-label="Excluir">×</button>`;
+        dataList.prepend(row);
+        const h = row.offsetHeight;
+        gsap.fromTo(row,{height:0,opacity:0,y:-8,paddingTop:0,paddingBottom:0},{height:h,opacity:1,y:0,paddingTop:8,paddingBottom:8,duration:D.normal,ease:'power3.out',onComplete:()=>gsap.set(row,{height:'auto'})});
+        bindDelete(q('.js-delete',row));
+      };
+
+      // Async button
+      const asyncButton = q('#asyncButton');
+      const asyncLabel = q('#asyncLabel');
+      let asyncBusy=false;
+      asyncButton.onclick = () => {
+        if(asyncBusy) return;
+        asyncBusy=true;
+        asyncButton.disabled=true;
+        const tl=gsap.timeline();
+        tl.to(asyncLabel,{opacity:0,y:-5,duration:D.press})
+          .call(()=>{asyncLabel.innerHTML='<span class="spinner"></span> Publicando';})
+          .fromTo(asyncLabel,{opacity:0,y:5},{opacity:1,y:0,duration:D.press});
+        gsap.to(q('.spinner',asyncLabel),{rotation:360,duration:.7,repeat:-1,ease:'none'});
+        setTimeout(()=>{
+          gsap.killTweensOf(q('.spinner',asyncLabel));
+          gsap.timeline()
+            .to(asyncLabel,{opacity:0,y:-5,duration:D.press})
+            .call(()=>{asyncLabel.innerHTML='<svg class="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg> Publicado';})
+            .fromTo(asyncLabel,{opacity:0,y:5},{opacity:1,y:0,duration:D.normal,ease:'back.out(1.7)'});
+          gsap.fromTo(asyncButton,{boxShadow:'0 0 0 0 rgba(48,213,154,0)'},{boxShadow:'0 0 0 7px rgba(48,213,154,0)',duration:.55});
+          setTimeout(()=>{
+            asyncButton.disabled=false;asyncBusy=false;
+            gsap.to(asyncLabel,{opacity:0,duration:D.press,onComplete:()=>{
+              asyncLabel.textContent='Publicar';
+              gsap.to(asyncLabel,{opacity:1,duration:D.press});
+            }});
+          },1100);
+        },800);
+      };
+
+      // Error validation
+      const errorField=q('#errorField'), errorText=q('#errorText');
+      q('#validateBtn').onclick=()=>{
+        errorField.classList.add('error');
+        gsap.timeline()
+          .to(errorField,{x:-5,duration:.045})
+          .to(errorField,{x:5,duration:.07})
+          .to(errorField,{x:-3,duration:.06})
+          .to(errorField,{x:0,duration:.05});
+        gsap.fromTo(errorText,{opacity:0,y:-4},{opacity:1,y:0,duration:D.normal,ease:'power2.out'});
+      };
+      errorField.addEventListener('input',()=>{
+        errorField.classList.remove('error');
+        gsap.to(errorText,{opacity:0,duration:D.exit});
+      });
+
+      // Like
+      const likeBtn=q('#likeBtn'), heart=q('#heart');
+      let liked=false;
+      likeBtn.onclick=()=>{
+        liked=!liked;
+        likeBtn.setAttribute('aria-pressed',String(liked));
+        if(liked){
+          gsap.to(heart,{fill:'#ff647c',stroke:'#ff647c',duration:D.press});
+          gsap.fromTo(heart,{scale:.7},{scale:1,duration:.42,ease:'elastic.out(1,.45)'});
+          for(let i=0;i<8;i++){
+            const p=document.createElement('span');p.className='particle';likeBtn.parentElement.appendChild(p);
+            const a=(Math.PI*2/8)*i, dist=28+Math.random()*12;
+            gsap.fromTo(p,{x:0,y:0,scale:.3,opacity:1},{
+              x:Math.cos(a)*dist,y:Math.sin(a)*dist,scale:0,opacity:0,duration:reducedMotion?0:.38,ease:'power2.out',onComplete:()=>p.remove()
+            });
+          }
+        } else {
+          gsap.to(heart,{fill:'transparent',stroke:'#b1bac9',scale:1,duration:D.normal,ease:'power2.out'});
+        }
+      };
+
+      // Progress
+      const progressBar=q('#progressBar'), progressText=q('#progressText');
+      const progressObj={value:0};
+      q('#progressBtn').onclick=()=>{
+        progressObj.value=0;
+        gsap.set(progressBar,{width:'0%'});
+        gsap.to(progressObj,{
+          value:100,duration:reducedMotion?0:.9,ease:'power2.inOut',
+          onUpdate(){
+            const v=Math.round(progressObj.value);
+            progressText.textContent=v+'%';
+            gsap.set(progressBar,{width:v+'%'});
+          },
+          onComplete(){
+            gsap.fromTo(progressBar,{filter:'brightness(1.7)'},{filter:'brightness(1)',duration:.35});
+          }
+        });
+      };
+
+      // Initial card entrance
+      gsap.fromTo('.demo',
+        {opacity:0,y:14},
+        {opacity:1,y:0,duration:reducedMotion?0:.42,stagger:reducedMotion?0:.025,ease:'power2.out',delay:.05}
+      );
+    })();
+  </script>
+</body>
+</html>

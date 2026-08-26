@@ -205,3 +205,16 @@ nextlevelbuilder/ui-ux-pro-max-skill
   typography, and schema per vertical) in the UI/UX skill — curated to the
   6 most common verticals in this kit, not a literal port of the
   upstream's 161 industry mappings.
+
+nateherkai/scroll-craft
+  https://github.com/nateherkai/scroll-craft
+  License: MIT
+  Source of the Scroll Storytelling skill (64). Unlike the idea-level
+  entries above, this one includes bundled code: engine/scrollcraft.js and
+  engine/scrollcraft.css are copied near-verbatim (the zero-dependency
+  scroll runtime), permitted under the upstream MIT license. The skill's
+  prose (interview protocol, page grammars, device kit, verification
+  procedure) is translated to Portuguese and restructured into this kit's
+  skill format, not a literal port. Full curation detail, including what
+  was intentionally left out, is in
+  skills/64-scroll-storytelling/references/PROVENANCE.md.

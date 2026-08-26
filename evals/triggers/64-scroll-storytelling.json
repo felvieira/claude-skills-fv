@@ -1,0 +1,22 @@
+{
+  "skill": "64-scroll-storytelling",
+  "should_trigger": [
+    "quero uma landing page estilo Apple com video que roda conforme rola a pagina",
+    "preciso de um scroll experience pra lancamento do produto",
+    "criar um site de scrollytelling pra essa marca de bebida",
+    "esse site parece um template, quero algo diferente que use scroll de verdade",
+    "fazer uma pagina scroll-driven onde a secao gruda e o texto muda",
+    "quero uma pagina que rola como um filme, tipo aqueles sites premiados",
+    "landing page cinematografica com video escrubando no scroll",
+    "site com efeito de 3D scroll world atravessando um lugar",
+    "scroll storytelling pra apresentar a jornada do cliente",
+    "interactive landing page onde cada secao se comporta diferente ao rolar"
+  ],
+  "shouldnt_trigger": [
+    "adicionar hover effect no botao do menu",
+    "criar spring animation pro toggle de tema",
+    "definir a paleta de cores e tipografia do design system do zero",
+    "revisar contraste de acessibilidade dos componentes existentes",
+    "configurar transicao de pagina simples com framer motion"
+  ]
+}

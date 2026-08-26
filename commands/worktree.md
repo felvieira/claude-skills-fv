@@ -7,6 +7,11 @@ description: Cria um git worktree isolado para trabalhar em paralelo sem afetar 
 Cria um git worktree em `../[repo]-[branch]`, copia `.env*`, e valida o ambiente antes de começar.
 Inspirado no padrão rtk: isolamento total sem perder contexto de ferramentas.
 
+Este comando é o atalho operacional enxuto para o caso comum. Para o protocolo completo — deteção
+explícita de isolamento existente, escolha entre ferramenta nativa (`EnterWorktree`) e fallback git,
+seleção de diretório com prioridade declarada, e a etapa obrigatória de baseline de testes — ver
+`skills/65-using-git-worktrees/SKILL.md` (protocolo adaptado de `obra/superpowers`, MIT).
+
 ## Como usar
 
 ```
@@ -29,11 +34,18 @@ node scripts/worktree.mjs --clean feature/nova-auth
 node .bot/scripts/worktree.mjs feature/nova-auth
 ```
 
-Flags: `--existing` (branch já existe), `--no-install`, `--no-validate`.
+Flags: `--existing` (branch já existe), `--no-install`, `--no-validate`, `--no-baseline` (pula a etapa de baseline de testes).
 
 ## O que o comando faz
 
 ### Criação (`/worktree [branch]`)
+
+**Passo 0 — Detectar isolamento existente (evita aninhar worktree)**
+
+Antes de tudo, o script compara `git rev-parse --git-dir` com `git rev-parse --git-common-dir`
+(com guard para não confundir submodule com worktree — ver `skills/65-using-git-worktrees/SKILL.md`
+Passo 0). Se a sessão já estiver dentro de um worktree vinculado, o comando **aborta com erro claro**
+em vez de criar um worktree aninhado silenciosamente.
 
 **Passo 1 — Verificar pré-condições**
 ```bash
@@ -76,12 +88,22 @@ cd ../$(basename $PWD)-[branch]
 [[ -f package.json ]] && npm run typecheck --if-present &
 ```
 
-**Passo 6 — Relatório**
+**Passo 6 — Baseline de testes (obrigatória, não trava o worktree)**
+
+Depois que o install termina, o script detecta o runtime do projeto de destino
+(`package.json` → `npm test`, `Cargo.toml` → `cargo test`, `pyproject.toml`/`requirements.txt` → `pytest`,
+`go.mod` → `go test ./...`) e roda a suíte padrão em background. O worktree já está pronto fisicamente
+antes disso — a baseline só reporta claramente "limpa" ou "suja", sem impedir o uso do worktree. Uma
+baseline suja torna toda falha futura ambígua, então vale sempre conferir o resultado antes de confiar
+em qualquer teste que falhar depois. Pular com `--no-baseline`.
+
+**Passo 7 — Relatório**
 Exibir:
 - Caminho do worktree criado
 - Branch ativo
 - Arquivos `.env*` copiados
 - Resultado das validações (quando disponível)
+- Resultado da baseline de testes (quando disponível)
 - Comando para navegar: `cd ../[repo]-[branch]`
 
 ### Listagem (`/worktree --list`)
@@ -115,3 +137,11 @@ git branch -d [branch]    # só se branch já mergeado
 ## Políticas relevantes
 - `policies/tool-safety.md` — verificar antes de operações destrutivas
 - `policies/execution.md` — validar ambiente antes de executar
+
+## Fontes Externas
+
+Deteção de isolamento (Passo 0) e baseline de testes obrigatória antes de liberar o worktree
+(Passo 6) adaptadas da skill `using-git-worktrees` do repositório
+[`obra/superpowers`](https://github.com/obra/superpowers) (licença MIT). Protocolo completo,
+incluindo o fallback manual de `git worktree add` e a tabela de racionalizações comuns, em
+`skills/65-using-git-worktrees/SKILL.md`.

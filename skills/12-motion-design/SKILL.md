@@ -372,6 +372,8 @@ function ScrollFadeIn({ children }: { children: React.ReactNode }) {
 
 Framer Motion `whileInView` cobre fade/slide-on-scroll simples (ver `ScrollFadeIn` acima). Para scroll-driven **coreografado** (pin de seção, scrub vinculado ao progresso do scroll, transições entre cards empilhados), GSAP + ScrollTrigger é a ferramenta certa — Framer Motion não tem `pin`/`scrub` nativos com o mesmo controle.
 
+Isso cobre a mecânica pontual. Quando o pedido é a página inteira estruturada como jornada de scroll — scrollytelling completo, landing page estilo Apple, vídeo que escruba com o scroll, variedade de efeito por seção — ver `skills/64-scroll-storytelling/SKILL.md`. Ela é dona da arquitetura (gramática de página, entrevista de brief, engine próprio `data-sc-*`); esta skill (12) permanece dona de motion tokens, easing e ScrollTrigger genéricos.
+
 **Regra dura:** nunca escutar scroll manualmente (`window.addEventListener('scroll')` em estado React) para dirigir animação — sempre `ScrollTrigger` (ou `useScroll`/`IntersectionObserver` para o caso simples). Listener manual perde sincronia de frame e não limpa corretamente.
 
 ### Sticky-stack (cards empilhando ao rolar)
@@ -691,12 +693,17 @@ ZERO comentários no código. O código deve ser autoexplicativo através de:
 
 ## Efeitos Vanilla — Referência de Código (naocodei.com)
 
-> **Aviso de proveniência.** Código copiado de https://naocodei.com/free-code/, **licença não declarada, autoria não identificada**, risco assumido pelo usuário em 2026-08-23. Ver [`references/naocodei-vanilla-effects.md`](references/naocodei-vanilla-effects.md) — abrir só ao implementar de verdade.
+> **Aviso de proveniência.** Código de https://naocodei.com/free-code/, **licença não declarada, autoria não identificada**, risco assumido pelo usuário em 2026-08-23. Ver [`references/naocodei-vanilla-effects.md`](references/naocodei-vanilla-effects.md).
 
-5 efeitos JS puro sem framework: stack cards, rolagem com inércia, partículas em canvas, scramble de texto, shader WebGL fluido. Cobrem o caso que Framer Motion/GSAP não resolvem sozinhos — dependência zero.
+5 efeitos JS puro: stack cards, rolagem com inércia, partículas em canvas, scramble de texto, shader WebGL fluido. Dependência zero.
+
+## Laboratorio de Microinteracoes (GSAP, referencia viva)
+
+`references/ui-motion-lab-gsap.html` — HTML standalone, 16 padroes em GSAP, gramatica desta skill (`press` 110ms, `exit` 170ms, `normal` 240ms, `enter` 300ms). Padroes: press+ripple, modal, drawer, dropdown, accordion, tabs, chat optimistic, busca+skeleton, toast, transicao, CRUD de lista, botao async, shake, like+particulas, progresso, regras.
 
 ## Fontes Externas
 
-- Skeletons de GSAP ScrollTrigger (sticky-stack, horizontal-pan) inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
-- API de morphing de icone-pra-icone baseada em [guillermolg00/morphicons](https://github.com/guillermolg00/morphicons) (MIT). Gap real: `skills/12-motion-design/` e `patterns/` nao cobriam morph entre icones (play↔pause, hamburguer↔X) antes desta secao — so transicoes, spring e easing genericos.
-- 5 efeitos vanilla JS copiados de [naocodei.com/free-code](https://naocodei.com/free-code/) — **licença não declarada, autoria não identificada** (diferente das entradas acima). Detalhe em `references/naocodei-vanilla-effects.md`. Gap real: skill não tinha exemplo de JS puro sem framework (canvas, WebGL raw, scroll com `lerp`).
+- Skeletons de GSAP ScrollTrigger inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
+- Morphing de icone via [guillermolg00/morphicons](https://github.com/guillermolg00/morphicons) (MIT).
+- 5 efeitos vanilla JS de [naocodei.com/free-code](https://naocodei.com/free-code/) — **licença não declarada, autoria não identificada**. Ver `references/naocodei-vanilla-effects.md`.
+- Laboratorio de 16 padroes (`references/ui-motion-lab-gsap.html`) — autoria do usuario, sem restricao de licenca, colado em 2026-08-26.

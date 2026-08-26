@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 62 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Versão:** 64 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -804,6 +804,20 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Diferente de:** a skill 60 é dona do modelo de dados de backend (tabela `Subscription` unificada, RTDN, reconciliação) — a 63 consome isso pra decisão de UI, nunca duplica o schema. `skills/02-ui-ux-design/references/marketing-surfaces.md` cobre a página de preço *pública*, sem transação real; a 63 é o paywall in-app com `PaymentSheet`/purchase sheet de verdade por trás.
 **Takeaway:** **código promocional do Google Play e cupão de comerciante não são a mesma coisa** — promo code do Play concede teste grátis, não um motor genérico de "25% off"; mostrar "25% aplicado" na UI quando o purchase sheet vai cobrar o preço cheio quebra confiança e viola a exigência de consistência de preço do Play.
 
+#### Skill 64 — Scroll Storytelling
+
+[Omitted long context line]
+**Quando ativar:** landing page ou site inteiro estruturado como jornada de scroll (não só uma seção com fade-in); pedido no estilo "Apple product page" ou site de referência citado desse tipo; vídeo/sequência de imagem que precisa scrubar conforme o usuário rola; pinning de seção, pan horizontal, ou "mundo" contínuo que a rolagem atravessa.
+**Diferente de:** a skill 12 (motion-design) é dona da mecânica genérica de easing/spring e dos motion tokens — a skill 64 os consome pro timing de UI, mas decide a arquitetura completa da página (estrutura, jornada narrativa, variedade de device por seção, gramática de página). A skill 02 (ui-ux-design) decide paleta/tipografia/âncora estética do zero — a skill 64 consome essa decisão pra escolher o "world" (ver `references/worlds.md`).
+**Takeaway:** **cinco seções que se comportam idêntico são uma seção mostrada cinco vezes** — uma página inteira construída de um único device repetido (mesmo diorama de argila, mesmo texto centralizado, mesmo contador `01/06`, mesmo "scroll to explore" piscando) se reconhece de longe; variedade por beat da jornada é o produto de fato, garantida por uma entrevista obrigatória de 8 perguntas antes de gerar qualquer coisa.
+
+#### Skill 65 — Using Git Worktrees
+
+[Omitted long context line]
+**Quando ativar:** antes de executar um plano de implementação que pode conflitar com o branch atual; usuário pede trabalho paralelo sem afetar o workspace corrente; incerteza se a sessão já está dentro de um worktree isolado (risco de aninhar worktree dentro de worktree).
+**Diferente de:** `commands/worktree.md` continua sendo o dispatcher enxuto (cria worktree, copia `.env*`, roda install/lint em background) — a skill 65 é o protocolo completo, acionado quando as garantias extras importam: detecção de isolamento com guard de submodule, preferência por ferramenta nativa (`EnterWorktree`/`ExitWorktree` antes de `git worktree add` cru), e baseline de testes obrigatória antes de liberar a task.
+**Takeaway:** **uma baseline suja torna toda falha futura ambígua** — pular o passo de baseline de testes significa que um bug introduzido pela task não pode ser distinguido de um que já existia; detectar isolamento existente primeiro (via `git rev-parse --git-dir` vs `--git-common-dir`, protegido contra falso positivo dentro de submodules) evita aninhar um worktree dentro de outro por engano.
+
 ---
 
 ## 6. Subagents (16)
@@ -919,7 +933,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **37 skills** em `skills/NN-nome/SKILL.md`
+- **64 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -932,7 +946,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 37 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 64 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -957,7 +971,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 37 skills | ✓ | ✓ | ✓ |
+| 64 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
