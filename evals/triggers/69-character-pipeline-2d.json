@@ -1,0 +1,22 @@
+{
+  "skill": "69-character-pipeline-2d",
+  "should_trigger": [
+    "qual estrategia usar pra gerar spritesheet de personagem a partir do rig 3D ja pronto",
+    "escrever o MotionPlan.json de um ataque pesado de espada com fases e eventos de hitbox",
+    "decompor a arte do personagem em camadas RGBA com Qwen-Image-Layered",
+    "extrair pose de um video de referencia com DWPose pra virar animacao 2D",
+    "usar Wan-Animate como previs de movimento sem shippar o video gerado direto",
+    "montar um workflow ComfyUI headless com provenance pra edicao de personagem",
+    "escolher entre Spine, LoongBones ou Grease Pencil pra rig 2D esqueletal",
+    "empacotar atlas de sprite deterministico e separar hitbox de hurtbox",
+    "desenhar os subcomandos do assetctl pra orquestrar o pipeline de asset de personagem",
+    "integrar o atlas.json exportado no AnimatedSprite2D do Godot ou no Phaser"
+  ],
+  "shouldnt_trigger": [
+    "decidir arquitetura ECS vs entidade rica pro sistema de combate",
+    "balancear a curva de progressao de XP desse RPG",
+    "fazer retargeting de animacao 3D entre dois esqueletos com proporcao diferente",
+    "implementar object pooling em Unity C#",
+    "gerar uma hero image generica pro site de divulgacao do jogo"
+  ]
+}

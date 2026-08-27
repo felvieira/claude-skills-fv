@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 66 Specialist Skills for Coding Agents
+# Dev Team Kit — 68 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.68.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-66-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.69.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-68-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -18,6 +18,7 @@
 
 | Version | Highlight | Where |
 |---|---|---|
+| **v2.69.0** | **Two new skills for the full 3D/2D character pipeline (AccuRIG, Blender, motion AI, MotionPlan, ComfyUI), sourced from the user's own whitepapers.** The user provided two original technical documents (not third-party content, though both cite third-party tools under varied licenses, preserved in full without hiding the restrictive ones). **Skill 68 (character-animation-3d)** treats AccuRIG as a rig-certification boundary rather than a headless API that doesn't exist, covers Blender as a headless CLI compiler (`bpy`, `--background --python`), retargeting via quaternion delta relative to rest pose, and a comparison map of 10 motion-AI technologies — including the critical distinction between AccuRIG's AI Deep Search (semantic search over 4500+ existing motions) and an actual synthesis model. Every `bpy` reference script from the source document was preserved verbatim, not summarized. **Skill 69 (character-pipeline-2d)** assumes skill 68's 3D pipeline already exists and covers `MotionPlan.json` as the contract — the LLM acts as *director* (intent/timing/phases/events), never as animator producing raw bone rotations, which also closes off a prompt-injection surface — the five 2D production strategies, native 2D generation via Qwen-Image-Layered/Qwen-Image-Edit with occlusion-completion handling, Wan-Animate strictly as motion reference/previs (an explicit anti-pattern warns against shipping generated video as final frames), ComfyUI as a headless inference server, 2D skeletal rigging tool choice, the unified `assetctl` CLI, and a 5-group test/CI architecture with content-addressed build caching. One process note: skill 69 was left half-built in an earlier round when the building agent hit its API session limit right after finishing `SKILL.md` but before its 3 reference files — a fresh agent picked it up, treating the already-complete `SKILL.md` as its own spec, and finished only what was missing. | [`skills/68-character-animation-3d/`](skills/68-character-animation-3d/), [`skills/69-character-pipeline-2d/`](skills/69-character-pipeline-2d/) |
 | **v2.68.0** | **Skill 40 gets an arbitration mechanism for when parallel agents disagree, plus a fail-closed gate.** Continuing the skills.sh sweep — this time the `agent-workflows` topic and an infra search (Kubernetes/Terraform). Most of it was already covered with more depth by the kit's own orchestration (skill 09/40/programs) and deploy stack (skill 07/20/43/46), but one real conceptual gap surfaced: **arbitration on disagreement** between reviewers, backed by a **fail-closed gate** — the kit already fans out N reviewers in parallel (skill 40, `/swarm`'s 4-agent review) but had no formal step for when they land on incompatible verdicts about the same finding. The source that revealed the pattern has no declared license, so nothing was copied — the mechanism was reimplemented from scratch as a general multi-agent design idea, with no attribution to that source. A third agent now arbitrates without seeing which reviewer said what first (avoids anchoring bias), and the next pipeline step stays blocked until resolution — it never silently proceeds with the more optimistic finding. Also confirmed as a real gap, construction deferred at the user's request: React Native/Expo (Tauri is WebView-packaged; React Native is a native bridge — incompatible architectures, not a superset). | [`skills/40-parallel-dispatcher/references/arbitration-disagreement.md`](skills/40-parallel-dispatcher/references/arbitration-disagreement.md), [`policies/quality-gates.md`](policies/quality-gates.md), [`policies/swarm-protocol.md`](policies/swarm-protocol.md) |
 | **v2.67.0** | **Broad skills.sh sweep across 4 categories, mostly confirming the kit is already thorough.** After the user asked whether anything relevant had been missed, 4 agents ran in parallel over categories not yet checked: backend/API/database, testing/security, frontend/React, and docs/devops/technical-writing. Result was intentionally uneven: **backend** turned up two real, surgical gaps, both landed in skill 03 — idempotency (deriving the key from operation *intent* rather than a per-attempt UUID, an atomic claim via a unique constraint instead of check-then-act, a payload-mismatch guard, and 3 strategies for an in-flight duplicate) from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT), and Postgres-specific schema power — Row-Level Security via `CREATE POLICY`, `EXCLUDE USING gist` for interval-overlap prevention — from [wshobson/agents](https://github.com/wshobson/agents) (MIT). **Testing/security** found nothing new beyond a Playwright patterns playbook (skill 05) — the kit's already strong there. **Frontend/React** surfaced only the native View Transition API (skill 12) as a narrow, optional addition. **Docs/devops/writing** hit a real wall: the site's term search (`?q=`) requires an OIDC token this session doesn't have, and no category route exists for those terms — the agent refused to fake candidates from an unfiltered result instead of forcing a recommendation. No new skills this round — just surgical enrichment of 3 existing ones, confirming the prior two rounds had already captured most of what the registry had to offer. | [`skills/03-backend-api/references/idempotencia-e-postgres-avancado.md`](skills/03-backend-api/references/idempotencia-e-postgres-avancado.md), [`skills/05-qa-testing/references/playwright-patterns.md`](skills/05-qa-testing/references/playwright-patterns.md), [`skills/12-motion-design/references/view-transitions-api.md`](skills/12-motion-design/references/view-transitions-api.md) |
 | **v2.66.0** | **Two new game-dev skills (66, 67), sourced with opposite license treatments; skill 12 gets a decision gate and a review checklist for animation.** Closes the two investigations v2.65.0 had left open. **Skill 66 (game-architecture-design)**, brand new, covers game system architecture, design review, and numeric balance — the gap was identified by reading [Yuki001/game-dev-skills](https://github.com/Yuki001/game-dev-skills) (dense, real depth, but **no declared license**), so the skill's content is entirely original writing: no sentence ported or closely paraphrased from that source, since its license doesn't permit text reuse. **Skill 67 (game-engine-development)** covers real Unity C# and Unreal C++ implementation (ECS, performance optimization, multiplayer networking) — code ported near-verbatim from [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills) (MIT, 11k stars, the only candidate source with genuine engine coverage), with explicit attribution. It says outright that Godot has no real depth in either evaluated source, instead of faking parity across all three engines. **Skill 12** gains `references/decision-gate-and-review.md`, combining 3 real sources from [emilkowalski/skills](https://github.com/emilkowalski/skills) (MIT) found via an "animation" search on skills.sh: a 4-question decision gate plus a 6-category seam sweep (from `find-animation-opportunities`), a ~30-term motion-vocabulary glossary (from `animation-vocabulary`), and a review checklist with a cascading remediation hierarchy — delete → reduce → easing → origin → interruptibility → GPU-only → asymmetric timing → polish → accessibility, including the 300ms UI ceiling and the `scale(0)` anti-pattern (from `review-animations`). | [`skills/66-game-architecture-design/`](skills/66-game-architecture-design/), [`skills/67-game-engine-development/`](skills/67-game-engine-development/), [`skills/12-motion-design/references/decision-gate-and-review.md`](skills/12-motion-design/references/decision-gate-and-review.md) |
@@ -161,7 +162,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 66 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 68 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -198,14 +199,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 66 skills (66 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 68 skills (68 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 66 skills | ✅ | ✅ | ✅ |
+| 68 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |

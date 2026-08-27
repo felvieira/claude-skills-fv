@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.69.0] - 2026-08-27 — skills 68 e 69 novas (pipeline de personagem 3D/2D via AccuRIG+Blender+IA)
+
+Usuário forneceu 2 whitepapers técnicos próprios (pesquisa original, não material de terceiro sujeito a licença de conteúdo) sobre pipeline de animação de personagem 3D e derivação/geração 2D. Ambos citam ferramentas de terceiro com licenças variadas, preservadas em tabela completa sem esconder as restritivas.
+
+### Adicionado
+- **`skills/68-character-animation-3d/`** (nova) — AccuRIG tratado como fronteira de certificação do rig (não API headless, que não existe) → Blender CLI headless (`bpy`, `--background --python`) → retargeting via delta de quaternion relativo à rest pose → mapa comparativo de 10 tecnologias de IA de motion (text-to-motion/video-to-motion/pose-estimation/retargeting-tool), com a distinção crítica AccuRIG AI Deep Search (busca semântica em 4500+ motions) vs modelo de síntese real → export GLB/FBX/Alembic. Todos os scripts `bpy` de referência preservados na íntegra (import, semantic bone mapping via `BONE_ALIASES`, `retarget_frame`, bake de constraints). Licenças de MDM/MoMask marcadas como "não confirmadas no documento fonte" em vez de chutadas
+- **`skills/69-character-pipeline-2d/`** (nova) — assume o pipeline 3D já pronto via skill 68. Cobre `MotionPlan.json` como contrato (LLM = diretor de intenção/timing/fases/eventos, nunca gerador de rotação de bone — reduz erro e superfície de prompt injection), as 5 estratégias de produção 2D, geração 2D nativa via Qwen-Image-Layered/Qwen-Image-Edit com tratamento de occlusion completion, Wan-Animate como motion reference/previs apenas (anti-padrão explícito de usar vídeo gerado como frame final), ComfyUI como servidor de inferência headless, rig 2D esqueletal (Blender+Grease Pencil vs Spine CLI vs LoongBones), o CLI `assetctl`, e arquitetura de testes/CI em 5 grupos com build graph content-addressed
+- Cross-links pequenos entre skills 66/67 (game-dev) e 68/69 (pipeline de asset de personagem) — arquitetura/código de engine vs. pipeline de conteúdo são frentes complementares, não sobrepostas
+
+### Corrigido
+- Contagem de skills (66→68) em `README.md`, `README.pt-BR.md`, `docs/WIKI.md`, `docs/WIKI.pt-BR.md`, `docs/SKILLS-OVERVIEW.md`, `mcp-server/package.json`, `.claude-plugin/plugin.json` e `.claude-plugin/marketplace.json`. Entradas `#### Skill 68` e `#### Skill 69` adicionadas no WIKI
+
+### Nota de processo
+A skill 69 ficou pela metade numa rodada anterior — o agente bateu o limite de sessão da API depois de entregar o `SKILL.md` completo, mas antes dos 3 arquivos de `references/`. Retomado com um agente novo que leu o `SKILL.md` já pronto como especificação (a tabela "Assunto → Arquivo" no topo já dizia exatamente o que cada referência precisava conter) e completou só o que faltava, sem redundância nem reescrita do que já estava correto.
+
+Validado: `check-consistency` (68 skills, 38 tools, 16 agents — limpo), `eval-plugin-routing --strict` (23/23), `eval-triggers` (62/62, skill 68 80% e skill 69 90% de should-trigger).
+
 ## [2.68.0] - 2026-08-26 — skill 40 ganha arbitragem em caso de discordância entre agentes
 
 Continuação da varredura do skills.sh — desta vez pelo topic `agent-workflows` e busca de infra (Kubernetes/Terraform). A maior parte foi descartada por já estar coberta com mais profundidade pelo kit (orquestração própria via skill 09/40/programs, deploy via skill 07/20/43/46), mas surgiu um insight conceitual real: um padrão de **arbitragem por discordância** entre reviewers, com **gate fail-closed**, que o kit não tinha.

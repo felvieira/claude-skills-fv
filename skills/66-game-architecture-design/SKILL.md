@@ -161,6 +161,10 @@ economia, PvP/metagame, recompensa aleatoria).
 
 - Skill 67 (Game Engine Development) — decisao arquitetural e numeros de balance viram insumo pra
   implementacao real em Unity/Unreal
+- Skill 68 (Character Animation 3D) — quando o sistema de combate/locomocao desenhado aqui precisa da
+  animacao de personagem 3D correspondente (rig, retargeting, IA de motion)
+- Skill 69 (Character Pipeline 2D) — quando a biblioteca de acoes (locomotion/combat/reactions)
+  desenhada aqui precisa virar `MotionPlan.json` e sprite/rig 2D
 - Skill 02 (UI/UX) — quando a review de design aponta problema de interface/HUD que precisa de
   decisao visual, nao so estrutural
 - Skill 09 (Orchestrator) — achados de review viram proxima etapa do pipeline quando a task exige

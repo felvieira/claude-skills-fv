@@ -1,6 +1,6 @@
 {
   "name": "claude-skills-fv",
-  "description": "Dev Team Kit — 66 specialist skills + 16 dispatchable subagents + 43 slash commands for coding agents. Spec-driven development, path-scoped rules system, anti-AI writing, memory consolidation, silent-failure hunting, context budgeting, skills-vs-agents disambiguation and more.",
+  "description": "Dev Team Kit — 68 specialist skills + 16 dispatchable subagents + 43 slash commands for coding agents. Spec-driven development, path-scoped rules system, anti-AI writing, memory consolidation, silent-failure hunting, context budgeting, skills-vs-agents disambiguation and more.",
   "owner": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"
@@ -12,8 +12,8 @@
         "source": "github",
         "repo": "felvieira/claude-skills-fv"
       },
-      "description": "66 specialist skills + 16 dispatchable subagents for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, parallel-dispatcher, pattern-conformity, research-prep, context-budget, ux-research, ui-polish, doubt-driven-review, silent-failure-hunter + spec-driven development (/constitution, /analyze, /checklist), path-scoped rules system (.claude/rules/ with paths: glob), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), skills-vs-agents disambiguation hook (prevents InputValidationError when skill names are passed as subagent_type), and more.",
-      "version": "2.68.0",
+      "description": "68 specialist skills + 16 dispatchable subagents for coding agents — orchestrator, backend, frontend, QA, security, deploy, detective-spec, static-analysis, skill-author, web-asset-generator, tdd-engineer, architecture-deepener, parallel-dispatcher, pattern-conformity, research-prep, context-budget, ux-research, ui-polish, doubt-driven-review, silent-failure-hunter + spec-driven development (/constitution, /analyze, /checklist), path-scoped rules system (.claude/rules/ with paths: glob), anti-AI writing (/humanize), memory consolidation (/consolidate-memory), skills-vs-agents disambiguation hook (prevents InputValidationError when skill names are passed as subagent_type), and more.",
+      "version": "2.69.0",
       "category": "development",
       "tags": [
         "skills",

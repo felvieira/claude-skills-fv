@@ -1,0 +1,22 @@
+{
+  "skill": "68-character-animation-3d",
+  "should_trigger": [
+    "como exportar o rig do AccuRIG pro Blender corretamente",
+    "escrever um script bpy que roda headless com blender --background --python",
+    "implementar semantic bone mapping pra desacoplar do nome CC_Base_L_Upperarm",
+    "fazer retargeting de animacao entre dois esqueletos com proporcao diferente",
+    "qual a diferenca entre AccuRIG AI Deep Search e um modelo text-to-motion de verdade",
+    "corrigir o root motion que ta duplicando o deslocamento do personagem",
+    "bake de constraints e IK antes de exportar FBX pro Unity",
+    "usar MDM ou MoMask pra gerar animacao a partir de texto",
+    "diferenca entre armature.data.bones e armature.pose.bones no Blender",
+    "converter motion capture do DeepMotion ou Rokoko pro rig do meu personagem"
+  ],
+  "shouldnt_trigger": [
+    "implementar object pooling jogo em Unity C#",
+    "revisar esse game design document e apontar fraquezas",
+    "balancear a curva de progressao de XP desse RPG",
+    "gerar um sprite sheet do personagem principal",
+    "criar animacao 2D esqueletal no Spine pro personagem"
+  ]
+}

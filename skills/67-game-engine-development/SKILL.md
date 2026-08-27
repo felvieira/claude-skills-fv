@@ -136,6 +136,10 @@ equivalência de profundidade com as referências de Unity/Unreal desta skill.
 
 - Skill 66 (Game Architecture Design) — decisao de paradigma, especificacao de sistema, e numeros de
   balance ja calculados, prontos pra virar codigo
+- Skill 68 (Character Animation 3D) — FBX/GLB de personagem ja rigado e animado (baked), pronto pra
+  virar Animator Controller (Unity) ou Anim Blueprint (Unreal)
+- Skill 69 (Character Pipeline 2D) — atlas/rig 2D prontos (sprite atlas + JSON, ou projeto Spine),
+  para integracao runtime via codigo (Godot `AnimatedSprite2D`/`Skeleton2D`, Phaser `load.atlas`)
 - Skill 09 (Orchestrator) — quando a task maior decide que implementacao de engine e a proxima etapa
 
 ### Entrega para
@@ -146,6 +150,9 @@ equivalência de profundidade com as referências de Unity/Unreal desta skill.
   logging/metrica/alerta em producao
 - Skill 66 (Game Architecture Design) — quando a implementacao revela que a decisao de arquitetura
   original nao se sustenta e precisa ser revisitada
+
+Pedido de pipeline de conteudo/asset de animacao de personagem 3D (rig AccuRIG, retargeting, IA de
+motion) — nao codigo de engine — vai pra `skills/68-character-animation-3d/SKILL.md`.
 
 ## Evidencia de Conclusao
 

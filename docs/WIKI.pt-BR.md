@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 66 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Versão:** 68 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -832,6 +832,20 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Diferente de:** a skill 66 (game-architecture-design) é dona da decisão de design e dos números de balance — a skill 67 só constrói; não decide o que construir nem por quê.
 **Takeaway:** **não finja cobertura que a fonte não tem** — a fonte MIT de onde esta skill porta código ([Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills)) cobre Unity e Unreal com código de produção real, mas tem zero conteúdo de Godot em qualquer lugar do repositório; a skill diz isso explicitamente numa seção "Cobertura de Godot" em vez de responder pergunta de Godot silenciosamente com chute com sabor de Unity.
 
+#### Skill 68 — Character Animation 3D
+
+[Omitted long context line]
+**Quando ativar:** riggar um personagem 3D humanoide via AccuRIG e normalizá-lo no Blender; fazer retargeting de movimento de qualquer fonte (mocap, text-to-motion, vídeo) sobre um rig certificado; decidir qual tecnologia de IA de motion serve pra um caso (text-to-motion vs video-to-motion vs pose estimation vs ferramenta de retargeting); rodar Blender headless (`--background --python`) como parte de um pipeline de build; escrever ou debugar a matemática de retargeting via delta de quaternion relativo à rest pose.
+**Diferente de:** a skill 67 (game-engine-development) é dona do código de engine runtime (Unity C#/Unreal C++) — a skill 68 fica a montante disso, produzindo o `character.glb`/`animation.glb` certificados que a engine consome; nunca escreve código de gameplay sozinha. A skill 69 (character-pipeline-2d) assume que a saída 3D desta skill já existe e foca em derivar assets 2D a partir dela.
+**Takeaway:** **o AI Deep Search do próprio AccuRIG não é um gerador text-to-motion** — é busca semântica sobre uma biblioteca já existente de 4500+ movimentos curados, ferramenta fundamentalmente diferente de um modelo de síntese como SayMotion ou MDM que inventa uma sequência nova a partir de um prompt; confundir os dois leva a esperar geração de ação inédita de uma feature de busca que só pode devolver o que alguém já capturou.
+
+#### Skill 69 — Character Pipeline 2D
+
+[Omitted long context line]
+**Quando ativar:** escolher entre as cinco estratégias de produção 2D pra um projeto; projetar ou validar um `MotionPlan.json` (intenção/timing/fases/contatos/eventos, nunca rotação de bone crua); derivar sprites/atlases de um rig 3D já existente via render ortográfico; gerar arte 2D de personagem nativamente com Qwen-Image-Layered/Qwen-Image-Edit e tratar occlusion completion; configurar ComfyUI como servidor de inferência headless, ou escolher ferramenta de rig 2D esqueletal (Blender+Grease Pencil vs Spine vs LoongBones); desenhar o CLI `assetctl` ou a camada de CI/testes do pipeline de asset.
+**Diferente de:** a skill 68 (character-animation-3d) é dona da matemática AccuRIG→Blender→retargeting que produz o GLB certificado que esta skill consome — a 69 nunca duplica isso; ela parte de um asset 3D já certificado (ou arte 2D nativa) e foca no `MotionPlan` como contrato do LLM-diretor, na derivação 2D e na orquestração/teste do pipeline.
+**Takeaway:** **nunca pedir rotação de bone a uma LLM** — tirar Euler angles ou quaternions de um modelo de linguagem é um erro de arquitetura esperando pra acontecer; o único trabalho da LLM é emitir um `MotionPlan.json` validado por schema (intenção, fases, contatos, eventos), e um `MotionResolver` determinístico — não o modelo — transforma isso em transforms reais, o que também fecha caminhos de prompt injection que output executável deixaria aberto.
+
 ---
 
 ## 6. Subagents (16)
@@ -947,7 +961,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **66 skills** em `skills/NN-nome/SKILL.md`
+- **68 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -960,7 +974,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 66 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 68 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -985,7 +999,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 66 skills | ✓ | ✓ | ✓ |
+| 68 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
