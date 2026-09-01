@@ -1,7 +1,7 @@
 # Codex Plugin — Integração no Dev Team Kit
 
-**Status:** integração via plugin oficial OpenAI (`openai/codex-plugin-cc`, Apache-2.0), com adapters locais de hooks.
-O runtime do Claude continua usando `hooks/hooks.json`; o Codex usa `.codex/hooks.json` e `.codex/codex-hook.mjs`, que normaliza payloads e falha aberto.
+**Status:** integração via plugin oficial OpenAI (`openai/codex-plugin-cc`, Apache-2.0), com dispatcher cross-runtime de hooks.
+Claude e Codex usam `hooks/scripts/runtime-dispatcher.mjs`; o registro específico do Codex fica em `.codex/hooks.json`.
 
 ## Por que via plugin oficial
 
@@ -11,9 +11,9 @@ Quando o user roda `/plugin install codex@openai-codex`, os 7 commands abaixo fi
 
 ### Hooks no Codex
 
-O arquivo `.codex/hooks.json` registra `SessionStart`, `PreToolUse`, `PostToolUse` e `Stop` através do dispatcher local. Ele não carrega diretamente os scripts do Claude: isso evita depender de `CLAUDE_PLUGIN_ROOT`, de nomes de campos exclusivos do Claude ou de exceções que possam transformar um sensor em falha de ferramenta.
+O arquivo `.codex/hooks.json` registra `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse` e `Stop` através do dispatcher compartilhado. Ele normaliza o payload antes de executar os sensores canônicos do kit e agrega as respostas em um único JSON válido.
 
-O dispatcher aceita `tool_name`/`tool`, `tool_input`/`input` e `tool_response`/`tool_result`, redige segredos no log `.auto/codex-events.jsonl` e sempre retorna `continue: true` quando um sensor não consegue processar o payload.
+O dispatcher aceita `tool_name`/`tool`, `tool_input`/`input` e `tool_response`/`tool_result`. Falhas individuais são registradas em `.auto/hook-errors.jsonl`; o evento continua com `continue: true`, evitando que um sensor opcional quebre a ferramenta. O Claude continua recebendo os mesmos sensores, agora agregados pelo mesmo dispatcher.
 
 ## Commands disponíveis (do `openai/codex-plugin-cc`)
 

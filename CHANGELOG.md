@@ -5,6 +5,24 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.70.0] - 2026-09-01 — hooks portáveis entre Claude Code e Codex
+
+### Adicionado
+
+- **Dispatcher compartilhado de hooks** (`hooks/scripts/runtime-dispatcher.mjs`) — normaliza eventos e nomes de tools dos dois runtimes e executa os mesmos sensores do kit em Claude Code e Codex.
+- **Cobertura Codex completa** — `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse` e `Stop`, com agregação de contexto e política fail-open por sensor.
+- **Diagnóstico persistente** — falhas isoladas são registradas em `.auto/hook-errors.jsonl` sem derrubar a sessão inteira.
+
+### Corrigido
+
+- Hooks do Codex deixaram de depender de um adaptador mínimo que não cobria os sensores reais do kit.
+- Stop hooks agora sempre devolvem JSON válido para o runtime consumidor.
+- Testes do instalador e smoke test agora verificam o dispatcher portável e a instalação de `PostToolUse`.
+
+### Compatibilidade
+
+- Claude Code continua usando `hooks/hooks.json`, agora apontando para o mesmo dispatcher; os scripts canônicos e o comportamento dos sensores foram preservados.
+
 ## [2.69.0] - 2026-08-27 — skills 68 e 69 novas (pipeline de personagem 3D/2D via AccuRIG+Blender+IA)
 
 Usuário forneceu 2 whitepapers técnicos próprios (pesquisa original, não material de terceiro sujeito a licença de conteúdo) sobre pipeline de animação de personagem 3D e derivação/geração 2D. Ambos citam ferramentas de terceiro com licenças variadas, preservadas em tabela completa sem esconder as restritivas.

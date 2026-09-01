@@ -114,7 +114,7 @@ assert.equal(claudeProjectMcp.mcpServers?.["dev-team-kit"]?.args?.[0], ".bot/mcp
 assert.equal(claudeProjectMcp.mcpServers?.["dev-team-kit"]?.env, undefined);
 assert.ok(!claudeProjectMcp.mcpServers?.fal);
 const postToolCommands = hookCommands(settings, "PostToolUse");
-assert.ok(postToolCommands.some((command) => command.includes(".bot/hooks/scripts/session-event-logger.mjs")));
+assert.ok(postToolCommands.some((command) => command.includes(".bot/hooks/scripts/runtime-dispatcher.mjs") && command.includes("PostToolUse")));
 assert.ok(!Object.keys(settings.hooks || {}).flatMap((event) => hookCommands(settings, event)).some((command) => command.includes("CLAUDE_PLUGIN_ROOT")));
 
 const tools = await listMcpTools();

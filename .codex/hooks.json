@@ -5,7 +5,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/codex-hook.mjs"
+            "command": "node hooks/scripts/runtime-dispatcher.mjs SessionStart"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/scripts/runtime-dispatcher.mjs UserPromptSubmit"
           }
         ]
       }
@@ -16,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/codex-hook.mjs"
+            "command": "node hooks/scripts/runtime-dispatcher.mjs PreToolUse"
           }
         ]
       }
@@ -27,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/codex-hook.mjs"
+            "command": "node hooks/scripts/runtime-dispatcher.mjs PostToolUse"
           }
         ]
       }
@@ -37,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/codex-hook.mjs"
+            "command": "node hooks/scripts/runtime-dispatcher.mjs Stop"
           }
         ]
       }

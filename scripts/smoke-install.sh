@@ -117,9 +117,9 @@ node -e "
     };
     const postToolUse = flattenCommands('PostToolUse');
     const preToolUse = flattenCommands('PreToolUse');
-    const hasEventLogger = postToolUse.some(c => c.includes('session-event-logger'));
-    if (!hasEventLogger) {
-      throw new Error('hooks.json PostToolUse does not include session-event-logger');
+    const hasDispatcher = postToolUse.some(c => c.includes('runtime-dispatcher') && c.includes('PostToolUse'));
+    if (!hasDispatcher) {
+      throw new Error('hooks.json PostToolUse does not include runtime-dispatcher');
     }
     if (preToolUse.length === 0) {
       throw new Error('hooks.json PreToolUse is empty');
@@ -135,8 +135,8 @@ node -e "
     const settings = JSON.parse(d);
     const blocks = settings.hooks?.PostToolUse || [];
     const commands = blocks.flatMap(block => block.hooks || (block.command ? [block] : [])).map(hook => hook.command || '');
-    if (!commands.some(command => command.includes('.bot/hooks/scripts/session-event-logger.mjs'))) {
-      throw new Error('installed settings do not register session-event-logger');
+    if (!commands.some(command => command.includes('.bot/hooks/scripts/runtime-dispatcher.mjs') && command.includes('PostToolUse'))) {
+      throw new Error('installed settings do not register runtime-dispatcher');
     }
     if (commands.some(command => command.includes('CLAUDE_PLUGIN_ROOT'))) {
       throw new Error('installed settings must not depend on CLAUDE_PLUGIN_ROOT');
