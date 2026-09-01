@@ -1,13 +1,19 @@
 # Codex Plugin — Integração no Dev Team Kit
 
-**Status:** integração via plugin oficial OpenAI (`openai/codex-plugin-cc`, Apache-2.0).
-**Não absorvemos código** — instalamos como plugin externo. Este doc explica os 7 commands disponíveis e quando usar cada um.
+**Status:** integração via plugin oficial OpenAI (`openai/codex-plugin-cc`, Apache-2.0), com adapters locais de hooks.
+O runtime do Claude continua usando `hooks/hooks.json`; o Codex usa `.codex/hooks.json` e `.codex/codex-hook.mjs`, que normaliza payloads e falha aberto.
 
 ## Por que via plugin oficial
 
 O OpenAI mantém o plugin `codex-plugin-cc` (19k+ stars, Apache-2.0) com runtime próprio (`scripts/codex-companion.mjs`), schemas, hooks de aprovação de write, e sessões de background com cancel/result/status. Reimplementar dentro do nosso kit seria duplicação cara que diverge da fonte oficial.
 
 Quando o user roda `/plugin install codex@openai-codex`, os 7 commands abaixo ficam disponíveis nativamente.
+
+### Hooks no Codex
+
+O arquivo `.codex/hooks.json` registra `SessionStart`, `PreToolUse`, `PostToolUse` e `Stop` através do dispatcher local. Ele não carrega diretamente os scripts do Claude: isso evita depender de `CLAUDE_PLUGIN_ROOT`, de nomes de campos exclusivos do Claude ou de exceções que possam transformar um sensor em falha de ferramenta.
+
+O dispatcher aceita `tool_name`/`tool`, `tool_input`/`input` e `tool_response`/`tool_result`, redige segredos no log `.auto/codex-events.jsonl` e sempre retorna `continue: true` quando um sensor não consegue processar o payload.
 
 ## Commands disponíveis (do `openai/codex-plugin-cc`)
 
