@@ -1,0 +1,15 @@
+{
+  "name": "claude-skills-fv",
+  "description": "Dev Team Kit — marketplace manifest lido pelo Codex (.agents/plugins/). O plugin e a raiz deste repo; metadados vem de .claude-plugin/plugin.json. O Claude Code continua lendo .claude-plugin/marketplace.json.",
+  "owner": {
+    "name": "felvieira",
+    "url": "https://github.com/felvieira"
+  },
+  "plugins": [
+    {
+      "name": "dev-team-kit-fv",
+      "source": "./",
+      "category": "development"
+    }
+  ]
+}

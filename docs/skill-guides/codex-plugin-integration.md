@@ -15,6 +15,45 @@ O arquivo `.codex/hooks.json` registra `SessionStart`, `UserPromptSubmit`, `PreT
 
 O dispatcher aceita `tool_name`/`tool`, `tool_input`/`input` e `tool_response`/`tool_result`. Falhas individuais são registradas em `.auto/hook-errors.jsonl`; o evento continua com `continue: true`, evitando que um sensor opcional quebre a ferramenta. O Claude continua recebendo os mesmos sensores, agora agregados pelo mesmo dispatcher.
 
+#### Como o Codex executa um hook (confirmado no fonte, `codex-rs/hooks/src/engine/command_runner.rs`)
+
+| Aspecto | Comportamento real |
+|---|---|
+| Campo usado | `commandWindows` no Windows, `command` no resto (`discovery.rs`: `command_windows.unwrap_or(command)`) |
+| Shell | **o shell configurado do usuário**, não o cmd. Com PowerShell como shell padrão, o `commandWindows` é interpretado pelo PowerShell; no POSIX, `$SHELL -lc` (fallback `/bin/sh`) |
+| cwd | o cwd da sessão (`current_dir(cwd)`) — abrir o Codex na raiz do repo |
+| Env | `env_clear()` + snapshot da sessão; no Windows com PowerShell o snapshot não é suportado ainda (aviso no log), então não conte com variáveis exóticas |
+| Timeout | default 600 s (o kit declara 30 s); `SessionEnd` é clampado a 3 s |
+| Output | JSON estrito (`additionalProperties: false`); `Stop` só aceita `continue/decision/reason/stopReason/suppressOutput/systemMessage` |
+| Confiança | hash por grupo de hook em `~/.codex/config.toml` → `[hooks.state]`. **Toda edição no `hooks.json` invalida o hash**: no TUI o Codex pede pra confiar de novo; no `codex exec` o hook é **pulado em silêncio**. Pra testar sem re-confiar: `codex exec --dangerously-bypass-hook-trust` |
+
+Regras que seguem disso pro `commandWindows`:
+
+- Só sintaxe válida em PowerShell **e** cmd ao mesmo tempo: `node <caminho relativo> <Evento>`. Nada de `$(...)`, `for /f`, `%G`, `&`, `|`, `>` — cada um desses quebra num dos dois shells. Foi exatamente isso que fazia todo hook do kit falhar no Windows (`"git rev-parse --show-toplevel" was unexpected at this time` — o PowerShell reinterpretando um `for /f` de cmd).
+- Sem BOM no `hooks.json` (`Set-Content -Encoding utf8` do PowerShell 5.1 grava BOM e o parser do Codex falha com `expected value at line 1 column 1`). Gravar com `[System.IO.File]::WriteAllText(path, text, UTF8Encoding($false))` ou pelo editor.
+- O `command` POSIX pode continuar usando `$(git rev-parse --show-toplevel)`, que resolve a raiz mesmo em subdiretório.
+
+Diagnóstico rápido quando "dá erro no Codex": `codex exec --skip-git-repo-check --dangerously-bypass-hook-trust "ok"` imprime `hook: <Evento> Completed|Failed` por handler. Pra ver stderr do hook, aponte temporariamente o `commandWindows` pra `... 1> arquivo.txt 2> arquivo-err.txt`.
+
+**Gap conhecido:** `setup/install.sh` registra hooks só em `.claude/settings.json` do repo consumidor. O `.codex/hooks.json` vale para este repo (dogfooding); consumidor que quiser os sensores no Codex copia o arquivo trocando `hooks/scripts/` por `.bot/hooks/scripts/`.
+
+### Marketplace no Codex
+
+O Codex procura o manifest de marketplace nesta ordem: `.agents/plugins/marketplace.json`, `.agents/plugins/api_marketplace.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`. Ele **não** aceita o formato `{"source": "github", "repo": ...}` do Claude — só path string (`"./"`, `"./sub"`) ou objeto `{"source": "local"|"url"|"git-subdir"|"npm"}`. Por isso o kit mantém dois manifests:
+
+- `.claude-plugin/marketplace.json` — formato do Claude Code, intocado.
+- `.agents/plugins/marketplace.json` — formato do Codex, mínimo (`name` + `source: "./"` + `category`); versão e descrição vêm do `.claude-plugin/plugin.json`, que o Codex aceita como manifest de plugin. Sem duplicar versão = sem drift.
+
+Instalar o kit no Codex:
+
+```bash
+codex plugin marketplace add claude-skills-fv https://github.com/felvieira/claude-skills-fv.git   # uma vez
+codex plugin marketplace upgrade                                                                    # após cada release
+codex plugin add dev-team-kit-fv@claude-skills-fv
+```
+
+Sem o manifest do Codex, o log mostrava `WARN skipping marketplace plugin with unsupported source ... plugin="dev-team-kit-fv"` e `codex plugin list -m claude-skills-fv` vinha vazio.
+
 ## Commands disponíveis (do `openai/codex-plugin-cc`)
 
 | Command | O que faz | Quando usar |

@@ -5,6 +5,23 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.71.1] - 2026-09-02 — hooks do Codex funcionando no Windows + kit instalável como plugin no Codex
+
+Os hooks da v2.70.0 falhavam em todo evento no Codex (`hook: SessionStart Failed`, `hook: UserPromptSubmit Failed`) enquanto passavam quando rodados à mão. Reproduzido com `codex exec` e com o stderr do hook redirecionado pra arquivo; causa confirmada lendo `codex-rs/hooks/src/engine/command_runner.rs`.
+
+### Corrigido
+
+- **`.codex/hooks.json`** — o Codex executa `commandWindows` pelo **shell configurado do usuário** (PowerShell, no caso), não pelo cmd. O `cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/...` virava `"git rev-parse --show-toplevel" was unexpected at this time` quando o PowerShell reinterpretava `(...)` e `%G`. Agora `commandWindows` é só `node hooks/scripts/runtime-dispatcher.mjs <Evento>` — válido em PowerShell e cmd, sem operadores de shell. `command` POSIX mantido. Validado no Codex real: 5/5 eventos `Completed`.
+- **Kit não carregava como plugin no Codex** (`WARN skipping marketplace plugin with unsupported source ... plugin="dev-team-kit-fv"`): o Codex não aceita `{"source": "github"}` do manifest do Claude. Novo `.agents/plugins/marketplace.json` (primeiro path que o Codex procura) com `source: "./"`, mínimo pra não duplicar versão. `codex plugin list -m claude-skills-fv` passa a listar `dev-team-kit-fv@claude-skills-fv`.
+
+### Documentado
+
+- `docs/skill-guides/codex-plugin-integration.md` — tabela de como o Codex executa hooks (campo, shell, cwd, env, timeout, schema de output, trust por hash), regras pro `commandWindows`, armadilha do BOM do PowerShell 5.1, receita de diagnóstico com `--dangerously-bypass-hook-trust`, instalação via marketplace, e o gap de o instalador ainda não registrar hooks do Codex em repos consumidores.
+
+### Atenção ao atualizar
+
+Editar `hooks.json` muda o hash de confiança: na próxima sessão interativa o Codex pede pra confiar os hooks de novo (em `codex exec` eles são pulados em silêncio até isso). O manifest de marketplace só vale pro Codex depois de `codex plugin marketplace upgrade`.
+
 ## [2.71.0] - 2026-09-01 — pipeline de campanha orientado por evidência
 
 ### Adicionado

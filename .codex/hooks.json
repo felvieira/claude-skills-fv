@@ -1,4 +1,5 @@
 {
+  "description": "Dev Team Kit hooks para Codex. `command` roda no shell POSIX do usuario (sh/bash/zsh). `commandWindows` roda no shell configurado do Codex no Windows (PowerShell ou cmd) — por isso usa so `node <caminho relativo>`, sem $(...), for /f, & ou | que so um dos dois shells entende. Abrir a sessao do Codex na raiz do repo.",
   "hooks": {
     "SessionStart": [
       {
@@ -6,7 +7,8 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" SessionStart",
-            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs SessionStart"
+            "commandWindows": "node hooks/scripts/runtime-dispatcher.mjs SessionStart",
+            "timeout": 30
           }
         ]
       }
@@ -17,7 +19,8 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" UserPromptSubmit",
-            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs UserPromptSubmit"
+            "commandWindows": "node hooks/scripts/runtime-dispatcher.mjs UserPromptSubmit",
+            "timeout": 30
           }
         ]
       }
@@ -29,7 +32,8 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" PreToolUse",
-            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs PreToolUse"
+            "commandWindows": "node hooks/scripts/runtime-dispatcher.mjs PreToolUse",
+            "timeout": 30
           }
         ]
       }
@@ -41,7 +45,8 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" PostToolUse",
-            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs PostToolUse"
+            "commandWindows": "node hooks/scripts/runtime-dispatcher.mjs PostToolUse",
+            "timeout": 30
           }
         ]
       }
@@ -52,7 +57,8 @@
           {
             "type": "command",
             "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" Stop",
-            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs Stop"
+            "commandWindows": "node hooks/scripts/runtime-dispatcher.mjs Stop",
+            "timeout": 30
           }
         ]
       }
