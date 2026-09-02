@@ -5,6 +5,17 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.71.0] - 2026-09-01 — pipeline de campanha orientado por evidência
+
+### Adicionado
+
+- **Skill 70 (`campaign-research-strategy`)** — evidence ledger, pesquisa de mercado/concorrentes/público, oportunidades, claims autorizados e guardrails.
+- **Skill 71 (`campaign-copywriting`)** — rotas de copy distintas, rastreabilidade de claims, adaptação por canal/duração e handoff visual.
+- **Skill 72 (`campaign-visual-direction`)** — conceito, Bíblia de Continuidade, papéis de referência, shot intents e overlays determinísticos.
+- Fixtures de trigger e capacidades no catálogo `product-marketing`, com exclusões para não colidir com a skill 50.
+
+As três skills formam `research -> copy -> visual direction` e permanecem independentes de fornecedor.
+
 ## [2.70.0] - 2026-09-01 — hooks portáveis entre Claude Code e Codex
 
 ### Adicionado

@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 68 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Version:** 71 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -866,6 +866,24 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **Distinct from:** skill 68 (character-animation-3d) owns the AccuRIG→Blender→retargeting math that produces the certified GLB this skill consumes — skill 69 never duplicates that; it starts from an already-certified 3D asset (or native 2D art) and focuses on `MotionPlan` as the LLM-director contract, 2D derivation, and pipeline orchestration/testing.
 **Takeaway:** **an LLM should never be asked for bone rotations** — pushing Euler angles or quaternions out of a language model is an architecture error waiting to happen; the LLM's only job is to emit a schema-validated `MotionPlan.json` (intent, phases, contacts, events), and a deterministic `MotionResolver` — not the model — turns that into actual transforms, which also closes off prompt-injection paths that executable output would leave open.
 
+#### Skill 70 — Campaign Research Strategy
+
+**What it does:** builds a source-linked `ResearchStrategyArtifact` with evidence ledger, audience, competitors, opportunities, authorized claims and guardrails before campaign writing starts.
+**When to activate:** market or competitor research for a campaign, consumer voice, evidence-backed angles, or strategy before copy.
+**Takeaway:** research produces an auditable source of truth, not ad copy.
+
+#### Skill 71 — Campaign Copywriting
+
+**What it does:** converts the selected strategy into structurally different copy routes while preserving evidence links and recording unsupported claim gaps.
+**When to activate:** copy deck from approved research, claim-safe ad variations, or channel and duration adaptation.
+**Takeaway:** a creative variation may be emotional, but a commercial claim remains traceable.
+
+#### Skill 72 — Campaign Visual Direction
+
+**What it does:** converts approved strategy and copy into concept, continuity bible, reference roles, shot intents and deterministic overlay plans.
+**When to activate:** visual direction, advertising shot list, continuity planning or visual handoff before media prompts.
+**Takeaway:** direction describes narrative intent; compilers own provider prompts and compositors own readable text and UI.
+
 ---
 
 ## 6. Subagents (16)
@@ -981,7 +999,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **68 skills** in `skills/NN-name/SKILL.md`
+- **71 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -994,7 +1012,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 68 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 71 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1019,7 +1037,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 68 skills | ✓ | ✓ | ✓ |
+| 71 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

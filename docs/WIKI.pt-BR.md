@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 68 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
+> **Versão:** 71 skills · 16 subagents · 45 slash commands · 61 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -846,6 +846,24 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Diferente de:** a skill 68 (character-animation-3d) é dona da matemática AccuRIG→Blender→retargeting que produz o GLB certificado que esta skill consome — a 69 nunca duplica isso; ela parte de um asset 3D já certificado (ou arte 2D nativa) e foca no `MotionPlan` como contrato do LLM-diretor, na derivação 2D e na orquestração/teste do pipeline.
 **Takeaway:** **nunca pedir rotação de bone a uma LLM** — tirar Euler angles ou quaternions de um modelo de linguagem é um erro de arquitetura esperando pra acontecer; o único trabalho da LLM é emitir um `MotionPlan.json` validado por schema (intenção, fases, contatos, eventos), e um `MotionResolver` determinístico — não o modelo — transforma isso em transforms reais, o que também fecha caminhos de prompt injection que output executável deixaria aberto.
 
+#### Skill 70 — Campaign Research Strategy
+
+**O que faz:** produz pesquisa e estratégia de campanha com ledger de evidências, público, concorrentes, oportunidades, claims autorizados e guardrails.
+**Quando ativar:** pesquisa de mercado ou concorrentes para campanha, voz do consumidor, ângulos com evidência ou estratégia antes da copy.
+**Takeaway:** pesquisa cria fonte de verdade auditável; não escreve anúncio.
+
+#### Skill 71 — Campaign Copywriting
+
+**O que faz:** transforma a estratégia selecionada em rotas de copy estruturalmente distintas, mantendo evidências e lacunas de claim explícitas.
+**Quando ativar:** copy deck a partir de pesquisa aprovada, variações rastreáveis ou adaptação por canal e duração.
+**Takeaway:** criatividade pode variar; claim comercial continua rastreável.
+
+#### Skill 72 — Campaign Visual Direction
+
+**O que faz:** transforma estratégia e copy aprovadas em conceito, Bíblia de Continuidade, papéis de referência, shot intents e overlays determinísticos.
+**Quando ativar:** direção visual, shot list publicitária, continuidade ou handoff antes dos prompts de mídia.
+**Takeaway:** direção define intenção narrativa; compilers cuidam de prompts e o compositor de texto e UI legível.
+
 ---
 
 ## 6. Subagents (16)
@@ -961,7 +979,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **68 skills** em `skills/NN-nome/SKILL.md`
+- **71 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -974,7 +992,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 68 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 71 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -999,7 +1017,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 68 skills | ✓ | ✓ | ✓ |
+| 71 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
