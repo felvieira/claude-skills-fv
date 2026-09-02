@@ -5,7 +5,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/runtime-dispatcher.mjs SessionStart"
+            "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" SessionStart",
+            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs SessionStart"
           }
         ]
       }
@@ -15,7 +16,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/runtime-dispatcher.mjs UserPromptSubmit"
+            "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" UserPromptSubmit",
+            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs UserPromptSubmit"
           }
         ]
       }
@@ -26,7 +28,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/runtime-dispatcher.mjs PreToolUse"
+            "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" PreToolUse",
+            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs PreToolUse"
           }
         ]
       }
@@ -37,7 +40,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/runtime-dispatcher.mjs PostToolUse"
+            "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" PostToolUse",
+            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs PostToolUse"
           }
         ]
       }
@@ -47,7 +51,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/runtime-dispatcher.mjs Stop"
+            "command": "node \"$(git rev-parse --show-toplevel)/hooks/scripts/runtime-dispatcher.mjs\" Stop",
+            "commandWindows": "cmd.exe /d /q /c for /f %G in ('git rev-parse --show-toplevel') do node %G/hooks/scripts/runtime-dispatcher.mjs Stop"
           }
         ]
       }

@@ -39,4 +39,26 @@ if (missing > 0) {
   process.exit(1);
 }
 
-console.log(`✅ All ${found} hook scripts referenced in hooks.json exist`);
+const codexRaw = JSON.parse(fs.readFileSync(".codex/hooks.json", "utf-8"));
+let codexFound = 0;
+for (const [event, blocks] of Object.entries(codexRaw.hooks || {})) {
+  for (const block of blocks || []) {
+    for (const hook of block.hooks || []) {
+      if (hook.type !== "command") continue;
+      codexFound++;
+      const generic = hook.command || "";
+      const windows = hook.commandWindows || "";
+      if (!generic.includes("git rev-parse --show-toplevel") || !generic.includes("runtime-dispatcher.mjs")) {
+        console.error(`❌ Codex ${event} hook must resolve the dispatcher from the git root`);
+        missing++;
+      }
+      if (!windows.includes("git rev-parse --show-toplevel") || !windows.includes("runtime-dispatcher.mjs")) {
+        console.error(`❌ Codex ${event} hook is missing its Windows git-root command override`);
+        missing++;
+      }
+    }
+  }
+}
+
+if (missing > 0) process.exit(1);
+console.log(`✅ All ${found} Claude hooks exist; all ${codexFound} Codex hooks resolve from the git root`);
