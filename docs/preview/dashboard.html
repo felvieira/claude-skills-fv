@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dev Team Kit — Insights Dashboard</title>
-<script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
-<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+<script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js" integrity="sha384-H3uzGzTfGHUAumB8+s4GEdfFwzAceN9wCCndN8AXubWKFIPuBSWKKtWDx7RhSf/z" crossorigin="anonymous"></script>
+<!-- cytoscape-fcose's UMD build expects window.coseBase (which itself expects
+     window.layoutBase) when loaded as a plain <script> — without these two,
+     the script silently leaves cytoscapeFcose undefined instead of throwing
+     at load time (root cause of "Cannot read properties of undefined
+     (reading 'layoutBase')" on first cytoscape.use(cytoscapeFcose) call). -->
+<script src="https://unpkg.com/layout-base@2.0.1/layout-base.js" integrity="sha384-5E2lB9AIGE6LRCnOOSTnZRlYZFZ01iMeN2fw97Z1r4Z/kXALxKw2AC+ZzQqoeDsG" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/cose-base@2.2.0/cose-base.js" integrity="sha384-RswRBkrMsPUYpJLbZ1CVA08zbNzAkykE2oGJTujBwfjWNdfxv2WVjLJNqv1LhAOp" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js" integrity="sha384-uk5Wbjq1+KqUdHO30w7N7GrEGdzBhaJeW9o/ANF6v9+yx3M/cBmoX51C000JNCUf" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/marked@13.0.3/marked.min.js" integrity="sha384-YTBHtsL8yVTHcLakYNyrOfK3K+QQcXiECuaALJ+3j7Mo681Rtzadt8NR6WrZH+eQ" crossorigin="anonymous"></script>
 <style>
   :root {
     --bg: #0a0a0a;
@@ -113,7 +121,7 @@
     gap: 16px;
     min-height: 500px;
   }
-  #cy {
+  #cy, #mem-cy {
     flex: 1;
     background: var(--bg-elev);
     border: 1px solid var(--border);
@@ -330,6 +338,10 @@
   <button class="tab-btn" data-tab="drift">Drift</button>
   <button class="tab-btn" data-tab="skill-quality">Skill Quality</button>
   <button class="tab-btn" data-tab="trigger-eval">Trigger Eval</button>
+  <button class="tab-btn" data-tab="mem-search">Memória: Busca</button>
+  <button class="tab-btn" data-tab="mem-timeline">Memória: Timeline</button>
+  <button class="tab-btn" data-tab="mem-graph">Memória: Grafo</button>
+  <button class="tab-btn" data-tab="mem-page">Memória: Página</button>
 </nav>
 
 <main>
@@ -397,6 +409,63 @@
   </div>
 </section>
 
+<!-- ─── Memória: Busca ────────────────────────────────────────────────── -->
+<section id="tab-mem-search" class="tab-content">
+  <h2>Memória — Busca semântica</h2>
+  <p>Busca híbrida (FTS5 + vetor) via <code>ai-memory</code>, projeto <code id="mem-project-label">claude-skills-fv</code></p>
+  <div class="toolbar">
+    <input type="text" id="mem-search-input" placeholder="buscar na memória...">
+    <button id="mem-search-btn">buscar</button>
+    <div class="stats-badge" id="mem-search-badge"></div>
+  </div>
+  <div id="mem-search-body">
+    <div class="alert">Digite um termo e clique em buscar.</div>
+  </div>
+</section>
+
+<!-- ─── Memória: Timeline ─────────────────────────────────────────────── -->
+<section id="tab-mem-timeline" class="tab-content">
+  <h2>Memória — Timeline de atividade</h2>
+  <p>Contagens e páginas recentes via <code>memory_briefing</code></p>
+  <div id="mem-timeline-body">
+    <div class="alert">Loading...</div>
+  </div>
+</section>
+
+<!-- ─── Memória: Grafo ────────────────────────────────────────────────── -->
+<section id="tab-mem-graph" class="tab-content">
+  <h2>Memória — Grafo (derivado de co-busca)</h2>
+  <p>
+    O ai-memory não expõe um grafo estruturado — estas arestas conectam páginas que
+    aparecem juntas nos resultados das mesmas buscas (proximidade de rank), não uma
+    relação declarada. Deixe o campo vazio para usar termos genéricos de amostragem.
+  </p>
+  <div class="toolbar">
+    <input type="text" id="mem-graph-query" placeholder="termo de busca (opcional)...">
+    <button id="mem-graph-btn">gerar grafo</button>
+    <div class="stats-badge" id="mem-graph-badge">loading...</div>
+  </div>
+  <div class="graph-area">
+    <div id="mem-cy"></div>
+    <aside id="mem-node-info">
+      <div class="placeholder">clique num nó para ver detalhes</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── Memória: Página ───────────────────────────────────────────────── -->
+<section id="tab-mem-page" class="tab-content">
+  <h2>Memória — Leitor de página</h2>
+  <p>Abre uma página específica com o markdown renderizado</p>
+  <div class="toolbar">
+    <input type="text" id="mem-page-path" placeholder="ex: logs/2026-09-04-claude-skills-fv-session.md">
+    <button id="mem-page-btn">abrir</button>
+  </div>
+  <div id="mem-page-body">
+    <div class="alert">Informe o path de uma página (veja a aba Timeline para paths recentes).</div>
+  </div>
+</section>
+
 </main>
 
 <footer>
@@ -414,6 +483,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     document.getElementById("tab-" + tab).classList.add("active");
     // Cytoscape may need a resize when graph tab becomes visible.
     if (tab === "graph" && window.__cy) window.__cy.resize();
+    if (tab === "mem-graph" && window.__memCy) window.__memCy.resize();
   });
 });
 
@@ -430,6 +500,27 @@ async function fetchJson(path) {
 
 function missingNotice(scriptName) {
   return `<div class="alert err">Snapshot missing. Run <code>node scripts/build-dashboard.mjs</code> to generate this data, then reload. (Underlying script: <code>${scriptName}</code>)</div>`;
+}
+
+// ─── Memory API (POST /api/memory/*, proxied to ai-memory over MCP by
+// dashboard-server.mjs — the browser never talks MCP directly) ─────────────
+async function postJson(path, body) {
+  try {
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body || {}),
+    });
+    const data = await res.json();
+    if (!res.ok) return { __error: data.error || ("HTTP " + res.status) };
+    return data;
+  } catch (err) {
+    return { __error: err.message || String(err) };
+  }
+}
+
+function memUnavailableNotice(msg) {
+  return `<div class="alert err">${escapeHtml(msg)}${msg && msg.includes("docker start") ? "" : " — verifique se <code>node scripts/dashboard-server.mjs</code> está rodando."}</div>`;
 }
 
 // ─── HSL palette (41 communities) ──────────────────────────────────────────
@@ -933,6 +1024,147 @@ async function renderTriggerEval() {
   `;
 }
 
+// ─── Memória: Busca ──────────────────────────────────────────────────────
+async function runMemSearch() {
+  const query = document.getElementById("mem-search-input").value.trim();
+  const body = document.getElementById("mem-search-body");
+  const badge = document.getElementById("mem-search-badge");
+  if (!query) { body.innerHTML = `<div class="alert">Digite um termo.</div>`; return; }
+  badge.textContent = "buscando...";
+  const data = await postJson("/api/memory/query", { query, limit: 20 });
+  if (data.__error) {
+    body.innerHTML = memUnavailableNotice(data.__error);
+    badge.textContent = "erro";
+    return;
+  }
+  const hits = data.hits || [];
+  badge.textContent = hits.length + " resultado(s)";
+  if (hits.length === 0) {
+    body.innerHTML = `<div class="alert">Nenhum resultado para "${escapeHtml(query)}".</div>`;
+    return;
+  }
+  body.innerHTML = `<div class="cards">` + hits.map((h) => `
+    <div class="card" style="grid-column: span 2">
+      <div class="label">${escapeHtml(h.path)}</div>
+      <div class="value" style="font-size:15px">${escapeHtml(h.title || h.path)}</div>
+      <div class="hint">${h.snippet || ""}</div>
+    </div>
+  `).join("") + `</div>`;
+}
+document.getElementById("mem-search-btn").addEventListener("click", runMemSearch);
+document.getElementById("mem-search-input").addEventListener("keydown", (e) => { if (e.key === "Enter") runMemSearch(); });
+
+// ─── Memória: Timeline ───────────────────────────────────────────────────
+async function renderMemTimeline() {
+  const body = document.getElementById("mem-timeline-body");
+  const data = await postJson("/api/memory/briefing", {});
+  if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
+  const c = data.counts || {};
+  const a7 = data.activity_7d || {};
+  const a30 = data.activity_30d || {};
+  const cards = `<div class="cards">
+    <div class="card"><div class="label">páginas</div><div class="value accent">${c.pages_latest ?? "—"}</div></div>
+    <div class="card"><div class="label">sessões</div><div class="value">${c.sessions ?? "—"}</div></div>
+    <div class="card"><div class="label">observações</div><div class="value">${c.observations ?? "—"}</div></div>
+    <div class="card"><div class="label">handoffs pendentes</div><div class="value">${data.pending_handoff_count ?? 0}</div></div>
+    <div class="card"><div class="label">atividade 7d</div><div class="value">${a7.sessions ?? 0} sessões · ${a7.observations ?? 0} obs</div></div>
+    <div class="card"><div class="label">atividade 30d</div><div class="value">${a30.sessions ?? 0} sessões · ${a30.observations ?? 0} obs</div></div>
+  </div>`;
+  const rows = (data.recent_pages || []).map((p) => `
+    <tr><td>${escapeHtml(p.path)}</td><td>${escapeHtml(p.title || "")}</td><td>${escapeHtml(p.kind || "")}</td><td>${escapeHtml(p.updated_at || "")}</td></tr>
+  `).join("");
+  body.innerHTML = cards + `
+    <table>
+      <thead><tr><th>path</th><th>título</th><th>kind</th><th>atualizado</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+// ─── Memória: Grafo (co-busca) ───────────────────────────────────────────
+async function renderMemGraph() {
+  const query = document.getElementById("mem-graph-query").value.trim();
+  const badge = document.getElementById("mem-graph-badge");
+  badge.textContent = "carregando...";
+  const data = await postJson("/api/memory/graph", query ? { query } : {});
+  const cyDiv = document.getElementById("mem-cy");
+  if (data.__error) {
+    cyDiv.innerHTML = memUnavailableNotice(data.__error);
+    badge.textContent = "erro";
+    return;
+  }
+  if (!data.nodes || data.nodes.length === 0) {
+    cyDiv.innerHTML = `<div class="alert">Sem resultados suficientes para montar um grafo com este termo.</div>`;
+    badge.textContent = "vazio";
+    return;
+  }
+  badge.textContent = data.nodes.length + " nós · " + data.links.length + " arestas";
+  cyDiv.innerHTML = "";
+
+  const degree = {};
+  data.nodes.forEach((n) => { degree[n.id] = 0; });
+  data.links.forEach((l) => {
+    degree[l.source] = (degree[l.source] || 0) + 1;
+    degree[l.target] = (degree[l.target] || 0) + 1;
+  });
+
+  const cy = cytoscape({
+    container: cyDiv,
+    elements: [
+      ...data.nodes.map((n) => ({ data: { id: n.id, label: n.label, community: n.community } })),
+      ...data.links.map((l) => ({ data: { source: l.source, target: l.target, relation: l.relation, weight: l.weight } })),
+    ],
+    style: [
+      { selector: "node", style: {
+        "background-color": (ele) => communityColor(ele.data("community")),
+        "label": "data(label)",
+        "font-size": 9,
+        "color": "#f0f0f0",
+        "text-outline-width": 2,
+        "text-outline-color": "#0a0a0a",
+        "width": (ele) => Math.max(10, Math.min(36, 8 + (degree[ele.id()] || 0) * 3)),
+        "height": (ele) => Math.max(10, Math.min(36, 8 + (degree[ele.id()] || 0) * 3)),
+      }},
+      { selector: "edge", style: {
+        "width": (ele) => Math.max(1, ele.data("weight") * 3),
+        "line-color": "#2a2a2a",
+        "curve-style": "bezier",
+        "opacity": 0.6,
+      }},
+    ],
+    // The co-search graph has many small disconnected components (unlike the
+    // repo graph, which is one connected blob) — fcose's default component
+    // packing crams them into a corner. tilingCompareBy/spread it across the
+    // full canvas instead.
+    layout: { name: "fcose", nodeRepulsion: 4500, idealEdgeLength: 60, padding: 30, randomize: true, componentSpacing: 80 },
+  });
+  window.__memCy = cy;
+
+  cy.on("tap", "node", (evt) => {
+    const n = evt.target;
+    document.getElementById("mem-node-info").innerHTML = `
+      <h3>${escapeHtml(n.data("label"))}</h3>
+      <p><code>${escapeHtml(n.id())}</code></p>
+      <p>${degree[n.id()] || 0} conexões</p>
+    `;
+  });
+}
+document.getElementById("mem-graph-btn").addEventListener("click", renderMemGraph);
+
+// ─── Memória: Página ─────────────────────────────────────────────────────
+async function runMemPage() {
+  const path = document.getElementById("mem-page-path").value.trim();
+  const body = document.getElementById("mem-page-body");
+  if (!path) { body.innerHTML = `<div class="alert">Informe um path.</div>`; return; }
+  body.innerHTML = `<div class="alert">Carregando...</div>`;
+  const data = await postJson("/api/memory/read-page", { path });
+  if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
+  const html = window.marked ? marked.parse(data.body || "") : `<pre>${escapeHtml(data.body || "")}</pre>`;
+  body.innerHTML = `<h3>${escapeHtml(data.title || path)}</h3><div class="md-body">${html}</div>`;
+}
+document.getElementById("mem-page-btn").addEventListener("click", runMemPage);
+document.getElementById("mem-page-path").addEventListener("keydown", (e) => { if (e.key === "Enter") runMemPage(); });
+
 // ─── Boot ──────────────────────────────────────────────────────────────────
 renderGraph();
 renderBench();
@@ -940,6 +1172,8 @@ renderSavings();
 renderDrift();
 renderSkillQuality();
 renderTriggerEval();
+renderMemTimeline();
+renderMemGraph();
 </script>
 
 </body>

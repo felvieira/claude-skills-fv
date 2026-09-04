@@ -5,6 +5,56 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.73.0] - 2026-09-04 — dashboard de memória + 2 bugs corrigidos no Graph tab existente
+
+### Adicionado
+
+- **`scripts/dashboard-server.mjs`** — servidor `node:http` (sem framework)
+  que faz proxy de `POST /api/memory/{status,recent,query,briefing,
+  read-page,graph}` pro transporte MCP-sobre-HTTP do `ai-memory` (via
+  `@modelcontextprotocol/sdk`, resolvido de `mcp-server/node_modules`), e
+  serve o `docs/preview/dashboard.html` consolidado. `GET /health` +
+  graceful shutdown em `SIGTERM`/`SIGINT`. Porta via `DASHBOARD_PORT`
+  (default 4173), projeto via `DASHBOARD_MEMORY_PROJECT` (default
+  `claude-skills-fv` — nunca confia no auto-resolve do MCP, que escopa por
+  atividade recente de hook e pode apontar pro projeto errado numa máquina
+  com sessões concorrentes).
+- **4 abas novas em `docs/preview/dashboard.html`** — Memória: Busca,
+  Timeline, Grafo, Página. As 6 abas originais do kit (Graph/Bench/Savings/
+  Drift/Skill Quality/Trigger Eval) continuam geradas por
+  `scripts/build-dashboard.mjs`, sem mudança.
+- **Grafo derivado por co-busca** (`/api/memory/graph`) — o `ai-memory` não
+  expõe nenhuma API de grafo estruturado (o "graph RRF" da doc é técnica
+  interna de ranking, não endpoint). Uma primeira tentativa via tags de
+  frontmatter compartilhadas deu zero sinal real (logs migrados só têm 2
+  tags universais + 1 tag de data única por página). A versão final conecta
+  páginas que co-ocorrem nos resultados da mesma busca, com peso por
+  proximidade de rank — sem relação inventada.
+
+### Corrigido
+
+- **`cytoscape-fcose@2.2.0` via CDN deixava `cytoscapeFcose` undefined**
+  (`Cannot read properties of undefined (reading 'layoutBase')`) — o build
+  UMD espera `window.coseBase`/`window.layoutBase` que nunca eram
+  fornecidos. Corrigido carregando `layout-base` e `cose-base` antes dele.
+  Bug pré-existente na aba Graph original, não introduzido nesta sessão —
+  presumivelmente o grafo do kit nunca renderizou em nenhuma máquina que
+  abriu o dashboard puro via CDN.
+- **Canvas do grafo de memória renderizava com tamanho zero** — CSS de
+  `#cy` era seletor de ID, não compartilhado com o novo `#mem-cy`.
+- **SRI**: os 5 scripts CDN (cytoscape, cytoscape-fcose, layout-base,
+  cose-base, marked) agora carregam `integrity`/`crossorigin`.
+
+### Decisão de design
+
+- **Sem "peek" de handoff pendente** — a única ferramenta de leitura,
+  `memory_handoff_accept`, é single-use (marca consumido). A aba Timeline
+  expõe só a contagem (`memory_briefing.pending_handoff_count`), nunca o
+  conteúdo, pra não arriscar o dashboard consumir silenciosamente um
+  handoff real de agente.
+
+---
+
 ## [2.72.0] - 2026-09-04 — backend `ai-memory` opcional, auto-plugado quando Docker está disponível
 
 O kit ganha um segundo backend de memória persistente, opcional e mutuamente
