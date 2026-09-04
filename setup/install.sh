@@ -54,12 +54,17 @@ SCRIPT_DIR="$(to_node_path "$(cd -P "$(dirname "$SOURCE")/.." && pwd)")"
 PROFILE="daily-dev"
 NO_INPUT=false
 ASSUME_YES=false
+MEMORY_BACKEND=""
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --profile)
       PROFILE="${2:-daily-dev}"
+      shift 2
+      ;;
+    --memory-backend)
+      MEMORY_BACKEND="${2:-}"
       shift 2
       ;;
     --no-input)
@@ -764,6 +769,18 @@ echo ""
 # existe (ou $CLAUDE_MEMORY_VAULT aponta pra um), não sobrescreve nada.
 VAULT_INIT="$SCRIPT_DIR/scripts/init-vault.mjs"
 [[ -f "$VAULT_INIT" ]] || VAULT_INIT="$TARGET_DIR/.bot/scripts/init-vault.mjs"
+
+# Backend de memória: ai-memory (github.com/akitaonrails/ai-memory) quando Docker
+# está disponível, com fallback automático pro vault nativo Zettelkasten. Auto-detect
+# por padrão — usuário pode forçar com --memory-backend native|ai-memory, ou
+# --profile lean/--no-input, que sempre cai no nativo (nunca baixa imagem Docker
+# silenciosamente num install não-interativo).
+if [[ -n "$MEMORY_BACKEND" ]]; then
+  export DEVKIT_MEMORY_BACKEND="$MEMORY_BACKEND"
+elif [[ "$SKIP_OPTIONAL_INSTALLS" == true ]] || [[ "$NO_INPUT" == true ]]; then
+  export DEVKIT_MEMORY_BACKEND="native"
+fi
+
 if command -v node >/dev/null 2>&1 && [[ -f "$VAULT_INIT" ]]; then
   echo " ${GREEN}Vault de memória:${RESET}"
   node "$VAULT_INIT" 2>&1 | sed 's/^/   /'

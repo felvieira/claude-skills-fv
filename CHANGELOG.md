@@ -5,6 +5,58 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.72.0] - 2026-09-04 — backend `ai-memory` opcional, auto-plugado quando Docker está disponível
+
+O kit ganha um segundo backend de memória persistente, opcional e mutuamente
+exclusivo com o vault nativo — decidido automaticamente no install, sem
+prompts, com fallback garantido quando Docker não existe.
+
+### Adicionado
+
+- **`scripts/ai-memory-setup.mjs`** — detecta `docker version`; se ausente,
+  fica no vault nativo sem perguntar. Se Docker existe, sobe (ou reaproveita)
+  o container [`akitaonrails/ai-memory`](https://github.com/akitaonrails/ai-memory)
+  em `127.0.0.1:49374` de forma idempotente e registra hooks + MCP para
+  `claude-code` quando o binário CLI `ai-memory` está no PATH.
+- **`policies/memory-backends.md`** — os dois backends lado a lado: vault
+  nativo (Zettelkasten, Node puro, zero dependência) vs `ai-memory` (servidor
+  Rust, MCP + hooks nativos, busca FTS5/híbrida, wiki OKF v0.2 versionada em
+  git, continuidade cross-agent entre Claude Code/Codex/Cursor/Gemini CLI).
+  Documenta o anti-padrão explícito da própria doc do ai-memory: o provider
+  `anthropic-oauth` é sinalizado como não-oficial e contra os termos de uso
+  da Anthropic — a recomendação do kit é `openai` (API key) ou `openai-oauth`
+  (assinatura ChatGPT, suportada oficialmente), com `embedding_provider =
+  local` (zero custo) pra busca semântica.
+- **`hooks/scripts/utils.mjs` → `isAiMemoryActive()`** — lê
+  `~/.dev-team-kit/memory-backend.json` (escrito pelo setup) pra saber qual
+  backend está ativo.
+
+### Alterado
+
+- **`scripts/init-vault.mjs`** — chama `ai-memory-setup.mjs` no fim, best-effort
+  e não-fatal: qualquer falha (Docker ausente, container não sobe) deixa o
+  vault nativo já criado como fallback funcional.
+- **`setup/install.sh`** — novo flag `--memory-backend native|ai-memory` pra
+  escolha explícita do usuário; `--profile lean`/`--no-input` sempre forçam
+  o nativo (uma instalação não-interativa nunca deve baixar uma imagem Docker
+  de ~200MB silenciosamente).
+- **`hooks/scripts/session-start.mjs`** e **`hooks/scripts/memory-curator.mjs`**
+  — mutuamente exclusivos com o `ai-memory`: quando ativo, `session-start.mjs`
+  não dispara mais o curador nativo nem injeta `.curator-pending.md`, e
+  `memory-curator.mjs` recusa rodar a menos que `--force` seja passado
+  explicitamente. Rodar os dois em paralelo duplicaria captura e curadoria
+  da mesma história — o bug real encontrado ao migrar um vault de produção
+  que motivou este guard.
+
+### Documentado
+
+- `policies/memory-curator.md` — referência cruzada para
+  `policies/memory-backends.md`.
+- `docs/{WIKI,WIKI.pt-BR,SKILLS-OVERVIEW}.md` — contagem de policies
+  atualizada (61 → 62).
+
+---
+
 ## [2.71.1] - 2026-09-02 — hooks do Codex funcionando no Windows + kit instalável como plugin no Codex
 
 Os hooks da v2.70.0 falhavam em todo evento no Codex (`hook: SessionStart Failed`, `hook: UserPromptSubmit Failed`) enquanto passavam quando rodados à mão. Reproduzido com `codex exec` e com o stderr do hook redirecionado pra arquivo; causa confirmada lendo `codex-rs/hooks/src/engine/command_runner.rs`.

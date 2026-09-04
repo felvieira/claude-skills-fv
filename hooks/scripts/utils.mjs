@@ -2,6 +2,24 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 
+/**
+ * True when the ai-memory backend (github.com/akitaonrails/ai-memory) is the
+ * active memory system for this machine — set by scripts/ai-memory-setup.mjs
+ * during install. When active, the kit's native vault hooks (memory-curator,
+ * session-start's vault-log injection) defer to it instead of running in
+ * parallel, so the two systems never write/curate the same history twice.
+ */
+export function isAiMemoryActive() {
+  const markerPath = join(homedir(), ".dev-team-kit", "memory-backend.json");
+  if (!existsSync(markerPath)) return false;
+  try {
+    const marker = JSON.parse(readFileSync(markerPath, "utf-8"));
+    return marker.backend === "ai-memory";
+  } catch {
+    return false;
+  }
+}
+
 export function resolveHookConfigPath() {
   const candidates = [".bot/hooks/config.json", "hooks/config.json"];
   return candidates.find((candidate) => existsSync(candidate)) || null;

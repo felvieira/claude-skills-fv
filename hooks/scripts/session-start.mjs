@@ -3,7 +3,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { spawn } from 'child_process';
 import { join } from 'path';
 import { homedir } from 'os';
-import { isHookDisabled, readHookConfig, resolveBotPath } from './utils.mjs';
+import { isHookDisabled, readHookConfig, resolveBotPath, isAiMemoryActive } from './utils.mjs';
 
 const BOOTSTRAP_DEFAULTS = {
   inject_meta_skill: true,
@@ -118,9 +118,12 @@ process.stdin.on('end', () => {
   // aplica a parte mecanica (decay/archive/dedup) e registra trabalho semantico
   // em .curator-pending.md. ZERO custo de LLM — a parte semantica e injetada
   // abaixo pro agente JA PAGO da sessao corrente.
+  // Desligado quando ai-memory (backend Docker) esta ativo: os dois sistemas
+  // curando/escrevendo a mesma historia em paralelo e o bug que motivou este guard.
+  const aiMemoryActive = isAiMemoryActive();
   try {
     const ccCfg = readHookConfig('memory_curator', { enabled: true });
-    if (ccCfg.enabled && !isHookDisabled('memory-curator')) {
+    if (ccCfg.enabled && !isHookDisabled('memory-curator') && !aiMemoryActive) {
       const curatorCandidates = [
         resolveBotPath('hooks/scripts/memory-curator.mjs'),
         'hooks/scripts/memory-curator.mjs',
@@ -143,26 +146,30 @@ process.stdin.on('end', () => {
   // Se o curador (de uma sessao ANTERIOR) deixou trabalho semantico pendente,
   // injeta como instrucao pro agente da sessao atual resolver. Sem forkar LLM:
   // usa o agente que ja esta presente. Procura o pending no vault resolvido.
+  // N/A quando ai-memory esta ativo — o curador nativo nunca roda, entao nunca
+  // gera pending.
   try {
-    const vaultCandidates = [
-      readHookConfig('memory_curator', {}).vault_path,
-      'D:/claude-memory',
-      join(homedir(), 'claude-memory'),
-      resolveBotPath('docs/memory'),
-    ].filter(Boolean);
-    for (const v of vaultCandidates) {
-      const pending = join(v, '.curator-pending.md');
-      if (existsSync(pending)) {
-        try {
-          const body = readFileSync(pending, 'utf-8');
-          parts.push(
-            `[memory-curator] O curador autonomo aplicou a manutencao mecanica da memoria ` +
-            `(decay, archive, dedup) e deixou trabalho SEMANTICO que precisa do seu julgamento ` +
-            `em ${pending}. Quando houver folga nesta sessao, resolva os candidatos a merge ` +
-            `listados la e delete o arquivo. Conteudo:\n\n${body.slice(0, 1500)}`
-          );
-        } catch { /* skip unreadable */ }
-        break; // so o primeiro vault encontrado
+    if (!aiMemoryActive) {
+      const vaultCandidates = [
+        readHookConfig('memory_curator', {}).vault_path,
+        'D:/claude-memory',
+        join(homedir(), 'claude-memory'),
+        resolveBotPath('docs/memory'),
+      ].filter(Boolean);
+      for (const v of vaultCandidates) {
+        const pending = join(v, '.curator-pending.md');
+        if (existsSync(pending)) {
+          try {
+            const body = readFileSync(pending, 'utf-8');
+            parts.push(
+              `[memory-curator] O curador autonomo aplicou a manutencao mecanica da memoria ` +
+              `(decay, archive, dedup) e deixou trabalho SEMANTICO que precisa do seu julgamento ` +
+              `em ${pending}. Quando houver folga nesta sessao, resolva os candidatos a merge ` +
+              `listados la e delete o arquivo. Conteudo:\n\n${body.slice(0, 1500)}`
+            );
+          } catch { /* skip unreadable */ }
+          break; // so o primeiro vault encontrado
+        }
       }
     }
   } catch { /* never block */ }

@@ -42,6 +42,7 @@ import { join, dirname, basename } from "path";
 import { homedir } from "os";
 import { createHash } from "crypto";
 import { execFileSync } from "child_process";
+import { isAiMemoryActive } from "./utils.mjs";
 
 // ---------- args ----------
 function arg(name, fallback = null) {
@@ -339,6 +340,10 @@ function isDirty() {
 
 // ---------- main ----------
 function main() {
+  // Defesa em profundidade: session-start.mjs já não dispara este script quando
+  // ai-memory está ativo, mas quem chamar memory-curator.mjs direto (manual,
+  // cron externo) também não deve curar o vault nativo em paralelo com ele.
+  if (!FORCE && isAiMemoryActive()) { log("[curator] ai-memory backend active — skipping native curation"); return; }
   if (!VAULT) { log("[curator] no vault found — nothing to do"); return; }
   if (!CFG.enabled) { log("[curator] disabled via config"); return; }
   if (!isDirty()) { log("[curator] vault clean — skipping"); return; }

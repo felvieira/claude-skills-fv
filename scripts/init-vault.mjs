@@ -19,9 +19,12 @@
  *      node init-vault.mjs --dry-run  → mostra o que faria
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execSync, execFileSync } from "node:child_process";
 import { defaultVaultPath } from "./vault-resolver.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const arg = (f) => { const i = process.argv.indexOf(f); return i >= 0 ? process.argv[i + 1] : null; };
 const DRY = process.argv.includes("--dry-run");
@@ -138,6 +141,22 @@ function main() {
     console.log(`   (usando CLAUDE_MEMORY_VAULT=${process.env.CLAUDE_MEMORY_VAULT})`);
   } else {
     console.log(`   Dica: para usar outro path, defina CLAUDE_MEMORY_VAULT=<path> no seu ambiente.`);
+  }
+
+  // --- ai-memory backend (opt-out via DEVKIT_MEMORY_BACKEND=native) ---
+  // Best-effort, non-fatal: se Docker não estiver disponível ou o setup
+  // falhar por qualquer razão, o vault nativo criado acima já é funcional
+  // como fallback. Ver scripts/ai-memory-setup.mjs e policies/memory-backends.md.
+  if (!DRY) {
+    console.log("");
+    try {
+      execFileSync(process.execPath, [join(__dirname, "ai-memory-setup.mjs")], {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+    } catch {
+      console.log("[ai-memory] setup opcional falhou — vault nativo continua ativo normalmente.");
+    }
   }
 }
 

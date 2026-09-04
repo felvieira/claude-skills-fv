@@ -1,5 +1,11 @@
 # Memory Curator (auto-lapidação autônoma de memória)
 
+> Este é o motor de curadoria do **backend nativo** do kit. Quando o backend
+> [`ai-memory`](https://github.com/akitaonrails/ai-memory) está ativo (Docker
+> disponível), este curador se desliga sozinho — os dois nunca rodam em
+> paralelo. Ver [`policies/memory-backends.md`](memory-backends.md) para os
+> dois backends lado a lado e o mecanismo mutuamente exclusivo.
+
 > **Inspiração:** [`curator.py` de nousresearch/hermes-agent](https://github.com/nousresearch/hermes-agent) (MIT, "the agent that grows with you"). O Hermes roda um curador **disparado por inatividade** que forka um agente auxiliar para revisar/consolidar/arquivar a memória. Esta policy adapta a ideia ao runtime do kit (markdown dentro do Claude Code), mantendo a autonomia mas evitando gastar LLM em dobro.
 
 ## Objetivo
