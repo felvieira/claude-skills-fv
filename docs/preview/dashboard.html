@@ -14,6 +14,13 @@
 <script src="https://unpkg.com/cose-base@2.2.0/cose-base.js" integrity="sha384-RswRBkrMsPUYpJLbZ1CVA08zbNzAkykE2oGJTujBwfjWNdfxv2WVjLJNqv1LhAOp" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js" integrity="sha384-uk5Wbjq1+KqUdHO30w7N7GrEGdzBhaJeW9o/ANF6v9+yx3M/cBmoX51C000JNCUf" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/marked@13.0.3/marked.min.js" integrity="sha384-YTBHtsL8yVTHcLakYNyrOfK3K+QQcXiECuaALJ+3j7Mo681Rtzadt8NR6WrZH+eQ" crossorigin="anonymous"></script>
+<!-- All memory content (page bodies, search snippets) is untrusted — it comes
+     from ai-memory's stored wiki, which is written by whatever agent/session
+     captured it. DOMPurify sanitizes both the rendered markdown and search
+     snippets before they touch innerHTML, so stored content can never inject
+     script/onerror/etc — only the escapeHtml()'d plain-text fields plus a safe
+     <mark> highlight survive. -->
+<script src="https://unpkg.com/dompurify@3.1.6/dist/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
 <style>
   :root {
     --bg: #0a0a0a;
@@ -521,6 +528,17 @@ async function postJson(path, body) {
 
 function memUnavailableNotice(msg) {
   return `<div class="alert err">${escapeHtml(msg)}${msg && msg.includes("docker start") ? "" : " — verifique se <code>node scripts/dashboard-server.mjs</code> está rodando."}</div>`;
+}
+
+// FTS5 search snippets are untrusted (stored wiki content) but come with
+// real <mark> tags from ai-memory's own highlighter — escape everything,
+// then convert only the literal, escaped &lt;mark&gt;/&lt;/mark&gt; pairs
+// back to real tags, so no other tag/attribute can survive.
+function sanitizeSnippet(snippet) {
+  if (!snippet) return "";
+  return escapeHtml(snippet)
+    .replace(/&lt;mark&gt;/g, "<mark>")
+    .replace(/&lt;\/mark&gt;/g, "</mark>");
 }
 
 // ─── HSL palette (41 communities) ──────────────────────────────────────────
@@ -1047,7 +1065,7 @@ async function runMemSearch() {
     <div class="card" style="grid-column: span 2">
       <div class="label">${escapeHtml(h.path)}</div>
       <div class="value" style="font-size:15px">${escapeHtml(h.title || h.path)}</div>
-      <div class="hint">${h.snippet || ""}</div>
+      <div class="hint">${sanitizeSnippet(h.snippet)}</div>
     </div>
   `).join("") + `</div>`;
 }
@@ -1159,7 +1177,8 @@ async function runMemPage() {
   body.innerHTML = `<div class="alert">Carregando...</div>`;
   const data = await postJson("/api/memory/read-page", { path });
   if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
-  const html = window.marked ? marked.parse(data.body || "") : `<pre>${escapeHtml(data.body || "")}</pre>`;
+  const rawHtml = window.marked ? marked.parse(data.body || "") : `<pre>${escapeHtml(data.body || "")}</pre>`;
+  const html = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : escapeHtml(data.body || "");
   body.innerHTML = `<h3>${escapeHtml(data.title || path)}</h3><div class="md-body">${html}</div>`;
 }
 document.getElementById("mem-page-btn").addEventListener("click", runMemPage);

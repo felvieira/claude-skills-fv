@@ -191,7 +191,20 @@ async function serveStatic(req, res, pathname) {
   res.end(body);
 }
 
+// DNS-rebinding / CSRF guard: this server has no auth (loopback-only is its
+// whole security model), so any page open in the user's browser could POST
+// to it via fetch() if we trusted the Host header blindly — a malicious site
+// resolving a hostname to 127.0.0.1, or one already loaded before the victim
+// visits it, can still send the request; only Host validation stops it,
+// since the browser sets Host from the URL bar, not from JS. Reject any
+// request whose Host isn't exactly this server's own loopback address.
+const ALLOWED_HOSTS = new Set([`127.0.0.1:${PORT}`, `localhost:${PORT}`]);
 const server = createServer(async (req, res) => {
+  if (!ALLOWED_HOSTS.has(req.headers.host)) {
+    sendJson(res, 403, { error: "forbidden host" });
+    return;
+  }
+
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;
 
