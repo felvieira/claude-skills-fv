@@ -134,7 +134,7 @@ async function listMemoryProjects() {
 // co-occur in the same query's results get an edge (weighted by how close
 // their ranks are) — the query IS the relationship, not an inferred label.
 async function buildDerivedGraph(args) {
-  const { query, limit } = args;
+  const { query, limit, project } = args;
   const terms = (query && String(query).trim())
     ? [String(query).trim()]
     : ["session", "decision", "docker", "migração", "arquitetura", "bug", "config"];
@@ -145,7 +145,7 @@ async function buildDerivedGraph(args) {
   for (const term of terms) {
     let result;
     try {
-      result = await callMemoryTool("memory_query", withDefaultProject({ query: term, limit: limit || 12 }));
+      result = await callMemoryTool("memory_query", withDefaultProject({ query: term, limit: limit || 12, project }));
     } catch {
       continue;
     }

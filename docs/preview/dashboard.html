@@ -1067,6 +1067,11 @@ async function renderTriggerEval() {
 // user picks a different card in the Projetos tab.
 let activeMemoryProject = null;
 
+// Which project's session list is expanded inline below the card grid.
+// Separate from activeMemoryProject (clicking a card both activates it for
+// the other tabs AND expands its sessions here — one click, two effects).
+let expandedMemoryProject = null;
+
 async function renderMemProjects() {
   const body = document.getElementById("mem-projects-body");
   const badge = document.getElementById("mem-projects-badge");
@@ -1081,16 +1086,58 @@ async function renderMemProjects() {
       <div class="value" style="font-size:15px">${escapeHtml(p)}</div>
       ${p === activeMemoryProject ? `<div class="hint">✓ ativo nas outras abas</div>` : ""}
     </div>
-  `).join("") + `</div>`;
+  `).join("") + `</div>` + `<div id="mem-projects-sessions"></div>`;
   body.querySelectorAll(".project-card").forEach((el) => {
     el.addEventListener("click", () => {
-      activeMemoryProject = el.dataset.project;
+      const project = el.dataset.project;
+      activeMemoryProject = project;
+      expandedMemoryProject = project;
       document.querySelectorAll("#mem-project-label").forEach((n) => { n.textContent = activeMemoryProject; });
       renderMemProjects();
     });
   });
+  if (expandedMemoryProject) await renderMemProjectSessions(expandedMemoryProject);
 }
 document.getElementById("tab-mem-projects") && renderMemProjects();
+
+// Sessions (logs/*.md pages, newest first) for the expanded project — this is
+// the "show me what's saved in here" view the user actually wanted when
+// clicking a project card, not just a silent "now active" flag.
+async function renderMemProjectSessions(project) {
+  const container = document.getElementById("mem-projects-sessions");
+  if (!container) return;
+  container.innerHTML = `<div class="alert">Carregando sessões de "${escapeHtml(project)}"...</div>`;
+  const data = await postJson("/api/memory/recent", { project, limit: 50 });
+  if (data.__error) { container.innerHTML = memUnavailableNotice(data.__error); return; }
+  const hits = data.hits || [];
+  if (hits.length === 0) {
+    container.innerHTML = `<div class="alert">Nenhuma sessão encontrada em "${escapeHtml(project)}".</div>`;
+    return;
+  }
+  const rows = hits.map((h) => `
+    <tr class="session-row" data-path="${escapeHtml(h.path)}" style="cursor:pointer">
+      <td>${escapeHtml(h.path)}</td>
+      <td>${escapeHtml(h.title || "")}</td>
+    </tr>
+  `).join("");
+  container.innerHTML = `
+    <h3 style="margin-top:24px">Sessões — ${escapeHtml(project)} (${hits.length})</h3>
+    <table>
+      <thead><tr><th>path</th><th>título</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  container.querySelectorAll(".session-row").forEach((el) => {
+    el.addEventListener("click", () => {
+      // Jump to the Página reader with this session pre-loaded — clicking a
+      // session should let you read it, not just see it listed.
+      document.querySelector('[data-tab="mem-page"]').click();
+      const pathInput = document.getElementById("mem-page-path");
+      pathInput.value = el.dataset.path;
+      runMemPage();
+    });
+  });
+}
 
 function withActiveProject(args) {
   return activeMemoryProject ? { project: activeMemoryProject, ...args } : args;
