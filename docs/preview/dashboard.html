@@ -21,6 +21,7 @@
      script/onerror/etc — only the escapeHtml()'d plain-text fields plus a safe
      <mark> highlight survive. -->
 <script src="https://unpkg.com/dompurify@3.1.6/dist/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js" integrity="sha384-WmdflGW9aGfoBdHc4rRyWzYuAjEmDwMdGdiPNacbwfGKxBW/SO6guzuQ76qjnSlr" crossorigin="anonymous"></script>
 <style>
   :root {
     --bg: #0a0a0a;
@@ -1086,7 +1087,7 @@ async function renderMemProjects() {
       <div class="value" style="font-size:15px">${escapeHtml(p)}</div>
       ${p === activeMemoryProject ? `<div class="hint">✓ ativo nas outras abas</div>` : ""}
     </div>
-  `).join("") + `</div>` + `<div id="mem-projects-sessions"></div>`;
+  `).join("") + `</div>` + `<div id="mem-projects-sessions"></div>` + `<div id="mem-project-detail"></div>`;
   body.querySelectorAll(".project-card").forEach((el) => {
     el.addEventListener("click", () => {
       const project = el.dataset.project;
@@ -1096,7 +1097,10 @@ async function renderMemProjects() {
       renderMemProjects();
     });
   });
-  if (expandedMemoryProject) await renderMemProjectSessions(expandedMemoryProject);
+  if (expandedMemoryProject) {
+    await renderMemProjectSessions(expandedMemoryProject);
+    renderMemProjectDetail(expandedMemoryProject);
+  }
 }
 document.getElementById("tab-mem-projects") && renderMemProjects();
 
@@ -1137,6 +1141,153 @@ async function renderMemProjectSessions(project) {
       runMemPage();
     });
   });
+}
+
+// ─── Project detail: Pastas / README / Diagrama / Grafo de deps ───────────
+// Reads the real on-disk source (resolved server-side from ai-memory's own
+// captured session cwd — not a guessed "D:\Repos\<name>" path), separate
+// from the ai-memory-backed sections above. Sub-tabs inside the project
+// card area, same tab-btn/tab-content pattern as the top-level nav but
+// scoped to this container so it doesn't compete with the 10 top-level tabs.
+const PROJECT_DETAIL_SUBTABS = [
+  { id: "folders", label: "Pastas" },
+  { id: "readme", label: "README" },
+  { id: "diagram", label: "Diagrama" },
+  { id: "depgraph", label: "Grafo de deps" },
+];
+
+function renderMemProjectDetail(project) {
+  const container = document.getElementById("mem-project-detail");
+  if (!container) return;
+  container.innerHTML = `
+    <h3 style="margin-top:24px">Código-fonte — ${escapeHtml(project)}</h3>
+    <nav style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px">
+      ${PROJECT_DETAIL_SUBTABS.map((t, i) => `
+        <button class="tab-btn detail-subtab${i === 0 ? " active" : ""}" data-subtab="${t.id}"
+          style="padding:8px 16px;background:none;border:none;border-bottom:2px solid ${i === 0 ? "var(--accent)" : "transparent"};color:${i === 0 ? "var(--fg)" : "var(--fg-mute)"};cursor:pointer;font-size:13px">
+          ${t.label}
+        </button>
+      `).join("")}
+    </nav>
+    ${PROJECT_DETAIL_SUBTABS.map((t, i) => `
+      <div id="detail-${t.id}" class="detail-subtab-content" style="${i === 0 ? "" : "display:none"}"></div>
+    `).join("")}
+  `;
+
+  container.querySelectorAll(".detail-subtab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".detail-subtab").forEach((b) => {
+        b.classList.remove("active");
+        b.style.borderBottomColor = "transparent";
+        b.style.color = "var(--fg-mute)";
+      });
+      btn.classList.add("active");
+      btn.style.borderBottomColor = "var(--accent)";
+      btn.style.color = "var(--fg)";
+      const subtab = btn.dataset.subtab;
+      container.querySelectorAll(".detail-subtab-content").forEach((c) => { c.style.display = "none"; });
+      const target = document.getElementById("detail-" + subtab);
+      target.style.display = "";
+      loadProjectDetailTab(project, subtab, target);
+    });
+  });
+
+  loadProjectDetailTab(project, "folders", document.getElementById("detail-folders"));
+}
+
+function renderFileTree(nodes) {
+  if (!nodes || nodes.length === 0) return "";
+  return `<ul style="margin:0;padding-left:18px">` + nodes.map((n) => `
+    <li style="font-family:var(--mono);font-size:12px;color:${n.type === "dir" ? "var(--accent)" : "var(--fg-dim)"}">
+      ${escapeHtml(n.name)}${n.type === "dir" ? "/" : ""}
+      ${n.children ? renderFileTree(n.children) : ""}
+    </li>
+  `).join("") + `</ul>`;
+}
+
+// Each sub-tab is loaded lazily on first visit and cached in the DOM (no
+// re-fetch on tab switch back) — folders/README are cheap, but the diagram
+// costs real LLM tokens and depgraph walks the filesystem, so neither should
+// re-run just because the user clicked away and back.
+const loadedDetailTabs = new Set();
+async function loadProjectDetailTab(project, subtab, target) {
+  const key = project + ":" + subtab;
+  if (loadedDetailTabs.has(key)) return;
+  loadedDetailTabs.add(key);
+
+  if (subtab === "folders") {
+    target.innerHTML = `<div class="alert">Carregando árvore de arquivos...</div>`;
+    const data = await postJson("/api/project/tree", { project });
+    if (data.__error) { target.innerHTML = memUnavailableNotice(data.__error); loadedDetailTabs.delete(key); return; }
+    target.innerHTML = `<p class="hint" style="color:var(--fg-mute);font-size:11px">${escapeHtml(data.folder)}</p>` + renderFileTree(data.tree);
+    return;
+  }
+
+  if (subtab === "readme") {
+    target.innerHTML = `<div class="alert">Carregando README...</div>`;
+    const data = await postJson("/api/project/readme", { project });
+    if (data.__error) { target.innerHTML = memUnavailableNotice(data.__error); loadedDetailTabs.delete(key); return; }
+    const rawHtml = window.marked ? marked.parse(data.body || "") : `<pre>${escapeHtml(data.body || "")}</pre>`;
+    const html = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : escapeHtml(data.body || "");
+    target.innerHTML = `<div class="md-body">${html}</div>`;
+    return;
+  }
+
+  if (subtab === "diagram") {
+    target.innerHTML = `
+      <button id="gen-diagram-btn">gerar diagrama de arquitetura (via LLM)</button>
+      <div id="diagram-body" style="margin-top:12px"></div>
+    `;
+    document.getElementById("gen-diagram-btn").addEventListener("click", () => renderProjectDiagram(project, true));
+    return;
+  }
+
+  if (subtab === "depgraph") {
+    target.innerHTML = `
+      <div class="stats-badge" id="depgraph-badge">carregando...</div>
+      <div class="graph-area" style="margin-top:12px">
+        <div id="depgraph-cy" class="cy-container" style="flex:1;background:var(--bg-elev);border:1px solid var(--border);border-radius:4px;min-height:500px"></div>
+        <aside id="depgraph-info" style="width:320px"><div class="placeholder">clique num nó para ver detalhes</div></aside>
+      </div>
+    `;
+    const badge = document.getElementById("depgraph-badge");
+    const data = await postJson("/api/project/depgraph", { project });
+    if (data.__error) {
+      document.getElementById("depgraph-cy").innerHTML = memUnavailableNotice(data.__error);
+      badge.textContent = "erro";
+      loadedDetailTabs.delete(key);
+      return;
+    }
+    if (!data.nodes || data.nodes.length === 0) {
+      document.getElementById("depgraph-cy").innerHTML = `<div class="alert">Nenhum import relativo encontrado (ou nenhum arquivo .js/.ts sob este projeto).</div>`;
+      badge.textContent = "vazio";
+      return;
+    }
+    badge.textContent = data.nodes.length + " arquivos · " + data.links.length + " imports";
+    renderCytoGraph(document.getElementById("depgraph-cy"), document.getElementById("depgraph-info"), data);
+    return;
+  }
+}
+
+async function renderProjectDiagram(project, force) {
+  const body = document.getElementById("diagram-body");
+  if (!body) return;
+  body.innerHTML = `<div class="alert">Gerando diagrama via LLM (pode levar alguns segundos)...</div>`;
+  const data = await postJson("/api/project/diagram", { project, force: !!force });
+  if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
+  body.innerHTML = `<pre class="mermaid-diagram"></pre>`;
+  const pre = body.querySelector(".mermaid-diagram");
+  try {
+    if (window.mermaid) {
+      mermaid.initialize({ startOnLoad: false, theme: "dark" });
+      const { svg } = await mermaid.render("diagram-svg-" + Date.now(), data.mermaid);
+      body.innerHTML = svg;
+    } else {
+      pre.textContent = data.mermaid;
+    }
+  } catch (err) {
+    body.innerHTML = memUnavailableNotice("Mermaid não conseguiu renderizar: " + err.message) + `<pre>${escapeHtml(data.mermaid)}</pre>`;
+  }
 }
 
 function withActiveProject(args) {
@@ -1200,25 +1351,11 @@ async function renderMemTimeline() {
 }
 
 // ─── Memória: Grafo (co-busca) ───────────────────────────────────────────
-async function renderMemGraph() {
-  const query = document.getElementById("mem-graph-query").value.trim();
-  const badge = document.getElementById("mem-graph-badge");
-  badge.textContent = "carregando...";
-  const data = await postJson("/api/memory/graph", withActiveProject(query ? { query } : {}));
-  const cyDiv = document.getElementById("mem-cy");
-  if (data.__error) {
-    cyDiv.innerHTML = memUnavailableNotice(data.__error);
-    badge.textContent = "erro";
-    return;
-  }
-  if (!data.nodes || data.nodes.length === 0) {
-    cyDiv.innerHTML = `<div class="alert">Sem resultados suficientes para montar um grafo com este termo.</div>`;
-    badge.textContent = "vazio";
-    return;
-  }
-  badge.textContent = data.nodes.length + " nós · " + data.links.length + " arestas";
+// Shared Cytoscape renderer — used by the memory co-search graph and the
+// project dependency graph, so the two don't duplicate the same ~40 lines
+// of style/layout/click-handler setup.
+function renderCytoGraph(cyDiv, infoDiv, data) {
   cyDiv.innerHTML = "";
-
   const degree = {};
   data.nodes.forEach((n) => { degree[n.id] = 0; });
   data.links.forEach((l) => {
@@ -1250,22 +1387,42 @@ async function renderMemGraph() {
         "opacity": 0.6,
       }},
     ],
-    // The co-search graph has many small disconnected components (unlike the
-    // repo graph, which is one connected blob) — fcose's default component
-    // packing crams them into a corner. tilingCompareBy/spread it across the
+    // Real-world graphs here often have many small disconnected components
+    // (co-search results, or a project's isolated file clusters) — fcose's
+    // default component packing crams them into a corner. Spread across the
     // full canvas instead.
     layout: { name: "fcose", nodeRepulsion: 4500, idealEdgeLength: 60, padding: 30, randomize: true, componentSpacing: 80 },
   });
-  window.__memCy = cy;
 
   cy.on("tap", "node", (evt) => {
     const n = evt.target;
-    document.getElementById("mem-node-info").innerHTML = `
+    infoDiv.innerHTML = `
       <h3>${escapeHtml(n.data("label"))}</h3>
       <p><code>${escapeHtml(n.id())}</code></p>
       <p>${degree[n.id()] || 0} conexões</p>
     `;
   });
+  return cy;
+}
+
+async function renderMemGraph() {
+  const query = document.getElementById("mem-graph-query").value.trim();
+  const badge = document.getElementById("mem-graph-badge");
+  badge.textContent = "carregando...";
+  const data = await postJson("/api/memory/graph", withActiveProject(query ? { query } : {}));
+  const cyDiv = document.getElementById("mem-cy");
+  if (data.__error) {
+    cyDiv.innerHTML = memUnavailableNotice(data.__error);
+    badge.textContent = "erro";
+    return;
+  }
+  if (!data.nodes || data.nodes.length === 0) {
+    cyDiv.innerHTML = `<div class="alert">Sem resultados suficientes para montar um grafo com este termo.</div>`;
+    badge.textContent = "vazio";
+    return;
+  }
+  badge.textContent = data.nodes.length + " nós · " + data.links.length + " arestas";
+  window.__memCy = renderCytoGraph(cyDiv, document.getElementById("mem-node-info"), data);
 }
 document.getElementById("mem-graph-btn").addEventListener("click", renderMemGraph);
 

@@ -14,6 +14,9 @@ __pycache__/
 # Graphify knowledge graph (local only)
 graphify-out/
 
+# Dashboard server's local derived cache (SQLite copy from ai-memory container)
+.dashboard-cache/
+
 # Bench A/B outputs (logs, traces, screenshots) — só os scripts são versionados
 bench/ab/out/
 .swarm/

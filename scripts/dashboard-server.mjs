@@ -123,6 +123,54 @@ async function listMemoryProjects() {
   return projectsCache.list;
 }
 
+// ─── Project → on-disk folder resolution (real cwd, not a guessed path) ────
+// ai-memory's own SQLite tracks the real cwd of every captured session
+// (sessions.cwd) — no need to guess a fixed root like "D:\Repos\<name>",
+// which would miss real projects that live elsewhere (confirmed: repos exist
+// under D:\Games\, D:\tmp\, worktree paths under C:\Users\...\.ao\, etc).
+// The container has no sqlite3 CLI, so the DB file is copied to the host
+// (docker cp) and read with Node's built-in node:sqlite (v22+, experimental
+// but functional — avoids adding a new dependency for one read-only query).
+let sqliteModule = null;
+async function getSqliteModule() {
+  if (!sqliteModule) {
+    sqliteModule = await import("node:sqlite");
+  }
+  return sqliteModule;
+}
+
+const DB_COPY_PATH = join(REPO_ROOT, ".dashboard-cache", "ai-memory.sqlite");
+let dbCopyCache = { at: 0 };
+const DB_COPY_CACHE_MS = 15_000;
+async function copyMemoryDb() {
+  if (Date.now() - dbCopyCache.at < DB_COPY_CACHE_MS && existsSync(DB_COPY_PATH)) {
+    return DB_COPY_PATH;
+  }
+  const { mkdir } = await import("node:fs/promises");
+  await mkdir(join(REPO_ROOT, ".dashboard-cache"), { recursive: true });
+  await execFileAsync("docker", ["cp", "ai-memory:/data/db/memory.sqlite", DB_COPY_PATH]);
+  dbCopyCache = { at: Date.now() };
+  return DB_COPY_PATH;
+}
+
+async function resolveProjectFolder(project) {
+  const dbPath = await copyMemoryDb();
+  const { DatabaseSync } = await getSqliteModule();
+  const db = new DatabaseSync(dbPath, { readOnly: true });
+  try {
+    const row = db.prepare(`
+      SELECT s.cwd FROM sessions s
+      JOIN projects p ON p.id = s.project_id
+      WHERE p.name = ? AND s.cwd IS NOT NULL
+      ORDER BY s.started_at DESC
+      LIMIT 1
+    `).get(project);
+    return row?.cwd || null;
+  } finally {
+    db.close();
+  }
+}
+
 // The ai-memory MCP server exposes no "graph data" tool — the "graph RRF"
 // mentioned in its docs is an internal search-ranking technique, not an API.
 // A first attempt derived edges from shared frontmatter tags, but real data
@@ -205,6 +253,234 @@ const MEMORY_ROUTES = {
   "/api/memory/projects": async () => ({ projects: await listMemoryProjects(), default: DEFAULT_PROJECT }),
 };
 
+// ─── Project source-code inspection (tree/README/diagram/depgraph) ─────────
+// These read the real on-disk folder resolved via resolveProjectFolder() —
+// separate concern from MEMORY_ROUTES above, which only reads ai-memory's
+// captured sessions/pages, never the actual source code.
+const TREE_IGNORE = new Set([
+  "node_modules", ".git", "dist", "build", ".next", "target", "__pycache__",
+  ".venv", "venv", ".cache", ".dashboard-cache", "graphify-out",
+]);
+const TREE_MAX_DEPTH = 4;
+const TREE_MAX_ENTRIES = 2000; // hard cap so a huge repo can't hang the request
+
+async function buildFileTree(rootPath) {
+  const { readdir } = await import("node:fs/promises");
+  let count = 0;
+  async function walk(dirPath, depth) {
+    if (depth > TREE_MAX_DEPTH || count > TREE_MAX_ENTRIES) return [];
+    let entries;
+    try {
+      entries = await readdir(dirPath, { withFileTypes: true });
+    } catch {
+      return [];
+    }
+    const nodes = [];
+    for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+      if (TREE_IGNORE.has(entry.name) || entry.name.startsWith(".")) continue;
+      if (count > TREE_MAX_ENTRIES) break;
+      count++;
+      if (entry.isDirectory()) {
+        nodes.push({ name: entry.name, type: "dir", children: await walk(join(dirPath, entry.name), depth + 1) });
+      } else {
+        nodes.push({ name: entry.name, type: "file" });
+      }
+    }
+    return nodes;
+  }
+  return walk(rootPath, 0);
+}
+
+async function projectTreeRoute(args) {
+  const folder = await resolveProjectFolder(args.project);
+  if (!folder || !existsSync(folder)) {
+    throw Object.assign(new Error(`código-fonte não encontrado para "${args.project}" (nenhuma sessão registrou um cwd válido)`), { status: 404 });
+  }
+  return { folder, tree: await buildFileTree(folder) };
+}
+
+async function findReadme(folder) {
+  const { readdir } = await import("node:fs/promises");
+  let entries;
+  try {
+    entries = await readdir(folder);
+  } catch {
+    return null;
+  }
+  const match = entries.find((e) => /^readme\.md$/i.test(e));
+  return match ? join(folder, match) : null;
+}
+
+async function projectReadmeRoute(args) {
+  const folder = await resolveProjectFolder(args.project);
+  if (!folder || !existsSync(folder)) {
+    throw Object.assign(new Error(`código-fonte não encontrado para "${args.project}"`), { status: 404 });
+  }
+  const readmePath = await findReadme(folder);
+  if (!readmePath) {
+    throw Object.assign(new Error(`"${args.project}" não tem README.md na raiz`), { status: 404 });
+  }
+  const body = await readFile(readmePath, "utf-8");
+  return { path: readmePath, body };
+}
+
+function flattenTree(nodes, prefix = "") {
+  const lines = [];
+  for (const n of nodes) {
+    const path = prefix ? `${prefix}/${n.name}` : n.name;
+    lines.push(n.type === "dir" ? `${path}/` : path);
+    if (n.children) lines.push(...flattenTree(n.children, path));
+  }
+  return lines;
+}
+
+// Cache generated diagrams in-process only — they're a derived artifact, not
+// source data, and the OPENAI_API_KEY call costs real tokens per generation.
+const diagramCache = new Map(); // project -> { at, mermaid }
+async function projectDiagramRoute(args) {
+  const project = args.project;
+  if (!args.force && diagramCache.has(project)) return diagramCache.get(project);
+
+  const folder = await resolveProjectFolder(project);
+  if (!folder || !existsSync(folder)) {
+    throw Object.assign(new Error(`código-fonte não encontrado para "${project}"`), { status: 404 });
+  }
+  const apiKey = await getOpenAiKey();
+  if (!apiKey) {
+    throw Object.assign(new Error("OPENAI_API_KEY não configurada — veja ~/.dev-team-kit/.env"), { status: 503 });
+  }
+
+  const tree = await buildFileTree(folder);
+  const treeText = flattenTree(tree).slice(0, 400).join("\n");
+  let readmeText = "";
+  const readmePath = await findReadme(folder);
+  if (readmePath) {
+    readmeText = (await readFile(readmePath, "utf-8")).slice(0, 3000);
+  }
+
+  const prompt = `Baseado na árvore de arquivos e README abaixo de um repositório de código chamado "${project}", gere um diagrama de arquitetura em Mermaid (flowchart TD) mostrando os módulos/camadas principais e como se relacionam. Responda APENAS com o bloco Mermaid, sem \`\`\`, sem explicação, sem texto antes ou depois.
+
+Árvore de arquivos:
+${treeText}
+
+README (se houver):
+${readmeText}`;
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "content-type": "application/json", "authorization": `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "gpt-5.4-mini",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.2,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw Object.assign(new Error(`OpenAI API error ${res.status}: ${text.slice(0, 200)}`), { status: 502 });
+  }
+  const data = await res.json();
+  let mermaid = data.choices?.[0]?.message?.content?.trim() || "";
+  mermaid = mermaid.replace(/^```(?:mermaid)?\n?/, "").replace(/```$/, "").trim();
+  if (!/^(flowchart|graph)\s/i.test(mermaid)) {
+    throw Object.assign(new Error("resposta do modelo não parece um diagrama Mermaid válido"), { status: 502 });
+  }
+
+  const result = { mermaid, generated_at: new Date().toISOString() };
+  diagramCache.set(project, result);
+  return result;
+}
+
+let cachedOpenAiKey; // undefined = not loaded yet, null = confirmed absent
+async function getOpenAiKey() {
+  if (cachedOpenAiKey !== undefined) return cachedOpenAiKey;
+  if (process.env.OPENAI_API_KEY) {
+    cachedOpenAiKey = process.env.OPENAI_API_KEY;
+    return cachedOpenAiKey;
+  }
+  try {
+    const { homedir } = await import("node:os");
+    const envPath = join(homedir(), ".dev-team-kit", ".env");
+    const content = await readFile(envPath, "utf-8");
+    const match = content.match(/^OPENAI_API_KEY=(.+)$/m);
+    cachedOpenAiKey = match ? match[1].trim() : null;
+  } catch {
+    cachedOpenAiKey = null;
+  }
+  return cachedOpenAiKey;
+}
+
+// Dependency graph via static regex analysis — no LLM, no bundler. Only
+// relative imports (./ or ../) are resolved; node_modules/package imports
+// are skipped since resolving them properly needs a real module resolver.
+const CODE_EXTENSIONS = [".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx"];
+const IMPORT_RE = /(?:from\s+|require\()\s*["'](\.\.?\/[^"']+)["']/g;
+
+async function collectCodeFiles(nodes, dirPath, out) {
+  for (const n of nodes) {
+    const full = join(dirPath, n.name);
+    if (n.type === "dir") {
+      await collectCodeFiles(n.children || [], full, out);
+    } else if (CODE_EXTENSIONS.includes(extname(n.name))) {
+      out.push(full);
+    }
+  }
+}
+
+function resolveImportTarget(fromFile, importPath, allFiles) {
+  const base = normalize(join(fromFile, "..", importPath));
+  const candidates = [base, ...CODE_EXTENSIONS.map((ext) => base + ext), ...CODE_EXTENSIONS.map((ext) => join(base, "index" + ext))];
+  return candidates.find((c) => allFiles.has(c)) || null;
+}
+
+async function projectDepgraphRoute(args) {
+  const folder = await resolveProjectFolder(args.project);
+  if (!folder || !existsSync(folder)) {
+    throw Object.assign(new Error(`código-fonte não encontrado para "${args.project}"`), { status: 404 });
+  }
+  const tree = await buildFileTree(folder);
+  const files = [];
+  await collectCodeFiles(tree, folder, files);
+  const fileSet = new Set(files.map((f) => normalize(f)));
+
+  const nodes = files.map((f, i) => ({ id: f.replace(folder, "").replace(/^[\\/]/, ""), label: f.split(/[\\/]/).pop(), community: i }));
+  const edges = [];
+  for (const file of files.slice(0, 300)) { // cap: very large repos shouldn't hang the request
+    let content;
+    try {
+      content = await readFile(file, "utf-8");
+    } catch {
+      continue;
+    }
+    // Strip comment lines first — a plain regex over raw source matches JSDoc
+    // usage examples too (e.g. "* import {...} from './foo.mjs'" inside a
+    // /** */ block), which produced a false self-edge in testing.
+    const codeOnly = content
+      .split("\n")
+      .filter((line) => !/^\s*(\*|\/\/)/.test(line))
+      .join("\n");
+    for (const match of codeOnly.matchAll(IMPORT_RE)) {
+      const target = resolveImportTarget(file, match[1], fileSet);
+      if (target && target !== file) {
+        edges.push({
+          source: file.replace(folder, "").replace(/^[\\/]/, ""),
+          target: target.replace(folder, "").replace(/^[\\/]/, ""),
+          relation: "import",
+          weight: 1,
+        });
+      }
+    }
+  }
+  return { nodes, links: edges };
+}
+
+const PROJECT_ROUTES = {
+  "/api/project/tree": projectTreeRoute,
+  "/api/project/readme": projectReadmeRoute,
+  "/api/project/diagram": projectDiagramRoute,
+  "/api/project/depgraph": projectDepgraphRoute,
+};
+
 async function serveStatic(req, res, pathname) {
   const rel = pathname === "/" ? "dashboard.html" : pathname.replace(/^\//, "");
   const safePath = normalize(join(DASHBOARD_DIR, rel));
@@ -257,6 +533,17 @@ const server = createServer(async (req, res) => {
           ? "ai-memory unreachable — run: docker start ai-memory"
           : message,
       });
+    }
+    return;
+  }
+
+  if (pathname in PROJECT_ROUTES) {
+    try {
+      const args = req.method === "POST" ? await readBody(req) : Object.fromEntries(url.searchParams);
+      const data = await PROJECT_ROUTES[pathname](args);
+      sendJson(res, 200, data);
+    } catch (err) {
+      sendJson(res, err.status || 500, { error: String(err.message || err) });
     }
     return;
   }
