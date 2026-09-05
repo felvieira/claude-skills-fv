@@ -12,10 +12,14 @@
  *      DASHBOARD_PORT=5000 node scripts/dashboard-server.mjs
  */
 import { createServer } from "node:http";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join, extname, normalize } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+const execFileAsync = promisify(execFile);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
@@ -91,6 +95,32 @@ async function callMemoryTool(name, args = {}) {
 
 function withDefaultProject(args) {
   return { project: DEFAULT_PROJECT, ...args };
+}
+
+// ai-memory exposes no MCP tool to list projects (memory_status/query/etc all
+// require you to already know the project name). The web UI's own project
+// grid reads this the same way: every scope inside the wiki has a `_meta.md`
+// manifest with a `project: <name>` line — walking those via `docker exec`
+// is the only way to discover what's fed the server, short of parsing its
+// SQLite index directly.
+let projectsCache = { at: 0, list: [] };
+const PROJECTS_CACHE_MS = 30_000;
+async function listMemoryProjects() {
+  if (Date.now() - projectsCache.at < PROJECTS_CACHE_MS) return projectsCache.list;
+  // One docker exec that finds + cats every _meta.md in a single round trip —
+  // the naive version (one `docker exec` per file, ~116 of them) took 12+
+  // seconds per request. `find -exec cat +` batches every matched path into
+  // one `cat` invocation, one process spawn total.
+  const { stdout } = await execFileAsync("docker", [
+    "exec", "ai-memory", "sh", "-c",
+    "find /data/wiki -iname _meta.md -not -path '*/.git/*' -exec cat {} +",
+  ]);
+  const names = new Set();
+  for (const match of stdout.matchAll(/^project:\s*(.+?)\s*$/gm)) {
+    names.add(match[1]);
+  }
+  projectsCache = { at: Date.now(), list: [...names].sort() };
+  return projectsCache.list;
 }
 
 // The ai-memory MCP server exposes no "graph data" tool — the "graph RRF"
@@ -172,6 +202,7 @@ const MEMORY_ROUTES = {
   "/api/memory/briefing": (args) => callMemoryTool("memory_briefing", withDefaultProject(args)),
   "/api/memory/read-page": (args) => callMemoryTool("memory_read_page", withDefaultProject(args)),
   "/api/memory/graph": (args) => buildDerivedGraph(args),
+  "/api/memory/projects": async () => ({ projects: await listMemoryProjects(), default: DEFAULT_PROJECT }),
 };
 
 async function serveStatic(req, res, pathname) {

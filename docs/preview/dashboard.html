@@ -345,6 +345,7 @@
   <button class="tab-btn" data-tab="drift">Drift</button>
   <button class="tab-btn" data-tab="skill-quality">Skill Quality</button>
   <button class="tab-btn" data-tab="trigger-eval">Trigger Eval</button>
+  <button class="tab-btn" data-tab="mem-projects">Memória: Projetos</button>
   <button class="tab-btn" data-tab="mem-search">Memória: Busca</button>
   <button class="tab-btn" data-tab="mem-timeline">Memória: Timeline</button>
   <button class="tab-btn" data-tab="mem-graph">Memória: Grafo</button>
@@ -413,6 +414,18 @@
   <p>Generated via <code>scripts/eval-triggers.mjs --json</code> · sorted by should % ascending (worst first)</p>
   <div id="trigger-eval-body">
     <div class="alert">Loading trigger-eval snapshot...</div>
+  </div>
+</section>
+
+<!-- ─── Memória: Projetos ─────────────────────────────────────────────── -->
+<section id="tab-mem-projects" class="tab-content">
+  <h2>Memória — Projetos</h2>
+  <p>Todos os projetos com memória capturada pelo ai-memory. Clique num card para ativá-lo nas outras abas de Memória.</p>
+  <div class="toolbar">
+    <div class="stats-badge" id="mem-projects-badge">loading...</div>
+  </div>
+  <div id="mem-projects-body">
+    <div class="alert">Carregando lista de projetos...</div>
   </div>
 </section>
 
@@ -491,6 +504,12 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     // Cytoscape may need a resize when graph tab becomes visible.
     if (tab === "graph" && window.__cy) window.__cy.resize();
     if (tab === "mem-graph" && window.__memCy) window.__memCy.resize();
+    // Memory tabs read whichever project is active — re-render on every visit
+    // so switching projects (Memória: Projetos) is reflected without a stale
+    // view from before the switch. Search/Página are query-driven (nothing to
+    // refresh until the user acts), Projetos re-renders itself on click.
+    if (tab === "mem-timeline" && window.renderMemTimeline) window.renderMemTimeline();
+    if (tab === "mem-graph" && window.renderMemGraph) window.renderMemGraph();
   });
 });
 
@@ -1043,13 +1062,47 @@ async function renderTriggerEval() {
 }
 
 // ─── Memória: Busca ──────────────────────────────────────────────────────
+// Which ai-memory project the Memória tabs read from. Defaults to whatever
+// the server resolves (its own DASHBOARD_MEMORY_PROJECT env var) until the
+// user picks a different card in the Projetos tab.
+let activeMemoryProject = null;
+
+async function renderMemProjects() {
+  const body = document.getElementById("mem-projects-body");
+  const badge = document.getElementById("mem-projects-badge");
+  const data = await postJson("/api/memory/projects", {});
+  if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); badge.textContent = "erro"; return; }
+  const projects = data.projects || [];
+  if (activeMemoryProject === null) activeMemoryProject = data.default || projects[0] || null;
+  badge.textContent = projects.length + " projeto(s)";
+  body.innerHTML = `<div class="cards">` + projects.map((p) => `
+    <div class="card project-card${p === activeMemoryProject ? " active" : ""}" data-project="${escapeHtml(p)}" style="cursor:pointer">
+      <div class="label">projeto</div>
+      <div class="value" style="font-size:15px">${escapeHtml(p)}</div>
+      ${p === activeMemoryProject ? `<div class="hint">✓ ativo nas outras abas</div>` : ""}
+    </div>
+  `).join("") + `</div>`;
+  body.querySelectorAll(".project-card").forEach((el) => {
+    el.addEventListener("click", () => {
+      activeMemoryProject = el.dataset.project;
+      document.querySelectorAll("#mem-project-label").forEach((n) => { n.textContent = activeMemoryProject; });
+      renderMemProjects();
+    });
+  });
+}
+document.getElementById("tab-mem-projects") && renderMemProjects();
+
+function withActiveProject(args) {
+  return activeMemoryProject ? { project: activeMemoryProject, ...args } : args;
+}
+
 async function runMemSearch() {
   const query = document.getElementById("mem-search-input").value.trim();
   const body = document.getElementById("mem-search-body");
   const badge = document.getElementById("mem-search-badge");
   if (!query) { body.innerHTML = `<div class="alert">Digite um termo.</div>`; return; }
   badge.textContent = "buscando...";
-  const data = await postJson("/api/memory/query", { query, limit: 20 });
+  const data = await postJson("/api/memory/query", withActiveProject({ query, limit: 20 }));
   if (data.__error) {
     body.innerHTML = memUnavailableNotice(data.__error);
     badge.textContent = "erro";
@@ -1075,7 +1128,7 @@ document.getElementById("mem-search-input").addEventListener("keydown", (e) => {
 // ─── Memória: Timeline ───────────────────────────────────────────────────
 async function renderMemTimeline() {
   const body = document.getElementById("mem-timeline-body");
-  const data = await postJson("/api/memory/briefing", {});
+  const data = await postJson("/api/memory/briefing", withActiveProject({}));
   if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
   const c = data.counts || {};
   const a7 = data.activity_7d || {};
@@ -1104,7 +1157,7 @@ async function renderMemGraph() {
   const query = document.getElementById("mem-graph-query").value.trim();
   const badge = document.getElementById("mem-graph-badge");
   badge.textContent = "carregando...";
-  const data = await postJson("/api/memory/graph", query ? { query } : {});
+  const data = await postJson("/api/memory/graph", withActiveProject(query ? { query } : {}));
   const cyDiv = document.getElementById("mem-cy");
   if (data.__error) {
     cyDiv.innerHTML = memUnavailableNotice(data.__error);
@@ -1175,7 +1228,7 @@ async function runMemPage() {
   const body = document.getElementById("mem-page-body");
   if (!path) { body.innerHTML = `<div class="alert">Informe um path.</div>`; return; }
   body.innerHTML = `<div class="alert">Carregando...</div>`;
-  const data = await postJson("/api/memory/read-page", { path });
+  const data = await postJson("/api/memory/read-page", withActiveProject({ path }));
   if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
   const rawHtml = window.marked ? marked.parse(data.body || "") : `<pre>${escapeHtml(data.body || "")}</pre>`;
   const html = window.DOMPurify ? DOMPurify.sanitize(rawHtml) : escapeHtml(data.body || "");
