@@ -12,9 +12,10 @@
  *      DASHBOARD_PORT=5000 node scripts/dashboard-server.mjs
  */
 import { createServer } from "node:http";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
+import { createInterface } from "node:readline";
 import { promisify } from "node:util";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join, extname, normalize } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -481,6 +482,95 @@ const PROJECT_ROUTES = {
   "/api/project/depgraph": projectDepgraphRoute,
 };
 
+// ─── Disk cleanup scanner (SSE) ─────────────────────────────────────────────
+// scripts/disk-cleanup-scan.mjs never deletes anything on its own — it only
+// reports candidates. /api/cleanup/delete is the one place that actually
+// removes a directory, and it revalidates every path against this exact
+// list of roots the last scan covered (trust boundary: the client sends
+// back paths from a scan result, but we never trust that blindly — a
+// tampered or stale request could ask us to delete anything on disk).
+const CLEANUP_ROOTS = [REPO_ROOT];
+let lastScannedPaths = new Set();
+const LAST_SCAN_FILE = join(REPO_ROOT, ".dashboard-cache", "last-cleanup-scan.json");
+
+function cleanupScanRoute(req, res) {
+  res.writeHead(200, {
+    "content-type": "text/event-stream; charset=utf-8",
+    "cache-control": "no-cache",
+    "connection": "keep-alive",
+  });
+
+  const child = spawn(process.execPath, [
+    join(__dirname, "disk-cleanup-scan.mjs"),
+    "--format", "json",
+    "--roots", CLEANUP_ROOTS.join(","),
+  ]);
+
+  const rl = createInterface({ input: child.stdout });
+  const scannedPaths = new Set();
+  rl.on("line", (line) => {
+    if (!line.trim()) return;
+    res.write(`data: ${line}\n\n`);
+    try {
+      const event = JSON.parse(line);
+      if (event.type === "found" || event.type === "secret-guard") scannedPaths.add(event.path);
+      if (event.type === "done") {
+        for (const c of event.candidates || []) scannedPaths.add(c.path);
+      }
+    } catch {
+      // malformed line from the child — forward it anyway, don't crash the stream
+    }
+  });
+
+  child.stderr.on("data", (chunk) => {
+    res.write(`data: ${JSON.stringify({ type: "error", message: chunk.toString() })}\n\n`);
+  });
+
+  child.on("close", async () => {
+    lastScannedPaths = scannedPaths;
+    try {
+      await import("node:fs/promises").then(({ mkdir }) => mkdir(join(REPO_ROOT, ".dashboard-cache"), { recursive: true }));
+      await writeFile(LAST_SCAN_FILE, JSON.stringify({ at: new Date().toISOString() }));
+    } catch {
+      // best-effort — the dashboard just won't show the "last scan" badge
+    }
+    res.end();
+  });
+
+  req.on("close", () => child.kill());
+}
+
+async function cleanupLastScanRoute() {
+  try {
+    const content = await readFile(LAST_SCAN_FILE, "utf-8");
+    return JSON.parse(content);
+  } catch {
+    return { at: null };
+  }
+}
+
+async function cleanupDeleteRoute(args) {
+  const paths = Array.isArray(args.paths) ? args.paths : [];
+  const results = [];
+  for (const p of paths) {
+    // Never trust a path from the client — it must be one this exact server
+    // process reported as a candidate in the most recent scan. Anything else
+    // (a typo, a stale request from a previous scan, a tampered request) is
+    // rejected outright rather than attempted.
+    if (!lastScannedPaths.has(p)) {
+      results.push({ path: p, ok: false, error: "não é um candidato do último scan — rode o scan de novo" });
+      continue;
+    }
+    try {
+      await rm(p, { recursive: true, force: false });
+      results.push({ path: p, ok: true });
+    } catch (err) {
+      results.push({ path: p, ok: false, error: String(err.message || err) });
+    }
+  }
+  return { results };
+}
+
 async function serveStatic(req, res, pathname) {
   const rel = pathname === "/" ? "dashboard.html" : pathname.replace(/^\//, "");
   const safePath = normalize(join(DASHBOARD_DIR, rel));
@@ -544,6 +634,28 @@ const server = createServer(async (req, res) => {
       sendJson(res, 200, data);
     } catch (err) {
       sendJson(res, err.status || 500, { error: String(err.message || err) });
+    }
+    return;
+  }
+
+  if (pathname === "/api/cleanup/scan") {
+    // SSE only — EventSource in the browser can only issue GET, so this
+    // can't follow the POST-with-JSON-body pattern the other routes use.
+    cleanupScanRoute(req, res);
+    return;
+  }
+
+  if (pathname === "/api/cleanup/last-scan") {
+    sendJson(res, 200, await cleanupLastScanRoute());
+    return;
+  }
+
+  if (pathname === "/api/cleanup/delete") {
+    try {
+      const args = await readBody(req);
+      sendJson(res, 200, await cleanupDeleteRoute(args));
+    } catch (err) {
+      sendJson(res, 500, { error: String(err.message || err) });
     }
     return;
   }

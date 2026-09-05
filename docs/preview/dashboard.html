@@ -336,7 +336,7 @@
 
 <header>
   <h1>Dev Team Kit — Insights Dashboard</h1>
-  <div class="sub">built from graphify + bench + savings + drift</div>
+  <div class="sub">built from graphify + bench + savings + drift · <span id="cleanup-last-scan-badge"></span></div>
 </header>
 
 <nav>
@@ -351,6 +351,7 @@
   <button class="tab-btn" data-tab="mem-timeline">Memória: Timeline</button>
   <button class="tab-btn" data-tab="mem-graph">Memória: Grafo</button>
   <button class="tab-btn" data-tab="mem-page">Memória: Página</button>
+  <button class="tab-btn" data-tab="cleanup">Limpeza de disco</button>
 </nav>
 
 <main>
@@ -485,6 +486,24 @@
   <div id="mem-page-body">
     <div class="alert">Informe o path de uma página (veja a aba Timeline para paths recentes).</div>
   </div>
+</section>
+
+<!-- ─── Limpeza de disco ──────────────────────────────────────────────── -->
+<section id="tab-cleanup" class="tab-content">
+  <h2>Limpeza de disco</h2>
+  <p>
+    Escaneia worktrees mergeados, <code>node_modules</code> órfãos/antigos e caches
+    parados — nunca deleta sozinho. Antes de sugerir qualquer remoção, verifica se o
+    diretório contém arquivos não versionados de segredo (<code>.env</code>, chaves,
+    credenciais); se contém, exige confirmação nomeada separada em vez de remover
+    junto com o resto.
+  </p>
+  <div class="toolbar">
+    <button id="cleanup-scan-btn">escanear</button>
+    <div class="stats-badge" id="cleanup-badge"></div>
+  </div>
+  <pre id="cleanup-log" style="max-height:220px;font-size:11px"></pre>
+  <div id="cleanup-results"></div>
 </section>
 
 </main>
@@ -1450,6 +1469,92 @@ renderSkillQuality();
 renderTriggerEval();
 renderMemTimeline();
 renderMemGraph();
+
+// ─── Limpeza de disco ────────────────────────────────────────────────────
+async function renderCleanupBadge() {
+  const badge = document.getElementById("cleanup-last-scan-badge");
+  const data = await postJson("/api/cleanup/last-scan", {});
+  if (!data.at) { badge.textContent = "nunca escaneado"; return; }
+  const days = Math.floor((Date.now() - new Date(data.at).getTime()) / 86_400_000);
+  badge.textContent = days === 0 ? "último scan: hoje" : `último scan: ${days}d atrás`;
+}
+renderCleanupBadge();
+
+let cleanupCandidates = [];
+function runCleanupScan() {
+  const log = document.getElementById("cleanup-log");
+  const badge = document.getElementById("cleanup-badge");
+  const results = document.getElementById("cleanup-results");
+  log.textContent = "";
+  results.innerHTML = "";
+  cleanupCandidates = [];
+  badge.textContent = "escaneando...";
+
+  const source = new EventSource("/api/cleanup/scan");
+  source.onmessage = (e) => {
+    let event;
+    try { event = JSON.parse(e.data); } catch { return; }
+    if (event.type === "scanning") {
+      log.textContent += `verificando ${event.path}...\n`;
+      log.scrollTop = log.scrollHeight;
+    } else if (event.type === "found" || event.type === "secret-guard") {
+      log.textContent += `${event.type === "secret-guard" ? "⚠ SEGREDO" : "✓ candidato"}: ${event.path}\n`;
+      log.scrollTop = log.scrollHeight;
+    } else if (event.type === "done") {
+      cleanupCandidates = event.candidates || [];
+      badge.textContent = `${event.summary.candidates} candidato(s), ${event.summary.secretGuarded} com guard de segredo`;
+      renderCleanupResults();
+      source.close();
+      renderCleanupBadge();
+    } else if (event.type === "error") {
+      log.textContent += `ERRO: ${event.message}\n`;
+    }
+  };
+  source.onerror = () => {
+    badge.textContent = "erro na conexão";
+    source.close();
+  };
+}
+document.getElementById("cleanup-scan-btn").addEventListener("click", runCleanupScan);
+
+function renderCleanupResults() {
+  const results = document.getElementById("cleanup-results");
+  if (cleanupCandidates.length === 0) {
+    results.innerHTML = `<div class="alert">Nenhum candidato encontrado.</div>`;
+    return;
+  }
+  results.innerHTML = `
+    <table>
+      <thead><tr><th></th><th>categoria</th><th>path</th><th>motivo</th></tr></thead>
+      <tbody>${cleanupCandidates.map((c, i) => `
+        <tr>
+          <td><input type="checkbox" class="cleanup-check" data-index="${i}" ${c.secretGuarded ? "disabled" : ""}></td>
+          <td>${escapeHtml(c.category)}</td>
+          <td style="font-family:var(--mono);font-size:11px">${escapeHtml(c.path)}</td>
+          <td>${c.secretGuarded
+            ? `<span style="color:var(--warn)">contém possível segredo: ${escapeHtml((c.secretFiles || []).join(", "))} — remover manualmente</span>`
+            : escapeHtml(c.reason)}</td>
+        </tr>
+      `).join("")}</tbody>
+    </table>
+    <button id="cleanup-delete-btn" style="margin-top:12px">remover selecionados</button>
+  `;
+  document.getElementById("cleanup-delete-btn").addEventListener("click", deleteCleanupSelected);
+}
+
+async function deleteCleanupSelected() {
+  const checked = [...document.querySelectorAll(".cleanup-check:checked")].map((el) => cleanupCandidates[Number(el.dataset.index)]);
+  if (checked.length === 0) return;
+  if (!confirm(`Remover ${checked.length} diretório(s) permanentemente? Esta ação não pode ser desfeita.`)) return;
+
+  const data = await postJson("/api/cleanup/delete", { paths: checked.map((c) => c.path) });
+  const log = document.getElementById("cleanup-log");
+  for (const r of data.results || []) {
+    log.textContent += r.ok ? `removido: ${r.path}\n` : `FALHOU: ${r.path} — ${r.error}\n`;
+  }
+  log.scrollTop = log.scrollHeight;
+  runCleanupScan(); // re-scan to refresh the list after deletion
+}
 </script>
 
 </body>
