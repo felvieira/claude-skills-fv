@@ -134,6 +134,27 @@ O relatório **NÃO** mede:
 - Custo de infra externa (fal.ai, Brave Search, Firecrawl) — ver skill 30
 - Qualidade da entrega final (sucesso/falha de feature) — métrica de outcome, não de processo
 
+## Métrica norte proposta: accepted outputs / human review minutes
+
+> Fonte: [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) (Birgitta Böckeler) — conceito absorvido, texto reescrito. Preenche o ponto cego "qualidade da entrega final" acima — não é um novo relatório, é a métrica que falta pra fechar aquele gap.
+
+Otimizar por tokens gerados, tool calls, ou tarefas iniciadas mede **atividade**, não **valor entregue**. A métrica que captura o que um harness deveria fazer é:
+
+```
+accepted_outputs / human_review_minutes
+```
+
+Onde `accepted_outputs` é o número de PRs/mudanças aceitas sem retrabalho, e `human_review_minutes` é o tempo humano gasto revisando (aceitas + rejeitadas). Um número alto significa que o kit está convertendo capacidade do modelo em trabalho revisável sem consumir esforço humano equivalente na saída — o oposto de gerar volume que exige o mesmo tempo de review de sempre.
+
+**Por que não está implementado ainda:** o kit não tem hoje um jeito de capturar `human_review_minutes` de forma confiável (isso vive fora do que hooks conseguem observar — é tempo do humano, não do agente) nem um sinal automático de "aceito sem retrabalho" vs "aceito após 3 rounds de correção". Registrado aqui como métrica-alvo, não implementação — se o usuário adotar um tracker externo (Linear/Jira, já mencionado no roadmap abaixo) ou revisão de PR no GitHub, o dado de `time_to_merge`/`review_comments_count` por PR é o proxy mais próximo disponível sem instrumentação nova.
+
+```
+☐ Ao avaliar se uma mudança no kit "ajudou", perguntar não "quantos tokens economizou"
+  mas "quantas mudanças aceitas sem retrabalho isso gerou por minuto de revisão humana"
+☐ Se a resposta é "gerou mais volume mas o review ficou mais longo" — não é uma melhoria,
+  é custo transferido do modelo pro humano
+```
+
 ## Como ajustar pro seu contexto
 
 1. Edite `SAVINGS_HEURISTICS` em `scripts/savings-report.mjs`

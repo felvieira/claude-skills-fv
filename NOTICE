@@ -102,6 +102,15 @@ Birgitta Böckeler (Thoughtworks) — "Harness engineering"
   Inspired the harness-categories policy, the /drift-scan command, the harness
   templates per topology, the approved-fixtures pattern, and the
   harnessability score.
+  A second, later piece by the same author — "Harness Engineering: Build a
+  Reliable AI Agent in 6 Layers" (thread: x.com/iiiichigo_chan/status/
+  2093765205276713218) — inspired five further additions after gap analysis
+  against the existing kit: the task-contract schema
+  (policies/goal-driven-execution.md), tool-response schema + named permission
+  ladder (policies/tool-safety.md), the fix-destination failure taxonomy
+  (agents/debugger.md), and the "accepted outputs / human review minutes"
+  target metric (policies/savings-metrics.md). No text or code copied from
+  either piece — concepts reformulated in the kit's own structure.
 
 multica-ai/andrej-karpathy-skills (Jiayuan Yu)
   https://github.com/multica-ai/andrej-karpathy-skills

@@ -57,3 +57,46 @@ Usar tools e MCP com minimo privilegio, baixo risco operacional e boa auditabili
 - motivo
 - risco
 - resultado relevante
+
+## Resposta estruturada de tool (sucesso/falha)
+
+> Fonte: [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) (Birgitta Böckeler) — conceito absorvido, texto reescrito.
+
+O kit já tem schema de I/O pra chamadas entre skill/subagent (`schemas/skill-io/`), mas nao formaliza o formato de retorno de uma chamada de tool arbitraria (bash, MCP, script). Sem isso, uma falha de tool vira "wall of text" de terminal que o proprio agente tem que reinterpretar — a mesma ambiguidade que gasta ciclo de raciocinio.
+
+Ao reportar o resultado de uma tool (especialmente de risco medio/alto, ou qualquer chamada que outro agente/etapa vai consumir depois), preferir isto a colar output bruto sem filtro:
+
+```json
+{
+  "status": "failed",
+  "tool": "run_tests",
+  "reason": "2 testes falhando (snapshot mismatch)",
+  "evidence": ["artifacts/home-mobile-before.png", "artifacts/home-mobile-after.png"],
+  "retryable": true
+}
+```
+
+- `status`: `ok` | `failed` | `denied` (nunca ambiguo — nao "parece que funcionou")
+- `reason`: uma frase, a causa, nao o log inteiro
+- `evidence`: paths/refs pro artefato real (screenshot, arquivo, output de teste) — nao o conteudo colado
+- `retryable`: `true` se um retry com o mesmo comando pode resolver (ex: rede instavel), `false` se precisa mudar algo primeiro (ex: erro de schema)
+
+```
+☐ Falha de tool reportada tem causa em 1 frase, nao o stdout/stderr bruto colado
+☐ Evidencia aponta pro artefato (path, screenshot, log salvo), nao repete o conteudo inteiro
+☐ Fica claro se um retry cego resolveria ou se algo precisa mudar antes de tentar de novo
+```
+
+## Permission ladder (ação → nível → evidência exigida)
+
+> Fonte: [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) (Birgitta Böckeler) — conceito absorvido, texto reescrito. As "Classes de Risco" acima já classificam por categoria; isto nomeia a régua por *tipo de ação* com o que precisa acompanhar a aprovação — mais granular, não substitui a classificação por risco.
+
+| Ação | Nível | Exige |
+|---|---|---|
+| Ler arquivo, buscar código, análise local | `automatic` | — |
+| Escrever no workspace local, rodar teste/build sem efeito externo | `automatic` | mudança revisável (diff visível, reversível via git) |
+| Enviar mensagem, publicar conteúdo, abrir PR/issue | `approval_required` | preview do conteúdo final antes de enviar |
+| Deploy em produção, alterar infra | `approval_required` | testes verdes + plano de rollback pronto |
+| Deletar dado, comando destrutivo | `approval_required` | alvo exato nomeado + plano de recuperação |
+
+Não aplique fricção máxima em toda ação — ler um doc público e apagar registro de cliente não devem passar pela mesma régua de aprovação (mesmo princípio de `rules/common/development-workflow.md` sobre confirmar só o que é irreversível). Nível de risco alto ⇒ nível de aprovação alto; risco baixo não precisa de cerimônia.

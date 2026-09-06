@@ -146,6 +146,23 @@ Pensamentos que significam STOP:
 - **Camada Context** — janela de contexto estourou, ou a trajetoria ficou corrompida (referencia a algo que nao esta mais no contexto, ex: apos compactacao). Sintoma: agente "esquece" algo que decidiu antes, ou referencia um resultado de tool-call que nao aparece mais no historico. Ver `policies/context-engineering.md` (KV-cache-aware prompt construction) pra prevenir isso na origem.
 - **Camada Control-flow** — loop infinito, ou "espiral da morte" (agente tenta a mesma coisa que falhou repetidamente, cada vez piorando o estado). Sintoma: numero de iteracoes/tokens crescendo sem progresso real no output. Isso e exatamente o que `circuit-breaker.mjs` do `/loop` existe pra pegar — se um bug desse tipo aparece, o circuit breaker que deveria ter cortado nao disparou; investigar o threshold dele antes de investigar a logica do agente.
 
+#### Trace do run + destino do fix (complementar a taxonomia por camada acima)
+
+> Fonte: [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) (Birgitta Böckeler) — conceito absorvido, texto reescrito. A taxonomia por camada acima responde "onde esta a causa" (API/Tool/Context/Control-flow); esta responde uma pergunta diferente e complementar — "que tipo de fix corrige isso de vez", que nem sempre e obvio so pela camada.
+
+Antes de fechar o Debug Report, classificar a causa raiz num destes 4 destinos de fix — cada um aponta pra uma acao concreta, nao so pra uma camada:
+
+| Destino do fix | Quando usar | Acao concreta |
+|---|---|---|
+| **missing_context** | Agente nao tinha a informacao que precisava (arquivo nao lido, doc desatualizado, mapa do projeto incompleto) | Atualizar `AGENTS.md`/`CLAUDE.md`/repo-audit com o que faltava |
+| **bad_tool_contract** | Tool foi chamada errado repetidamente (schema ambiguo, descricao que induz erro) | Melhorar o schema/descricao da tool, nao so corrigir a chamada uma vez |
+| **missing_guardrail** | Acao de risco rodou sem checagem previa que deveria existir | Adicionar policy check em `policies/tool-safety.md` ou hook `PreToolUse` |
+| **weak_verification** | Bug passou porque a evidencia de "done" nao provava o caso que quebrou | Adicionar teste de regressao que falha sem o fix e passa com ele |
+
+Isso nao substitui a secao `## Sugestoes (fora do escopo do fix)` do Output abaixo — formaliza especificamente a categoria da causa raiz de bug agentico, pra virar dado consultavel em vez de prosa solta. Se o Debug Report e sobre um `/loop`/`/swarm`/pipeline, adicionar `**Destino do fix:**` logo apos `## Root Cause` usando uma das 4 categorias acima.
+
+**Nao fazer:** re-rodar a mesma tarefa com prompt "mais forte" ou "mais educado" na esperanca de que funcione — isso nao corrige nenhum dos 4 destinos, so tenta sorte de novo com o mesmo ambiente subespecificado.
+
 ## Output
 
 ```markdown

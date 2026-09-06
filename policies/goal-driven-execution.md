@@ -20,6 +20,33 @@ Every non-trivial task must be transformed into a **verifiable goal** before imp
 | "Make it faster" | "Measure baseline → add bench fixture → optimize → confirm bench shows improvement" |
 | "Improve the API" | "Define 3 acceptance criteria as DADO/QUANDO/ENTÃO, then satisfy them" |
 
+## Task contract (schema formal)
+
+> Fonte: [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) (Birgitta Böckeler, resumo em thread) — conceito absorvido, texto reescrito.
+
+A tabela acima já cobre a reescrita de "vago" pra "verificável", mas nada aqui impunha um formato único e versionável do resultado. Pra tarefa não-trivial que atravessa mais de uma etapa de pipeline (várias skills, um `/loop`, ou handoff pra outro agente), o goal reescrito vira um **objeto de contrato**, não só uma frase — assim quem retoma a tarefa (outra skill, um `/loop` numa iteração seguinte, um handoff) lê os mesmos campos em vez de reinferir o objetivo da prosa anterior:
+
+```yaml
+contract_version: 1
+goal: <objetivo verificável, uma frase>
+inputs: [<arquivo/spec/issue relevante>, ...]
+constraints: [<o que não pode mudar — API pública, schema, dependências>, ...]
+deliverable: { type: <pr | file | report | fix> }
+done_when: [<critério observável 1>, <critério observável 2>, ...]
+escalate_when: [<condição que exige parar e perguntar>, ...]
+```
+
+`done_when` são os critérios DADO/QUANDO/ENTÃO já produzidos pela skill 01 ou pela reescrita goal-driven — só formalizados como lista, não frase solta. `escalate_when` é novo: condições explícitas que disparam parar-e-perguntar em vez de decidir sozinho (ex: "schema change parece necessária", "mesmo teste falha 3x seguidas", "requisito conflita com regra de produto existente") — sem isso, um agente autônomo tende a inventar uma saída em vez de escalar.
+
+```
+☐ Tarefa que atravessa mais de uma etapa (pipeline, /loop, handoff) tem os campos acima
+  explícitos em algum lugar consultável — não só "eu sei qual é o objetivo" na cabeça do agente
+☐ escalate_when tem pelo menos 1 condição concreta, não fica implícito
+☐ done_when é lista de critérios observáveis (testável), não uma frase vaga tipo "funciona bem"
+```
+
+Não crie um arquivo de contrato pra toda tarefa — tarefa trivial (ver `## When to skip` abaixo) não precisa. O contrato formal vale quando o goal precisa sobreviver a uma transição de contexto (nova sessão, handoff, iteração de loop) que a conversa atual não vai carregar sozinha.
+
 ## Multi-step plans
 
 For tasks with 3+ steps, state the plan with a verifier per step:
