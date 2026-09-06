@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Contract",
+  "description": "Formal contract for a task that crosses more than one pipeline/loop/handoff boundary. See policies/goal-driven-execution.md for when to use this vs. an inline goal restatement. Consumed by scripts/auto-loop/contract.mjs (--contract flag).",
+  "type": "object",
+  "required": ["contract_version", "goal", "done_when"],
+  "properties": {
+    "contract_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bump when the contract itself is edited mid-task (e.g. scope renegotiated) — lets a trace correlate which contract version a given run acted on."
+    },
+    "goal": {
+      "type": "string",
+      "description": "Verifiable goal, one sentence. Same bar as policies/goal-driven-execution.md's rewrite table."
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relevant files/specs/issues the agent should read before acting."
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "What must not change (public API, schema, dependencies)."
+    },
+    "deliverable": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["pr", "file", "report", "fix"] }
+      }
+    },
+    "done_when": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Observable, testable criteria — not a vague phrase. Checked against agent output; loop keeps running until all are satisfied or escalate_when fires."
+    },
+    "escalate_when": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Explicit conditions that should stop the loop and surface to a human instead of letting the agent invent a way forward."
+    }
+  }
+}

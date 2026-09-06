@@ -13,6 +13,7 @@ export const EXIT_CODES = {
   STALL: 5,
   TOKEN_CAP: 6,
   POLISH_INCOMPLETE: 7,
+  ESCALATED: 8,
   INTERRUPTED: 130,
   FATAL: 99,
 };
@@ -25,6 +26,7 @@ const FLAGS_WITH_VALUE = new Set([
   '--agent',
   '--model',
   '--parallel',
+  '--contract',
 ]);
 
 const BOOL_FLAGS = new Set([
@@ -52,6 +54,7 @@ export function parseArgs(argv) {
     maxIterations: 0,
     maxTokens: 0,
     stopWhen: '',
+    contract: '',
     polish: 'standard',
     agent: 'claude',
     // Default stays hardcoded (not env-driven) unless the user opts in via
@@ -97,6 +100,7 @@ export function parseArgs(argv) {
         case '--max-iterations': opts.maxIterations = parseInt(val, 10); break;
         case '--max-tokens': opts.maxTokens = parseInt(val, 10); break;
         case '--stop-when': opts.stopWhen = val; break;
+        case '--contract': opts.contract = val; break;
         case '--polish':
           if (!['none', 'light', 'standard', 'full'].includes(val)) {
             throw new Error(`Invalid --polish value: ${val}. Use none|light|standard|full`);
@@ -187,6 +191,9 @@ Flags:
   --max-iterations <n>          Cap iterations (default: auto by complexity)
   --max-tokens <n>              Abort when cumulative tokens exceed n
   --stop-when "<condition>"     End loop when agent reports condition met
+  --contract <path>             Formal task contract (JSON, schemas/task-contract.schema.json).
+                                  done_when drives completion, escalate_when stops and
+                                  surfaces to the user instead of letting the agent guess.
   --polish none|light|standard|full
                                 Quality pass after validation (default: standard)
                                   none     = no polish
@@ -211,6 +218,7 @@ Exit codes:
   5    Stall detected (no progress)
   6    Token cap reached
   7    Polish incomplete (committed anyway)
+  8    Escalated (contract escalate_when condition met — needs human decision)
   130  Interrupted by user
   99   Fatal error
 

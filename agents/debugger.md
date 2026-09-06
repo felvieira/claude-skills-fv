@@ -163,6 +163,8 @@ Isso nao substitui a secao `## Sugestoes (fora do escopo do fix)` do Output abai
 
 **Nao fazer:** re-rodar a mesma tarefa com prompt "mais forte" ou "mais educado" na esperanca de que funcione — isso nao corrige nenhum dos 4 destinos, so tenta sorte de novo com o mesmo ambiente subespecificado.
 
+**Enforcement real:** o `/loop` ja grava `fixDestination` sozinho quando o circuit breaker dispara (`scripts/auto-loop/runner.mjs`) — `missing_context` num stall (sem progresso de arquivo/qualidade entre iteracoes), `weak_verification` num erro de validacao repetido N vezes. Isso fica em `.auto/runs/<runId>/status.json` junto com `stopReason` (nome canonico: `done`/`escalated`/`stall`/`same_error_repeated`/etc), `rollbackPoint` (HEAD no inicio do run) e `contractVersion` (se `--contract` foi usado). Ao investigar um bug de `/loop`, ler esse arquivo primeiro em vez de reconstituir o que aconteceu so pelos logs.
+
 ## Output
 
 ```markdown

@@ -32,6 +32,7 @@ const EVENT_SCRIPTS = {
     "agent-dispatch-validator.mjs",
     "investigate-first-guard.mjs",
     "design-anchor-guard.mjs",
+    "permission-ladder-guard.mjs",
     "pre-tool-enforcer.mjs",
     "model-routing-hook.mjs",
     "simplify-ignore.mjs",

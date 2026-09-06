@@ -42,6 +42,7 @@ import {
 import { startPreventSleep, stopPreventSleep } from './prevent-sleep.mjs';
 import { withBackoff } from './backoff.mjs';
 import { injectStopWhen, checkStopWhen } from './stop-when.mjs';
+import { loadContract, contractStopInstruction, checkContractSignal } from './contract.mjs';
 import { getAgent } from './agents/index.mjs';
 import { routeTask } from '../lib/plugin-catalog.mjs';
 
@@ -156,7 +157,25 @@ export async function runOnce(opts, _testAgent = null) {
   let permanentError = false;
   let retryExhausted = false;
   let polishIncomplete = false;
+  let taskEscalated = false;
+  let escalateReason = '';
+  let fixDestination = null;
   let lastError = '';
+
+  // Formal task contract (policies/goal-driven-execution.md) — optional.
+  // Load-fail is loud on purpose: a broken --contract path should stop the
+  // run, not silently fall back to the looser stop-when/completion heuristics.
+  let contract = null;
+  if (opts.contract) {
+    contract = loadContract(opts.contract);
+  }
+  const rollbackPoint = (() => {
+    try {
+      return execSync('git rev-parse HEAD', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+    } catch {
+      return null;
+    }
+  })();
 
   function cleanup() {
     try { closeLog(); } catch {}
@@ -202,6 +221,8 @@ export async function runOnce(opts, _testAgent = null) {
     stopWhen: opts.stopWhen,
     polish: opts.polish,
     worktree: !!worktreePath,
+    contractVersion: contract ? contract.contract_version : null,
+    rollbackPoint,
   });
 
   setTitle(`auto-loop: ${(opts.task || '').slice(0, 40)}`);
@@ -294,8 +315,13 @@ export async function runOnce(opts, _testAgent = null) {
       taskBlocked = true;
       blockedByStall = true;
       lastError = stall.reason;
+      // Stall (no file changes / no quality progress across iterations) is a
+      // control-flow symptom, but the fix is almost always that the agent
+      // lacked the information to make progress — see agents/debugger.md's
+      // fix-destination taxonomy.
+      fixDestination = 'missing_context';
       log(`⚡ Circuit breaker (stall): ${stall.reason}`, '🛑');
-      logEvent('breaker.stall', { reason: stall.reason });
+      logEvent('breaker.stall', { reason: stall.reason, fixDestination });
       break;
     }
 
@@ -316,6 +342,7 @@ export async function runOnce(opts, _testAgent = null) {
       tools,
     });
     if (opts.stopWhen) prompt = injectStopWhen(prompt, opts.stopWhen);
+    if (contract) prompt = `${prompt}\n\n${contractStopInstruction(contract)}`;
 
     // Invoke agent (with backoff for retryable errors).
     log(`Calling ${agent.name || opts.agent}...`);
@@ -381,6 +408,28 @@ export async function runOnce(opts, _testAgent = null) {
       }
     }
 
+    // Contract signal (escalate_when takes priority over done_when — a
+    // contract that says "escalate" should never be overridden by the
+    // looser completion heuristics below).
+    if (contract) {
+      const signal = checkContractSignal(output);
+      if (signal && signal.escalate) {
+        taskEscalated = true;
+        taskBlocked = true;
+        escalateReason = signal.escalateReason || 'escalate_when condition met (reason not stated by agent)';
+        lastError = escalateReason;
+        log(`🚩 Escalating per contract: ${escalateReason}`, '🛑');
+        logEvent('contract.escalate', { reason: escalateReason });
+        break;
+      }
+      if (signal && signal.done) {
+        taskDone = true;
+        log(`✅ Contract done_when satisfied`);
+        logEvent('contract.done', {});
+        break;
+      }
+    }
+
     // Completion / blocked detection.
     const completion = detectCompletion(output);
     if (completion.blocked) {
@@ -427,8 +476,13 @@ export async function runOnce(opts, _testAgent = null) {
           taskBlocked = true;
           blockedByBreaker = true;
           lastError = cb.reason;
+          // Same validation failure repeated N times without the agent
+          // adapting is the class of bug weak_verification is meant to catch:
+          // the check that keeps failing needs a regression test written
+          // against it, not another blind retry with the same prompt.
+          fixDestination = 'weak_verification';
           log(cb.reason, '🛑');
-          logEvent('breaker.tripped', { reason: cb.reason });
+          logEvent('breaker.tripped', { reason: cb.reason, fixDestination });
           break;
         }
 
@@ -450,20 +504,44 @@ export async function runOnce(opts, _testAgent = null) {
   // Why did the loop exit?
   const userInterrupted = isGracefulStop() || isForceStop();
 
+  // Named stop_reason (harness-trace vocabulary) — one canonical string per
+  // run instead of reconstructing it from 7 boolean flags at every consumer.
+  const stopReason = taskEscalated
+    ? 'escalated'
+    : taskDone
+      ? 'done'
+      : userInterrupted
+        ? 'interrupted'
+        : permanentError
+          ? 'permanent_error'
+          : retryExhausted
+            ? 'retry_exhausted'
+            : tokenCapReached
+              ? 'token_cap'
+              : blockedByBreaker
+                ? 'same_error_repeated'
+                : blockedByStall
+                  ? 'stall'
+                  : taskBlocked
+                    ? 'blocked'
+                    : 'budget_exhausted';
+
   logSection(
-    taskDone
-      ? '✅ Done'
-      : taskBlocked
-        ? '🛑 Blocked'
-        : tokenCapReached
-          ? '💸 Token cap'
-          : userInterrupted
-            ? '⏸️ Interrupted'
-            : permanentError
-              ? '💥 Permanent error'
-              : retryExhausted
-                ? '⏳ Retry exhausted'
-                : '⏱️ Budget exhausted',
+    taskEscalated
+      ? '🚩 Escalated'
+      : taskDone
+        ? '✅ Done'
+        : taskBlocked
+          ? '🛑 Blocked'
+          : tokenCapReached
+            ? '💸 Token cap'
+            : userInterrupted
+              ? '⏸️ Interrupted'
+              : permanentError
+                ? '💥 Permanent error'
+                : retryExhausted
+                  ? '⏳ Retry exhausted'
+                  : '⏱️ Budget exhausted',
   );
 
   // Final validation if marked done.
@@ -569,11 +647,17 @@ Run ID:     ${runId}
   logEvent('run.end', {
     taskDone,
     taskBlocked,
+    taskEscalated,
+    escalateReason: escalateReason || null,
     tokenCapReached,
     userInterrupted,
     permanentError,
     retryExhausted,
     polishIncomplete,
+    stopReason,
+    fixDestination,
+    contractVersion: contract ? contract.contract_version : null,
+    rollbackPoint,
     iteration,
     cumulativeTokens,
     commitHash,
@@ -583,21 +667,23 @@ Run ID:     ${runId}
   // Order of precedence matches the original runner logic.
   const finalCode = userInterrupted
     ? EXIT_CODES.INTERRUPTED
-    : permanentError
-      ? EXIT_CODES.PERMANENT_ERROR
-      : retryExhausted
-        ? EXIT_CODES.RETRY_EXHAUSTED
-        : tokenCapReached
-          ? EXIT_CODES.TOKEN_CAP
-          : blockedByBreaker || taskBlocked
-            ? EXIT_CODES.SAME_ERROR_REPEATED
-            : blockedByStall
-              ? EXIT_CODES.STALL
-              : polishIncomplete
-                ? EXIT_CODES.POLISH_INCOMPLETE
-                : taskDone
-                  ? EXIT_CODES.OK
-                  : EXIT_CODES.STALL; // budget-exhausted fallback
+    : taskEscalated
+      ? EXIT_CODES.ESCALATED
+      : permanentError
+        ? EXIT_CODES.PERMANENT_ERROR
+        : retryExhausted
+          ? EXIT_CODES.RETRY_EXHAUSTED
+          : tokenCapReached
+            ? EXIT_CODES.TOKEN_CAP
+            : blockedByBreaker || taskBlocked
+              ? EXIT_CODES.SAME_ERROR_REPEATED
+              : blockedByStall
+                ? EXIT_CODES.STALL
+                : polishIncomplete
+                  ? EXIT_CODES.POLISH_INCOMPLETE
+                  : taskDone
+                    ? EXIT_CODES.OK
+                    : EXIT_CODES.STALL; // budget-exhausted fallback
 
   // Write structured status for parallel parent / external tooling to consume.
   // Lives in the SAME .auto/runs/<runId>/ dir as the JSONL debug log.
@@ -612,11 +698,21 @@ Run ID:     ${runId}
       commitHash,
       taskDone,
       taskBlocked,
+      taskEscalated,
+      escalateReason: escalateReason || null,
       tokenCapReached,
       userInterrupted,
       permanentError,
       retryExhausted,
       polishIncomplete,
+      // Harness-trace fields (policies/goal-driven-execution.md, agents/debugger.md
+      // fix-destination taxonomy) — kept alongside the pre-existing boolean flags
+      // above rather than replacing them, so nothing that already reads this file
+      // (parallel.mjs's parent process) breaks.
+      stopReason,
+      fixDestination,
+      contractVersion: contract ? contract.contract_version : null,
+      rollbackPoint,
       cumulativeTokens,
       exitCode: finalCode,
       worktreePath,

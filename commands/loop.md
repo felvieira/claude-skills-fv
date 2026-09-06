@@ -35,6 +35,7 @@ node scripts/auto-loop.mjs --worktree --parallel 3 \
 | `--max-iterations <n>` | Cap de iterações | auto (8/12/15) |
 | `--max-tokens <n>` | Aborta quando tokens cumulativos passam de `n` | unlimited |
 | `--stop-when "<cond>"` | Encerra loop quando agente reporta condição satisfeita | — |
+| `--contract <path.json>` | Contrato formal (`schemas/task-contract.schema.json`) — `done_when` dirige conclusão, `escalate_when` para o loop e sinaliza pro usuário em vez do agente decidir sozinho | — |
 | `--polish none\|light\|standard\|full` | Passe de qualidade após validation | `standard` |
 | `--worktree` | Roda em git worktree isolado | false |
 | `--parallel <n>` | Roda `n` tasks em paralelo (requer `--worktree`, max 8) | 1 |
@@ -57,6 +58,7 @@ node scripts/auto-loop.mjs --worktree --parallel 3 \
 | `5` | Stall (sem progresso em git diff) |
 | `6` | Token cap atingido |
 | `7` | Polish incompleto (commitou mesmo assim) |
+| `8` | Escalado (`escalate_when` do contrato disparou — decisão humana necessária) |
 | `130` | Interrompido pelo usuário (SIGINT) |
 | `99` | Erro fatal |
 

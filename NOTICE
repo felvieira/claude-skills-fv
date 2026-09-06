@@ -106,11 +106,17 @@ Birgitta Böckeler (Thoughtworks) — "Harness engineering"
   Reliable AI Agent in 6 Layers" (thread: x.com/iiiichigo_chan/status/
   2093765205276713218) — inspired five further additions after gap analysis
   against the existing kit: the task-contract schema
-  (policies/goal-driven-execution.md), tool-response schema + named permission
-  ladder (policies/tool-safety.md), the fix-destination failure taxonomy
-  (agents/debugger.md), and the "accepted outputs / human review minutes"
-  target metric (policies/savings-metrics.md). No text or code copied from
-  either piece — concepts reformulated in the kit's own structure.
+  (policies/goal-driven-execution.md, schemas/task-contract.schema.json,
+  scripts/auto-loop/contract.mjs — wired into /loop via --contract), tool-
+  response schema + named permission ladder (policies/tool-safety.md,
+  enforced opt-in by hooks/scripts/permission-ladder-guard.mjs), the
+  fix-destination failure taxonomy (agents/debugger.md, recorded by
+  scripts/auto-loop/runner.mjs into .auto/runs/<id>/status.json), and the
+  "accepted outputs / human review minutes" target metric
+  (policies/savings-metrics.md — documented as a target, not implemented,
+  since it needs human review-time data the kit's hooks cannot observe). No
+  text or code copied from either piece — concepts reformulated in the
+  kit's own structure.
 
 multica-ai/andrej-karpathy-skills (Jiayuan Yu)
   https://github.com/multica-ai/andrej-karpathy-skills

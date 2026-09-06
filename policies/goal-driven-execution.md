@@ -47,6 +47,8 @@ escalate_when: [<condição que exige parar e perguntar>, ...]
 
 Não crie um arquivo de contrato pra toda tarefa — tarefa trivial (ver `## When to skip` abaixo) não precisa. O contrato formal vale quando o goal precisa sobreviver a uma transição de contexto (nova sessão, handoff, iteração de loop) que a conversa atual não vai carregar sozinha.
 
+**Enforcement real:** `/loop --contract <path.json>` carrega o contrato (`scripts/auto-loop/contract.mjs`) e injeta `done_when`/`escalate_when` na instrução de cada iteração — o loop só marca `taskDone` quando o agente confirma `CONTRACT_DONE: true`, e para com exit code dedicado (`ESCALATED`) se qualquer `escalate_when` disparar, em vez de deixar a heurística de `completion.mjs` decidir sozinha. Sem `--contract`, o `/loop` continua funcionando como antes (goal em prosa + stop-when opcional) — isto é aditivo, não obrigatório.
+
 ## Multi-step plans
 
 For tasks with 3+ steps, state the plan with a verifier per step:
