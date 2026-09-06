@@ -94,6 +94,7 @@ steps:
   # ---- Phase 6: Quality gates (parallel) ----
   - id: quality-gates
     type: parallel
+    split_by: lens
     trigger_rule: all_success
     parallel:
       - id: tests

@@ -191,6 +191,32 @@ Parser implementado em `scripts/run-program.mjs`. Expressões inválidas = abort
 ```
 
 - Despacha via `Task` tool em uma mensagem (multiple tool uses)
+
+### `split_by` — declare a dimensão do corte
+
+> Fonte: [Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) (Hanako) — conceito absorvido, texto reescrito.
+
+O nó que corta o trabalho decide mais que qualquer outro do graph, porque **cortar pela dimensão errada desperdiça tudo que vem depois**. Cortar um repositório por pasta faz quatro workers auditarem os mesmos três arquivos; cortar por blast radius faz cada um ver algo que os outros não veem. O fan-out fica igual nos dois casos — o que muda é o valor do que volta.
+
+O kit não introduz um `type: splitter` separado (`parallel` já faz o despacho). O que faltava era **nomear a dimensão**, para que ela seja uma decisão revisável em vez de um acidente:
+
+```yaml
+- id: review-suite
+  type: parallel
+  split_by: lens          # cada branch olha o MESMO input por um ângulo diferente
+  parallel: [...]
+```
+
+| `split_by` | O que distingue cada branch | Exemplo |
+|---|---|---|
+| `lens` | Mesmo input, ângulo de análise diferente | 6 reviewers (código, erro, teste, docs, naming, security) |
+| `unit-of-work` | Cada branch recebe um pedaço distinto do trabalho | N slices de uma migração, um arquivo por branch |
+| `blast-radius` | Corte por consequência de erro, não por estrutura | reversível-contido / reversível-amplo / difícil-de-reverter |
+| `source` | Cada branch consulta uma fonte diferente | 3 pesquisas em registries distintos |
+
+**Como usar na prática:** antes de escrever o bloco `parallel`, responda *"o que cada branch tem que os outros não têm?"*. Se a resposta é "nada, só rodam ao mesmo tempo", o fan-out não vale — é `skills/40-parallel-dispatcher/SKILL.md` (teste de informação nova) aplicado na camada declarativa.
+
+Campo opcional e sem enforcement duro: `validate-program.mjs` avisa se um `parallel` com 3+ branches não declara `split_by`, porque é exatamente aí que o corte arbitrário passa despercebido. Um `parallel` de 2 branches raramente esconde essa decisão.
 - `trigger_rule`:
   - `all_success` (default) — espera todos OK; falha de um aborta
   - `one_success` — segue assim que UM completar OK; cancela os outros
@@ -398,6 +424,22 @@ Cada step **lê explicitamente** o output do anterior via `${steps.X.capture.<na
 2. **Capture explícito** força contratos de output entre steps
 3. **Validador detecta** referência a step inexistente
 4. **Encaixa em pipelines maiores** — stream-chain é a building block, não o pipeline inteiro
+5. **Validador detecta aresta falsa** — `depends_on: [X]` sem nenhum `${steps.X...}` no corpo do step vira warning (ver abaixo)
+
+### Aresta falsa: "and then" não é dependência
+
+> Fonte: [Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) (Hanako) — conceito absorvido, texto reescrito.
+
+`depends_on` declara que o output de um step alimenta o input de outro. Quando o step declara a dependência mas **nunca lê** `${steps.X...}`, nada atravessa aquela aresta — ela veio da ordem em que os steps foram digitados, não de um dado real. O custo é serialização gratuita: dois steps que podiam rodar em paralelo esperam um pelo outro.
+
+**Teste:** para cada `depends_on`, pergunte *"consegue nomear o que atravessa?"*. Se não dá pra apontar o `${steps.X.capture...}` ou o arquivo que o step anterior escreveu e este lê, não é aresta.
+
+`scripts/validate-program.mjs` emite warning nesse caso — **warning, não erro**, porque existe uma forma legítima de dependência que não aparece como `${steps...}`: side-effect via filesystem (step A escreve `meta.json`, step B lê com `jq`). O dado atravessa, só não pela sintaxe de capture. Ao ver o warning, decida qual dos dois é:
+
+- **Dado atravessa por arquivo/estado** → dependência real, ignore o warning
+- **Nada atravessa** → remova o `depends_on` e deixe rodar em paralelo
+
+Caso real corrigido no próprio kit: `comprehensive-review.yml` tinha o step `security` com `depends_on: [parallel-review]`, mas ele consome só `${inputs.pr_number}` — nenhum dos 5 reviews. Virou o 6º agente dentro do bloco `parallel`, eliminando uma fase serial inteira.
 
 ### Anti-padrões específicos
 

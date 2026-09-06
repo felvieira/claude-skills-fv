@@ -98,6 +98,9 @@ Ao reportar o resultado de uma tool (especialmente de risco medio/alto, ou qualq
 | Enviar mensagem, publicar conteúdo, abrir PR/issue | `approval_required` | preview do conteúdo final antes de enviar |
 | Deploy em produção, alterar infra | `approval_required` | testes verdes + plano de rollback pronto |
 | Deletar dado, comando destrutivo | `approval_required` | alvo exato nomeado + plano de recuperação |
+| Escrita destrutiva em dados de produção (`DROP TABLE`, migration contra prod, cliente de DB apontando pra prod) | `closed` | **não abre** — o humano roda, não o agente |
+
+**Lane fechada ≠ threshold alto.** A última linha não é "exige aprovação muito forte": é uma categoria que o agente não executa, ponto. A distinção importa porque *threshold se ajusta e lane fechada não* — se qualquer sufixo, flag ou aprovação abre, você tem um threshold com nome de lane. O `permission-ladder-guard` reflete isso: lane `gated` emite `ask` e aceita o escape hatch; lane `closed` emite `deny` e **ignora** o escape hatch. Quando bater numa lane fechada, o caminho é propor a alternativa reversível (rodar contra staging, gerar o SQL pra revisão em vez de executar) ou pedir pro usuário rodar.
 
 Não aplique fricção máxima em toda ação — ler um doc público e apagar registro de cliente não devem passar pela mesma régua de aprovação (mesmo princípio de `rules/common/development-workflow.md` sobre confirmar só o que é irreversível). Nível de risco alto ⇒ nível de aprovação alto; risco baixo não precisa de cerimônia.
 

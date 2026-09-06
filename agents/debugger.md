@@ -158,6 +158,7 @@ Antes de fechar o Debug Report, classificar a causa raiz num destes 4 destinos d
 | **bad_tool_contract** | Tool foi chamada errado repetidamente (schema ambiguo, descricao que induz erro) | Melhorar o schema/descricao da tool, nao so corrigir a chamada uma vez |
 | **missing_guardrail** | Acao de risco rodou sem checagem previa que deveria existir | Adicionar policy check em `policies/tool-safety.md` ou hook `PreToolUse` |
 | **weak_verification** | Bug passou porque a evidencia de "done" nao provava o caso que quebrou | Adicionar teste de regressao que falha sem o fix e passa com ele |
+| **bad_plan** | Uma unidade falhou a mesma correcao N vezes seguidas — a verificacao funcionou toda vez, o problema e a unidade ter sido mal cortada | Voltar pro passo que PRODUZIU a unidade (splitter/plano), nao insistir na correcao. O loop nao enxerga o plano |
 
 Isso nao substitui a secao `## Sugestoes (fora do escopo do fix)` do Output abaixo — formaliza especificamente a categoria da causa raiz de bug agentico, pra virar dado consultavel em vez de prosa solta. Se o Debug Report e sobre um `/loop`/`/swarm`/pipeline, adicionar `**Destino do fix:**` logo apos `## Root Cause` usando uma das 4 categorias acima.
 

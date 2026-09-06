@@ -53,8 +53,14 @@ function runHook(cwd, command, toolName = 'Bash') {
   return JSON.parse(r.stdout);
 }
 
+function decisionOf(result) {
+  if (result.continue === true) return 'allow';
+  return (result.hookSpecificOutput && result.hookSpecificOutput.permissionDecision) || 'allow';
+}
+
 function isBlocked(result) {
-  return !!(result.hookSpecificOutput && result.hookSpecificOutput.permissionDecision === 'ask');
+  const d = decisionOf(result);
+  return d === 'ask' || d === 'deny';
 }
 
 // ─── Test 1: disabled by default ─────────────────────────────────────────────
@@ -135,6 +141,33 @@ console.log('\nTest 6: compound/obfuscated commands (regex bypass fixes)');
     const r = runHook(cwd, cmd);
     assert(`blocks compound/quoted "${cmd}"`, isBlocked(r), JSON.stringify(r));
   }
+  rmSync(cwd, { recursive: true, force: true });
+}
+
+// ─── Test 8: closed lane denies, and the escape hatch does not open it ───────
+console.log('\nTest 8: closed lane (irreversible prod-data writes)');
+{
+  const cwd = makeCwd(true);
+  const closedCases = [
+    'psql -c "DROP TABLE users"',
+    'psql -h db.prod.internal -c "delete from accounts"',
+    'prisma migrate deploy --schema prod.prisma',
+  ];
+  for (const cmd of closedCases) {
+    assert(`denies (not just asks) "${cmd.slice(0, 40)}"`, decisionOf(runHook(cwd, cmd)) === 'deny', JSON.stringify(runHook(cwd, cmd)));
+  }
+  // The whole point of a closed lane: no suffix opens it. If the escape hatch
+  // worked here, this would be a threshold, not a lane.
+  const withHatch = runHook(cwd, 'psql -c "DROP TABLE users" # permission-ladder: allow');
+  assert('escape hatch does NOT open a closed lane', decisionOf(withHatch) === 'deny', JSON.stringify(withHatch));
+
+  // A gated lane still honours the hatch — the two behaviours must differ.
+  const gatedWithHatch = runHook(cwd, 'rm -rf /tmp/foo # permission-ladder: allow');
+  assert('escape hatch still opens a gated lane', decisionOf(gatedWithHatch) === 'allow', JSON.stringify(gatedWithHatch));
+
+  // Non-production database work is not in the closed lane.
+  const staging = runHook(cwd, 'psql -h staging -c "select 1"');
+  assert('staging db access is not blocked', decisionOf(staging) === 'allow', JSON.stringify(staging));
   rmSync(cwd, { recursive: true, force: true });
 }
 

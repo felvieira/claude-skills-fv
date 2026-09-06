@@ -17,7 +17,7 @@ import { detectTools, runValidation } from './validation.mjs';
 import { calcBudget, countPlanTasks } from './plan.mjs';
 import { detectCompletion } from './completion.mjs';
 import { buildContext } from './context.mjs';
-import { CircuitBreaker } from './circuit-breaker.mjs';
+import { CircuitBreaker, hashError } from './circuit-breaker.mjs';
 import {
   saveSession,
   loadSession,
@@ -43,6 +43,7 @@ import { startPreventSleep, stopPreventSleep } from './prevent-sleep.mjs';
 import { withBackoff } from './backoff.mjs';
 import { injectStopWhen, checkStopWhen } from './stop-when.mjs';
 import { loadContract, contractStopInstruction, checkContractSignal } from './contract.mjs';
+import { buildReturnEnvelope, formatReturnEnvelope } from './return-envelope.mjs';
 import { getAgent } from './agents/index.mjs';
 import { routeTask } from '../lib/plugin-catalog.mjs';
 
@@ -455,6 +456,27 @@ export async function runOnce(opts, _testAgent = null) {
         logEvent('completion.deferred', { reason: 'no diff on iter 1' });
         continue;
       }
+      // A check the model can talk its way past is not a check. `detectCompletion`
+      // infers "done" from phrases like "all tests pass" — that is the agent
+      // asserting success, not evidence of it. When the verdict came from
+      // inference rather than an explicit marker, make the deterministic
+      // validators agree before accepting; they, unlike prose, can fail.
+      const inferredDone = /^semantic completion/.test(completion.reason || '');
+      if (inferredDone && (tools.lint || tools.test || tools.typecheck)) {
+        const confirm = runValidation(tools, 'intermediate');
+        if (!confirm.ok) {
+          const envelope = buildReturnEnvelope({
+            feedback: confirm.feedback,
+            tier: 'completion-check',
+            attempt: (breaker.errorCounts[hashError(confirm.feedback)] || 0) + 1,
+            maxAttempts: breaker.maxSameError,
+          });
+          lastError = formatReturnEnvelope(envelope);
+          log(`Agent claimed done, validation disagrees: ${envelope.reason.slice(0, 80)}`, '⚠️');
+          logEvent('completion.deferred', { reason: 'semantic done contradicted by validation', envelope });
+          continue;
+        }
+      }
       taskDone = true;
       log(`✅ Task complete: ${completion.reason}`);
       logEvent('completion.done', { reason: completion.reason });
@@ -467,20 +489,32 @@ export async function runOnce(opts, _testAgent = null) {
       log(`Validation (${tier})...`);
       const val = runValidation(tools, tier);
       if (!val.ok) {
-        lastError = val.feedback;
-        log(`Validation failed: ${val.feedback.slice(0, 100)}`, '⚠️');
-        logEvent('validation.fail', { tier, feedback: val.feedback.slice(0, 500) });
+        // Return the unit, not the batch: instead of pushing the whole
+        // validation blob into the next prompt, extract what actually failed
+        // and bound the correction to it. SCOPE is what stops a one-file fix
+        // from turning into a four-file diff (see return-envelope.mjs).
+        const envelope = buildReturnEnvelope({
+          feedback: val.feedback,
+          tier,
+          attempt: (breaker.errorCounts[hashError(val.feedback)] || 0) + 1,
+          maxAttempts: breaker.maxSameError,
+        });
+        lastError = formatReturnEnvelope(envelope);
+        log(`Validation failed: ${envelope.reason.slice(0, 100)}`, '⚠️');
+        logEvent('validation.fail', { tier, envelope, feedback: val.feedback.slice(0, 500) });
 
         const cb = breaker.recordError(val.feedback);
         if (cb.tripped) {
           taskBlocked = true;
           blockedByBreaker = true;
           lastError = cb.reason;
-          // Same validation failure repeated N times without the agent
-          // adapting is the class of bug weak_verification is meant to catch:
-          // the check that keeps failing needs a regression test written
-          // against it, not another blind retry with the same prompt.
-          fixDestination = 'weak_verification';
+          // A unit that fails the same correction maxSameError times in a row
+          // is not a verification problem — the loop verified correctly every
+          // time. The fault is in the plan that produced the unit, and the loop
+          // cannot see the plan (it only sees one unit). Routing this to
+          // weak_verification would send the fix to the wrong layer: writing
+          // another regression test does not fix a badly-cut unit of work.
+          fixDestination = 'bad_plan';
           log(cb.reason, '🛑');
           logEvent('breaker.tripped', { reason: cb.reason, fixDestination });
           break;

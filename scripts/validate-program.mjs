@@ -209,6 +209,25 @@ function validate(programPath, doc) {
         if (step.trigger_rule && !["all_success", "one_success", "all_done"].includes(step.trigger_rule)) {
           errors.push(`step "${step.id}": unknown trigger_rule "${step.trigger_rule}"`);
         }
+        // The node that cuts the work decides more than any other: split by the
+        // wrong dimension and every downstream branch is wasted (four workers
+        // auditing the same three files). Declaring `split_by` makes that a
+        // reviewable decision instead of an accident. Only warned at 3+ branches
+        // — a 2-branch fan-out rarely hides the choice.
+        const VALID_SPLITS = ["lens", "unit-of-work", "blast-radius", "source"];
+        if (step.split_by && !VALID_SPLITS.includes(step.split_by)) {
+          warnings.push(
+            `step "${step.id}": split_by "${step.split_by}" is not one of ${VALID_SPLITS.join(", ")} — ` +
+            `custom dimensions are allowed, but check it names what each branch has that the others don't`
+          );
+        }
+        if (!step.split_by && Array.isArray(step.parallel) && step.parallel.length >= 3) {
+          warnings.push(
+            `step "${step.id}": ${step.parallel.length} parallel branches without split_by — ` +
+            `declare the cut dimension (${VALID_SPLITS.join(" | ")}) so the split is a reviewed decision. ` +
+            `Ask: what does each branch have that the others don't?`
+          );
+        }
       }
       if (type === "conditional" && (!step.if || !step.then)) {
         errors.push(`step "${step.id}": type=conditional requires if + then`);
@@ -236,19 +255,47 @@ function validate(programPath, doc) {
 
     // Check ${steps.X} references
     const allRefs = [];
-    const findRefs = (obj) => {
+    const findRefs = (obj, sink) => {
       if (typeof obj === "string") {
         const matches = obj.matchAll(/\$\{steps\.([a-z][a-z0-9-]*)/g);
-        for (const m of matches) allRefs.push(m[1]);
+        for (const m of matches) sink.push(m[1]);
       } else if (Array.isArray(obj)) {
-        obj.forEach(findRefs);
+        obj.forEach((o) => findRefs(o, sink));
       } else if (obj && typeof obj === "object") {
-        Object.values(obj).forEach(findRefs);
+        Object.values(obj).forEach((o) => findRefs(o, sink));
       }
     };
-    findRefs(doc.steps);
+    findRefs(doc.steps, allRefs);
     for (const ref of allRefs) {
       if (!ids.has(ref)) errors.push(`reference to non-existent step: \${steps.${ref}}`);
+    }
+
+    // Anti-pattern: false edge. `depends_on: [X]` declares a data dependency,
+    // but if the step never reads ${steps.X...} anywhere in its body, nothing
+    // actually crosses that edge — it's "and then", not a dependency, and the
+    // wait is pure serialization cost (policies/programs-schema.md, stream-chain
+    // section). Warning rather than error: an ordering-only edge is occasionally
+    // deliberate (side effects on shared state, e.g. a step that writes files a
+    // later step globs), so this flags for review instead of blocking.
+    for (const step of doc.steps) {
+      if (!step.id || !step.depends_on) continue;
+      const deps = Array.isArray(step.depends_on) ? step.depends_on : [step.depends_on];
+      // Refs found anywhere inside THIS step (its own body only).
+      const stepRefs = [];
+      findRefs(step, stepRefs);
+      for (const dep of deps) {
+        if (!ids.has(dep)) {
+          errors.push(`step "${step.id}": depends_on references non-existent step "${dep}"`);
+          continue;
+        }
+        if (!stepRefs.includes(dep)) {
+          warnings.push(
+            `step "${step.id}": depends_on "${dep}" but never reads \${steps.${dep}...} — ` +
+            `false edge? If no data crosses, drop the dependency so the steps can run in parallel ` +
+            `(if the edge is for ordering/side-effects only, this warning is expected)`
+          );
+        }
+      }
     }
   }
 

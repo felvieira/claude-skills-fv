@@ -43,36 +43,61 @@ import { isHookDisabled, readHookConfig, resolveBotPath } from "./utils.mjs";
 // Each pattern maps to the ladder row it belongs to (policies/tool-safety.md).
 // `requires` is what the policy says must accompany approval — surfaced in
 // the block message so the human approving it knows what to check for.
+// `lane` sorts by how expensive the mistake is to undo, not by how confident
+// anyone is (confidence is the one variable the model can influence, which
+// makes it the weakest input to this decision):
+//
+//   "gated" — reversible but wide. Opens on human approval.
+//   "closed" — hard to reverse: production data, irreversible destruction.
+//             Does NOT open. This is deliberately not a very high threshold,
+//             because thresholds get adjusted and closed lanes do not. The
+//             agent must hand these back to the human to run themselves.
+//
+// Source: Loops and Graphs (x.com/hanakoxbt/status/2091515787366306154).
 const LADDER = [
   {
     id: "destructive-delete",
     pattern: /\b(rm\s+-rf|rimraf|Remove-Item\s+.*-Recurse\s+.*-Force|del\s+\/[sf]\s)/i,
     label: "comando de delete recursivo/forçado",
+    lane: "gated",
     requires: "alvo exato nomeado + plano de recuperação",
   },
   {
     id: "force-push",
     pattern: /\bgit\s+push\s+.*--force(?!-with-lease)\b|\bgit\s+push\s+-f\b/i,
     label: "force-push (sem --force-with-lease)",
+    lane: "gated",
     requires: "confirmação explícita — pode sobrescrever histórico remoto de outra pessoa",
   },
   {
     id: "reset-hard",
     pattern: /\bgit\s+reset\s+--hard\b/i,
     label: "git reset --hard",
+    lane: "gated",
     requires: "confirmação de que trabalho não commitado pode ser descartado",
   },
   {
     id: "branch-delete-force",
     pattern: /\bgit\s+branch\s+-D\b/i,
     label: "delete forçado de branch",
+    lane: "gated",
     requires: "confirmação de que a branch não tem trabalho não mergeado",
   },
   {
     id: "deploy-shaped",
     pattern: /\b(terraform\s+apply|kubectl\s+apply|pulumi\s+up|serverless\s+deploy|vercel\s+--prod|firebase\s+deploy|npm\s+publish|docker\s+push)\b/i,
     label: "comando que parece alterar infra/produção ou publicar pacote",
+    lane: "gated",
     requires: "testes verdes + plano de rollback pronto",
+  },
+  {
+    id: "prod-data-write",
+    // Irreversible against real data: dropping/truncating tables, or running a
+    // migration/psql/mysql against something whose name says production.
+    pattern: /\b(DROP\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\s+TABLE)\b|\b(psql|mysql|mongo|redis-cli)\b[^\n]*\b(prod|production)\b|\b(prisma\s+migrate\s+deploy|alembic\s+upgrade)\b[^\n]*\b(prod|production)\b/i,
+    label: "escrita destrutiva em dados de produção",
+    lane: "closed",
+    requires: "esta lane não abre — o humano roda isto, não o agente",
   },
 ];
 
@@ -126,9 +151,6 @@ process.stdin.on("end", () => {
   const command = extractCommand(input);
   if (!command) return allow();
 
-  // Escape hatch, same convention as design-anchor-guard and dev-guard.
-  if (/permission-ladder:\s*allow/i.test(command)) return allow();
-
   const segments = splitCompoundCommand(command).map(stripCommandQuoting);
   let hit = null;
   let matchedSegment = command;
@@ -138,18 +160,43 @@ process.stdin.on("end", () => {
   }
   if (!hit) return allow();
 
-  const reason = [
-    `PERMISSÃO REQUERIDA (permission-ladder-guard): ${hit.label}`,
-    ``,
-    `Comando completo: ${command.slice(0, 200)}`,
-    `Trecho que disparou: ${matchedSegment.slice(0, 150)}`,
-    `Exige: ${hit.requires}`,
-    ``,
-    `Ver policies/tool-safety.md ("Permission ladder") para a régua completa.`,
-    `Se já confirmado com o usuário nesta conversa, adicione o sufixo`,
-    `" # permission-ladder: allow" ao comando e rode de novo.`,
-    `Desligar: hooks/config.json -> permission_ladder_guard.enabled=false`,
-  ].join("\n");
+  const isClosedLane = hit.lane === "closed";
+
+  // Escape hatch, same convention as design-anchor-guard and dev-guard — but
+  // it does not apply to a closed lane. A lane that any suffix can open is a
+  // threshold, not a closed lane, and thresholds are exactly what this is
+  // meant not to be.
+  if (!isClosedLane && /permission-ladder:\s*allow/i.test(command)) return allow();
+
+  const reason = isClosedLane
+    ? [
+        `BLOQUEADO — lane fechada (permission-ladder-guard): ${hit.label}`,
+        ``,
+        `Comando completo: ${command.slice(0, 200)}`,
+        `Trecho que disparou: ${matchedSegment.slice(0, 150)}`,
+        ``,
+        `Esta categoria não é um threshold alto: é uma lane que não abre.`,
+        `${hit.requires}.`,
+        ``,
+        `O escape hatch "# permission-ladder: allow" NÃO se aplica aqui —`,
+        `uma lane que qualquer sufixo abre não é uma lane fechada.`,
+        `Peça ao usuário para rodar o comando, ou proponha uma alternativa reversível`,
+        `(ex: rodar contra staging, gerar o SQL para revisão em vez de executá-lo).`,
+        ``,
+        `Ver policies/tool-safety.md ("Permission ladder").`,
+      ].join("\n")
+    : [
+        `PERMISSÃO REQUERIDA (permission-ladder-guard): ${hit.label}`,
+        ``,
+        `Comando completo: ${command.slice(0, 200)}`,
+        `Trecho que disparou: ${matchedSegment.slice(0, 150)}`,
+        `Exige: ${hit.requires}`,
+        ``,
+        `Ver policies/tool-safety.md ("Permission ladder") para a régua completa.`,
+        `Se já confirmado com o usuário nesta conversa, adicione o sufixo`,
+        `" # permission-ladder: allow" ao comando e rode de novo.`,
+        `Desligar: hooks/config.json -> permission_ladder_guard.enabled=false`,
+      ].join("\n");
 
   try {
     mkdirSync(resolveBotPath(), { recursive: true });
@@ -159,6 +206,7 @@ process.stdin.on("end", () => {
         ts: new Date().toISOString(),
         hook: "permission-ladder-guard",
         rule: hit.id,
+        lane: hit.lane || "gated",
         command: command.slice(0, 300),
       }) + "\n",
       "utf-8"
@@ -168,7 +216,9 @@ process.stdin.on("end", () => {
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {
       hookEventName: "PreToolUse",
-      permissionDecision: "ask",
+      // Closed lane denies outright: there is no approval that opens it from
+      // inside the agent loop. Everything else asks a human.
+      permissionDecision: isClosedLane ? "deny" : "ask",
       permissionDecisionReason: reason,
     },
   }));

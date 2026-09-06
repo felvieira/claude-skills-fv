@@ -60,6 +60,7 @@ steps:
 
   - id: polish-full
     type: parallel
+    split_by: lens
     when: inputs.polish_level == "full"
     trigger_rule: all_done
     parallel:

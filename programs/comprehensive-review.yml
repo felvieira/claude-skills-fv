@@ -2,9 +2,9 @@ schema_version: "1.0"
 
 program:
   id: comprehensive-review
-  name: "Comprehensive PR Review (5-agent parallel)"
-  version: "1.0.0"
-  description: "Sync PR with main → 5 specialized review agents em paralelo → synthesize → auto-fix CRITICAL/HIGH → report"
+  name: "Comprehensive PR Review (6-agent parallel)"
+  version: "1.1.0"
+  description: "Sync PR with main → 6 specialized review agents em paralelo (inclui security) → synthesize → auto-fix CRITICAL/HIGH → report"
   authors: ["felvieira"]
 
 requires:
@@ -47,9 +47,10 @@ steps:
       git merge "origin/$BASE" --no-edit || echo "Merge conflict — manual resolution may be needed"
       echo "PR synced with $BASE"
 
-  # ═══ PHASE 2: 5 PARALLEL REVIEW AGENTS ═══
+  # ═══ PHASE 2: 6 PARALLEL REVIEW AGENTS ═══
   - id: parallel-review
     type: parallel
+    split_by: lens
     trigger_rule: all_done
     parallel:
       # Agent 1 — Code quality
@@ -128,15 +129,17 @@ steps:
           Reporte em $ARTIFACTS_DIR/pr-${inputs.pr_number}/review-docs.md.
         allowed_tools: [Read, Grep, Bash, Write]
 
-  # ═══ PHASE 3: SECURITY (separate, mandatory) ═══
-  - id: security
-    type: command
-    depends_on: [parallel-review]
-    command: /security-review
-    args: "PR ${inputs.pr_number}"
-    context: fresh
+      # Agent 6 — Security (mandatory; runs alongside the other five)
+      # Was a separate serial phase with depends_on: [parallel-review], but it
+      # consumes only ${inputs.pr_number} — never any reviewer's output — so the
+      # wait was pure serialization. `synthesize` is the real consumer of all six.
+      - id: security
+        type: command
+        command: /security-review
+        args: "PR ${inputs.pr_number}"
+        context: fresh
 
-  # ═══ PHASE 4: SYNTHESIZE ═══
+  # ═══ PHASE 3: SYNTHESIZE ═══
   - id: synthesize
     type: prompt
     context: fresh
@@ -160,7 +163,7 @@ steps:
       - Recomendacao final: APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
     allowed_tools: [Read, Write, Glob]
 
-  # ═══ PHASE 5: AUTO-FIX (conditional) ═══
+  # ═══ PHASE 4: AUTO-FIX (conditional) ═══
   - id: auto-fix
     type: conditional
     if: inputs.auto_fix != "none"
@@ -182,7 +185,7 @@ steps:
           Output: lista de fixes aplicados + lista de fixes pulados com razao.
         allowed_tools: [Read, Edit, Write, Bash, Glob, Grep]
 
-  # ═══ PHASE 6: REPORT TO GITHUB ═══
+  # ═══ PHASE 5: REPORT TO GITHUB ═══
   - id: post-comment
     type: bash
     bash: |
