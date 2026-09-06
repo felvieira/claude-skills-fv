@@ -228,6 +228,31 @@
     letter-spacing: 0.05em;
   }
   table tr:hover td { background: var(--bg-elev); }
+  table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+  table th.sortable:hover { color: var(--fg); }
+  table th.sortable .arrow { display: inline-block; width: 10px; color: var(--accent); }
+  .table-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 12px 0;
+  }
+  .table-toolbar input[type="text"] {
+    background: var(--bg-elev);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 13px;
+    min-width: 220px;
+  }
+  .table-toolbar input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  .table-toolbar .table-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-mute);
+  }
   pre {
     background: var(--bg-elev);
     border: 1px solid var(--border);
@@ -569,6 +594,85 @@ function memUnavailableNotice(msg) {
   return `<div class="alert err">${escapeHtml(msg)}${msg && msg.includes("docker start") ? "" : " — verifique se <code>node scripts/dashboard-server.mjs</code> está rodando."}</div>`;
 }
 
+// ─── Generic searchable/sortable table ──────────────────────────────────────
+// Every tab renders its own flavor of <table> (heat colors, expandable rows,
+// custom cells) so this doesn't replace those renderers — it wraps a plain
+// array of row objects with a text-search box and click-to-sort headers,
+// then hands back the filtered+sorted array for the caller's own row-building
+// code to consume. State (query, sort column/direction) lives per table id
+// so switching tabs and coming back doesn't reset what the user typed.
+const tableToolkitState = {};
+
+function tableToolkitFilterSort(tableId, rows, columns) {
+  const state = tableToolkitState[tableId] || { query: "", sortKey: null, sortDir: 1 };
+  tableToolkitState[tableId] = state;
+  let out = rows;
+  if (state.query) {
+    const q = state.query.toLowerCase();
+    const searchable = columns.filter((c) => c.searchable !== false).map((c) => c.key);
+    out = out.filter((r) => searchable.some((k) => String(r[k] ?? "").toLowerCase().includes(q)));
+  }
+  if (state.sortKey) {
+    const col = columns.find((c) => c.key === state.sortKey);
+    const type = (col && col.type) || "string";
+    out = out.slice().sort((a, b) => {
+      let av = a[state.sortKey], bv = b[state.sortKey];
+      if (type === "number") { av = Number(av) || 0; bv = Number(bv) || 0; return (av - bv) * state.sortDir; }
+      if (type === "date") { av = av ? new Date(av).getTime() : 0; bv = bv ? new Date(bv).getTime() : 0; return (av - bv) * state.sortDir; }
+      av = String(av ?? "").toLowerCase(); bv = String(bv ?? "").toLowerCase();
+      return av.localeCompare(bv) * state.sortDir;
+    });
+  }
+  return out;
+}
+
+// Renders the toolbar (search input + count badge) into `toolbarEl` and wires
+// up header click-to-sort on `<th data-key>` elements already present inside
+// `theadEl`. Caller is responsible for building `<thead>`/`<tbody>` markup —
+// this only wires the interaction and re-invokes `onChange(filteredSortedRows)`
+// whenever the query or sort changes, so the caller re-renders just the rows.
+function initTableToolkit(tableId, { toolbarEl, theadEl, rows, columns, onChange, placeholder }) {
+  const state = tableToolkitState[tableId] || { query: "", sortKey: null, sortDir: 1 };
+  tableToolkitState[tableId] = state;
+
+  if (toolbarEl) {
+    toolbarEl.innerHTML = `
+      <input type="text" class="table-search" placeholder="${escapeHtml(placeholder || "filtrar...")}" value="${escapeHtml(state.query)}">
+      <span class="table-count"></span>
+    `;
+    const input = toolbarEl.querySelector(".table-search");
+    input.addEventListener("input", () => {
+      state.query = input.value.trim();
+      const filtered = tableToolkitFilterSort(tableId, rows, columns);
+      toolbarEl.querySelector(".table-count").textContent = filtered.length + " / " + rows.length;
+      onChange(filtered);
+    });
+  }
+
+  if (theadEl) {
+    theadEl.querySelectorAll("th[data-key]").forEach((th) => {
+      th.classList.add("sortable");
+      th.addEventListener("click", () => {
+        if (state.sortKey === th.dataset.key) state.sortDir *= -1;
+        else { state.sortKey = th.dataset.key; state.sortDir = 1; }
+        theadEl.querySelectorAll("th[data-key] .arrow").forEach((a) => a.textContent = "");
+        const arrow = th.querySelector(".arrow");
+        if (arrow) arrow.textContent = state.sortDir === 1 ? "▲" : "▼";
+        onChange(tableToolkitFilterSort(tableId, rows, columns));
+      });
+      if (state.sortKey === th.dataset.key && !th.querySelector(".arrow")) {
+        th.insertAdjacentHTML("beforeend", ` <span class="arrow">${state.sortDir === 1 ? "▲" : "▼"}</span>`);
+      } else if (!th.querySelector(".arrow")) {
+        th.insertAdjacentHTML("beforeend", ` <span class="arrow"></span>`);
+      }
+    });
+  }
+
+  const initial = tableToolkitFilterSort(tableId, rows, columns);
+  if (toolbarEl) toolbarEl.querySelector(".table-count").textContent = initial.length + " / " + rows.length;
+  return initial;
+}
+
 // FTS5 search snippets are untrusted (stored wiki content) but come with
 // real <mark> tags from ai-memory's own highlighter — escape everything,
 // then convert only the literal, escaped &lt;mark&gt;/&lt;/mark&gt; pairs
@@ -771,28 +875,47 @@ async function renderBench() {
       <div class="card"><div class="label">Second-run reduction</div><div class="value accent">${s.second_run_reduction_pct ?? "—"}%</div><div class="hint">mean after cache seed</div></div>
     </div>
   `;
-  const rows = (data.results || []).map((r) => {
-    const match = r.second_run && r.second_run.cross_call_match
+  const rows = (data.results || []).map((r) => ({
+    fixture: r.fixture,
+    bytes: r.original_bytes,
+    single_pct: r.single_call ? r.single_call.reduction_pct : null,
+    second_pct: r.second_run ? r.second_run.reduction_pct : null,
+    match: r.second_run && r.second_run.cross_call_match
       ? `${r.second_run.cross_call_match.kind} (sim ${r.second_run.cross_call_match.similarity})`
-      : "—";
-    return `
+      : "—",
+  }));
+  const columns = [
+    { key: "fixture", label: "fixture", type: "string" },
+    { key: "bytes", label: "bytes", type: "number" },
+    { key: "single_pct", label: "single %", type: "number" },
+    { key: "second_pct", label: "second-run %", type: "number" },
+    { key: "match", label: "cross-call match", type: "string" },
+  ];
+  function renderRows(filtered) {
+    document.getElementById("bench-tbody").innerHTML = filtered.map((r) => `
       <tr>
         <td>${escapeHtml(r.fixture)}</td>
-        <td>${r.original_bytes}</td>
-        <td>${r.single_call ? r.single_call.reduction_pct : "—"}%</td>
-        <td>${r.second_run ? r.second_run.reduction_pct : "—"}%</td>
-        <td>${escapeHtml(match)}</td>
+        <td>${r.bytes}</td>
+        <td>${r.single_pct ?? "—"}%</td>
+        <td>${r.second_pct ?? "—"}%</td>
+        <td>${escapeHtml(r.match)}</td>
       </tr>
-    `;
-  }).join("");
+    `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhum resultado encontrado.</td></tr>`;
+  }
   body.innerHTML = cards + `
+    <div class="table-toolbar" id="bench-toolbar"></div>
     <table>
-      <thead><tr>
-        <th>fixture</th><th>bytes</th><th>single %</th><th>second-run %</th><th>cross-call match</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
+      <thead><tr id="bench-thead">${columns.map((c) => `<th data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+      <tbody id="bench-tbody"></tbody>
     </table>
   `;
+  const filtered = initTableToolkit("bench", {
+    toolbarEl: document.getElementById("bench-toolbar"),
+    theadEl: document.getElementById("bench-thead"),
+    rows, columns, onChange: renderRows,
+    placeholder: "filtrar por fixture...",
+  });
+  renderRows(filtered);
 }
 
 // ─── Savings rendering ─────────────────────────────────────────────────────
@@ -819,24 +942,45 @@ async function renderSavings() {
   `;
   // Optional: list top sensors if present.
   let sensorsBlock = "";
-  if (data.harness_coverage && data.harness_coverage.sensors) {
-    const rows = Object.entries(data.harness_coverage.sensors).map(([name, s]) => `
-      <tr>
-        <td>${escapeHtml(name)}</td>
-        <td>${escapeHtml(s.category || "—")}</td>
-        <td>${s.fired ?? 0}</td>
-        <td>${s.active ? "active" : "idle"}</td>
-      </tr>
-    `).join("");
+  const sensorRows = data.harness_coverage && data.harness_coverage.sensors
+    ? Object.entries(data.harness_coverage.sensors).map(([name, s]) => ({
+        name, category: s.category || "—", fired: s.fired ?? 0, state: s.active ? "active" : "idle",
+      }))
+    : null;
+  if (sensorRows) {
+    const columns = [
+      { key: "name", label: "sensor", type: "string" },
+      { key: "category", label: "category", type: "string" },
+      { key: "fired", label: "fired", type: "number" },
+      { key: "state", label: "state", type: "string" },
+    ];
     sensorsBlock = `
       <h2 style="margin-top:24px;font-size:14px">Sensor coverage</h2>
+      <div class="table-toolbar" id="savings-sensors-toolbar"></div>
       <table>
-        <thead><tr><th>sensor</th><th>category</th><th>fired</th><th>state</th></tr></thead>
-        <tbody>${rows}</tbody>
+        <thead><tr id="savings-sensors-thead">${columns.map((c) => `<th data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+        <tbody id="savings-sensors-tbody"></tbody>
       </table>
     `;
+    body.innerHTML = cards + sensorsBlock + `
+      <h2 style="margin-top:24px;font-size:14px">Raw snapshot</h2>
+      <pre id="savings-json">${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+    `;
+    function renderRows(filtered) {
+      document.getElementById("savings-sensors-tbody").innerHTML = filtered.map((s) => `
+        <tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.category)}</td><td>${s.fired}</td><td>${escapeHtml(s.state)}</td></tr>
+      `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhum sensor encontrado.</td></tr>`;
+    }
+    const filtered = initTableToolkit("savings-sensors", {
+      toolbarEl: document.getElementById("savings-sensors-toolbar"),
+      theadEl: document.getElementById("savings-sensors-thead"),
+      rows: sensorRows, columns, onChange: renderRows,
+      placeholder: "filtrar por sensor, categoria...",
+    });
+    renderRows(filtered);
+    return;
   }
-  body.innerHTML = cards + sensorsBlock + `
+  body.innerHTML = cards + `
     <h2 style="margin-top:24px;font-size:14px">Raw snapshot</h2>
     <pre id="savings-json">${escapeHtml(JSON.stringify(data, null, 2))}</pre>
   `;
@@ -852,35 +996,16 @@ async function renderDrift() {
   }
   const sensors = data.sensors || {};
   let totalHigh = 0, totalMed = 0, totalLow = 0;
-  const blocks = [];
+  const sensorList = [];
   for (const [key, s] of Object.entries(sensors)) {
     const findings = s.findings || [];
-    let high = 0, med = 0, low = 0;
-    const items = findings.slice(0, 10).map((f) => {
-      const sev = (f.severity || "low").toLowerCase();
-      if (sev === "high") high++;
-      else if (sev === "medium") med++;
-      else low++;
-      const label = f.file || f.path || f.id || f.todo || JSON.stringify(f);
-      const extra = f.lines ? ` (${f.lines} lines)` : f.age_days ? ` (${f.age_days}d old)` : "";
-      return `<div class="finding"><span class="sev-${sev}">[${sev}]</span> ${escapeHtml(String(label))}${escapeHtml(extra)}</div>`;
-    }).join("");
     findings.forEach((f) => {
       const sev = (f.severity || "low").toLowerCase();
       if (sev === "high") totalHigh++;
       else if (sev === "medium") totalMed++;
       else totalLow++;
     });
-    blocks.push(`
-      <div class="sensor-block">
-        <div class="sensor-head">
-          <span class="name">${escapeHtml(s.label || key)}</span>
-          <span class="count">${findings.length} finding(s)</span>
-        </div>
-        ${items || '<div class="finding sev-low">no findings</div>'}
-        ${findings.length > 10 ? `<div class="finding sev-low">... and ${findings.length - 10} more</div>` : ""}
-      </div>
-    `);
+    sensorList.push({ key, label: s.label || key, findings });
   }
   const cards = `
     <div class="cards">
@@ -890,7 +1015,46 @@ async function renderDrift() {
       <div class="card"><div class="label">Sensors run</div><div class="value">${Object.keys(sensors).length}</div></div>
     </div>
   `;
-  body.innerHTML = cards + blocks.join("");
+
+  function findingLabel(f) {
+    const label = f.file || f.path || f.id || f.todo || JSON.stringify(f);
+    const extra = f.lines ? ` (${f.lines} lines)` : f.age_days ? ` (${f.age_days}d old)` : "";
+    return String(label) + extra;
+  }
+
+  function renderBlocks(query) {
+    const q = query.trim().toLowerCase();
+    const blocks = sensorList.map(({ key, label, findings }) => {
+      const matched = q
+        ? findings.filter((f) => findingLabel(f).toLowerCase().includes(q) || label.toLowerCase().includes(q))
+        : findings;
+      if (q && matched.length === 0 && !label.toLowerCase().includes(q)) return "";
+      const items = matched.slice(0, 10).map((f) => {
+        const sev = (f.severity || "low").toLowerCase();
+        return `<div class="finding"><span class="sev-${sev}">[${sev}]</span> ${escapeHtml(findingLabel(f))}</div>`;
+      }).join("");
+      return `
+        <div class="sensor-block">
+          <div class="sensor-head">
+            <span class="name">${escapeHtml(label)}</span>
+            <span class="count">${matched.length} / ${findings.length} finding(s)</span>
+          </div>
+          ${items || '<div class="finding sev-low">no findings</div>'}
+          ${matched.length > 10 ? `<div class="finding sev-low">... and ${matched.length - 10} more</div>` : ""}
+        </div>
+      `;
+    }).filter(Boolean);
+    document.getElementById("drift-blocks").innerHTML = blocks.join("") || `<div class="alert">Nenhum sensor/finding encontrado para "${escapeHtml(query)}".</div>`;
+  }
+
+  body.innerHTML = cards + `
+    <div class="table-toolbar">
+      <input type="text" id="drift-search" placeholder="filtrar por sensor ou finding...">
+    </div>
+    <div id="drift-blocks"></div>
+  `;
+  document.getElementById("drift-search").addEventListener("input", (e) => renderBlocks(e.target.value));
+  renderBlocks("");
 }
 
 // ─── Skill-Quality rendering ───────────────────────────────────────────────
@@ -930,47 +1094,73 @@ async function renderSkillQuality() {
   const dims = ["frontmatter", "structure", "size", "anti_ai", "attribution"];
   const dimHeaders = { frontmatter: "fm", structure: "str", size: "size", anti_ai: "anti-ai", attribution: "att" };
 
-  const rows = results.map((r, i) => {
-    const cells = dims.map((d) => {
-      const b = (r.breakdown && r.breakdown[d]) || { score: 0, max: 0 };
-      const bg = heatColor(b.score, b.max);
-      return `<td class="score" style="background:${bg}">${b.score}/${b.max}</td>`;
-    }).join("");
-    const totalBg = heatColor(r.total || 0, r.max || max);
-    return `
-      <tr class="skill-row" data-idx="${i}">
-        <td>${escapeHtml(r.id)}</td>
-        <td class="score" style="background:${totalBg};font-weight:600">${r.total ?? "—"}/${r.max ?? max}</td>
-        ${cells}
-      </tr>
-      <tr class="detail-row" id="sq-detail-${i}" style="display:none">
-        <td colspan="${2 + dims.length}"><pre>${escapeHtml(JSON.stringify(r.breakdown, null, 2))}</pre></td>
-      </tr>
-    `;
-  }).join("");
+  const rows = results.map((r) => ({ ...r, _breakdownJson: JSON.stringify(r.breakdown, null, 2) }));
+  const columns = [
+    { key: "id", label: "skill", type: "string" },
+    { key: "total", label: "total", type: "number" },
+    ...dims.map((d) => ({ key: d, label: dimHeaders[d], type: "number", searchable: false })),
+  ];
+
+  function cellValue(r, key) {
+    if (key === "id" || key === "total") return r[key];
+    return ((r.breakdown && r.breakdown[key]) || { score: 0 }).score;
+  }
+  // Sort needs the flattened dim score, not the nested breakdown object.
+  const flatRows = rows.map((r) => {
+    const flat = { ...r };
+    dims.forEach((d) => { flat[d] = cellValue(r, d); });
+    return flat;
+  });
+
+  function renderRows(filtered) {
+    const tbody = document.getElementById("skill-quality-tbody");
+    tbody.innerHTML = filtered.map((r) => {
+      const cells = dims.map((d) => {
+        const b = (r.breakdown && r.breakdown[d]) || { score: 0, max: 0 };
+        const bg = heatColor(b.score, b.max);
+        return `<td class="score" style="background:${bg}">${b.score}/${b.max}</td>`;
+      }).join("");
+      const totalBg = heatColor(r.total || 0, r.max || max);
+      return `
+        <tr class="skill-row" data-id="${escapeHtml(r.id)}">
+          <td>${escapeHtml(r.id)}</td>
+          <td class="score" style="background:${totalBg};font-weight:600">${r.total ?? "—"}/${r.max ?? max}</td>
+          ${cells}
+        </tr>
+        <tr class="detail-row" id="sq-detail-${escapeHtml(r.id)}" style="display:none">
+          <td colspan="${2 + dims.length}"><pre>${escapeHtml(r._breakdownJson)}</pre></td>
+        </tr>
+      `;
+    }).join("") || `<tr><td colspan="${2 + dims.length}" style="color:var(--fg-mute)">Nenhuma skill encontrada.</td></tr>`;
+    tbody.querySelectorAll("tr.skill-row").forEach((row) => {
+      row.addEventListener("click", () => {
+        const detail = document.getElementById("sq-detail-" + row.dataset.id);
+        if (!detail) return;
+        detail.style.display = detail.style.display === "none" ? "table-row" : "none";
+      });
+    });
+  }
 
   body.innerHTML = cards + `
+    <div class="table-toolbar" id="skill-quality-toolbar"></div>
     <table class="heat">
       <thead>
-        <tr>
-          <th>skill</th>
-          <th style="text-align:right">total</th>
-          ${dims.map((d) => `<th style="text-align:right">${dimHeaders[d]}</th>`).join("")}
+        <tr id="skill-quality-thead">
+          <th data-key="id">skill</th>
+          <th data-key="total" style="text-align:right">total</th>
+          ${dims.map((d) => `<th data-key="${d}" style="text-align:right">${dimHeaders[d]}</th>`).join("")}
         </tr>
       </thead>
-      <tbody>${rows}</tbody>
+      <tbody id="skill-quality-tbody"></tbody>
     </table>
   `;
-
-  // Row expansion.
-  body.querySelectorAll("tr.skill-row").forEach((row) => {
-    row.addEventListener("click", () => {
-      const idx = row.dataset.idx;
-      const detail = document.getElementById("sq-detail-" + idx);
-      if (!detail) return;
-      detail.style.display = detail.style.display === "none" ? "table-row" : "none";
-    });
+  const filtered = initTableToolkit("skill-quality", {
+    toolbarEl: document.getElementById("skill-quality-toolbar"),
+    theadEl: document.getElementById("skill-quality-thead"),
+    rows: flatRows, columns, onChange: renderRows,
+    placeholder: "filtrar por nome da skill...",
   });
+  renderRows(filtered);
 }
 
 // ─── Trigger-Eval rendering ────────────────────────────────────────────────
@@ -1031,54 +1221,76 @@ async function renderTriggerEval() {
     </div>
   `;
 
-  const rows = results.map((r) => {
-    if (r.error) {
+  const rows = results.map((r) => ({
+    skill: r.skill,
+    error: !!r.error,
+    triggers_count: r.triggers_count ?? null,
+    should_pct: r.should ? r.should.pct : null,
+    should_hits: r.should ? `${r.should.hits}/${r.should.total}` : "",
+    shouldnt_pct: r.shouldnt ? r.shouldnt.pct : null,
+    shouldnt_hits: r.shouldnt ? `${r.shouldnt.hits}/${r.shouldnt.total}` : "",
+    passed: r.passed,
+  }));
+  const columns = [
+    { key: "skill", label: "skill", type: "string" },
+    { key: "triggers_count", label: "triggers", type: "number" },
+    { key: "should_pct", label: "should %", type: "number" },
+    { key: "shouldnt_pct", label: "shouldn't %", type: "number" },
+    { key: "passed", label: "verdict", type: "string", searchable: false },
+  ];
+
+  function renderRows(filtered) {
+    document.getElementById("trigger-eval-tbody").innerHTML = filtered.map((r) => {
+      if (r.error) {
+        return `
+          <tr>
+            <td>${escapeHtml(r.skill)}</td>
+            <td class="score">—</td><td class="score">—</td><td class="score">—</td>
+            <td><span class="pill err">error</span></td>
+          </tr>
+        `;
+      }
+      const shouldCell = r.should_pct != null
+        ? `<td class="score" style="background:${shouldColor(r.should_pct)}">${r.should_pct}% <span style="color:var(--fg-mute)">(${r.should_hits})</span></td>`
+        : `<td class="score">—</td>`;
+      const shouldntCell = r.shouldnt_pct != null
+        ? `<td class="score" style="background:${shouldntColor(r.shouldnt_pct)}">${r.shouldnt_pct}% <span style="color:var(--fg-mute)">(${r.shouldnt_hits})</span></td>`
+        : `<td class="score">—</td>`;
+      const verdictPill = r.passed ? `<span class="pill pass">pass</span>` : `<span class="pill fail">fail</span>`;
       return `
         <tr>
           <td>${escapeHtml(r.skill)}</td>
-          <td class="score">—</td>
-          <td class="score">—</td>
-          <td class="score">—</td>
-          <td><span class="pill err">error</span></td>
+          <td class="score">${r.triggers_count ?? "—"}</td>
+          ${shouldCell}
+          ${shouldntCell}
+          <td>${verdictPill}</td>
         </tr>
       `;
-    }
-    const sp = r.should ? r.should.pct : null;
-    const np = r.shouldnt ? r.shouldnt.pct : null;
-    const shouldCell = r.should
-      ? `<td class="score" style="background:${shouldColor(sp)}">${sp}% <span style="color:var(--fg-mute)">(${r.should.hits}/${r.should.total})</span></td>`
-      : `<td class="score">—</td>`;
-    const shouldntCell = r.shouldnt
-      ? `<td class="score" style="background:${shouldntColor(np)}">${np}% <span style="color:var(--fg-mute)">(${r.shouldnt.hits}/${r.shouldnt.total})</span></td>`
-      : `<td class="score">—</td>`;
-    const verdictPill = r.passed
-      ? `<span class="pill pass">pass</span>`
-      : `<span class="pill fail">fail</span>`;
-    return `
-      <tr>
-        <td>${escapeHtml(r.skill)}</td>
-        <td class="score">${r.triggers_count ?? "—"}</td>
-        ${shouldCell}
-        ${shouldntCell}
-        <td>${verdictPill}</td>
-      </tr>
-    `;
-  }).join("");
+    }).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhuma skill encontrada.</td></tr>`;
+  }
 
   body.innerHTML = cards + `
+    <div class="table-toolbar" id="trigger-eval-toolbar"></div>
     <table class="heat">
       <thead>
-        <tr>
-          <th>skill</th>
-          <th style="text-align:right">triggers</th>
-          <th style="text-align:right">should %</th>
-          <th style="text-align:right">shouldn't %</th>
+        <tr id="trigger-eval-thead">
+          <th data-key="skill">skill</th>
+          <th data-key="triggers_count" style="text-align:right">triggers</th>
+          <th data-key="should_pct" style="text-align:right">should %</th>
+          <th data-key="shouldnt_pct" style="text-align:right">shouldn't %</th>
           <th>verdict</th>
         </tr>
       </thead>
-      <tbody>${rows}</tbody>
+      <tbody id="trigger-eval-tbody"></tbody>
     </table>
   `;
+  const filtered = initTableToolkit("trigger-eval", {
+    toolbarEl: document.getElementById("trigger-eval-toolbar"),
+    theadEl: document.getElementById("trigger-eval-thead"),
+    rows, columns, onChange: renderRows,
+    placeholder: "filtrar por nome da skill...",
+  });
+  renderRows(filtered);
 }
 
 // ─── Memória: Busca ──────────────────────────────────────────────────────
@@ -1092,6 +1304,9 @@ let activeMemoryProject = null;
 // the other tabs AND expands its sessions here — one click, two effects).
 let expandedMemoryProject = null;
 
+let memProjectsQuery = "";
+let memProjectsSortDir = 1; // 1 = A→Z, -1 = Z→A
+
 async function renderMemProjects() {
   const body = document.getElementById("mem-projects-body");
   const badge = document.getElementById("mem-projects-badge");
@@ -1100,22 +1315,59 @@ async function renderMemProjects() {
   const projects = data.projects || [];
   if (activeMemoryProject === null) activeMemoryProject = data.default || projects[0] || null;
   badge.textContent = projects.length + " projeto(s)";
-  body.innerHTML = `<div class="cards">` + projects.map((p) => `
-    <div class="card project-card${p === activeMemoryProject ? " active" : ""}" data-project="${escapeHtml(p)}" style="cursor:pointer">
-      <div class="label">projeto</div>
-      <div class="value" style="font-size:15px">${escapeHtml(p)}</div>
-      ${p === activeMemoryProject ? `<div class="hint">✓ ativo nas outras abas</div>` : ""}
-    </div>
-  `).join("") + `</div>` + `<div id="mem-projects-sessions"></div>` + `<div id="mem-project-detail"></div>`;
-  body.querySelectorAll(".project-card").forEach((el) => {
-    el.addEventListener("click", () => {
-      const project = el.dataset.project;
-      activeMemoryProject = project;
-      expandedMemoryProject = project;
-      document.querySelectorAll("#mem-project-label").forEach((n) => { n.textContent = activeMemoryProject; });
-      renderMemProjects();
+
+  function visibleProjects() {
+    let out = projects;
+    if (memProjectsQuery) {
+      const q = memProjectsQuery.toLowerCase();
+      out = out.filter((p) => p.toLowerCase().includes(q));
+    }
+    return out.slice().sort((a, b) => a.localeCompare(b) * memProjectsSortDir);
+  }
+
+  function renderCards() {
+    const visible = visibleProjects();
+    document.getElementById("mem-projects-count").textContent = visible.length + " / " + projects.length;
+    const grid = document.getElementById("mem-projects-grid");
+    grid.innerHTML = visible.map((p) => `
+      <div class="card project-card${p === activeMemoryProject ? " active" : ""}" data-project="${escapeHtml(p)}" style="cursor:pointer">
+        <div class="label">projeto</div>
+        <div class="value" style="font-size:15px">${escapeHtml(p)}</div>
+        ${p === activeMemoryProject ? `<div class="hint">✓ ativo nas outras abas</div>` : ""}
+      </div>
+    `).join("") || `<div class="alert">Nenhum projeto encontrado para "${escapeHtml(memProjectsQuery)}".</div>`;
+    grid.querySelectorAll(".project-card").forEach((el) => {
+      el.addEventListener("click", () => {
+        const project = el.dataset.project;
+        activeMemoryProject = project;
+        expandedMemoryProject = project;
+        document.querySelectorAll("#mem-project-label").forEach((n) => { n.textContent = activeMemoryProject; });
+        renderMemProjects();
+      });
     });
+  }
+
+  body.innerHTML = `
+    <div class="table-toolbar">
+      <input type="text" id="mem-projects-search" placeholder="filtrar projeto..." value="${escapeHtml(memProjectsQuery)}">
+      <button id="mem-projects-sort-btn">nome ${memProjectsSortDir === 1 ? "A→Z" : "Z→A"}</button>
+      <span class="table-count" id="mem-projects-count"></span>
+    </div>
+    <div class="cards" id="mem-projects-grid"></div>
+    <div id="mem-projects-sessions"></div>
+    <div id="mem-project-detail"></div>
+  `;
+  document.getElementById("mem-projects-search").addEventListener("input", (e) => {
+    memProjectsQuery = e.target.value.trim();
+    renderCards();
   });
+  document.getElementById("mem-projects-sort-btn").addEventListener("click", () => {
+    memProjectsSortDir *= -1;
+    document.getElementById("mem-projects-sort-btn").textContent = "nome " + (memProjectsSortDir === 1 ? "A→Z" : "Z→A");
+    renderCards();
+  });
+  renderCards();
+
   if (expandedMemoryProject) {
     await renderMemProjectSessions(expandedMemoryProject);
     renderMemProjectDetail(expandedMemoryProject);
@@ -1132,34 +1384,56 @@ async function renderMemProjectSessions(project) {
   container.innerHTML = `<div class="alert">Carregando sessões de "${escapeHtml(project)}"...</div>`;
   const data = await postJson("/api/memory/recent", { project, limit: 50 });
   if (data.__error) { container.innerHTML = memUnavailableNotice(data.__error); return; }
-  const hits = data.hits || [];
+  const hits = (data.hits || []).map((h) => ({ ...h, project }));
   if (hits.length === 0) {
     container.innerHTML = `<div class="alert">Nenhuma sessão encontrada em "${escapeHtml(project)}".</div>`;
     return;
   }
-  const rows = hits.map((h) => `
-    <tr class="session-row" data-path="${escapeHtml(h.path)}" style="cursor:pointer">
-      <td>${escapeHtml(h.path)}</td>
-      <td>${escapeHtml(h.title || "")}</td>
-    </tr>
-  `).join("");
+
+  const columns = [
+    { key: "project", label: "projeto", type: "string" },
+    { key: "path", label: "path", type: "string" },
+    { key: "title", label: "título", type: "string" },
+    { key: "updated_at", label: "atualizado", type: "date" },
+  ];
+
+  function renderRows(filtered) {
+    const tbody = document.getElementById("mem-projects-sessions-tbody");
+    tbody.innerHTML = filtered.map((h) => `
+      <tr class="session-row" data-path="${escapeHtml(h.path)}" style="cursor:pointer">
+        <td>${escapeHtml(h.project)}</td>
+        <td>${escapeHtml(h.path)}</td>
+        <td>${escapeHtml(h.title || "")}</td>
+        <td>${escapeHtml(h.updated_at || "")}</td>
+      </tr>
+    `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhuma sessão encontrada.</td></tr>`;
+    tbody.querySelectorAll(".session-row").forEach((el) => {
+      el.addEventListener("click", () => {
+        // Jump to the Página reader with this session pre-loaded — clicking a
+        // session should let you read it, not just see it listed.
+        document.querySelector('[data-tab="mem-page"]').click();
+        const pathInput = document.getElementById("mem-page-path");
+        pathInput.value = el.dataset.path;
+        runMemPage();
+      });
+    });
+  }
+
   container.innerHTML = `
     <h3 style="margin-top:24px">Sessões — ${escapeHtml(project)} (${hits.length})</h3>
+    <div class="table-toolbar" id="mem-projects-sessions-toolbar"></div>
     <table>
-      <thead><tr><th>path</th><th>título</th></tr></thead>
-      <tbody>${rows}</tbody>
+      <thead><tr id="mem-projects-sessions-thead">${columns.map((c) => `<th data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+      <tbody id="mem-projects-sessions-tbody"></tbody>
     </table>
   `;
-  container.querySelectorAll(".session-row").forEach((el) => {
-    el.addEventListener("click", () => {
-      // Jump to the Página reader with this session pre-loaded — clicking a
-      // session should let you read it, not just see it listed.
-      document.querySelector('[data-tab="mem-page"]').click();
-      const pathInput = document.getElementById("mem-page-path");
-      pathInput.value = el.dataset.path;
-      runMemPage();
-    });
+  const filtered = initTableToolkit("mem-projects-sessions", {
+    toolbarEl: document.getElementById("mem-projects-sessions-toolbar"),
+    theadEl: document.getElementById("mem-projects-sessions-thead"),
+    rows: hits, columns, onChange: renderRows,
+    placeholder: "filtrar por path, título...",
   });
+  renderRows(filtered);
 }
 
 // ─── Project detail: Pastas / README / Diagrama / Grafo de deps ───────────
@@ -1345,28 +1619,52 @@ document.getElementById("mem-search-input").addEventListener("keydown", (e) => {
 // ─── Memória: Timeline ───────────────────────────────────────────────────
 async function renderMemTimeline() {
   const body = document.getElementById("mem-timeline-body");
+  const project = activeMemoryProject || document.getElementById("mem-project-label").textContent;
   const data = await postJson("/api/memory/briefing", withActiveProject({}));
   if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
   const c = data.counts || {};
   const a7 = data.activity_7d || {};
   const a30 = data.activity_30d || {};
   const cards = `<div class="cards">
-    <div class="card"><div class="label">páginas</div><div class="value accent">${c.pages_latest ?? "—"}</div></div>
+    <div class="card"><div class="label">projeto</div><div class="value accent" style="font-size:16px">${escapeHtml(project)}</div></div>
+    <div class="card"><div class="label">páginas</div><div class="value">${c.pages_latest ?? "—"}</div></div>
     <div class="card"><div class="label">sessões</div><div class="value">${c.sessions ?? "—"}</div></div>
     <div class="card"><div class="label">observações</div><div class="value">${c.observations ?? "—"}</div></div>
     <div class="card"><div class="label">handoffs pendentes</div><div class="value">${data.pending_handoff_count ?? 0}</div></div>
     <div class="card"><div class="label">atividade 7d</div><div class="value">${a7.sessions ?? 0} sessões · ${a7.observations ?? 0} obs</div></div>
     <div class="card"><div class="label">atividade 30d</div><div class="value">${a30.sessions ?? 0} sessões · ${a30.observations ?? 0} obs</div></div>
   </div>`;
-  const rows = (data.recent_pages || []).map((p) => `
-    <tr><td>${escapeHtml(p.path)}</td><td>${escapeHtml(p.title || "")}</td><td>${escapeHtml(p.kind || "")}</td><td>${escapeHtml(p.updated_at || "")}</td></tr>
-  `).join("");
+
+  const rows = (data.recent_pages || []).map((p) => ({ ...p, project }));
+  const columns = [
+    { key: "project", label: "projeto", type: "string" },
+    { key: "path", label: "path", type: "string" },
+    { key: "title", label: "título", type: "string" },
+    { key: "kind", label: "kind", type: "string" },
+    { key: "updated_at", label: "atualizado", type: "date" },
+  ];
+
+  function renderRows(filtered) {
+    const tbody = document.getElementById("mem-timeline-tbody");
+    tbody.innerHTML = filtered.map((p) => `
+      <tr><td>${escapeHtml(p.project)}</td><td>${escapeHtml(p.path)}</td><td>${escapeHtml(p.title || "")}</td><td>${escapeHtml(p.kind || "")}</td><td>${escapeHtml(p.updated_at || "")}</td></tr>
+    `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhuma página encontrada.</td></tr>`;
+  }
+
   body.innerHTML = cards + `
+    <div class="table-toolbar" id="mem-timeline-toolbar"></div>
     <table>
-      <thead><tr><th>path</th><th>título</th><th>kind</th><th>atualizado</th></tr></thead>
-      <tbody>${rows}</tbody>
+      <thead><tr id="mem-timeline-thead">${columns.map((c) => `<th data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+      <tbody id="mem-timeline-tbody"></tbody>
     </table>
   `;
+  const filtered = initTableToolkit("mem-timeline", {
+    toolbarEl: document.getElementById("mem-timeline-toolbar"),
+    theadEl: document.getElementById("mem-timeline-thead"),
+    rows, columns, onChange: renderRows,
+    placeholder: "filtrar por path, título, kind...",
+  });
+  renderRows(filtered);
 }
 
 // ─── Memória: Grafo (co-busca) ───────────────────────────────────────────
