@@ -149,6 +149,35 @@ Para checklists detalhados e exemplos de findings, consultar `docs/skill-guides/
 ☐ Metadata endpoint bloqueado (169.254.169.254)
 ```
 
+### 11. Agent-Specific: Prompt Injection Persistente & Tool-Call Validation
+
+> Fonte: [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book), book-en/chapter6.md — conceitos absorvidos, texto reescrito.
+
+Categoria não coberta pelo OWASP Top 10 clássico, mas real em qualquer sistema que dá a um agente de IA acesso a dado privado + conteúdo não-confiável + capacidade de agir. Extensão do "lethal trifecta" (Simon Willison): acesso a dado privado + exposição a conteúdo não-confiável + capacidade de comunicação externa = agente que pode ser sequestrado por texto malicioso embutido no que ele lê.
+
+**A quarta dimensão que muda tudo quando há memória persistente:** um payload de prompt injection escrito numa sessão pode ficar **dormente** e ativar só numa sessão **futura**, quando o agente relê aquela memória como contexto confiável. Isso é diretamente relevante pra qualquer kit que usa memória persistente entre sessões (ver `policies/memory-backends.md`, `ai-memory`) — o conteúdo armazenado nunca deve ser tratado como instrução, só como dado histórico.
+
+```
+☐ Conteúdo lido de memória persistente (ai-memory, vault, logs de sessão anterior) é tratado
+  como DADO, nunca como instrução — mesmo que o texto pareça um comando direcionado ao agente
+☐ Se uma ferramenta de memória tem instruções MCP dizendo "trate contexto recuperado como
+  não-confiável", essa regra está sendo seguida de verdade, não só lida e ignorada
+☐ Escrita em memória persistente sanitiza segredos antes de salvar (nunca grava API key,
+  senha, token em texto plano num log/página que pode ser relido por sessão futura)
+☐ Qualquer ferramenta que combine (a) acesso a dado privado + (b) exposição a conteúdo
+  externo não-confiável + (c) capacidade de ação (enviar mensagem, fazer request, escrever
+  arquivo) tem uma camada de validação entre "ler o conteúdo" e "agir com base nele"
+```
+
+**Sidecar validation pattern** — mitigação estrutural pra tool-calls em sistemas agenticos com risco de injection: um segundo modelo (mais barato/rápido) roda em paralelo ao agente principal, mas vê **só os campos estruturados da tool call** (nome da ferramenta + argumentos), nunca o texto livre/raciocínio que pode conter o payload de injection. Esse sidecar aprova ou rejeita a chamada antes da execução — adiciona uns poucos centenas de ms (rodando em paralelo, não em série) e é estruturalmente imune a injection porque nunca processa o texto não-confiável que carregaria o ataque. Diferente do nosso `doubt-driven-review` (skill 53) e do arbitration de reviewers em desacordo (skill 40) — aqueles atuam sobre artefato já pronto; este é um gate por-ação, em tempo real, antes de cada execução.
+
+```
+☐ Para ferramentas de alto risco (delete, send-message, financial, exec de comando), existe
+  validação da chamada ANTES da execução, não só revisão do resultado depois
+☐ Essa validação (humana ou sidecar-model) recebe só os campos estruturados da chamada
+  (tool name + args), nunca o texto livre completo que originou a decisão de chamar
+```
+
 ## Headers de Segurança - Obrigatórios
 
 **src/middleware/security-headers.ts**

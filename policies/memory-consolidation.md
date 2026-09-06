@@ -55,12 +55,42 @@
 5. **Verify** — checar que vault ainda navega (índice abre, links funcionam)
 6. **Report** — relatório final: X duplicatas merged, Y arquivos archived, Z stale flagged
 
+## Roteamento de sinal de aprendizado (4 destinos) + boundary/retention set
+
+> Fonte: [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book), book-en/chapter9.md — conceito absorvido, texto reescrito. A maior parte do capítulo é reformulação do que este arquivo já cobre; a peça genuinamente nova é o roteamento explícito por destino e a disciplina de boundary/retention set abaixo.
+
+Todo "sinal de aprendizado" (um erro recorrente, uma correção do usuário, um padrão descoberto) deve ser roteado pra **exatamente um** destino, nunca espalhado por vários sem critério:
+
+| Destino | Quando usar | Exemplo neste kit |
+|---|---|---|
+| **KB de experiência** (memória) | Fato específico de um projeto/sessão, não generalizável | `logs/*.md`, `architecture/<projeto>/decisions.md` |
+| **Prompt/skill** | Padrão que se repete entre sessões/projetos, correção de comportamento do agente | Editar `SKILL.md`, `policies/*.md` |
+| **Harness/programa** | Falha estrutural do próprio fluxo de trabalho (não do conteúdo) | `hooks/*.mjs`, `programs/*.yml`, `scripts/auto-loop/*.mjs` |
+| **Pesos do modelo** | Fora do escopo deste kit (nenhum treino de modelo acontece aqui) | N/A — nunca é o destino aqui |
+
+**Gate de verificação antes de aceitar uma edição de skill/prompt (o "aprendizado" indo pro destino 2):**
+
+1. **Boundary set** — os casos de falha específicos que motivaram a mudança. A edição deve corrigi-los, comprovadamente (não "acho que resolve").
+2. **Retention set** — casos que já funcionavam corretamente **antes** da edição. A edição não pode regredir nenhum deles.
+
+Uma edição só é aceita se passa nos dois conjuntos — só passar no boundary set (corrigiu o caso novo, mas quebrou 3 que funcionavam) é uma troca ruim disfarçada de progresso. Isso é o **eval-triggers** (`scripts/eval-triggers.mjs`) já fazendo, na prática, quando uma skill é editada e o pipeline PASS/FAIL exige 80%+ nos `should` E ≤20% nos `shouldnt` — mas a disciplina vale explicitamente também pra edições feitas fora desse pipeline (correção manual de `SKILL.md`, ajuste de `policies/*.md`).
+
+```
+☐ Antes de editar uma skill/policy por causa de um caso de falha específico, o caso vira
+  um item de teste concreto (boundary set) — não só "lembrei que precisa mudar X"
+☐ Existe pelo menos um caso conhecido-bom que a edição não deve quebrar (retention set),
+  e ele foi checado depois da edição
+☐ A "prova" de que a edição funciona não é reler o texto novo e achar que faz sentido —
+  é rodar o boundary set e o retention set e ver os dois passarem
+```
+
 ## Anti-padrões
 
 - **Delete sem archive** — perdeu contexto de sessão antiga = perdeu para sempre
 - **Merge automático com conteúdos divergentes** — merge só se similaridade > 90%
 - **Archive sem manter buscável** — arquivado deve ser indexado também (busca semântica precisa)
 - **Promote sem evidência** — promover skill para semantic tier sem 5+ usos é ruído
+- **Editar skill/policy só pelo boundary set** — corrigir o caso novo sem checar que os casos antigos continuam passando é regressão disfarçada de melhoria
 
 ## Integração
 

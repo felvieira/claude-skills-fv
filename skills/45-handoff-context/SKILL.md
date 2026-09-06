@@ -153,6 +153,24 @@ git pull
 - **pra dev humano:** `.md` como issue/PR description
 - **pra fresh session:** abrir nova sessao com primeiro prompt = ler `docs/handoffs/<arquivo>.md`
 
+## Handoff cross-vendor (trajetória portável vs credenciais)
+
+> Fonte: [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book), book-en/chapter6.md — conceito absorvido, texto reescrito. Distinto do Output Canônico acima: aquele é um handoff humano-legível entre sessões de trabalho; isto é sobre serializar a trajetória de execução de um agente pra retomada programática por outro provider/harness (failover no meio de uma sessão, replay pra avaliação, extração de dados de treino).
+
+Quando o handoff precisa ser consumido por **outro agente/provider**, não por um humano lendo o próximo passo, separar a trajetória em duas partes distintas:
+
+- **Texto portável** — o raciocínio em prosa e as tool-calls reduzidas a `{name, args}` (nunca a resposta bruta da API do provider original, que pode ter formato proprietário). Isso é o que atravessa a troca de vendor.
+- **Credenciais não-portáveis** — tokens de sessão, IDs de conversa do provider original, qualquer estado que só faz sentido dentro daquele vendor específico. **Descartadas** na troca, nunca reenviadas pro novo provider.
+
+```
+☐ Um log de trajetória pensado pra handover cross-vendor separa claramente as duas partes
+  acima — não serializa a resposta bruta do provider como se fosse portável
+☐ Falha de um provider no meio de um /loop ou /swarm não perde a trajetória — o texto
+  portável permite retomar noutro provider a partir do mesmo ponto
+```
+
+Nível de aplicação: mais baixo que os providers/adapters de `patterns/ai-integration/providers.md` (que resolvem "qual provider chamar"), mais alto que uma chamada de API isolada — isto é sobre o formato do **log de execução completo**, não da requisição individual.
+
 ## Anti-padroes
 
 - ❌ Roadmap de 10 passos — esta skill produz **1 proximo passo**
@@ -160,3 +178,4 @@ git pull
 - ❌ "Continue de onde parei" sem dizer onde parou
 - ❌ Esconder armadilhas pra outro descobrir — registra
 - ❌ Handoff sem comando de setup executavel
+- ❌ Handoff cross-vendor que reenvia token/ID de sessão do provider original pro novo — vaza credencial não-portável

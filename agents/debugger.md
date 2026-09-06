@@ -137,6 +137,15 @@ Pensamentos que significam STOP:
 - BOM, line endings (CRLF vs LF), UTF-8 vs UTF-16
 - normalizacao Unicode (NFC vs NFD)
 
+### Falha de sistema agentico (loop/subagent/pipeline de IA, nao app tradicional)
+
+> Taxonomia por camada, fonte: [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book), book-en/chapter6.md — conceito absorvido, texto reescrito. Use pra classificar rapido quando o bug e num `/loop`, `/swarm`, subagent, ou pipeline de skill — a causa raiz costuma estar numa dessas 4 camadas, nessa ordem de frequencia.
+
+- **Camada API** — rate limit, timeout, resposta truncada pelo provider. Sintoma: erro vem da chamada de rede, nao da logica do agente. Escalada: retry silencioso com backoff → se persistir, degradar (modelo mais barato/menos contexto) → se ainda falhar, expor ao usuario.
+- **Camada Tool** — o agente chama uma ferramenta que nao existe (alucinada) ou passa argumento malformado/fora de schema. Sintoma: erro de "tool not found" ou validation error na chamada, nao na resposta dela. Escalada: validar schema antes de executar (nao so depois) → se invalido, devolver o erro de validacao pro proprio agente corrigir → se repetir 2x+, e um problema de prompt/tool-description, nao do agente.
+- **Camada Context** — janela de contexto estourou, ou a trajetoria ficou corrompida (referencia a algo que nao esta mais no contexto, ex: apos compactacao). Sintoma: agente "esquece" algo que decidiu antes, ou referencia um resultado de tool-call que nao aparece mais no historico. Ver `policies/context-engineering.md` (KV-cache-aware prompt construction) pra prevenir isso na origem.
+- **Camada Control-flow** — loop infinito, ou "espiral da morte" (agente tenta a mesma coisa que falhou repetidamente, cada vez piorando o estado). Sintoma: numero de iteracoes/tokens crescendo sem progresso real no output. Isso e exatamente o que `circuit-breaker.mjs` do `/loop` existe pra pegar — se um bug desse tipo aparece, o circuit breaker que deveria ter cortado nao disparou; investigar o threshold dele antes de investigar a logica do agente.
+
 ## Output
 
 ```markdown

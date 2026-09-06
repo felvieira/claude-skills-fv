@@ -38,6 +38,14 @@ Nunca passe nome de skill como `subagent_type`. Sempre.
 - Tarefas com dependência sequencial — use `/loop` ou pipeline
 - Carregar playbook na sessão atual — use `Skill` tool diretamente
 
+## Teste de "informação nova"
+
+> Fonte: [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book)
+
+Fan-out só compensa se cada braço recebe informação **diferente** — não a mesma entrada N vezes. Se a resposta é "nada" — não paralelize, aumente o orçamento de UM agente.
+
+Falhas MAST: interface ambígua, sobreposição de papel, convergência homogênea.
+
 ---
 
 ## Decision Tree

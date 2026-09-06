@@ -246,3 +246,18 @@ Jeffallan/claude-skills
   domains). Godot/GDScript has no dedicated reference in skill 67 because
   the upstream source has no coverage of that engine — documented as a
   known gap in the skill rather than inferred.
+
+bojieli/ai-agent-book
+  https://github.com/bojieli/ai-agent-book
+  Commit: bb86b64acd1c4f01a8e631cf39bde14f3d600f92 (book-en directory)
+  License: none declared upstream (no LICENSE file at the pinned commit).
+  No text or code copied — concepts read from the book-en chapters were
+  reformulated in this kit's own words and structure. Inspired six additions:
+  KV-cache-aware prompt construction (policies/context-engineering.md),
+  persistent-memory prompt-injection risk + sidecar tool-call validation
+  (skills/06-security-review/SKILL.md), cross-vendor handoff trajectory
+  portability (skills/45-handoff-context/SKILL.md), the 4-destination
+  learning-signal routing plus boundary/retention set discipline
+  (policies/memory-consolidation.md), the agentic-system failure-layer
+  taxonomy (agents/debugger.md), and the MAST failure taxonomy plus
+  "new information" test before fan-out (skills/40-parallel-dispatcher/SKILL.md).
