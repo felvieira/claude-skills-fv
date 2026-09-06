@@ -54,7 +54,11 @@ export function parseArgs(argv) {
     stopWhen: '',
     polish: 'standard',
     agent: 'claude',
-    model: 'claude-sonnet-4-5',
+    // Default stays hardcoded (not env-driven) unless the user opts in via
+    // CLAUDE_LOOP_MODEL or --model — models get renamed/retired over time,
+    // but forcing an env var on everyone by default would be a bigger
+    // behavior change than asked for. --model always wins over the env var.
+    model: process.env.CLAUDE_LOOP_MODEL || 'claude-sonnet-4-5',
     validate: false,
     noCommit: false,
     push: false,
@@ -179,7 +183,7 @@ Usage:
 
 Flags:
   --agent claude|codex          Agent to use (default: claude)
-  --model <name>                Model name (claude only, default: claude-sonnet-4-5)
+  --model <name>                Model name (claude only, default: $CLAUDE_LOOP_MODEL or claude-sonnet-4-5)
   --max-iterations <n>          Cap iterations (default: auto by complexity)
   --max-tokens <n>              Abort when cumulative tokens exceed n
   --stop-when "<condition>"     End loop when agent reports condition met

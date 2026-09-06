@@ -28,8 +28,14 @@ const INDEX_ENTRY = resolve(__dirname, 'index.mjs');
 export function buildChildArgs(opts, task) {
   const args = [INDEX_ENTRY, '--worktree', task];
 
+  // Default model is the same source of truth as args.mjs: $CLAUDE_LOOP_MODEL
+  // if set, else the hardcoded fallback. Comparing against the fallback alone
+  // (ignoring the env var) would make this always re-pass --model when the
+  // env var is set — harmless (the child inherits the same env var anyway)
+  // but redundant, so check both.
+  const defaultModel = process.env.CLAUDE_LOOP_MODEL || 'claude-sonnet-4-5';
   if (opts.agent && opts.agent !== 'claude') args.push('--agent', String(opts.agent));
-  if (opts.model && opts.model !== 'claude-sonnet-4-5') args.push('--model', String(opts.model));
+  if (opts.model && opts.model !== defaultModel) args.push('--model', String(opts.model));
   if (opts.maxIterations) args.push('--max-iterations', String(opts.maxIterations));
   if (opts.maxTokens) args.push('--max-tokens', String(opts.maxTokens));
   if (opts.stopWhen) args.push('--stop-when', String(opts.stopWhen));

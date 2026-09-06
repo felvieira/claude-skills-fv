@@ -31,7 +31,7 @@ node scripts/auto-loop.mjs --worktree --parallel 3 \
 | Flag | Descrição | Default |
 |------|-----------|---------|
 | `--agent claude\|codex` | Agente a usar | `claude` |
-| `--model <name>` | Modelo (apenas para `claude`) | `claude-sonnet-4-5` |
+| `--model <name>` | Modelo (apenas para `claude`) | `$CLAUDE_LOOP_MODEL` se definida, senão `claude-sonnet-4-5` |
 | `--max-iterations <n>` | Cap de iterações | auto (8/12/15) |
 | `--max-tokens <n>` | Aborta quando tokens cumulativos passam de `n` | unlimited |
 | `--stop-when "<cond>"` | Encerra loop quando agente reporta condição satisfeita | — |
