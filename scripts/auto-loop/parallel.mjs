@@ -39,6 +39,7 @@ export function buildChildArgs(opts, task) {
   if (opts.maxIterations) args.push('--max-iterations', String(opts.maxIterations));
   if (opts.maxTokens) args.push('--max-tokens', String(opts.maxTokens));
   if (opts.stopWhen) args.push('--stop-when', String(opts.stopWhen));
+  if (opts.contract) args.push('--contract', String(opts.contract));
   if (opts.polish && opts.polish !== 'standard') args.push('--polish', String(opts.polish));
   if (opts.validate) args.push('--validate');
   if (opts.noCommit) args.push('--no-commit');

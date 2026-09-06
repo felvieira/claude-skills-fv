@@ -44,6 +44,7 @@ console.log('\nTest 1: buildChildArgs() with defaults');
     `got: ${JSON.stringify(args)}`);
   assert('omits default model flag', !args.includes('--model'));
   assert('omits default polish flag', !args.includes('--polish'));
+  assert('omits --contract when not set', !args.includes('--contract'));
   assert('omits --no-prevent-sleep when preventSleep=true', !args.includes('--no-prevent-sleep'));
 }
 
@@ -58,6 +59,7 @@ console.log('\nTest 2: buildChildArgs() with custom flags');
       maxIterations: 10,
       maxTokens: 5000,
       stopWhen: 'tests pass',
+      contract: '/tmp/contract.json',
       validate: true,
       noCommit: true,
       push: true,
@@ -72,6 +74,7 @@ console.log('\nTest 2: buildChildArgs() with custom flags');
   assert('passes --max-iterations 10', args.includes('--max-iterations') && args[args.indexOf('--max-iterations') + 1] === '10');
   assert('passes --max-tokens 5000', args.includes('--max-tokens') && args[args.indexOf('--max-tokens') + 1] === '5000');
   assert('passes --stop-when value', args.includes('--stop-when') && args[args.indexOf('--stop-when') + 1] === 'tests pass');
+  assert('passes --contract value', args.includes('--contract') && args[args.indexOf('--contract') + 1] === '/tmp/contract.json');
   assert('passes --validate', args.includes('--validate'));
   assert('passes --no-commit', args.includes('--no-commit'));
   assert('passes --push', args.includes('--push'));
