@@ -276,3 +276,22 @@ bojieli/ai-agent-book
   (policies/memory-consolidation.md), the agentic-system failure-layer
   taxonomy (agents/debugger.md), and the MAST failure taxonomy plus
   "new information" test before fan-out (skills/40-parallel-dispatcher/SKILL.md).
+
+Hanako (@hanakoxbt) — "Loops and Graphs"
+  https://x.com/hanakoxbt/status/2091515787366306154
+  License: none declared (a public post; no code accompanies it).
+  No text copied — the ten claims were audited against this kit's code by a
+  subagent first, and only the five that had no existing mechanism were
+  implemented, in the kit's own words and structure. Inspired: the false-edge
+  validator rule, i.e. `depends_on` that carries no data is ordering rather
+  than dependency (scripts/validate-program.mjs, policies/programs-schema.md);
+  the return envelope with a SCOPE field, so a failed unit is returned instead
+  of the whole batch (scripts/auto-loop/return-envelope.mjs); `split_by` as a
+  declared cut dimension on parallel blocks (policies/programs-schema.md); the
+  closed lane that no approval opens, distinct from a high threshold
+  (hooks/scripts/permission-ladder-guard.mjs, policies/tool-safety.md); and the
+  `bad_plan` fix destination for a unit that fails the same correction
+  repeatedly (agents/debugger.md, scripts/auto-loop/runner.mjs). The article's
+  remaining claims were either already enforced in code (loop with a check that
+  can fail, loop-inside-node/graph-between-nodes, worker/code-node/gate) or
+  judged disproportionate to mechanize.
