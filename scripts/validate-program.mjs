@@ -21,7 +21,7 @@ const root = path.resolve(__dirname, "..");
 
 // Mini YAML parser — suficiente para nosso subset. Para uso real,
 // trocar por `yaml` package quando build pipeline permitir.
-function parseYAML(content) {
+export function parseYAML(content) {
   // Simplest possible YAML → JSON via line-based parser.
   // Limitado a: mappings, scalars, lists. Sem anchors/aliases.
   const lines = content.split("\n");
@@ -125,7 +125,7 @@ function parseScalar(s) {
   return s;
 }
 
-function validate(programPath, doc) {
+export function validate(programPath, doc) {
   const errors = [];
   const warnings = [];
 
@@ -340,4 +340,9 @@ async function main() {
   process.exit(totalErrors > 0 ? 1 : 0);
 }
 
-main();
+// Only run the CLI when invoked directly — parseYAML/validate are imported by
+// dashboard-server.mjs to render the program graph, and main() calls
+// process.exit(), which would kill the server on import.
+const invokedDirectly = process.argv[1] &&
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+if (invokedDirectly) main();

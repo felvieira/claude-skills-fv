@@ -475,11 +475,138 @@ async function projectDepgraphRoute(args) {
   return { nodes, links: edges };
 }
 
+// ─── Programs as graphs ─────────────────────────────────────────────────────
+// The kit's programs/*.yml ARE the graph layer (nodes = steps, edges =
+// depends_on), but nothing ever showed them as one — you had to read YAML and
+// hold the shape in your head. Reuses validate-program.mjs's parser and
+// validator rather than reimplementing either, so the warnings shown here are
+// literally the same ones `node scripts/validate-program.mjs` prints.
+async function programsGraphRoute(_args) {
+  const { parseYAML, validate } = await import(
+    pathToFileURL(join(REPO_ROOT, "scripts", "validate-program.mjs")).href
+  );
+  const dir = join(REPO_ROOT, "programs");
+  if (!existsSync(dir)) return { programs: [] };
+
+  const { readdir } = await import("node:fs/promises");
+  const files = (await readdir(dir)).filter((f) => f.endsWith(".yml")).sort();
+  const programs = [];
+
+  for (const file of files) {
+    const rel = `programs/${file}`;
+    let doc, warnings = [], errors = [];
+    try {
+      doc = parseYAML(await readFile(join(dir, file), "utf8"));
+      ({ errors, warnings } = validate(rel, doc));
+    } catch (err) {
+      programs.push({ file: rel, id: file, error: err.message, nodes: [], links: [] });
+      continue;
+    }
+
+    const nodes = [];
+    const links = [];
+    const stepType = (s) =>
+      s.type ||
+      (s.command && "command") || (s.prompt && "prompt") || (s.bash && "bash") ||
+      (s.message && "gate") || (s.loop && "loop") || (s.parallel && "parallel") ||
+      (s.if && "conditional") || "unknown";
+
+    // Flatten one level of `parallel:` so branches are visible as their own
+    // nodes — the fan-out shape is the whole point of looking at this.
+    let prevSequential = null;
+    for (const step of doc.steps || []) {
+      if (!step || !step.id) continue;
+      const type = stepType(step);
+      nodes.push({
+        id: step.id,
+        label: step.id,
+        type,
+        splitBy: step.split_by || null,
+        branches: Array.isArray(step.parallel) ? step.parallel.length : 0,
+      });
+
+      const deps = step.depends_on
+        ? (Array.isArray(step.depends_on) ? step.depends_on : [step.depends_on])
+        : [];
+      // Does this step actually read the dependency's output? Mirrors the
+      // validator's false-edge rule so the UI can paint the difference.
+      const body = JSON.stringify(step);
+      for (const dep of deps) {
+        links.push({
+          source: dep,
+          target: step.id,
+          declared: true,
+          carriesData: body.includes(`\${steps.${dep}`),
+        });
+      }
+      // Implicit sequential order (no depends_on): shown dashed, since the
+      // runner executes top-to-bottom even without a declared edge.
+      if (deps.length === 0 && prevSequential) {
+        links.push({ source: prevSequential, target: step.id, declared: false, carriesData: false });
+      }
+      prevSequential = step.id;
+
+      if (Array.isArray(step.parallel)) {
+        for (const branch of step.parallel) {
+          if (!branch || !branch.id) continue;
+          nodes.push({
+            id: `${step.id}/${branch.id}`,
+            label: branch.id,
+            type: stepType(branch),
+            parentId: step.id,
+            branch: true,
+          });
+          links.push({ source: step.id, target: `${step.id}/${branch.id}`, declared: true, carriesData: true, fanout: true });
+        }
+      }
+    }
+
+    programs.push({
+      file: rel,
+      id: (doc.program && doc.program.id) || file.replace(/\.yml$/, ""),
+      name: (doc.program && doc.program.name) || file,
+      description: (doc.program && doc.program.description) || "",
+      version: (doc.program && doc.program.version) || "",
+      nodes,
+      links,
+      errors,
+      warnings,
+      stepCount: nodes.filter((n) => !n.branch).length,
+    });
+  }
+  return { programs };
+}
+
+// ─── Auto-loop runs ─────────────────────────────────────────────────────────
+// Reads .auto/runs/<runId>/status.json, the per-run trace the runner writes.
+// Empty until /loop actually runs in this repo — the UI says so rather than
+// rendering an empty table with no explanation.
+async function loopRunsRoute(_args) {
+  const runsDir = join(REPO_ROOT, ".auto", "runs");
+  if (!existsSync(runsDir)) return { runs: [], runsDir: ".auto/runs" };
+
+  const { readdir } = await import("node:fs/promises");
+  const entries = (await readdir(runsDir)).sort().reverse();
+  const runs = [];
+  for (const dir of entries.slice(0, 100)) {
+    const statusPath = join(runsDir, dir, "status.json");
+    if (!existsSync(statusPath)) continue;
+    try {
+      runs.push(JSON.parse(await readFile(statusPath, "utf8")));
+    } catch {
+      // A half-written status.json from a killed run shouldn't break the list.
+    }
+  }
+  return { runs, runsDir: ".auto/runs" };
+}
+
 const PROJECT_ROUTES = {
   "/api/project/tree": projectTreeRoute,
   "/api/project/readme": projectReadmeRoute,
   "/api/project/diagram": projectDiagramRoute,
   "/api/project/depgraph": projectDepgraphRoute,
+  "/api/programs/graph": programsGraphRoute,
+  "/api/loop/runs": loopRunsRoute,
 };
 
 // ─── Disk cleanup scanner (SSE) ─────────────────────────────────────────────

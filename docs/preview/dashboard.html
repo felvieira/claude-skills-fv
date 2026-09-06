@@ -376,6 +376,8 @@
   <button class="tab-btn" data-tab="mem-timeline">Memória: Timeline</button>
   <button class="tab-btn" data-tab="mem-graph">Memória: Grafo</button>
   <button class="tab-btn" data-tab="mem-page">Memória: Página</button>
+  <button class="tab-btn" data-tab="programs">Programas (grafo)</button>
+  <button class="tab-btn" data-tab="loop-runs">Runs do /loop</button>
   <button class="tab-btn" data-tab="cleanup">Limpeza de disco</button>
 </nav>
 
@@ -514,6 +516,37 @@
 </section>
 
 <!-- ─── Limpeza de disco ──────────────────────────────────────────────── -->
+<!-- ─── Programas (grafo) ─────────────────────────────────────────────── -->
+<section id="tab-programs" class="tab-content">
+  <h2>Programas — a forma do trabalho</h2>
+  <p>
+    Cada <code>programs/*.yml</code> é um grafo: nós são steps, arestas são dependências.
+    Aresta cheia = dado atravessa (<code>${steps.X}</code>); tracejada = só ordem de execução;
+    <span style="color:var(--err)">vermelha</span> = declarada com <code>depends_on</code> mas nada atravessa
+    (espera possivelmente desnecessária).
+  </p>
+  <div class="toolbar">
+    <select id="programs-select"></select>
+    <div class="stats-badge" id="programs-badge">carregando...</div>
+  </div>
+  <div id="programs-warnings"></div>
+  <div class="graph-area">
+    <div id="programs-cy" class="cy-container" style="flex:1;background:var(--bg-elev);border:1px solid var(--border);border-radius:4px;min-height:500px"></div>
+    <aside id="programs-info" style="width:320px"><div class="placeholder">clique num nó para ver detalhes</div></aside>
+  </div>
+</section>
+
+<!-- ─── Runs do /loop ─────────────────────────────────────────────────── -->
+<section id="tab-loop-runs" class="tab-content">
+  <h2>Runs do <code>/loop</code></h2>
+  <p>
+    Trace por execução lido de <code>.auto/runs/&lt;runId&gt;/status.json</code>:
+    por que parou (<code>stopReason</code>), para onde vai o fix quando o circuit breaker
+    dispara (<code>fixDestination</code>), e o commit de rollback do início da run.
+  </p>
+  <div id="loop-runs-body"><div class="alert">Carregando...</div></div>
+</section>
+
 <section id="tab-cleanup" class="tab-content">
   <h2>Limpeza de disco</h2>
   <p>
@@ -555,6 +588,17 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     // refresh until the user acts), Projetos re-renders itself on click.
     if (tab === "mem-timeline" && window.renderMemTimeline) window.renderMemTimeline();
     if (tab === "mem-graph" && window.renderMemGraph) window.renderMemGraph();
+    // Cytoscape lays out against the container's size at construction time, and
+    // a hidden container measures zero — so resize() alone isn't enough here:
+    // the positions were already computed against that zero width and stay
+    // collapsed in one column. Re-run the layout after resizing.
+    if (tab === "programs" && window.__programsCy) {
+      window.__programsCy.resize();
+      window.__programsCy.layout({ name: "breadthfirst", directed: true, padding: 30, spacingFactor: 1.3 }).run();
+    }
+    // Runs are written by /loop while the dashboard is open — re-read on every
+    // visit rather than caching the empty state from page load.
+    if (tab === "loop-runs" && window.renderLoopRuns) window.renderLoopRuns();
   });
 });
 
@@ -1767,6 +1811,200 @@ renderSkillQuality();
 renderTriggerEval();
 renderMemTimeline();
 renderMemGraph();
+
+// ─── Programas (grafo) ───────────────────────────────────────────────────
+// Node colour = step type; edge style carries the "is this a real dependency?"
+// answer the validator computes. A red edge is the visual version of the
+// false-edge warning: declared with depends_on, but no data crosses it.
+//
+// Palette is derived, not picked: the three step types that already have a
+// semantic token in this dashboard reuse it (gate→err, bash→warn, parallel→ok),
+// and the rest are spaced around the teal accent's hue (174°) the same way
+// communityColor() spaces its nodes — so this tab looks like the rest of the
+// dashboard instead of importing a foreign palette.
+const PROGRAM_TYPE_COLORS = {
+  command: "hsl(174, 60%, 45%)",   // the accent itself — the most common type
+  prompt: "hsl(214, 60%, 55%)",
+  bash: "#f59e0b",                 // --warn: shell side effects
+  gate: "#ef4444",                 // --err: blocks on a human
+  loop: "hsl(264, 60%, 60%)",
+  parallel: "#22c55e",             // --ok: fan-out
+  conditional: "hsl(204, 12%, 52%)",
+  unknown: "#666",
+};
+
+let programsData = null;
+
+async function renderPrograms() {
+  const badge = document.getElementById("programs-badge");
+  const select = document.getElementById("programs-select");
+  const data = await postJson("/api/programs/graph", {});
+  if (data.__error) {
+    document.getElementById("programs-cy").innerHTML = memUnavailableNotice(data.__error);
+    badge.textContent = "erro";
+    return;
+  }
+  programsData = data.programs || [];
+  if (programsData.length === 0) {
+    document.getElementById("programs-cy").innerHTML = `<div class="alert">Nenhum programa em <code>programs/*.yml</code>.</div>`;
+    badge.textContent = "vazio";
+    return;
+  }
+  select.innerHTML = programsData
+    .map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name || p.id)}</option>`)
+    .join("");
+  select.onchange = () => drawProgram(select.value);
+  drawProgram(programsData[0].id);
+}
+
+function drawProgram(programId) {
+  const p = programsData.find((x) => x.id === programId);
+  if (!p) return;
+  const badge = document.getElementById("programs-badge");
+  const warnBox = document.getElementById("programs-warnings");
+  const cyDiv = document.getElementById("programs-cy");
+  const infoDiv = document.getElementById("programs-info");
+
+  const falseEdges = p.links.filter((l) => l.declared && !l.carriesData && !l.fanout).length;
+  badge.textContent = `${p.stepCount} steps · ${p.links.length} arestas` + (falseEdges ? ` · ${falseEdges} suspeita(s)` : "");
+
+  const notes = [...(p.errors || []).map((e) => ({ kind: "err", text: e })),
+                 ...(p.warnings || []).map((w) => ({ kind: "warn", text: w }))];
+  warnBox.innerHTML = notes.length
+    ? notes.map((n) => `<div class="alert${n.kind === "err" ? " err" : ""}">${escapeHtml(n.text)}</div>`).join("")
+    : "";
+
+  if (p.error) { cyDiv.innerHTML = `<div class="alert err">${escapeHtml(p.error)}</div>`; return; }
+
+  cyDiv.innerHTML = "";
+  const cy = cytoscape({
+    container: cyDiv,
+    elements: [
+      ...p.nodes.map((n) => ({ data: { ...n } })),
+      ...p.links.map((l, i) => ({ data: { id: `e${i}`, ...l } })),
+    ],
+    style: [
+      { selector: "node", style: {
+        "background-color": (ele) => PROGRAM_TYPE_COLORS[ele.data("type")] || PROGRAM_TYPE_COLORS.unknown,
+        "label": "data(label)",
+        "font-size": 10,
+        "color": "#f0f0f0",
+        "text-outline-width": 2,
+        "text-outline-color": "#0a0a0a",
+        "text-valign": "center",
+        "width": (ele) => (ele.data("branch") ? 18 : 30),
+        "height": (ele) => (ele.data("branch") ? 18 : 30),
+        "shape": (ele) => (ele.data("type") === "gate" ? "diamond" : ele.data("branch") ? "ellipse" : "round-rectangle"),
+      }},
+      { selector: "edge", style: {
+        "curve-style": "bezier",
+        "target-arrow-shape": "triangle",
+        "width": 2,
+        "line-color": (ele) => (ele.data("declared") && !ele.data("carriesData") && !ele.data("fanout") ? "#ef4444" : "#3a3a3a"),
+        "target-arrow-color": (ele) => (ele.data("declared") && !ele.data("carriesData") && !ele.data("fanout") ? "#ef4444" : "#3a3a3a"),
+        "line-style": (ele) => (ele.data("declared") ? "solid" : "dashed"),
+        "opacity": 0.85,
+      }},
+    ],
+    layout: { name: "breadthfirst", directed: true, padding: 30, spacingFactor: 1.3 },
+  });
+  window.__programsCy = cy;
+
+  cy.on("tap", "node", (evt) => {
+    const d = evt.target.data();
+    const rows = [
+      ["tipo", d.type],
+      d.splitBy ? ["split_by", d.splitBy] : null,
+      d.branches ? ["branches", d.branches] : null,
+      d.parentId ? ["dentro de", d.parentId] : null,
+    ].filter(Boolean);
+    infoDiv.innerHTML = `<h3>${escapeHtml(d.label)}</h3>` +
+      rows.map(([k, v]) => `<div class="row"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(String(v))}</span></div>`).join("");
+  });
+}
+document.getElementById("tab-programs") && renderPrograms();
+
+// ─── Runs do /loop ───────────────────────────────────────────────────────
+const STOP_REASON_COLOR = {
+  done: "var(--ok)",
+  escalated: "var(--warn)",
+  stall: "var(--warn)",
+  same_error_repeated: "var(--err)",
+  permanent_error: "var(--err)",
+  retry_exhausted: "var(--err)",
+  token_cap: "var(--warn)",
+  interrupted: "var(--fg-mute)",
+  budget_exhausted: "var(--fg-mute)",
+  blocked: "var(--err)",
+};
+
+async function renderLoopRuns() {
+  const body = document.getElementById("loop-runs-body");
+  const data = await postJson("/api/loop/runs", {});
+  if (data.__error) { body.innerHTML = memUnavailableNotice(data.__error); return; }
+  const runs = data.runs || [];
+
+  if (runs.length === 0) {
+    // Empty state that says what to do, not just "no data" — this repo has
+    // simply never run /loop, which is different from something being broken.
+    body.innerHTML = `
+      <div class="alert">
+        Nenhuma run registrada em <code>${escapeHtml(data.runsDir)}</code>.
+        Esta aba popula sozinha depois do primeiro <code>/loop</code> neste repo —
+        cada execução grava um <code>status.json</code> com <code>stopReason</code>,
+        <code>fixDestination</code>, <code>rollbackPoint</code> e <code>contractVersion</code>.
+      </div>`;
+    return;
+  }
+
+  const done = runs.filter((r) => r.stopReason === "done" || r.taskDone).length;
+  const escalated = runs.filter((r) => r.stopReason === "escalated").length;
+  const cards = `<div class="cards">
+    <div class="card"><div class="label">runs</div><div class="value">${runs.length}</div></div>
+    <div class="card"><div class="label">concluídas</div><div class="value accent">${done}</div></div>
+    <div class="card"><div class="label">escaladas</div><div class="value" style="color:var(--warn)">${escalated}</div></div>
+    <div class="card"><div class="label">iterações (média)</div><div class="value">${(runs.reduce((a, r) => a + (r.iterations || 0), 0) / runs.length).toFixed(1)}</div></div>
+  </div>`;
+
+  const columns = [
+    { key: "runId", label: "run", type: "string" },
+    { key: "task", label: "task", type: "string" },
+    { key: "stopReason", label: "parou porque", type: "string" },
+    { key: "fixDestination", label: "destino do fix", type: "string" },
+    { key: "iterations", label: "iter", type: "number" },
+    { key: "cumulativeTokens", label: "tokens", type: "number" },
+    { key: "commitHash", label: "commit", type: "string" },
+  ];
+
+  function renderRows(filtered) {
+    document.getElementById("loop-runs-tbody").innerHTML = filtered.map((r) => `
+      <tr>
+        <td>${escapeHtml(String(r.runId || ""))}</td>
+        <td>${escapeHtml(String(r.task || ""))}</td>
+        <td style="color:${STOP_REASON_COLOR[r.stopReason] || "var(--fg)"}">${escapeHtml(String(r.stopReason || "—"))}</td>
+        <td>${r.fixDestination ? `<span class="pill err">${escapeHtml(r.fixDestination)}</span>` : "—"}</td>
+        <td>${r.iterations ?? "—"}</td>
+        <td>${(r.cumulativeTokens ?? 0).toLocaleString()}</td>
+        <td>${escapeHtml(String(r.commitHash || "—"))}</td>
+      </tr>
+    `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhuma run encontrada.</td></tr>`;
+  }
+
+  body.innerHTML = cards + `
+    <div class="table-toolbar" id="loop-runs-toolbar"></div>
+    <table>
+      <thead><tr id="loop-runs-thead">${columns.map((c) => `<th data-key="${c.key}">${c.label}</th>`).join("")}</tr></thead>
+      <tbody id="loop-runs-tbody"></tbody>
+    </table>`;
+  const filtered = initTableToolkit("loop-runs", {
+    toolbarEl: document.getElementById("loop-runs-toolbar"),
+    theadEl: document.getElementById("loop-runs-thead"),
+    rows: runs, columns, onChange: renderRows,
+    placeholder: "filtrar por task, motivo de parada...",
+  });
+  renderRows(filtered);
+}
+document.getElementById("tab-loop-runs") && renderLoopRuns();
 
 // ─── Limpeza de disco ────────────────────────────────────────────────────
 async function renderCleanupBadge() {
