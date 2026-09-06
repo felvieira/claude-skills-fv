@@ -11,6 +11,22 @@
  * where that confirmation gets skipped under autonomous/fast modes, not a
  * replacement for asking the user.
  *
+ * SECURITY MODEL — read before extending this file:
+ * This is regex-over-raw-text detection, not a shell parser. A real shell
+ * resolves quoting, variable expansion, command substitution, and encoding
+ * before it decides what to run; this hook cannot and does not replicate
+ * that. Confirmed bypasses during review: quoting the command name
+ * (`"rm" -rf`), `eval $(echo <base64> | base64 -d)`, and any obfuscation a
+ * determined agent/user constructs on purpose. Building a regex robust
+ * against deliberate evasion means writing a shell parser — disproportionate
+ * for a best-effort backstop, and still beatable by the next encoding.
+ *
+ * What this DOES catch: accidental/unobfuscated high-risk commands — the
+ * agent typing `rm -rf`, `git push --force`, etc. plainly, split across
+ * `&&`/`;`/`|`/newline-joined sub-commands. What this does NOT catch: any
+ * intentional evasion. Never treat "the guard didn't fire" as "this command
+ * is safe" — same caveat design-anchor-guard's regex-based detection carries.
+ *
  * Deliberately narrow: only flags patterns that are UNAMBIGUOUSLY high-rung on
  * the ladder (destructive git, force-push, rm -rf, deploy-shaped commands).
  * A guard that flags too much gets disabled, and then it protects nothing —
@@ -66,6 +82,29 @@ function extractCommand(input) {
   return "";
 }
 
+// Splits a compound command into the pieces a shell would treat as separate
+// commands (&&, ||, ;, |, newlines) plus anything inside $(...) / `...`
+// substitution — closes the trivial case of a dangerous command riding
+// along a benign one, without attempting to be a real shell parser (see the
+// SECURITY MODEL note above the file header).
+function splitCompoundCommand(command) {
+  const segments = [command];
+  for (const m of command.matchAll(/\$\(([^)]*)\)|`([^`]*)`/g)) {
+    segments.push(m[1] ?? m[2] ?? "");
+  }
+  const flat = segments.flatMap((s) => s.split(/&&|\|\||[;|\n]/));
+  return flat.map((s) => s.trim()).filter(Boolean);
+}
+
+// A shell treats `"rm"` and `rm` identically; the pattern's word-boundary
+// regex does not, because a straddling quote character breaks \b. Strip
+// paired quotes immediately around a bareword before matching so this one
+// specific dodge (there's no way to close all of them with regex, see the
+// header note) doesn't slip through for free.
+function stripCommandQuoting(command) {
+  return command.replace(/(^|[\s;&|])["']([\w./-]+)["']/g, "$1$2");
+}
+
 let inputBuffer = "";
 process.stdin.setEncoding("utf-8");
 process.stdin.on("data", (chunk) => { inputBuffer += chunk; });
@@ -90,13 +129,20 @@ process.stdin.on("end", () => {
   // Escape hatch, same convention as design-anchor-guard and dev-guard.
   if (/permission-ladder:\s*allow/i.test(command)) return allow();
 
-  const hit = LADDER.find((rule) => rule.pattern.test(command));
+  const segments = splitCompoundCommand(command).map(stripCommandQuoting);
+  let hit = null;
+  let matchedSegment = command;
+  for (const segment of segments) {
+    hit = LADDER.find((rule) => rule.pattern.test(segment));
+    if (hit) { matchedSegment = segment; break; }
+  }
   if (!hit) return allow();
 
   const reason = [
     `PERMISSÃO REQUERIDA (permission-ladder-guard): ${hit.label}`,
     ``,
-    `Comando: ${command.slice(0, 200)}`,
+    `Comando completo: ${command.slice(0, 200)}`,
+    `Trecho que disparou: ${matchedSegment.slice(0, 150)}`,
     `Exige: ${hit.requires}`,
     ``,
     `Ver policies/tool-safety.md ("Permission ladder") para a régua completa.`,
