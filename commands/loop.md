@@ -128,6 +128,7 @@ node scripts/auto-loop.mjs "task original" --worktree
 | Multi-agente | Adapter para claude + codex (interface comum) |
 | Worktree integrado | `--worktree` cria `<repo>-auto-worktrees/<slug>/`, branch `auto/<slug>`, preserva se há commits |
 | Modo paralelo | `--parallel N` orquestra runners isolados, agrega logs prefixados, tabela final |
+| Escalação em paralelo | Task que escala aparece como `ESCALATED` (não `FAIL(8)`) na tabela — escalar é o contrato funcionando, não quebra. No exit code agregado, falha real tem precedência sobre escalação, pra uma task esperando decisão humana não esconder outra que quebrou de verdade |
 | Polishing pass | `--polish` roda skills `simplify`/`review`/`security-review`/`test` antes do commit |
 | Token cap | `--max-tokens` aborta quando uso cumulativo excede |
 | Stop-when | `--stop-when` injeta instrução `STOP_WHEN_MET: true\|false` no prompt |

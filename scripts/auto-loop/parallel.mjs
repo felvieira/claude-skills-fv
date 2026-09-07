@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 import { resolve, dirname, basename } from 'path';
 
 import { slugify } from './worktree.mjs';
+import { EXIT_CODES } from './args.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,6 +52,21 @@ export function buildChildArgs(opts, task) {
 }
 
 /**
+ * Status label for one child run.
+ *
+ * ESCALATED (8) is deliberately not shown as a failure: the contract's
+ * escalate_when fired, which is the guardrail working as designed and asking
+ * for a human decision. Rendering it as FAIL(8) next to a genuine crash makes
+ * the reader triage the wrong thing — "three broke" and "three are waiting on
+ * you" call for different responses.
+ */
+function formatStatus(r) {
+  if (r.exitCode === 0) return 'OK';
+  if (r.exitCode === EXIT_CODES.ESCALATED) return 'ESCALATED';
+  return `FAIL(${r.exitCode})`;
+}
+
+/**
  * Format the final results table.
  * Pure helper, exported for tests.
  */
@@ -58,7 +74,7 @@ export function formatSummary(results) {
   const headers = ['slug', 'status', 'iters', 'commits', 'path'];
   const rows = results.map((r) => [
     r.slug,
-    r.exitCode === 0 ? 'OK' : `FAIL(${r.exitCode})`,
+    formatStatus(r),
     String(r.iterations ?? '-'),
     String(r.commits ?? '-'),
     r.path ?? '-',
@@ -123,7 +139,13 @@ export async function runParallel(opts) {
   stdout.write('\n[parallel] Summary:\n');
   stdout.write(formatSummary(results) + '\n');
 
-  const exitCode = results.reduce((acc, r) => Math.max(acc, r.exitCode || 0), 0);
+  // Aggregate exit code: a genuine failure outranks an escalation, even though
+  // ESCALATED (8) is numerically higher. Plain Math.max would let one task
+  // asking for a human decision hide another task that actually crashed, from
+  // anything scripting against this process's exit code.
+  const codes = results.map((r) => r.exitCode || 0);
+  const realFailure = codes.find((c) => c !== 0 && c !== EXIT_CODES.ESCALATED);
+  const exitCode = realFailure ?? (codes.includes(EXIT_CODES.ESCALATED) ? EXIT_CODES.ESCALATED : 0);
   return { exitCode, results };
 }
 

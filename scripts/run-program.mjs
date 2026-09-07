@@ -167,6 +167,11 @@ async function describeProgram(nameOrPath) {
       provider: s.provider,
       model: s.model,
       parallel_count: Array.isArray(s.parallel) ? s.parallel.length : undefined,
+      // The cut dimension travels with the plan: the agent dispatching the
+      // branches needs to know WHY they were split this way, otherwise it can
+      // hand them overlapping briefs and get the same answer N times
+      // (see policies/programs-schema.md, `split_by`).
+      split_by: s.split_by,
       trigger_rule: s.trigger_rule,
       loop: s.loop ? {
         until: s.loop.until,

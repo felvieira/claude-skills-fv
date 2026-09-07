@@ -171,6 +171,72 @@ console.log('\nTest 4: runParallel() with mock spawner');
   assert('summary contains FAIL(3)', allOut.includes('FAIL(3)'));
 }
 
+// ─── Test 4b: escalation is not a failure ────────────────────────────────────
+console.log('\nTest 4b: ESCALATED is labelled and ranked apart from failures');
+{
+  const out = formatSummary([
+    { slug: 'ok-task', exitCode: 0, iterations: 2, commits: 1, path: '/tmp/a' },
+    { slug: 'escalated-task', exitCode: 8, iterations: 3, commits: 0, path: '/tmp/b' },
+    { slug: 'broken-task', exitCode: 2, iterations: 1, commits: 0, path: '/tmp/c' },
+  ]);
+  assert('escalated row says ESCALATED, not FAIL(8)', out.includes('ESCALATED') && !out.includes('FAIL(8)'), out);
+  assert('real failure still says FAIL(2)', out.includes('FAIL(2)'), out);
+
+  // A task waiting on a human must not mask a task that actually crashed.
+  const stdoutBuf = [];
+  function makeStream() {
+    const s = new EventEmitter();
+    s.setEncoding = () => {};
+    return s;
+  }
+  // First task escalates (8), second fails for real (2). Naive Math.max would
+  // surface 8 and hide the crash.
+  function mockSpawn(_node, args) {
+    const child = new EventEmitter();
+    child.stdout = makeStream();
+    child.stderr = makeStream();
+    const wIdx = args.indexOf('--worktree');
+    const task = args[wIdx + 1] || '';
+    setImmediate(() => child.emit('close', task.includes('escalate') ? 8 : 2));
+    return child;
+  }
+  const { exitCode } = await runParallel({
+    tasks: ['escalate this one', 'crash this one'],
+    parallel: 2,
+    worktree: true,
+    agent: 'claude',
+    model: 'claude-sonnet-4-5',
+    polish: 'standard',
+    preventSleep: true,
+    _spawn: mockSpawn,
+    _stdout: { write: (s) => stdoutBuf.push(s) },
+    _stderr: { write: () => {} },
+  });
+  assert(`real failure outranks escalation (got ${exitCode})`, exitCode === 2);
+
+  // And with only escalations, the escalation code survives.
+  function mockAllEscalate(_node, _args) {
+    const child = new EventEmitter();
+    child.stdout = makeStream();
+    child.stderr = makeStream();
+    setImmediate(() => child.emit('close', 8));
+    return child;
+  }
+  const onlyEscalations = await runParallel({
+    tasks: ['a', 'b'],
+    parallel: 2,
+    worktree: true,
+    agent: 'claude',
+    model: 'claude-sonnet-4-5',
+    polish: 'standard',
+    preventSleep: true,
+    _spawn: mockAllEscalate,
+    _stdout: { write: () => {} },
+    _stderr: { write: () => {} },
+  });
+  assert(`all-escalated returns 8 (got ${onlyEscalations.exitCode})`, onlyEscalations.exitCode === 8);
+}
+
 // ─── Test 5: runParallel — rejects when --worktree missing ───────────────────
 console.log('\nTest 5: runParallel() rejects without --worktree');
 {
