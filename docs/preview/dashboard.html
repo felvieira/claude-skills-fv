@@ -1974,6 +1974,9 @@ async function renderLoopRuns() {
     { key: "iterations", label: "iter", type: "number" },
     { key: "cumulativeTokens", label: "tokens", type: "number" },
     { key: "commitHash", label: "commit", type: "string" },
+    // The commit the run started from — what you reset to if the run went
+    // somewhere bad. Promised in this tab's description, so it has to be here.
+    { key: "rollbackPoint", label: "rollback p/", type: "string" },
   ];
 
   function renderRows(filtered) {
@@ -1981,11 +1984,15 @@ async function renderLoopRuns() {
       <tr>
         <td>${escapeHtml(String(r.runId || ""))}</td>
         <td>${escapeHtml(String(r.task || ""))}</td>
-        <td style="color:${STOP_REASON_COLOR[r.stopReason] || "var(--fg)"}">${escapeHtml(String(r.stopReason || "—"))}</td>
+        <td style="color:${STOP_REASON_COLOR[r.stopReason] || "var(--fg)"}">
+          ${escapeHtml(String(r.stopReason || "—"))}
+          ${r.escalateReason ? `<div style="color:var(--fg-mute);font-size:11px;margin-top:2px">${escapeHtml(r.escalateReason)}</div>` : ""}
+        </td>
         <td>${r.fixDestination ? `<span class="pill err">${escapeHtml(r.fixDestination)}</span>` : "—"}</td>
         <td>${r.iterations ?? "—"}</td>
         <td>${(r.cumulativeTokens ?? 0).toLocaleString()}</td>
         <td>${escapeHtml(String(r.commitHash || "—"))}</td>
+        <td>${r.rollbackPoint ? escapeHtml(String(r.rollbackPoint).slice(0, 8)) : "—"}</td>
       </tr>
     `).join("") || `<tr><td colspan="${columns.length}" style="color:var(--fg-mute)">Nenhuma run encontrada.</td></tr>`;
   }
