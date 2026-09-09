@@ -105,6 +105,8 @@ Este resumo é de uma sessão sobre [tema] em [projeto], salvo em [data]. Cobre 
 - **Context Manager (08)**: persiste o resumo e atualiza o foco atual
 - **Cost Tracker (30)**: anexa custos da sessao ao resumo quando disponivel
 
+**Checkpoint antes de salvar:** reler o resumo perguntando "alguém que não viu a sessão consegue retomar só com isso?" — se um "Próximo Passo Recomendado" não nomeia arquivo/comando concreto, ou uma "Decisão Tomada" não diz o porquê, reescrever aquele item antes de persistir. Resumo vago custa mais caro na próxima sessão do que o tempo de deixá-lo específico agora.
+
 ## Evidencia de Conclusao
 
 - resumo salvo em `docs/context/session-YYYY-MM-DD.md` (repo consumidor)

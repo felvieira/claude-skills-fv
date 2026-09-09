@@ -102,7 +102,9 @@ Ver `policies/memory-tiers.md` para a lógica completa de score e decay.
 
 - **Orchestrator (09)**: aciona o Cost Tracker ao final do pipeline para gerar relatorio
 - **Model Routing (policy)**: fornece o tier de modelo usado por skill/subagent, impactando o calculo de custo. Ver `policies/model-routing.md`
-- **Todas as skills**: reportam consumo de tokens e chamadas no handoff
+- **Todas as skills**: reportam consumo de tokens e chamadas no handoff (bloco `tokens_in`/`tokens_out`/`api_calls` no handoff estruturado da skill, seguindo `policies/handoffs.md`) — sem isso o Cost Tracker não tem de onde puxar o número, e não deve inventar estimativa não-declarada
+
+**Checkpoint antes de gerar o relatório:** somar os totais por skill e conferir contra o total geral — se a soma das partes não bater com o total (skill reportou tokens mas não entrou na soma, ou duplicou), corrigir a consolidação antes de persistir. Um relatório com totais que não fecham é pior que nenhum relatório.
 
 ## Evidencia de Conclusao
 

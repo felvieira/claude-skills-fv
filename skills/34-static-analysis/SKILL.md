@@ -162,6 +162,8 @@ const sql = `SELECT * FROM users WHERE id = ${id}`;
 
 Nao suprimir sem comentario explicando porque.
 
+**Checkpoint por TP corrigido:** aplicar o fix → rodar o scanner de novo só naquele arquivo → confirmar que o finding original sumiu E que nenhum finding novo apareceu no mesmo arquivo (fix de SQLi que remove sanitização de outro campo, por exemplo). Se sumir mas surgir outro, corrigir o novo antes de marcar o TP como resolvido — não é aceitável trocar um finding critical por outro.
+
 ## Severidade
 
 | Nivel | Critério | Acao |

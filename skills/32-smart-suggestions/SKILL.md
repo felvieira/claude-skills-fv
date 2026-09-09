@@ -83,6 +83,8 @@ Detectar oportunidades de aplicar os novos commands quando contexto bate:
 - Interface desatualizada ou sem design system -> "Rodar Design Intelligence para avaliar UI"
 - Codigo sem review recente -> "Executar Security Review + Reviewer para garantir qualidade"
 
+**Checkpoint antes de sugerir:** confirmar a premissa contra o repo real, não contra o padrão genérico do tipo de projeto — "sem testes detectados" precisa ter checado `package.json`/pasta de testes de fato, não assumido pela ausência de menção no contexto atual. Sugestão baseada em premissa não verificada é ruído que o usuário aprende a ignorar, o que mata o valor da skill inteira.
+
 ## Integracao com Outras Skills
 
 - **Orchestrator (09)**: usa as sugestoes para decidir proximo pipeline ou step

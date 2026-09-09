@@ -324,6 +324,8 @@ Items `low` viram fila de validacao em `99-traceability.md` secao "Needs Human R
 4. **Testes desatualizados mentem.** Verificar se passam antes de usar como evidencia.
 5. **Nao extrapole de 1 caso.** Regra precisa de pelo menos 2 ocorrencias ou teste explicito.
 
+**Checkpoint de validação (distinto do `state.json` de progresso acima):** ao encontrar 1 ocorrência de um padrão, buscar (`grep`/symbol search) por uma segunda antes de escrever a regra como confirmada. Se a segunda busca não achar nada, a regra vira `confidence: low` com nota "1 ocorrência apenas" — nunca sobe pra `confidence: high` por conta própria depois. Regra tratada como confirmada sem a segunda ocorrência é exatamente a alucinação que este processo existe para prevenir.
+
 ## Evidencia de Conclusao
 
 - `.detective/state.json` com `phase: 5, status: done`
