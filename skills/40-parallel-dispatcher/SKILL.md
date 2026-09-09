@@ -247,9 +247,9 @@ Após os N subagents retornarem:
 
 1. **Verificar status** de cada um (sucesso/falha/parcial)
 2. **Coletar diffs** dos worktrees
-3. **Estratégia de merge:**
-   - **Merge num branch único** (recomendado para feature unificada): cherry-pick ou merge dos N worktrees
-   - **N PRs separados** (recomendado para slices verdadeiramente independentes): cada worktree vira PR próprio
+3. **Estratégia de merge** (conflito resolvido → suite isolada antes do próximo):
+   - **Branch único**: cherry-pick ou merge dos N worktrees (feature unificada)
+   - **N PRs separados**: cada worktree vira PR próprio (slices independentes)
 4. **Suite completa de testes** no branch consolidado
 5. **Despachar review paralelo** (Caminho A com os 4 review subagents)
 6. **Self-fix CRITICAL/HIGH** (loop até verde) — ver `policies/swarm-protocol.md` Phase 5

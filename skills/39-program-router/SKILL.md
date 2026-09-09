@@ -75,3 +75,5 @@ node scripts/validate-plugin-catalog.mjs
 node scripts/eval-plugin-routing.mjs --strict
 node scripts/devkit-doctor.mjs --strict
 ```
+
+**Checkpoint:** se `eval-plugin-routing.mjs --strict` falhar após editar o catálogo, o roteamento mudou pra pior em algum caso conhecido — reverter a edição no catálogo (não relaxar o `--strict` pra passar) e ajustar de novo até o eval confirmar que os casos antigos continuam roteando certo, não só o caso novo que motivou a mudança.
