@@ -8,8 +8,9 @@ description: |
   "cortando na tela", "quebrou no celular", "scroll horizontal", "viewport", "safe area", "notch",
   "bottom sheet", "modal no mobile", "confirmacao de exclusao", "modal de confirmar", "undo",
   "grid quebrado", "overflow", "converter para mobile", "adaptar layout".
-argument-hint: "[--audit=path] [--scope=page|component|app] [--target=mobile|tablet|all]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--audit=path] [--scope=page|component|app] [--target=mobile|tablet|all]"
 ---
 
 # Responsive Conversion — Web para Mobile e Padroes de Interacao

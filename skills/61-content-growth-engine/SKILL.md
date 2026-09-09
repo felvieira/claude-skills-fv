@@ -15,8 +15,9 @@ description: |
   "material rico", "lead magnet", "pesquisa original", "glossario", "trafego nao converte",
   "nao converte em reuniao", "conteudo nao gera pipeline", "objecoes de venda", "objecao de venda",
   "perguntas que aparecem em toda reuniao".
-argument-hint: "[--fase=descobrir|criar|otimizar|medir] [--icp=<segmento>]"
 allowed-tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
+metadata:
+  argument-hint: "[--fase=descobrir|criar|otimizar|medir] [--icp=<segmento>]"
 ---
 
 # Content Growth Engine — Conteudo como Motor de Aquisicao

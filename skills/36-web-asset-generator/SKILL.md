@@ -6,8 +6,9 @@ description: |
   meta tags HTML. Use ao preparar deploy de site, landing page ou PWA novo.
   Trigger em: "favicon", "favicons", "PWA icon", "manifest", "Open Graph image", "OG image",
   "social meta", "twitter card", "apple-touch-icon", "imagem de compartilhamento", "share image".
-argument-hint: "[--input=path/to/logo.png] [--brand-name=X] [--brand-color=#hex] [--output-dir=public/]"
 allowed-tools: Read, Write, Bash(npx *), Bash(magick *), Bash(convert *), Bash(node *)
+metadata:
+  argument-hint: "[--input=path/to/logo.png] [--brand-name=X] [--brand-color=#hex] [--output-dir=public/]"
 ---
 
 # Web Asset Generator — Favicons, PWA Icons, OG Images

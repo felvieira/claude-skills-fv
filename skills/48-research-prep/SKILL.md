@@ -12,8 +12,9 @@ description: |
   "compara abordagens", "levanta referencias", "faz um research de", "coleta fontes sobre",
   "pesquisa sobre", "quero saber o que existe de", "monta um dossie tecnico",
   "background tecnico", "due diligence tecnica", "levantamento de alternativas".
-argument-hint: "<topico> [--depth quick|deep] [--output <slug>]"
 allowed-tools: WebSearch, WebFetch, Bash, Read, Write, Grep, Glob
+metadata:
+  argument-hint: "<topico> [--depth quick|deep] [--output <slug>]"
 ---
 
 # Research Prep — Coleta Técnica Multi-Fonte

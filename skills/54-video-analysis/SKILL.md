@@ -8,8 +8,9 @@ description: |
   "extrair frames desse video", "legenda automatica", "resumir video", "resumir esse video", "analisar video",
   "analisar o conteudo desse video", "o que acontece nesse video", "whisper", "yt-dlp", "transcription video",
   "extract frames from this video".
-argument-hint: "[url ou caminho do video] [pergunta opcional]"
 allowed-tools: Read, Write, Bash(node *), Bash(python *), Bash(ffmpeg *), Bash(yt-dlp *)
+metadata:
+  argument-hint: "[url ou caminho do video] [pergunta opcional]"
 ---
 
 # Video Analysis - Ingestão e Transcrição de Vídeo

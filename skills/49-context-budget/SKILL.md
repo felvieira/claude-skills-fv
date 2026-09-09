@@ -1,8 +1,5 @@
 ---
-id: 49-context-budget
 name: context-budget
-version: 1.0.0
-tags: [observability, context, performance, tokens, budget]
 description: |
   Audita o peso de contexto carregado na sessão — CLAUDE.md, agents, MCP descriptions, rules
   ativas, skills invocadas e histórico acumulado. Estima tokens por componente, reporta headroom
@@ -13,6 +10,10 @@ description: |
   "respostas degradadas", "headroom de contexto", "custo fixo de contexto",
   "overhead de rules", "overhead dos agents", "impacto do MCP no contexto",
   "espaco no context window", "quanto cabe no context window"
+metadata:
+  id: 49-context-budget
+  version: 1.0.0
+  tags: [observability, context, performance, tokens, budget]
 ---
 
 # Skill 49 — Context Budget

@@ -6,7 +6,6 @@ description: |
   scroll a âncora, formatos PNG/JPG. Compõe com skill 41 (blog-publisher).
   Trigger em: "tira print", "screenshot do site", "captura tela", "screenshot da página",
   "print da landing", "print do dashboard", "screenshot pro blog".
-argument-hint: "[URL ou descrição da captura]"
 allowed-tools:
   - Bash
   - Read
@@ -16,9 +15,11 @@ allowed-tools:
   - mcp__plugin_playwright_playwright__browser_resize
   - mcp__plugin_playwright_playwright__browser_evaluate
   - mcp__plugin_playwright_playwright__browser_snapshot
-version: 1.0.0
-author: felvieira
-compatibility: ">=2.10.2"
+metadata:
+  argument-hint: "[URL ou descrição da captura]"
+  version: 1.0.0
+  author: felvieira
+  compatibility: ">=2.10.2"
 ---
 
 # Blog Screenshot — Skill 42

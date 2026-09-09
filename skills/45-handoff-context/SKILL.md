@@ -7,8 +7,9 @@ description: |
   Trigger em: "handoff", "passar bastao", "passar o bastao", "delega pra outro", "delega isso",
   "transfer context", "passar contexto", "outro dev vai pegar", "outro agente vai continuar",
   "preciso passar isso", "briefing prospectivo", "sessao fresh", "preparar handoff", "monta o pacote".
-argument-hint: "[--feature=<nome>] [--target=human|agent|fresh-session]"
 allowed-tools: Read, Write, Glob, Grep, Bash
+metadata:
+  argument-hint: "[--feature=<nome>] [--target=human|agent|fresh-session]"
 ---
 
 # Handoff Context — Briefing Acionavel pra Quem Chega Cego

@@ -10,8 +10,9 @@ description: |
   "watch production", "post-deploy check", "pos-deploy", "depois do deploy", "depois do rollout",
   "vigiar producao", "regressao silenciosa", "deploy passou mas", "verificar producao",
   "deploy stuck", "production health check", "screenshot diff", "lcp regrediu", "baseline comparativo".
-argument-hint: "[--url=https://prod.exemplo] [--baseline=path] [--interval=15m] [--duration=24h]"
 allowed-tools: Read, Write, Bash, Glob
+metadata:
+  argument-hint: "[--url=https://prod.exemplo] [--baseline=path] [--interval=15m] [--duration=24h]"
 ---
 
 # Post-Deploy Canary Monitor — Vigia Producao Sem Dormir

@@ -6,16 +6,17 @@ description: |
   skill 42 Playwright screenshot), commit+push automático, retorna URL pública via GitHub Pages.
   Trigger em: "post no blog", "publicar post", "escrever post", "blog post", "publish blog",
   "gera post", "criar post", "novo post no meu blog".
-argument-hint: "[assunto ou texto do post]"
-allowed-tools: [Read, Write, Edit, Bash, Skill, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize]
-version: 1.0.0
-author: felvieira
-compatibility: ">=2.10.2"
-requires:
-  - 17-image-generator
-  - 42-blog-screenshot
-  - 13-marketing-copy
-  - 26-prompt-engineer
+allowed-tools: Read, Write, Edit, Bash, Skill, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize
+metadata:
+  argument-hint: "[assunto ou texto do post]"
+  version: 1.0.0
+  author: felvieira
+  compatibility: ">=2.10.2"
+  requires:
+    - 17-image-generator
+    - 42-blog-screenshot
+    - 13-marketing-copy
+    - 26-prompt-engineer
 ---
 
 # Blog Publisher — Skill 41

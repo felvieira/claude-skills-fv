@@ -5,8 +5,9 @@ description: |
   pendencias e contexto do projeto para sugerir a proxima acao mais relevante ao usuario.
   Trigger em: "o que fazer agora", "sugestao", "suggest", "proximo passo", "next", "what now",
   "me ajuda a decidir", "priorizar".
-argument-hint: "[--context pipeline | feature | general]"
 allowed-tools: Read, Glob, Grep
+metadata:
+  argument-hint: "[--context pipeline | feature | general]"
 ---
 
 # Smart Suggestions

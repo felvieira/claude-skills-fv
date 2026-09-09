@@ -14,7 +14,8 @@ description: |
   "mercado pago mobile", "mercado pago no app", "preço anual vs mensal", "preço anual deve aparecer",
   "billing period selector", "plano recomendado", "pré-selecionar plano", "fluxo de assinatura android",
   "tela de preços do app".
-argument-hint: "[--foco=billing-decision|plan-selection|coupon|payment-states|accessibility|experimentation]"
+metadata:
+  argument-hint: "[--foco=billing-decision|plan-selection|coupon|payment-states|accessibility|experimentation]"
 ---
 
 # Mobile Paywall & Checkout — Seleção de Plano e Pagamento em Apps

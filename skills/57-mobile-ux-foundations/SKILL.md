@@ -14,8 +14,9 @@ description: |
   "texto ampliado", "fonte do sistema", "momento aha", "ativacao do usuario", "primeiro uso",
   "product tour", "tour guiado", "checklist de onboarding", "barra de progresso de onboarding",
   "usuario abandona no primeiro uso", "tela de boas-vindas", "walkthrough".
-argument-hint: "[--focus=ergonomics|dark-mode|perceived-perf|auth|onboarding]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--focus=ergonomics|dark-mode|perceived-perf|auth|onboarding]"
 ---
 
 # Mobile UX Foundations — Ergonomia, Cor, Percepcao e Entrada

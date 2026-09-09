@@ -24,8 +24,9 @@ description: |
   "inferir persona a partir do codigo", "inferir persona do codigo",
   "nao tenho personas escritas", "auditoria automatica de produto",
   "auditoria automatica do produto", "sem preparar nada antes", "audita tudo sozinho".
-argument-hint: "[--fase=personas|testar|analisar|fix|review|triagem] [--max-agentes=N] [--personas=auto|arquivo]"
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(gh *), Agent
+metadata:
+  argument-hint: "[--fase=personas|testar|analisar|fix|review|triagem] [--max-agentes=N] [--personas=auto|arquivo]"
 ---
 
 # Persona-Driven Issue Audit — Auditoria em Massa via Personas Simuladas

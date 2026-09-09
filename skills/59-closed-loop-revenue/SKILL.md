@@ -10,8 +10,9 @@ description: |
   "margem de contribuicao", "break-even ROAS", "ROAS de equilibrio", "value-based bidding",
   "smart bidding", "target ROAS", "qualidade de lead", "lead nao vira venda", "consent mode",
   "closed loop", "atribuicao".
-argument-hint: "[--audit] [--funnel=ecommerce|leadgen]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--audit] [--funnel=ecommerce|leadgen]"
 ---
 
 # Closed-Loop Revenue — Do Clique à Margem

@@ -9,8 +9,9 @@ description: |
   Trigger em: "deepening", "deep module", "shallow module", "refactor architecture",
   "improve architecture", "consolidate modules", "agent-friendly codebase",
   "AI-navigable", "module depth".
-argument-hint: "[--scope=src/foo] [--max-candidates=N]"
 allowed-tools: Read, Grep, Glob, Bash
+metadata:
+  argument-hint: "[--scope=src/foo] [--max-candidates=N]"
 ---
 
 # Architecture Deepener — Refactors que Importam

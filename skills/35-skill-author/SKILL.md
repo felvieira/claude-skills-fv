@@ -5,8 +5,9 @@ description: |
   refatorar skill existente, ou medir qualidade de descoberta de skill (description triggering).
   Trigger em: "criar nova skill", "nova capacidade", "skill author", "skill creator", "editar skill",
   "avaliar skill", "skill eval", "otimizar description", "meta-skill", "kit governance".
-argument-hint: "[--action=create|edit|eval|optimize] [--skill=name] [--target=skills/NN-name/]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--action=create|edit|eval|optimize] [--skill=name] [--target=skills/NN-name/]"
 ---
 
 # Skill Author — Meta-Skill de Governanca do Kit

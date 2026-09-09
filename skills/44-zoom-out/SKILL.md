@@ -8,8 +8,9 @@ description: |
   Trigger em: "zoom out", "mapa de modulos", "mapa dos modulos", "estou perdido", "perdido nesse codigo",
   "como isso encaixa", "como se conecta", "callers principais", "visao geral", "big picture",
   "neighborhood", "broader context", "higher level perspective".
-argument-hint: "[caminho-alvo] [--depth=2]"
 allowed-tools: Read, Grep, Glob, Bash
+metadata:
+  argument-hint: "[caminho-alvo] [--depth=2]"
 ---
 
 # Zoom Out — Mapa de Bairro Antes do Codigo

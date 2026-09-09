@@ -6,8 +6,9 @@ description: |
   determinísticos. Trigger em: "direção visual da campanha", "bíblia de continuidade do anúncio",
   "shot intents", "shot list publicitário", "shot list publicitaria", "handoff visual da copy",
   "conceito visual com continuidade", "planejar cenas do anúncio", "planeja as cenas do anuncio".
-argument-hint: "<ResearchStrategyArtifact> <CopyDeckArtifact> [--format <formato>]"
 allowed-tools: Read, Grep, Glob
+metadata:
+  argument-hint: "<ResearchStrategyArtifact> <CopyDeckArtifact> [--format <formato>]"
 ---
 
 # Campaign Visual Direction

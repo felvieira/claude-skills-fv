@@ -5,8 +5,9 @@ description: |
   Use antes de toda release, em PRs grandes, ou quando suspeitar de classe de bug recorrente.
   Trigger em: "semgrep", "codeql", "static analysis", "scan de seguranca", "SAST", "varredura",
   "pre-deploy security", "OWASP scan", "CVE check", "auditoria automatizada".
-argument-hint: "[--tool=semgrep|codeql|both] [--ruleset=p/owasp-top-ten] [--lang=js,py,go]"
 allowed-tools: Read, Grep, Glob, Bash(semgrep *), Bash(codeql *), Bash(npx *), Bash(pip *)
+metadata:
+  argument-hint: "[--tool=semgrep|codeql|both] [--ruleset=p/owasp-top-ten] [--lang=js,py,go]"
 ---
 
 # Static Analysis — Scan Automatizado de Vulnerabilidades

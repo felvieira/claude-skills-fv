@@ -11,8 +11,9 @@ description: |
   "arquitetura de referencia", "auth dual web e app", "gerar APK a partir do Next.js",
   "template de SaaS", "monetizar app mobile", "Google Play IAP", "assinatura Stripe e Play Store",
   "mesma estrutura dos outros apps", "boilerplate de app", "starter kit mobile+web".
-argument-hint: "[--fase=setup|auth|pagamento|push|tauri|docker|cicd] [--app-tipo=saas-simples|conteudo|ia-pesada]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--fase=setup|auth|pagamento|push|tauri|docker|cicd] [--app-tipo=saas-simples|conteudo|ia-pesada]"
 ---
 
 # App Reference Architecture — Molde Next.js + Tauri para Apps Novos

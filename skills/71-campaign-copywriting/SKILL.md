@@ -7,8 +7,9 @@ description: |
   "variações de anúncio com evidência", "variacoes de anuncio", "copy rastreável", "transforma a
   estratégia em anúncios", "transforma a estrategia", "rotas de copy da campanha", "copy com claim
   ledger".
-argument-hint: "<ResearchStrategyArtifact> [--channel <canal>] [--duration <segundos>]"
 allowed-tools: Read, Grep, Glob
+metadata:
+  argument-hint: "<ResearchStrategyArtifact> [--channel <canal>] [--duration <segundos>]"
 ---
 
 # Campaign Copywriting

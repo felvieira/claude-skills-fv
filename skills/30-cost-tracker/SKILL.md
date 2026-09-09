@@ -4,8 +4,9 @@ description: |
   Skill de rastreamento de custo por sessao. Monitora tokens consumidos, chamadas de API (fal.ai, Brave, Firecrawl),
   tempo de execucao e custo estimado por skill no pipeline. Gera relatorio de custo ao final da sessao.
   Trigger em: "custo", "cost", "quanto gastou", "token usage", "consumo", "budget", "relatorio de custo".
-argument-hint: "[sessao-id ou --current]"
 allowed-tools: Read, Write, Bash
+metadata:
+  argument-hint: "[sessao-id ou --current]"
 ---
 
 # Cost Tracker

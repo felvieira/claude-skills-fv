@@ -7,8 +7,9 @@ description: |
   Trigger em: "direct response", "copy de anuncio", "copy de venda", "headline", "gatilho mental",
   "criativo de ads", "email de venda", "legenda", "instagram", "caption", "copy predadora", "VSL",
   "pagina de vendas", "lancamento digital", "infoproduto", "lead magnet", "anuncio", "prova social".
-argument-hint: "[peça: headline|anuncio|email|legenda|pagina-de-vendas] [avatar] [oferta]"
 allowed-tools: Read, Grep, Glob, Write, Edit
+metadata:
+  argument-hint: "[peça: headline|anuncio|email|legenda|pagina-de-vendas] [avatar] [oferta]"
 ---
 
 # Direct Response Copy — Headlines, Gatilhos e Copy de Venda

@@ -7,8 +7,9 @@ description: |
   "base estratégica do anúncio", "research de concorrentes para campanha", "pesquisa concorrentes
   para a campanha", "voz do consumidor", "evidence ledger de marketing", "ângulos de campanha com
   evidência", "angulos de campanha", "estratégia antes da copy".
-argument-hint: "<produto/oferta> [--market <mercado>] [--depth none|targeted|deep]"
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch
+metadata:
+  argument-hint: "<produto/oferta> [--market <mercado>] [--depth none|targeted|deep]"
 ---
 
 # Campaign Research Strategy

@@ -6,8 +6,9 @@ description: |
   Use apos o Repo Auditor (18) ter mapeado o repositorio.
   Trigger em: "gerar claude.md", "criar claude.md", "onboarding", "setup claude md",
   "contexto do projeto", "documentar projeto para agente".
-argument-hint: "[caminho-do-projeto]"
 allowed-tools: Read, Grep, Glob, Edit, Write
+metadata:
+  argument-hint: "[caminho-do-projeto]"
 ---
 
 # CLAUDE.md Generator

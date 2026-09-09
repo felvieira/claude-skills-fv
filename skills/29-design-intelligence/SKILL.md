@@ -5,8 +5,9 @@ description: |
   analisar tendencias visuais de um nicho, gerar moodboards, ou melhorar interface existente com base em
   benchmarking visual. Trigger em: "melhorar interface", "pesquisar concorrentes", "benchmark visual",
   "tendencias de design", "moodboard", "redesign", "design competitivo", "analise visual", "referencia UI".
-argument-hint: "[nicho ou descricao do projeto]"
 allowed-tools: Read, Write, Bash, WebSearch, mcp__plugin_playwright_playwright__*
+metadata:
+  argument-hint: "[nicho ou descricao do projeto]"
 ---
 
 # Design Intelligence - Pesquisa Competitiva e Geracao de UI

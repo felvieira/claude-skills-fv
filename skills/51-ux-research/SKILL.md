@@ -9,8 +9,9 @@ description: |
   "entrevista em profundidade", "persona", "criar persona", "mapa de jornada", "journey map", "mapa de empatia",
   "teste de usabilidade", "usability testing", "validar problema", "arquitetura de informação", "card sorting",
   "taxonomia", "proposição de valor", "produto que ninguém usa", "começar pelo usuário", "focus group".
-argument-hint: "[entregavel: entrevista|persona|jornada|teste-usabilidade|AI|validacao] [produto] [publico-alvo]"
 allowed-tools: Read, Grep, Glob, Write, Edit
+metadata:
+  argument-hint: "[entregavel: entrevista|persona|jornada|teste-usabilidade|AI|validacao] [produto] [publico-alvo]"
 ---
 
 # UX Research — Discovery Qualitativo, Persona, Jornada e Teste de Usabilidade

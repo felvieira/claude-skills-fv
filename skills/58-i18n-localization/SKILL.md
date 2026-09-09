@@ -9,8 +9,9 @@ description: |
   "outro idioma", "RTL", "arabe", "hebraico", "direita para esquerda", "pseudolocale",
   "texto quebrou traduzido", "formato de data", "formato de moeda", "plural", "locale",
   "timezone", "fuso horario", "expansao de texto".
-argument-hint: "[--audit=path] [--target-locales=pt-BR,en,ar]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--audit=path] [--target-locales=pt-BR,en,ar]"
 ---
 
 # i18n e Localizacao — Preparar Antes de Traduzir

@@ -7,8 +7,9 @@ description: |
   os testes antes de toda a implementacao).
   Trigger em: "tdd", "test-first", "red-green-refactor", "tracer bullet", "behavior test",
   "integration test", "tdd deep module", "interface design test".
-argument-hint: "[--module=path] [--behavior=descricao]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+metadata:
+  argument-hint: "[--module=path] [--behavior=descricao]"
 ---
 
 # TDD Engineer — Red-Green-Refactor Enforced

@@ -12,8 +12,9 @@ description: |
   "patterns do codebase", "pattern enforcement", "conformidade de padrao",
   "convencoes de naming", "padrao de tratamento de erro", "mesma estrutura do projeto",
   "detecta as convencoes", "extrai padroes de coding", "como o projeto estrutura".
-argument-hint: "[area-alvo] [--update]"
 allowed-tools: Read, Grep, Glob, Bash
+metadata:
+  argument-hint: "[area-alvo] [--update]"
 ---
 
 # Pattern Conformity — Code Like the Codebase

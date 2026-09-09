@@ -5,8 +5,9 @@ description: |
   artefatos produzidos, pendencias e proximos passos. Facilita continuidade sem perder contexto.
   Trigger em: "resumo", "summary", "o que foi feito", "handoff retrospectivo", "encerrar sessao",
   "salvar sessao", "continuar depois", "recap".
-argument-hint: "[--save | --show]"
 allowed-tools: Read, Write, Glob, Grep
+metadata:
+  argument-hint: "[--save | --show]"
 ---
 
 # Session Summary
