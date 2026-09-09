@@ -47,6 +47,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 - validacao incremental por fase
 - risco operacional e tecnico priorizados
 
+**Checkpoint por fase:** aplicar a fase → rodar a suite de testes completa (não só os testes da área tocada, migração muda comportamento transversal) → se falhar, corrigir ou executar o rollback documentado daquela fase, nunca seguir pra próxima fase com teste vermelho. Só avançar quando a suite estiver verde na fase atual.
+
 ## Evidencia de Conclusao
 
 - plano de transicao definido

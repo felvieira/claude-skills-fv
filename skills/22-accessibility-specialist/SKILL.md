@@ -57,6 +57,8 @@ Ferramentas automaticas pegam ~30-40% das violacoes WCAG. As outras exigem mao e
 | **Screen reader** | nome/role/estado anunciados, live regions, contexto | NVDA (Win, gratis) ou VoiceOver (Mac, `Cmd+F5`); navegue por landmarks e headings |
 | **Zoom / reflow** | 200%-400% zoom sem perda de conteudo, reflow a 320px | Browser zoom + viewport estreito; sem scroll horizontal em texto |
 
+**Checkpoint:** rodar as 4 categorias na ordem da tabela → achado vira fix concreto (snippet, atributo ARIA) → aplicar → rodar de novo a categoria que falhou (não as 4 do zero, salvo se o fix tocou layout amplo). Achado do automático "resolvido" que ainda falha no teclado significa que o fix cobriu o sintoma (contraste) mas não a causa (foco nunca chegou no elemento) — voltar e corrigir a causa antes de marcar o critério como atendido.
+
 ## Checklist WCAG 2.2 AA — os criterios que mais quebram
 
 **Perceivable**

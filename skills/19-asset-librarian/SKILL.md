@@ -99,7 +99,7 @@ grep -rEo "#[0-9a-fA-F]{3,8}|rgb\(|hsl\(" src/ | sort | uniq -c | sort -rn   # p
 
 1. **Paleta divergente** — cores quase-iguais (#0F766E vs #0D9488) sao quase sempre acidente. Consolidar.
 2. **Logo duplicado** — mesmo logo em N formatos/paths sem single-source → escolher a fonte de verdade (SVG) e derivar o resto.
-3. **Peso morto** — asset sem referencia no codigo (`grep` o nome do arquivo no src). Candidato a remover.
+3. **Peso morto** — asset sem referencia no codigo (`grep` o nome do arquivo no src). Candidato a remover — mas **checkpoint antes de apagar**: grep pelo nome sem extensao tambem (referencia dinamica tipo `` `/images/${slug}.png` ``) e pelo path relativo em configs/CSS. Se o segundo grep achar uso, nao e peso morto — e falso positivo do primeiro grep. So remover apos os dois greps confirmarem zero referencia.
 4. **Formato errado pra finalidade** — JPG onde devia ser SVG (logo), PNG gigante sem WebP/AVIF.
 5. **Fonte nao otimizada** — TTF/OTF servido direto (devia ser WOFF2), sem `font-display: swap`.
 6. **Gaps de plataforma** — falta favicon multi-size, apple-touch-icon, OG image, maskable PWA → handoff skill 36.

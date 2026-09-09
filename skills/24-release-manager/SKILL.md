@@ -106,6 +106,8 @@ Gere release notes a partir do changelog, nunca o contrario. Anti-AI-writing (su
 
 **Promocao gradual:** se o risco e nao-trivial, handoff para skill 43 (canary) em vez de 0→100%.
 
+**Checkpoint pós-release:** monitorar error rate/p95 contra o gatilho definido pela janela Z minutos completa — não parar de olhar após 2 minutos "porque parece estável". Se o gatilho disparar, executar o mecanismo de rollback já decidido (não decidir na hora, sob pressão) e voltar pro runbook do zero na próxima tentativa: novo pre-release checklist, não só reaplicar o mesmo release.
+
 ## Comunicacao
 
 | Canal | Conteudo | Quando |

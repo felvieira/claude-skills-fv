@@ -77,6 +77,8 @@ Sempre tabela, sempre com owner e criterio de leitura:
 
 **Dispare no servidor** eventos de dinheiro/conversao (signup, purchase) — client-side perde 5-15% por adblock/erro de rede. Eventos de UI/interacao (clique, hover) podem ser client-side.
 
+**Checkpoint por evento instrumentado:** disparar a ação no app → confirmar que o evento aparece no debugger/live events da ferramenta (PostHog, Amplitude, etc.) com as propriedades certas — não assumir que "o código chama `track()`" significa que chegou. Se não aparecer, checar API key/env e disparar de novo antes de marcar o evento como instrumentado no tracking plan.
+
 ## Os 3 tipos de metrica que toda feature precisa
 
 1. **North-star / metrica de sucesso** — a UMA coisa que prova valor (ex: `activation_reached` rate). Sem ela, a feature nao tem placar.

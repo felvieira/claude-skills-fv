@@ -166,6 +166,8 @@ Para playbooks e exemplos operacionais mais detalhados, consultar `docs/skill-gu
 - alertas acionaveis e sem excesso de ruido
 - rollback e runbook claros para incidentes principais
 
+**Checkpoint:** disparar cada alerta configurado de propósito (erro forçado, latência artificial) e confirmar que ele chega no canal esperado com informação suficiente pra agir sem abrir o dashboard. Se o alerta chegar mudo ("erro 500 detectado") ou não chegar, corrigir o payload/threshold e disparar de novo — um alerta nunca testado é um runbook que só vai ser lido durante o incidente real, tarde demais para achar que está errado.
+
 ## Evidencia de Conclusao
 
 - sinais operacionais principais definidos
