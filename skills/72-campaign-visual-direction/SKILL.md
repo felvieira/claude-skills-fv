@@ -62,7 +62,10 @@ Um `CreativeDirectionArtifact` JSON com `schemaVersion: creative-direction.v1`, 
 3. Dar a cada shot uma função narrativa e uma ação principal.
 4. Reservar headline, preço, CTA, screenshots e UI para `overlayPlan` ou assets determinísticos.
 5. Em image-to-video, tratar o keyframe aprovado como fonte de identidade, composição, cenário e luz;
-   o vídeo descreve movimento e mudança temporal.
+   o vídeo descreve movimento e mudança temporal. **Checkpoint:** comparar o primeiro frame do vídeo
+   gerado contra o keyframe aprovado — se identidade/composição/luz divergiu, o prompt de movimento
+   invadiu território que devia vir só do keyframe; ajustar o prompt e gerar de novo, não aceitar a
+   divergência como "efeito colateral aceitável".
 6. Registrar limitações quando faltarem vistas ou referências, sem inventar o original.
 
 Presença humana, acabamento, energia, movimento e quantidade de cenas são decisões do caso, não

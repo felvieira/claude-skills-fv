@@ -61,7 +61,7 @@ Um `CopyDeckArtifact` JSON com `schemaVersion: copy-deck.v1`, contendo:
 3. Respeitar orçamento de palavras e pausas naturais em vídeo falado.
 4. Manter `onScreenText` curto. A renderização pertence ao compositor.
 5. Recomendar por aderência estratégica, força do hook, clareza, sustentação, naturalidade e produção.
-6. Rodar o gate anti-AI e o gate de integridade antes da entrega.
+6. Rodar o gate anti-AI e o gate de integridade antes da entrega — item que falhar volta pra reescrita naquele trecho especificamente, roda o gate de novo; não entregar com item pendente marcado "revisar depois".
 
 Escolhas emocionais podem não ter evidência desde que não se apresentem como fato. Nunca invente
 preço, desempenho, comparação, garantia, certificação, depoimento, experiência pessoal, escassez ou

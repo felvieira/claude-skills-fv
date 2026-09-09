@@ -72,6 +72,8 @@ Snippets, estimativas e conteúdo atrás de paywall não confirmam um fato compl
 deve ser paráfrase curta ou trecho mínimo atribuído. Urgência, preço, desempenho, depoimento e
 comparação sem prova entram em `prohibitedClaims` ou `limitations`, nunca como claim autorizado.
 
+**Checkpoint antes de fechar o ledger:** reler cada item marcado `fact` perguntando "essa fonte prova isso diretamente, ou é inferência que virou fact por estar repetida em várias buscas?" — reclassificar pra `inference`/`hypothesis` quando a resposta for a segunda. Ledger com `fact` inflado propaga claim sem prova pra copy e visual sem ninguém perceber depois.
+
 ## Anti-padrões
 
 - inventar concorrente, tráfego, preço, comportamento, depoimento ou tendência
