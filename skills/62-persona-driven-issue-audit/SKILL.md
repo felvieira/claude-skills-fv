@@ -145,7 +145,7 @@ Toda issue sai desta fase com um rótulo de confiança implícito no comentário
 
 N agentes (default: 10, mesmo teto do `Workflow`), cada um clone do perfil "engenheiro frontend/arquitetura", cada um consome **uma issue**, lê o comentário de análise da Fase 3, decide:
 
-- **confiança alta** → implementa o fix, abre PR referenciando a issue, descreve a mudança e por que a confiança era alta
+- **confiança alta** → implementa o fix, roda a suite de testes local antes de abrir o PR (não confiar que "coberto por teste existente" da Fase 3 significa que o teste ainda passa após a mudança), abre PR referenciando a issue, descreve a mudança e por que a confiança era alta
 - **confiança baixa** → comenta `wontfix` (ou `needs-human`) na issue com o motivo específico — "requer decisão de produto sobre X", "toca lógica de billing, fora do escopo de auto-fix", "reprodução inconsistente" — nunca um wontfix genérico
 
 **Critério de confiança alta não é "o código compila"**: exige (a) causa raiz identificada com certeza razoável na Fase 3, (b) fix local — não atravessa múltiplos módulos ou muda contrato de API, (c) coberto por teste existente ou trivialmente testável, (d) fora de área sensível declarada pelo projeto (pagamento, auth, dado pessoal — ver `skills/06-security-review`). Fora disso, `wontfix`/`needs-human` é a resposta correta, e um agente que abre PR de baixa confiança só move o custo do review da Fase 3 para a Fase 5.

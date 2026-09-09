@@ -266,6 +266,8 @@ Schema, autor real com bio, `dateModified` visivel e FAQ marcado sao **requisito
 
 Autor tem que ser pessoa real, com bio e link — nao "Equipe de Conteudo". E sinal de E-E-A-T e o que permite ao modelo atribuir autoridade.
 
+**Checkpoint antes de publicar:** validar o schema gerado no Rich Results Test do Google (ou validador equivalente) — schema com erro de sintaxe nao aparece como rico resultado, mesmo estando no HTML. Corrigir e revalidar antes do artigo ir ao ar, nao depois que o Search Console reportar o erro semanas depois.
+
 ---
 
 ## Fase 4 — Paralelo

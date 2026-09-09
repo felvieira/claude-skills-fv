@@ -114,7 +114,7 @@ Badge tem semântica que não pode ser inventada: `"Mais Popular"` exige dado re
 
 Máquina de estados mínima: `Ready → Submitting → Authenticating (3DS) → Pending → Succeeded | Failed → Reconciling`.
 
-Regra fundamental: **"o usuário voltou da autenticação 3DS" não é sinônimo de "pagamento aprovado" nem de "recusado"**. Depois do retorno (deep link, callback do SDK), a tela mostra `"A confirmar pagamento…"` e consulta o estado autoritativo antes de declarar sucesso ou falha — nunca assume pelo simples fato de ter retornado.
+Regra fundamental: **"o usuário voltou da autenticação 3DS" não é sinônimo de "pagamento aprovado" nem de "recusado"**. Depois do retorno (deep link, callback do SDK), a tela mostra `"A confirmar pagamento…"` e consulta o estado autoritativo antes de declarar sucesso ou falha — nunca assume pelo simples fato de ter retornado. **Checkpoint:** se a consulta ao estado autoritativo não retornar em tempo hábil (timeout, rede instável), permanecer em `Reconciling` e reconsultar com backoff — nunca inferir sucesso/falha pela ausência de resposta, e nunca deixar o usuário preso na tela sem indicação de que a verificação continua em andamento.
 
 Erro de pagamento nunca obriga o usuário a repetir trabalho que já foi validado (plano, cupão) — preservar tudo, mostrar mensagem específica e acionável, oferecer retry ou troca de método. Anti-duplo-submit é obrigatório: `PaymentIntent` do Stripe leva idempotency key associada à mesma sessão/compra pra impedir cobrança duplicada em retry técnico.
 
