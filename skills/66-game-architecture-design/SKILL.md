@@ -131,6 +131,8 @@ checagem independente de uma proposta (rodar, capturar evidencia, apagar depois)
 persistente** pra sistema que sera ajustado repetidamente (entregar e manter a ferramenta). Cálculo
 inline só basta quando poucas contas independentes determinam o resultado por completo.
 
+**Checkpoint:** rodar a simulação → se o resultado não bater a curva pretendida (opção dominante emergindo, intransitividade colapsando pra transitiva), ajustar o parâmetro específico apontado pela simulação → rodar de novo. Não aceitar "está próximo o suficiente" — a simulação existe justamente pra substituir esse julgamento por número.
+
 Sistemas de aleatoriedade sempre em três camadas: probabilidade matemática, utilidade pro jogador
 (limiar, perda, duplicata), e probabilidade percebida (o que a apresentação faz o jogador acreditar).
 Ver `references/balance-playbooks.md` para o procedimento completo de cada dominio (combate/progressao,

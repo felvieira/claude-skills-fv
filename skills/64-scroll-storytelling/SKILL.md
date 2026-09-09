@@ -141,6 +141,8 @@ gramatica-padrao que qualquer build tende a reproduzir sem decidir, entao carreg
 - Um ato e o pico, com o maior espaco por margem visivel.
 - Comprimento total da pagina entre 8 e 14 viewport-heights.
 
+**Checkpoint no Passo 5:** se o feel check contra o BRIEF.md ou a verificação em reduced-motion revelar violação de um item desta lista (device repetido, emoção adjacente igual, scrub a mais), voltar ao Passo 2 pra reclassificar o beat — não corrigir o HTML isolado sem revisar a tabela de device-por-beat, que é onde a decisão original foi tomada.
+
 ## Regras Duras
 
 Bloqueadores de entrega, nao preferencia. Cada uma e algo que faz uma pagina ler como feita por maquina.
