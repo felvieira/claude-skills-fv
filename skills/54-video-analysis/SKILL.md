@@ -58,6 +58,8 @@ Para comandos completos de ffmpeg por estratégia e exemplos de payload de trans
 2. **Extrair frames, só se a pergunta for visual** — três estratégias por custo de token: `keyframe` (só cortes de cena, até 50 frames, mais barato), `scene-aware` (detecção de mudança de cena + fallback uniforme, até 100 frames), `uniform` (amostragem regular, sem cap, mais caro). ~80 frames a 512px de largura ≈ 50-80k tokens de imagem — decidir a estratégia baseado no orçamento de contexto disponível.
 3. **Transcrever áudio, só se não há legenda** — ver seção abaixo. Pré-processar o áudio pra mono/16kHz antes de transcrever (reduz tempo de processamento sem perder qualidade de transcrição).
 
+**Checkpoint por passo:** ler o resultado antes de avançar — legenda "encontrada" que na verdade é auto-gerada de baixa qualidade (erros óbvios de reconhecimento) conta como "não tem legenda boa", cair pro passo 3. Frame extraído borrado/preto (falha do `yt-dlp`) volta pro passo 1 com outra estratégia de download antes de gastar tokens analisando frame ruim.
+
 ## Transcrição — local por padrão, hosted como override
 
 | Opção | Custo | Privacidade | Velocidade |

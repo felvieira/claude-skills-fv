@@ -194,6 +194,8 @@ Sempre apresentar mudancas como tabela markdown com colunas **Before** e **After
 - [ ] `will-change` so em transform/opacity/filter/clip-path, nunca `all`
 - [ ] Elementos interativos com pelo menos 40x40px de hit area, sem sobreposicao
 
+**Checkpoint:** marcar um item nesta checklist exige ter visto o resultado no browser (não no código-fonte) — "usei `tabular-nums`" não é evidência de que o número não pula mais durante contagem, é evidência de que a classe existe. Item que não foi visualmente confirmado fica desmarcado, não vira aposta otimista.
+
 ## Evidencia de Conclusao
 
 - tabela Before/After cobrindo toda mudanca aplicada
