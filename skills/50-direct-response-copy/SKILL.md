@@ -103,6 +103,8 @@ As fórmulas vêm de material agressivo de direct response. O kit usa as estrutu
 4. **Promessa de resultado ≠ garantia de resultado.** Saúde, dinheiro e relacionamento têm regras de plataforma estritas (Meta/Google ads) — promessas de ganho específico ("R$5 mil/mês") só em estudo de caso real e identificado
 5. **Medo sem terrorismo.** Gatilho de medo aponta risco real e oferece saída; não inventa ameaça
 
+**Checkpoint antes de entregar:** reler cada claim/número/depoimento do copy contra as 5 regras acima, um por um. Claim que falhar não vira "mais suave" — é cortado ou reformulado pra algo verificável, e reler de novo. Copy que "quase" tem prova ainda é claim inventado.
+
 ## Anti-Padroes
 
 - **Headline genérica de slot vazio:** preencher `{resultado}` com abstração ("melhore sua vida") — slot pede específico e mensurável

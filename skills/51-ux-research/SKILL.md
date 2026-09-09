@@ -118,6 +118,8 @@ Do livro: pesquisa não precisa de relatório formal tabulado. No caminho de vol
 
 Conforme o pedido. Templates em `references/personas-jornada.md`. Todo artefato cita as fontes de pesquisa que o embasam.
 
+**Checkpoint:** para cada afirmação do artefato ("usuários preferem X", "o maior atrito é Y"), apontar de qual entrevista/métrica/observação especificamente ela veio — se não conseguir apontar, é opinião do pesquisador vestida de dado, não insight de pesquisa. Reescrever ou remover a afirmação antes de entregar.
+
 ### 6. Gates + handoff
 
 Rodar gate anti-AI e gate de integridade. Entregar para 01/02 com as fontes anexadas.

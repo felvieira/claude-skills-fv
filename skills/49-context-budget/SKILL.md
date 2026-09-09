@@ -150,6 +150,8 @@ Thresholds por modelo:
 5. Revisar .claude/rules/ — paths: glob muito amplo?
 ```
 
+**Checkpoint:** aplicar a ação mais barata primeiro (1 ou 2, reversível e imediata) → medir de novo (Fase 1) → se o sintoma persistir, aplicar a próxima ação da lista. Não pular direto pra remover MCP server ou editar `agents/*.md` sem confirmar que o `/clear` sozinho não resolveu — são mudanças mais permanentes pra um sintoma que às vezes é só histórico acumulado.
+
 ## Integração com kit
 
 - Invocar após `/savings` quando contexto parecer inchado
