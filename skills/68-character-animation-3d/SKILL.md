@@ -161,6 +161,8 @@ Bake final: `bpy.ops.nla.bake(visual_keying=True, clear_constraints=True, bake_t
 converte resultado visual de IK/Copy Rotation/Copy Transforms em keyframes explicitas, obrigatorio
 antes de exportar pra formato/engine que nao preserva constraint procedural.
 
+**Checkpoint pós-retarget:** reproduzir a animação no target e observar visualmente foot sliding (pé escorregando no contato com o chão) e penetração de mesh nas articulações — a matemática do delta relativo pode estar correta e ainda produzir esses artefatos por diferença de proporção não coberta pela fórmula. Corrigir contact points/proporção e re-bakear antes de exportar, não exportar e corrigir depois na engine.
+
 ## Regras Duras
 
 | Nunca | Em vez disso |

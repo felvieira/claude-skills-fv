@@ -311,6 +311,8 @@ skeleton/frame count/pivot e um **build quebrado**. Os 5 grupos de teste, exempl
 o build graph content-addressed (cache de Qwen/SAM/pose/retarget/render/atlas por hash de input) estao
 em `references/testing-and-ci.md` — carregar ao montar CI ou ao decidir se um rebuild e necessario.
 
+**Checkpoint:** teste de um dos 5 grupos falhando invalida o cache content-addressed daquele estágio (não só o output final) — recalcular a partir do estágio que falhou, nunca aceitar o asset com "só esse teste não passou" quando skeleton/frame count/pivot está entre os afetados.
+
 ## Regras Duras
 
 | Nunca | Em vez disso |
