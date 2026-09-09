@@ -102,6 +102,8 @@ Critérios de aceitação devem ser:
 Exemplo ruim: "O sistema deve ser rápido"
 Exemplo bom: "DADO que o usuário está na listagem QUANDO clicar em filtrar ENTÃO os resultados carregam em menos de 500ms"
 
+**Checkpoint antes de fechar a spec:** para cada critério escrito, teste as 4 propriedades (Específico/Mensurável/Independente/Testável) uma por uma. Se algum falhar — "rápido" sem número, critério que só faz sentido lendo outro antes — reescreva aquele critério e teste de novo. Não avance pro handoff com um critério que falhou o teste "QA consegue escrever teste automatizado a partir dele sem perguntar nada de volta".
+
 ## Priorização - Matriz de Valor
 
 Use a fórmula: **Score = (Impacto × Urgência) / Esforço**
@@ -268,10 +270,6 @@ Usar repo-audit, session summary, git log e stack para inferir o que falta. Apre
  → Quer ajustar ou detalhar algo?
  → Ou era outra coisa?"
 ```
-
-## Código Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Fontes
 

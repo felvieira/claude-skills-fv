@@ -229,7 +229,3 @@ Entregar sempre:
 - formato, dimensao e pos-processamento
 
 Seguir `policies/handoffs.md` e, quando util, `templates/handoff.md`.
-
-## Codigo Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.

@@ -391,10 +391,6 @@ Só libera se:
 5. Headers configurados
 6. Env vars documentadas (sem valores, só nomes)
 
-## Código Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
-
 ## Integração com Pipeline
 
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa

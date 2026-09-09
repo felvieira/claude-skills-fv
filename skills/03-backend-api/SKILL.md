@@ -630,6 +630,8 @@ function transferCredits(fromId, toId, amount) {
 - Rollback: se migration falha, executar DOWN imediatamente
 - NUNCA renomear coluna diretamente — criar nova, migrar dados, remover antiga
 
+**Checkpoint de validação antes de aplicar em prod:** rodar UP em staging → confirmar que a aplicação antiga E a nova conseguem ler/escrever durante a janela de coexistência (não só a nova) → rodar DOWN e confirmar que volta ao estado anterior sem perda de dado → só então promover para prod. Se qualquer passo falhar, corrigir a migration (não pular a etapa) e repetir o ciclo UP→verificar→DOWN→verificar do zero.
+
 ## Evidencia de Conclusao
 
 - contrato de API coerente com a spec
@@ -647,10 +649,6 @@ Entregar:
 6. Rate limits definidos por endpoint
 7. Websocket events se houver real-time
 8. Variáveis de ambiente necessárias no front
-
-## Código Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Integração com Pipeline
 

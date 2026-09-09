@@ -205,10 +205,6 @@ Entregar:
 2. cenarios cobertos e gaps conhecidos
 3. notas sobre regressao, flakiness ou risco residual
 
-## Codigo Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
-
 ## Integracao com Pipeline
 
 - **Orquestrador (skill 09):** define quando QA entra e se precisa reexecucao

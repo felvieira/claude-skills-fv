@@ -254,7 +254,3 @@ Seguir `policies/handoffs.md` e `templates/handoff.md`.
 
 - Checagem de diversidade estrutural (Fase 3) inspirada na função "Redesign" de [usehallmark.com](https://www.usehallmark.com/) — garantir que a mesma forma estrutural não se repita sem justificativa entre projetos.
 - Protocolo Scan → Diagnose → Fix e checklist de 7 dimensões ("Modo Redesign") inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (redesign-skill).
-
-## Codigo Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.

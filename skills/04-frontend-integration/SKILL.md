@@ -253,6 +253,8 @@ export function useApiMutation<TInput, TOutput = unknown>(
 }
 ```
 
+**Checkpoint antes de considerar a integração pronta:** para toda mutation com `optimistic`, forçar o backend a retornar erro (mockar 500, ou desligar o endpoint temporariamente) e confirmar que a UI reverte pro estado anterior — não só que o optimistic update aparece no caminho feliz. Se o rollback não reverter visualmente, o `previous` capturado em `onMutate` está errado (query key diferente da que o `updater` mexeu) — corrigir a query key e repetir o teste de erro forçado antes de seguir.
+
 ## Skeleton Loading - Implementação
 
 **src/components/ui/Skeleton.tsx**
@@ -582,10 +584,6 @@ Entregar:
 3. Componentes interativos documentados (Storybook se houver)
 4. Variáveis de ambiente documentadas
 5. Como rodar localmente (README)
-
-## Código Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Fontes
 

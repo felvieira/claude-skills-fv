@@ -555,6 +555,8 @@ Ambos falham com exit 1 quando encontram problema (`--warn` so reporta, `--json`
 
 Se o checker acusa indigo, a ancora nao foi aplicada — foi declarada e esquecida.
 
+**Loop de fechamento:** rodar os dois checkers → se algum falhar (exit 1), corrigir só o token/classe apontado (nao redesenhar a tela) → rodar de novo. Repetir até os dois passarem limpo. Não é aceitável entregar com o checker vermelho e uma nota dizendo "ajustar depois" — "depois" é o Frontend implementando o token errado.
+
 ## Evidencia de Conclusao
 
 - fluxo principal definido
@@ -585,10 +587,6 @@ Comunicar:
 3. Filtros e ordenação que a UI precisa
 4. Estados de loading e como o skeleton se comporta
 5. Feedback visual que depende de resposta da API (sucesso, erro)
-
-## Código Limpo
-
-Codigo deve priorizar clareza. Comentarios so fazem sentido quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios.
 
 ## Fontes
 
