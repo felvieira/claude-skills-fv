@@ -99,7 +99,7 @@ Usar o catalogo abaixo. Fix sem entender a causa raiz reaparece na proxima tela.
 
 ### Fase 4 — Verificar sem regressao
 
-Reconferir as 3 larguras da Fase 2 **e** a largura desktop original — conversao mobile que quebra o desktop nao e conversao, e troca de bug.
+Reconferir as 3 larguras da Fase 2 **e** a largura desktop original — conversao mobile que quebra o desktop nao e conversao, e troca de bug. Largura que quebrou volta pra Fase 3 pra reclassificar a causa raiz (o fix provavelmente resolveu o sintoma numa largura e criou outro numa diferente) — nao ajustar o CSS até "parecer ok" sem reclassificar.
 
 ## Catalogo de Bugs — Sintoma, Causa, Fix
 

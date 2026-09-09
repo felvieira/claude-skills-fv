@@ -343,6 +343,8 @@ Dark mode:
 - [ ] Container com `min-height` em vez de altura fixa, para nao cortar texto ampliado
 - [ ] Testado a 200% de zoom e no maior passo de fonte do sistema, sem scroll horizontal
 
+**Checkpoint de contraste:** rodar `node scripts/check-contrast.mjs <css>` (skill 02) nos dois temas — não estimar visualmente "parece escuro o suficiente". Item de contraste só marca quando o script confirma o ratio, exit code 0 nos dois temas.
+
 Percepcao:
 - [ ] Feedback de toque em ate 100ms
 - [ ] Skeleton (nao spinner) entre 1s e 10s, espelhando o layout final

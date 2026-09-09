@@ -138,7 +138,7 @@ Checklist de configuracao, nao de estrategia (a estrategia de *o que* medir vem 
 - [ ] Google Tag Assistant / Preview mode do GTM sem erros
 - [ ] comparar contagem de conversao do GA4 com o sistema de origem (CRM/checkout) por 3-7 dias antes de confiar no numero
 
-**Nao "configurado" ate passar pela Fase 4** — GA4 aceitar o tag nao significa que os dados estao corretos.
+**Nao "configurado" ate passar pela Fase 4** — GA4 aceitar o tag nao significa que os dados estao corretos. Se a comparacao de 3-7 dias mostrar divergencia relevante (>5-10%) contra o CRM/checkout, voltar pra Fase 2 (evento mal parametrizado, dedupe faltando entre client-side e server-side) antes de considerar o setup pronto — nao aceitar o numero "aproximado" como definitivo.
 
 ## 3. Auditoria de Infraestrutura de Dados de Marketing
 
