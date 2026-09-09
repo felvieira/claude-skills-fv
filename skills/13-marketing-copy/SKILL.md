@@ -333,6 +333,8 @@ EXEMPLOS
      e intuitivo para uma experiência seamless."
 ```
 
+**Checkpoint antes de entregar:** reler cada frase do copy contra as 7 Regras de Ouro acima — feature sem benefício, frase com 2+ ideias, voz passiva, CTA genérico. Marcar cada violação encontrada, reescrever a frase (não só trocar a palavra apontada), e reler de novo até a passada inteira não achar nenhuma. Copy que "quase" segue a regra ainda é a versão errada.
+
 ## Evidencia de Conclusao
 
 - voz e proposta de valor consistentes

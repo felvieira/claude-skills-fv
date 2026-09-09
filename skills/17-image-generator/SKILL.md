@@ -192,6 +192,8 @@ Auth: `FAL_AI_API_KEY` em env (fallback: `FAL_KEY`, `FAL_API_KEY`).
 
 **Quando provider != FAL.AI:** ajustar `models/image-models.json` no fork do projeto, ou criar adapter substituto seguindo a mesma interface (`generateImage(opts) → {images, model, estimatedCostUsd}`).
 
+**Checkpoint:** abrir o arquivo gerado e confirmar visualmente que corresponde ao prompt (assunto certo, sem artefato/mão extra/texto ilegível) antes de referenciar no código. Se não corresponder, ajustar o prompt (não só gerar de novo com o mesmo texto esperando resultado diferente) e regenerar. Nunca commitar um asset que não foi aberto ao menos uma vez.
+
 ## Output Path
 
 Preferencia de destino:

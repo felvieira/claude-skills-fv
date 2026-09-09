@@ -332,6 +332,8 @@ TTFB           < 800ms      Time to First Byte — velocidade do servidor
 
 Todas as métricas devem estar na zona **verde** do Google PageSpeed Insights.
 
+**Checkpoint:** rodar PageSpeed Insights (ou Lighthouse local) → se qualquer métrica ficar fora da zona verde, aplicar a otimização correspondente (LCP alto → lazy load de imagem abaixo do fold; CLS alto → dimensões reservadas em imagem/ad; TTFB alto → cache/CDN) → rodar de novo. Repetir até as 5 métricas estarem verdes na mesma medição — não é aceitável "3 de 5 verde, os outros 2 são aceitáveis".
+
 ## Otimizações Obrigatórias
 
 ### next.config.js

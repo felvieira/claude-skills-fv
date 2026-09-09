@@ -245,6 +245,8 @@ Para decidir quais splits gerar, verificar:
 
 Usar `templates/audit.md` como base e manter secoes curtas, atualizaveis e reutilizaveis.
 
+**Checkpoint antes de persistir:** para cada afirmação da auditoria ("usa Prisma", "testes com Vitest", "deploy via Docker"), confirmar contra um arquivo real do repo (`package.json`, `docker-compose.yml`, config de teste) — não contra memória de repos parecidos. Se uma seção não pôde ser confirmada, marcar explicitamente como não-verificado em vez de preencher por inferência silenciosa; uma auditoria com gap marcado é mais útil que uma completa e errada.
+
 ## Regras de Economia de Token
 
 - ler primeiro a auditoria existente antes de explorar o repo novamente

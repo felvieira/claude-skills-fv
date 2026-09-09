@@ -641,6 +641,8 @@ Estes nao sao preferencia estetica; sao risco de saude.
 
 Asset animado (Lottie, Rive, video) tambem precisa respeitar: em reduced motion, mostrar o **frame final** em vez de tocar a trajetoria. A preferencia deve virar um token global que a aplicacao inteira le, incluindo bibliotecas externas.
 
+**Checkpoint antes de considerar a animação pronta:** ligar `prefers-reduced-motion: reduce` no DevTools (ou emular no sistema) e revisitar cada tela animada — se algo ainda deslocar, girar ou fazer parallax de tela inteira, a `@media` query não cobriu aquele efeito. Corrigir o CSS/asset faltante e testar de novo com a preferência ligada, não só declarar que "reduced motion está implementado" porque a media query existe em algum arquivo.
+
 ## Quando NAO Animar
 
 O criterio mais importante desta skill. Animação tem custo — de atencao, de tempo e de frame budget.

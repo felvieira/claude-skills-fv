@@ -339,6 +339,8 @@ Fallback offline implementado para features criticas
 Assinatura de APK configurada para release
 ```
 
+**Checkpoint:** rodar o build de release (não o dev) para cada plataforma alvo → instalar no dispositivo real (não só emulador) → testar as features nativas e o fallback offline de verdade (modo avião, não só "deveria funcionar"). Se algo falhar só no build de release (permissão faltando, CSP bloqueando request que funcionava em dev), corrigir a config e repetir o build completo — não patchear no dispositivo e considerar resolvido.
+
 ## Evidencia de Conclusao
 
 - build e permissao planejados com menor privilegio
