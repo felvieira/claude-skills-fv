@@ -223,6 +223,8 @@ Apos todos os testes passarem, procurar oportunidades de refactor:
 
 **Nunca refactore enquanto RED.** Chegue ao GREEN primeiro.
 
+**Se um refactor quebrar um teste que passava:** o refactor mudou comportamento observável, não só estrutura interna — reverter o passo de refactor (não ajustar o teste pra passar de novo). Um teste bem escrito sobrevive a refactor por definição (checklist abaixo); teste quebrado por refactor é sinal de que o refactor extrapolou escopo ou o teste testava implementação, não comportamento.
+
 ## Checklist Por Ciclo
 
 ```

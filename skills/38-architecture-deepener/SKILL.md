@@ -173,6 +173,8 @@ Side effects acontecem inline conforme decisoes cristalizam:
 - **Refinando termo durante a conversa?** Atualizar `CONTEXT.md` ali mesmo.
 - **Usuario rejeita candidato com motivo "load-bearing"?** Oferecer ADR: _"Quer registrar isso como ADR para que reviews futuros nao re-sugiram?"_. So oferecer quando o motivo seria realmente necessario para um explorador futuro evitar re-sugestao — pular motivos efemeros ("nao vale a pena agora") e auto-evidentes.
 
+**Checkpoint apos o deepening implementado:** rodar a suite de testes que a Fase 2 previu que "sobreviveriam" pela interface nova — se algum teste que deveria sobreviver quebrou, a interface nova vazou detalhe de implementação que o deepening deveria ter escondido. Corrigir a interface (não o teste) e rodar de novo antes de considerar o deepening concluído.
+
 ## Heuristicas de Detecao
 
 | Sintoma | Suspeita | Acao |

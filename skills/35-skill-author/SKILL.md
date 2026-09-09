@@ -270,7 +270,7 @@ Tecnica:
 1. Coletar 5-10 transcricoes onde a skill **deveria** ter sido acionada
 2. Listar palavras/frases recorrentes
 3. Adicionar como "Trigger em:" na description
-4. Re-testar com transcricoes
+4. Re-testar com as mesmas transcricoes — se alguma ainda nao aciona, voltar ao passo 2 com aquela transcricao especifica (a frase que faltou ainda nao esta nos triggers); repetir ate as 5-10 acionarem. Adicionar trigger novo sem re-testar as anteriores corre o risco de criar overlap com outra skill sem perceber.
 
 ## Anti-Padroes (em criacao de skill)
 

@@ -280,6 +280,8 @@ curl -I https://meusite.com/favicon.ico  # deve retornar 200
 # Chrome DevTools > Application > Manifest
 ```
 
+**Checkpoint:** rodar os 4 → item que falhar (favicon 404, manifest incompleto no DevTools) tem causa mecânica e conhecida (path errado, ícone faltando no manifest, tamanho fora do spec) — corrigir a causa específica e rodar de novo só aquele item. Não considerar a geração pronta com qualquer um dos 4 vermelho.
+
 <!-- anti-rationalization: N/A — skill e mecanica (gera assets a partir de input bem-definido), sem judgment calls que justifiquem tabela de vies -->
 
 ## Anti-Padroes
