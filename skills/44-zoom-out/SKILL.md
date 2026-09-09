@@ -84,6 +84,8 @@ Antes de produzir output, capturar **vocabulario do dominio** lendo (em ordem de
 
 O mapa **fala a lingua do projeto**, nao termos genericos.
 
+**Checkpoint antes de entregar o mapa:** para cada "hub" ou "god node" listado, confirmar com um segundo grep (contagem real de importações, não só a posição no graph.json) — graph desatualizado pode listar um arquivo já removido/refatorado como hub. Item que não confirma no código atual sai do mapa ou vira nota "desatualizado desde X".
+
 ## Output
 
 Tabela markdown ou hierarquia textual:

@@ -173,7 +173,9 @@ Procedimento de rollback (deve estar testado em staging):
 ```
 1. Acionar reversao do step (weighting volta para 100% stable, flag desligada,
    switch blue-green revertido)
-2. Confirmar via dashboard que trafego retornou para versao anterior (< 2 min)
+2. Confirmar via dashboard que trafego retornou para versao anterior (< 2 min) —
+   se nao confirmar dentro da janela, escalar pra on-call humano imediatamente,
+   nao repetir o comando de reversao esperando resultado diferente
 3. Snapshot de logs/metricas do periodo do canary (window: inicio - 5min ate now)
 4. Comunicar canal #releases com link do dashboard e janela do incidente
 5. Abrir postmortem dentro de 24h (skill 20 observability-sre lidera, skill 11

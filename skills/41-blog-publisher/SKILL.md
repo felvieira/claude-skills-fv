@@ -82,7 +82,7 @@ Para texto pronto: converter para HTML semântico, aplicar policy anti-ai-writin
 
 Em ambos os casos: zero atribuição de fonte, zero "Fonte original", zero "segundo {autor da fonte}".
 
-**Gate obrigatório antes de salvar:** rodar a `## Checklist de estilo para output publicado` de `policies/anti-ai-writing.md` no corpo do post — sem em dash, sem ponto-e-vírgula, sem asteriscos soltos no texto corrido, variação de comprimento/estrutura de frase e parágrafo, sem headings genéricos ("Key Takeaways", "Final Thoughts"), sem transição conversacional falsa. Grep literal na lista de palavras banidas da policy antes de considerar o post pronto.
+**Gate obrigatório antes de salvar:** rodar a `## Checklist de estilo para output publicado` de `policies/anti-ai-writing.md` no corpo do post — sem em dash, sem ponto-e-vírgula, sem asteriscos soltos no texto corrido, variação de comprimento/estrutura de frase e parágrafo, sem headings genéricos ("Key Takeaways", "Final Thoughts"), sem transição conversacional falsa. Grep literal na lista de palavras banidas da policy → cada match encontrado é reescrito naquele trecho (não substituído por sinônimo da mesma lista) → grep de novo até zero matches antes de considerar o post pronto.
 
 Salvar em `{blog_repo_path}/.tmp-body-{slug}.html`.
 

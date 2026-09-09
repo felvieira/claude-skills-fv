@@ -129,6 +129,8 @@ ls -la D:/Repos/blog/assets/images/{slug}-{N}.png
 Esperado: 50KB-300KB pra PNG dark mode comum. Se >1MB, considerar converter pra JPEG ou
 crop específico de elemento.
 
+**Checkpoint:** abrir o arquivo gerado e confirmar visualmente — tela em branco (esperou pouco no passo 5), cookie banner ainda visível (seletor do passo 4 não bateu no site), ou viewport cortando conteúdo esperado. Se algo estiver errado, ajustar o passo correspondente (não só repetir o shot) e capturar de novo.
+
 ## Naming convention
 
 Para integração com skill 41:
