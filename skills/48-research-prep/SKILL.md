@@ -149,6 +149,8 @@ Para cada fonte coletada, calcular score de autoridade (0-10):
 
 Descartar fontes com score < 4.0. Ranquear as demais.
 
+**Checkpoint:** se restarem menos de 3 fontes acima de 4.0, isso é sinal de que a Fase 2 coletou pouco ou de baixa qualidade — voltar e ampliar a busca (mais termos, mais `site:`) antes de aceitar um research raso. Não afrouxar o threshold de 4.0 pra "ter fonte suficiente" — a régua existe pra filtrar ruído, não pra ser contornada quando incomoda.
+
 ### Fase 4 — Produção do Output
 
 Salvar em `memory/research/<slug>.md`:

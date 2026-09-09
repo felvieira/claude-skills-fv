@@ -66,7 +66,7 @@ Capturar:
 
 ### 2. Pendencias verificadas
 
-Listar:
+Listar — cada item vem de rodar o comando agora, nao de memoria da sessao (a suite pode ter passado 20 mensagens atras e quebrado desde):
 - **testes:** quais passam, quais falham, quais nao foram escritos
 - **build:** verde, vermelho, ou nao tentado
 - **TODOs novos** introduzidos nesta sessao (grep recente)

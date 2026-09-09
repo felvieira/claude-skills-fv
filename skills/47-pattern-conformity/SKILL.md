@@ -292,6 +292,8 @@ Exemplo de comentario de desvio intencional:
 // onde propagar excecao quebraria o fluxo. Ver patterns.md P4.
 ```
 
+**Checkpoint pós-escrita:** reler o arquivo gerado contra a checklist P1-P8 (não confiar que o gate inline foi seguido perfeitamente durante a geração) — desvio sem comentário de justificativa volta pra corrigir (adicionar o comentário ou reescrever conforme o padrão), não passa despercebido só porque o código funciona.
+
 ## Output Minimo
 
 Ao final da skill, reportar:

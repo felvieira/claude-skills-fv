@@ -130,6 +130,8 @@ Ao detectar 2 falhas consecutivas:
 
 NAO faz rollback automatico **por default**. Producao = decisao humana, salvo override explicito no input.
 
+**Checkpoint na opcao C:** "false positive confirmado" exige o humano ter olhado a evidencia especifica do alerta (screenshot diff, log de erro), nao so aceitar a sugestao pra destravar o monitoramento. Se o override for aceito sem essa confirmacao, registrar isso explicitamente no `abort.md` — silenciar um alerta real vira o proximo incidente sem trace de por que passou.
+
 ### 4. Saida saudavel
 
 Ao final da janela sem aborts:
