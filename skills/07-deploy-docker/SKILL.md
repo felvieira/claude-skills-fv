@@ -816,6 +816,8 @@ export function isFeatureEnabled(feature: string): boolean {
 ☐ README atualizado
 ```
 
+**Checkpoint pós-deploy:** subir a versão nova → checar `/api/health` (não só "container up", o endpoint respondendo 200) → se falhar ou ficar `unhealthy` por mais de 30s, executar `rollback.sh` pra tag anterior imediatamente, não investigar em produção com o serviço no ar quebrado. Investigar a causa depois, contra os logs capturados no rollback, e só reintentar o deploy quando a causa estiver corrigida e testada em staging.
+
 ## Integração com Pipeline
 
 - **Orquestrador (skill 09):** Coordena quando esta skill é invocada e define a próxima etapa

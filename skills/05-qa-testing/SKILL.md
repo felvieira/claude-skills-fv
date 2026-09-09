@@ -188,6 +188,8 @@ Descoberto em eval-bench/Teste 2 (2026-05-23). Pattern não é Windows-only — 
 - sem flakiness relevante em CI
 - falhas conhecidas classificadas por impacto
 
+**Checkpoint:** rodar a suite → item que falhar, corrigir o teste ou reportar o bug ao dev (nunca marcar `skip`/`todo` pra passar) → rodar de novo. Repetir até os 5 itens acima serem verdade sem excecao nao-documentada. "Passou na segunda tentativa depois que ajustei o mock" so conta se o mock ajustado ainda testa o comportamento real — mock ajustado pra sempre retornar sucesso e um teste que nao testa nada.
+
 ## Evidencia de Conclusao
 
 - cenarios criticos cobertos

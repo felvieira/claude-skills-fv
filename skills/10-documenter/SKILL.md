@@ -161,6 +161,8 @@ Usar `templates/doc-update.md` para atualizacao curta e `docs/skill-guides/docum
 5. **Nunca misture regras de negócio com detalhes de implementação** — "Usuário só pode ter 3 posts por dia" é regra de negócio. "Usamos Redis para cache do contador" é implementação. Cada um no seu lugar
 6. **Toda documentação responde**: O que é? Por que existe? Como funciona? Onde fica? O que fala com o que? O que pode quebrar?
 
+**Checkpoint antes de finalizar:** buscar (`grep`) o mesmo fato/regra em outros arquivos de doc do projeto — se aparecer em 2+ lugares com texto divergente, isso já é a regra 4 quebrada, não uma coincidência inofensiva. Substituir a duplicata por referência ao arquivo canônico e reler o resultado; se ainda houver repetição, repetir a busca antes de considerar a doc pronta.
+
 ## Quando Documentar
 
 Documentação é escrita DURANTE o desenvolvimento, não depois.

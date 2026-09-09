@@ -338,6 +338,8 @@ Quando houver rejeicao:
 - repetir QA quando houver mudanca funcional relevante
 - repetir Security quando houver impacto em auth, dados, validacao ou superficie de ataque
 
+**Checkpoint:** corrigir → reverificar apenas os findings daquela rejeicao (nao a etapa toda do zero, salvo se QA/Security exigirem por escopo) → se ainda rejeitar. Teto de 3 ciclos de rejeicao na mesma etapa: na 3a, o problema deixou de ser "corrigir o codigo" e passou a ser "o plano/spec que originou esta etapa esta errado" (ver `agents/debugger.md`, categoria `bad_plan`) — escalar pra revisar a spec, nao insistir numa 4a correcao.
+
 ## Protocolo com Context Manager
 
 - criar uma task por etapa relevante do pipeline

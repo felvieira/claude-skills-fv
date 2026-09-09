@@ -41,15 +41,6 @@ Quando o repo consumidor tem `memory/constitution.md`:
 
 Considerar rodar `/analyze` antes deste review quando ha spec + plan + issues — pega inconsistencias antes do reviewer humano.
 
-### Constituicao como rubric primario
-
-Quando o repo consumidor tem `memory/constitution.md`:
-- usar os 5 eixos (Code Quality, Testing, UX, Performance, Security) como criterio primario de review
-- conflito implementacao ↔ constituicao = **rejeicao automatica** (constituicao e nao-negociavel)
-- se review encontra principio precisando mudar, NAO diluir aqui — abrir item para `/constitution` em commit dedicado
-
-Considerar rodar `/analyze` antes deste review quando ha spec + plan + issues — pega inconsistencias antes do reviewer humano.
-
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
 
 Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So consultar exemplos maiores quando houver necessidade real.
@@ -216,7 +207,7 @@ Garantir sempre:
 5. O Reviewer não corrige — aponta e retorna para a skill responsável
 6. Comentarios so sao aceitaveis quando explicam contexto nao obvio, restricoes externas ou workarounds temporarios
 7. Cada rejeição deve listar TODOS os problemas encontrados, não apenas o primeiro
-8. Re-review após correção deve verificar que novos problemas não foram introduzidos
+8. Re-review após correção deve verificar que novos problemas não foram introduzidos — **rodar o checklist completo de novo, não só os itens que falharam antes.** Corrigir o item A pode ter introduzido um problema no item B que passava antes. Repetir checklist→corrigir→checklist até todos os itens ficarem OK na mesma passada.
 
 ## Evidencia de Conclusao
 

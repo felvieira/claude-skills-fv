@@ -358,6 +358,8 @@ Após review, gerar relatório:
 [Aprovado/Reprovado] — [justificativa]
 ```
 
+**Checkpoint:** todo finding 🔴 Crítico bloqueia aprovação por definição — não existe "aprovado com ressalvas" tendo crítico aberto. Após o dev corrigir, reexecutar a checklist inteira (não só reverificar o item corrigido) contra o novo diff, porque a correção do crítico pode ter introduzido outro problema (fix de SQL injection que remove validação de input, por exemplo). Repetir corrigir→reverificar até zero críticos, então emitir o relatório.
+
 ### Gerenciamento de Dependencias
 
 - CRITICAL/HIGH: corrigir imediatamente, bloqueia deploy

@@ -64,6 +64,8 @@ Usar o mecanismo disponivel no ambiente:
 
 `Criar item (pending) -> Atualizar para in_progress -> Execucao -> Atualizar para completed -> Revisar lista geral`
 
+**Checkpoint antes de marcar `completed`:** confirmar que a evidencia de conclusao (ver `policies/verification-before-completion.md`) existe de fato — nao marcar completo so porque a etapa foi tentada. Se a verificacao falhar, a tarefa volta pra `in_progress` com a razao anotada, nao pra `pending` (perderia o progresso) nem pra `completed` (mentiria pro proximo passo do pipeline).
+
 ## Regras de Operacao
 
 - titulo no imperativo e curto
