@@ -122,6 +122,8 @@ O relatorio de reconciliacao compara os tres e declara uma **tolerancia** — na
 
 Divergencia acima da tolerancia bloqueia escala de midia. Escalar orcamento em cima de dado que nao reconcilia e multiplicar o erro.
 
+**Checkpoint:** identificar a causa provavel na tabela → corrigir a fonte especifica (dedupe por `transaction_id`, ajustar janela de atribuicao, alinhar calculo de moeda/imposto) → rodar a reconciliacao de novo no mesmo periodo. So liberar escala quando a divergencia cair dentro da tolerancia declarada — nao redefinir a tolerancia pra "caber" o numero que já saiu.
+
 ## 4. Da Metrica Operacional ao Lucro
 
 A hierarquia importa: quanto mais em cima, mais economico; quanto mais embaixo, mais operacional.

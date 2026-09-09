@@ -124,6 +124,8 @@ Verificar SEMPRE, ao planejar uma feature nova: se ela usa Server Action, existe
 uma rota de API irmã que o stub client-side do build Tauri pode chamar? Decidir isso no design da
 feature, não depois que o build Tauri já quebrou.
 
+**Checkpoint:** rodar o build Tauri de verdade (não só o build Next.js normal) antes de considerar a feature pronta — o script de swap pode ter deixado algo não-restaurado no `finally` de uma execução anterior interrompida. Se o build falhar, checar primeiro se o `finally` rodou na última execução (arquivos ainda renomeados) antes de investigar a feature nova.
+
 ### 4. Pagamento dual (Stripe + Google Play IAP [+ Pix])
 
 Google Play Billing não é opcional se o app vende assinatura/conteúdo dentro de um APK publicado

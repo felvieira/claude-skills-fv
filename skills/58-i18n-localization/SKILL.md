@@ -130,6 +130,10 @@ O teste minimo e alternar `dir="rtl"` no root e percorrer o fluxo principal. O q
 
 Ver o catalogo abaixo. Trocar `margin-left` por `margin-inline-start` um a um sem entender o padrao gera regressao na proxima tela.
 
+### Fase 5 — Reconferir Fase 2 e 3 apos o fix
+
+Rodar pseudolocale e RTL de novo (não só no elemento corrigido — a troca de propriedade lógica pode ter afetado espaçamento vizinho). Se algo que passava antes do fix quebrou agora, o fix vazou escopo — revisar antes de considerar a correção concluída.
+
 ## Catalogo — Problema, Causa, Correcao
 
 ### 1. String presa ao codigo
