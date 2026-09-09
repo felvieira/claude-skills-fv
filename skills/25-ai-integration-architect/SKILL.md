@@ -50,6 +50,8 @@ Antes de decidir a arquitetura, consultar:
 - `patterns/ai-integration/cost-efficiency.md`
 - `patterns/ai-integration/security.md`
 
+**Checkpoint antes de fechar a arquitetura:** rodar uma chamada real contra o provider escolhido com o adapter implementado (não mock) e confirmar que fallback/retry/rate-limit funcionam de propósito — forçar timeout ou erro 429 e ver o adapter reagir como desenhado. Se o fallback não disparar, corrigir o adapter e forçar o erro de novo antes de considerar a integração pronta.
+
 ## Evidencia de Conclusao
 
 - provider/gateway escolhido com justificativa

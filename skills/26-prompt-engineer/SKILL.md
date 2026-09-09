@@ -66,6 +66,8 @@ Adicionar:
 
 **Evidência de conclusão: prompt funciona em Camada A antes de receber B e C.**
 
+**Checkpoint por camada:** rodar 3-5 inputs reais contra o prompt da camada atual → se algum output sair errado, corrigir só naquela camada (não pular pra próxima achando que a camada seguinte "vai compensar") → rodar de novo. Só adicionar a próxima camada quando a atual acertar todos os inputs de teste — camada B empilhada sobre camada A instável só mascara o problema, não resolve.
+
 Ver `templates/agent-spec.md` para o template completo com as 3 camadas.
 
 ## Evidencia de Conclusao

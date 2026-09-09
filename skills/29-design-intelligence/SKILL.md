@@ -100,11 +100,12 @@ Montar super-prompt enriquecido com insights da analise e fazer handoff para o s
 
 Ponto de entrada 2 (linha "Melhoria de UI existente") usa este protocolo em vez das Fases 1-2 abaixo — aqui não há concorrente pra pesquisar, a UI existente É o material de análise. Aplica-se quando o usuário pede pra melhorar/redesenhar algo que já está construído.
 
-### Scan → Diagnose → Fix
+### Scan → Diagnose → Fix → Reverify
 
 1. **Scan**: ler o código da UI existente — framework, método de estilização (Tailwind, CSS vanilla, styled-components), estrutura de componentes.
 2. **Diagnose**: rodar o checklist de 7 dimensões abaixo, listando todo padrão genérico, ponto fraco e estado faltante encontrado.
 3. **Fix**: aplicar upgrades na ordem de prioridade, trabalhando com a stack existente (não trocar framework/lib no meio do redesign).
+4. **Reverify**: rodar o checklist de 7 dimensões de novo contra o resultado — um fix de uma dimensão pode introduzir problema em outra (ex: trocar componente genérico por custom pode remover o estado de foco que o componente nativo tinha de graça). Item que ainda falhar volta pro passo 3, não segue pro artefato final.
 
 ### Checklist de 7 dimensões
 

@@ -78,6 +78,8 @@ Decisoes que importam:
 - **idempotencia**: webhook pode chegar 2x — dedupe por job_id
 - **timeout/dead-job**: job que nunca volta precisa de TTL + estado `failed`
 
+**Checkpoint antes de liberar:** simular os 3 caminhos de falha antes do primeiro uso real — webhook duplicado (chamar 2x com mesmo job_id, confirmar que não duplica o asset/notificação), job que nunca completa (confirmar que o TTL move pra `failed` sozinho), e provider retornando erro (confirmar que o usuário recebe status claro, não fica esperando pra sempre). Corrigir o caminho que falhar e repetir a simulação antes de liberar pra produção.
+
 ## Prompt cinematografico (estrutura)
 
 Video responde a vocabulario de cinema, nao so descricao de cena:

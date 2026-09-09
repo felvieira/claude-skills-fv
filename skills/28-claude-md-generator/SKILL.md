@@ -248,6 +248,8 @@ Para monorepos com multiplos packages/workspaces:
 - Se ja existir um CLAUDE.md, mostrar diff e perguntar antes de sobrescrever
 - Sem backup — git cuida do historico
 
+**Checkpoint antes da Fase 4:** para cada comando documentado no draft (`npm run X`, `docker compose Y`), confirmar que existe no `package.json`/script real do projeto — não inventar comando plausível. Comando que não existe no repo é pior que seção vazia: o próximo agente vai tentar rodar e falhar.
+
 ## Evidencia de Conclusao
 
 - `CLAUDE.md` criado ou atualizado na raiz do projeto
