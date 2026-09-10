@@ -2,27 +2,17 @@
 name: character-pipeline-2d
 description: |
   Skill de pipeline 2D de personagem e orquestracao geral do pipeline character-to-runtime. Cobre as
-  cinco estrategias de producao de sprite/animacao 2D (3D->render ortografico->spritesheet, arte
-  2D->layers->rig skeletal, video IA->frames, frame-by-frame IA, hibrido rig+replacement), o contrato
-  MotionPlan.json (LLM como diretor de intencao/timing/fases/contatos/eventos — nunca como animador
-  que produz rotacao de bone), geracao 2D nativa via Qwen-Image-Layered (decomposicao em camadas RGBA)
-  e Qwen-Image-Edit (edicao com consistencia de personagem), SAM como refinamento de mascara (nao
-  gerador primario), occlusion completion, DWPose/MMPose (pose 2D vs 3D) e o CanonicalPoseSequence
-  intermediario obrigatorio, Wan-Animate como motion reference/previs (nunca fonte final de frame),
-  ComfyUI como servidor de inferencia headless, ferramentas de rig 2D esqueletal (Blender Grease
-  Pencil, Spine CLI, LoongBones), o CLI unificado assetctl, rasterizacao deterministica, atlas
-  packing, separacao hitbox/hurtbox, integracao runtime Godot/Phaser, licenciamento e hardware, e
-  testes/CI em 5 grupos com build graph content-addressed. Assume pipeline 3D ate GLB ja pronto via
-  skill 68 — nao duplica retargeting bpy nem matematica de quaternion.
-  Trigger em: "pipeline de personagem 2D", "spritesheet", "sprite sheet", "MotionPlan", "motion plan
-  json", "LLM diretor de animacao", "Qwen-Image-Layered", "Qwen-Image-Edit", "decomposicao em camadas
-  RGBA", "occlusion completion", "DWPose", "MMPose", "CanonicalPoseSequence", "Wan-Animate",
-  "Wan2.2-Animate", "motion reference", "previs de animacao", "ComfyUI headless", "workflow ComfyUI",
-  "rig 2D esqueletal", "Spine CLI", "LoongBones", "Grease Pencil rig", "assetctl", "atlas de sprite",
-  "texture atlas", "hitbox hurtbox", "render ortografico", "camera ortografica fixa", "rasterizacao
-  deterministica", "AccuRIG headless", "fronteira de certificacao do rig", "build graph content
-  addressed", "pipeline de asset de jogo 2D", "derivar sprite de personagem 3D", "geracao 2D de
-  personagem com IA", "integrar Skeleton2D Godot", "Phaser spritesheet atlas".
+  cinco estrategias de producao de sprite/animacao 2D (3D->spritesheet, arte 2D->rig skeletal,
+  video IA->frames, frame-by-frame IA, hibrido), o contrato MotionPlan.json (LLM como diretor de
+  intencao/timing/fases), geracao 2D via Qwen-Image-Layered/Qwen-Image-Edit, SAM para mascara,
+  occlusion completion, DWPose/MMPose e CanonicalPoseSequence, Wan-Animate como motion
+  reference/previs, ComfyUI headless, rig 2D esqueletal (Blender Grease Pencil, Spine CLI,
+  LoongBones), CLI assetctl, rasterizacao deterministica, atlas packing, hitbox/hurtbox,
+  integracao runtime Godot/Phaser, e testes/CI com build graph content-addressed. Assume pipeline
+  3D ate GLB pronto via skill 68.
+  Trigger em: "pipeline de personagem 2D", "spritesheet", "MotionPlan", "Qwen-Image-Layered",
+  "occlusion completion", "DWPose", "CanonicalPoseSequence", "Wan-Animate", "ComfyUI headless",
+  "rig 2D esqueletal", "Spine CLI", "assetctl".
 ---
 
 # Character Pipeline 2D — Derivacao, Geracao 2D Nativa e Orquestracao

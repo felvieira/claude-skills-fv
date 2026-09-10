@@ -1,20 +1,16 @@
 ---
 name: content-growth-engine
 description: |
-  Skill de estrategia de conteudo como motor de aquisicao para SaaS e B2B. Use quando precisar montar
-  um plano de conteudo do zero, priorizar pauta por intencao comercial, definir cadencia de producao,
-  decidir entre criar conteudo novo ou atualizar antigo, planejar linkagem interna, extrair pauta das
-  objecoes de venda, ou medir share de citacao em IA e receita influenciada por conteudo.
+  Skill de estrategia de conteudo como motor de aquisicao para SaaS e B2B: montar plano de conteudo do
+  zero, priorizar pauta por intencao comercial, definir cadencia, decidir criar vs. atualizar conteudo,
+  linkagem interna, extrair pauta de objecoes de venda, medir share de citacao em IA e receita.
   Trigger em: "plano de conteudo", "estrategia de conteudo", "content marketing", "growth de conteudo",
-  "pauta", "calendario editorial", "cluster de conteudo", "clusters de conteudo", "topic cluster",
-  "intencao de busca", "intencao comercial", "fundo de funil", "bottom of funnel", "pagina de servico",
-  "pagina de segmento", "pagina de precos", "comparativo X vs Y", "listicle", "estudo de caso",
-  "newsletter", "LinkedIn", "link interno", "linkagem interna", "atualizar conteudo antigo",
-  "content refresh", "conteudo antigo caindo", "share of voice", "citacao em IA", "respostas de IA",
-  "menciona a marca no ChatGPT", "chatgpt cita", "chatgpt recomenda", "aparece nas respostas",
-  "material rico", "lead magnet", "pesquisa original", "glossario", "trafego nao converte",
-  "nao converte em reuniao", "conteudo nao gera pipeline", "objecoes de venda", "objecao de venda",
-  "perguntas que aparecem em toda reuniao".
+  "pauta", "calendario editorial", "cluster de conteudo", "topic cluster", "intencao de busca",
+  "intencao comercial", "fundo de funil", "pagina de servico", "pagina de precos",
+  "comparativo X vs Y", "estudo de caso", "link interno", "linkagem interna",
+  "atualizar conteudo antigo", "content refresh", "share of voice", "citacao em IA",
+  "menciona a marca no ChatGPT", "chatgpt recomenda", "lead magnet", "trafego nao converte",
+  "conteudo nao gera pipeline", "objecoes de venda".
 allowed-tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
 metadata:
   argument-hint: "[--fase=descobrir|criar|otimizar|medir] [--icp=<segmento>]"

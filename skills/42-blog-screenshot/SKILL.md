@@ -1,20 +1,12 @@
 ---
-name: 42-blog-screenshot
+name: blog-screenshot
 description: |
   Captura screenshots via Playwright MCP de URLs/elementos pra usar em posts de blog ou
   documentação. Lida com viewport, cookie banners, full-page vs section,
   scroll a âncora, formatos PNG/JPG. Compõe com skill 41 (blog-publisher).
   Trigger em: "tira print", "screenshot do site", "captura tela", "screenshot da página",
   "print da landing", "print do dashboard", "screenshot pro blog".
-allowed-tools:
-  - Bash
-  - Read
-  - Write
-  - mcp__plugin_playwright_playwright__browser_navigate
-  - mcp__plugin_playwright_playwright__browser_take_screenshot
-  - mcp__plugin_playwright_playwright__browser_resize
-  - mcp__plugin_playwright_playwright__browser_evaluate
-  - mcp__plugin_playwright_playwright__browser_snapshot
+allowed-tools: Bash, Read, Write, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_snapshot
 metadata:
   argument-hint: "[URL ou descrição da captura]"
   version: 1.0.0

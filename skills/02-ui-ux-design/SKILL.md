@@ -1,12 +1,11 @@
 ---
 name: ui-ux-design
 description: |
-  Skill do Designer UI/UX para definição de interfaces e experiência do usuário. Use quando precisar criar
-  wireframes, design system tokens, componentes de UI, fluxos de navegação, acessibilidade, ou qualquer
-  decisão de interface. Cobre também derivação de paleta (esquema de cor, OKLCH, 60/30/10), leis
-  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo. Cobre ainda
-  auditoria de interface existente: modo dual auditoria/implementação, classificação de achado
-  (norma/evidência/heurística/preferência), priorização por severidade e tabela de achados.
+  Skill do Designer UI/UX para interfaces e experiência do usuário: wireframes, design system tokens,
+  componentes de UI, fluxos de navegação, acessibilidade, derivação de paleta (OKLCH, 60/30/10), leis
+  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo. Cobre também
+  auditoria de interface: modo dual auditoria/implementação, classificação de achado
+  (norma/evidência/heurística/preferência) e priorização por severidade.
   Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
   "layout", "responsivo", "mobile first", "acessibilidade básica", "acessibilidade dos componentes",
   "wcag", "design system", "protótipo", "Figma", "aesthetic anchor", "âncora estética",

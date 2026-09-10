@@ -3,17 +3,15 @@ name: mobile-paywall-checkout
 description: |
   Skill de UI/UX de paywall e checkout de pagamento em apps mobile — seleção de plano, periodicidade,
   cupão, Google Play Billing, Google Pay e PSPs externos (Stripe, Mercado Pago). Cobre a decisão de
-  arquitetura de cobrança (quando é obrigatório Play Billing vs. quando PSP externo é permitido), o
-  fluxo periodicidade→plano→cupão→pagamento→autenticação→confirmação, a hierarquia de plano-alvo sem
-  manipulação, estados de pagamento (processing/3DS/pending/succeeded/failed) e a posição do campo de
-  cupão (collapsed vs. aberto). Complementa a skill 60 (que cobre o lado backend/dados de pagamento
-  multi-provider) com o lado de interface e decisão de produto.
+  arquitetura de cobrança (quando é obrigatório Play Billing vs. PSP externo), o fluxo periodicidade→
+  plano→cupão→pagamento→autenticação→confirmação, hierarquia de plano-alvo sem manipulação, estados de
+  pagamento (processing/3DS/pending/succeeded/failed) e posição do campo de cupão. Complementa a skill
+  60 (backend/dados multi-provider) com o lado de interface e decisão de produto.
   Trigger em: "paywall", "tela de assinatura", "checkout de assinatura", "seleção de plano", "plan card",
   "checkout de pagamento mobile", "google play billing", "in-app purchase", "iap", "purchase sheet",
-  "campo de cupão", "cupom no checkout", "3ds", "3d secure", "payment sheet", "google pay no checkout",
-  "mercado pago mobile", "mercado pago no app", "preço anual vs mensal", "preço anual deve aparecer",
-  "billing period selector", "plano recomendado", "pré-selecionar plano", "fluxo de assinatura android",
-  "tela de preços do app".
+  "campo de cupão", "3ds", "3d secure", "payment sheet", "google pay no checkout",
+  "mercado pago mobile", "preço anual vs mensal", "billing period selector",
+  "plano recomendado", "fluxo de assinatura android", "tela de preços do app".
 metadata:
   argument-hint: "[--foco=billing-decision|plan-selection|coupon|payment-states|accessibility|experimentation]"
 ---

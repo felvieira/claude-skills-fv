@@ -1,5 +1,5 @@
 ---
-name: 41-blog-publisher
+name: blog-publisher
 description: |
   Skill compositora que pega texto/assunto e gera post de blog HTML completo no repo
   configurado em ~/.dev-team-kit/blog-config.json, com imagens (via skill 17 fal.ai ou

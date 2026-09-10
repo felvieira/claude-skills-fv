@@ -1,29 +1,17 @@
 ---
 name: persona-driven-issue-audit
 description: |
-  Skill de auditoria em massa de produto existente via personas simuladas, ponta a ponta e autonoma:
-  infere as proto-personas lendo o proprio repositorio (rotas, docs, textos de erro, hierarquia de
-  menu), oferece uma janela curta de confirmacao humana sem bloquear se ninguem responder, e so
-  entao roda o pipeline completo ate PR — persona-testing encontra bugs reais de usabilidade e
-  navegacao, issues sao abertas com dedup, um agente analista cruza cada issue com a codebase e
-  comenta solucao, uma frota paralela de agentes abre PR onde a confianca e alta (ou comenta wontfix
-  onde nao e), e um reviewer aprova ou rejeita cada PR. Termina em issues residuais para triagem
-  humana, nunca em merge automatico.
-  Use quando precisar auditar um produto (nao uma feature) do ponto de vista de usuarios reais
-  variados sem ja ter personas escritas, gerar volume de findings de UX/navegacao/encontrabilidade,
-  ou escalar triagem de bug encontrado por IA sem virar gargalo de review humano.
-  Trigger em: "auditar o produto com personas", "auditar o produto simulando usuarios",
-  "testar como usuario real", "simular usuarios", "simular usuario nao tecnico",
-  "impersonar persona", "encontrar bugs de usabilidade em massa", "auditoria de 100 issues",
-  "100 issues numa auditoria", "triar issues", "triagem em massa de issues",
-  "frota de agentes de fix", "agentes paralelos abrindo PR", "dedup de issue",
-  "issue duplicada de bug", "wontfix em lote", "abrir pr automatica ou comentar wontfix",
-  "quais issues sao reais", "quantas prs aprovar automaticamente",
-  "prs deveriam ser aprovadas automaticamente", "prs aprovadas automaticamente",
-  "escalar QA exploratorio com IA", "gerar personas a partir do repo",
-  "inferir persona a partir do codigo", "inferir persona do codigo",
-  "nao tenho personas escritas", "auditoria automatica de produto",
-  "auditoria automatica do produto", "sem preparar nada antes", "audita tudo sozinho".
+  Skill de auditoria em massa de produto via personas simuladas, ponta a ponta e autonoma: infere
+  proto-personas lendo o repositorio, oferece janela curta de confirmacao humana, e roda o pipeline
+  completo ate PR — persona-testing encontra bugs de usabilidade, issues abertas com dedup, um
+  agente analista comenta solucao, uma frota paralela abre PR onde a confianca e alta (ou comenta
+  wontfix), e um reviewer aprova ou rejeita. Termina em issues residuais para triagem humana, nunca
+  merge automatico. Use para auditar produto sem personas escritas, gerar findings de UX/navegacao,
+  ou escalar triagem de bug de IA sem gargalo de review humano.
+  Trigger em: "auditar o produto com personas", "testar como usuario real", "simular usuarios",
+  "encontrar bugs de usabilidade em massa", "auditoria de 100 issues", "frota de agentes de fix",
+  "agentes paralelos abrindo PR", "dedup de issue", "wontfix em lote", "quais issues sao reais",
+  "gerar personas a partir do repo", "nao tenho personas escritas".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(gh *), Agent
 metadata:
   argument-hint: "[--fase=personas|testar|analisar|fix|review|triagem] [--max-agentes=N] [--personas=auto|arquivo]"

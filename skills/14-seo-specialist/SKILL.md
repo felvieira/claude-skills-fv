@@ -1,13 +1,12 @@
 ---
 name: seo-specialist
 description: |
-  Skill do Especialista SEO para otimização de páginas e sistemas para motores de busca tradicionais e
-  também para otimização para ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews).
-  Use quando precisar otimizar meta tags, Open Graph, sitemap, schema markup, Core Web Vitals, performance,
-  imagens, fontes, acessibilidade para SEO, fazer pesquisa de palavra-chave (keyword research, intent,
-  cauda longa), priorizar termos por volume/dificuldade, ou planejar estratégia de backlinks e autoridade
-  de domínio, ou qualquer decisão de ranqueamento e citação por motores
-  generativos. Trigger em: "SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals",
+  Skill do Especialista SEO para páginas e sistemas em motores de busca tradicionais e otimização para
+  ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews): meta tags, Open Graph, sitemap,
+  schema markup, Core Web Vitals, performance, imagens, fontes, acessibilidade para SEO, pesquisa de
+  palavra-chave (intent, cauda longa), priorização por volume/dificuldade, estratégia de backlinks e
+  autoridade de domínio.
+  Trigger em: "SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals",
   "performance", "LCP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine",
   "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization",
   "keyword research", "pesquisa de palavra-chave", "palavra-chave", "keyword", "cauda longa", "long tail",

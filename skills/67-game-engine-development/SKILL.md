@@ -4,17 +4,14 @@ description: |
   Skill de implementacao real de codigo de engine de jogo — Unity C# e Unreal C++. Cobre padroes de
   MonoBehaviour, ScriptableObject, object pooling, state machine, ECS, componentes de Actor/UPROPERTY/
   UFUNCTION do Unreal, otimizacao de performance (profiling, batching, LOD, culling, garbage collection),
-  e networking multiplayer (arquitetura cliente-servidor, predicao de cliente, lag compensation,
-  serializacao). Cobertura conceitual (nao profunda) de Godot GDScript quando pedido, porque nao existe
-  fonte com profundidade real desse motor curada nesta skill. Nao decide arquitetura de sistema nem
+  e networking multiplayer (cliente-servidor, predicao de cliente, lag compensation, serializacao).
+  Cobertura conceitual de Godot GDScript quando pedido. Nao decide arquitetura de sistema nem
   balanceamento de numero — para isso ver skill 66.
   Trigger em: "Unity C#", "Unreal C++", "MonoBehaviour", "ScriptableObject", "UCLASS", "UPROPERTY",
-  "UFUNCTION", "Actor component", "object pooling jogo", "ECS Unity", "entity component system",
-  "otimizar FPS", "otimizar performance de jogo", "profiler Unity", "Unreal Insights",
-  "multiplayer networking jogo", "client-side prediction", "lag compensation", "server reconciliation",
-  "state machine jogo", "spatial partitioning", "GetComponent", "coroutine Unity", "Blueprint callable",
-  "smart pointer Unreal", "TSharedPtr", "código de jogo", "implementar sistema de jogo em Unity",
-  "implementar sistema de jogo em Unreal", "Godot GDScript".
+  "UFUNCTION", "object pooling jogo", "ECS Unity", "otimizar FPS", "profiler Unity",
+  "Unreal Insights", "multiplayer networking jogo", "client-side prediction", "lag compensation",
+  "state machine jogo", "spatial partitioning", "coroutine Unity", "Blueprint callable",
+  "smart pointer Unreal", "implementar sistema de jogo em Unity", "Godot GDScript".
 ---
 
 # Game Engine Development — Unity C# e Unreal C++

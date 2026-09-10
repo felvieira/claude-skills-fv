@@ -1,19 +1,16 @@
 ---
 name: mobile-ux-foundations
 description: |
-  Fundamentos ergonomicos, cromaticos e psicologicos de UX mobile — onde posicionar navegacao pela
-  biometria do polegar, como implementar dark mode sem destruir legibilidade, como tratar tempo de
-  espera pela percepcao e nao pelo relogio, e como desenhar login/onboarding sem fricção. Use ao
-  decidir posicao de navegacao, criar tema escuro, tratar estados de carregamento longos, desenhar
-  fluxo de autenticacao/passkey, ou pedir permissao de GPS/camera/notificacao.
-  Trigger em: "thumb zone", "zona do polegar", "navegacao inferior", "bottom nav", "onde por o menu",
-  "dark mode", "modo escuro", "tema escuro", "preto puro", "OLED", "skeleton", "spinner", "loading",
-  "tempo de carregamento", "app parece lento", "passkey", "passwordless", "login sem senha",
-  "webauthn", "biometria", "onboarding", "tutorial inicial", "pedir permissao", "permission priming",
-  "haptic", "vibracao", "feedback tatil", "dynamic type", "escala de fonte", "zoom 200%",
-  "texto ampliado", "fonte do sistema", "momento aha", "ativacao do usuario", "primeiro uso",
-  "product tour", "tour guiado", "checklist de onboarding", "barra de progresso de onboarding",
-  "usuario abandona no primeiro uso", "tela de boas-vindas", "walkthrough".
+  Fundamentos ergonomicos, cromaticos e psicologicos de UX mobile: posicao de navegacao pela biometria
+  do polegar, dark mode sem destruir legibilidade, tempo de espera pela percepcao (nao pelo relogio),
+  e login/onboarding sem fricção. Use ao decidir posicao de navegacao, criar tema escuro, tratar estados
+  de carregamento, desenhar fluxo de autenticacao/passkey, ou pedir permissao de GPS/camera/notificacao.
+  Trigger em: "thumb zone", "zona do polegar", "navegacao inferior", "bottom nav", "dark mode",
+  "modo escuro", "tema escuro", "OLED", "skeleton", "spinner", "loading", "tempo de carregamento",
+  "app parece lento", "passkey", "passwordless", "login sem senha", "webauthn", "biometria",
+  "onboarding", "tutorial inicial", "pedir permissao", "permission priming", "haptic",
+  "feedback tatil", "dynamic type", "escala de fonte", "texto ampliado", "momento aha",
+  "ativacao do usuario", "product tour", "checklist de onboarding", "tela de boas-vindas".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--focus=ergonomics|dark-mode|perceived-perf|auth|onboarding]"

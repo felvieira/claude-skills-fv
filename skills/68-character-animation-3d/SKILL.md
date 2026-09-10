@@ -2,21 +2,16 @@
 name: character-animation-3d
 description: |
   Skill de pipeline de conteudo/asset para animacao de personagem 3D humanoide via AccuRIG + Blender
-  headless + IA de motion. Cobre rigging com AccuRIG (deform rig, nao control rig), Blender como
-  "compilador de animacao" via CLI (`--background --python`), a distincao critica entre deform bones,
-  pose bones, actions e constraints, formatos (FBX/USD/glTF/BVH/Alembic/NPY-JSON) e quando usar cada
-  um, o mapa de tecnologias de IA de motion (text-to-motion, video-to-motion, pose estimation,
-  retargeting tool), a distincao AccuRIG AI Deep Search (busca semantica) vs modelo de sintese real
-  (SayMotion/MDM/MoMask), o conceito de canonical/semantic skeleton com bone aliasing, a matematica de
-  retargeting via delta de rotacao relativo a rest pose, root motion tratado separadamente, e bake de
-  constraints/IK via `bpy.ops.nla.bake()`. Nao cobre codigo de engine (Unity/Unreal) — ver skill 67.
+  headless + IA de motion. Cobre rigging com AccuRIG (deform rig), Blender como "compilador de
+  animacao" via CLI (`--background --python`), a distincao entre deform bones, pose bones, actions e
+  constraints, formatos (FBX/USD/glTF/BVH/Alembic/NPY-JSON), o mapa de tecnologias de IA de motion
+  (text-to-motion, video-to-motion, pose estimation, retargeting), AccuRIG AI Deep Search vs sintese
+  real (SayMotion/MDM/MoMask), canonical/semantic skeleton com bone aliasing, matematica de retargeting
+  via delta de rotacao, root motion, e bake via `bpy.ops.nla.bake()`. Nao cobre codigo de engine — ver skill 67.
   Trigger em: "AccuRIG", "rig de personagem 3D", "retargeting de animacao", "Blender headless",
-  "blender --background --python", "bpy armature", "deform bones vs pose bones", "canonical skeleton",
-  "semantic bone mapping", "BONE_ALIASES", "text-to-motion", "video-to-motion", "SayMotion",
-  "DeepMotion", "Rokoko", "Move.ai", "MDM motion diffusion", "MoMask", "OpenPose retargeting",
-  "MoveNet pose estimation", "AccuRIG AI Deep Search", "root motion", "bake de constraints animacao",
-  "bpy.ops.nla.bake", "pipeline de animacao de personagem", "FBX para Blender animacao",
-  "exportar GLB animado", "Alembic cache de animacao", "mocap para Blender".
+  "bpy armature", "deform bones vs pose bones", "canonical skeleton", "text-to-motion",
+  "video-to-motion", "SayMotion", "DeepMotion", "MDM motion diffusion", "MoMask",
+  "root motion", "bake de constraints animacao".
 ---
 
 # Character Animation 3D — AccuRIG, Blender Headless e IA de Motion

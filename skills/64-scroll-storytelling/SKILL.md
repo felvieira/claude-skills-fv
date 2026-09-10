@@ -2,18 +2,16 @@
 name: scroll-storytelling
 description: |
   Skill de arquitetura de scrollytelling completo — pagina onde o scroll e a timeline narrativa, nao so
-  uma lista de secoes que aparecem com fade. Use quando o pedido for uma landing page estilo Apple, um
-  scroll experience, um site que "parece um template" e precisa ser diferente, video que roda conforme
-  rola a pagina, ou qualquer pedido de scrollytelling/scroll-driven storytelling completo (jornada,
-  estrutura de pagina, variedade de efeito por secao — nao so a mecanica solta de uma transicao).
-  Cobre protocolo de entrevista antes de gerar qualquer coisa, 4 regras centrais de variedade e mundo
-  visual, 8 gramaticas de pagina mutuamente exclusivas, kit de 10 devices de scroll, engine vanilla
-  JS/CSS zero-dependencia incluso, e verificacao por screenshot em multiplas posicoes de scroll.
-  Trigger em: "scrollytelling", "scroll storytelling", "scroll animation site", "site que anima com o
-  scroll", "scroll-driven", "Apple-style landing page", "scroll experience", "rola como um filme",
-  "video que roda com o scroll", "roda conforme rola a pagina", "parece um template",
-  "quero um site diferente de todo mundo", "3D scroll world", "interactive landing page",
-  "landing page cinematografica".
+  uma lista de secoes com fade. Use para landing page estilo Apple, scroll experience, site que "parece
+  um template" e precisa ser diferente, video que roda conforme rola a pagina, ou qualquer pedido de
+  scrollytelling/scroll-driven storytelling completo (jornada, estrutura, variedade de efeito por secao).
+  Cobre protocolo de entrevista antes de gerar, 4 regras de variedade e mundo visual, 8 gramaticas de
+  pagina mutuamente exclusivas, kit de 10 devices de scroll, engine vanilla JS/CSS zero-dependencia, e
+  verificacao por screenshot em multiplas posicoes de scroll.
+  Trigger em: "scrollytelling", "scroll storytelling", "scroll animation site", "scroll-driven",
+  "Apple-style landing page", "scroll experience", "rola como um filme",
+  "video que roda com o scroll", "parece um template", "3D scroll world",
+  "interactive landing page", "landing page cinematografica".
 ---
 
 # Scroll Storytelling — Arquitetura de Scrollytelling

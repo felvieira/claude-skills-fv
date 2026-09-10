@@ -4,8 +4,8 @@ description: |
   Coleta e organiza informacao tecnica multi-fonte antes de escrever docs, PRDs, ADRs ou artigos.
   Busca em: docs oficiais, GitHub (repos + issues), Stack Overflow, papers e blogs de referencia.
   Ranqueia fontes por autoridade (oficial 40% + recencia 30% + profundidade 20% + comunidade 10%).
-  Output: memory/research/<slug>.md pronto para alimentar skill 10 (documenter), skill 01 (po-feature-spec),
-  skill 26 (prompt-engineer) ou skill 41 (blog-publisher).
+  Output: memory/research/<slug>.md pronto para alimentar as skills documenter, po-feature-spec,
+  prompt-engineer ou blog-publisher.
   Trigger em: "pesquisa tecnica", "levanta informacao", "coleta docs", "busca referencias",
   "preciso de fontes", "research antes de escrever", "levanta o que existe sobre",
   "benchmark de solucoes", "o que existe sobre X", "quero entender o estado da arte",
