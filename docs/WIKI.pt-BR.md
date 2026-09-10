@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 71 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
+> **Versão:** 72 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -864,6 +864,12 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** direção visual, shot list publicitária, continuidade ou handoff antes dos prompts de mídia.
 **Takeaway:** direção define intenção narrativa; compilers cuidam de prompts e o compositor de texto e UI legível.
 
+#### Skill 73 — SaaS Conversion Playbook
+
+**O que faz:** audita e desenha o funil de conversão de assinatura — classifica o produto em playbook A (consumer/resultado pessoal) ou B (ferramenta B2B/PLG) e recomenda telas de onboarding, evento de ativação, paywall completo, gatilhos in-app e lifecycle de e-mail com métricas-alvo de benchmark real.
+**Quando ativar:** auditoria de onboarding/paywall existente, desenho de funil novo, ou decisão entre freemium/trial/hard paywall/reverse trial.
+**Takeaway:** aprofunda taticamente a monetização que a skill 01 decide em nível de discovery; entrega a decisão de modelo comercial para a skill 63 implementar na UI de checkout.
+
 ---
 
 ## 6. Subagents (16)
@@ -979,7 +985,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **71 skills** em `skills/NN-nome/SKILL.md`
+- **72 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -992,7 +998,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 71 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 72 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1017,7 +1023,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 71 skills | ✓ | ✓ | ✓ |
+| 72 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -1,17 +1,17 @@
 ---
 name: persona-driven-issue-audit
 description: |
-  Skill de auditoria em massa de produto via personas simuladas, ponta a ponta e autonoma: infere
-  proto-personas lendo o repositorio, oferece janela curta de confirmacao humana, e roda o pipeline
-  completo ate PR — persona-testing encontra bugs de usabilidade, issues abertas com dedup, um
-  agente analista comenta solucao, uma frota paralela abre PR onde a confianca e alta (ou comenta
-  wontfix), e um reviewer aprova ou rejeita. Termina em issues residuais para triagem humana, nunca
-  merge automatico. Use para auditar produto sem personas escritas, gerar findings de UX/navegacao,
-  ou escalar triagem de bug de IA sem gargalo de review humano.
-  Trigger em: "auditar o produto com personas", "testar como usuario real", "simular usuarios",
-  "encontrar bugs de usabilidade em massa", "auditoria de 100 issues", "frota de agentes de fix",
-  "agentes paralelos abrindo PR", "dedup de issue", "wontfix em lote", "quais issues sao reais",
-  "gerar personas a partir do repo", "nao tenho personas escritas".
+  Skill de auditoria em massa via personas simuladas: infere proto-personas do repositorio, confirma
+  com o humano sem bloquear, e roda ate PR — encontra bugs, abre issues com dedup, analista comenta
+  solucao, frota paralela abre PR onde a confianca e alta ou comenta wontfix, reviewer decide.
+  Termina em issues residuais, nunca merge automatico.
+  Trigger em: "simulando usuarios reais diferentes", "fazer a IA impersonar persona e testar o app",
+  "encontrar bugs de usabilidade em massa antes do lancamento", "numa auditoria, como triar tudo isso",
+  "frota de agentes paralelos abrindo PR", "regras de dedup de issue quando varios agentes reportam",
+  "abrir PR automatica ou comentar wontfix", "escalar QA exploratorio com IA sem virar gargalo",
+  "simular usuario nao tecnico testando o produto", "PRs deveriam ser aprovadas automaticamente",
+  "nao tenho personas escritas, da pra gerar a partir do repo", "auditoria automatica do produto sem
+  preparar nada antes", "inferir persona a partir do codigo do projeto".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(gh *), Agent
 metadata:
   argument-hint: "[--fase=personas|testar|analisar|fix|review|triagem] [--max-agentes=N] [--personas=auto|arquivo]"

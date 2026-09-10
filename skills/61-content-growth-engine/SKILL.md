@@ -5,12 +5,12 @@ description: |
   zero, priorizar pauta por intencao comercial, definir cadencia, decidir criar vs. atualizar conteudo,
   linkagem interna, extrair pauta de objecoes de venda, medir share de citacao em IA e receita.
   Trigger em: "plano de conteudo", "estrategia de conteudo", "content marketing", "growth de conteudo",
-  "pauta", "calendario editorial", "cluster de conteudo", "topic cluster", "intencao de busca",
-  "intencao comercial", "fundo de funil", "pagina de servico", "pagina de precos",
-  "comparativo X vs Y", "estudo de caso", "link interno", "linkagem interna",
+  "pauta", "calendario editorial", "organizar o blog em clusters", "cluster de conteudo",
+  "topic cluster", "intencao de busca", "intencao comercial", "fundo de funil", "pagina de servico",
+  "pagina de precos", "comparativo X vs Y", "estudo de caso", "link interno", "linkagem interna",
   "atualizar conteudo antigo", "content refresh", "share of voice", "citacao em IA",
-  "menciona a marca no ChatGPT", "chatgpt recomenda", "lead magnet", "trafego nao converte",
-  "conteudo nao gera pipeline", "objecoes de venda".
+  "o chatgpt cita os concorrentes", "como medir se a marca aparece nas respostas de IA",
+  "chatgpt recomenda", "lead magnet", "trafego nao converte", "objecoes de venda".
 allowed-tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
 metadata:
   argument-hint: "[--fase=descobrir|criar|otimizar|medir] [--icp=<segmento>]"
