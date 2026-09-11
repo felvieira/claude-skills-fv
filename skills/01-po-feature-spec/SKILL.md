@@ -65,9 +65,23 @@ Toda nova feature deve cobrir, no minimo:
 - regras de negocio e dependencias
 - escopo `IN` e `OUT`
 - prioridade e metricas de sucesso
+- **decisoes estruturais** (ver `Decisoes Estruturais Antes da Primeira Tela` abaixo)
 - **vertical slices** (se feature multi-camada — ver abaixo)
 
 Para spec completa e exemplos extensos, consultar `docs/skill-guides/po-feature-spec.md`.
+
+## Decisões Estruturais Antes da Primeira Tela
+
+O retrabalho mais caro num MVP não vem de código malfeito — vem de decisão de produto que ficou implícita e só aparece quando um cliente de verdade usa o sistema. As quatro categorias abaixo mudam telas inteiras se decididas tarde; decida cada uma **antes** de passar a spec para UI/UX, mesmo que a resposta seja "não se aplica nesta feature" (declarar isso é diferente de não ter pensado nisso).
+
+1. **Modelo de dados e posse do registro.** Para cada entidade nova ou alterada: quem é o dono (usuário, organização, sistema?), quais campos são obrigatórios de verdade (não "provavelmente vou precisar"), e o que pode ser apagado — soft delete, hard delete, ou nunca. Mudar posse ou obrigatoriedade depois que existem registros reais de cliente exige migration de dado, não só de schema — é o retrabalho mais caro da lista.
+2. **Permissão por ator.** Uma matriz curta — quem vê, quem edita, quem aprova cada entidade/ação da feature. "Depois eu coloco o login" quase sempre vira reescrita, porque permissão atravessa todas as telas que já foram construídas sem ela. Se a feature não tem múltiplos atores ainda, declare isso explicitamente («ator único nesta v1») em vez de omitir a seção.
+3. **Estados e transições.** Se a feature tem fluxo — orçamento → aprovação → execução → cobrança, ou equivalente — liste os estados possíveis e o que é permitido em cada um (quem pode transicionar, o que fica travado) antes de pedir a primeira tela. Uma tela desenhada sem os estados declarados normalmente esconde um estado que ninguém previu (ex: "orçamento aprovado mas cliente cancelou antes da execução").
+4. **Ciclo de vida do cliente.** Como ele entra (cadastro, convite de equipe), e como ele sai (cancelamento, exportação dos próprios dados). Se a feature manipula dado de cliente e o produto não tem ainda fluxo de exportação/cancelamento, isso vira `OUT` explícito da spec — não uma omissão.
+
+O que acontece quando algo dá errado (pagamento recusado, import com coluna faltando, e-mail que não sai) já é coberto pelo critério de aceitação em si — `rules/common/acceptance-criteria.md` exige o caminho de erro como um dos casos obrigatórios de todo critério; a spec só precisa garantir que cada regra de negócio nova tem seu caminho de erro nomeado, não apenas o happy path.
+
+**Checkpoint antes do handoff:** relia as 4 categorias uma a uma perguntando "se eu pular esta e um cliente de verdade usar amanhã, o que quebra?" — se a resposta for concreta (não "talvez dê problema"), a categoria precisa de uma frase na spec antes de seguir. Não é preciso desenhar solução aqui, só declarar a decisão — UI/UX e Backend implementam a partir do que foi decidido.
 
 ## Vertical Slices em Specs Multi-Camada
 
@@ -137,6 +151,7 @@ Score < 1.5 = Backlog
 - problema, escopo e prioridade definidos
 - criterios de aceitacao testaveis
 - dependencias e riscos explicitos
+- as 4 decisões estruturais declaradas (posse de dado, permissão por ator, estados/transições, ciclo de vida do cliente) — mesmo que a resposta seja "não se aplica"
 
 ## Handoff para UI/UX
 
@@ -146,6 +161,7 @@ Ao finalizar a spec, entregar para UI/UX:
 3. Referências visuais se houver
 4. Restrições técnicas que impactam UI (ex: "não temos API de upload ainda")
 5. Personas e contexto de uso
+6. As decisões estruturais da seção acima — UI/UX não desenha tela de permissão, estado ou ciclo de vida sem saber o que foi decidido
 
 ## Fase Divergente (Opcional)
 

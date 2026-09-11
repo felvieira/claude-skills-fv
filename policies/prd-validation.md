@@ -58,6 +58,10 @@ Para cada check que falha, o agente deve oferecer 3 opções:
 - **Solution descreve API endpoints específicos** → confunde com implementation, falha check 10
 - **Out of Scope vazio** → escopo vai crescer no `/to-issues`
 
+## Checklist complementar — decisões estruturais
+
+Os 13 checks acima validam a **qualidade de redação** do PRD. Eles não pegam uma spec bem escrita que ainda assim esconde uma decisão de produto — o retrabalho mais caro num MVP nasce disso, não de prosa vaga. Antes de aprovar um PRD que envolve dado de cliente, ator com permissão diferenciada, fluxo com etapas, ou entrada/saída de cliente, confirmar que `skills/01-po-feature-spec/SKILL.md` seção "Decisões Estruturais Antes da Primeira Tela" foi respondida: posse do dado, matriz de permissão por ator, estados/transições, e ciclo de vida do cliente (entrada, convite, cancelamento, exportação). PRD sem essas 4 respostas passa nos 13 checks e ainda assim quebra na frente do primeiro cliente real.
+
 ## Inspiração
 
 Adaptado de [anombyte93/prd-taskmaster](https://github.com/anombyte93/prd-taskmaster) — `script.py validate-prd`. Removida dependência hard do Taskmaster; mantida a essência (13 checks de qualidade objetiva).

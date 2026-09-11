@@ -600,6 +600,86 @@ async function loopRunsRoute(_args) {
   return { runs, runsDir: ".auto/runs" };
 }
 
+// ─── Swarm runs ─────────────────────────────────────────────────────────────
+// Reads .swarm/<runId>/{plan-execution.json,stories.json,state.env} — unlike
+// /loop's single status.json, a swarm run's progress lives in stories.json
+// and is written incrementally by the agent (via Ralph loop) while the run
+// is in flight, so this route re-derives a summary on every call rather than
+// trusting a cached "done" flag anywhere.
+async function swarmRunsRoute(_args) {
+  const runsDir = join(REPO_ROOT, ".swarm");
+  if (!existsSync(runsDir)) return { runs: [], runsDir: ".swarm" };
+
+  const { readdir } = await import("node:fs/promises");
+  const entries = (await readdir(runsDir, { withFileTypes: true }))
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name)
+    .sort()
+    .reverse();
+
+  const runs = [];
+  for (const dir of entries.slice(0, 100)) {
+    const runDir = join(runsDir, dir);
+    const planPath = join(runDir, "plan-execution.json");
+    if (!existsSync(planPath)) continue;
+
+    let plan;
+    try {
+      plan = JSON.parse(await readFile(planPath, "utf8"));
+    } catch {
+      continue; // half-written plan from a killed run
+    }
+
+    let stories = [];
+    const storiesPath = join(runDir, "stories.json");
+    if (existsSync(storiesPath)) {
+      try {
+        stories = JSON.parse(await readFile(storiesPath, "utf8"));
+      } catch {
+        // stories.json mid-write by the agent — show the run without story detail
+        // rather than dropping it from the list.
+      }
+    }
+
+    let prUrl = null;
+    const stateEnvPath = join(runDir, "state.env");
+    if (existsSync(stateEnvPath)) {
+      try {
+        const stateEnv = await readFile(stateEnvPath, "utf8");
+        const match = stateEnv.match(/^PR_URL=(.*)$/m);
+        if (match) prUrl = match[1].trim();
+      } catch {}
+    }
+
+    const done = stories.filter((s) => s.status === "done").length;
+    const aborted = stories.filter((s) => s.status === "aborted").length;
+    const pending = stories.filter((s) => s.status === "pending" || s.status === "in_progress").length;
+
+    // A phase list with no per-story detail yet (still in prd-stories) reads
+    // as "planning", not "0 done" — those are different states for the UI.
+    let phase = "planning";
+    if (stories.length > 0) {
+      phase = pending > 0 ? "running" : aborted > 0 && done + aborted === stories.length ? "blocked" : "review";
+    }
+    if (prUrl) phase = "done";
+
+    runs.push({
+      runId: dir,
+      task: plan.input?.task || plan.input?.issue || plan.input?.prd || "—",
+      branch: plan.branch_name,
+      workspacePath: plan.workspace_path,
+      phase,
+      storiesTotal: stories.length,
+      storiesDone: done,
+      storiesAborted: aborted,
+      storiesPending: pending,
+      prUrl,
+    });
+  }
+
+  return { runs, runsDir: ".swarm" };
+}
+
 const PROJECT_ROUTES = {
   "/api/project/tree": projectTreeRoute,
   "/api/project/readme": projectReadmeRoute,
@@ -607,6 +687,7 @@ const PROJECT_ROUTES = {
   "/api/project/depgraph": projectDepgraphRoute,
   "/api/programs/graph": programsGraphRoute,
   "/api/loop/runs": loopRunsRoute,
+  "/api/swarm/runs": swarmRunsRoute,
 };
 
 // ─── Disk cleanup scanner (SSE) ─────────────────────────────────────────────

@@ -89,6 +89,7 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ☐ Handoffs entre skills verificados (cada skill entregou pro próximo)
 ☐ Artefatos de cada step existem (specs, designs, código, testes, security report)
 ☐ Ordem do pipeline respeitada (PO → Design → Backend → Frontend → QA → Security → Deploy)
+☐ Spec original declara as 4 decisões estruturais (posse de dado, permissão por ator, estados/transições, ciclo de vida do cliente) — feature com dado de cliente sem isso declarado volta pro PO, não é achado de código
 ```
 
 ### Código
