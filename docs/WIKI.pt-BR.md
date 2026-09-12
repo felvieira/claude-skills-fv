@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 72 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
+> **Versão:** 73 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -870,6 +870,12 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** auditoria de onboarding/paywall existente, desenho de funil novo, ou decisão entre freemium/trial/hard paywall/reverse trial.
 **Takeaway:** aprofunda taticamente a monetização que a skill 01 decide em nível de discovery; entrega a decisão de modelo comercial para a skill 63 implementar na UI de checkout.
 
+#### Skill 74 — Web3D Scene Runtime
+
+**O que faz:** transforma uma scene description estruturada (câmera, luzes, ambiente, slots de asset GLB, materiais, partículas) em cena 3D real e interativa no browser — WebGPURenderer com fallback WebGL2 automático, câmera navegável com raycasting, e orçamento de performance medido (Draco/KTX2, LOD, dispose, `prefers-reduced-motion`, fallback estático).
+**Quando ativar:** landing page ou site onde o visitante gira/explora um objeto 3D, configurador de produto, visualizar GLB no browser, ou decidir entre WebGPU e WebGL2.
+**Takeaway:** fecha o handoff que as skills 68/69 nunca tiveram — elas certificavam um `.glb` mas só entregavam pra Unity/Unreal/Godot, nunca pra uma página. A cena continua editável por campo em vez de re-gerada como vídeo; guidelines de código three.js seguem no `threejs.csv` da skill 02, não duplicadas aqui.
+
 ---
 
 ## 6. Subagents (16)
@@ -985,7 +991,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **72 skills** em `skills/NN-nome/SKILL.md`
+- **73 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -998,7 +1004,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 72 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 73 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1023,7 +1029,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 72 skills | ✓ | ✓ | ✓ |
+| 73 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

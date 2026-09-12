@@ -1,0 +1,22 @@
+{
+  "skill": "74-web3d-scene-runtime",
+  "should_trigger": [
+    "quero um modelo 3D no site que o visitante possa girar com o mouse",
+    "preciso carregar GLB na pagina e deixar a camera navegavel",
+    "montar um configurador 3D pro produto, trocar cor e material",
+    "vale usar WebGPU ou WebGL nessa landing page com 3D",
+    "o three.js ta travando o celular, como faco orcamento de performance",
+    "quero uma cena 3D no browser em vez de renderizar um video",
+    "como fazer raycasting funcionar num GLTFLoader que carreguei",
+    "preciso de um visualizador 3D do tenis com OrbitControls",
+    "usar react-three-fiber ou three.js puro nesse projeto",
+    "quero girar o produto na tela e clicar nas partes pra focar"
+  ],
+  "shouldnt_trigger": [
+    "fazer rig e retargeting de animacao do personagem no Blender",
+    "gerar um spritesheet 2D a partir do personagem 3D",
+    "criar landing page de scrollytelling fotografico com video escrubando",
+    "adicionar hover effect e spring animation no botao",
+    "implementar object pooling em Unity C# pro jogo"
+  ]
+}

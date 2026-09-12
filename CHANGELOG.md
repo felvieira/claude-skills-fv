@@ -5,6 +5,82 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.76.0] - 2026-09-12 — skill 74 nova (cena 3D interativa no browser) + registro das 2.74/2.75
+
+Cobre também as versões 2.74.0 e 2.75.0, que saíram no README/VERSION sem entrada aqui.
+
+### Adicionado
+
+- **`skills/74-web3d-scene-runtime/`** (nova) — o elo que faltava entre asset 3D pronto e página
+  real. Investigação (subagent, leitura das skills 02/12/17/29/36/64/68/69 + grep amplo) confirmou
+  gap em três pontos: as skills 68/69 certificavam `.glb` mas **todo** handoff apontava pra
+  Unity/Unreal/Godot, nunca pro browser; a skill 02 já tinha 53 guidelines verificadas de three.js
+  (`data/stacks/threejs.csv`, 0.185.1) consultáveis por BM25, mas nenhuma skill era **dona** de
+  "cena 3D no browser"; e `scene description` — o contrato que um LLM emite pro runtime consumir —
+  tinha **zero** ocorrências no repo (`WebGPU`, `R3F` e `Spline` também). A skill entrega: schema
+  versionado de scene description (câmera, luzes, ambiente, slots de GLB, materiais, partículas,
+  interações, budget, fallback, a11y — com validação que **recusa** cena em vez de renderizar
+  errado em silêncio), WebGPURenderer com fallback WebGL2 automático, câmera navegável com
+  raycasting, e orçamento medido na página composta. Guidelines de código **não** foram duplicadas:
+  a skill referencia o `threejs.csv` da 02 via `design_search.py`, pra não criar duas fontes de
+  verdade envelhecendo em ritmos diferentes
+- **`skills/74-web3d-scene-runtime/references/scene-schema.md`** — schema completo com exemplo
+  end-to-end e as 5 regras de validação. A regra de ouro: se um campo obriga o LLM a saber three.js,
+  o campo está errado (`camera.framing: "product"` é decisão de cena; `camera.fov: 47.3` é
+  implementação). Adaptação deliberada do `MotionPlan.json` da skill 69 — LLM dirige intenção,
+  runtime faz a matemática
+- **`skills/74-web3d-scene-runtime/references/renderer-and-performance.md`** — setup com bundler e
+  com importmap (build `three.webgpu.js`, não `three.module.js`), compressão (Draco/meshopt vs
+  KTX2 — e por que KTX2 é o de maior impacto: fica comprimida na VRAM, não só no download),
+  orçamento com os campos de `renderer.info` que detectam vazamento, e matriz de fallback de 5 casos
+- **`evals/triggers/74-web3d-scene-runtime.json`** — fixture nova (10 should / 5 shouldnt, com os
+  shouldnt puxados das skills vizinhas 68/69/64/12/67)
+
+### Verificado, não presumido
+
+Três achados de pesquisa mudaram o desenho da skill antes de qualquer linha ser escrita:
+
+- **WebGPU atingiu Baseline em janeiro de 2026** (Chrome/Edge, Firefox no Windows e macOS Tahoe
+  ARM64, Safari 26+; buracos reais: Firefox no Linux e iPhone pré-A12). Isso torna WebGPU o caminho
+  primário com fallback declarado — não um opt-in exótico, e nem uma certeza estável: o
+  `WebGPURenderer` segue **oficialmente experimental**, o que muda o texto do risco no ADR
+- **`setAnimationLoop()` cobre a inicialização do backend sozinho.** `await renderer.init()`
+  explícito só é necessário quando algo roda antes do primeiro frame (compute pass, render único
+  pra thumbnail)
+- **Material embutido atravessa pro backend WebGPU** (mapeado pro sistema de nodes), mas
+  `ShaderMaterial`, `RawShaderMaterial` e patch via `onBeforeCompile` **não** — exigem reescrita em
+  TSL. É exatamente aí que migração de projeto WebGL antigo quebra **sem erro de import**, só
+  material errado na tela
+
+### Corrigido
+
+- Contagem de skills (72→73) em `README.md`, `README.pt-BR.md`, `docs/WIKI.md`,
+  `docs/WIKI.pt-BR.md`, `docs/SKILLS-OVERVIEW.md` e `mcp-server/package.json`; entradas
+  `#### Skill 74` adicionadas nos dois WIKIs
+- **`.claude-plugin/marketplace.json` estava em "71 specialist skills"** desde a v2.71.1 — duas
+  skills atrás do repo real. O `check-consistency.mjs` valida a contagem em README/WIKI/OVERVIEW e
+  `mcp-server/package.json`, mas **não** no marketplace, então a defasagem passou silenciosa
+
+### Fronteira com a skill 64 (scroll storytelling)
+
+A 64 tem regra dura contra render 3D (`references/worlds.md`: "NAO render 3D") e contra corrente
+contínua de câmera — e ela está certa no domínio dela. Nada na 74 revoga isso. A fronteira é o
+**input**, não o visual: se o visitante só rola a página, é da 64; se ele controla a câmera
+(arrasta, orbita, clica pra focar), é da 74. Um beat de scrollytelling que precise de objeto 3D
+girando pode delegar só aquele canvas — a página continua sendo da 64.
+
+### Fora de escopo (declarado, não esquecido)
+
+Geração de mesh 3D (text-to-3D) continua **sem dono no kit** — as skills 66/67 apontam a 17 como
+geradora de "modelo 3D", mas a 17 gera imagem 2D. Handoff defeituoso pré-existente, agora nomeado
+explicitamente no "Quando Não Usar" da 74 em vez de virar promessa falsa. WebXR/VR e física também
+ficaram fora de propósito.
+
+Validado: `check-consistency` (73 skills, 38 tools, 16 agents), `eval-triggers --strict` (66/66,
+skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30, acima do gate de
+22 da skill 35), `description` em 975 chars (limite Tessl de 1024) e `SKILL.md` em 15037 bytes
+(gate de 15360).
+
 ## [2.73.0] - 2026-09-04 — dashboard de memória + 2 bugs corrigidos no Graph tab existente
 
 ### Adicionado

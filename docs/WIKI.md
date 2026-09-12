@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 72 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
+> **Version:** 73 skills · 16 subagents · 45 slash commands · 62 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -890,6 +890,12 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** auditing an existing onboarding/paywall, designing a new funnel, or deciding between freemium/trial/hard paywall/reverse trial.
 **Takeaway:** deepens the monetization decision skill 01 makes at discovery level; hands off the commercial-model decision to skill 63 for checkout UI implementation.
 
+#### Skill 74 — Web3D Scene Runtime
+
+**What it does:** turns a structured scene description (camera, lights, environment, GLB asset slots, materials, particles) into a real interactive 3D scene in the browser — WebGPURenderer with automatic WebGL2 fallback, navigable camera with raycasting, and a measured web performance budget (Draco/KTX2, LOD, dispose, `prefers-reduced-motion`, static fallback).
+**When to activate:** a landing page or site where the visitor rotates/explores a 3D object, a product configurator, viewing a GLB in the browser, or choosing between WebGPU and WebGL2.
+**Takeaway:** closes the handoff skills 68/69 never had — they certified a `.glb` but only ever delivered it to Unity/Unreal/Godot, never to a page. The scene stays editable by field instead of re-generated like a video; three.js code guidelines stay in skill 02's `threejs.csv`, not duplicated here.
+
 ---
 
 ## 6. Subagents (16)
@@ -1005,7 +1011,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **72 skills** in `skills/NN-name/SKILL.md`
+- **73 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1018,7 +1024,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 72 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 73 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1043,7 +1049,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 72 skills | ✓ | ✓ | ✓ |
+| 73 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
