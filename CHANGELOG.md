@@ -5,9 +5,7 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
-## [2.76.0] - 2026-09-12 — skill 74 nova (cena 3D interativa no browser) + registro das 2.74/2.75
-
-Cobre também as versões 2.74.0 e 2.75.0, que saíram no README/VERSION sem entrada aqui.
+## [2.76.0] - 2026-09-12 — skill 74 nova (cena 3D interativa no browser)
 
 ### Adicionado
 
@@ -80,6 +78,46 @@ Validado: `check-consistency` (73 skills, 38 tools, 16 agents), `eval-triggers -
 skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30, acima do gate de
 22 da skill 35), `description` em 975 chars (limite Tessl de 1024) e `SKILL.md` em 15037 bytes
 (gate de 15360).
+
+## [2.75.0] - 2026-09-11 — dashboard rastreia runs do /swarm ao vivo + gate de decisões estruturais na skill 01
+
+### Adicionado
+
+- Nova aba "Runs do /swarm" no dashboard — lê `stories.json`/`plan-execution.json`/`state.env` por
+  run e mostra fase (planning/running/blocked/done), progresso por story e o link do PR. Diferente
+  do `/loop` (um `status.json` único ao final), uma run de swarm atualiza progresso em voo, então a
+  rota re-deriva o resumo a cada chamada em vez de confiar num snapshot cacheado
+- As duas abas de runs (`/loop` e `/swarm`) passam a fazer polling a cada 5s enquanto ficam abertas —
+  verificado em browser real com uma run sintética virando "done" sem precisar trocar de aba pra
+  forçar reload
+- Nova seção "Decisões Estruturais Antes da Primeira Tela" na skill 01 (po-feature-spec): uma
+  investigação (motivada por um post sobre por que MVPs quebram na frente do primeiro cliente de
+  verdade) confirmou que 4 de 5 decisões de produto citadas — posse de dado, permissão por ator,
+  estados/transições de fluxo, e ciclo de vida do cliente (cadastro/convite/cancelamento/exportação)
+  — não tinham checkpoint nenhum na spec inicial, só apareciam tecnicamente bem mais tarde (ex:
+  segurança audita RBAC depois do código já escrito)
+- Skill 11 (reviewer) ganha item de gate cobrando que a spec original declarou essas decisões antes
+  de aprovar deploy
+
+### Arquivos
+
+[`docs/preview/dashboard.html`](docs/preview/dashboard.html), [`scripts/dashboard-server.mjs`](scripts/dashboard-server.mjs), [`skills/01-po-feature-spec/SKILL.md`](skills/01-po-feature-spec/SKILL.md), [`skills/11-reviewer/SKILL.md`](skills/11-reviewer/SKILL.md), [`policies/prd-validation.md`](policies/prd-validation.md)
+
+## [2.74.0] - 2026-09-09 — skill 73 nova (auditoria de funil de conversão SaaS)
+
+### Adicionado
+
+- **`skills/73-saas-conversion-playbook/`** — classifica o produto em playbook A (consumer/resultado
+  pessoal) ou B (ferramenta B2B/PLG) e usa isso pra recomendar telas de onboarding, evento de
+  ativação, paywall completo, gatilhos in-app e lifecycle de e-mail, com métricas-alvo de benchmark
+  real (R/1K, TTV, trial-to-paid por modelo comercial) em vez de achismo. Aprofunda taticamente a
+  seção de monetização que a skill 01 já cobre em nível de discovery, e entrega a decisão de modelo
+  comercial e momento do paywall pra skill 63 (UI de checkout mobile). Conteúdo consolidado a partir
+  de material de benchmark de conversão fornecido pelo usuário
+
+### Arquivos
+
+[`skills/73-saas-conversion-playbook/`](skills/73-saas-conversion-playbook/)
 
 ## [2.73.0] - 2026-09-04 — dashboard de memória + 2 bugs corrigidos no Graph tab existente
 
