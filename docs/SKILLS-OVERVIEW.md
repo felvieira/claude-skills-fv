@@ -9,7 +9,7 @@
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
 > **Versão:** 73 skills, 16 subagents, 45 slash commands, 62 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
+> **Última atualização:** 2026-09-12 (v2.76.0 — skill 74 web3d-scene-runtime; tabelas por categoria completadas com as 32 skills que faltavam)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 62 especialistas
+- [Skills por categoria](#skills-por-categoria) — 73 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -317,7 +317,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 
 ## Skills por categoria
 
-### Management & Coordination
+### Gestão e Coordenação
 
 | # | Skill | Quando ativar |
 |---|---|---|
@@ -342,8 +342,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 32 | **Smart Suggestions** | sugerir próxima ação mais impactante baseado no estado real |
 | 35 | **Skill Author** | meta-skill para criar/editar/avaliar skills do próprio kit |
 | 38 | **Architecture Deepener** | encontra deep modules opportunities (deletion test, deepening), prep para refactor com testabilidade |
+| 39 | **Program Router** | decidir qual pipeline de `programs/*.yml` rodar a partir da classificação da task |
+| 40 | **Parallel Dispatcher** | despachar N slices/reviews independentes pra subagents sem cair na armadilha skill-vs-agent |
+| 44 | **Zoom Out** | mapa de módulos e topologia quando o agente está perdido em área desconhecida |
+| 45 | **Handoff Context** | empacotar o que a próxima sessão/agente precisa pra continuar sem re-derivar contexto |
+| 49 | **Context Budget** | auditar peso de contexto carregado (skills, agents, MCP, rules) — tokens por componente e headroom |
+| 65 | **Using Git Worktrees** | isolar workspace via git worktree, com baseline de testes obrigatória antes de liberar a task |
 
-### Product & Design
+### Produto e Design
 
 | # | Skill | Quando ativar |
 |---|---|---|
@@ -351,8 +357,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 02 | **UI/UX Designer** | layout, design tokens, responsividade, heurísticas |
 | 29 | **Design Intelligence** | benchmark competitivo, screenshots, dossier estratégico |
 | 36 | **Web Asset Generator** | favicons, PWA icons, OG images, manifest, snippet HTML |
+| 56 | **Responsive Conversion** | converter UI desktop-first em mobile, corrigir layout quebrado, modal/bottom sheet |
+| 57 | **Mobile UX Foundations** | zona do polegar, dark mode físico, performance percebida, UX de auth/onboarding/permissão |
+| 58 | **i18n & Localization** | preparar pra outro idioma/região/direção de escrita antes de existir tradutor |
+| 63 | **Mobile Paywall & Checkout** | seleção de plano e checkout em app mobile — Play Billing vs PSP, estados de pagamento, cupão |
+| 64 | **Scroll Storytelling** | página onde o scroll é a timeline narrativa, com variedade de device por beat |
+| 73 | **SaaS Conversion Playbook** | funil de assinatura — playbook A/B, ativação, paywall, gatilhos in-app, lifecycle |
 
-### Development
+### Desenvolvimento
 
 | # | Skill | Quando ativar |
 |---|---|---|
@@ -361,8 +373,11 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 12 | **Motion Designer** | animações, transições, micro-interações |
 | 15 | **Mobile / Tauri** | apps desktop e mobile com Tauri + React Native |
 | 52 | **UI Polish** | border radius concêntrico, alinhamento óptico, sombra vs borda, tabular numbers, scale on press, hit area |
+| 47 | **Pattern Conformity** | extrair e codificar as convenções de código do projeto em `memory/patterns.md` |
+| 60 | **App Reference Architecture** | molde de app novo com login + pagamento + push + web + APK a partir de um código-fonte |
+| 74 | **Web3D Scene Runtime** | scene description → cena 3D interativa no browser (WebGPU com fallback WebGL2, câmera navegável, budget medido) |
 
-### Content & Discovery
+### Conteúdo e Descoberta
 
 | # | Skill | Quando ativar |
 |---|---|---|
@@ -370,8 +385,13 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap, keyword research, link building |
 | 50 | **Direct Response Copy** | headline com gatilho mental, anúncio, página de vendas, e-mail de venda, legenda de Instagram |
 | 51 | **UX Research** | discovery qualitativo: entrevista, persona, journey map, teste de usabilidade, arquitetura de informação |
+| 48 | **Research Prep** | pesquisa técnica multi-fonte antes de escrever docs/PRD/ADR, ranqueada por autoridade |
+| 54 | **Video Analysis** | analisar vídeo existente — frames, transcrição, perguntas sobre o que acontece na tela |
+| 55 | **Marketing Reporting & Analytics** | relatório de campanha, setup de GA4/GTM, auditoria de infra de dados de marketing |
+| 59 | **Closed-Loop Revenue** | fechar a cadeia clique pago → venda real → margem (GCLID/UTM, reconciliação, break-even ROAS) |
+| 61 | **Content Growth Engine** | conteúdo como sistema de aquisição — intenção comercial, cluster, citação em IA, pipeline |
 
-### Quality & Delivery
+### Qualidade e Entrega
 
 | # | Skill | Quando ativar |
 |---|---|---|
@@ -382,6 +402,38 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF |
 | 37 | **TDD Engineer** | red-green-refactor enforced, anti horizontal slicing (1 teste → 1 impl → repete) |
 | 53 | **Doubt-Driven Review** | revisão adversarial EM VOO antes de decisão não-trivial ficar de pé — complementa a 11, não substitui |
+| 43 | **Canary Deployment** | rollout gradual (1/10/50/100%) + 7 métricas + rollback automático |
+| 46 | **Post-Deploy Canary Monitor** | vigiar produção depois do canary fechar — error budget, latência, anomalia |
+| 62 | **Persona-Driven Issue Audit** | auditar produto existente via personas simuladas, ponta a ponta até PR, sem merge automático |
+
+### Publicação e Automação
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 41 | **Blog Publisher** | texto/assunto → post HTML + imagens → commit/push no repo do blog → URL pública |
+| 42 | **Blog Screenshot** | captura via Playwright pra post: viewport por destino, cookie banner, FOUT |
+
+### Desenvolvimento de Jogos
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 66 | **Game Architecture Design** | arquitetura e balanceamento numérico de jogo — a decisão antes do código de engine |
+| 67 | **Game Engine Development** | código real de engine: Unity C#, Unreal C++, ECS, profiling, networking multiplayer |
+
+### Pipeline de Personagem
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 68 | **Character Animation 3D** | AccuRIG + Blender headless + IA de motion → rig e animação de personagem 3D |
+| 69 | **Character Pipeline 2D** | sprite/atlas 2D e contrato `MotionPlan.json` (LLM dirige intenção, não rotação de bone) |
+
+### Produção de Campanha
+
+| # | Skill | Quando ativar |
+|---|---|---|
+| 70 | **Campaign Research Strategy** | evidence ledger, claims autorizados e oportunidades antes de copy ou visual |
+| 71 | **Campaign Copywriting** | estratégia → rotas de copy rastreáveis e distintas, sem repesquisar nem inventar claim |
+| 72 | **Campaign Visual Direction** | conceito visual, bíblia de continuidade e shot intents, com overlays determinísticos |
 
 ---
 
