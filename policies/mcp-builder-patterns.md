@@ -129,4 +129,4 @@ Isso evita o agente tratar uma resposta truncada como completa — o campo `_met
 
 - Skill 25 (ai-integration-architect) referencia esta policy ao recomendar MCP server
 - Skill 35 (skill-author) aponta para esta policy quando uma skill expõe tool customizada
-- Nosso `mcp-server/` (37 tools) segue estes padrões — usar como referência viva
+- Nosso `mcp-server/` (38 tools) segue estes padrões — usar como referência viva

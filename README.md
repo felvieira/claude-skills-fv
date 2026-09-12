@@ -772,7 +772,7 @@ consumer-repo/
     └── templates/
 ```
 
-The consumer repo also receives `.claude/commands/` (10 slash commands) at the root, installed by `setup/install.sh`.
+The consumer repo also receives `.claude/commands/` (45 slash commands) at the root, installed by `setup/install.sh`.
 
 
 ---

@@ -40,7 +40,7 @@ Thanks for your interest in contributing! This guide covers how to add skills, f
 ├── evals/            ← versioned fixtures (triggers/, commands/, programs/)
 ├── docs/skill-guides/← operational guides (skill-discovery, autonomous-loop, ...)
 ├── scripts/          ← utilities (auto-loop.mjs, check-consistency.mjs, eval-triggers.mjs, ...)
-├── mcp-server/       ← TypeScript MCP server (exposes 37 tools)
+├── mcp-server/       ← TypeScript MCP server (exposes 38 tools)
 ├── setup/            ← installer (install.sh) and platform configs
 └── templates/        ← handoff, plan, review, rejection templates
 ```

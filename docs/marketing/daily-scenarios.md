@@ -276,7 +276,7 @@
 ### Cenário 27 — "Mudei de Claude pra Cursor"
 **A dor.** Você customizou 50 prompts no Claude Code. Trocou de tool. Perdeu tudo.
 **Sem o kit.** Recomeça do zero.
-**Com o kit.** Kit roda em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity. MCP server universal expõe 37 tools pra qualquer cliente MCP-compatível. Skills via `AGENTS.md`/`.windsurf/rules/`/`.github/copilot-instructions.md`/`GEMINI.md`. Zero vendor lock-in.
+**Com o kit.** Kit roda em Claude Code, Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity. MCP server universal expõe 38 tools pra qualquer cliente MCP-compatível. Skills via `AGENTS.md`/`.windsurf/rules/`/`.github/copilot-instructions.md`/`GEMINI.md`. Zero vendor lock-in.
 
 ---
 

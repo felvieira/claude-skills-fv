@@ -19,9 +19,9 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
 5. [Skills (62) — specialists by category](#5-skills-62)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
-7. [Policies (57) — shared rules](#7-policies-57)
+7. [Policies (62) — shared rules](#7-policies-62)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
-9. [MCP server: 37 tools under the hood](#9-mcp-server-37-tools-under-the-hood)
+9. [MCP server: 38 tools under the hood](#9-mcp-server-38-tools-under-the-hood)
 10. [When to use what: decision tree](#10-when-to-use-what-decision-tree)
 11. [Inspiration and attribution](#11-inspiration-and-attribution)
 
@@ -962,7 +962,7 @@ Review-only agent with zero tolerance for silent failures: empty `catch{}`, erro
 
 ---
 
-## 7. Policies (57)
+## 7. Policies (62)
 
 Policies are shared rules that govern skill behavior. Every skill cites the policies it follows. **Top 5 most important:**
 
@@ -1053,7 +1053,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
-| MCP server (37 tools) | ✗ | ✓ | ✓ |
+| MCP server (38 tools) | ✗ | ✓ | ✓ |
 | Handoff templates | ✗ | ✓ | ✓ |
 | Docs + repo-audit | ✗ | ✓ | ✓ |
 | Multi-platform configs | ✗ | ✓ | ✓ |
@@ -1073,9 +1073,9 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 ---
 
-## 9. MCP server: 37 tools under the hood
+## 9. MCP server: 38 tools under the hood
 
-The kit includes its own **MCP server** (`mcp-server/src/index.ts`) with **37 tools** exposed for any MCP client (Cursor, Windsurf, Gemini CLI, etc).
+The kit includes its own **MCP server** (`mcp-server/src/index.ts`) with **38 tools** exposed for any MCP client (Cursor, Windsurf, Gemini CLI, etc).
 
 Tools are orthogonal to skills — they implement low-level capabilities that skills consume:
 

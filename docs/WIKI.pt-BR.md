@@ -21,9 +21,9 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
 5. [Skills (62) — especialistas por categoria](#5-skills-62)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
-7. [Policies (22) — regras compartilhadas](#7-policies-22)
+7. [Policies (62) — regras compartilhadas](#7-policies-62)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
-9. [MCP server: 37 tools por trás dos panos](#9-mcp-server-37-tools-por-trás-dos-panos)
+9. [MCP server: 38 tools por trás dos panos](#9-mcp-server-38-tools-por-trás-dos-panos)
 10. [Quando usar o quê: árvore de decisão](#10-quando-usar-o-quê-árvore-de-decisão)
 11. [Inspirações e atribuições](#11-inspirações-e-atribuições)
 
@@ -942,7 +942,7 @@ Agente review-only com tolerância zero a falha silenciosa: `catch{}` vazio, err
 
 ---
 
-## 7. Policies (51)
+## 7. Policies (62)
 
 Policies são regras compartilhadas que governam comportamento das skills. Toda skill cita as policies que segue. **Top 5 mais importantes:**
 
@@ -1014,7 +1014,7 @@ Com plugin instalado, dentro do repo alvo:
 /devkit-install-fv
 ```
 
-Instala `.bot/` completo: MCP server (37 tools), policies, templates, docs, hooks, learned-skills, configs multi-plataforma (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
+Instala `.bot/` completo: MCP server (38 tools), policies, templates, docs, hooks, learned-skills, configs multi-plataforma (Cursor, Windsurf, Copilot, Gemini CLI, OpenCode, Antigravity).
 
 #### Modo 3 — Bash direto
 
@@ -1033,7 +1033,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
-| MCP server (37 tools) | ✗ | ✓ | ✓ |
+| MCP server (38 tools) | ✗ | ✓ | ✓ |
 | Templates de handoff | ✗ | ✓ | ✓ |
 | Docs + repo-audit | ✗ | ✓ | ✓ |
 | Configs multi-plataforma | ✗ | ✓ | ✓ |
@@ -1053,9 +1053,9 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 ---
 
-## 9. MCP server: 37 tools por trás dos panos
+## 9. MCP server: 38 tools por trás dos panos
 
-O kit inclui um **MCP server próprio** (`mcp-server/src/index.ts`) com **37 tools** expostas para qualquer cliente MCP (Cursor, Windsurf, Gemini CLI, etc).
+O kit inclui um **MCP server próprio** (`mcp-server/src/index.ts`) com **38 tools** expostas para qualquer cliente MCP (Cursor, Windsurf, Gemini CLI, etc).
 
 Tools são ortogonais às skills — implementam capacidades de baixo nível que as skills consomem:
 
