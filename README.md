@@ -248,7 +248,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 59 Specialists
+## The 73 Specialists
 
 ### Management and Coordination
 
@@ -280,6 +280,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
 | 44 | **Zoom Out** | builds a module map and topology of the codebase — complements smart-suggestions with a structural bird's-eye view |
 | 45 | **Handoff Context** | prospective handoff between sessions/agents — packages what the next session needs to continue without re-deriving context |
+| 65 | **Using Git Worktrees** | workspace isolation via git worktree — detects existing isolation, prefers native tooling (`EnterWorktree`/`ExitWorktree` or the kit's `/worktree` dispatcher) before raw `git worktree add`, mandatory test baseline before releasing the task for work |
 
 ### Product and Design
 
@@ -293,6 +294,9 @@ The MCP exposes 38 tools backed by the installed skills.
 | 57 | **Mobile UX Foundations** | thumb-zone ergonomics (where navigation may live), dark mode physiology (`#121212`, never pure black), perceived performance (skeleton vs. spinner by duration band), and auth/onboarding/permission UX (passkeys, NIST password rules, permission priming) |
 | 58 | **i18n & Localization** | prepares a product for another language, region or writing direction *before* a translator exists: string externalization, plural via platform API, locale formatters, +30% text expansion, RTL with logical properties, and pseudolocale/RTL as regression tests |
 | 59 | **Closed-Loop Revenue** | closes the chain from ad click to margin: identity (GCLID/UTM/`transaction_id`/CRM), backend as the source of revenue truth, reconciliation with a declared tolerance, break-even ROAS derived from real contribution margin, and offline conversion so lead-gen bidding learns from closed deals rather than submitted forms |
+| 51 | **UX Research** | qualitative discovery — user interview scripts, research-based persona, journey mapping (moments of truth, pain point, opportunity), information architecture (card sort, tree test) and usability testing (SUS score, task success rate) |
+| 64 | **Scroll Storytelling** | full scrollytelling page architecture — where scroll is the narrative timeline, not a list of fade-in sections. At least 4 device families, photographic-by-default visual world, no continuous camera flythrough unless explicitly requested. Includes a zero-dependency vanilla JS/CSS runtime engine |
+| 73 | **SaaS Conversion Playbook** | audits and designs a SaaS/app subscription conversion funnel — playbook A (consumer/personal-result) vs. B (B2B tool/PLG) classification, onboarding screens, activation event, full paywall, in-app triggers and email lifecycle, with real benchmark targets (R/1K, TTV, trial-to-paid by commercial model) instead of guesswork |
 
 ### Development
 
@@ -305,6 +309,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 60 | **App Reference Architecture** | blueprint for new apps needing login + payment + push + web app + Android APK from one Next.js + Tauri codebase — dual auth, dual payment (Stripe + Google Play IAP), dual push, static-export build script, Docker/CI-CD, distilled from 3 real production apps |
 | 74 | **Web3D Scene Runtime** | structured scene description (camera, lights, GLB slots, materials, particles) → real interactive 3D scene in the browser: WebGPURenderer with automatic WebGL2 fallback, navigable camera + raycasting, measured budget (Draco/KTX2, LOD, dispose, reduced-motion, static fallback). Closes the handoff skills 68/69 never had — a certified `.glb` that only ever reached Unity/Unreal, never a page |
 | 47 | **Pattern Conformity** | detects and codifies an existing codebase's coding conventions (naming, structure, error handling, testing, async, DI, API design) into `memory/patterns.md` so new code matches house style |
+| 52 | **UI Polish** | the small details that make a UI read as refined instead of "ok" — concentric border radius, optical alignment, shadow vs. border, tabular numbers, scale-on-press, hit area, stagger on entry/exit animation |
 
 ### Content and Discovery
 
@@ -315,6 +320,9 @@ The MCP exposes 38 tools backed by the installed skills.
 | 61 | **Content Growth Engine** | content as an acquisition system, not a publishing calendar: search intent from sales calls and support tickets (never from search volume alone), clusters ordered by commercial intent, an AI-citation baseline measured against a fixed prompt set, realistic production cadence sized against actual capacity, a refresh quota so the library doesn't rot, sales objections turned into bottom-funnel pages, and success measured in pipeline — not sessions |
 | 48 | **Research Prep** | multi-source technical research before writing docs/PRDs/ADRs/articles — official docs + GitHub + Stack Overflow + papers, scored by authority, output to `memory/research/<slug>.md`; feeds skills 10, 01, 26, 41 |
 | 49 | **Context Budget** | audits loaded context weight (skills, agents, MCP descriptions, rules, CLAUDE.md) — estimates tokens per component, headroom available and overflow alerts. Distinct from skill 30 (cost-tracker) which tracks runtime completion costs |
+| 50 | **Direct Response Copy** | direct-response copy — trigger-word headlines, ads, sales emails, Instagram captions, VSL scripts and sales pages built on proven direct-response frameworks (AIDA, PAS, 4 Ps), distinct from skill 13's broader brand/landing copy |
+| 54 | **Video Analysis** | analyzes existing video content — downloads, extracts frames, transcribes audio and answers questions about what happens on screen, without generating anything new |
+| 55 | **Marketing Reporting & Analytics** | marketing analytics ops — campaign reporting, GA4/GTM technical setup, marketing data-infrastructure audit, dashboard assembly across ad platforms and CRM |
 
 ### Quality and Delivery
 
@@ -326,6 +334,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
 | 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |
 | 37 | **TDD Engineer** | red-green-refactor enforced; combats horizontal slicing anti-pattern (writing all tests before all impl); 1 test → 1 impl → repeat. Pairs with skill 38 for deep module identification |
+| 53 | **Doubt-Driven Review** | real-time adversarial review — submits every non-trivial decision to a fresh-context reviewer biased to REFUTE, complementing skill 11 (final gate) rather than replacing it |
 | 07 | **Deploy Engineer** | containerization, CI/CD, blue-green rollout, rollback and infra as code |
 
 ### Publishing and Automation (v2.11.0+)
@@ -352,6 +361,28 @@ node scripts/init-blog-repo.mjs \
 ```
 
 The init script creates `~/.dev-team-kit/blog-config.json` so the skill knows where to publish. See `scripts/init-blog-repo.mjs` and `templates/blog/` for details.
+
+### Game Development (v2.68.0+)
+
+| # | Skill | What it does |
+|---|---|---|
+| 66 | **Game Architecture Design** | architecture, design review and numeric balancing of games — the decision layer before any engine code. Paradigm selection (rich entity vs. data-driven vs. prototype), combat/skill/AI/narrative/UI/PCG system design, GDD/mechanic/level critique backed by evidence, and executable numeric modeling of economy, progression and drop rate |
+| 67 | **Game Engine Development** | real engine code implementation — Unity C# and Unreal C++: MonoBehaviour, ScriptableObject, object pooling, state machines, ECS, Actor/UPROPERTY/UFUNCTION components, performance optimization (profiling, batching, LOD, culling, GC) and multiplayer networking |
+
+### 3D/2D Character Pipeline (v2.69.0+)
+
+| # | Skill | What it does |
+|---|---|---|
+| 68 | **Character Animation 3D** | content/asset pipeline for humanoid 3D character animation via AccuRIG + headless Blender + motion AI — rigging, `bpy` CLI as an "animation compiler", retargeting via quaternion delta relative to rest pose, and a comparative map of 10 motion-AI technologies |
+| 69 | **Character Pipeline 2D** | 2D character pipeline and character-to-runtime orchestration — the five 2D sprite/animation production strategies, the `MotionPlan.json` contract (LLM as intent/timing director, never a bone-rotation generator), native 2D generation, and skeletal 2D rigging tool selection |
+
+### Campaign Production (v2.71.0+)
+
+| # | Skill | What it does |
+|---|---|---|
+| 70 | **Campaign Research Strategy** | researches market, competitors, audience and consumer voice to form a verifiable strategic base before copy or visual direction — produces an evidence ledger, authorized claims, prioritized opportunities and guardrails |
+| 71 | **Campaign Copywriting** | transforms a research strategy with evidence ledger into traceable, distinct, channel-appropriate copy routes — never re-researches, never invents claims |
+| 72 | **Campaign Visual Direction** | converts approved strategy and copy into visual concept, continuity bible, reference roles and structured shot intents — separates identity references from language references, reserves text/UI for deterministic overlays |
 
 ---
 
