@@ -1,0 +1,70 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Workflows e fluxos · Repo-Wiki</title><link rel="stylesheet" href="assets/site.css"></head><body data-track="workflows"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="index.html">Repo-Wiki</a><nav aria-label="Páginas"><a href="architecture.html" class="nav-link">Arquitetura e organograma</a><a href="automations.html" class="nav-link">Automações</a><a href="boundaries.html" class="nav-link">Boundaries e contratos</a><a href="business-rules.html" class="nav-link">Regras de negócio e comportamento</a><a href="database.html" class="nav-link">Banco de dados</a><a href="improvements.html" class="nav-link">Melhorias do repositório</a><a href="modules/file-reader.html" class="nav-link">File reader</a><a href="modules/index.html" class="nav-link">Módulos centrais</a><a href="modules/mcp-entrypoint.html" class="nav-link">MCP server entrypoint</a><a href="modules/permission-guard.html" class="nav-link">Permission ladder guard</a><a href="modules/pipeline-engine.html" class="nav-link">Pipeline engine</a><a href="overview.html" class="nav-link">Visão geral do repositório</a><a href="index.html" class="nav-link">claude-skills-fv — documentação do código</a><a href="rpa.html" class="nav-link">RPA</a><a href="security.html" class="nav-link">Segurança</a><a href="verification.html" class="nav-link">Verificação de execução</a><a href="workflows.html" class="nav-link">Workflows e fluxos</a></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option><option value="boundaries">Boundaries e contratos</option><option value="database">Banco de dados</option><option value="verification">Verificação</option><option value="modules">Módulos</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Workflows e fluxos</span></nav><article id="content" class="content" data-page="workflows.html" data-track="workflows"><h1 id="workflows-e-fluxos">Workflows e fluxos</h1>
+<p>Leitura estática de quatorze arquivos: dez arquivos de código do núcleo MCP, proteção de ferramentas, entrypoint e schema de template, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.</p>
+<p>Os fluxos revisados cobrem a inicialização do servidor MCP, o consumo de uma ferramenta pelo agente e a decisão do guard de comandos. São fluxos estáticos; não representam uma sessão de produção.</p>
+<h2 id="mcp-startup-inicializacao-do-servidor-mcp-via-stdio">mcp-startup — Inicialização do servidor MCP via stdio</h2>
+<p><strong>Disparador:</strong> O processo do servidor é iniciado pelo entrypoint compilado.</p>
+<p><strong>Atores:</strong> Cliente MCP e processo Node do servidor</p>
+<p><strong>Passos:</strong></p>
+<ul><li>Instanciar StdioServerTransport.</li><li>Conectar o servidor MCP ao transporte stdio.</li><li>Manter a comunicação disponível para o cliente.</li></ul>
+<p><strong>Sucesso:</strong> O servidor conecta sem erro e registra a mensagem de execução.</p>
+<p><strong>Falha, retry ou exceção:</strong> Falha de inicialização cai no catch de main e termina o processo com exit 1; não há prova de execução nesta análise.</p>
+<p><strong>Confiança:</strong> observed</p>
+<figure class="diagram"><img src="assets/diagrams/workflows-md-1.svg" alt="Diagrama workflows-md-1"><figcaption>Diagrama renderizado localmente</figcaption><details><summary>Ver fonte Mermaid</summary><pre>flowchart LR
+  start_mcp-startup([O processo do servidor é iniciado pelo entrypoint compilado.])
+  step_mcp-startup_0[Instanciar StdioServerTransport.]
+  step_mcp-startup_1[Conectar o servidor MCP ao transporte stdio.]
+  step_mcp-startup_2[Manter a comunicação disponível para o cliente.]
+  end_mcp-startup([O servidor conecta sem erro e registra a mensagem de execução.])
+  start_mcp-startup --&gt; step_mcp-startup_0
+  step_mcp-startup_0 --&gt; step_mcp-startup_1
+  step_mcp-startup_1 --&gt; step_mcp-startup_2
+  step_mcp-startup_2 --&gt; end_mcp-startup</pre></details></figure>
+<p><a class="evidence" href="evidence/mcp-server-src-index-ts-e8f7ed71.html#L1505">evidence: mcp-server/src/index.ts:1505</a></p>
+<h2 id="task-routing-roteamento-de-uma-tarefa-para-pipeline-e-plugins">task-routing — Roteamento de uma tarefa para pipeline e plugins</h2>
+<p><strong>Disparador:</strong> O cliente chama a ferramenta devkit_route_task com uma descrição.</p>
+<p><strong>Atores:</strong> Cliente MCP, classifier, pipeline engine e plugin router</p>
+<p><strong>Passos:</strong></p>
+<ul><li>Receber description e project_context opcionais.</li><li>Classificar a tarefa.</li><li>Construir o pipeline correspondente.</li><li>Consultar a composição de plugins.</li><li>Retornar a composição ao cliente.</li></ul>
+<p><strong>Sucesso:</strong> O resultado contém o tipo, as etapas do pipeline e a composição roteada.</p>
+<p><strong>Falha, retry ou exceção:</strong> Falhas do roteador ou de dependências podem rejeitar a chamada; o contrato de erro completo não foi revisado nesta amostra.</p>
+<p><strong>Confiança:</strong> observed</p>
+<figure class="diagram"><img src="assets/diagrams/workflows-md-2.svg" alt="Diagrama workflows-md-2"><figcaption>Diagrama renderizado localmente</figcaption><details><summary>Ver fonte Mermaid</summary><pre>flowchart LR
+  start_task-routing([O cliente chama a ferramenta devkit_route_task com uma descrição.])
+  step_task-routing_0[Receber description e project_context opcionais.]
+  step_task-routing_1[Classificar a tarefa.]
+  step_task-routing_2[Construir o pipeline correspondente.]
+  step_task-routing_3[Consultar a composição de plugins.]
+  step_task-routing_4[Retornar a composição ao cliente.]
+  end_task-routing([O resultado contém o tipo, as etapas do pipeline e a composição rotead])
+  start_task-routing --&gt; step_task-routing_0
+  step_task-routing_0 --&gt; step_task-routing_1
+  step_task-routing_1 --&gt; step_task-routing_2
+  step_task-routing_2 --&gt; step_task-routing_3
+  step_task-routing_3 --&gt; step_task-routing_4
+  step_task-routing_4 --&gt; end_task-routing</pre></details></figure>
+<p><a class="evidence" href="evidence/mcp-server-src-index-ts-e8f7ed71.html#L70">evidence: mcp-server/src/index.ts:70</a></p>
+<h2 id="permission-decision-decomposicao-de-comando-para-decisao-do-guard">permission-decision — Decomposição de comando para decisão do guard</h2>
+<p><strong>Disparador:</strong> O hook recebe um evento Bash com comando composto.</p>
+<p><strong>Atores:</strong> Hook de permissão e comando Bash</p>
+<p><strong>Passos:</strong></p>
+<ul><li>Extrair o comando do payload do hook.</li><li>Separar substituições e segmentos shell.</li><li>Normalizar aspas simples em barewords.</li><li>Comparar os segmentos com a escada de permissões.</li><li>Permitir ou bloquear conforme a regra encontrada.</li></ul>
+<p><strong>Sucesso:</strong> Uma decisão estruturada é escrita no stdout quando o hook está habilitado.</p>
+<p><strong>Falha, retry ou exceção:</strong> Payload inválido ou configuração desabilitada segue pelo caminho allow; a precedência de múltiplas regras permanece uma melhoria registrada.</p>
+<p><strong>Confiança:</strong> observed</p>
+<figure class="diagram"><img src="assets/diagrams/workflows-md-3.svg" alt="Diagrama workflows-md-3"><figcaption>Diagrama renderizado localmente</figcaption><details><summary>Ver fonte Mermaid</summary><pre>flowchart LR
+  start_permission-decision([O hook recebe um evento Bash com comando composto.])
+  step_permission-decision_0[Extrair o comando do payload do hook.]
+  step_permission-decision_1[Separar substituições e segmentos shell.]
+  step_permission-decision_2[Normalizar aspas simples em barewords.]
+  step_permission-decision_3[Comparar os segmentos com a escada de permissões.]
+  step_permission-decision_4[Permitir ou bloquear conforme a regra encontrada.]
+  end_permission-decision([Uma decisão estruturada é escrita no stdout quando o hook está habilit])
+  start_permission-decision --&gt; step_permission-decision_0
+  step_permission-decision_0 --&gt; step_permission-decision_1
+  step_permission-decision_1 --&gt; step_permission-decision_2
+  step_permission-decision_2 --&gt; step_permission-decision_3
+  step_permission-decision_3 --&gt; step_permission-decision_4
+  step_permission-decision_4 --&gt; end_permission-decision</pre></details></figure>
+<p><a class="evidence" href="evidence/hooks-scripts-permission-ladder-guard-mjs-4dd91429.html#L116">evidence: hooks/scripts/permission-ladder-guard.mjs:116</a></p>
+<h2 id="lacunas">Lacunas</h2>
+<ul><li>Não há evidência de uma chamada MCP real, de timeout/retry de ferramenta ou de execução de uma automação externa.</li><li>Fluxos de autenticação do app consumidor não foram tratados como fluxo do servidor MCP.</li></ul></article><footer class="footer">Gerado localmente. Índice: search-index.js</footer></main></div><script src="assets/search-index.js"></script><script src="assets/site.js"></script></body></html>

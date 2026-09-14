@@ -16,8 +16,8 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 1. [How the kit works in 60 seconds](#1-how-the-kit-works-in-60-seconds)
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
-4. [Slash commands (43) — shortcuts by phase](#4-slash-commands-43)
-5. [Skills (62) — specialists by category](#5-skills-62)
+4. [Slash commands (45) — shortcuts by phase](#4-slash-commands-45)
+5. [Skills (73) — specialists by category](#5-skills-73)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (62) — shared rules](#7-policies-62)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -145,7 +145,7 @@ Worker C: password reset (DB + back + front + e2e test) → mergeable on its own
 
 ---
 
-## 4. Slash commands (43)
+## 4. Slash commands (45)
 
 These are phase shortcuts. No need to memorize skill names — call the shortcut, it routes.
 
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (62)
+## 5. Skills (73)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -1013,7 +1013,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 Official Claude Code schema. Lists:
 - **73 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
-- **23 commands** in `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
+- **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
 
 ### Install modes (3 options)
@@ -1024,7 +1024,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 73 skills, hooks, 23 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 73 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 

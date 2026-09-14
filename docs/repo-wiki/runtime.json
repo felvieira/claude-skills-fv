@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "repo": "D:\\Repos\\claude-skills-fv",
+  "package": "mcp-server/package.json",
+  "status": "pass",
+  "commands": [
+    {
+      "command": "npm run build",
+      "purpose": "Compilar o pacote selecionado.",
+      "status": "pass",
+      "exit_code": 0,
+      "notes": "process exited normally",
+      "duration_ms": 4366,
+      "output": "\n> @felvieira/dev-team-kit-mcp@2.76.0 build\n> tsc\n\n",
+      "package": "mcp-server/package.json"
+    },
+    {
+      "command": "npm run test",
+      "purpose": "Executar os testes declarados pelo pacote.",
+      "status": "pass",
+      "exit_code": 0,
+      "notes": "process exited normally",
+      "duration_ms": 3072,
+      "output": "\n> @felvieira/dev-team-kit-mcp@2.76.0 test\n> node dist/lib/cross-call-dedup.test.js && node dist/lib/skill-manifest.test.js && node dist/lib/plugin-router.test.js\n\ncross-call-dedup\n  ok  fnv1a64: deterministic\n  ok  fnv1a64: distinguishes near-strings\n  ok  fnv1a64: returns 16 hex chars\n  ok  jaccard: identical text → 1.0\n  ok  jaccard: timestamp tweak survives ≥0.85 threshold\n  ok  jaccard: unrelated text → low\n  ok  cache: first insert never matches\n  ok  cache: exact re-run hits exact path\n  ok  cache: fuzzy re-run hits fuzzy path\n  ok  cache: respects window size\n  ok  cache: clear resets state\n\n11 passed, 0 failed\nskill-manifest v2 parsing\n  ok  listSkills returns at least the 39 core skills\n  ok  every skill has a defined name and description\n  ok  v2 fields are typed as optional (undefined when absent)\n  ok  backward compat: skills without v2 frontmatter still parse\n\n4 passed, 0 failed\nplugin-router shared routing fixtures\n  ok  lists bundled and external plugins with install metadata\n  ok  landing page combines marketing and design\n  ok  seo stays in product marketing\n  ok  direct response uses its specialized skill\n  ok  frontend implementation keeps testing\n  ok  security is routed to the security playbook\n  ok  legacy discovery does not imply a release\n  ok  image work routes to the asset workflow\n  ok  canary deployment is high risk\n  ok  research request has a focused discovery route\n  ok  financial reconciliation is an external high-risk recommendation\n  ok  NDA review is an external high-risk recommendation\n  ok  version-specific documentation recommends Context7 without a human gate\n  ok  API contract is technical, not a legal-contract recommendation\n  ok  a real legal contract clause still routes when an unrelated API contract is mentioned\n  ok  real feature authentication API keeps the engineering loop small\n  ok  real frontend dashboard adds design and engineering without marketing\n  ok  real landing launch scopes copy to product work\n  ok  real legacy bug asks for evidence before a fix\n  ok  real AI assistant feature uses architecture and prompts\n  ok  real production deployment remains a human-review route\n  ok  real refactor has review and migration safeguards\n  ok  real version docs use Context7 as a bounded external recommendation\n  ok  small rename does not inflate to a plugin pipeline\n  ok  CLI and MCP route contract stay in parity\n\n25 passed, 0 failed\n",
+      "package": "mcp-server/package.json"
+    }
+  ],
+  "gaps": [
+    "Execução local não prova integração com serviços externos, deploy ou produção."
+  ]
+}

@@ -8,6 +8,18 @@ const metadataFiles = new Set(['package.json','tsconfig.json','Cargo.toml','go.m
 const excluded = new Set(['node_modules','vendor','dist','build','coverage','out','graphify-out','worktrees','docs','logs','cache']);
 export const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 export const posix = value => value.replaceAll('\\','/');
+const secretPatterns = [
+  /-----BEGIN [^-]*PRIVATE KEY-----/i,
+  /\b(?:sk_(?:live|test)_|ghp_|github_pat_|xox[baprs]-|AKIA)[A-Za-z0-9_./-]{12,}/,
+  /(?:api[_-]?key|secret|password|token|authorization)\s*[:=]\s*["'][A-Za-z0-9+/_=-]{24,}["']/i,
+];
+export const hasSecret = text => secretPatterns.some(pattern => pattern.test(String(text)));
+export function redactSecrets(text) {
+  return String(text)
+    .replace(/(-----BEGIN [^-]*PRIVATE KEY-----)[\s\S]*?(-----END [^-]*PRIVATE KEY-----)/gi, '$1 <REDACTED PRIVATE KEY> $2')
+    .replace(/\b(?:sk_(?:live|test)_|ghp_|github_pat_|xox[baprs]-|AKIA)[A-Za-z0-9_./-]{12,}/g, '<REDACTED TOKEN>')
+    .replace(/((?:api[_-]?key|secret|password|token|authorization)\s*[:=]\s*["']?)[^\s"',;]{10,}/gi, '$1<REDACTED>');
+}
 export function allowedSource(relative) {
   const parts = posix(relative).split('/');
   const basename = path.basename(relative);
@@ -32,7 +44,7 @@ export async function readSource(repo, relative, options = {}) {
   const info = await fs.stat(current);
   if (!info.isFile() || info.size > 512*1024) throw new Error('Fonte fora do limite: '+relative);
   const text = await fs.readFile(current,'utf8');
-  if (text.includes('\0') || /-----BEGIN .*PRIVATE KEY-----|\b(?:sk_live_|ghp_)[A-Za-z0-9]{16,}/.test(text)) throw new Error('Fonte sensível/binária: '+relative);
+  if (text.includes('\0') || hasSecret(text)) throw new Error('Fonte sensível/binária: '+relative);
   return {path:posix(relative),text,sha256:hash(text)};
 }
 export async function collectSources(repo) {

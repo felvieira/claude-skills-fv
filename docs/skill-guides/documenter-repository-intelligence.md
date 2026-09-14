@@ -8,7 +8,7 @@ Este guia define o modo Repo-Wiki da skill 10. O agente lê código permitido e 
 - Ler implementações completas relevantes, chamadores e testes permitidos. Explicar condição, consequência, exceções e evidência. Separar `product`, `operational` e `reference`; snippets e templates não são automaticamente um app implantado.
 - Markdown/ADRs podem explicar intenção em outros modos documentais, mas NÃO entram como evidência de regras neste compilador. Se algo só existe em prosa, registrar lacuna.
 - Registrar SHA-256 de cada arquivo realmente lido; não preencher `reviewed_files` a partir do inventário sem leitura. Toda citação deve ser um trecho exato, único e não vazio de fonte revisada. Código observado não prova runtime.
-- Produzir `analysis.json` antes de compor. Sem esse arquivo, a saída é apenas inventário com trilhas `not_reviewed`. O compilador recusa fontes ocultas/ignoradas, hashes obsoletos, citações inexistentes ou ambíguas e regras sem campos obrigatórios.
+- Produzir `analysis.json` antes de compor. Sem esse arquivo, a saída é apenas inventário com trilhas `not_reviewed`. O compilador recusa fontes ocultas/ignoradas, hashes obsoletos, citações inexistentes ou ambíguas, snippets sensíveis e regras sem campos obrigatórios.
 
 Formato schema 2 (valores abaixo são ilustrativos, preencher com a leitura real):
 
@@ -211,7 +211,7 @@ report.json
 
 Cada página deve conter: escopo da análise, propósito, fatos observados, relações, evidências, confiança, lacunas e links para a fonte canônica. Não duplicar regras de negócio entre `overview`, `workflows` e `boundaries`; fazer referência ao documento dono.
 
-Para a página `architecture.md`, o `analysis.json` deve declarar `architecture.summary`, `nodes` e `edges`. Nós precisam de `id`, `label`, `kind`, responsabilidade e evidência; relações precisam de `from`, `to`, descrição, confiança e evidência. O gerador valida os destinos e os trechos; o site renderiza o organograma Mermaid como SVG local. Ownership, organograma de pessoas e deploy ficam fora até haver evidência específica.
+Para a página `architecture.md`, o `analysis.json` deve declarar `architecture.summary`, `nodes` e `edges`. Nós precisam de `id`, `label`, `kind`, responsabilidade e evidência; relações precisam de `from`, `to`, descrição, confiança e evidência. Quando disponíveis, `contexts` e `levels` também exigem resumo e evidência para separar sistema/runtime, containers e componentes sem misturar template, benchmark e produto. O gerador valida os destinos e os trechos; o site renderiza o organograma Mermaid como SVG local. Ownership, organograma de pessoas e deploy ficam fora até haver evidência específica.
 
 Para a página `overview.md`, o input deve declarar `overview.summary`, `purpose`, `audience`, `technologies`, `entrypoints`, `commands` e `structure`. Tecnologias, versões, comandos e caminhos são itens evidenciados individualmente. O texto deve distinguir runtime principal, templates, benchmarks e integrações opcionais.
 
@@ -230,13 +230,13 @@ Quando o leitor precisar navegar, construir também `site/` com HTML self-contai
 
 ### Relatório do run
 
-`report.json` deve conter, no mínimo: modo, projeto, SHA, data, escopo, arquivos considerados/excluídos, contagens por linguagem, módulos, boundaries, diagramas, páginas geradas, fontes externas, cache hits/misses, warnings, lacunas e cobertura por domínio. Métrica de cobertura é cobertura do inventário, não cobertura de testes.
+`report.json` deve conter, no mínimo: modo, projeto, SHA, data, escopo, estado do working tree, arquivos considerados/excluídos, contagens por linguagem, módulos, boundaries, banco, diagramas, páginas geradas, fontes externas, cache hits/misses, warnings, lacunas, cobertura por domínio e `runtime_verification`. Métrica de cobertura é cobertura do inventário, não cobertura de testes.
 
 ## Cache e execução incremental
 
 Se houver cache, indexe por hash do arquivo, configuração, versão do playbook e prompt. Invalide um módulo quando mudarem seus arquivos, dependências, entry points ou fontes externas relevantes. Preserve artefatos parciais com status `in_progress` e retome pela primeira etapa incompleta.
 
-Nunca cachear tokens, chaves, conteúdo de `.env`, dados pessoais ou respostas que contenham secrets. `--skip` só é válido quando o artefato de entrada da etapa já foi localizado e sua revisão é compatível.
+Nunca cachear tokens, chaves, conteúdo de `.env`, dados pessoais ou respostas que contenham secrets. O coletor recusa padrões de segredo conhecidos e o builder mascara snippets como defesa em profundidade. `--skip` só é válido quando o artefato de entrada da etapa já foi localizado e sua revisão é compatível.
 
 ## Fase 5: verificação
 
@@ -249,13 +249,14 @@ node scripts/verify-docset.mjs --docs docs/repo-wiki --json
 Para gerar e validar a experiência completa:
 
 ```bash
-node scripts/generate-repo-wiki.mjs --repo . --output docs/repo-wiki --mode Full --analysis docs/repo-wiki/analysis.json
+node scripts/run-repo-wiki-runtime.mjs --repo . --output docs/repo-wiki/runtime.json --allow-execution
+node scripts/generate-repo-wiki.mjs --repo . --output docs/repo-wiki --mode Full --analysis docs/repo-wiki/analysis.json --runtime docs/repo-wiki/runtime.json
 node scripts/build-repo-wiki.mjs --repo . --docs docs/repo-wiki --site docs/repo-wiki/site
 node scripts/verify-repo-wiki.mjs --docs docs/repo-wiki --site docs/repo-wiki/site --json
 node scripts/test-repo-wiki.mjs
 ```
 
-A revisão semântica acontece ANTES da composição e é conferida novamente depois. O CLI implementa Full; Incremental/Focused/Drift acima são playbooks do agente, não flags disponíveis. Com visão geral e arquitetura revisadas, as oito páginas compiladas são README, overview, architecture, business-rules, security, automations, rpa e improvements. Sem essas seções no input, as páginas correspondentes permanecem `not_reviewed`. Conferir:
+A revisão semântica acontece ANTES da composição e é conferida novamente depois. O CLI aceita Full, Focused, Incremental e Drift. Focused restringe o inventário a `--focus`; o agente deve fornecer uma análise compatível. Incremental registra o delta contra o relatório anterior e só reutiliza semântica quando o agente a reapresenta com evidência válida. Drift escreve `drift.json` e não reescreve a documentação. A saída base contém README, overview, architecture, workflows, boundaries, database, verification e as cinco trilhas funcionais; `modules/index.md` e deep dives são adicionados quando há módulos revisados. Sem seções no input, as páginas correspondentes permanecem `not_reviewed` ou `not_applicable`. Conferir:
 
 - links relativos apontam para arquivos existentes;
 - fences Markdown e blocos Mermaid fecham corretamente;

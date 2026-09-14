@@ -16,7 +16,7 @@ bash /tmp/dev-team-kit/setup/install.sh
 ```
 
 O instalador copia o kit para `.bot/` e configura:
-- **MCP server** (`dev-team-kit`) com 31 tools apoiadas pelas skills
+- **MCP server** (`dev-team-kit`) com 38 tools apoiadas pelas skills
 - **Hooks** registrados no `.claude/settings.json` (lifecycle intelligence)
 - **Policies** — model routing, tool safety, cost optimization e mais
 - **Templates** de handoff, plano, review e rejeição

@@ -5,7 +5,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { readSource } from "./repo-wiki-sources.mjs";
+import { readSource, redactSecrets } from "./repo-wiki-sources.mjs";
 
 
 function parseArgs(argv) {
@@ -88,7 +88,11 @@ function parseTrack(relativeMarkdown) {
   if (value.includes("rpa") || value.includes("automation")) return "automation";
   if (value.includes("improvement")) return "improvements";
   if (value.includes("workflow")) return "workflows";
-  if (value.includes("architecture") || value.includes("module")) return "architecture";
+  if (value.includes("boundary") || value.includes("contract")) return "boundaries";
+  if (value.includes("database") || value.includes("schema")) return "database";
+  if (value.includes("verification")) return "verification";
+  if (value.includes("modules/") || value.includes("module")) return "modules";
+  if (value.includes("architecture")) return "architecture";
   return "overview";
 }
 
@@ -264,7 +268,7 @@ function renderMarkdown(markdown, context, diagramWriter) {
 
 function shell({ title, body, page, pages, assetPrefix, searchIndex, track }) {
   const nav = pages.map((item) => `<a href="${htmlEscape(relativeUrl(page, item.url))}" class="nav-link">${htmlEscape(item.title)}</a>`).join("");
-  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>${htmlEscape(title)} · Repo-Wiki</title><link rel="stylesheet" href="${assetPrefix}assets/site.css"></head><body data-track="${htmlEscape(track)}"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="${htmlEscape(relativeUrl(page, "index.html"))}">Repo-Wiki</a><nav aria-label="Páginas">${nav}</nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${htmlEscape(relativeUrl(page, "index.html"))}">Repo-Wiki</a><span aria-hidden="true">/</span><span>${htmlEscape(title)}</span></nav><article id="content" class="content" data-page="${htmlEscape(page)}" data-track="${htmlEscape(track)}">${body}</article><footer class="footer">Gerado localmente. Índice: ${htmlEscape(searchIndex)}</footer></main></div><script src="${htmlEscape(assetPrefix)}assets/search-index.js"></script><script src="${htmlEscape(assetPrefix)}assets/site.js"></script></body></html>`;
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>${htmlEscape(title)} · Repo-Wiki</title><link rel="stylesheet" href="${assetPrefix}assets/site.css"></head><body data-track="${htmlEscape(track)}"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="${htmlEscape(relativeUrl(page, "index.html"))}">Repo-Wiki</a><nav aria-label="Páginas">${nav}</nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option><option value="boundaries">Boundaries e contratos</option><option value="database">Banco de dados</option><option value="verification">Verificação</option><option value="modules">Módulos</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${htmlEscape(relativeUrl(page, "index.html"))}">Repo-Wiki</a><span aria-hidden="true">/</span><span>${htmlEscape(title)}</span></nav><article id="content" class="content" data-page="${htmlEscape(page)}" data-track="${htmlEscape(track)}">${body}</article><footer class="footer">Gerado localmente. Índice: ${htmlEscape(searchIndex)}</footer></main></div><script src="${htmlEscape(assetPrefix)}assets/search-index.js"></script><script src="${htmlEscape(assetPrefix)}assets/site.js"></script></body></html>`;
 }
 
 const CSS = `:root{color-scheme:light;--bg:#f7f8fc;--panel:#fff;--text:#1c2434;--muted:#647086;--line:#dce2ee;--accent:#3156c8;--soft:#edf2ff;--code:#20293b}*{box-sizing:border-box}html[data-theme=dark]{color-scheme:dark;--bg:#111722;--panel:#182131;--text:#edf2ff;--muted:#a7b2c5;--line:#344158;--accent:#9bb2ff;--soft:#263458;--code:#0d121b}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}.layout{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:24px 14px;position:sticky;top:0;height:100vh;overflow:auto}.brand{display:block;font-size:1.25rem;font-weight:800;color:var(--text);text-decoration:none;padding:0 10px 22px}.nav-link{display:block;color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}.nav-link:hover,.nav-link:focus{background:var(--soft);color:var(--accent)}.main{min-width:0}.toolbar{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;padding:14px max(22px,calc((100% - 1050px)/2));background:color-mix(in srgb,var(--panel) 94%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}.toolbar input{flex:1;min-width:120px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)}.toolbar select,.toolbar button{padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)}.search-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.menu-button{display:none}.content,.breadcrumbs,.footer{width:min(1050px,calc(100% - 44px));margin-left:auto;margin-right:auto}.content{padding:28px 0 58px}.breadcrumbs{padding:22px 0 0;color:var(--muted);font-size:.9rem}.breadcrumbs a{color:var(--accent)}h1,h2,h3,h4{line-height:1.25;margin:1.6em 0 .55em}h1{font-size:2.2rem;margin-top:.3em}h2{font-size:1.45rem;border-bottom:1px solid var(--line);padding-bottom:6px}a{color:var(--accent)}p{max-width:85ch}ul,ol{padding-left:28px}code{background:var(--soft);padding:2px 5px;border-radius:5px}pre{overflow:auto;background:var(--code);color:#edf2ff;padding:16px;border-radius:10px}pre code{background:transparent;padding:0}table{width:100%;border-collapse:collapse;margin:20px 0;display:block;overflow:auto}th,td{text-align:left;border:1px solid var(--line);padding:8px 10px;vertical-align:top}th{background:var(--soft)}.evidence{font-size:.9em}.evidence-unlinked{color:var(--muted)}.unresolved-link{border-bottom:1px dashed #bd5b5b;color:var(--muted)}.diagram{margin:24px 0;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px}.diagram img{width:100%;height:auto}.diagram figcaption{color:var(--muted);font-size:.85rem}.search-results{position:fixed;z-index:3;top:72px;left:50%;transform:translateX(-50%);width:min(780px,calc(100% - 44px));max-height:70vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px #0003;padding:12px}.result{display:block;padding:12px;border-radius:8px;text-decoration:none}.result:hover,.result:focus{background:var(--soft)}.result small{display:block;color:var(--muted)}.footer{border-top:1px solid var(--line);padding:18px 0 30px;color:var(--muted);font-size:.85rem}.skip-link{position:absolute;left:-10000px}.skip-link:focus{left:12px;top:12px;z-index:10;background:var(--panel);padding:8px}.content:focus{outline:3px solid var(--accent)}@media(max-width:800px){.layout{display:block}.sidebar{position:fixed;z-index:5;left:-280px;transition:left .18s;width:260px;box-shadow:10px 0 30px #0003}.sidebar.open{left:0}.menu-button{display:block}.toolbar{padding:10px 12px;flex-wrap:wrap}.toolbar input{order:2;flex-basis:calc(100% - 42px)}.toolbar select{order:3;flex:1}.toolbar [data-theme-toggle]{order:3}.content,.breadcrumbs,.footer{width:calc(100% - 28px)}h1{font-size:1.8rem}}`;
@@ -284,7 +288,7 @@ async function main() {
 
   const reportPath = path.join(docs, "report.json");
   const report = JSON.parse(await fs.readFile(reportPath, "utf8"));
-  if (report.schema_version !== 2 || !Array.isArray(report.pages_generated)) throw new Error("Regenerate using reviewed analysis schema 2");
+  if (![2, 3].includes(report.schema_version) || !Array.isArray(report.pages_generated)) throw new Error("Regenerate using reviewed analysis schema 2 or 3");
   const markdownFiles = [];
   for (const relative of report.pages_generated) {
     if (!/^[a-zA-Z0-9_/-]+\.md$/.test(relative) || relative.split("/").some(p => p.startsWith("."))) throw new Error("Invalid page path");
@@ -300,6 +304,8 @@ async function main() {
   const sourceCache = new Map();
   const citedLines = new Map();
   const architectureEvidence = [
+    ...(report.architecture?.contexts || []).flatMap(context => context.evidence || []),
+    ...(report.architecture?.levels || []).flatMap(level => level.evidence || []),
     ...(report.architecture?.nodes || []).flatMap(node => node.evidence || []),
     ...(report.architecture?.edges || []).flatMap(edge => edge.evidence || []),
   ];
@@ -309,10 +315,17 @@ async function main() {
     ...(report.overview?.commands || []).flatMap(item => item.evidence || []),
     ...(report.overview?.structure || []).flatMap(item => item.evidence || []),
   ];
+  const structuredEvidence = [
+    ...(report.workflows?.items || []),
+    ...(report.boundaries?.items || []),
+    ...(report.database?.entities || []),
+    ...(report.modules?.items || []),
+  ].flatMap(item => item.evidence || []);
   const approvedEvidence = new Set([
     ...report.findings.flatMap(f => f.evidence.map(e => e.path+":"+e.start+"-"+e.end)),
     ...architectureEvidence.map(e => e.path+":"+e.start+"-"+e.end),
     ...overviewEvidence.map(e => e.path+":"+e.start+"-"+e.end),
+    ...structuredEvidence.map(e => e.path+":"+e.start+"-"+e.end),
   ]);
   for (const file of markdownFiles) {
     const markdown = await fs.readFile(file, "utf8");
@@ -332,7 +345,7 @@ async function main() {
   const evidenceMap = new Map(evidenceSources);
   for (const [source, target] of evidenceSources) {
     const lines = sourceCache.get(source).text.split("\n");
-    const body = [...citedLines.get(source)].sort((a,b)=>a-b).map(line => `<span class="source-line" id="L${line}"><a href="#L${line}">${line}</a> ${htmlEscape(lines[line-1])}</span>`).join("\n");
+    const body = [...citedLines.get(source)].sort((a,b)=>a-b).map(line => `<span class="source-line" id="L${line}"><a href="#L${line}">${line}</a> ${htmlEscape(redactSecrets(lines[line-1]))}</span>`).join("\n");
     await fs.writeFile(path.join(site,target), shell({title:`Evidência · ${source}`,body:`<h1>${htmlEscape(source)}</h1><p>Somente linhas citadas. Snapshot de código, não prova de execução.</p><pre><code>${body}</code></pre>`,page:target,pages:[],assetPrefix:"../",searchIndex:"local",track:"evidence"}));
   }
 

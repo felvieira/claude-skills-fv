@@ -73,7 +73,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **48 specialists in total** (numeric IDs run 01–48; ID 16 was deprecated and the number is reserved, so 47 physical skill files). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **73 specialists in total** (73 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -85,7 +85,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 48 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
+The **Dev Team Kit** is a set of 73 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
 
 **What you get:**
 
@@ -207,7 +207,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 48 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 73 specialists |
 | 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
 | 39 | **Program Router** | decides which `programs/*.yml` pipeline to run from task classification — works alongside the orchestrator (ad-hoc) and the intent-classifier hook (suggestion) |
 | 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
@@ -223,13 +223,18 @@ When the Documenter skill runs inside a project, Repo-Wiki uses the current dire
 <project>/docs/repo-wiki/README.md
 <project>/docs/repo-wiki/overview.md
 <project>/docs/repo-wiki/architecture.md
+<project>/docs/repo-wiki/workflows.md
+<project>/docs/repo-wiki/boundaries.md
+<project>/docs/repo-wiki/database.md
+<project>/docs/repo-wiki/verification.md
+<project>/docs/repo-wiki/modules/
 <project>/docs/repo-wiki/report.json
 <project>/docs/repo-wiki/site/index.html
 ```
 
-The overview summarizes the project's purpose, audience, technologies and versions, entrypoints, useful commands, structure, and documentation limits. The architecture page contains an evidence-backed module map and a Mermaid organogram. The HTML site supports offline search and track filtering.
+The overview summarizes the project's purpose, audience, technologies and versions, entrypoints, useful commands, structure, and documentation limits. The architecture page contains an evidence-backed module map and Mermaid organogram; workflows, boundaries/contracts, database applicability, module deep dives, and execution verification are separate tracks. The HTML site supports offline search and filtering across all tracks without external requests. Snippets with known secret patterns are rejected and sanitized in the evidence renderer.
 
-Use `--repo`, `--output`, and `--site` for explicit destinations. The generator and builder return the effective absolute paths (`repo`, `markdown_dir`, `report`, `site`, and `index`), and the skill handoff must show them to the user together with inventoried/reviewed files, pending tracks, and verification results. The documentation must not merely say “docs generated.”
+Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scripts/run-repo-wiki-runtime.mjs --repo . --output docs/repo-wiki/runtime.json --allow-execution` when local build/test evidence is authorized, then pass `--runtime docs/repo-wiki/runtime.json` to the generator. `--mode Drift` writes a delta report without rewriting docs; `--mode Focused --focus <path>` narrows the inventory. The generator and builder return the effective absolute paths (`repo`, `markdown_dir`, `report`, `site`, and `index`), and the skill handoff must show them to the user together with inventoried/reviewed files, pending tracks and verification results. The documentation must not merely say “docs generated.”
 
 ### Product and Design
 
@@ -680,7 +685,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 48 specialists (*/SKILL.md)
+├── skills/               ← 73 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```

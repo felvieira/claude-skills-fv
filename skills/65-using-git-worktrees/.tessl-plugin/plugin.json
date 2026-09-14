@@ -1,0 +1,9 @@
+{
+  "name": "felvieira/using-git-worktrees",
+  "description": "Skill de isolamento de workspace via git worktree, com deteccao de isolamento existente,\npreferencia por ferramenta nativa (`EnterWorktree`/`ExitWorktree` ou dispatcher do kit\n`/worktree`) antes de cair para `git worktree add` cru, e baseline de testes obrigatoria\nantes de liberar a task para trabalho. Eleva o comando `/worktree` do kit para protocolo\ncompleto quando a situacao exige as garantias extras (evitar aninhamento de worktree,\nconfirmar workspace limpo antes de comecar).\nTrigger em: \"worktree\", \"isolar workspace\", \"trabalhar isolado\", \"workspace isolado\",\n\"criar worktree\", \"ja estou num worktree\", \"aninhar worktree\", \"worktree dentro de worktree\",\n\"baseline de testes\", \"verificar baseline limpa\", \"detectar isolamento\", \"git worktree add\",\n\"ferramenta nativa de worktree\", \"EnterWorktree\", \"plano de implementacao isolado\",\n\"trabalho paralelo sem afetar o branch atual\".",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0"
+}

@@ -272,11 +272,11 @@ O modo Repo-Wiki deve:
 
 Cada regra exige leitura semântica de código executável: condição, efeito, exceções, domínio, natureza (produto, operação ou exemplo), verificação e trecho exato. Listar arquivos, símbolos ou matches de palavras-chave NÃO extrai regras. Documentos, logs e instruções de agentes não são evidência de comportamento. Nunca abrir pastas ocultas para esse levantamento, nem reutilizar seu conteúdo via cache ou páginas de evidência antigas.
 
-Registrar a revisão em `analysis.json` (schema 2, contrato no guia): arquivos lidos com SHA-256 e achados com trechos exatos. O compilador valida os hashes e gera âncoras `[evidence: caminho:linha]`. `observed` significa observado estaticamente, não executado; `inferred` marca interpretação ou proposta. Verificação em runtime é relatada separadamente. Nunca escrever “sempre atualizado”, “completo” ou “funciona” sem prova correspondente.
+Registrar a revisão em `analysis.json` (schema de entrada 2, contrato no guia): arquivos lidos com SHA-256 e achados com trechos exatos. O compilador valida os hashes e gera âncoras `[evidence: caminho:linha]`; o `report.json` emitido usa schema 3. Snippets sensíveis são recusados e o builder aplica mascaramento em defesa adicional. `observed` significa observado estaticamente, não executado; `inferred` marca interpretação ou proposta. Verificação em runtime é relatada separadamente. Nunca escrever “sempre atualizado”, “completo” ou “funciona” sem prova correspondente.
 
 O compilador marca trilhas como `partial` ou `not_reviewed`; ausência de achados não prova ausência no projeto. Publicar arquivos inventariados versus realmente revisados. RPA só é considerado operacional com processo e execução comprovados; um helper de instruções de browser não executa RPA.
 
-Arquitetura é documentada em uma seção própria de `analysis.json`: resumo, nós e relações com evidência exata. O gerador valida IDs, destinos e confiança, compõe `architecture.md` com mapa de módulos e bloco Mermaid, e o builder transforma o bloco em SVG local no site. Relações `observed` vêm de import/call/configuração visível; `inferred` são hipóteses rastreáveis. Não desenhar organograma de pessoas, ownership ou deploy sem evidência correspondente.
+Arquitetura é documentada em uma seção própria de `analysis.json`: resumo, nós e relações com evidência exata. `contexts` e `levels` opcionais separam contexto, containers e componentes, evitando misturar runtime, aplicação consumidora, template e benchmark. O gerador valida IDs, destinos, confiança e evidências, compõe `architecture.md` com mapa de módulos e bloco Mermaid, e o builder transforma o bloco em SVG local no site. Relações `observed` vêm de import/call/configuração visível; `inferred` são hipóteses rastreáveis. Não desenhar organograma de pessoas, ownership ou deploy sem evidência correspondente.
 
 A página `overview.md` resume o sistema para onboarding: propósito, público/consumidor, tecnologias e versões, pontos de entrada, comandos úteis, estrutura relevante e limites. Cada item técnico deve ter evidência de manifesto, configuração ou código; templates e benchmarks são identificados como auxiliares, não misturados com a stack principal.
 
@@ -291,21 +291,24 @@ docs/repo-wiki/
   architecture.md           # containers, componentes e dependências
   workflows.md              # fluxos e sequência de dados
   boundaries.md             # CLI, API, rotas, integrações e configuração
-  database.md               # somente se schema/SQL existir
-  modules/                  # deep dives dos módulos centrais
+  database.md               # schema/SQL ou not_applicable explícito
+  verification.md           # comandos executados e limites da prova
+  modules/                  # índice e deep dives dos módulos centrais
+  runtime.json              # resultado opcional do runner seguro de build/test
   site/                     # HTML offline + busca + evidências locais
-  report.json               # métricas, warnings, SHA e cobertura
+  report.json               # métricas, warnings, SHA, delta e cobertura
 ```
 
 ### Execução local do Repo-Wiki
 
 ```bash
-node scripts/generate-repo-wiki.mjs --repo . --output docs/repo-wiki --mode Full --analysis docs/repo-wiki/analysis.json
+node scripts/run-repo-wiki-runtime.mjs --repo . --output docs/repo-wiki/runtime.json --allow-execution
+node scripts/generate-repo-wiki.mjs --repo . --output docs/repo-wiki --mode Full --analysis docs/repo-wiki/analysis.json --runtime docs/repo-wiki/runtime.json
 node scripts/build-repo-wiki.mjs --repo . --docs docs/repo-wiki --site docs/repo-wiki/site
 node scripts/verify-repo-wiki.mjs --docs docs/repo-wiki --site docs/repo-wiki/site --json
 ```
 
-Antes do comando, o agente deve ler as fontes permitidas e escrever a análise. Sem `--analysis`, o CLI produz apenas inventário e páginas pendentes. O CLI compõe Full; Focused/Incremental/Drift são procedimentos do agente, não flags implementadas. Com `overview` e `architecture` revisados, ele publica oito páginas canônicas: README, visão geral, arquitetura/organograma e as cinco trilhas funcionais. Sem essas seções, as páginas correspondentes permanecem explicitamente `not_reviewed`; não são preenchidas com texto ou diagrama genérico. O HTML usa apenas o manifesto do relatório, busca local, filtro por trilha, snippets citados e SVG local para Mermaid; não copia arquivos-fonte inteiros nem republica páginas antigas fora do manifesto.
+Antes do comando, o agente deve ler as fontes permitidas e escrever a análise. Sem `--analysis`, o CLI produz apenas inventário e páginas pendentes. O runner opcional executa somente scripts `build` e `test` declarados no package escolhido, exige `--allow-execution` e grava saída sanitizada. O CLI aceita Full, Focused, Incremental e Drift: Focused restringe o inventário com `--focus`; Incremental registra delta e não reutiliza semântica sem reapresentação evidenciada; Drift escreve `drift.json` sem reescrever docs. A saída base publica README, overview, architecture, workflows, boundaries, database, verification e as cinco trilhas funcionais; `modules/index.md` e deep dives são adicionados quando houver módulos. Sem essas seções, as páginas correspondentes permanecem explicitamente `not_reviewed` ou `not_applicable`; não são preenchidas com texto ou diagrama genérico. O HTML usa apenas o manifesto do relatório, busca local, filtros por trilha, snippets citados e SVG local para Mermaid; não copia arquivos-fonte inteiros nem republica páginas antigas fora do manifesto.
 
 ### Destino e handoff obrigatório
 

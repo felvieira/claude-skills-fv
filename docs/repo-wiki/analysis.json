@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "scope": "Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "scope": "Leitura estática de quatorze arquivos: dez arquivos de código do núcleo MCP, proteção de ferramentas, entrypoint e schema de template, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
   "reviewed_files": [
     {
       "path": "src/middleware.ts",
@@ -40,7 +40,7 @@
     },
     {
       "path": "mcp-server/package.json",
-      "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
     },
     {
       "path": "mcp-server/tsconfig.json",
@@ -53,6 +53,10 @@
     {
       "path": "bench/ab/package.json",
       "sha256": "a83aba737b3069c359a5e5f52ec0d735ad9efe4cd0675d794a961fc8255bd34f"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/db/schema.ts",
+      "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
     }
   ],
   "overview": {
@@ -71,7 +75,7 @@
     "entrypoints": [
       {"name":"dev-team-kit-mcp","role":"Binário publicado que aponta para dist/index.js.","evidence":[{"path":"mcp-server/package.json","quote":"    \"dev-team-kit-mcp\": \"dist/index.js\""}]},
       {"name":"mcp-server/src/index.ts","role":"Inicializa o McpServer, registra as ferramentas e conecta transporte stdio.","evidence":[{"path":"mcp-server/src/index.ts","quote":"const server = new McpServer({"},{"path":"mcp-server/src/index.ts","quote":"  const transport = new StdioServerTransport();\n  await server.connect(transport);"}]},
-      {"name":"skills/ e .claude/commands/","role":"Superfícies do kit consumidas como skills e comandos do agente; a ligação completa não foi revisada nesta amostra.","evidence":[{"path":"mcp-server/package.json","quote":"  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 43 slash commands"}]}
+      {"name":"skills/ e .claude/commands/","role":"Superfícies do kit consumidas como skills e comandos do agente; a ligação completa não foi revisada nesta amostra.","evidence":[{"path":"mcp-server/package.json","quote":"  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 45 slash commands"}]}
     ],
     "commands": [
       {"command":"npm run build","purpose":"Compila TypeScript para dist.","evidence":[{"path":"mcp-server/package.json","quote":"    \"build\": \"tsc\""}]},
@@ -92,6 +96,76 @@
   },
   "architecture": {
     "summary": "O código revisado se divide em limites de aplicação (middleware e hooks), serviços do núcleo MCP, controles de execução e integrações externas. O mapa abaixo mostra somente relações sustentadas pelos trechos revisados.",
+    "contexts": [
+      {
+        "id": "kit-runtime",
+        "label": "Runtime do kit e servidor MCP",
+        "summary": "Núcleo executável que registra ferramentas MCP, carrega serviços e aplica políticas do kit.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "const server = new McpServer({\n  name: \"dev-team-kit-mcp-server\",\n  version: \"1.0.0\",\n});"
+          }
+        ]
+      },
+      {
+        "id": "consumer-template",
+        "label": "Aplicação consumidora de referência",
+        "summary": "Template web separado do runtime MCP; serve como exemplo de aplicação que o kit pode apoiar.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "    \"dev\": \"next dev --turbopack\",\n    \"build\": \"next build\",\n    \"start\": \"next start\","
+          }
+        ]
+      },
+      {
+        "id": "benchmark",
+        "label": "Benchmark e experimento",
+        "summary": "Área de benchmark independente, sem evidência de ser parte do caminho de produção do servidor.",
+        "evidence": [
+          {
+            "path": "bench/ab/package.json",
+            "quote": "  \"name\": \"ab\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\","
+          }
+        ]
+      }
+    ],
+    "levels": [
+      {
+        "id": "context",
+        "label": "Contexto",
+        "summary": "Kit de skills com servidor MCP, templates de aplicação e benchmarks em contextos distintos.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 45 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development, /canary for gradual rollout, /diff-impact for ripple analysis, /instinct-export|import|promote, /multi-plan, /aside, /skill-health, /pattern-conformity), routing, context packs, working sets, image generation, scraping and session intelligence\","
+          }
+        ]
+      },
+      {
+        "id": "container",
+        "label": "Containers e limites",
+        "summary": "Servidor MCP, hooks/policies, aplicação web de referência e benchmark possuem responsabilidades e ciclos próprios.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"main\": \"dist/index.js\",\n  \"bin\": {\n    \"dev-team-kit-mcp\": \"dist/index.js\"\n  },"
+          }
+        ]
+      },
+      {
+        "id": "component",
+        "label": "Componentes",
+        "summary": "Serviços e bibliotecas internas implementam classificação, pipelines, leitura, deduplicação e guards.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { buildPipeline, getNextStep } from \"./lib/pipeline-engine.js\";"
+          }
+        ]
+      }
+    ],
     "nodes": [
       {
         "id": "auth-middleware",
@@ -364,6 +438,274 @@
       "O mapa cobre somente os oito arquivos revisados; o wiring completo do servidor MCP e as dependências entre todos os módulos ainda precisam de leitura semântica.",
       "Não há evidência suficiente nesta amostra para desenhar organogramas de times, ownership ou deploy.",
       "A relação entre middleware e o hook de autenticação permanece fora do diagrama porque o trecho revisado não mostra uma chamada direta entre eles."
+    ]
+  },
+  "workflows": {
+    "summary": "Os fluxos revisados cobrem a inicialização do servidor MCP, o consumo de uma ferramenta pelo agente e a decisão do guard de comandos. São fluxos estáticos; não representam uma sessão de produção.",
+    "items": [
+      {
+        "id": "mcp-startup",
+        "title": "Inicialização do servidor MCP via stdio",
+        "trigger": "O processo do servidor é iniciado pelo entrypoint compilado.",
+        "actors": "Cliente MCP e processo Node do servidor",
+        "steps": [
+          "Instanciar StdioServerTransport.",
+          "Conectar o servidor MCP ao transporte stdio.",
+          "Manter a comunicação disponível para o cliente."
+        ],
+        "success": "O servidor conecta sem erro e registra a mensagem de execução.",
+        "failure": "Falha de inicialização cai no catch de main e termina o processo com exit 1; não há prova de execução nesta análise.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();\n  await server.connect(transport);"
+          }
+        ]
+      },
+      {
+        "id": "task-routing",
+        "title": "Roteamento de uma tarefa para pipeline e plugins",
+        "trigger": "O cliente chama a ferramenta devkit_route_task com uma descrição.",
+        "actors": "Cliente MCP, classifier, pipeline engine e plugin router",
+        "steps": [
+          "Receber description e project_context opcionais.",
+          "Classificar a tarefa.",
+          "Construir o pipeline correspondente.",
+          "Consultar a composição de plugins.",
+          "Retornar a composição ao cliente."
+        ],
+        "success": "O resultado contém o tipo, as etapas do pipeline e a composição roteada.",
+        "failure": "Falhas do roteador ou de dependências podem rejeitar a chamada; o contrato de erro completo não foi revisado nesta amostra.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "server.registerTool(\n  \"devkit_route_task\","
+          }
+        ]
+      },
+      {
+        "id": "permission-decision",
+        "title": "Decomposição de comando para decisão do guard",
+        "trigger": "O hook recebe um evento Bash com comando composto.",
+        "actors": "Hook de permissão e comando Bash",
+        "steps": [
+          "Extrair o comando do payload do hook.",
+          "Separar substituições e segmentos shell.",
+          "Normalizar aspas simples em barewords.",
+          "Comparar os segmentos com a escada de permissões.",
+          "Permitir ou bloquear conforme a regra encontrada."
+        ],
+        "success": "Uma decisão estruturada é escrita no stdout quando o hook está habilitado.",
+        "failure": "Payload inválido ou configuração desabilitada segue pelo caminho allow; a precedência de múltiplas regras permanece uma melhoria registrada.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  const segments = [command];"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "Não há evidência de uma chamada MCP real, de timeout/retry de ferramenta ou de execução de uma automação externa.",
+      "Fluxos de autenticação do app consumidor não foram tratados como fluxo do servidor MCP."
+    ]
+  },
+  "boundaries": {
+    "summary": "Os boundaries observados se concentram no transporte MCP, no binário Node e na entrada de comandos do hook. Contratos HTTP externos exigem revisão adicional de cada service.",
+    "items": [
+      {
+        "id": "mcp-stdio",
+        "kind": "transport",
+        "name": "Servidor MCP ↔ cliente",
+        "interface": "StdioServerTransport conectado por server.connect(transport)",
+        "auth": "Não documentada neste transporte; autorização de ferramentas é uma preocupação separada.",
+        "input": "Mensagens MCP recebidas no stdio.",
+        "output": "Respostas e resultados das ferramentas MCP no stdio.",
+        "errors": "Falha em main registra erro e termina com exit 1.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();\n  await server.connect(transport);"
+          }
+        ]
+      },
+      {
+        "id": "route-tool",
+        "kind": "mcp-tool",
+        "name": "devkit_route_task",
+        "interface": "Ferramenta MCP registrada com description e project_context opcionais.",
+        "auth": "Nenhum mecanismo de autenticação foi observado no registro desta ferramenta.",
+        "input": "Descrição da tarefa e contexto opcional do projeto.",
+        "output": "Tipo de tarefa, etapas do pipeline e composição de plugins.",
+        "errors": "O contrato completo de erros do classifier/plugin-router não foi revisado nesta amostra.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "server.registerTool(\n  \"devkit_route_task\","
+          }
+        ]
+      },
+      {
+        "id": "package-entrypoint",
+        "kind": "cli",
+        "name": "dev-team-kit-mcp",
+        "interface": "Binário npm que aponta para dist/index.js.",
+        "auth": "Nenhuma autenticação no launcher; services podem exigir env vars.",
+        "input": "Execução do binário e mensagens MCP no processo.",
+        "output": "Servidor MCP compilado.",
+        "errors": "Erros de compilação ou inicialização impedem o processo.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"dev-team-kit-mcp\": \"dist/index.js\""
+          }
+        ]
+      },
+      {
+        "id": "environment-loader",
+        "kind": "configuration",
+        "name": "Arquivos de ambiente",
+        "interface": "loadEnvFile lê .env.local e .env no projeto e no KIT_ROOT.",
+        "auth": "Valores são credenciais potenciais e não devem ser publicados.",
+        "input": "Arquivos de ambiente e process.env.",
+        "output": "Variáveis disponíveis para services.",
+        "errors": "Falhas de leitura são capturadas e seguem para o próximo arquivo/base.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  for (const envFile of [\".env.local\", \".env\"]) {"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "Os endpoints Brave, Firecrawl e FAL aparecem no código, mas seus services não foram incluídos na revisão semântica deste snapshot.",
+      "Não há exemplos de request/response MCP completos nem matriz de erros por ferramenta."
+    ]
+  },
+  "database": {
+    "status": "partial",
+    "summary": "O template stack-default contém um schema Drizzle/Postgres separado do runtime principal do servidor MCP. O snapshot documenta as tabelas Better Auth visíveis no schema, sem afirmar migrações ou banco implantado.",
+    "entities": [
+      {
+        "name": "user",
+        "kind": "Drizzle pgTable",
+        "fields": "id, name, email, emailVerified, image, createdAt, updatedAt",
+        "relations": "É referenciada por session e account via userId.",
+        "evidence": [{"path":"templates/stack-default/apps/web/src/db/schema.ts","quote":"export const user = pgTable(\"user\", {"}]
+      },
+      {
+        "name": "session",
+        "kind": "Drizzle pgTable",
+        "fields": "id, expiresAt, token, createdAt, updatedAt, ipAddress, userAgent, userId",
+        "relations": "userId referencia user.id com onDelete cascade.",
+        "evidence": [{"path":"templates/stack-default/apps/web/src/db/schema.ts","quote":"export const session = pgTable(\"session\", {"}]
+      },
+      {
+        "name": "account",
+        "kind": "Drizzle pgTable",
+        "fields": "id, accountId, providerId, userId, accessToken, refreshToken, idToken, scope, password, timestamps",
+        "relations": "userId referencia user.id com onDelete cascade.",
+        "evidence": [{"path":"templates/stack-default/apps/web/src/db/schema.ts","quote":"export const account = pgTable(\"account\", {"}]
+      },
+      {
+        "name": "verification",
+        "kind": "Drizzle pgTable",
+        "fields": "id, identifier, value, expiresAt, timestamps",
+        "relations": "Nenhuma relação explícita foi observada neste schema.",
+        "evidence": [{"path":"templates/stack-default/apps/web/src/db/schema.ts","quote":"export const verification = pgTable(\"verification\", {"}]
+      }
+    ],
+    "gaps": [
+      "O template não foi tratado como banco do servidor MCP principal.",
+      "Migrações, índices adicionais, queries de domínio e banco de produção não foram executados ou revisados."
+    ]
+  },
+  "modules": {
+    "summary": "Deep dives dos módulos centrais revisados, selecionados por papel no entrypoint, fan-in aparente e impacto de segurança/execução.",
+    "items": [
+      {
+        "id": "mcp-entrypoint",
+        "name": "MCP server entrypoint",
+        "path": "mcp-server/src/index.ts",
+        "purpose": "Inicializa configuração, registra ferramentas MCP e conecta o transporte stdio.",
+        "inputs": "Payloads MCP, project context e variáveis de ambiente.",
+        "outputs": "Resultados de ferramentas e processo MCP conectado.",
+        "dependencies": "McpServer, StdioServerTransport, Zod, services e libs internas.",
+        "tests": "Build e testes compilados do pacote foram executados localmente; cobertura por ferramenta não foi medida.",
+        "risks": "Arquivo grande concentra registro e composição de muitas ferramentas; falhas de inicialização afetam todo o servidor.",
+        "evidence": [{"path":"mcp-server/src/index.ts","quote":"const server = new McpServer({"}]
+      },
+      {
+        "id": "pipeline-engine",
+        "name": "Pipeline engine",
+        "path": "mcp-server/src/lib/pipeline-engine.ts",
+        "purpose": "Transforma o tipo de tarefa em configuração ordenada de etapas.",
+        "inputs": "TaskType e índice da etapa corrente.",
+        "outputs": "PipelineConfig e próxima etapa ou null.",
+        "dependencies": "Tipo TaskType definido pelo classifier.",
+        "tests": "A suíte do pacote foi executada, mas não há teste dedicado de todos os índices nesta revisão.",
+        "risks": "Índices negativos, fracionários e NaN ainda são uma melhoria proposta.",
+        "evidence": [{"path":"mcp-server/src/lib/pipeline-engine.ts","quote":"export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {"}]
+      },
+      {
+        "id": "file-reader",
+        "name": "File reader",
+        "path": "mcp-server/src/services/file-reader.ts",
+        "purpose": "Lê arquivos permitidos e monta snippets para as ferramentas do kit.",
+        "inputs": "Caminhos e tipos de snippet.",
+        "outputs": "Texto de arquivo ou lista de snippets; erro de leitura vira null no helper observado.",
+        "dependencies": "Filesystem do processo Node.",
+        "tests": "Não foi encontrado teste dedicado do caminho de erro de filesystem nesta amostra.",
+        "risks": "Catch amplo pode esconder permissão/I/O como ausência; há melhoria MEL-03 para separar os casos.",
+        "evidence": [{"path":"mcp-server/src/services/file-reader.ts","quote":"export async function readFile(filePath: string): Promise<string | null> {"}]
+      },
+      {
+        "id": "permission-guard",
+        "name": "Permission ladder guard",
+        "path": "hooks/scripts/permission-ladder-guard.mjs",
+        "purpose": "Classifica comandos Bash em lanes de permissão e retorna decisão ao hook.",
+        "inputs": "Payload JSON do evento de ferramenta.",
+        "outputs": "JSON de continuidade ou bloqueio no stdout.",
+        "dependencies": "Configuração do hook, regex da ladder e parsing de segmentos shell.",
+        "tests": "A revisão leu a decomposição e a suíte geral do repositório foi validada; combinações de precedência continuam pendentes.",
+        "risks": "Regex não substitui parser shell completo; a precedência de regras em comandos compostos exige cobertura adversarial.",
+        "evidence": [{"path":"hooks/scripts/permission-ladder-guard.mjs","quote":"  const segments = [command];"}]
+      }
+    ],
+    "gaps": [
+      "O deep dive ainda não cobre todos os módulos com alto fan-in do pacote MCP.",
+      "Owners não foram preenchidos porque não há evidência de ownership no recorte revisado."
+    ]
+  },
+  "runtime_verification": {
+    "status": "pass",
+    "commands": [
+      {
+        "command": "npm run build",
+        "purpose": "Compilar o servidor MCP TypeScript.",
+        "status": "pass",
+        "exit_code": 0,
+        "notes": "Executado localmente em mcp-server com Node v22.23.2."
+      },
+      {
+        "command": "npm test",
+        "purpose": "Executar testes compilados de deduplicação, manifesto e roteador de plugins.",
+        "status": "pass",
+        "exit_code": 0,
+        "notes": "Executado localmente; 11 + 4 + 25 casos reportados sem falha."
+      }
+    ],
+    "gaps": [
+      "O servidor MCP não foi iniciado contra um cliente real nem chamado por uma sessão MCP.",
+      "Nenhuma integração externa, deploy ou automação de browser foi executada."
     ]
   },
   "findings": [

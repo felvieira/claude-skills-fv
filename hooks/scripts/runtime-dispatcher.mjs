@@ -138,7 +138,11 @@ function run() {
 
   const payload = normalize(input, event);
   const serialized = JSON.stringify(payload);
-  const response = { continue: true };
+  // Stop hooks have a narrower contract in Codex: an allowed stop must emit
+  // an empty JSON object, while a blocked stop uses decision/reason. The
+  // generic `continue` field is valid for turn/tool hooks but is rejected by
+  // Codex's Stop parser.
+  const response = event === "Stop" ? {} : { continue: true };
   const contexts = [];
   const systemMessages = [];
 
@@ -164,16 +168,26 @@ function run() {
     }
   }
 
-  // Stop has a stricter response schema in both runtimes; its sensors are
-  // side-effect/reminder hooks, so only the portable continuation field is emitted.
+  // Stop has a stricter response schema in Codex. Keep block decisions, but
+  // send non-blocking reminders to stderr so they remain visible without
+  // making the JSON invalid for the Stop event.
   if (event !== "Stop" && (contexts.length || Object.keys(response.hookSpecificOutput || {}).length)) {
     response.hookSpecificOutput ||= {};
     response.hookSpecificOutput.hookEventName = event;
     if (contexts.length) response.hookSpecificOutput.additionalContext = contexts.join("\n\n");
   } else if (event === "Stop") {
     delete response.hookSpecificOutput;
+    if (systemMessages.length && response.decision !== "block") {
+      process.stderr.write(`${systemMessages.join("\n\n")}\n`);
+    }
+    if (response.decision !== "block") {
+      delete response.systemMessage;
+      delete response.reason;
+      delete response.stopReason;
+      delete response.suppressOutput;
+    }
   }
-  if (systemMessages.length) response.systemMessage = systemMessages.join("\n");
+  if (event !== "Stop" && systemMessages.length) response.systemMessage = systemMessages.join("\n");
   process.stdout.write(JSON.stringify(response));
 }
 

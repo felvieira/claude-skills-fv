@@ -1,0 +1,9 @@
+{
+  "name": "felvieira/cost-tracker",
+  "description": "Skill de rastreamento de custo por sessao. Monitora tokens consumidos, chamadas de API (fal.ai, Brave, Firecrawl),\ntempo de execucao e custo estimado por skill no pipeline. Gera relatorio de custo ao final da sessao.\nTrigger em: \"custo\", \"cost\", \"quanto gastou\", \"token usage\", \"consumo\", \"budget\", \"relatorio de custo\".",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0"
+}

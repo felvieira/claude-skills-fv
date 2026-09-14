@@ -73,7 +73,7 @@ Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que fu
 - **SEO** que otimiza antes do Google indexar — seu site nasce achável
 
 ### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **37 especialistas no total**. Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **73 especialistas no total** (73 diretórios de skill instalados; o ID 16 é reservado). Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
 
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
@@ -207,7 +207,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 | 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 37 especialistas |
+| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 73 especialistas |
 | 38 | **Architecture Deepener** | encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural; pareia com skill 23 (Migration & Refactor) para execução |
 | 39 | **Program Router** | decide qual pipeline de `programs/*.yml` rodar a partir da classificação da task — trabalha junto do orchestrator (ad-hoc) e do hook intent-classifier (sugestão) |
 | 40 | **Parallel Dispatcher** | despacha N slices/reviews independentes pra subagents corretamente, evitando a armadilha skill-vs-agent; scatter-gather com isolamento via worktree |
@@ -223,13 +223,18 @@ Ao rodar a skill Documenter dentro de um projeto, o Repo-Wiki usa a pasta corren
 <projeto>/docs/repo-wiki/README.md
 <projeto>/docs/repo-wiki/overview.md
 <projeto>/docs/repo-wiki/architecture.md
+<projeto>/docs/repo-wiki/workflows.md
+<projeto>/docs/repo-wiki/boundaries.md
+<projeto>/docs/repo-wiki/database.md
+<projeto>/docs/repo-wiki/verification.md
+<projeto>/docs/repo-wiki/modules/
 <projeto>/docs/repo-wiki/report.json
 <projeto>/docs/repo-wiki/site/index.html
 ```
 
-A visão geral resume o propósito do projeto, público, tecnologias e versões, entradas, comandos úteis, estrutura e limites da documentação. A página de arquitetura traz um mapa de módulos baseado em evidências e um organograma Mermaid. O site HTML permite busca e filtro por trilha sem depender de internet.
+A visão geral resume o propósito do projeto, público, tecnologias e versões, entradas, comandos úteis, estrutura e limites da documentação. A arquitetura traz um mapa de módulos baseado em evidências e um organograma Mermaid; workflows, boundaries/contratos, aplicabilidade de banco, deep dives de módulos e verificação de execução ficam em trilhas próprias. O site HTML permite busca e filtro por todas as trilhas sem depender de internet. Snippets com padrões conhecidos de segredo são recusados e também mascarados no renderer de evidências.
 
-O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. O gerador e o builder retornam os caminhos absolutos efetivos (`repo`, `markdown_dir`, `report`, `site` e `index`), e o handoff da skill deve apresentar esses caminhos ao usuário junto com arquivos inventariados/revisados, trilhas pendentes e verificações. A documentação não deve dizer apenas “docs geradas”.
+O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode `node scripts/run-repo-wiki-runtime.mjs --repo . --output docs/repo-wiki/runtime.json --allow-execution` quando a execução local de build/test estiver autorizada e passe `--runtime docs/repo-wiki/runtime.json` ao gerador. `--mode Drift` grava um relatório de alterações sem reescrever a documentação; `--mode Focused --focus <caminho>` restringe o inventário. O gerador e o builder retornam os caminhos absolutos efetivos (`repo`, `markdown_dir`, `report`, `site` e `index`), e o handoff da skill deve apresentar esses caminhos ao usuário junto com arquivos inventariados/revisados, trilhas pendentes e verificações. A documentação não deve dizer apenas “docs geradas”.
 
 ### Produto e Design
 
@@ -657,7 +662,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py e utilitários
 ├── setup/                ← install.sh multi-plataforma
-├── skills/               ← 37 specialists (*/SKILL.md)
+├── skills/               ← 73 specialists (*/SKILL.md)
 ├── src/                  ← hooks, stores, components e middleware reutilizáveis
 └── templates/            ← handoff, plano, review, rejeição
 ```

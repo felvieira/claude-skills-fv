@@ -1,13 +1,16 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
+  "generator_version": "3.0.0",
   "mode": "Full",
+  "focus": null,
   "project": "claude-skills-fv",
-  "sha": "2fe7f833edb8d0dfa450bdbc87cb067a3fc2cb3c",
+  "sha": "696db09fbe94933af5e8cd925278ef76d3f8b8c2",
   "branch": "main",
   "dirty": true,
-  "generated_at": "2026-09-14T17:19:04.056Z",
+  "working_tree_sha": "7bba3ed55be51ade23855415d80542bcca8df27ce1d26b5ccc13718138365d69",
+  "generated_at": "2026-09-14T19:22:04.639Z",
   "analysis_method": "agent-reviewed-code",
-  "scope": "Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "scope": "Leitura estática de quatorze arquivos: dez arquivos de código do núcleo MCP, proteção de ferramentas, entrypoint e schema de template, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
   "exclusions": [
     "qualquer componente de caminho iniciado por ponto",
     "gitignore",
@@ -186,7 +189,7 @@
     },
     {
       "path": "hooks/scripts/runtime-dispatcher.mjs",
-      "sha256": "6fc58e39225fa040a0bf8c18df1b256dc40b5d97a2b0e8a7be1ea03cf324e278"
+      "sha256": "35b4d7019cdee5cda5c949f449795ba0d7510eb77993f24a2e5e940a9ce7ca66"
     },
     {
       "path": "hooks/scripts/session-event-logger.mjs",
@@ -218,7 +221,7 @@
     },
     {
       "path": "mcp-server/package.json",
-      "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+      "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
     },
     {
       "path": "mcp-server/src/constants.ts",
@@ -414,7 +417,7 @@
     },
     {
       "path": "scripts/build-repo-wiki.mjs",
-      "sha256": "37695e6869cf44ce3cd7d2682093d4d4bcb16a5e9463d7fa8bd14d170a2ef278"
+      "sha256": "e4b1fc7694973d58886e249193ed6df5d4c9a961f8a00981aff4ff31c91807c1"
     },
     {
       "path": "scripts/check-consistency.mjs",
@@ -477,10 +480,6 @@
       "sha256": "7358e96cec292df01bea5ee55c282bd318ac4852e827a067040413f8b9829715"
     },
     {
-      "path": "scripts/generate-repo-wiki.mjs",
-      "sha256": "a040ea0f9052dccfdf51a0975e5d19c80feab24e21513d891f890d43c3a3079a"
-    },
-    {
       "path": "scripts/git-hooks/install.sh",
       "sha256": "fd122f0f64ba056441a801e8729f0c15784ddfe1109198399becd6fab111374e"
     },
@@ -521,6 +520,10 @@
       "sha256": "1298c7d64ab8db8e68195fbcb0208e2c579540a5ee67bdd5c0ff3093d194e254"
     },
     {
+      "path": "scripts/repo-wiki-sources.mjs",
+      "sha256": "b47fdc8f52942d6031c7344adaf0b39784bfaa40969a6be9f1a8022ddfb95b29"
+    },
+    {
       "path": "scripts/route-feedback.mjs",
       "sha256": "bdb5fb389bb3aa448717e460036db8d2ab2c6498e2ee463d7aa799c5b53c0474"
     },
@@ -535,6 +538,10 @@
     {
       "path": "scripts/run-program.mjs",
       "sha256": "c54c076911ccee36e4ec8bb528ba0f2ce66a7220820a7392f86ec96439610937"
+    },
+    {
+      "path": "scripts/run-repo-wiki-runtime.mjs",
+      "sha256": "61102744ad5387d1608db09581d033f0022d4fbaac75e9c4082775e34024ad19"
     },
     {
       "path": "scripts/savings-report.mjs",
@@ -567,10 +574,6 @@
     {
       "path": "scripts/test-event-log.mjs",
       "sha256": "53d766823c4fd23fcedcd6c28a5ccec46041dbe9fcfb98db4644ee61d0d55f34"
-    },
-    {
-      "path": "scripts/test-repo-wiki.mjs",
-      "sha256": "b52ff217998ab137eeef48bbee4e3964416acb623af509cd2b9c0e1011134595"
     },
     {
       "path": "scripts/test-seen-queries.mjs",
@@ -926,18 +929,41 @@
     "mcp-server/package.json",
     "mcp-server/tsconfig.json",
     "templates/stack-default/apps/web/package.json",
-    "bench/ab/package.json"
+    "bench/ab/package.json",
+    "templates/stack-default/apps/web/src/db/schema.ts"
   ],
   "skipped": [
     {
-      "path": "scripts/repo-wiki-sources.mjs",
-      "reason": "Fonte sensível/binária: scripts/repo-wiki-sources.mjs"
+      "path": "scripts/generate-repo-wiki.mjs",
+      "reason": "Fonte sensível/binária: scripts/generate-repo-wiki.mjs"
+    },
+    {
+      "path": "scripts/test-repo-wiki.mjs",
+      "reason": "Fonte sensível/binária: scripts/test-repo-wiki.mjs"
     }
   ],
   "coverage": {
     "source_files": 224,
-    "reviewed_files": 13,
-    "unreviewed_files": 211
+    "reviewed_files": 14,
+    "unreviewed_files": 210,
+    "by_extension": {
+      ".mjs": 157,
+      ".json": 4,
+      ".js": 3,
+      ".ts": 46,
+      ".py": 6,
+      ".sh": 3,
+      ".tsx": 3,
+      "makefile": 1,
+      "dockerfile": 1
+    },
+    "by_domain": {
+      "business_rules": 6,
+      "security": 2,
+      "automations": 1,
+      "rpa": 1,
+      "improvements": 4
+    }
   },
   "tracks": {
     "overview": {
@@ -947,8 +973,30 @@
     },
     "architecture": {
       "status": "partial",
+      "contexts": 3,
+      "levels": 3,
       "nodes": 15,
       "edges": 7
+    },
+    "workflows": {
+      "status": "partial",
+      "workflows": 3
+    },
+    "boundaries": {
+      "status": "partial",
+      "boundaries": 4
+    },
+    "database": {
+      "status": "partial",
+      "entities": 4
+    },
+    "modules": {
+      "status": "partial",
+      "modules": 4
+    },
+    "verification": {
+      "status": "pass",
+      "commands": 2
     },
     "business_rules": {
       "status": "partial",
@@ -1318,7 +1366,7 @@
             "quote": "    \"node\": \">=18\"",
             "start": 46,
             "end": 46,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       },
@@ -1332,14 +1380,14 @@
             "quote": "    \"typescript\": \"^5.7.0\"",
             "start": 39,
             "end": 39,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           },
           {
             "path": "mcp-server/package.json",
             "quote": "    \"build\": \"tsc\"",
             "start": 11,
             "end": 11,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       },
@@ -1353,7 +1401,7 @@
             "quote": "    \"@modelcontextprotocol/sdk\": \"^1.12.1\"",
             "start": 32,
             "end": 32,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           },
           {
             "path": "mcp-server/src/index.ts",
@@ -1374,7 +1422,7 @@
             "quote": "    \"zod\": \"^3.24.0\"",
             "start": 35,
             "end": 35,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           },
           {
             "path": "mcp-server/src/index.ts",
@@ -1395,7 +1443,7 @@
             "quote": "  \"type\": \"module\",",
             "start": 9,
             "end": 9,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           },
           {
             "path": "mcp-server/tsconfig.json",
@@ -1466,7 +1514,7 @@
             "quote": "    \"dev-team-kit-mcp\": \"dist/index.js\"",
             "start": 7,
             "end": 7,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       },
@@ -1496,10 +1544,10 @@
         "evidence": [
           {
             "path": "mcp-server/package.json",
-            "quote": "  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 43 slash commands",
+            "quote": "  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 45 slash commands",
             "start": 4,
             "end": 4,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       }
@@ -1514,7 +1562,7 @@
             "quote": "    \"build\": \"tsc\"",
             "start": 11,
             "end": 11,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       },
@@ -1527,7 +1575,7 @@
             "quote": "    \"start\": \"node dist/index.js\"",
             "start": 13,
             "end": 13,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       },
@@ -1540,7 +1588,7 @@
             "quote": "    \"test\": \"node dist/lib/cross-call-dedup.test.js && node dist/lib/skill-manifest.test.js && node dist/lib/plugin-router.test.js\"",
             "start": 14,
             "end": 14,
-            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
           }
         ]
       }
@@ -1643,6 +1691,94 @@
   "architecture": {
     "status": "partial",
     "summary": "O código revisado se divide em limites de aplicação (middleware e hooks), serviços do núcleo MCP, controles de execução e integrações externas. O mapa abaixo mostra somente relações sustentadas pelos trechos revisados.",
+    "contexts": [
+      {
+        "id": "kit-runtime",
+        "label": "Runtime do kit e servidor MCP",
+        "summary": "Núcleo executável que registra ferramentas MCP, carrega serviços e aplica políticas do kit.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "const server = new McpServer({\n  name: \"dev-team-kit-mcp-server\",\n  version: \"1.0.0\",\n});",
+            "start": 61,
+            "end": 64,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "consumer-template",
+        "label": "Aplicação consumidora de referência",
+        "summary": "Template web separado do runtime MCP; serve como exemplo de aplicação que o kit pode apoiar.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "    \"dev\": \"next dev --turbopack\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",",
+            "start": 6,
+            "end": 8,
+            "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+          }
+        ]
+      },
+      {
+        "id": "benchmark",
+        "label": "Benchmark e experimento",
+        "summary": "Área de benchmark independente, sem evidência de ser parte do caminho de produção do servidor.",
+        "evidence": [
+          {
+            "path": "bench/ab/package.json",
+            "quote": "  \"name\": \"ab\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\",",
+            "start": 2,
+            "end": 4,
+            "sha256": "a83aba737b3069c359a5e5f52ec0d735ad9efe4cd0675d794a961fc8255bd34f"
+          }
+        ]
+      }
+    ],
+    "levels": [
+      {
+        "id": "context",
+        "label": "Contexto",
+        "summary": "Kit de skills com servidor MCP, templates de aplicação e benchmarks em contextos distintos.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 45 slash commands (incl. /constitution, /analyze, /checklist for spec-driven development, /canary for gradual rollout, /diff-impact for ripple analysis, /instinct-export|import|promote, /multi-plan, /aside, /skill-health, /pattern-conformity), routing, context packs, working sets, image generation, scraping and session intelligence\",",
+            "start": 4,
+            "end": 4,
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
+          }
+        ]
+      },
+      {
+        "id": "container",
+        "label": "Containers e limites",
+        "summary": "Servidor MCP, hooks/policies, aplicação web de referência e benchmark possuem responsabilidades e ciclos próprios.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"main\": \"dist/index.js\",\n  \"bin\": {\n    \"dev-team-kit-mcp\": \"dist/index.js\"\n  },",
+            "start": 5,
+            "end": 8,
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
+          }
+        ]
+      },
+      {
+        "id": "component",
+        "label": "Componentes",
+        "summary": "Serviços e bibliotecas internas implementam classificação, pipelines, leitura, deduplicação e guards.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { buildPipeline, getNextStep } from \"./lib/pipeline-engine.js\";",
+            "start": 16,
+            "end": 16,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      }
+    ],
     "nodes": [
       {
         "id": "auth-middleware",
@@ -1657,7 +1793,8 @@
             "end": 47,
             "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "auth-hook",
@@ -1672,7 +1809,8 @@
             "end": 35,
             "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "auth-api",
@@ -1687,7 +1825,8 @@
             "end": 33,
             "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "pagination-hook",
@@ -1702,7 +1841,8 @@
             "end": 29,
             "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "paginated-query",
@@ -1717,7 +1857,8 @@
             "end": 5,
             "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "pipeline-engine",
@@ -1732,7 +1873,8 @@
             "end": 158,
             "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "task-classifier",
@@ -1747,7 +1889,8 @@
             "end": 1,
             "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "file-reader",
@@ -1762,7 +1905,8 @@
             "end": 103,
             "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "filesystem",
@@ -1777,7 +1921,8 @@
             "end": 10,
             "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "playwright-adapter",
@@ -1792,7 +1937,8 @@
             "end": 16,
             "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "playwright-mcp",
@@ -1807,7 +1953,8 @@
             "end": 1,
             "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "dedup-cache",
@@ -1822,7 +1969,8 @@
             "end": 179,
             "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "similarity-engine",
@@ -1837,7 +1985,8 @@
             "end": 196,
             "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "permission-guard",
@@ -1852,7 +2001,8 @@
             "end": 106,
             "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
           }
-        ]
+        ],
+        "level": "component"
       },
       {
         "id": "bash-tool",
@@ -1867,7 +2017,8 @@
             "end": 106,
             "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
           }
-        ]
+        ],
+        "level": "component"
       }
     ],
     "edges": [
@@ -1983,28 +2134,419 @@
       "A relação entre middleware e o hook de autenticação permanece fora do diagrama porque o trecho revisado não mostra uma chamada direta entre eles."
     ]
   },
+  "workflows": {
+    "status": "partial",
+    "summary": "Os fluxos revisados cobrem a inicialização do servidor MCP, o consumo de uma ferramenta pelo agente e a decisão do guard de comandos. São fluxos estáticos; não representam uma sessão de produção.",
+    "items": [
+      {
+        "id": "mcp-startup",
+        "title": "Inicialização do servidor MCP via stdio",
+        "trigger": "O processo do servidor é iniciado pelo entrypoint compilado.",
+        "actors": "Cliente MCP e processo Node do servidor",
+        "steps": [
+          "Instanciar StdioServerTransport.",
+          "Conectar o servidor MCP ao transporte stdio.",
+          "Manter a comunicação disponível para o cliente."
+        ],
+        "success": "O servidor conecta sem erro e registra a mensagem de execução.",
+        "failure": "Falha de inicialização cai no catch de main e termina o processo com exit 1; não há prova de execução nesta análise.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();\n  await server.connect(transport);",
+            "start": 1505,
+            "end": 1506,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "task-routing",
+        "title": "Roteamento de uma tarefa para pipeline e plugins",
+        "trigger": "O cliente chama a ferramenta devkit_route_task com uma descrição.",
+        "actors": "Cliente MCP, classifier, pipeline engine e plugin router",
+        "steps": [
+          "Receber description e project_context opcionais.",
+          "Classificar a tarefa.",
+          "Construir o pipeline correspondente.",
+          "Consultar a composição de plugins.",
+          "Retornar a composição ao cliente."
+        ],
+        "success": "O resultado contém o tipo, as etapas do pipeline e a composição roteada.",
+        "failure": "Falhas do roteador ou de dependências podem rejeitar a chamada; o contrato de erro completo não foi revisado nesta amostra.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "server.registerTool(\n  \"devkit_route_task\",",
+            "start": 70,
+            "end": 71,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "permission-decision",
+        "title": "Decomposição de comando para decisão do guard",
+        "trigger": "O hook recebe um evento Bash com comando composto.",
+        "actors": "Hook de permissão e comando Bash",
+        "steps": [
+          "Extrair o comando do payload do hook.",
+          "Separar substituições e segmentos shell.",
+          "Normalizar aspas simples em barewords.",
+          "Comparar os segmentos com a escada de permissões.",
+          "Permitir ou bloquear conforme a regra encontrada."
+        ],
+        "success": "Uma decisão estruturada é escrita no stdout quando o hook está habilitado.",
+        "failure": "Payload inválido ou configuração desabilitada segue pelo caminho allow; a precedência de múltiplas regras permanece uma melhoria registrada.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  const segments = [command];",
+            "start": 116,
+            "end": 116,
+            "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "Não há evidência de uma chamada MCP real, de timeout/retry de ferramenta ou de execução de uma automação externa.",
+      "Fluxos de autenticação do app consumidor não foram tratados como fluxo do servidor MCP."
+    ]
+  },
+  "boundaries": {
+    "status": "partial",
+    "summary": "Os boundaries observados se concentram no transporte MCP, no binário Node e na entrada de comandos do hook. Contratos HTTP externos exigem revisão adicional de cada service.",
+    "items": [
+      {
+        "id": "mcp-stdio",
+        "kind": "transport",
+        "name": "Servidor MCP ↔ cliente",
+        "interface": "StdioServerTransport conectado por server.connect(transport)",
+        "auth": "Não documentada neste transporte; autorização de ferramentas é uma preocupação separada.",
+        "input": "Mensagens MCP recebidas no stdio.",
+        "output": "Respostas e resultados das ferramentas MCP no stdio.",
+        "errors": "Falha em main registra erro e termina com exit 1.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();\n  await server.connect(transport);",
+            "start": 1505,
+            "end": 1506,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "route-tool",
+        "kind": "mcp-tool",
+        "name": "devkit_route_task",
+        "interface": "Ferramenta MCP registrada com description e project_context opcionais.",
+        "auth": "Nenhum mecanismo de autenticação foi observado no registro desta ferramenta.",
+        "input": "Descrição da tarefa e contexto opcional do projeto.",
+        "output": "Tipo de tarefa, etapas do pipeline e composição de plugins.",
+        "errors": "O contrato completo de erros do classifier/plugin-router não foi revisado nesta amostra.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "server.registerTool(\n  \"devkit_route_task\",",
+            "start": 70,
+            "end": 71,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "package-entrypoint",
+        "kind": "cli",
+        "name": "dev-team-kit-mcp",
+        "interface": "Binário npm que aponta para dist/index.js.",
+        "auth": "Nenhuma autenticação no launcher; services podem exigir env vars.",
+        "input": "Execução do binário e mensagens MCP no processo.",
+        "output": "Servidor MCP compilado.",
+        "errors": "Erros de compilação ou inicialização impedem o processo.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"dev-team-kit-mcp\": \"dist/index.js\"",
+            "start": 7,
+            "end": 7,
+            "sha256": "f6813cffb396c1ace24454b850dbb3b0dd8d55cd8b95637ef6c114b0675744c4"
+          }
+        ]
+      },
+      {
+        "id": "environment-loader",
+        "kind": "configuration",
+        "name": "Arquivos de ambiente",
+        "interface": "loadEnvFile lê .env.local e .env no projeto e no KIT_ROOT.",
+        "auth": "Valores são credenciais potenciais e não devem ser publicados.",
+        "input": "Arquivos de ambiente e process.env.",
+        "output": "Variáveis disponíveis para services.",
+        "errors": "Falhas de leitura são capturadas e seguem para o próximo arquivo/base.",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  for (const envFile of [\".env.local\", \".env\"]) {",
+            "start": 35,
+            "end": 35,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "Os endpoints Brave, Firecrawl e FAL aparecem no código, mas seus services não foram incluídos na revisão semântica deste snapshot.",
+      "Não há exemplos de request/response MCP completos nem matriz de erros por ferramenta."
+    ]
+  },
+  "database": {
+    "status": "partial",
+    "summary": "O template stack-default contém um schema Drizzle/Postgres separado do runtime principal do servidor MCP. O snapshot documenta as tabelas Better Auth visíveis no schema, sem afirmar migrações ou banco implantado.",
+    "entities": [
+      {
+        "name": "user",
+        "kind": "Drizzle pgTable",
+        "fields": "id, name, email, emailVerified, image, createdAt, updatedAt",
+        "relations": "É referenciada por session e account via userId.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/src/db/schema.ts",
+            "quote": "export const user = pgTable(\"user\", {",
+            "start": 26,
+            "end": 26,
+            "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
+          }
+        ]
+      },
+      {
+        "name": "session",
+        "kind": "Drizzle pgTable",
+        "fields": "id, expiresAt, token, createdAt, updatedAt, ipAddress, userAgent, userId",
+        "relations": "userId referencia user.id com onDelete cascade.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/src/db/schema.ts",
+            "quote": "export const session = pgTable(\"session\", {",
+            "start": 36,
+            "end": 36,
+            "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
+          }
+        ]
+      },
+      {
+        "name": "account",
+        "kind": "Drizzle pgTable",
+        "fields": "id, accountId, providerId, userId, accessToken, refreshToken, idToken, scope, password, timestamps",
+        "relations": "userId referencia user.id com onDelete cascade.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/src/db/schema.ts",
+            "quote": "export const account = pgTable(\"account\", {",
+            "start": 47,
+            "end": 47,
+            "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
+          }
+        ]
+      },
+      {
+        "name": "verification",
+        "kind": "Drizzle pgTable",
+        "fields": "id, identifier, value, expiresAt, timestamps",
+        "relations": "Nenhuma relação explícita foi observada neste schema.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/src/db/schema.ts",
+            "quote": "export const verification = pgTable(\"verification\", {",
+            "start": 63,
+            "end": 63,
+            "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "O template não foi tratado como banco do servidor MCP principal.",
+      "Migrações, índices adicionais, queries de domínio e banco de produção não foram executados ou revisados."
+    ]
+  },
+  "modules": {
+    "status": "partial",
+    "summary": "Deep dives dos módulos centrais revisados, selecionados por papel no entrypoint, fan-in aparente e impacto de segurança/execução.",
+    "items": [
+      {
+        "id": "mcp-entrypoint",
+        "name": "MCP server entrypoint",
+        "path": "mcp-server/src/index.ts",
+        "purpose": "Inicializa configuração, registra ferramentas MCP e conecta o transporte stdio.",
+        "inputs": "Payloads MCP, project context e variáveis de ambiente.",
+        "outputs": "Resultados de ferramentas e processo MCP conectado.",
+        "dependencies": "McpServer, StdioServerTransport, Zod, services e libs internas.",
+        "tests": "Build e testes compilados do pacote foram executados localmente; cobertura por ferramenta não foi medida.",
+        "risks": "Arquivo grande concentra registro e composição de muitas ferramentas; falhas de inicialização afetam todo o servidor.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "const server = new McpServer({",
+            "start": 61,
+            "end": 61,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "id": "pipeline-engine",
+        "name": "Pipeline engine",
+        "path": "mcp-server/src/lib/pipeline-engine.ts",
+        "purpose": "Transforma o tipo de tarefa em configuração ordenada de etapas.",
+        "inputs": "TaskType e índice da etapa corrente.",
+        "outputs": "PipelineConfig e próxima etapa ou null.",
+        "dependencies": "Tipo TaskType definido pelo classifier.",
+        "tests": "A suíte do pacote foi executada, mas não há teste dedicado de todos os índices nesta revisão.",
+        "risks": "Índices negativos, fracionários e NaN ainda são uma melhoria proposta.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {",
+            "start": 158,
+            "end": 158,
+            "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+          }
+        ]
+      },
+      {
+        "id": "file-reader",
+        "name": "File reader",
+        "path": "mcp-server/src/services/file-reader.ts",
+        "purpose": "Lê arquivos permitidos e monta snippets para as ferramentas do kit.",
+        "inputs": "Caminhos e tipos de snippet.",
+        "outputs": "Texto de arquivo ou lista de snippets; erro de leitura vira null no helper observado.",
+        "dependencies": "Filesystem do processo Node.",
+        "tests": "Não foi encontrado teste dedicado do caminho de erro de filesystem nesta amostra.",
+        "risks": "Catch amplo pode esconder permissão/I/O como ausência; há melhoria MEL-03 para separar os casos.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "export async function readFile(filePath: string): Promise<string | null> {",
+            "start": 8,
+            "end": 8,
+            "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+          }
+        ]
+      },
+      {
+        "id": "permission-guard",
+        "name": "Permission ladder guard",
+        "path": "hooks/scripts/permission-ladder-guard.mjs",
+        "purpose": "Classifica comandos Bash em lanes de permissão e retorna decisão ao hook.",
+        "inputs": "Payload JSON do evento de ferramenta.",
+        "outputs": "JSON de continuidade ou bloqueio no stdout.",
+        "dependencies": "Configuração do hook, regex da ladder e parsing de segmentos shell.",
+        "tests": "A revisão leu a decomposição e a suíte geral do repositório foi validada; combinações de precedência continuam pendentes.",
+        "risks": "Regex não substitui parser shell completo; a precedência de regras em comandos compostos exige cobertura adversarial.",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  const segments = [command];",
+            "start": 116,
+            "end": 116,
+            "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "O deep dive ainda não cobre todos os módulos com alto fan-in do pacote MCP.",
+      "Owners não foram preenchidos porque não há evidência de ownership no recorte revisado."
+    ]
+  },
+  "runtime_verification": {
+    "status": "pass",
+    "commands": [
+      {
+        "command": "npm run build",
+        "purpose": "Compilar o pacote selecionado.",
+        "status": "pass",
+        "exit_code": 0,
+        "notes": "process exited normally",
+        "duration_ms": 4366,
+        "output": "\n> @felvieira/dev-team-kit-mcp@2.76.0 build\n> tsc\n\n",
+        "package": "mcp-server/package.json"
+      },
+      {
+        "command": "npm run test",
+        "purpose": "Executar os testes declarados pelo pacote.",
+        "status": "pass",
+        "exit_code": 0,
+        "notes": "process exited normally",
+        "duration_ms": 3072,
+        "output": "\n> @felvieira/dev-team-kit-mcp@2.76.0 test\n> node dist/lib/cross-call-dedup.test.js && node dist/lib/skill-manifest.test.js && node dist/lib/plugin-router.test.js\n\ncross-call-dedup\n  ok  fnv1a64: deterministic\n  ok  fnv1a64: distinguishes near-strings\n  ok  fnv1a64: returns 16 hex chars\n  ok  jaccard: identical text → 1.0\n  ok  jaccard: timestamp tweak survives ≥0.85 threshold\n  ok  jaccard: unrelated text → low\n  ok  cache: first insert never matches\n  ok  cache: exact re-run hits exact path\n  ok  cache: fuzzy re-run hits fuzzy path\n  ok  cache: respects window size\n  ok  cache: clear resets state\n\n11 passed, 0 failed\nskill-manifest v2 parsing\n  ok  listSkills returns at least the 39 core skills\n  ok  every skill has a defined name and description\n  ok  v2 fields are typed as optional (undefined when absent)\n  ok  backward compat: skills without v2 frontmatter still parse\n\n4 passed, 0 failed\nplugin-router shared routing fixtures\n  ok  lists bundled and external plugins with install metadata\n  ok  landing page combines marketing and design\n  ok  seo stays in product marketing\n  ok  direct response uses its specialized skill\n  ok  frontend implementation keeps testing\n  ok  security is routed to the security playbook\n  ok  legacy discovery does not imply a release\n  ok  image work routes to the asset workflow\n  ok  canary deployment is high risk\n  ok  research request has a focused discovery route\n  ok  financial reconciliation is an external high-risk recommendation\n  ok  NDA review is an external high-risk recommendation\n  ok  version-specific documentation recommends Context7 without a human gate\n  ok  API contract is technical, not a legal-contract recommendation\n  ok  a real legal contract clause still routes when an unrelated API contract is mentioned\n  ok  real feature authentication API keeps the engineering loop small\n  ok  real frontend dashboard adds design and engineering without marketing\n  ok  real landing launch scopes copy to product work\n  ok  real legacy bug asks for evidence before a fix\n  ok  real AI assistant feature uses architecture and prompts\n  ok  real production deployment remains a human-review route\n  ok  real refactor has review and migration safeguards\n  ok  real version docs use Context7 as a bounded external recommendation\n  ok  small rename does not inflate to a plugin pipeline\n  ok  CLI and MCP route contract stay in parity\n\n25 passed, 0 failed\n",
+        "package": "mcp-server/package.json"
+      }
+    ],
+    "gaps": [
+      "Execução local não prova integração com serviços externos, deploy ou produção."
+    ]
+  },
+  "source_state": {
+    "head": "696db09fbe94933af5e8cd925278ef76d3f8b8c2",
+    "branch": "main",
+    "dirty": true,
+    "working_tree_sha": "7bba3ed55be51ade23855415d80542bcca8df27ce1d26b5ccc13718138365d69"
+  },
+  "cache": {
+    "enabled": false,
+    "hits": 0,
+    "misses": 0
+  },
+  "warnings": [
+    "210 fontes foram inventariadas, mas não tiveram leitura semântica nesta execução.",
+    "2 fontes foram excluídas pelo escopo, por serem ocultas, binárias, sensíveis, ignoradas ou fora do limite."
+  ],
+  "external_sources": [],
+  "diagrams": {
+    "architecture": 1,
+    "workflows": 3
+  },
+  "incremental": null,
   "pages_generated": [
     "README.md",
     "overview.md",
     "architecture.md",
+    "workflows.md",
+    "boundaries.md",
+    "database.md",
+    "verification.md",
     "business-rules.md",
     "security.md",
     "automations.md",
     "rpa.md",
-    "improvements.md"
+    "improvements.md",
+    "modules/index.md",
+    "modules/mcp-entrypoint.md",
+    "modules/pipeline-engine.md",
+    "modules/file-reader.md",
+    "modules/permission-guard.md"
   ],
   "verification": {
     "markdown": "pass",
     "html": "pass",
     "markdown_details": {
-      "files": 8,
-      "bytes": 39555,
-      "mermaid_blocks": 1,
+      "files": 17,
+      "bytes": 55876,
+      "mermaid_blocks": 4,
       "errors": 0,
       "warnings": 0
     },
     "html_details": {
-      "html_files": 21,
+      "html_files": 31,
       "errors": 0,
       "warnings": 0
     }
@@ -2018,9 +2560,9 @@
   "html": {
     "status": "built",
     "site": "docs/repo-wiki/site2",
-    "pages": 8,
-    "evidence_pages": 13,
-    "diagram_assets": 1,
+    "pages": 17,
+    "evidence_pages": 14,
+    "diagram_assets": 4,
     "mermaid_renderer": "builtin-svg-fallback",
     "external_requests": 0
   }

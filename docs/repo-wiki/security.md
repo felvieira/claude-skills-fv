@@ -1,6 +1,6 @@
 # Segurança
 
-Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.
+Leitura estática de quatorze arquivos: dez arquivos de código do núcleo MCP, proteção de ferramentas, entrypoint e schema de template, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.
 
 2 comportamentos descritos a partir de código lido. Cobertura parcial; não equivale a execução em produção.
 

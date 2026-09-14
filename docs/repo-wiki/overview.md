@@ -1,6 +1,6 @@
 # Visão geral do repositório
 
-Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.
+Leitura estática de quatorze arquivos: dez arquivos de código do núcleo MCP, proteção de ferramentas, entrypoint e schema de template, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.
 
 Este repositório é o Dev Team Kit: um kit de skills, comandos e um servidor MCP para apoiar agentes de coding em tarefas de desenvolvimento.
 
@@ -34,18 +34,18 @@ Ele organiza especialistas e ferramentas reutilizáveis para descoberta, impleme
 
 | Comando | Finalidade | Evidência |
 |---|---|---|
-| `npm run build` | Compila TypeScript para dist. | [evidence: mcp-server/package.json:11-11] |
-| `npm start` | Inicia o entrypoint compilado do servidor MCP. | [evidence: mcp-server/package.json:13-13] |
-| `npm test` | Executa os testes compilados de deduplicação, manifesto e roteador de plugins. | [evidence: mcp-server/package.json:14-14] |
+| npm run build | Compila TypeScript para dist. | [evidence: mcp-server/package.json:11-11] |
+| npm start | Inicia o entrypoint compilado do servidor MCP. | [evidence: mcp-server/package.json:13-13] |
+| npm test | Executa os testes compilados de deduplicação, manifesto e roteador de plugins. | [evidence: mcp-server/package.json:14-14] |
 
 ## Estrutura relevante
 
 | Caminho | Papel | Evidência |
 |---|---|---|
-| `mcp-server/src/index.ts` | Bootstrap do servidor MCP e registro das ferramentas. | [evidence: mcp-server/src/index.ts:61-61], [evidence: mcp-server/src/index.ts:1505-1505] |
-| `mcp-server/src/services/` | Serviços auxiliares, incluindo leitura de arquivos, busca, scraping, geração de imagem e instruções de browser. | [evidence: mcp-server/src/index.ts:8-8], [evidence: mcp-server/src/index.ts:9-9], [evidence: mcp-server/src/index.ts:11-11], [evidence: mcp-server/src/index.ts:12-12] |
-| `mcp-server/src/lib/` | Bibliotecas internas de classificação, pipelines, contexto, compressão, eventos e roteamento. | [evidence: mcp-server/src/index.ts:15-15], [evidence: mcp-server/src/index.ts:16-16] |
-| `templates/stack-default/apps/web/` | Template separado para iniciar aplicações web com Next.js, React e Tailwind. | [evidence: templates/stack-default/apps/web/package.json:2-2] |
+| mcp-server/src/index.ts | Bootstrap do servidor MCP e registro das ferramentas. | [evidence: mcp-server/src/index.ts:61-61], [evidence: mcp-server/src/index.ts:1505-1505] |
+| mcp-server/src/services/ | Serviços auxiliares, incluindo leitura de arquivos, busca, scraping, geração de imagem e instruções de browser. | [evidence: mcp-server/src/index.ts:8-8], [evidence: mcp-server/src/index.ts:9-9], [evidence: mcp-server/src/index.ts:11-11], [evidence: mcp-server/src/index.ts:12-12] |
+| mcp-server/src/lib/ | Bibliotecas internas de classificação, pipelines, contexto, compressão, eventos e roteamento. | [evidence: mcp-server/src/index.ts:15-15], [evidence: mcp-server/src/index.ts:16-16] |
+| templates/stack-default/apps/web/ | Template separado para iniciar aplicações web com Next.js, React e Tailwind. | [evidence: templates/stack-default/apps/web/package.json:2-2] |
 
 ## Limites
 
