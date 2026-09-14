@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "scope": "Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "scope": "Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
   "reviewed_files": [
     {
       "path": "src/middleware.ts",
@@ -33,8 +33,339 @@
     {
       "path": "hooks/scripts/permission-ladder-guard.mjs",
       "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+    },
+    {
+      "path": "mcp-server/src/index.ts",
+      "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+    },
+    {
+      "path": "mcp-server/package.json",
+      "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+    },
+    {
+      "path": "mcp-server/tsconfig.json",
+      "sha256": "fee86899bb77179611ed16b73572159d567e76a4717522e567900dbb17ac0804"
+    },
+    {
+      "path": "templates/stack-default/apps/web/package.json",
+      "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+    },
+    {
+      "path": "bench/ab/package.json",
+      "sha256": "a83aba737b3069c359a5e5f52ec0d735ad9efe4cd0675d794a961fc8255bd34f"
     }
   ],
+  "overview": {
+    "summary": "Este repositório é o Dev Team Kit: um kit de skills, comandos e um servidor MCP para apoiar agentes de coding em tarefas de desenvolvimento.",
+    "purpose": "Ele organiza especialistas e ferramentas reutilizáveis para descoberta, implementação, testes, segurança, documentação, inteligência de sessão e integração com serviços auxiliares. O pacote principal executável identificado no código é o servidor MCP em mcp-server/.",
+    "audience": "Agentes compatíveis com MCP e equipes que usam o kit para conduzir tarefas de software com governança e etapas especializadas.",
+    "technologies": [
+      {"name":"Node.js","version":">=18","role":"Runtime do pacote MCP e execução do entrypoint compilado.","evidence":[{"path":"mcp-server/package.json","quote":"    \"node\": \">=18\""}]},
+      {"name":"TypeScript","version":"^5.7.0","role":"Linguagem e compilador do servidor MCP.","evidence":[{"path":"mcp-server/package.json","quote":"    \"typescript\": \"^5.7.0\""},{"path":"mcp-server/package.json","quote":"    \"build\": \"tsc\""}]},
+      {"name":"Model Context Protocol SDK","version":"^1.12.1","role":"Cria o servidor MCP e expõe ferramentas ao agente.","evidence":[{"path":"mcp-server/package.json","quote":"    \"@modelcontextprotocol/sdk\": \"^1.12.1\""},{"path":"mcp-server/src/index.ts","quote":"import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";"}]},
+      {"name":"Zod","version":"^3.24.0","role":"Biblioteca declarativa de schemas/validação usada pelo servidor.","evidence":[{"path":"mcp-server/package.json","quote":"    \"zod\": \"^3.24.0\""},{"path":"mcp-server/src/index.ts","quote":"import { z } from \"zod\";"}]},
+      {"name":"ES Modules + Node16","version":"ES2022","role":"Configuração de módulo, resolução e alvo de compilação TypeScript.","evidence":[{"path":"mcp-server/package.json","quote":"  \"type\": \"module\","},{"path":"mcp-server/tsconfig.json","quote":"    \"target\": \"ES2022\","},{"path":"mcp-server/tsconfig.json","quote":"    \"module\": \"Node16\","}]},
+      {"name":"Next.js + React + Tailwind","version":"Next 15.3.2 / React 19 / Tailwind 4.1.7","role":"Stack do template web stack-default; é template de aplicação, não o runtime principal do MCP.","evidence":[{"path":"templates/stack-default/apps/web/package.json","quote":"    \"next\": \"15.3.2\","},{"path":"templates/stack-default/apps/web/package.json","quote":"    \"react\": \"^19.0.0\","},{"path":"templates/stack-default/apps/web/package.json","quote":"    \"tailwindcss\": \"^4.1.7\""}]},
+      {"name":"Playwright","version":"1.44","role":"Dependência do benchmark A/B em bench/ab; não foi tratado como executor do servidor MCP.","evidence":[{"path":"bench/ab/package.json","quote":"    \"playwright\": \"1.44\""}]}
+    ],
+    "entrypoints": [
+      {"name":"dev-team-kit-mcp","role":"Binário publicado que aponta para dist/index.js.","evidence":[{"path":"mcp-server/package.json","quote":"    \"dev-team-kit-mcp\": \"dist/index.js\""}]},
+      {"name":"mcp-server/src/index.ts","role":"Inicializa o McpServer, registra as ferramentas e conecta transporte stdio.","evidence":[{"path":"mcp-server/src/index.ts","quote":"const server = new McpServer({"},{"path":"mcp-server/src/index.ts","quote":"  const transport = new StdioServerTransport();\n  await server.connect(transport);"}]},
+      {"name":"skills/ e .claude/commands/","role":"Superfícies do kit consumidas como skills e comandos do agente; a ligação completa não foi revisada nesta amostra.","evidence":[{"path":"mcp-server/package.json","quote":"  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 43 slash commands"}]}
+    ],
+    "commands": [
+      {"command":"npm run build","purpose":"Compila TypeScript para dist.","evidence":[{"path":"mcp-server/package.json","quote":"    \"build\": \"tsc\""}]},
+      {"command":"npm start","purpose":"Inicia o entrypoint compilado do servidor MCP.","evidence":[{"path":"mcp-server/package.json","quote":"    \"start\": \"node dist/index.js\""}]},
+      {"command":"npm test","purpose":"Executa os testes compilados de deduplicação, manifesto e roteador de plugins.","evidence":[{"path":"mcp-server/package.json","quote":"    \"test\": \"node dist/lib/cross-call-dedup.test.js && node dist/lib/skill-manifest.test.js && node dist/lib/plugin-router.test.js\""}]}
+    ],
+    "structure": [
+      {"path":"mcp-server/src/index.ts","role":"Bootstrap do servidor MCP e registro das ferramentas.","evidence":[{"path":"mcp-server/src/index.ts","quote":"const server = new McpServer({"},{"path":"mcp-server/src/index.ts","quote":"  const transport = new StdioServerTransport();"}]},
+      {"path":"mcp-server/src/services/","role":"Serviços auxiliares, incluindo leitura de arquivos, busca, scraping, geração de imagem e instruções de browser.","evidence":[{"path":"mcp-server/src/index.ts","quote":"import * as fileReader from \"./services/file-reader.js\";"},{"path":"mcp-server/src/index.ts","quote":"import { searchBrave, searchCompetitors, searchDesignReferences } from \"./services/brave-search.js\";"},{"path":"mcp-server/src/index.ts","quote":"import { generateImage } from \"./services/fal-ai.js\";"},{"path":"mcp-server/src/index.ts","quote":"import { buildScreenshotInstruction, buildImageExtractionInstruction, buildScrapeInstruction } from \"./services/playwright.js\";"}]},
+      {"path":"mcp-server/src/lib/","role":"Bibliotecas internas de classificação, pipelines, contexto, compressão, eventos e roteamento.","evidence":[{"path":"mcp-server/src/index.ts","quote":"import { classifyTask } from \"./lib/classifier.js\";"},{"path":"mcp-server/src/index.ts","quote":"import { buildPipeline, getNextStep } from \"./lib/pipeline-engine.js\";"}]},
+      {"path":"templates/stack-default/apps/web/","role":"Template separado para iniciar aplicações web com Next.js, React e Tailwind.","evidence":[{"path":"templates/stack-default/apps/web/package.json","quote":"  \"name\": \"web\","}]}
+    ],
+    "gaps": [
+      "O propósito geral foi sintetizado a partir do manifesto e dos pontos de entrada revisados; a matriz completa de 73 skills não foi relida nesta execução.",
+      "Não foi executado npm install, npm run build ou npm test do mcp-server nesta rodada; os comandos acima são declarados pelo package.json.",
+      "Versões do template e do benchmark são componentes auxiliares e não devem ser confundidas com a stack do servidor MCP."
+    ]
+  },
+  "architecture": {
+    "summary": "O código revisado se divide em limites de aplicação (middleware e hooks), serviços do núcleo MCP, controles de execução e integrações externas. O mapa abaixo mostra somente relações sustentadas pelos trechos revisados.",
+    "nodes": [
+      {
+        "id": "auth-middleware",
+        "label": "Next middleware",
+        "kind": "control",
+        "responsibility": "Aplica fronteiras de rota, sessão por cookie e headers de segurança.",
+        "evidence": [
+          {
+            "path": "src/middleware.ts",
+            "quote": "  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }"
+          }
+        ]
+      },
+      {
+        "id": "auth-hook",
+        "label": "useAuth",
+        "kind": "module",
+        "responsibility": "Coordena login, cadastro, logout, cache de queries e navegação do cliente.",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "  const loginMutation = useMutation({\n    mutationFn: async (input: LoginInput) => {\n      const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);\n      return data.data;\n    },"
+          }
+        ]
+      },
+      {
+        "id": "auth-api",
+        "label": "API de autenticação",
+        "kind": "external",
+        "responsibility": "Endpoint consumido pelo hook para iniciar a sessão.",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);"
+          }
+        ]
+      },
+      {
+        "id": "pagination-hook",
+        "label": "usePagination",
+        "kind": "module",
+        "responsibility": "Mantém página, parâmetros e limites de navegação sobre uma query paginada.",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "  const query = usePaginatedQuery<T>(queryKey, url, allParams);"
+          }
+        ]
+      },
+      {
+        "id": "paginated-query",
+        "label": "usePaginatedQuery",
+        "kind": "interface",
+        "responsibility": "Interface de consulta reutilizada pelo hook de paginação.",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "import { usePaginatedQuery } from './useApi';"
+          }
+        ]
+      },
+      {
+        "id": "pipeline-engine",
+        "label": "Pipeline engine",
+        "kind": "module",
+        "responsibility": "Transforma o tipo de tarefa em configuração ordenada de etapas, políticas e templates.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {"
+          }
+        ]
+      },
+      {
+        "id": "task-classifier",
+        "label": "TaskType classifier",
+        "kind": "interface",
+        "responsibility": "Fornece o tipo de tarefa usado como chave dos pipelines.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "import type { TaskType } from \"./classifier.js\";"
+          }
+        ]
+      },
+      {
+        "id": "file-reader",
+        "label": "File reader",
+        "kind": "module",
+        "responsibility": "Lê arquivos e monta snippets de código a partir dos caminhos configurados.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "export async function getCodeSnippets(type: string): Promise<Array<{ path: string; content: string }>> {"
+          }
+        ]
+      },
+      {
+        "id": "filesystem",
+        "label": "Filesystem",
+        "kind": "external",
+        "responsibility": "Fonte de conteúdo usada pelo leitor de arquivos.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "    return await fs.readFile(filePath, \"utf-8\");"
+          }
+        ]
+      },
+      {
+        "id": "playwright-adapter",
+        "label": "Playwright adapter",
+        "kind": "module",
+        "responsibility": "Monta instruções de screenshot compatíveis com o cliente de browser.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "export function buildScreenshotInstruction(\n  url: string,\n  fullPage: boolean = true,"
+          }
+        ]
+      },
+      {
+        "id": "playwright-mcp",
+        "label": "Playwright MCP",
+        "kind": "external",
+        "responsibility": "Cliente externo que executa as instruções de browser descritas pelo serviço.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "// Playwright is used via the Playwright MCP that the client already has configured."
+          }
+        ]
+      },
+      {
+        "id": "dedup-cache",
+        "label": "Cross-call dedup cache",
+        "kind": "module",
+        "responsibility": "Mantém uma janela em memória de saídas recentes para detectar duplicação.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "export class CrossCallDedupCache {\n  private readonly windowSize: number;\n  private readonly threshold: number;"
+          }
+        ]
+      },
+      {
+        "id": "similarity-engine",
+        "label": "Hash e similaridade",
+        "kind": "interface",
+        "responsibility": "Usa hash exato e comparação de similaridade como caminhos de detecção.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "    const exactHash = fnv1a64(text);\n    // Fast path: exact hash match. Walk newest-to-oldest."
+          }
+        ]
+      },
+      {
+        "id": "permission-guard",
+        "label": "Permission ladder guard",
+        "kind": "control",
+        "responsibility": "Extrai comandos Bash recebidos pelo hook para aplicar a política de permissão.",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "function extractCommand(input) {\n  const name = input?.tool_name || \"\";\n  if (name === \"Bash\") return input?.tool_input?.command || \"\";"
+          }
+        ]
+      },
+      {
+        "id": "bash-tool",
+        "label": "Bash tool",
+        "kind": "external",
+        "responsibility": "Ferramenta cuja entrada é inspecionada pelo guard de permissões.",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  if (name === \"Bash\") return input?.tool_input?.command || \"\";"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "auth-hook",
+        "to": "auth-api",
+        "relationship": "consome endpoint de login",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);"
+          }
+        ]
+      },
+      {
+        "from": "pagination-hook",
+        "to": "paginated-query",
+        "relationship": "delegates a consulta paginada",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "  const query = usePaginatedQuery<T>(queryKey, url, allParams);"
+          }
+        ]
+      },
+      {
+        "from": "pipeline-engine",
+        "to": "task-classifier",
+        "relationship": "importa o tipo da tarefa",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "import type { TaskType } from \"./classifier.js\";"
+          }
+        ]
+      },
+      {
+        "from": "file-reader",
+        "to": "filesystem",
+        "relationship": "lê conteúdo por fs.readFile",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "    return await fs.readFile(filePath, \"utf-8\");"
+          }
+        ]
+      },
+      {
+        "from": "playwright-adapter",
+        "to": "playwright-mcp",
+        "relationship": "prepara instruções para execução externa",
+        "confidence": "inferred",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "// This service provides helper functions for building Playwright-compatible instructions"
+          }
+        ]
+      },
+      {
+        "from": "dedup-cache",
+        "to": "similarity-engine",
+        "relationship": "usa hash para detectar repetição",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "    const exactHash = fnv1a64(text);"
+          }
+        ]
+      },
+      {
+        "from": "permission-guard",
+        "to": "bash-tool",
+        "relationship": "inspeciona a ferramenta Bash",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  if (name === \"Bash\") return input?.tool_input?.command || \"\";"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "O mapa cobre somente os oito arquivos revisados; o wiring completo do servidor MCP e as dependências entre todos os módulos ainda precisam de leitura semântica.",
+      "Não há evidência suficiente nesta amostra para desenhar organogramas de times, ownership ou deploy.",
+      "A relação entre middleware e o hook de autenticação permanece fora do diagrama porque o trecho revisado não mostra uma chamada direta entre eles."
+    ]
+  },
   "findings": [
     {
       "id": "RN-01",
@@ -310,7 +641,7 @@
     }
   ],
   "gaps": [
-    "Cobertura parcial: apenas os oito arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
+      "Cobertura parcial: apenas os treze arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
     "Nenhum fluxo de autenticação, deploy ou RPA foi executado em produção.",
     "Produto, UX/acessibilidade, infraestrutura/deploy, banco de dados e observabilidade fora dos trechos citados continuam pendentes; não foram preenchidos com recomendações genéricas.",
     "Propostas de melhoria são inferências rastreáveis, não alterações autorizadas nos módulos auditados."

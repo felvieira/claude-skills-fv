@@ -211,6 +211,10 @@ report.json
 
 Cada página deve conter: escopo da análise, propósito, fatos observados, relações, evidências, confiança, lacunas e links para a fonte canônica. Não duplicar regras de negócio entre `overview`, `workflows` e `boundaries`; fazer referência ao documento dono.
 
+Para a página `architecture.md`, o `analysis.json` deve declarar `architecture.summary`, `nodes` e `edges`. Nós precisam de `id`, `label`, `kind`, responsabilidade e evidência; relações precisam de `from`, `to`, descrição, confiança e evidência. O gerador valida os destinos e os trechos; o site renderiza o organograma Mermaid como SVG local. Ownership, organograma de pessoas e deploy ficam fora até haver evidência específica.
+
+Para a página `overview.md`, o input deve declarar `overview.summary`, `purpose`, `audience`, `technologies`, `entrypoints`, `commands` e `structure`. Tecnologias, versões, comandos e caminhos são itens evidenciados individualmente. O texto deve distinguir runtime principal, templates, benchmarks e integrações opcionais.
+
 Quando o leitor precisar navegar, construir também `site/` com HTML self-contained: índice de busca local, filtro por trilha, páginas de evidência, teclado, mobile, tema e SVG local para Mermaid. Não carregar CDN, script externo ou fazer `fetch` em runtime.
 
 ### Registro de evidência mínimo
@@ -251,7 +255,7 @@ node scripts/verify-repo-wiki.mjs --docs docs/repo-wiki --site docs/repo-wiki/si
 node scripts/test-repo-wiki.mjs
 ```
 
-A revisão semântica acontece ANTES da composição e é conferida novamente depois. O CLI implementa Full; Incremental/Focused/Drift acima são playbooks do agente, não flags disponíveis. As seis páginas compiladas são README, business-rules, security, automations, rpa e improvements. Arquitetura e demais páginas requerem composição adicional verificada. Conferir:
+A revisão semântica acontece ANTES da composição e é conferida novamente depois. O CLI implementa Full; Incremental/Focused/Drift acima são playbooks do agente, não flags disponíveis. Com visão geral e arquitetura revisadas, as oito páginas compiladas são README, overview, architecture, business-rules, security, automations, rpa e improvements. Sem essas seções no input, as páginas correspondentes permanecem `not_reviewed`. Conferir:
 
 - links relativos apontam para arquivos existentes;
 - fences Markdown e blocos Mermaid fecham corretamente;

@@ -221,9 +221,13 @@ Ao rodar a skill Documenter dentro de um projeto, o Repo-Wiki usa a pasta corren
 
 ```text
 <projeto>/docs/repo-wiki/README.md
+<projeto>/docs/repo-wiki/overview.md
+<projeto>/docs/repo-wiki/architecture.md
 <projeto>/docs/repo-wiki/report.json
 <projeto>/docs/repo-wiki/site/index.html
 ```
+
+A visão geral resume o propósito do projeto, público, tecnologias e versões, entradas, comandos úteis, estrutura e limites da documentação. A página de arquitetura traz um mapa de módulos baseado em evidências e um organograma Mermaid. O site HTML permite busca e filtro por trilha sem depender de internet.
 
 O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. O gerador e o builder retornam os caminhos absolutos efetivos (`repo`, `markdown_dir`, `report`, `site` e `index`), e o handoff da skill deve apresentar esses caminhos ao usuário junto com arquivos inventariados/revisados, trilhas pendentes e verificações. A documentação não deve dizer apenas “docs geradas”.
 

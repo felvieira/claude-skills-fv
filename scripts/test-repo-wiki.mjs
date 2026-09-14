@@ -55,6 +55,20 @@ async function main(){
   await put(base,'docs/repo-wiki/site/obsolete.html','HIDDEN_SENTINEL');
   await put(base,'docs/repo-wiki/site/evidence/obsolete.html','HIDDEN_SENTINEL');
   build(base);
+  const architectureAnalysis={...analysis,overview:{summary:'Resumo da fixture.',purpose:'Demonstra a composição de uma visão geral.',audience:'Testes do gerador',technologies:[{name:'JavaScript',version:'ESM',role:'Runtime da fixture.',evidence:[{path:'src/order.mjs',quote:"export function createOrder(items) {"}]}],entrypoints:[{name:'createOrder',role:'Entrada pública da fixture.',evidence:[{path:'src/order.mjs',quote:"export function createOrder(items) {"}]}],commands:[{command:'node fixture',purpose:'Executa a fixture.',evidence:[{path:'src/order.mjs',quote:"export function createOrder(items) {"}]}],structure:[{path:'src/order.mjs',role:'Módulo da fixture.',evidence:[{path:'src/order.mjs',quote:order.trimEnd()}]}],gaps:[]},architecture:{summary:'Mapa da fixture de pedidos.',nodes:[
+    {id:'order-module',label:'Order module',kind:'module',responsibility:'Cria pedidos e aplica a regra de lista vazia.',evidence:[{path:'src/order.mjs',quote:order.trimEnd()}]},
+    {id:'order-input',label:'Itens de entrada',kind:'external',responsibility:'Entrada consumida pelo módulo de pedidos.',evidence:[{path:'src/order.mjs',quote:"export function createOrder(items) {"}]}
+  ],edges:[{from:'order-module',to:'order-input',relationship:'recebe itens',confidence:'observed',evidence:[{path:'src/order.mjs',quote:"export function createOrder(items) {"}]}],gaps:[]}};
+  await save(architectureAnalysis); gen(base,true); build(base);
+  const architectureMd=await readFile(path.join(base,'docs/repo-wiki/architecture.md'),'utf8');
+  const architectureHtml=await readFile(path.join(base,'docs/repo-wiki/site/architecture.html'),'utf8');
+  const architectureSvg=await readFile(path.join(base,'docs/repo-wiki/site/assets/diagrams/architecture-md-1.svg'),'utf8');
+  const architectureReport=JSON.parse(await readFile(path.join(base,'docs/repo-wiki/report.json')));
+  const overviewMd=await readFile(path.join(base,'docs/repo-wiki/overview.md'),'utf8');
+  const overviewHtml=await readFile(path.join(base,'docs/repo-wiki/site/overview.html'),'utf8');
+  assert.match(overviewMd,/Resumo da fixture/); assert.match(overviewHtml,/Tecnologias/); assert.match(architectureMd,/Mapa da fixture/); assert.match(architectureMd,/flowchart LR/); assert.match(architectureHtml,/Diagrama renderizado localmente/); assert.match(architectureSvg,/Order module/); assert.doesNotMatch(architectureSvg,/flowchart LR/); assert.equal(architectureReport.architecture.edges.length,1); assert.equal(architectureReport.overview.technologies.length,1); assert.equal(architectureReport.tracks.architecture.status,'partial'); assert.equal(architectureReport.tracks.overview.status,'partial');
+  checks.push('architecture map and Mermaid organogram are generated and searchable');
+  await save(analysis); gen(base,true); build(base);
   const md=await readFile(path.join(base,'docs/repo-wiki/business-rules.md'),'utf8');
   const html=await readFile(path.join(base,'docs/repo-wiki/site/business-rules.html'),'utf8');
   assert.match(md,/A lista de itens está vazia/); assert.match(html,/pedido é rejeitado/);

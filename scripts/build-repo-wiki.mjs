@@ -143,11 +143,17 @@ function renderMermaidSvg(source, name) {
     if (!nodes.has(id)) nodes.set(id, label.replace(/^['"]|['"]$/g, ""));
   };
   for (const line of lines) {
-    const flow = line.match(/^(?:[A-Za-z]+\s+)?([A-Za-z0-9_-]+)(?:\[([^\]]+)\])?\s*[-.]+>+\s*([A-Za-z0-9_-]+)(?:\[([^\]]+)\])?/);
+    if (/^(?:flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram)\b/i.test(line)) continue;
+    const flow = line.match(/^([A-Za-z0-9_-]+)(?:\[([^\]]+)\])?\s*[-.]+>+\s*(?:\|([^|]*)\|\s*)?([A-Za-z0-9_-]+)(?:\[([^\]]+)\])?/);
     if (flow) {
       addNode(flow[1], flow[2] || flow[1]);
-      addNode(flow[3], flow[4] || flow[3]);
-      edges.push([flow[1], flow[3]]);
+      addNode(flow[4], flow[5] || flow[4]);
+      edges.push([flow[1], flow[4], flow[3] || '']);
+      continue;
+    }
+    const declaration = line.match(/^([A-Za-z0-9_-]+)\[([^\]]+)\]\s*$/);
+    if (declaration) {
+      addNode(declaration[1], declaration[2]);
       continue;
     }
     const participant = line.match(/^participant\s+([A-Za-z0-9_-]+)(?:\s+as\s+(.+))?/i);
@@ -163,9 +169,11 @@ function renderMermaidSvg(source, name) {
     lines.slice(0, 10).forEach((line, index) => addNode(`line${index + 1}`, line));
   }
   const list = [...nodes.entries()];
-  const width = Math.max(760, list.length * 170);
-  const height = Math.max(180, 150 + Math.ceil(edges.length / Math.max(1, list.length - 1)) * 70);
-  const positions = new Map(list.map(([id], index) => [id, { x: 90 + index * ((width - 180) / Math.max(1, list.length - 1)), y: 70 }]));
+  const columns = Math.min(6, Math.max(1, list.length));
+  const rows = Math.ceil(list.length / columns);
+  const width = Math.max(760, columns * 170);
+  const height = Math.max(180, 110 + rows * 110);
+  const positions = new Map(list.map(([id], index) => [id, { x: 90 + (index % columns) * 170, y: 70 + Math.floor(index / columns) * 110 }]));
   const svg = [];
   svg.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title-${name}">`);
   svg.push(`<title id="title-${name}">Diagrama ${htmlEscape(name)}</title><desc>Renderização SVG local de um bloco Mermaid. Fonte original preservada na página.</desc>`);
@@ -291,7 +299,21 @@ async function main() {
   const evidenceSources = new Map();
   const sourceCache = new Map();
   const citedLines = new Map();
-  const approvedEvidence = new Set(report.findings.flatMap(f => f.evidence.map(e => e.path+":"+e.start+"-"+e.end)));
+  const architectureEvidence = [
+    ...(report.architecture?.nodes || []).flatMap(node => node.evidence || []),
+    ...(report.architecture?.edges || []).flatMap(edge => edge.evidence || []),
+  ];
+  const overviewEvidence = [
+    ...(report.overview?.technologies || []).flatMap(item => item.evidence || []),
+    ...(report.overview?.entrypoints || []).flatMap(item => item.evidence || []),
+    ...(report.overview?.commands || []).flatMap(item => item.evidence || []),
+    ...(report.overview?.structure || []).flatMap(item => item.evidence || []),
+  ];
+  const approvedEvidence = new Set([
+    ...report.findings.flatMap(f => f.evidence.map(e => e.path+":"+e.start+"-"+e.end)),
+    ...architectureEvidence.map(e => e.path+":"+e.start+"-"+e.end),
+    ...overviewEvidence.map(e => e.path+":"+e.start+"-"+e.end),
+  ]);
   for (const file of markdownFiles) {
     const markdown = await fs.readFile(file, "utf8");
     for (const item of parseEvidence(markdown)) {

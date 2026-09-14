@@ -221,9 +221,13 @@ When the Documenter skill runs inside a project, Repo-Wiki uses the current dire
 
 ```text
 <project>/docs/repo-wiki/README.md
+<project>/docs/repo-wiki/overview.md
+<project>/docs/repo-wiki/architecture.md
 <project>/docs/repo-wiki/report.json
 <project>/docs/repo-wiki/site/index.html
 ```
+
+The overview summarizes the project's purpose, audience, technologies and versions, entrypoints, useful commands, structure, and documentation limits. The architecture page contains an evidence-backed module map and a Mermaid organogram. The HTML site supports offline search and track filtering.
 
 Use `--repo`, `--output`, and `--site` for explicit destinations. The generator and builder return the effective absolute paths (`repo`, `markdown_dir`, `report`, `site`, and `index`), and the skill handoff must show them to the user together with inventoried/reviewed files, pending tracks, and verification results. The documentation must not merely say “docs generated.”
 

@@ -256,7 +256,7 @@ O modo Repo-Wiki deve:
 1. excluir qualquer arquivo/pasta com componente iniciado por ponto, gitignored, symlink/junction, dependências, builds e logs ANTES de abrir arquivos; descobrir entry points e código permitido;
 2. construir um inventário de símbolos, responsabilidades, interfaces, dependências e evidências;
 3. pesquisar em trilhas independentes: contexto do sistema, regras de negócio, arquitetura, workflows, boundaries, contratos, segurança, automações/RPA, banco de dados quando houver SQL e módulos centrais;
-4. compor Markdown e um site HTML estático, navegável, pesquisável, responsivo e sem dependências externas;
+4. compor Markdown e um site HTML estático, navegável, pesquisável, responsivo e sem dependências externas, incluindo arquitetura/organograma quando houver nós e relações revisados;
 5. gerar uma matriz de melhorias do repositório cobrindo produto, UX/acessibilidade, arquitetura, segurança/privacidade, performance/custo, operação, dados/contratos, testes, DX/dependências/docs, automações/RPA e deploy;
 6. validar links, fences, Mermaid/SVG, busca offline, cobertura, duplicatas, placeholders e ausência de requests externos antes do handoff;
 7. registrar SHA/revisão analisada, escopo, lacunas, confiança, métricas do run e status de cada trilha.
@@ -275,6 +275,10 @@ Cada regra exige leitura semântica de código executável: condição, efeito, 
 Registrar a revisão em `analysis.json` (schema 2, contrato no guia): arquivos lidos com SHA-256 e achados com trechos exatos. O compilador valida os hashes e gera âncoras `[evidence: caminho:linha]`. `observed` significa observado estaticamente, não executado; `inferred` marca interpretação ou proposta. Verificação em runtime é relatada separadamente. Nunca escrever “sempre atualizado”, “completo” ou “funciona” sem prova correspondente.
 
 O compilador marca trilhas como `partial` ou `not_reviewed`; ausência de achados não prova ausência no projeto. Publicar arquivos inventariados versus realmente revisados. RPA só é considerado operacional com processo e execução comprovados; um helper de instruções de browser não executa RPA.
+
+Arquitetura é documentada em uma seção própria de `analysis.json`: resumo, nós e relações com evidência exata. O gerador valida IDs, destinos e confiança, compõe `architecture.md` com mapa de módulos e bloco Mermaid, e o builder transforma o bloco em SVG local no site. Relações `observed` vêm de import/call/configuração visível; `inferred` são hipóteses rastreáveis. Não desenhar organograma de pessoas, ownership ou deploy sem evidência correspondente.
+
+A página `overview.md` resume o sistema para onboarding: propósito, público/consumidor, tecnologias e versões, pontos de entrada, comandos úteis, estrutura relevante e limites. Cada item técnico deve ter evidência de manifesto, configuração ou código; templates e benchmarks são identificados como auxiliares, não misturados com a stack principal.
 
 ### Saída canônica
 
@@ -301,7 +305,7 @@ node scripts/build-repo-wiki.mjs --repo . --docs docs/repo-wiki --site docs/repo
 node scripts/verify-repo-wiki.mjs --docs docs/repo-wiki --site docs/repo-wiki/site --json
 ```
 
-Antes do comando, o agente deve ler as fontes permitidas e escrever a análise. Sem `--analysis`, o CLI produz apenas inventário e páginas pendentes. O CLI compõe Full; Focused/Incremental/Drift são procedimentos do agente, não flags implementadas. Ele publica seis páginas canônicas: README e as cinco trilhas funcionais. Páginas adicionais de arquitetura exigem composição e evidência próprias, não textos genéricos. O HTML usa apenas o manifesto do relatório, busca local, filtro por trilha e snippets citados; não copia arquivos-fonte inteiros nem republica páginas antigas fora do manifesto.
+Antes do comando, o agente deve ler as fontes permitidas e escrever a análise. Sem `--analysis`, o CLI produz apenas inventário e páginas pendentes. O CLI compõe Full; Focused/Incremental/Drift são procedimentos do agente, não flags implementadas. Com `overview` e `architecture` revisados, ele publica oito páginas canônicas: README, visão geral, arquitetura/organograma e as cinco trilhas funcionais. Sem essas seções, as páginas correspondentes permanecem explicitamente `not_reviewed`; não são preenchidas com texto ou diagrama genérico. O HTML usa apenas o manifesto do relatório, busca local, filtro por trilha, snippets citados e SVG local para Mermaid; não copia arquivos-fonte inteiros nem republica páginas antigas fora do manifesto.
 
 ### Destino e handoff obrigatório
 

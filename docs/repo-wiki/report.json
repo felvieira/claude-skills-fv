@@ -2,12 +2,12 @@
   "schema_version": 2,
   "mode": "Full",
   "project": "claude-skills-fv",
-  "sha": "cc432e3c4677e36c8dea5fd96e6eaa1599db6c59",
+  "sha": "2fe7f833edb8d0dfa450bdbc87cb067a3fc2cb3c",
   "branch": "main",
   "dirty": true,
-  "generated_at": "2026-09-14T16:33:35.148Z",
+  "generated_at": "2026-09-14T17:19:04.056Z",
   "analysis_method": "agent-reviewed-code",
-  "scope": "Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "scope": "Leitura estática de treze arquivos: nove arquivos de código do núcleo MCP, proteção de ferramentas e entrypoint, mais quatro manifestos/configurações auxiliares. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
   "exclusions": [
     "qualquer componente de caminho iniciado por ponto",
     "gitignore",
@@ -31,6 +31,10 @@
     {
       "path": "bench/ab/instrument.mjs",
       "sha256": "79116d832f152e216737e6811c14385cfc4559665fbce769f810ab783e854ae3"
+    },
+    {
+      "path": "bench/ab/package.json",
+      "sha256": "a83aba737b3069c359a5e5f52ec0d735ad9efe4cd0675d794a961fc8255bd34f"
     },
     {
       "path": "bench/ab/report/chart.min.js",
@@ -213,6 +217,10 @@
       "sha256": "91a6c73add5ef22620fd5f8caaa9e1a402f3d19f1edca60deefaa9629e0fbe5a"
     },
     {
+      "path": "mcp-server/package.json",
+      "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+    },
+    {
       "path": "mcp-server/src/constants.ts",
       "sha256": "36f8c58f3e54c9a18ca8f0bd4a7488fe1c6d6b49dc3f6ee0ccc0276b2d095834"
     },
@@ -291,6 +299,10 @@
     {
       "path": "mcp-server/src/types.ts",
       "sha256": "0c495c9f29f65c179fe3011f49924655ed2072b5ccadd6ac16e9667b5d45915e"
+    },
+    {
+      "path": "mcp-server/tsconfig.json",
+      "sha256": "fee86899bb77179611ed16b73572159d567e76a4717522e567900dbb17ac0804"
     },
     {
       "path": "scripts/ai-memory-setup.mjs",
@@ -402,7 +414,7 @@
     },
     {
       "path": "scripts/build-repo-wiki.mjs",
-      "sha256": "25fc30bc00fc8542d5f63c96330e3ad21ff2c40619082597bcc3962a949aa082"
+      "sha256": "37695e6869cf44ce3cd7d2682093d4d4bcb16a5e9463d7fa8bd14d170a2ef278"
     },
     {
       "path": "scripts/check-consistency.mjs",
@@ -466,7 +478,7 @@
     },
     {
       "path": "scripts/generate-repo-wiki.mjs",
-      "sha256": "39d754843f3795fe2d039a8da549072e1a72639ab15c2db6bcf6216f678730dc"
+      "sha256": "a040ea0f9052dccfdf51a0975e5d19c80feab24e21513d891f890d43c3a3079a"
     },
     {
       "path": "scripts/git-hooks/install.sh",
@@ -558,7 +570,7 @@
     },
     {
       "path": "scripts/test-repo-wiki.mjs",
-      "sha256": "5e576e99304bf6bd0a75368a485f0cf6ed91bf7e9b2d92c5475b25324dfa75a0"
+      "sha256": "b52ff217998ab137eeef48bbee4e3964416acb623af509cd2b9c0e1011134595"
     },
     {
       "path": "scripts/test-seen-queries.mjs",
@@ -833,12 +845,24 @@
       "sha256": "b9dd7a1cb8c0682e9b7bc52c8c4e86e2e998e12fdcdc16b2edd54363e7f3f2c6"
     },
     {
+      "path": "templates/stack-default/Makefile",
+      "sha256": "e8a195b8e399f1194b928b042b64c022ad34d3a4269686070a8bbd542a6e6ce6"
+    },
+    {
+      "path": "templates/stack-default/apps/web/Dockerfile",
+      "sha256": "b93e05afbd81cc00c39ce33174cc80aa7fbad97d48ec4c43b0bd5de3695909c3"
+    },
+    {
       "path": "templates/stack-default/apps/web/drizzle.config.ts",
       "sha256": "038d1449a9d1eb5e3f87a77d006b8e8924ef90198155d8edd57e5b05c118e7c2"
     },
     {
       "path": "templates/stack-default/apps/web/next.config.ts",
       "sha256": "7aadc9b4a08385ec389d25e181a060a1a7bca09c574c93c4a55b01a910e122bf"
+    },
+    {
+      "path": "templates/stack-default/apps/web/package.json",
+      "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
     },
     {
       "path": "templates/stack-default/apps/web/src/app/api/auth/[...all]/route.ts",
@@ -897,7 +921,12 @@
     "mcp-server/src/lib/cross-call-dedup.ts",
     "mcp-server/src/services/file-reader.ts",
     "mcp-server/src/services/playwright.ts",
-    "hooks/scripts/permission-ladder-guard.mjs"
+    "hooks/scripts/permission-ladder-guard.mjs",
+    "mcp-server/src/index.ts",
+    "mcp-server/package.json",
+    "mcp-server/tsconfig.json",
+    "templates/stack-default/apps/web/package.json",
+    "bench/ab/package.json"
   ],
   "skipped": [
     {
@@ -906,11 +935,21 @@
     }
   ],
   "coverage": {
-    "source_files": 218,
-    "reviewed_files": 8,
-    "unreviewed_files": 210
+    "source_files": 224,
+    "reviewed_files": 13,
+    "unreviewed_files": 211
   },
   "tracks": {
+    "overview": {
+      "status": "partial",
+      "technologies": 7,
+      "entrypoints": 3
+    },
+    "architecture": {
+      "status": "partial",
+      "nodes": 15,
+      "edges": 7
+    },
     "business_rules": {
       "status": "partial",
       "findings": 6
@@ -1263,8 +1302,691 @@
       ]
     }
   ],
+  "overview": {
+    "status": "partial",
+    "summary": "Este repositório é o Dev Team Kit: um kit de skills, comandos e um servidor MCP para apoiar agentes de coding em tarefas de desenvolvimento.",
+    "purpose": "Ele organiza especialistas e ferramentas reutilizáveis para descoberta, implementação, testes, segurança, documentação, inteligência de sessão e integração com serviços auxiliares. O pacote principal executável identificado no código é o servidor MCP em mcp-server/.",
+    "audience": "Agentes compatíveis com MCP e equipes que usam o kit para conduzir tarefas de software com governança e etapas especializadas.",
+    "technologies": [
+      {
+        "name": "Node.js",
+        "version": ">=18",
+        "role": "Runtime do pacote MCP e execução do entrypoint compilado.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"node\": \">=18\"",
+            "start": 46,
+            "end": 46,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": "^5.7.0",
+        "role": "Linguagem e compilador do servidor MCP.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"typescript\": \"^5.7.0\"",
+            "start": 39,
+            "end": 39,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          },
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"build\": \"tsc\"",
+            "start": 11,
+            "end": 11,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      },
+      {
+        "name": "Model Context Protocol SDK",
+        "version": "^1.12.1",
+        "role": "Cria o servidor MCP e expõe ferramentas ao agente.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"@modelcontextprotocol/sdk\": \"^1.12.1\"",
+            "start": 32,
+            "end": 32,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";",
+            "start": 3,
+            "end": 3,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "name": "Zod",
+        "version": "^3.24.0",
+        "role": "Biblioteca declarativa de schemas/validação usada pelo servidor.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"zod\": \"^3.24.0\"",
+            "start": 35,
+            "end": 35,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { z } from \"zod\";",
+            "start": 5,
+            "end": 5,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "name": "ES Modules + Node16",
+        "version": "ES2022",
+        "role": "Configuração de módulo, resolução e alvo de compilação TypeScript.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"type\": \"module\",",
+            "start": 9,
+            "end": 9,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          },
+          {
+            "path": "mcp-server/tsconfig.json",
+            "quote": "    \"target\": \"ES2022\",",
+            "start": 3,
+            "end": 3,
+            "sha256": "fee86899bb77179611ed16b73572159d567e76a4717522e567900dbb17ac0804"
+          },
+          {
+            "path": "mcp-server/tsconfig.json",
+            "quote": "    \"module\": \"Node16\",",
+            "start": 4,
+            "end": 4,
+            "sha256": "fee86899bb77179611ed16b73572159d567e76a4717522e567900dbb17ac0804"
+          }
+        ]
+      },
+      {
+        "name": "Next.js + React + Tailwind",
+        "version": "Next 15.3.2 / React 19 / Tailwind 4.1.7",
+        "role": "Stack do template web stack-default; é template de aplicação, não o runtime principal do MCP.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "    \"next\": \"15.3.2\",",
+            "start": 22,
+            "end": 22,
+            "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+          },
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "    \"react\": \"^19.0.0\",",
+            "start": 23,
+            "end": 23,
+            "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+          },
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "    \"tailwindcss\": \"^4.1.7\"",
+            "start": 38,
+            "end": 38,
+            "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+          }
+        ]
+      },
+      {
+        "name": "Playwright",
+        "version": "1.44",
+        "role": "Dependência do benchmark A/B em bench/ab; não foi tratado como executor do servidor MCP.",
+        "evidence": [
+          {
+            "path": "bench/ab/package.json",
+            "quote": "    \"playwright\": \"1.44\"",
+            "start": 13,
+            "end": 13,
+            "sha256": "a83aba737b3069c359a5e5f52ec0d735ad9efe4cd0675d794a961fc8255bd34f"
+          }
+        ]
+      }
+    ],
+    "entrypoints": [
+      {
+        "name": "dev-team-kit-mcp",
+        "role": "Binário publicado que aponta para dist/index.js.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"dev-team-kit-mcp\": \"dist/index.js\"",
+            "start": 7,
+            "end": 7,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      },
+      {
+        "name": "mcp-server/src/index.ts",
+        "role": "Inicializa o McpServer, registra as ferramentas e conecta transporte stdio.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "const server = new McpServer({",
+            "start": 61,
+            "end": 61,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();\n  await server.connect(transport);",
+            "start": 1505,
+            "end": 1506,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "name": "skills/ e .claude/commands/",
+        "role": "Superfícies do kit consumidas como skills e comandos do agente; a ligação completa não foi revisada nesta amostra.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "  \"description\": \"MCP server for the Dev Team Kit - 38 tools backed by 73 skills + 43 slash commands",
+            "start": 4,
+            "end": 4,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "npm run build",
+        "purpose": "Compila TypeScript para dist.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"build\": \"tsc\"",
+            "start": 11,
+            "end": 11,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      },
+      {
+        "command": "npm start",
+        "purpose": "Inicia o entrypoint compilado do servidor MCP.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"start\": \"node dist/index.js\"",
+            "start": 13,
+            "end": 13,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      },
+      {
+        "command": "npm test",
+        "purpose": "Executa os testes compilados de deduplicação, manifesto e roteador de plugins.",
+        "evidence": [
+          {
+            "path": "mcp-server/package.json",
+            "quote": "    \"test\": \"node dist/lib/cross-call-dedup.test.js && node dist/lib/skill-manifest.test.js && node dist/lib/plugin-router.test.js\"",
+            "start": 14,
+            "end": 14,
+            "sha256": "88ed177aad5f32d1cdff58c328bc65dc8c7cf90c6597be10d03ba87ad66e1d67"
+          }
+        ]
+      }
+    ],
+    "structure": [
+      {
+        "path": "mcp-server/src/index.ts",
+        "role": "Bootstrap do servidor MCP e registro das ferramentas.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "const server = new McpServer({",
+            "start": 61,
+            "end": 61,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "  const transport = new StdioServerTransport();",
+            "start": 1505,
+            "end": 1505,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "path": "mcp-server/src/services/",
+        "role": "Serviços auxiliares, incluindo leitura de arquivos, busca, scraping, geração de imagem e instruções de browser.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import * as fileReader from \"./services/file-reader.js\";",
+            "start": 8,
+            "end": 8,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { searchBrave, searchCompetitors, searchDesignReferences } from \"./services/brave-search.js\";",
+            "start": 9,
+            "end": 9,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { generateImage } from \"./services/fal-ai.js\";",
+            "start": 11,
+            "end": 11,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { buildScreenshotInstruction, buildImageExtractionInstruction, buildScrapeInstruction } from \"./services/playwright.js\";",
+            "start": 12,
+            "end": 12,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "path": "mcp-server/src/lib/",
+        "role": "Bibliotecas internas de classificação, pipelines, contexto, compressão, eventos e roteamento.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { classifyTask } from \"./lib/classifier.js\";",
+            "start": 15,
+            "end": 15,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          },
+          {
+            "path": "mcp-server/src/index.ts",
+            "quote": "import { buildPipeline, getNextStep } from \"./lib/pipeline-engine.js\";",
+            "start": 16,
+            "end": 16,
+            "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+          }
+        ]
+      },
+      {
+        "path": "templates/stack-default/apps/web/",
+        "role": "Template separado para iniciar aplicações web com Next.js, React e Tailwind.",
+        "evidence": [
+          {
+            "path": "templates/stack-default/apps/web/package.json",
+            "quote": "  \"name\": \"web\",",
+            "start": 2,
+            "end": 2,
+            "sha256": "892a0474772bc6b8129751fb269c166413e6b9ec43d7d32dcca8bbe79d00a0f6"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "O propósito geral foi sintetizado a partir do manifesto e dos pontos de entrada revisados; a matriz completa de 73 skills não foi relida nesta execução.",
+      "Não foi executado npm install, npm run build ou npm test do mcp-server nesta rodada; os comandos acima são declarados pelo package.json.",
+      "Versões do template e do benchmark são componentes auxiliares e não devem ser confundidas com a stack do servidor MCP."
+    ]
+  },
+  "architecture": {
+    "status": "partial",
+    "summary": "O código revisado se divide em limites de aplicação (middleware e hooks), serviços do núcleo MCP, controles de execução e integrações externas. O mapa abaixo mostra somente relações sustentadas pelos trechos revisados.",
+    "nodes": [
+      {
+        "id": "auth-middleware",
+        "label": "Next middleware",
+        "kind": "control",
+        "responsibility": "Aplica fronteiras de rota, sessão por cookie e headers de segurança.",
+        "evidence": [
+          {
+            "path": "src/middleware.ts",
+            "quote": "  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }",
+            "start": 42,
+            "end": 47,
+            "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
+          }
+        ]
+      },
+      {
+        "id": "auth-hook",
+        "label": "useAuth",
+        "kind": "module",
+        "responsibility": "Coordena login, cadastro, logout, cache de queries e navegação do cliente.",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "  const loginMutation = useMutation({\n    mutationFn: async (input: LoginInput) => {\n      const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);\n      return data.data;\n    },",
+            "start": 31,
+            "end": 35,
+            "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+          }
+        ]
+      },
+      {
+        "id": "auth-api",
+        "label": "API de autenticação",
+        "kind": "external",
+        "responsibility": "Endpoint consumido pelo hook para iniciar a sessão.",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);",
+            "start": 33,
+            "end": 33,
+            "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+          }
+        ]
+      },
+      {
+        "id": "pagination-hook",
+        "label": "usePagination",
+        "kind": "module",
+        "responsibility": "Mantém página, parâmetros e limites de navegação sobre uma query paginada.",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "  const query = usePaginatedQuery<T>(queryKey, url, allParams);",
+            "start": 29,
+            "end": 29,
+            "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+          }
+        ]
+      },
+      {
+        "id": "paginated-query",
+        "label": "usePaginatedQuery",
+        "kind": "interface",
+        "responsibility": "Interface de consulta reutilizada pelo hook de paginação.",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "import { usePaginatedQuery } from './useApi';",
+            "start": 5,
+            "end": 5,
+            "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+          }
+        ]
+      },
+      {
+        "id": "pipeline-engine",
+        "label": "Pipeline engine",
+        "kind": "module",
+        "responsibility": "Transforma o tipo de tarefa em configuração ordenada de etapas, políticas e templates.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {",
+            "start": 158,
+            "end": 158,
+            "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+          }
+        ]
+      },
+      {
+        "id": "task-classifier",
+        "label": "TaskType classifier",
+        "kind": "interface",
+        "responsibility": "Fornece o tipo de tarefa usado como chave dos pipelines.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "import type { TaskType } from \"./classifier.js\";",
+            "start": 1,
+            "end": 1,
+            "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+          }
+        ]
+      },
+      {
+        "id": "file-reader",
+        "label": "File reader",
+        "kind": "module",
+        "responsibility": "Lê arquivos e monta snippets de código a partir dos caminhos configurados.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "export async function getCodeSnippets(type: string): Promise<Array<{ path: string; content: string }>> {",
+            "start": 103,
+            "end": 103,
+            "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+          }
+        ]
+      },
+      {
+        "id": "filesystem",
+        "label": "Filesystem",
+        "kind": "external",
+        "responsibility": "Fonte de conteúdo usada pelo leitor de arquivos.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "    return await fs.readFile(filePath, \"utf-8\");",
+            "start": 10,
+            "end": 10,
+            "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+          }
+        ]
+      },
+      {
+        "id": "playwright-adapter",
+        "label": "Playwright adapter",
+        "kind": "module",
+        "responsibility": "Monta instruções de screenshot compatíveis com o cliente de browser.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "export function buildScreenshotInstruction(\n  url: string,\n  fullPage: boolean = true,",
+            "start": 14,
+            "end": 16,
+            "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+          }
+        ]
+      },
+      {
+        "id": "playwright-mcp",
+        "label": "Playwright MCP",
+        "kind": "external",
+        "responsibility": "Cliente externo que executa as instruções de browser descritas pelo serviço.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "// Playwright is used via the Playwright MCP that the client already has configured.",
+            "start": 1,
+            "end": 1,
+            "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+          }
+        ]
+      },
+      {
+        "id": "dedup-cache",
+        "label": "Cross-call dedup cache",
+        "kind": "module",
+        "responsibility": "Mantém uma janela em memória de saídas recentes para detectar duplicação.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "export class CrossCallDedupCache {\n  private readonly windowSize: number;\n  private readonly threshold: number;",
+            "start": 177,
+            "end": 179,
+            "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+          }
+        ]
+      },
+      {
+        "id": "similarity-engine",
+        "label": "Hash e similaridade",
+        "kind": "interface",
+        "responsibility": "Usa hash exato e comparação de similaridade como caminhos de detecção.",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "    const exactHash = fnv1a64(text);\n    // Fast path: exact hash match. Walk newest-to-oldest.",
+            "start": 195,
+            "end": 196,
+            "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+          }
+        ]
+      },
+      {
+        "id": "permission-guard",
+        "label": "Permission ladder guard",
+        "kind": "control",
+        "responsibility": "Extrai comandos Bash recebidos pelo hook para aplicar a política de permissão.",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "function extractCommand(input) {\n  const name = input?.tool_name || \"\";\n  if (name === \"Bash\") return input?.tool_input?.command || \"\";",
+            "start": 104,
+            "end": 106,
+            "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+          }
+        ]
+      },
+      {
+        "id": "bash-tool",
+        "label": "Bash tool",
+        "kind": "external",
+        "responsibility": "Ferramenta cuja entrada é inspecionada pelo guard de permissões.",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  if (name === \"Bash\") return input?.tool_input?.command || \"\";",
+            "start": 106,
+            "end": 106,
+            "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "auth-hook",
+        "to": "auth-api",
+        "relationship": "consome endpoint de login",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "src/hooks/useAuth.ts",
+            "quote": "const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', input);",
+            "start": 33,
+            "end": 33,
+            "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+          }
+        ]
+      },
+      {
+        "from": "pagination-hook",
+        "to": "paginated-query",
+        "relationship": "delegates a consulta paginada",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "src/hooks/usePagination.ts",
+            "quote": "  const query = usePaginatedQuery<T>(queryKey, url, allParams);",
+            "start": 29,
+            "end": 29,
+            "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+          }
+        ]
+      },
+      {
+        "from": "pipeline-engine",
+        "to": "task-classifier",
+        "relationship": "importa o tipo da tarefa",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/pipeline-engine.ts",
+            "quote": "import type { TaskType } from \"./classifier.js\";",
+            "start": 1,
+            "end": 1,
+            "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+          }
+        ]
+      },
+      {
+        "from": "file-reader",
+        "to": "filesystem",
+        "relationship": "lê conteúdo por fs.readFile",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/file-reader.ts",
+            "quote": "    return await fs.readFile(filePath, \"utf-8\");",
+            "start": 10,
+            "end": 10,
+            "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+          }
+        ]
+      },
+      {
+        "from": "playwright-adapter",
+        "to": "playwright-mcp",
+        "relationship": "prepara instruções para execução externa",
+        "confidence": "inferred",
+        "evidence": [
+          {
+            "path": "mcp-server/src/services/playwright.ts",
+            "quote": "// This service provides helper functions for building Playwright-compatible instructions",
+            "start": 2,
+            "end": 2,
+            "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+          }
+        ]
+      },
+      {
+        "from": "dedup-cache",
+        "to": "similarity-engine",
+        "relationship": "usa hash para detectar repetição",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "mcp-server/src/lib/cross-call-dedup.ts",
+            "quote": "    const exactHash = fnv1a64(text);",
+            "start": 195,
+            "end": 195,
+            "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+          }
+        ]
+      },
+      {
+        "from": "permission-guard",
+        "to": "bash-tool",
+        "relationship": "inspeciona a ferramenta Bash",
+        "confidence": "observed",
+        "evidence": [
+          {
+            "path": "hooks/scripts/permission-ladder-guard.mjs",
+            "quote": "  if (name === \"Bash\") return input?.tool_input?.command || \"\";",
+            "start": 106,
+            "end": 106,
+            "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "O mapa cobre somente os oito arquivos revisados; o wiring completo do servidor MCP e as dependências entre todos os módulos ainda precisam de leitura semântica.",
+      "Não há evidência suficiente nesta amostra para desenhar organogramas de times, ownership ou deploy.",
+      "A relação entre middleware e o hook de autenticação permanece fora do diagrama porque o trecho revisado não mostra uma chamada direta entre eles."
+    ]
+  },
   "pages_generated": [
     "README.md",
+    "overview.md",
+    "architecture.md",
     "business-rules.md",
     "security.md",
     "automations.md",
@@ -1275,20 +1997,20 @@
     "markdown": "pass",
     "html": "pass",
     "markdown_details": {
-      "files": 6,
-      "bytes": 28464,
-      "mermaid_blocks": 0,
+      "files": 8,
+      "bytes": 39555,
+      "mermaid_blocks": 1,
       "errors": 0,
       "warnings": 0
     },
     "html_details": {
-      "html_files": 14,
+      "html_files": 21,
       "errors": 0,
       "warnings": 0
     }
   },
   "gaps": [
-    "Cobertura parcial: apenas os oito arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
+    "Cobertura parcial: apenas os treze arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
     "Nenhum fluxo de autenticação, deploy ou RPA foi executado em produção.",
     "Produto, UX/acessibilidade, infraestrutura/deploy, banco de dados e observabilidade fora dos trechos citados continuam pendentes; não foram preenchidos com recomendações genéricas.",
     "Propostas de melhoria são inferências rastreáveis, não alterações autorizadas nos módulos auditados."
@@ -1296,9 +2018,9 @@
   "html": {
     "status": "built",
     "site": "docs/repo-wiki/site2",
-    "pages": 6,
-    "evidence_pages": 8,
-    "diagram_assets": 0,
+    "pages": 8,
+    "evidence_pages": 13,
+    "diagram_assets": 1,
     "mermaid_renderer": "builtin-svg-fallback",
     "external_requests": 0
   }
