@@ -1,0 +1,1305 @@
+{
+  "schema_version": 2,
+  "mode": "Full",
+  "project": "claude-skills-fv",
+  "sha": "cc432e3c4677e36c8dea5fd96e6eaa1599db6c59",
+  "branch": "main",
+  "dirty": true,
+  "generated_at": "2026-09-14T16:33:35.148Z",
+  "analysis_method": "agent-reviewed-code",
+  "scope": "Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "exclusions": [
+    "qualquer componente de caminho iniciado por ponto",
+    "gitignore",
+    "symlinks/junctions",
+    "dependências, builds, docs, logs, caches",
+    "arquivos acima de 512 KiB"
+  ],
+  "source_snapshot": [
+    {
+      "path": "bench/ab/capture-real.mjs",
+      "sha256": "993dd6987f34323461cb8b6629126b54d06f9cfa44ee0a087186744cd7f0d465"
+    },
+    {
+      "path": "bench/ab/capture-screenshots.mjs",
+      "sha256": "b8c2c21b2b48cef91e07df9eba73480fd41c837149668371d2c07d9b4305ed5d"
+    },
+    {
+      "path": "bench/ab/capture-v230.mjs",
+      "sha256": "ffe172d555240642860667fa153ad13e65d83b4787808e58e755a775861d8e32"
+    },
+    {
+      "path": "bench/ab/instrument.mjs",
+      "sha256": "79116d832f152e216737e6811c14385cfc4559665fbce769f810ab783e854ae3"
+    },
+    {
+      "path": "bench/ab/report/chart.min.js",
+      "sha256": "d2af8974e95271638772e9e9524db5b9a6f58d6ec2d5d781400447b4a31c681e"
+    },
+    {
+      "path": "bench/ab/report/generate-full.mjs",
+      "sha256": "8ef1446a1c9c640fcbed9d0c01084f7ca239b24e4a4aba8c53a1e4cc26bd93bb"
+    },
+    {
+      "path": "bench/ab/report/generate-v2.mjs",
+      "sha256": "34438decbd954d1460cc4b05c3b7f2aaef6f1e6cab7446aae3f31150112d152a"
+    },
+    {
+      "path": "bench/ab/report/generate-v3.mjs",
+      "sha256": "bb6fa6470db945e5186d0a576da161587556e72353bfb41babc5fecd1ca6fe3d"
+    },
+    {
+      "path": "bench/ab/report/generate.mjs",
+      "sha256": "b4199d05267607cb2e55e6ae32601083dc13aaecb495375fb6a73ccadf063e02"
+    },
+    {
+      "path": "bench/ab/run-ab.mjs",
+      "sha256": "3e8515bbc19f40aa3a7039c15ea4f3bd221c985a2b7210e3c3c6e32556d55801"
+    },
+    {
+      "path": "bench/ab/score-design.mjs",
+      "sha256": "c45b6a283f2b3bc53119fb59ba8f3e1b8dfbb6200b8d6be6ad5d901db253ffa9"
+    },
+    {
+      "path": "bench/check-regression.mjs",
+      "sha256": "5436e35fbe099bd6055805b0184776fb51689b8e4033de8e8153242457944492"
+    },
+    {
+      "path": "bench/compare.mjs",
+      "sha256": "0dc194f5419c1c7543ac23e72e997d97f63d6fb2f643abe29955a834d0613a1c"
+    },
+    {
+      "path": "bench/run.mjs",
+      "sha256": "49093ea5842148ba8db64cea664f6564378d26bdf22a3ccb62e45e7cfc80bea7"
+    },
+    {
+      "path": "evals/hooks/schema-validator.mjs",
+      "sha256": "355ede35b79b5cf35a280c4c3fabc6ac7aa5e58ae1a964ff5ee567c600189086"
+    },
+    {
+      "path": "evals/policies/self-correcting-sensors/run-eval.mjs",
+      "sha256": "1de4e0999519e614bd96ded7a3aca7876bfbfba24977e0e3a8c1e5a6574ea8d8"
+    },
+    {
+      "path": "evals/policies/skills-vs-agents/test-hook.mjs",
+      "sha256": "ca2c5247e471f21a6d454e4613e433dd0efb27eb83e01381f0c9eb4c8057af58"
+    },
+    {
+      "path": "hooks/lib/transcript-parser.mjs",
+      "sha256": "ab1c0efa7ea2156be7d03a5cf9ebb9d582ce99dc33bb3bd86ac9e2e18881eae5"
+    },
+    {
+      "path": "hooks/scripts/agent-dispatch-validator.mjs",
+      "sha256": "d57bbad8157ef1da2ac1eb59ca42c7eddfc020bd0cb9ab05a43e0ebee2143ed9"
+    },
+    {
+      "path": "hooks/scripts/ai-writing-detector.mjs",
+      "sha256": "b08dccabfbc3763d771711be2dd729455e42dddcc39e7ffb2d20b3fb84407cc5"
+    },
+    {
+      "path": "hooks/scripts/auto-skillify.mjs",
+      "sha256": "cb5b23232ae72ad7a4ed2d2b4ede0c9be0e51a8125e6dd91c5beb57ad4f8b999"
+    },
+    {
+      "path": "hooks/scripts/claim-verifier.mjs",
+      "sha256": "4749518e257b9b1193dbfa6548b7bb07f1d7f4afe148c897a4c974748fd2e38e"
+    },
+    {
+      "path": "hooks/scripts/conflict-resolution-reminder.mjs",
+      "sha256": "1b1d6e7cdea717e66e248438473d499e6d10f61a8477cf8377d5421132766cc5"
+    },
+    {
+      "path": "hooks/scripts/constitution-watcher.mjs",
+      "sha256": "ac9fb6d698e59e1b686562c4c856ff7f9aa70f30f14f389f61bcca6ee3b2fdaa"
+    },
+    {
+      "path": "hooks/scripts/context-guard-stop.mjs",
+      "sha256": "b787731cab795aa6bacd63cdc4cba531d5911ba932bf94ae55a643925e8faf99"
+    },
+    {
+      "path": "hooks/scripts/context-turn-counter.mjs",
+      "sha256": "43b27a901c103cb27bb46a25d8c4aa396e0a34f5e9e0d200673372e7761c7eca"
+    },
+    {
+      "path": "hooks/scripts/design-anchor-guard.mjs",
+      "sha256": "484c05e6f3da048552a43a8612af20cadb457f88a7fe71dc4ec1781558ada418"
+    },
+    {
+      "path": "hooks/scripts/graph-update-post-tool.mjs",
+      "sha256": "9e465136e509a6042876475bf911c22f9c11c21e7d66abab9231a3af294e7fd3"
+    },
+    {
+      "path": "hooks/scripts/intent-classifier.mjs",
+      "sha256": "14ac5622f4b402762dfc02e06111ebfba9cc6f2b6821b71e26ac05040b962b9e"
+    },
+    {
+      "path": "hooks/scripts/investigate-first-guard.mjs",
+      "sha256": "f94121e17d8c01825f6e6da4ff54e19e52e242aa3745aa332d419fa0cf035be7"
+    },
+    {
+      "path": "hooks/scripts/keyword-detector.mjs",
+      "sha256": "c291f9278ea03a8d8de692dd6bb1a129261b249cdc29f52da19ef0106e0b5551"
+    },
+    {
+      "path": "hooks/scripts/llm-classifier.mjs",
+      "sha256": "0cbd8dd955ec611a0f60798db865f421077d890ffa082cbc8695722ad8684fd4"
+    },
+    {
+      "path": "hooks/scripts/memory-curator.mjs",
+      "sha256": "63cd90bbb64903d2a55d5c968a05709d4c49169a6dd0cf36b2815db8d4bca930"
+    },
+    {
+      "path": "hooks/scripts/model-routing-hook.mjs",
+      "sha256": "695b66804f4243788bdb00024d3696f607764c9926faa0c66300341e8ccda976"
+    },
+    {
+      "path": "hooks/scripts/permission-ladder-guard.mjs",
+      "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+    },
+    {
+      "path": "hooks/scripts/persistent-mode.mjs",
+      "sha256": "87eab155e117679be82884bc91364f031d5761123c98eab84b6433292e530bd1"
+    },
+    {
+      "path": "hooks/scripts/post-tool-verifier.mjs",
+      "sha256": "b3fea6146b595dc8bd05c8e04daa4a72b272a6e3a1b3bb168c000fba7e102eac"
+    },
+    {
+      "path": "hooks/scripts/pre-build-gate.mjs",
+      "sha256": "e583398a871501a4360acc9ff284b934e7a3338b569f3bd28e24dfdd47097d27"
+    },
+    {
+      "path": "hooks/scripts/pre-code-ladder-guard.mjs",
+      "sha256": "49bf3dde37b9e6cef6301f6bebd4561dec9e6963b94ceab4e6c4547c8d54e9e9"
+    },
+    {
+      "path": "hooks/scripts/pre-execution-gate.mjs",
+      "sha256": "25a441d92143c779fd8f9c146d08f1d36603a47c022efe56a775081ad0ef7aef"
+    },
+    {
+      "path": "hooks/scripts/pre-tool-enforcer.mjs",
+      "sha256": "ad802733a5f3d3c744493b60146076334fbfb104f312924494b0a25588645296"
+    },
+    {
+      "path": "hooks/scripts/runtime-dispatcher.mjs",
+      "sha256": "6fc58e39225fa040a0bf8c18df1b256dc40b5d97a2b0e8a7be1ea03cf324e278"
+    },
+    {
+      "path": "hooks/scripts/session-event-logger.mjs",
+      "sha256": "54f8ee03301cffa3a369019bb1028e5c5174fd8dcf8187b561eb2793456a467b"
+    },
+    {
+      "path": "hooks/scripts/session-start.mjs",
+      "sha256": "d683b686044d27211a0f4b80e0ce913e128a31b14c889a9417647f5d91058d39"
+    },
+    {
+      "path": "hooks/scripts/simplify-ignore.mjs",
+      "sha256": "93e6b1702b54b394e848d44b432e87079997b65630111d58bb699ea2bc19c111"
+    },
+    {
+      "path": "hooks/scripts/stop-savings-summary.mjs",
+      "sha256": "db485852f4aea333525ea1ab552a0b813120a8a156ba8ab99fb5259e2d3ea110"
+    },
+    {
+      "path": "hooks/scripts/topic-shift-detector.mjs",
+      "sha256": "43e3ee614f8e95fe65aef9127e2f2eba667b689be2b18f52f2e329c08ba0cd4a"
+    },
+    {
+      "path": "hooks/scripts/utils.mjs",
+      "sha256": "3b526c9bdc27b49b1ef9fb80fe58fd1e432a0f315b7a404009abb3ae0ee67ef7"
+    },
+    {
+      "path": "hooks/scripts/verify-integrity.mjs",
+      "sha256": "91a6c73add5ef22620fd5f8caaa9e1a402f3d19f1edca60deefaa9629e0fbe5a"
+    },
+    {
+      "path": "mcp-server/src/constants.ts",
+      "sha256": "36f8c58f3e54c9a18ca8f0bd4a7488fe1c6d6b49dc3f6ee0ccc0276b2d095834"
+    },
+    {
+      "path": "mcp-server/src/index.ts",
+      "sha256": "519646766040e3c21d84bf45e9c494f0f0cd045fdbd4fc564da69c7e6b2f0322"
+    },
+    {
+      "path": "mcp-server/src/lib/classifier.ts",
+      "sha256": "15e81b166cef0d6005894ab8f0585f579c7d7e1dcaef8475e6dac1a4e6812552"
+    },
+    {
+      "path": "mcp-server/src/lib/cross-call-dedup.test.ts",
+      "sha256": "a5b710a7e5ee3fb354b63cdd5da66fe2a348764d65812df24a88c7039a9d04cb"
+    },
+    {
+      "path": "mcp-server/src/lib/cross-call-dedup.ts",
+      "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+    },
+    {
+      "path": "mcp-server/src/lib/event-log.ts",
+      "sha256": "d08bcdc70ba1bca939976afaad6ac36b571d189f00a6adc2dfb942c8dd446266"
+    },
+    {
+      "path": "mcp-server/src/lib/output-compressor.ts",
+      "sha256": "184507c2b70bd65fc279cdcaeaea8b82c8824d5e2d2c7ed6147d9e200339b5d2"
+    },
+    {
+      "path": "mcp-server/src/lib/pipeline-engine.ts",
+      "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+    },
+    {
+      "path": "mcp-server/src/lib/plugin-router.test.ts",
+      "sha256": "61049c4c278e4e55475e403dcfc4b6ea08cac1eb8f00e5e23e6cae84a5a925f2"
+    },
+    {
+      "path": "mcp-server/src/lib/plugin-router.ts",
+      "sha256": "032007ef9a9749aaf63797e5cfacecf759b3972fe18e7e3b3a38c6d37319ffd3"
+    },
+    {
+      "path": "mcp-server/src/lib/project-intel.ts",
+      "sha256": "7d295f0de07ae358da0318f384a8145be594edbd4c80a8d2a8e38af138f19b4d"
+    },
+    {
+      "path": "mcp-server/src/lib/skill-loader.ts",
+      "sha256": "f59865745f56eb7465079cfa1df8e084db8c66484dc0c0ea4dba6127609820ea"
+    },
+    {
+      "path": "mcp-server/src/lib/skill-manifest.test.ts",
+      "sha256": "7fd7fad2e6fc6c56afc20e822394da1d60df0c29a3116b74080869c634c11700"
+    },
+    {
+      "path": "mcp-server/src/lib/suggestions-engine.ts",
+      "sha256": "056c3b7b3b8dd09df1fe8a737dfa34f05cefb55f5a15aa455250336020e41470"
+    },
+    {
+      "path": "mcp-server/src/services/brave-search.ts",
+      "sha256": "d2716f9ce4cb95fc6d0d6c0708839a44729f63b9cba2d5d4aa32c1132937d7dc"
+    },
+    {
+      "path": "mcp-server/src/services/fal-ai.ts",
+      "sha256": "d8c75aa00dd3e4a910763de6e4c43041cf5d131727dd590ac0e3b8d92561a8e6"
+    },
+    {
+      "path": "mcp-server/src/services/file-reader.ts",
+      "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+    },
+    {
+      "path": "mcp-server/src/services/firecrawl.ts",
+      "sha256": "e1a398efa5661cb848469176a4a18e09fc500caba5a9c0d621e001e964e75104"
+    },
+    {
+      "path": "mcp-server/src/services/playwright.ts",
+      "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+    },
+    {
+      "path": "mcp-server/src/types.ts",
+      "sha256": "0c495c9f29f65c179fe3011f49924655ed2072b5ccadd6ac16e9667b5d45915e"
+    },
+    {
+      "path": "scripts/ai-memory-setup.mjs",
+      "sha256": "7a78ab8963cc026e3a23647ba9816f73dc7a312325815eff276169d38e459da9"
+    },
+    {
+      "path": "scripts/auto-loop.mjs",
+      "sha256": "4650ee777612097718455c23332ca2610a88e9301d0b64530e99e82516203777"
+    },
+    {
+      "path": "scripts/auto-loop/_legacy.mjs",
+      "sha256": "82c315586e9e44e8f33977828394f59b419cc78c7249c99691ca47b7e47c3ebc"
+    },
+    {
+      "path": "scripts/auto-loop/agents/claude.mjs",
+      "sha256": "6475a371893a774dc3693fd2f47a8859da4829eeb4ace0a8efc67828948a0332"
+    },
+    {
+      "path": "scripts/auto-loop/agents/codex.mjs",
+      "sha256": "9fbb302bd149043d60ac8f63446dc8633b2adb21961df0dce8ac3d6410686334"
+    },
+    {
+      "path": "scripts/auto-loop/agents/index.mjs",
+      "sha256": "45e52bb314041d414919b465a7a4dbd72aa9cb229d710680294881d28f482821"
+    },
+    {
+      "path": "scripts/auto-loop/args.mjs",
+      "sha256": "d4894cb7fac1a369fd9cb7a4bbddd7850d0b8a401d28e4a1c99fbdc259e0f7cc"
+    },
+    {
+      "path": "scripts/auto-loop/backoff.mjs",
+      "sha256": "d6818c9e06ba2cb3fdd497cefe0b3fa6c1cdaa57d09a1aa93c2287bc2868286d"
+    },
+    {
+      "path": "scripts/auto-loop/circuit-breaker.mjs",
+      "sha256": "cb2993c44c3bc6d2e64ac07a5bb60170ac65b84e5cebde6056af675e61437a0c"
+    },
+    {
+      "path": "scripts/auto-loop/completion.mjs",
+      "sha256": "d44a4cfa766a307ebc83573eb9bcbb49c1efd2bf3178c5701e69bbec5e18658f"
+    },
+    {
+      "path": "scripts/auto-loop/context.mjs",
+      "sha256": "a1ba1413b2ed66c614048b897318ec2d6445eaa38c095cd946ea11679c7ef157"
+    },
+    {
+      "path": "scripts/auto-loop/contract.mjs",
+      "sha256": "f828fdcf22c5551c1549ee92d717107b6706d45825a6d2925b20a7a2cd4d0fa0"
+    },
+    {
+      "path": "scripts/auto-loop/index.mjs",
+      "sha256": "462c8e98219af6bf6d2fa7217a45f2a97bf160efc76dad36616d05dfd3db10b2"
+    },
+    {
+      "path": "scripts/auto-loop/interrupt.mjs",
+      "sha256": "b6b1f3b38c9b67fbbede6409ceb03fec6fd14f18dc531851378e68160e21fca0"
+    },
+    {
+      "path": "scripts/auto-loop/logger.mjs",
+      "sha256": "a27cd25b56a989766e3af438f6f6f19b60fe66744e5b122c51a4228392c462e4"
+    },
+    {
+      "path": "scripts/auto-loop/parallel.mjs",
+      "sha256": "eeb9a82028a52d56d1680656fbf4f1a5caafada3951f5f8830c67e0d2739a897"
+    },
+    {
+      "path": "scripts/auto-loop/plan.mjs",
+      "sha256": "920fc86ad14098cc62ecf50fea6e8f3511af998e8d4b00f902ee928836518a4d"
+    },
+    {
+      "path": "scripts/auto-loop/polish.mjs",
+      "sha256": "c29b3d6ae9bc3ab9635713da8b114990630a0b2bf75eafd94281b26791518def"
+    },
+    {
+      "path": "scripts/auto-loop/prevent-sleep.mjs",
+      "sha256": "f2fd8a3f641a5fe919a31c37ea244a38252419d438795d90c2453a6da2452b75"
+    },
+    {
+      "path": "scripts/auto-loop/return-envelope.mjs",
+      "sha256": "68c4e43863e553204c4b60cfd274e7c5a6b5083c8773de247aca417778331a76"
+    },
+    {
+      "path": "scripts/auto-loop/runner.mjs",
+      "sha256": "f9a933ad224706607c80c80e6fa8d81ad6a2521a61852ac5f5864244d5c015d7"
+    },
+    {
+      "path": "scripts/auto-loop/scoring.mjs",
+      "sha256": "e6051dfbfb4db8c8f786f6caead0e40d23399693adc35a8a807e6b58d5c50b0c"
+    },
+    {
+      "path": "scripts/auto-loop/session.mjs",
+      "sha256": "fe2b67a6020060f5ee0b81535274d3f8c90d7ddad052fde9d196e98b9f044361"
+    },
+    {
+      "path": "scripts/auto-loop/stop-when.mjs",
+      "sha256": "95c2f35b6ce82b3f06396ee1e9d614aca4e6bc4c56eb9aa5179905154ee45fb6"
+    },
+    {
+      "path": "scripts/auto-loop/validation.mjs",
+      "sha256": "81c0864762923915237f742b23c2568cfaa72d28937d516df3ae9d1e72d4432b"
+    },
+    {
+      "path": "scripts/auto-loop/worktree.mjs",
+      "sha256": "e04a26e2b5c1b6f34fe66eca04f54fe6239f1418de88ac1ffdf2da6b6486ee33"
+    },
+    {
+      "path": "scripts/build-dashboard.mjs",
+      "sha256": "aca4027a5ff7c82306355ad5d4e9bbc9dae2cfb0f81a45d3556629564854de97"
+    },
+    {
+      "path": "scripts/build-repo-wiki.mjs",
+      "sha256": "25fc30bc00fc8542d5f63c96330e3ad21ff2c40619082597bcc3962a949aa082"
+    },
+    {
+      "path": "scripts/check-consistency.mjs",
+      "sha256": "98ecf4cbddd096ac3268bea613214148ccf8c3b12c613627ef42b48a81fad990"
+    },
+    {
+      "path": "scripts/check-contrast.mjs",
+      "sha256": "fc51da8cb47236f3eb641ebf9c0efae230341e0f5cf2321df17c69ed58eb7423"
+    },
+    {
+      "path": "scripts/check-design-generic.mjs",
+      "sha256": "e4862d81ccc9b1a242c022935dd4302fe6f823f58835592235c5d2f7e3b2baeb"
+    },
+    {
+      "path": "scripts/check-harness-coherence.mjs",
+      "sha256": "b3b9707f71af80af3c6df332faaeb3c760101b9dbab222b8aac0cfe26587aace"
+    },
+    {
+      "path": "scripts/check-hook-scripts-exist.mjs",
+      "sha256": "0a225961f4e88594151dbad8f09b01583bb447542f0f263727e0120371f19534"
+    },
+    {
+      "path": "scripts/curator-state.mjs",
+      "sha256": "45a0b403e20ff6227031615d4e855fc8d82722e1f4c52340a9fca42816cdc936"
+    },
+    {
+      "path": "scripts/dashboard-server.mjs",
+      "sha256": "a1d060ca39a6fd4e1f6dfbb564235265d7463b09c936e0c2d373833eb20cbd55"
+    },
+    {
+      "path": "scripts/devkit-doctor.mjs",
+      "sha256": "23bf5cec679fd8ccc6fbdb2d2f2b11d9a334daca2bc4f6c98ad1920ba6c095ff"
+    },
+    {
+      "path": "scripts/diff-impact.mjs",
+      "sha256": "95d7c22a5cb4d4a8a6f86eb2222cc08c5c4f802227283f16c5a0a69a752a5a20"
+    },
+    {
+      "path": "scripts/disk-cleanup-scan.mjs",
+      "sha256": "6c0f8eeabc9551b745983eba41b00ea8215dab2f36596464c2603d27be2bf668"
+    },
+    {
+      "path": "scripts/drift-scan.mjs",
+      "sha256": "4129b16fb1fd12d7f7d46fb686da180b99d9124d1111e4d431383d1ad3642e7c"
+    },
+    {
+      "path": "scripts/eval-plugin-routing.mjs",
+      "sha256": "f2489050deaa7b33e02e7f9b4cc3284fc0dd002fb7da4682745b3e39a34a42e4"
+    },
+    {
+      "path": "scripts/eval-triggers.mjs",
+      "sha256": "00e5394206ec981ce3cffbad2c1f620342a592bfb6eeba1fc5c4dbbfbcc554ca"
+    },
+    {
+      "path": "scripts/generate-image.mjs",
+      "sha256": "9571f610787427e2240a752bf936f8c45b9f221f1a9b32eee0d7c4a74fd6f41e"
+    },
+    {
+      "path": "scripts/generate-image.py",
+      "sha256": "7358e96cec292df01bea5ee55c282bd318ac4852e827a067040413f8b9829715"
+    },
+    {
+      "path": "scripts/generate-repo-wiki.mjs",
+      "sha256": "39d754843f3795fe2d039a8da549072e1a72639ab15c2db6bcf6216f678730dc"
+    },
+    {
+      "path": "scripts/git-hooks/install.sh",
+      "sha256": "fd122f0f64ba056441a801e8729f0c15784ddfe1109198399becd6fab111374e"
+    },
+    {
+      "path": "scripts/init-blog-repo.mjs",
+      "sha256": "c9f83ad273a89a30bafd1bf2cdba204f967496c6f721acc9c6128e3b2edf6a14"
+    },
+    {
+      "path": "scripts/init-vault.mjs",
+      "sha256": "af4649a1d29110de0be1ec667f6a953db5f1d650d6cff0e824ba565b3c704c14"
+    },
+    {
+      "path": "scripts/instinct.mjs",
+      "sha256": "48022bf347a50542f2d1210a986939453cfabd1ce3a49f2af1dd61676fd2f5ff"
+    },
+    {
+      "path": "scripts/l3-persona-generator.mjs",
+      "sha256": "b79c72b516cc80e46ebdc8ff6adc68c07bc7140d6373fa52090e93ee92265229"
+    },
+    {
+      "path": "scripts/lib/plugin-catalog.mjs",
+      "sha256": "82bd7aed37490572c6e31c8502735956800f1e19c4c307af514e600d6b78f2a0"
+    },
+    {
+      "path": "scripts/lib/route-feedback.mjs",
+      "sha256": "9a47ef073023e419e6262889ca46d96257402444ed64f74252c183f1ed35c6d7"
+    },
+    {
+      "path": "scripts/log-conflict-decision.mjs",
+      "sha256": "0559e8814ff7b3a8360c10d95fe383ef1c40e231933087fd1326f521540aa850"
+    },
+    {
+      "path": "scripts/mmd-canvas-builder.mjs",
+      "sha256": "333f0ef7e634e996695e4325e90cfca1cd6d0b53caa308e6cf685ffa3ed2458d"
+    },
+    {
+      "path": "scripts/print-kimi-mcp-setup.mjs",
+      "sha256": "1298c7d64ab8db8e68195fbcb0208e2c579540a5ee67bdd5c0ff3093d194e254"
+    },
+    {
+      "path": "scripts/route-feedback.mjs",
+      "sha256": "bdb5fb389bb3aa448717e460036db8d2ab2c6498e2ee463d7aa799c5b53c0474"
+    },
+    {
+      "path": "scripts/route-task.mjs",
+      "sha256": "90957e16b78306325e62cd7a66cb3038445b8cee417859cba57a4356d52f8ccb"
+    },
+    {
+      "path": "scripts/routing-insights.mjs",
+      "sha256": "e85de6bbd813b312b6be914201c51dc7e71f6d341aecae2b5907a85742857d62"
+    },
+    {
+      "path": "scripts/run-program.mjs",
+      "sha256": "c54c076911ccee36e4ec8bb528ba0f2ce66a7220820a7392f86ec96439610937"
+    },
+    {
+      "path": "scripts/savings-report.mjs",
+      "sha256": "488c4bfe481948553ed9e030b16e34d5528c8b4437642596a9aca2bd391123b2"
+    },
+    {
+      "path": "scripts/setup-video-analysis.mjs",
+      "sha256": "4aa007c968ba44c7aaac032f8f1e151da5f2f855b9db1dd11e6aa181e6593021"
+    },
+    {
+      "path": "scripts/skill-health.mjs",
+      "sha256": "183e7c13fc5fec2aee3daef84256ccea97716e6769589f60b9db6816399ce8f1"
+    },
+    {
+      "path": "scripts/skill-quality-score.mjs",
+      "sha256": "2a6bf6ad70c880026ce9fc7b895eba39d993af8af6d60fee68e6faefc57dd3f2"
+    },
+    {
+      "path": "scripts/smoke-install.sh",
+      "sha256": "564a76515ad9d0da4b414589af67d3b6500fe658f2241aca2140f10a7d1f086e"
+    },
+    {
+      "path": "scripts/swarm/index.mjs",
+      "sha256": "c394e52f5261600f000fccb0eee3b4fe87f7041ac0225c6ee235fbb9742c25de"
+    },
+    {
+      "path": "scripts/test-compressor.mjs",
+      "sha256": "01c27a329312236e0031b739609ac6ae8fe38a5f7e97947706f4e3e8359e7778"
+    },
+    {
+      "path": "scripts/test-event-log.mjs",
+      "sha256": "53d766823c4fd23fcedcd6c28a5ccec46041dbe9fcfb98db4644ee61d0d55f34"
+    },
+    {
+      "path": "scripts/test-repo-wiki.mjs",
+      "sha256": "5e576e99304bf6bd0a75368a485f0cf6ed91bf7e9b2d92c5475b25324dfa75a0"
+    },
+    {
+      "path": "scripts/test-seen-queries.mjs",
+      "sha256": "aaad75180cf94e23d50969c445562c21d9f69f24be0932f23075e2319d7b2047"
+    },
+    {
+      "path": "scripts/test-suggestions-engine.mjs",
+      "sha256": "d90f08e3b76177f40d35c94615a52aecd132c68fca79ccfd051ca574268ad4f2"
+    },
+    {
+      "path": "scripts/tests/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scripts/tests/auto-loop/fixtures/fake-codex.mjs",
+      "sha256": "82fa39a2c9cecbeb4334389101a16b0dcf60bb6c32f58a8352a289630ce48eb6"
+    },
+    {
+      "path": "scripts/tests/auto-loop/run-all.mjs",
+      "sha256": "46c7d882188baff2be603f58322a457f55bc036f6ae363e26ec6169950445d07"
+    },
+    {
+      "path": "scripts/tests/auto-loop/scoring.test.mjs",
+      "sha256": "7d805c36dca81f864f5289263b6b2eac143fd08842ab122afc27664ed10bc5b8"
+    },
+    {
+      "path": "scripts/tests/auto-loop/smoke-real.mjs",
+      "sha256": "08d9bf3bf02d5d0764fa3ee91e34537635bb90b14afd9bf04fb9dcdb59ae0ad1"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-agents-claude.mjs",
+      "sha256": "64fca2e2df803aa353ce64ab73d9defd33777b29c70da72c162aa897e659ce12"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-agents-codex-e2e.mjs",
+      "sha256": "4244b7809ab08cfbb771eaa41408532c661fe3a46f0cabd2f99ca0fcb4595804"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-agents-codex.mjs",
+      "sha256": "64851ac85278b90d1120d1b05d3f9833ec31be683278e58661111a5e6d4801b6"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-backoff.mjs",
+      "sha256": "bba42387a537a4f77965516db4e8588c4729905e8b210e437c304a92e0a82c5e"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-circuit-breaker.mjs",
+      "sha256": "2bf166f628af8596b8255bfaf91cf5cf9b8549a00495c5aef0d4f77800408f64"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-completion.mjs",
+      "sha256": "6d052381ec3313ac4c3096ad49ade489d90d1344a272a80acd8c22c0df0c7358"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-context.mjs",
+      "sha256": "b17c700a13516c60957ea2a1e58bf207d73c511c7a6dd2032e2c2243168e3025"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-contract.mjs",
+      "sha256": "6e10982f7e8b37169cf322fe4097db0c670aea7c54db84627c79e0494b33eab7"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-interrupt.mjs",
+      "sha256": "4e27dbd6b4b222d74ff0e00a88a44967bf1ae78942bc50b3442b9da0198ee29d"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-logger.mjs",
+      "sha256": "af4cae73e22507e7204bd35cedb92e9d7bc48ac151a1dfad0577470b08597823"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-parallel.mjs",
+      "sha256": "93c808712ffb6335eef397e922e0ba7748d9a49839373c7b3b4d4cce45c24625"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-permission-ladder-guard.mjs",
+      "sha256": "2b5eafc3149dceee91b89744a6ca8ffd2f1f47613928de90abf42b1919508bed"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-plan.mjs",
+      "sha256": "885d83b6dd85001778f1f666c8cfecad9d1dcb0468606ea2843063f9a8ba9ded"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-polish-e2e.mjs",
+      "sha256": "2ebe133b756ef7212732fc7c34b0ecaf8d07ae94072fd12fa449255466574ec8"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-polish-skill-paths.mjs",
+      "sha256": "2ed41ab7e85c8e78b8a00428bf6dd2dd6d7b47772cb8e8928bba7a0976074a2f"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-polish.mjs",
+      "sha256": "2affc547127673cdfbcafac6f461fb0db74663900492ca248a6a4dd50c57f3e9"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-prevent-sleep.mjs",
+      "sha256": "6531494194db057c12fe60792a89613e971635fc1c24bfed7807a88863ef27bb"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-return-envelope.mjs",
+      "sha256": "c418aa33be01d35c0deacdc2f89bdbb4ef08493e437440b70b5e50e0ba5360da"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-runner-worktree.mjs",
+      "sha256": "c67e7f37ea249a2a3e71ed3ca19d9af35fda33a906e8f15124c53d91773d38ea"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-runner.mjs",
+      "sha256": "8e469a78b1310b5eb44b2329b3673d9d1640ccfd5ff6b4dc9cd5cacca270ef9f"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-session.mjs",
+      "sha256": "dcb637be82d5c0dca9ad07e25e6a1e7dd4b097e9f17b11f1e0edc74ca624aa9c"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-stop-when.mjs",
+      "sha256": "2d34675897f8d87435436a8f423596f76b21d18cab021ca637b332301cac7f11"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-validation.mjs",
+      "sha256": "ffd7e47183e86be92516800d238322f0f94ac5249eeca734c7a47a30f8022dc9"
+    },
+    {
+      "path": "scripts/tests/auto-loop/test-worktree.mjs",
+      "sha256": "17e70656f72b63d4d99e896b55f01a79dc49f20a55c2a54811ca0102fa0d24cb"
+    },
+    {
+      "path": "scripts/tests/consumer-install.mjs",
+      "sha256": "c1dd4fba2e516469a82339dd850aeb8dd7acf116708b27b9a28124996498fda1"
+    },
+    {
+      "path": "scripts/tests/route-feedback.mjs",
+      "sha256": "0d6fe6fe7d2d6ead7a55642edf9118d92f45b83d1c866790c16a05ce04a67643"
+    },
+    {
+      "path": "scripts/tests/test_generate_image.py",
+      "sha256": "9569bfb745d0c385a107cb5d8869749819d103480ac13a7c5d02e21e54098b6a"
+    },
+    {
+      "path": "scripts/validate-plugin-catalog.mjs",
+      "sha256": "c97313b21b7afe690fa1853a158c07afb555dda03111828cfdd2997497c8f385"
+    },
+    {
+      "path": "scripts/validate-program.mjs",
+      "sha256": "6cdc20d89adddd4c43252cd6c9f8bc42c221ebf2496c0dd5c054fe6bfbf1e681"
+    },
+    {
+      "path": "scripts/validate-schema.mjs",
+      "sha256": "391271a9ca7c6324a43bdb264aa827e49d3d06d3e0a69cec25f3a68368dbcd96"
+    },
+    {
+      "path": "scripts/vault-resolver.mjs",
+      "sha256": "83db579bdde356359c83cff115872d3620ef197098f703069556f8dfc106f998"
+    },
+    {
+      "path": "scripts/verify-docset.mjs",
+      "sha256": "866917ba7d9a94dfe6a9e58bc3f1f4f0b8cf0add3c6eabd519a794766f8153d9"
+    },
+    {
+      "path": "scripts/verify-mcp-runtime.mjs",
+      "sha256": "93ccc570e3fbbc5307c7f537b6b7592109f13c2cd1cb7aeab43623a2857a07f6"
+    },
+    {
+      "path": "scripts/verify-repo-wiki.mjs",
+      "sha256": "a5adb70d067aa60803b8946db95a6b9763551fad551b833af533eeb0283a06b1"
+    },
+    {
+      "path": "scripts/video-download.mjs",
+      "sha256": "a6fa60a92a8f698ea5ef6523a5116b14c819949106c9800f339084158554d484"
+    },
+    {
+      "path": "scripts/video-frames.mjs",
+      "sha256": "5085cd77bdbf5d4ffddb904c6d510690b3894d5317ad368bb42980742361d72f"
+    },
+    {
+      "path": "scripts/video-transcribe-local.py",
+      "sha256": "3be80ec8ad413758aa1a0e185d314c9858d7cc1b6ce920f48c70ea870df9a7f7"
+    },
+    {
+      "path": "scripts/video-transcribe.mjs",
+      "sha256": "d67088cadc0e8610a995ddbcddb82d4b20d9e384f9e84f98ce0662ff6a5cddaf"
+    },
+    {
+      "path": "scripts/worktree.mjs",
+      "sha256": "34fca088aac67e9c811a8e456b17f2f017c08fae743ae2f571c51e0410d9e93c"
+    },
+    {
+      "path": "setup/install.sh",
+      "sha256": "b202ddc9c53bae325a3f57083a4f97066661ba22d2735b972cdd2549db830ee6"
+    },
+    {
+      "path": "skills/02-ui-ux-design/scripts/design_search.py",
+      "sha256": "41bee877d7d6b77b2de52bb8753708296a6d8300ce2cd6b9300ca4ec0333fe0e"
+    },
+    {
+      "path": "skills/02-ui-ux-design/scripts/design_search_core.py",
+      "sha256": "862085161ddd3a733bc2f3cc695cc1b75e20532f2711c3ce15368faba35ef54b"
+    },
+    {
+      "path": "skills/64-scroll-storytelling/engine/scrollcraft.js",
+      "sha256": "cf038048d4f592584b633ff28012fdfbf258064659a43627a738b56cd06cb7e8"
+    },
+    {
+      "path": "src/components/ui/ErrorBoundary.tsx",
+      "sha256": "4becf2782ea61db10fd361bfa3a2d497efff1aed107122bb70fa2525f8a48cd5"
+    },
+    {
+      "path": "src/components/ui/Skeleton.tsx",
+      "sha256": "77b7cc3b88bb0de295763f8a70f715c71b3a6404cd5d14f34e840baf5e513a44"
+    },
+    {
+      "path": "src/hooks/index.ts",
+      "sha256": "b0eaad39ae0b7924a33f55d625340f80d30c792e94a44a308e296721811c7b33"
+    },
+    {
+      "path": "src/hooks/useApi.ts",
+      "sha256": "61777f0684126f7368e0c32ebeb7e3d9ef8d8c0dcd813104efb5677830985813"
+    },
+    {
+      "path": "src/hooks/useAuth.ts",
+      "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+    },
+    {
+      "path": "src/hooks/useDebounce.ts",
+      "sha256": "813ee8016247af67f566433477aee20bcea53e8aef50e430be767bc1795120bc"
+    },
+    {
+      "path": "src/hooks/useForm.ts",
+      "sha256": "fec690e186573d088a4cde10c8e0a3198e20fd6245e9c3a213db04eb5a7af83c"
+    },
+    {
+      "path": "src/hooks/useInfiniteScroll.ts",
+      "sha256": "f5d5bb70fa9da306f72727182bf69ce3084d126caf0fe104954b472d2b2c4f90"
+    },
+    {
+      "path": "src/hooks/useMediaQuery.ts",
+      "sha256": "5d27d4ae5e526ccd2887096b7f93960ae2e4e843349ab45b27634a4caeb4300e"
+    },
+    {
+      "path": "src/hooks/usePagination.ts",
+      "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+    },
+    {
+      "path": "src/hooks/useUtilities.ts",
+      "sha256": "c6b9511f1d5bf3a92003c416f1f9866588f33d08f61302c169f38ab7809515a7"
+    },
+    {
+      "path": "src/lib/index.ts",
+      "sha256": "a265b92cbee9577ac3d48e20a37de65487197b7b18deb8994e64d4fa878c8a71"
+    },
+    {
+      "path": "src/middleware.ts",
+      "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
+    },
+    {
+      "path": "src/stores/index.ts",
+      "sha256": "2cca96dbc813bfc52d2045b60b543c7ecd83fb55b315ffa7717987b2a0b34885"
+    },
+    {
+      "path": "src/types/index.ts",
+      "sha256": "81dfcbb494aa6a1071423564990d68107f97e81c1c9b8c7d696babab599554e8"
+    },
+    {
+      "path": "templates/blog/assets/js/share.js",
+      "sha256": "6b944efca8a037a74589e82486f237fe5ea51e0e096c127445c54923faec9963"
+    },
+    {
+      "path": "templates/blog/scripts/new-post.mjs",
+      "sha256": "b8681fe399372545b6fe3ef16354bf5adfa5822f36c9e4af8e2f5812cfad0d02"
+    },
+    {
+      "path": "templates/blog/scripts/update-index.mjs",
+      "sha256": "b9dd7a1cb8c0682e9b7bc52c8c4e86e2e998e12fdcdc16b2edd54363e7f3f2c6"
+    },
+    {
+      "path": "templates/stack-default/apps/web/drizzle.config.ts",
+      "sha256": "038d1449a9d1eb5e3f87a77d006b8e8924ef90198155d8edd57e5b05c118e7c2"
+    },
+    {
+      "path": "templates/stack-default/apps/web/next.config.ts",
+      "sha256": "7aadc9b4a08385ec389d25e181a060a1a7bca09c574c93c4a55b01a910e122bf"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/app/api/auth/[...all]/route.ts",
+      "sha256": "e5317c64f85261bef1c7489a7c91a0d66ee735ef4e0cae4bf8f76df73646165d"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/app/api/chat/route.ts",
+      "sha256": "eb5a60e73d9a8ba0612ec44d967bd4fdfee0785f89a6a88ea0af43c79cb47a1c"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/app/api/image/route.ts",
+      "sha256": "289074f9db454b3e92b2331fb3a1665f3ff60bd16d622fdb56ed8ed37a6c8c6c"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/app/layout.tsx",
+      "sha256": "aaa37c9c479dba7a2e985a1d1749a28d42a6512415d989420547d5a7aea1e612"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/auth/client.ts",
+      "sha256": "aba27ee669fd38e2d15fa59b2d96a25552ab98076a4e57965df732e09ef10879"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/auth/index.ts",
+      "sha256": "ccadbc4dfe1b9aaff15e72c7b6725633f8f008a74f6457c25f3d9a0f67c347b0"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/db/index.ts",
+      "sha256": "e9edec002a9608134dc019380fcb18d1866e02b685610c39515031a95e38ac10"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/db/schema.ts",
+      "sha256": "5579cbdbd8726780e8f4086c29b35899b51605bbe3a137d7d031082fdd63b11b"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/lib/image.ts",
+      "sha256": "684732f502a1b984fd7fe80adafcfbc1e51d3f0a3f97a44757d60bddbed8dbc4"
+    },
+    {
+      "path": "templates/stack-default/apps/web/src/lib/llm.ts",
+      "sha256": "9e9815cfa6065ad52e1fd95d3e11acad93b2db221a6f0a5ec8b467479ebd26ec"
+    },
+    {
+      "path": "templates/stack-default/fal/config.ts",
+      "sha256": "9fece9b28333021ec67507ac552bb2a1b529b544c872f9e1341b36492736cf81"
+    },
+    {
+      "path": "templates/stack-default/openrouter/config.ts",
+      "sha256": "e389c1a2369d038b4152092c7fb47765f2a06448a139cdd206ef5af751891c83"
+    }
+  ],
+  "reviewed_files": [
+    "src/middleware.ts",
+    "src/hooks/useAuth.ts",
+    "src/hooks/usePagination.ts",
+    "mcp-server/src/lib/pipeline-engine.ts",
+    "mcp-server/src/lib/cross-call-dedup.ts",
+    "mcp-server/src/services/file-reader.ts",
+    "mcp-server/src/services/playwright.ts",
+    "hooks/scripts/permission-ladder-guard.mjs"
+  ],
+  "skipped": [
+    {
+      "path": "scripts/repo-wiki-sources.mjs",
+      "reason": "Fonte sensível/binária: scripts/repo-wiki-sources.mjs"
+    }
+  ],
+  "coverage": {
+    "source_files": 218,
+    "reviewed_files": 8,
+    "unreviewed_files": 210
+  },
+  "tracks": {
+    "business_rules": {
+      "status": "partial",
+      "findings": 6
+    },
+    "security": {
+      "status": "partial",
+      "findings": 2
+    },
+    "automations": {
+      "status": "partial",
+      "findings": 1
+    },
+    "rpa": {
+      "status": "partial",
+      "findings": 1
+    },
+    "improvements": {
+      "status": "partial",
+      "findings": 4
+    }
+  },
+  "findings": [
+    {
+      "id": "RN-01",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "O tipo de tarefa determina a sequência de trabalho",
+      "domain": "Orquestração",
+      "condition": "Um consumidor chama buildPipeline com bugfix ou hotfix.",
+      "effect": "Bugfix recebe auditoria do repositório, QA, segurança e revisão final. Hotfix recebe segurança, revisão e deploy. A função devolve a configuração ordenada.",
+      "exceptions": "O retorno é um plano; esta função não executa testes nem deploy e não prova que etapas foram cumpridas.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "  bugfix: {\n    steps: [\n      { id: \"18-repo-auditor\", name: \"Repo Auditor\", purpose: \"entender contexto do bug\" },\n      { id: \"05-qa-testing\", name: \"QA\", purpose: \"reproduzir e testar fix\" },\n      { id: \"06-security-review\", name: \"Security\", purpose: \"validar se fix nao abre brecha\" },\n      { id: \"11-reviewer\", name: \"Reviewer\", purpose: \"validacao final\" },\n    ],\n    policies: [\"execution\", \"handoffs\", \"quality-gates\"],\n    templates: [\"handoff\", \"review\"],\n  },\n  ui_improvement:",
+          "start": 31,
+          "end": 41,
+          "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+        },
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "  hotfix: {\n    steps: [\n      { id: \"06-security-review\", name: \"Security\", purpose: \"validar fix critico\" },\n      { id: \"11-reviewer\", name: \"Reviewer\", purpose: \"validacao rapida\" },\n      { id: \"07-deploy\", name: \"Deploy\", purpose: \"deploy urgente\" },\n    ],\n    policies: [\"execution\", \"quality-gates\"],\n    templates: [\"handoff\"],\n  },\n  release:",
+          "start": 105,
+          "end": 114,
+          "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+        },
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {\n  const config = PIPELINES[taskType];\n  return {\n    type: taskType,\n    ...config,\n  };\n}\n\nexport function getNextStep",
+          "start": 158,
+          "end": 166,
+          "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+        }
+      ]
+    },
+    {
+      "id": "RN-02",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "Saídas repetidas podem ser substituídas por referência à chamada anterior",
+      "domain": "Economia de contexto",
+      "condition": "check recebe texto com hash igual a uma chamada na janela; na ausência de igualdade, avalia similaridade das assinaturas.",
+      "effect": "Uma igualdade retorna marcador com ID da chamada mais recente correspondente; similaridade igual ou superior ao limiar retorna marcador percentual da melhor correspondência. Sem correspondência, replacement é null.",
+      "exceptions": "O padrão é uma janela de 16 e limiar de 0,85. check não insere. A comparação aproximada não prova equivalência semântica; o chamador decide aplicar a substituição.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/cross-call-dedup.ts",
+          "quote": "  constructor(opts: CrossCallDedupOptions = {}) {\n    this.windowSize = Math.max(1, opts.windowSize ?? 16);\n    this.threshold = Math.min(1, Math.max(0, opts.threshold ?? 0.85));\n  }\n\n  /**\n   * Check the cache. Does NOT insert. Returns a replacement string when the\n   * incoming text matches a recent call exactly or fuzzily.\n   */\n  check(text: string): DedupResult {\n    if (this.records.length === 0) return { replacement: null };\n\n    const exactHash = fnv1a64(text);\n    // Fast path: exact hash match. Walk newest-to-oldest.\n    for (let i = this.records.length - 1; i >= 0; i--) {\n      const r = this.records[i];\n      if (r.exactHash === exactHash) {\n        return {\n          replacement: `[squeez-style: identical to call #${r.callId}${r.label ? ` (${r.label})` : \"\"}]`,\n          match: { callId: r.callId, kind: \"exact\", similarity: 1, label: r.label },\n        };\n      }\n    }\n\n    // Fuzzy path: compute signature, scan window, pick best above threshold.\n    const sig = shingleMinHash(text);\n    let best: { record: CallRecord; sim: number } | null = null;\n    for (let i = this.records.length - 1; i >= 0; i--) {\n      const r = this.records[i];\n      const sim = jaccard(sig, r.signature);\n      if (sim >= this.threshold && (best === null || sim > best.sim)) {\n        best = { record: r, sim };\n      }\n    }\n\n    if (best !== null) {\n      const pct = Math.round(best.sim * 100);\n      return {\n        replacement: `[squeez-style: ~${pct}% similar to call #${best.record.callId}${best.record.label ? ` (${best.record.label})` : \"\"}]`,\n        match: {\n          callId: best.record.callId,\n          kind: \"fuzzy\",\n          similarity: best.sim,\n          label: best.record.label,\n        },\n      };\n    }\n\n    return { replacement: null };\n  }\n\n  /**\n   * Insert a new call",
+          "start": 183,
+          "end": 235,
+          "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+        }
+      ]
+    },
+    {
+      "id": "RN-03",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "O cache descarta a chamada mais antiga quando excede a janela",
+      "domain": "Retenção do histórico",
+      "condition": "insert adiciona uma chamada e o número de registros ultrapassa windowSize.",
+      "effect": "O registro mais antigo é removido. checkAndInsert insere mesmo quando encontrou repetição. clear esvazia a janela e reinicia os IDs em 1.",
+      "exceptions": "A classe mantém estado em memória, não um histórico persistente. Reiniciar a sessão exige que o consumidor limpe ou substitua a instância.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/cross-call-dedup.ts",
+          "quote": "  insert(text: string, label?: string): CallRecord {\n    const record: CallRecord = {\n      callId: this.nextId++,\n      exactHash: fnv1a64(text),\n      signature: shingleMinHash(text),\n      label,\n    };\n    this.records.push(record);\n    if (this.records.length > this.windowSize) {\n      this.records.shift();\n    }\n    return record;\n  }\n\n  /**\n   * Convenience: check first, then insert (always). Returns the dedup result.\n   * Inserting after a match lets future calls match against the same anchor.\n   */\n  checkAndInsert(text: string, label?: string): DedupResult {\n    const result = this.check(text);\n    this.insert(text, label);\n    return result;\n  }\n\n  /** Current number of records in the window. */\n  size(): number {\n    return this.records.length;\n  }\n\n  /** Reset the window. Useful between sessions or for tests. */\n  clear(): void {\n    this.records = [];\n    this.nextId = 1;\n  }\n}\n\n// ─── Default singleton",
+          "start": 239,
+          "end": 275,
+          "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+        }
+      ]
+    },
+    {
+      "id": "RN-04",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "Tipos desconhecidos não retornam snippets",
+      "domain": "Distribuição de exemplos",
+      "condition": "getCodeSnippets recebe uma categoria de código.",
+      "effect": "Categorias reconhecidas selecionam hooks, components, stores, types ou middleware. Uma categoria desconhecida retorna lista vazia; middleware retorna apenas o exemplo correspondente quando legível.",
+      "exceptions": "Isso identifica src como biblioteca de exemplos exposta pelo serviço, não prova que uma aplicação Next.js esteja implantada. Falhas de leitura são convertidas em null pelo helper.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function getCodeSnippets(type: string): Promise<Array<{ path: string; content: string }>> {\n  const typeMap: Record<string, string> = {\n    hooks: \"hooks\",\n    components: \"components\",\n    stores: \"stores\",\n    types: \"types\",\n    middleware: \"\",\n  };\n\n  const subDir = typeMap[type];\n  if (subDir === undefined) return [];\n\n  if (type === \"middleware\") {\n    const content = await readFile(path.join(PATHS.src, \"middleware.ts\"));\n    return content ? [{ path: \"src/middleware.ts\", content }] : [];\n  }\n\n  const files = await glob(\"**/*.{ts,tsx}\", { cwd: path.join(PATHS.src, subDir) });\n  const results: Array<{ path: string; content: string }> = [];\n\n  for (const file of files) {\n    const content = await readFile(path.join(PATHS.src, subDir, file));\n    if (content) {\n      results.push({ path: `src/${subDir}/${file}`, content });\n    }\n  }\n\n  return results;\n}\n\nexport async function getRepoAudit",
+          "start": 103,
+          "end": 133,
+          "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+        },
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function readFile(filePath: string): Promise<string | null> {\n  try {\n    return await fs.readFile(filePath, \"utf-8\");\n  } catch {\n    return null;\n  }\n}\n\nexport async function listSkills",
+          "start": 8,
+          "end": 16,
+          "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+        }
+      ]
+    },
+    {
+      "id": "RN-05",
+      "track": "business_rules",
+      "kind": "reference",
+      "title": "Logout encerra a sessão local mesmo quando a API falha",
+      "domain": "Sessão do exemplo de aplicação",
+      "condition": "A mutação de logout termina, com sucesso ou erro.",
+      "effect": "onSettled limpa o estado de autenticação e o cache de consultas e navega para /login.",
+      "exceptions": "Não comprova revogação do token no servidor em caso de erro. É comportamento do snippet de referência, não uma regra de produto em produção.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/hooks/useAuth.ts",
+          "quote": "  const logoutMutation = useMutation({\n    mutationFn: async () => {\n      await api.post('/auth/logout');\n    },\n    onSettled: () => {\n      clearAuth();\n      queryClient.clear();\n      router.push('/login');\n    },\n  });\n\n  // Me query",
+          "start": 56,
+          "end": 67,
+          "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+        }
+      ]
+    },
+    {
+      "id": "RN-06",
+      "track": "business_rules",
+      "kind": "reference",
+      "title": "Navegação de páginas respeita os limites conhecidos",
+      "domain": "Listagem do exemplo de aplicação",
+      "condition": "goToPage, nextPage ou prevPage são chamados com metadados de paginação disponíveis.",
+      "effect": "goToPage limita o destino entre 1 e totalPages; nextPage usa o menor valor entre próxima página e totalPages; prevPage não desce de 1. Sem metadados, totalPages vale 1.",
+      "exceptions": "initialPage não é normalizado e não há validação de NaN ou números fracionários. A regra descreve entradas numéricas válidas e não garante correção para metadados inválidos.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/hooks/usePagination.ts",
+          "quote": "  const meta = query.data?.meta;\n  const totalPages = meta?.totalPages ?? 1;\n\n  const goToPage = useCallback((p: number) => {\n    setPage(Math.max(1, Math.min(p, totalPages)));\n  }, [totalPages]);\n\n  const nextPage = useCallback(() => {\n    setPage((p) => Math.min(p + 1, totalPages));\n  }, [totalPages]);\n\n  const prevPage = useCallback(() => {\n    setPage((p) => Math.max(p - 1, 1));\n  }, []);\n\n  // Gera array",
+          "start": 31,
+          "end": 46,
+          "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+        }
+      ]
+    },
+    {
+      "id": "SEC-01",
+      "track": "security",
+      "kind": "reference",
+      "title": "O middleware verifica presença de cookie, não validade da sessão",
+      "domain": "Autenticação",
+      "condition": "Uma rota não dispensada passa pela checagem do middleware.",
+      "effect": "A presença do cookie refresh-token é usada como hasSession. Sem cookie, a rota protegida redireciona para login; nas rotas de login/cadastro, a presença do cookie redireciona para dashboard.",
+      "exceptions": "Não há validação JWT neste arquivo. Prefixos de APIs públicas e caminhos contendo ponto retornam antes da checagem. A proteção efetiva do backend não foi revisada; isto não é certificação de acesso seguro.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/middleware.ts",
+          "quote": "export function middleware(request: NextRequest) {\n  const { pathname } = request.nextUrl;\n\n  // Ignora assets estáticos e API routes públicas\n  if (\n    pathname.startsWith('/_next') ||\n    pathname.startsWith('/favicon') ||\n    pathname.includes('.') ||\n    publicApiRoutes.some((r) => pathname.startsWith(r))\n  ) {\n    return NextResponse.next();\n  }\n\n  // Checa se tem token (via cookie de session ou header)\n  // Em produção, validar JWT server-side aqui\n  const hasSession = request.cookies.has('refresh-token');\n\n  // Rota pública: permite acesso\n  if (publicRoutes.some((r) => pathname.startsWith(r))) {\n    // Se já autenticado, redireciona pra dashboard\n    if (hasSession && authRoutes.some((r) => pathname.startsWith(r))) {\n      return NextResponse.redirect(new URL('/dashboard', request.url));\n    }\n    return NextResponse.next();\n  }\n\n  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }\n\n  // Security headers",
+          "start": 16,
+          "end": 49,
+          "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
+        }
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "track": "security",
+      "kind": "operational",
+      "title": "O guard diferencia pedir aprovação de negar a ação",
+      "domain": "Permissão de ferramentas",
+      "condition": "Com o guard habilitado, um comando Bash casa com uma regra.",
+      "effect": "A primeira correspondência decide: lane closed produz deny; as demais produzem ask, salvo escape explícito permitido apenas para essas demais lanes.",
+      "exceptions": "O padrão é desabilitado. Entrada JSON inválida, ferramenta diferente de Bash ou ausência de match libera. Regex não interpreta toda a linguagem de shell; combinações podem selecionar uma regra menos restritiva antes da closed.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "function extractCommand(input) {\n  const name = input?.tool_name || \"\";\n  if (name === \"Bash\") return input?.tool_input?.command || \"\";\n  return \"\";\n}\n\n// Splits",
+          "start": 104,
+          "end": 110,
+          "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+        },
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  if (isHookDisabled(\"permission-ladder-guard\")) return allow();\n\n  let input = {};\n  try { input = JSON.parse(inputBuffer); } catch { return allow(); }\n\n  const cfg = readHookConfig(\"permission_ladder_guard\", { enabled: false });\n  if (cfg.enabled !== true) return allow();\n\n  const command = extractCommand(input);\n  if (!command) return allow();\n\n  const segments = splitCompoundCommand(command).map(stripCommandQuoting);\n  let hit = null;\n  let matchedSegment = command;\n  for (const segment of segments) {\n    hit = LADDER.find((rule) => rule.pattern.test(segment));\n    if (hit) { matchedSegment = segment; break; }\n  }\n  if (!hit) return allow();\n\n  const isClosedLane = hit.lane === \"closed\";\n\n  // Escape hatch, same convention as design-anchor-guard and dev-guard — but\n  // it does not apply to a closed lane. A lane that any suffix can open is a\n  // threshold, not a closed lane, and thresholds are exactly what this is\n  // meant not to be.\n  if (!isClosedLane && /permission-ladder:\\s*allow/i.test(command)) return allow();\n\n  const reason =",
+          "start": 143,
+          "end": 171,
+          "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+        },
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  process.stdout.write(JSON.stringify({\n    hookSpecificOutput: {\n      hookEventName: \"PreToolUse\",\n      // Closed lane denies outright: there is no approval that opens it from\n      // inside the agent loop. Everything else asks a human.\n      permissionDecision: isClosedLane ? \"deny\" : \"ask\",\n      permissionDecisionReason: reason,\n    },\n  }));",
+          "start": 216,
+          "end": 224,
+          "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+        }
+      ]
+    },
+    {
+      "id": "AUTO-01",
+      "track": "automations",
+      "kind": "operational",
+      "title": "A consulta da próxima etapa usa índice de base zero",
+      "domain": "Pipeline",
+      "condition": "getNextStep recebe tipo e posição atual.",
+      "effect": "Retorna a etapa na posição informada; tipo inexistente ou posição a partir do fim retorna null.",
+      "exceptions": "Não incrementa a posição, não executa a etapa e não verifica sua conclusão. Índices negativos ou fracionários não são rejeitados explicitamente e podem retornar undefined.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function getNextStep(\n  pipelineType: TaskType,\n  currentStep: number,\n): { id: string; name: string; purpose: string } | null {\n  const config = PIPELINES[pipelineType];\n  if (!config) return null;\n\n  const nextIndex = currentStep;\n  if (nextIndex >= config.steps.length) return null;\n\n  return config.steps[nextIndex];\n}",
+          "start": 166,
+          "end": 177,
+          "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+        }
+      ]
+    },
+    {
+      "id": "RPA-01",
+      "track": "rpa",
+      "kind": "operational",
+      "title": "O serviço de browser prepara instruções, não executa o processo",
+      "domain": "Integração com automação de navegador",
+      "condition": "O cliente solicita instrução de screenshot, extração de imagens ou scraping.",
+      "effect": "O serviço retorna URL e parâmetros descritivos. Screenshot assume página inteira; imagens usam seletor img e limite configurado. A execução depende de um consumidor externo.",
+      "exceptions": "Não há lançamento de browser, login, retry, idempotência ou fila de exceções nestas funções. Nenhum processo de RPA operacional foi comprovado neste recorte.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/playwright.ts",
+          "quote": "export function buildScreenshotInstruction(\n  url: string,\n  fullPage: boolean = true,\n  viewport?: { width: number; height: number },\n): ScreenshotInstruction {\n  return {\n    url,\n    fullPage,\n    viewport: viewport || DEFAULTS.screenshotViewport,\n    description: `Navigate to ${url} and take a ${fullPage ? \"full-page\" : \"viewport\"} screenshot`,\n  };\n}\n\nexport interface ImageExtractionInstruction {\n  url: string;\n  selector: string;\n  limit: number;\n  description: string;\n}\n\nexport function buildImageExtractionInstruction(\n  url: string,\n  selector: string = \"img\",\n  limit: number = DEFAULTS.maxImages,\n): ImageExtractionInstruction {\n  return {\n    url,\n    selector,\n    limit,\n    description: `Navigate to ${url}, query all '${selector}' elements, extract src and alt attributes (limit ${limit})`,\n  };\n}\n\nexport function buildScrapeInstruction(url: string): {\n  url: string;\n  description: string;\n} {\n  return {\n    url,\n    description: `Navigate to ${url}, extract page title and main text content as markdown`,\n  };\n}",
+          "start": 14,
+          "end": 55,
+          "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+        }
+      ]
+    },
+    {
+      "id": "MEL-01",
+      "track": "improvements",
+      "kind": "reference",
+      "title": "Validar sessão e revisar as exceções de rotas",
+      "domain": "Segurança e produto",
+      "condition": "Um app consumidor usa o middleware de exemplo como barreira de acesso.",
+      "effect": "Proposta P1: validar token no servidor e substituir os atalhos de ponto/prefixo por regras de rota explícitas. Aplicar headers também às respostas antecipadas. Impacto: reduzir a diferença entre o redirecionamento da UI e autorização real.",
+      "exceptions": "Não implementado nesta revisão. Depende do contrato de sessão do backend; esforço médio, risco de bloquear rotas públicas legítimas. Os outros endpoints não foram auditados.",
+      "verification": "Proposto: testar cookie inválido/expirado, caminho com ponto, prefixo semelhante a API pública, rotas realmente públicas e headers em todos os retornos.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "src/middleware.ts",
+          "quote": "export function middleware(request: NextRequest) {\n  const { pathname } = request.nextUrl;\n\n  // Ignora assets estáticos e API routes públicas\n  if (\n    pathname.startsWith('/_next') ||\n    pathname.startsWith('/favicon') ||\n    pathname.includes('.') ||\n    publicApiRoutes.some((r) => pathname.startsWith(r))\n  ) {\n    return NextResponse.next();\n  }\n\n  // Checa se tem token (via cookie de session ou header)\n  // Em produção, validar JWT server-side aqui\n  const hasSession = request.cookies.has('refresh-token');\n\n  // Rota pública: permite acesso\n  if (publicRoutes.some((r) => pathname.startsWith(r))) {\n    // Se já autenticado, redireciona pra dashboard\n    if (hasSession && authRoutes.some((r) => pathname.startsWith(r))) {\n      return NextResponse.redirect(new URL('/dashboard', request.url));\n    }\n    return NextResponse.next();\n  }\n\n  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }\n\n  // Security headers em todas as respostas\n  const response = NextResponse.next();\n  response.headers.set('X-Frame-Options', 'DENY');\n  response.headers.set('X-Content-Type-Options', 'nosniff');\n  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');\n\n  return response;\n}",
+          "start": 16,
+          "end": 56,
+          "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
+        }
+      ]
+    },
+    {
+      "id": "MEL-02",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Priorizar a restrição mais forte em comandos compostos",
+      "domain": "Segurança das automações",
+      "condition": "Um comando contém mais de uma operação que casa com regras distintas.",
+      "effect": "Proposta P1: avaliar todas as correspondências antes de decidir e fazer closed prevalecer sobre gated. Impacto: a ordem dos segmentos não deve reduzir a restrição.",
+      "exceptions": "Não implementado. Esforço médio, risco de falsos positivos. A melhoria não torna regex um parser completo de shell.",
+      "verification": "Proposto: fixtures gated→closed, closed→gated, substituição de comando e escape; todas as combinações contendo closed devem negar.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  const segments = [command];\n  for (const m of command.matchAll(/\\$\\(([^)]*)\\)|`([^`]*)`/g)) {\n    segments.push(m[1] ?? m[2] ?? \"\");\n  }\n  const flat = segments.flatMap((s) => s.split(/&&|\\|\\||[;|\\n]/));\n  return flat.map((s) => s.trim()).filter(Boolean);\n}\n\n// A shell treats `\"rm\"` and `rm` identically; the pattern's word-boundary\n// regex does not, because a straddling quote character breaks \\b. Strip\n// paired quotes immediately around a bareword before matching so this one\n// specific dodge (there's no way to close all of them with regex, see the\n// header note) doesn't slip through for free.\nfunction stripCommandQuoting(command) {\n  return command.replace(/(^|[\\s;&|])[\"']([\\w./-]+)[\"']/g, \"$1$2\");\n}\n\nlet inputBuffer = \"\";\nprocess.stdin.setEncoding(\"utf-8\");\nprocess.stdin.on(\"data\", (chunk) => { inputBuffer += chunk; });\n\nprocess.stdin.on(\"end\", () => {\n  const allow = () => {\n    process.stdout.write(JSON.stringify({ continue: true }));\n    process.exit(0);\n  };\n\n  if (isHookDisabled(\"permission-ladder-guard\")) return allow();\n\n  let input = {};\n  try { input = JSON.parse(inputBuffer); } catch { return allow(); }\n\n  const cfg = readHookConfig(\"permission_ladder_guard\", { enabled: false });\n  if (cfg.enabled !== true) return allow();\n\n  const command = extractCommand(input);\n  if (!command) return allow();\n\n  const segments = splitCompoundCommand(command).map(stripCommandQuoting);\n  let hit = null;\n  let matchedSegment = command;\n  for (const segment of segments) {\n    hit = LADDER.find((rule) => rule.pattern.test(segment));\n    if (hit) { matchedSegment = segment; break; }\n  }\n  if (!hit) return allow();\n\n  const isClosedLane = hit.lane === \"closed\";\n\n  // Escape hatch, same convention as design-anchor-guard and dev-guard — but\n  // it does not apply to a closed lane. A lane that any suffix can open is a\n  // threshold, not a closed lane, and thresholds are exactly what this is\n  // meant not to be.\n  if (!isClosedLane && /permission-ladder:\\s*allow/i.test(command)) return allow();\n\n  const reason =",
+          "start": 116,
+          "end": 171,
+          "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+        }
+      ]
+    },
+    {
+      "id": "MEL-03",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Distinguir arquivo ausente de falha de leitura",
+      "domain": "Confiabilidade e diagnóstico",
+      "condition": "readFile recebe erro de permissão, I/O ou arquivo inexistente.",
+      "effect": "Proposta P2: devolver ausência apenas para ENOENT e reportar as demais falhas com contexto sanitizado. Impacto: o catálogo não deve parecer vazio quando a leitura falhou.",
+      "exceptions": "Não implementado. Esforço pequeno; mudar de null para erro pode exigir ajuste dos consumidores e compatibilidade do contrato.",
+      "verification": "Proposto: testar arquivo ausente, permissão negada, leitura válida e propagação controlada do erro no serviço.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function readFile(filePath: string): Promise<string | null> {\n  try {\n    return await fs.readFile(filePath, \"utf-8\");\n  } catch {\n    return null;\n  }\n}\n\nexport async function listSkills",
+          "start": 8,
+          "end": 16,
+          "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+        }
+      ]
+    },
+    {
+      "id": "MEL-04",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Validar a posição antes de consultar a etapa",
+      "domain": "Contratos, testes e DX",
+      "condition": "Um consumidor envia índice negativo, fracionário ou NaN a getNextStep.",
+      "effect": "Proposta P2: exigir inteiro não negativo e escolher contrato explícito de erro/null. Impacto: impedir retorno undefined quando o tipo anunciado promete etapa ou null.",
+      "exceptions": "Não implementado. Esforço pequeno; é preciso decidir e documentar compatibilidade de erro para clientes existentes.",
+      "verification": "Proposto: testar -1, 0, último índice, tamanho do pipeline, fração e NaN.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function getNextStep(\n  pipelineType: TaskType,\n  currentStep: number,\n): { id: string; name: string; purpose: string } | null {\n  const config = PIPELINES[pipelineType];\n  if (!config) return null;\n\n  const nextIndex = currentStep;\n  if (nextIndex >= config.steps.length) return null;\n\n  return config.steps[nextIndex];\n}",
+          "start": 166,
+          "end": 177,
+          "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+        }
+      ]
+    }
+  ],
+  "pages_generated": [
+    "README.md",
+    "business-rules.md",
+    "security.md",
+    "automations.md",
+    "rpa.md",
+    "improvements.md"
+  ],
+  "verification": {
+    "markdown": "pass",
+    "html": "pass",
+    "markdown_details": {
+      "files": 6,
+      "bytes": 28464,
+      "mermaid_blocks": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "html_details": {
+      "html_files": 14,
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "gaps": [
+    "Cobertura parcial: apenas os oito arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
+    "Nenhum fluxo de autenticação, deploy ou RPA foi executado em produção.",
+    "Produto, UX/acessibilidade, infraestrutura/deploy, banco de dados e observabilidade fora dos trechos citados continuam pendentes; não foram preenchidos com recomendações genéricas.",
+    "Propostas de melhoria são inferências rastreáveis, não alterações autorizadas nos módulos auditados."
+  ],
+  "html": {
+    "status": "built",
+    "site": "docs/repo-wiki/site2",
+    "pages": 6,
+    "evidence_pages": 8,
+    "diagram_assets": 0,
+    "mermaid_renderer": "builtin-svg-fallback",
+    "external_requests": 0
+  }
+}

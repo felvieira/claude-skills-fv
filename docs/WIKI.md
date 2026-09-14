@@ -428,7 +428,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 #### Skill 10 — Documenter
 
-**What it does:** records decisions, API contracts, operations and impacts in living docs. Acts transversally — every relevant change in rule/contract goes through here.
+**What it does:** records decisions, API contracts, operations, impacts and traceable Repo-Wikis in living docs, including business rules, app security, automations/RPA, repo-wide improvements and searchable offline HTML. Acts transversally — every relevant change in rule/contract goes through here.
 **When to activate:** feature or refactor that changes documented behavior.
 
 #### Skill 11 — Reviewer

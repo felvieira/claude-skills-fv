@@ -70,6 +70,16 @@ aihero.dev — "5 Agent Skills I Use Every Day"
   Inspired the documentation format used for the kit's WIKI and
   SKILLS-OVERVIEW pages.
 
+sopaco/deepwiki-rs (Litho)
+  https://github.com/sopaco/deepwiki-rs
+  License: MIT
+  Inspired the Repo-Wiki documentation mode: staged repository
+  preprocessing, research by architectural domain, C4 composition, local
+  knowledge categorization and chunking, incremental cache/provenance,
+  summary reporting, and diagram/document integrity checks. No upstream code
+  is bundled; the kit reimplements these ideas in Markdown and zero-dependency
+  Node tooling.
+
 Anthropic Skills (anthropic-skills:*)
   Inspired the MCP builder patterns documentation, the memory consolidation
   policy, and the /consolidate-memory command.

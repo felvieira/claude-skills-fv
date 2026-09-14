@@ -4,7 +4,10 @@ description: |
   Skill de Documentação por nível de decisão. Use quando precisar documentar features, APIs, arquitetura,
   setup, operação, ou manter documentação existente atualizada. Trigger em: "documentar", "documentação",
   "docs", "ADR", "architecture decision record", "README", "feature doc", "api doc", "setup doc",
-  "runbook", "troubleshooting", "doc de operação", "registrar decisão", "atualizar docs".
+  "runbook", "troubleshooting", "doc de operação", "registrar decisão", "atualizar docs",
+  "documentar repositório", "repo wiki", "mapa de arquitetura", "C4", "documentação completa do código",
+  "regras de negócio", "RPA", "automação", "segurança do app", "melhorias do repositório",
+  "site da documentação", "HTML offline", "buscar na documentação".
 ---
 
 # Documenter - Documentação por Nível de Decisão
@@ -22,6 +25,10 @@ Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 - `policies/writing-clarity.md`
 - `policies/anti-ai-writing.md` ← **antes de finalizar qualquer doc que humanos vão ler**
 - `policies/evals.md`
+- `policies/search-first.md`
+- `policies/iterative-retrieval.md`
+- `policies/source-driven.md`
+- `policies/verification-before-completion.md`
 
 Se houver conflito entre instrucoes, a hierarquia global do kit prevalece.
 
@@ -239,3 +246,79 @@ Seguir `policies/handoffs.md` e, quando util, `templates/doc-update.md`.
 ## Integração com Pipeline
 
 - **skill 48 (research-prep):** roda **antes** desta skill quando o tópico a documentar requer pesquisa externa (tecnologia nova, comparativo de abordagens, ADR baseado em evidência). Passar `memory/research/<slug>.md` como fonte de verdade para a documentação.
+
+## Modo Repo-Wiki e inteligência de repositório
+
+Quando o pedido for documentar um repositório inteiro, uma arquitetura desconhecida, um legado ou uma mudança transversal, carregar `docs/skill-guides/documenter-repository-intelligence.md`. Esse modo incorpora a análise estruturada do Litho/deepwiki-rs ao modelo do kit sem instalar um runtime Rust, depender de uma API externa ou transformar inferência em fato.
+
+O modo Repo-Wiki deve:
+
+1. excluir qualquer arquivo/pasta com componente iniciado por ponto, gitignored, symlink/junction, dependências, builds e logs ANTES de abrir arquivos; descobrir entry points e código permitido;
+2. construir um inventário de símbolos, responsabilidades, interfaces, dependências e evidências;
+3. pesquisar em trilhas independentes: contexto do sistema, regras de negócio, arquitetura, workflows, boundaries, contratos, segurança, automações/RPA, banco de dados quando houver SQL e módulos centrais;
+4. compor Markdown e um site HTML estático, navegável, pesquisável, responsivo e sem dependências externas;
+5. gerar uma matriz de melhorias do repositório cobrindo produto, UX/acessibilidade, arquitetura, segurança/privacidade, performance/custo, operação, dados/contratos, testes, DX/dependências/docs, automações/RPA e deploy;
+6. validar links, fences, Mermaid/SVG, busca offline, cobertura, duplicatas, placeholders e ausência de requests externos antes do handoff;
+7. registrar SHA/revisão analisada, escopo, lacunas, confiança, métricas do run e status de cada trilha.
+
+### Modos de execução
+
+- **Full:** descoberta + pesquisa + composição + verificação. Use para onboarding, legado ou arquitetura desconhecida.
+- **Incremental:** recalcular apenas arquivos alterados e dependentes, preservando documentos não afetados.
+- **Focused:** restringir a um módulo, boundary, workflow ou schema e gerar apenas o subconjunto correspondente.
+- **Drift:** comparar a documentação existente com o código atual e produzir gaps, sem reescrever automaticamente.
+
+### Contrato de evidência
+
+Cada regra exige leitura semântica de código executável: condição, efeito, exceções, domínio, natureza (produto, operação ou exemplo), verificação e trecho exato. Listar arquivos, símbolos ou matches de palavras-chave NÃO extrai regras. Documentos, logs e instruções de agentes não são evidência de comportamento. Nunca abrir pastas ocultas para esse levantamento, nem reutilizar seu conteúdo via cache ou páginas de evidência antigas.
+
+Registrar a revisão em `analysis.json` (schema 2, contrato no guia): arquivos lidos com SHA-256 e achados com trechos exatos. O compilador valida os hashes e gera âncoras `[evidence: caminho:linha]`. `observed` significa observado estaticamente, não executado; `inferred` marca interpretação ou proposta. Verificação em runtime é relatada separadamente. Nunca escrever “sempre atualizado”, “completo” ou “funciona” sem prova correspondente.
+
+O compilador marca trilhas como `partial` ou `not_reviewed`; ausência de achados não prova ausência no projeto. Publicar arquivos inventariados versus realmente revisados. RPA só é considerado operacional com processo e execução comprovados; um helper de instruções de browser não executa RPA.
+
+### Saída canônica
+
+Por padrão, gerar em `docs/repo-wiki/` para não sobrescrever feature docs, contratos ou ADRs existentes:
+
+```text
+docs/repo-wiki/
+  README.md                 # índice e escopo do snapshot
+  overview.md               # contexto C4 nível 1
+  architecture.md           # containers, componentes e dependências
+  workflows.md              # fluxos e sequência de dados
+  boundaries.md             # CLI, API, rotas, integrações e configuração
+  database.md               # somente se schema/SQL existir
+  modules/                  # deep dives dos módulos centrais
+  site/                     # HTML offline + busca + evidências locais
+  report.json               # métricas, warnings, SHA e cobertura
+```
+
+### Execução local do Repo-Wiki
+
+```bash
+node scripts/generate-repo-wiki.mjs --repo . --output docs/repo-wiki --mode Full --analysis docs/repo-wiki/analysis.json
+node scripts/build-repo-wiki.mjs --repo . --docs docs/repo-wiki --site docs/repo-wiki/site
+node scripts/verify-repo-wiki.mjs --docs docs/repo-wiki --site docs/repo-wiki/site --json
+```
+
+Antes do comando, o agente deve ler as fontes permitidas e escrever a análise. Sem `--analysis`, o CLI produz apenas inventário e páginas pendentes. O CLI compõe Full; Focused/Incremental/Drift são procedimentos do agente, não flags implementadas. Ele publica seis páginas canônicas: README e as cinco trilhas funcionais. Páginas adicionais de arquitetura exigem composição e evidência próprias, não textos genéricos. O HTML usa apenas o manifesto do relatório, busca local, filtro por trilha e snippets citados; não copia arquivos-fonte inteiros nem republica páginas antigas fora do manifesto.
+
+### Destino e handoff obrigatório
+
+Se `--repo` não for informado, o alvo é o diretório corrente (`process.cwd()`). Portanto, ao rodar a skill dentro de um projeto, a saída padrão fica nesse próprio projeto:
+
+```text
+<projeto>/docs/repo-wiki/README.md
+<projeto>/docs/repo-wiki/report.json
+<projeto>/docs/repo-wiki/site/index.html
+```
+
+O agente deve informar no handoff o caminho absoluto do repositório analisado, da pasta Markdown, do `report.json` e do `site/index.html`, além do número de arquivos inventariados/revisados, trilhas pendentes e verificações executadas. Se usar `--repo`, `--output` ou `--site`, deve informar os caminhos efetivos retornados pelos comandos, não repetir o default. O JSON de cada comando também retorna `repo`, `markdown_dir`, `report`, `site` e `index` para evitar ambiguidade.
+
+Se o projeto já tiver uma árvore canônica, atualizar os arquivos correspondentes e registrar a decisão no handoff; não criar uma segunda fonte de verdade.
+
+### Limites do porte
+
+Foram portados os padrões e o fluxo de trabalho, não o código Rust do upstream. O leitor Litho Book e o produto Terrain ficam fora desta skill; Mermaid é validado pelo verificador local do kit, e a análise usa as ferramentas e políticas já disponíveis na superfície do agente.
+
+O gate de conclusão exige Markdown válido e, quando o site é solicitado, HTML construído, links locais resolvidos, busca offline presente e `external_requests: 0`. Isso prova o artefato local; não substitui validação de domínio, teste de segurança em runtime ou execução real de uma automação.

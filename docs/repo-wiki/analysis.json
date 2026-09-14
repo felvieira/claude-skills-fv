@@ -1,0 +1,318 @@
+{
+  "schema_version": 2,
+  "scope": "Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.",
+  "reviewed_files": [
+    {
+      "path": "src/middleware.ts",
+      "sha256": "44dee90de93282939a1fdfae5ccae635637c98b321c98c4e610653f6490fb396"
+    },
+    {
+      "path": "src/hooks/useAuth.ts",
+      "sha256": "94116a0e5fc7df63b49c93f7bdafcd54742cfd57e8368ffcab54ca30034fc161"
+    },
+    {
+      "path": "src/hooks/usePagination.ts",
+      "sha256": "b7d64454a5c4ef11dceddd037311a9ed3eb9672dfd304fde1af444f9b890c56c"
+    },
+    {
+      "path": "mcp-server/src/lib/pipeline-engine.ts",
+      "sha256": "cbf2be0b0d025e1019fc76f9973c5a0c7a33a8b5132cc81ac31837a29bfb506b"
+    },
+    {
+      "path": "mcp-server/src/lib/cross-call-dedup.ts",
+      "sha256": "3e1045be91a9e40bf22c802c321312eec702c2dda99fb2f939b3e3269d741ac0"
+    },
+    {
+      "path": "mcp-server/src/services/file-reader.ts",
+      "sha256": "1244013c81dece135da72402a67aa6f4b4091985e809a6d4afe5ca172bdac847"
+    },
+    {
+      "path": "mcp-server/src/services/playwright.ts",
+      "sha256": "a6bd36465f79e004f38dae5f6d2779fcaafd5f685161971664fe2cfe631af195"
+    },
+    {
+      "path": "hooks/scripts/permission-ladder-guard.mjs",
+      "sha256": "05833af14ea3512139202c0da051a6134c55b0e49f73cf5d009ed16ab4b21b9d"
+    }
+  ],
+  "findings": [
+    {
+      "id": "RN-01",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "O tipo de tarefa determina a sequência de trabalho",
+      "domain": "Orquestração",
+      "condition": "Um consumidor chama buildPipeline com bugfix ou hotfix.",
+      "effect": "Bugfix recebe auditoria do repositório, QA, segurança e revisão final. Hotfix recebe segurança, revisão e deploy. A função devolve a configuração ordenada.",
+      "exceptions": "O retorno é um plano; esta função não executa testes nem deploy e não prova que etapas foram cumpridas.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "  bugfix: {\n    steps: [\n      { id: \"18-repo-auditor\", name: \"Repo Auditor\", purpose: \"entender contexto do bug\" },\n      { id: \"05-qa-testing\", name: \"QA\", purpose: \"reproduzir e testar fix\" },\n      { id: \"06-security-review\", name: \"Security\", purpose: \"validar se fix nao abre brecha\" },\n      { id: \"11-reviewer\", name: \"Reviewer\", purpose: \"validacao final\" },\n    ],\n    policies: [\"execution\", \"handoffs\", \"quality-gates\"],\n    templates: [\"handoff\", \"review\"],\n  },\n  ui_improvement:"
+        },
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "  hotfix: {\n    steps: [\n      { id: \"06-security-review\", name: \"Security\", purpose: \"validar fix critico\" },\n      { id: \"11-reviewer\", name: \"Reviewer\", purpose: \"validacao rapida\" },\n      { id: \"07-deploy\", name: \"Deploy\", purpose: \"deploy urgente\" },\n    ],\n    policies: [\"execution\", \"quality-gates\"],\n    templates: [\"handoff\"],\n  },\n  release:"
+        },
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function buildPipeline(taskType: TaskType): PipelineConfig & { type: string } {\n  const config = PIPELINES[taskType];\n  return {\n    type: taskType,\n    ...config,\n  };\n}\n\nexport function getNextStep"
+        }
+      ]
+    },
+    {
+      "id": "RN-02",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "Saídas repetidas podem ser substituídas por referência à chamada anterior",
+      "domain": "Economia de contexto",
+      "condition": "check recebe texto com hash igual a uma chamada na janela; na ausência de igualdade, avalia similaridade das assinaturas.",
+      "effect": "Uma igualdade retorna marcador com ID da chamada mais recente correspondente; similaridade igual ou superior ao limiar retorna marcador percentual da melhor correspondência. Sem correspondência, replacement é null.",
+      "exceptions": "O padrão é uma janela de 16 e limiar de 0,85. check não insere. A comparação aproximada não prova equivalência semântica; o chamador decide aplicar a substituição.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/cross-call-dedup.ts",
+          "quote": "  constructor(opts: CrossCallDedupOptions = {}) {\n    this.windowSize = Math.max(1, opts.windowSize ?? 16);\n    this.threshold = Math.min(1, Math.max(0, opts.threshold ?? 0.85));\n  }\n\n  /**\n   * Check the cache. Does NOT insert. Returns a replacement string when the\n   * incoming text matches a recent call exactly or fuzzily.\n   */\n  check(text: string): DedupResult {\n    if (this.records.length === 0) return { replacement: null };\n\n    const exactHash = fnv1a64(text);\n    // Fast path: exact hash match. Walk newest-to-oldest.\n    for (let i = this.records.length - 1; i >= 0; i--) {\n      const r = this.records[i];\n      if (r.exactHash === exactHash) {\n        return {\n          replacement: `[squeez-style: identical to call #${r.callId}${r.label ? ` (${r.label})` : \"\"}]`,\n          match: { callId: r.callId, kind: \"exact\", similarity: 1, label: r.label },\n        };\n      }\n    }\n\n    // Fuzzy path: compute signature, scan window, pick best above threshold.\n    const sig = shingleMinHash(text);\n    let best: { record: CallRecord; sim: number } | null = null;\n    for (let i = this.records.length - 1; i >= 0; i--) {\n      const r = this.records[i];\n      const sim = jaccard(sig, r.signature);\n      if (sim >= this.threshold && (best === null || sim > best.sim)) {\n        best = { record: r, sim };\n      }\n    }\n\n    if (best !== null) {\n      const pct = Math.round(best.sim * 100);\n      return {\n        replacement: `[squeez-style: ~${pct}% similar to call #${best.record.callId}${best.record.label ? ` (${best.record.label})` : \"\"}]`,\n        match: {\n          callId: best.record.callId,\n          kind: \"fuzzy\",\n          similarity: best.sim,\n          label: best.record.label,\n        },\n      };\n    }\n\n    return { replacement: null };\n  }\n\n  /**\n   * Insert a new call"
+        }
+      ]
+    },
+    {
+      "id": "RN-03",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "O cache descarta a chamada mais antiga quando excede a janela",
+      "domain": "Retenção do histórico",
+      "condition": "insert adiciona uma chamada e o número de registros ultrapassa windowSize.",
+      "effect": "O registro mais antigo é removido. checkAndInsert insere mesmo quando encontrou repetição. clear esvazia a janela e reinicia os IDs em 1.",
+      "exceptions": "A classe mantém estado em memória, não um histórico persistente. Reiniciar a sessão exige que o consumidor limpe ou substitua a instância.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/cross-call-dedup.ts",
+          "quote": "  insert(text: string, label?: string): CallRecord {\n    const record: CallRecord = {\n      callId: this.nextId++,\n      exactHash: fnv1a64(text),\n      signature: shingleMinHash(text),\n      label,\n    };\n    this.records.push(record);\n    if (this.records.length > this.windowSize) {\n      this.records.shift();\n    }\n    return record;\n  }\n\n  /**\n   * Convenience: check first, then insert (always). Returns the dedup result.\n   * Inserting after a match lets future calls match against the same anchor.\n   */\n  checkAndInsert(text: string, label?: string): DedupResult {\n    const result = this.check(text);\n    this.insert(text, label);\n    return result;\n  }\n\n  /** Current number of records in the window. */\n  size(): number {\n    return this.records.length;\n  }\n\n  /** Reset the window. Useful between sessions or for tests. */\n  clear(): void {\n    this.records = [];\n    this.nextId = 1;\n  }\n}\n\n// ─── Default singleton"
+        }
+      ]
+    },
+    {
+      "id": "RN-04",
+      "track": "business_rules",
+      "kind": "operational",
+      "title": "Tipos desconhecidos não retornam snippets",
+      "domain": "Distribuição de exemplos",
+      "condition": "getCodeSnippets recebe uma categoria de código.",
+      "effect": "Categorias reconhecidas selecionam hooks, components, stores, types ou middleware. Uma categoria desconhecida retorna lista vazia; middleware retorna apenas o exemplo correspondente quando legível.",
+      "exceptions": "Isso identifica src como biblioteca de exemplos exposta pelo serviço, não prova que uma aplicação Next.js esteja implantada. Falhas de leitura são convertidas em null pelo helper.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function getCodeSnippets(type: string): Promise<Array<{ path: string; content: string }>> {\n  const typeMap: Record<string, string> = {\n    hooks: \"hooks\",\n    components: \"components\",\n    stores: \"stores\",\n    types: \"types\",\n    middleware: \"\",\n  };\n\n  const subDir = typeMap[type];\n  if (subDir === undefined) return [];\n\n  if (type === \"middleware\") {\n    const content = await readFile(path.join(PATHS.src, \"middleware.ts\"));\n    return content ? [{ path: \"src/middleware.ts\", content }] : [];\n  }\n\n  const files = await glob(\"**/*.{ts,tsx}\", { cwd: path.join(PATHS.src, subDir) });\n  const results: Array<{ path: string; content: string }> = [];\n\n  for (const file of files) {\n    const content = await readFile(path.join(PATHS.src, subDir, file));\n    if (content) {\n      results.push({ path: `src/${subDir}/${file}`, content });\n    }\n  }\n\n  return results;\n}\n\nexport async function getRepoAudit"
+        },
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function readFile(filePath: string): Promise<string | null> {\n  try {\n    return await fs.readFile(filePath, \"utf-8\");\n  } catch {\n    return null;\n  }\n}\n\nexport async function listSkills"
+        }
+      ]
+    },
+    {
+      "id": "RN-05",
+      "track": "business_rules",
+      "kind": "reference",
+      "title": "Logout encerra a sessão local mesmo quando a API falha",
+      "domain": "Sessão do exemplo de aplicação",
+      "condition": "A mutação de logout termina, com sucesso ou erro.",
+      "effect": "onSettled limpa o estado de autenticação e o cache de consultas e navega para /login.",
+      "exceptions": "Não comprova revogação do token no servidor em caso de erro. É comportamento do snippet de referência, não uma regra de produto em produção.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/hooks/useAuth.ts",
+          "quote": "  const logoutMutation = useMutation({\n    mutationFn: async () => {\n      await api.post('/auth/logout');\n    },\n    onSettled: () => {\n      clearAuth();\n      queryClient.clear();\n      router.push('/login');\n    },\n  });\n\n  // Me query"
+        }
+      ]
+    },
+    {
+      "id": "RN-06",
+      "track": "business_rules",
+      "kind": "reference",
+      "title": "Navegação de páginas respeita os limites conhecidos",
+      "domain": "Listagem do exemplo de aplicação",
+      "condition": "goToPage, nextPage ou prevPage são chamados com metadados de paginação disponíveis.",
+      "effect": "goToPage limita o destino entre 1 e totalPages; nextPage usa o menor valor entre próxima página e totalPages; prevPage não desce de 1. Sem metadados, totalPages vale 1.",
+      "exceptions": "initialPage não é normalizado e não há validação de NaN ou números fracionários. A regra descreve entradas numéricas válidas e não garante correção para metadados inválidos.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/hooks/usePagination.ts",
+          "quote": "  const meta = query.data?.meta;\n  const totalPages = meta?.totalPages ?? 1;\n\n  const goToPage = useCallback((p: number) => {\n    setPage(Math.max(1, Math.min(p, totalPages)));\n  }, [totalPages]);\n\n  const nextPage = useCallback(() => {\n    setPage((p) => Math.min(p + 1, totalPages));\n  }, [totalPages]);\n\n  const prevPage = useCallback(() => {\n    setPage((p) => Math.max(p - 1, 1));\n  }, []);\n\n  // Gera array"
+        }
+      ]
+    },
+    {
+      "id": "SEC-01",
+      "track": "security",
+      "kind": "reference",
+      "title": "O middleware verifica presença de cookie, não validade da sessão",
+      "domain": "Autenticação",
+      "condition": "Uma rota não dispensada passa pela checagem do middleware.",
+      "effect": "A presença do cookie refresh-token é usada como hasSession. Sem cookie, a rota protegida redireciona para login; nas rotas de login/cadastro, a presença do cookie redireciona para dashboard.",
+      "exceptions": "Não há validação JWT neste arquivo. Prefixos de APIs públicas e caminhos contendo ponto retornam antes da checagem. A proteção efetiva do backend não foi revisada; isto não é certificação de acesso seguro.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "src/middleware.ts",
+          "quote": "export function middleware(request: NextRequest) {\n  const { pathname } = request.nextUrl;\n\n  // Ignora assets estáticos e API routes públicas\n  if (\n    pathname.startsWith('/_next') ||\n    pathname.startsWith('/favicon') ||\n    pathname.includes('.') ||\n    publicApiRoutes.some((r) => pathname.startsWith(r))\n  ) {\n    return NextResponse.next();\n  }\n\n  // Checa se tem token (via cookie de session ou header)\n  // Em produção, validar JWT server-side aqui\n  const hasSession = request.cookies.has('refresh-token');\n\n  // Rota pública: permite acesso\n  if (publicRoutes.some((r) => pathname.startsWith(r))) {\n    // Se já autenticado, redireciona pra dashboard\n    if (hasSession && authRoutes.some((r) => pathname.startsWith(r))) {\n      return NextResponse.redirect(new URL('/dashboard', request.url));\n    }\n    return NextResponse.next();\n  }\n\n  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }\n\n  // Security headers"
+        }
+      ]
+    },
+    {
+      "id": "SEC-02",
+      "track": "security",
+      "kind": "operational",
+      "title": "O guard diferencia pedir aprovação de negar a ação",
+      "domain": "Permissão de ferramentas",
+      "condition": "Com o guard habilitado, um comando Bash casa com uma regra.",
+      "effect": "A primeira correspondência decide: lane closed produz deny; as demais produzem ask, salvo escape explícito permitido apenas para essas demais lanes.",
+      "exceptions": "O padrão é desabilitado. Entrada JSON inválida, ferramenta diferente de Bash ou ausência de match libera. Regex não interpreta toda a linguagem de shell; combinações podem selecionar uma regra menos restritiva antes da closed.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "function extractCommand(input) {\n  const name = input?.tool_name || \"\";\n  if (name === \"Bash\") return input?.tool_input?.command || \"\";\n  return \"\";\n}\n\n// Splits"
+        },
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  if (isHookDisabled(\"permission-ladder-guard\")) return allow();\n\n  let input = {};\n  try { input = JSON.parse(inputBuffer); } catch { return allow(); }\n\n  const cfg = readHookConfig(\"permission_ladder_guard\", { enabled: false });\n  if (cfg.enabled !== true) return allow();\n\n  const command = extractCommand(input);\n  if (!command) return allow();\n\n  const segments = splitCompoundCommand(command).map(stripCommandQuoting);\n  let hit = null;\n  let matchedSegment = command;\n  for (const segment of segments) {\n    hit = LADDER.find((rule) => rule.pattern.test(segment));\n    if (hit) { matchedSegment = segment; break; }\n  }\n  if (!hit) return allow();\n\n  const isClosedLane = hit.lane === \"closed\";\n\n  // Escape hatch, same convention as design-anchor-guard and dev-guard — but\n  // it does not apply to a closed lane. A lane that any suffix can open is a\n  // threshold, not a closed lane, and thresholds are exactly what this is\n  // meant not to be.\n  if (!isClosedLane && /permission-ladder:\\s*allow/i.test(command)) return allow();\n\n  const reason ="
+        },
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  process.stdout.write(JSON.stringify({\n    hookSpecificOutput: {\n      hookEventName: \"PreToolUse\",\n      // Closed lane denies outright: there is no approval that opens it from\n      // inside the agent loop. Everything else asks a human.\n      permissionDecision: isClosedLane ? \"deny\" : \"ask\",\n      permissionDecisionReason: reason,\n    },\n  }));"
+        }
+      ]
+    },
+    {
+      "id": "AUTO-01",
+      "track": "automations",
+      "kind": "operational",
+      "title": "A consulta da próxima etapa usa índice de base zero",
+      "domain": "Pipeline",
+      "condition": "getNextStep recebe tipo e posição atual.",
+      "effect": "Retorna a etapa na posição informada; tipo inexistente ou posição a partir do fim retorna null.",
+      "exceptions": "Não incrementa a posição, não executa a etapa e não verifica sua conclusão. Índices negativos ou fracionários não são rejeitados explicitamente e podem retornar undefined.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function getNextStep(\n  pipelineType: TaskType,\n  currentStep: number,\n): { id: string; name: string; purpose: string } | null {\n  const config = PIPELINES[pipelineType];\n  if (!config) return null;\n\n  const nextIndex = currentStep;\n  if (nextIndex >= config.steps.length) return null;\n\n  return config.steps[nextIndex];\n}"
+        }
+      ]
+    },
+    {
+      "id": "RPA-01",
+      "track": "rpa",
+      "kind": "operational",
+      "title": "O serviço de browser prepara instruções, não executa o processo",
+      "domain": "Integração com automação de navegador",
+      "condition": "O cliente solicita instrução de screenshot, extração de imagens ou scraping.",
+      "effect": "O serviço retorna URL e parâmetros descritivos. Screenshot assume página inteira; imagens usam seletor img e limite configurado. A execução depende de um consumidor externo.",
+      "exceptions": "Não há lançamento de browser, login, retry, idempotência ou fila de exceções nestas funções. Nenhum processo de RPA operacional foi comprovado neste recorte.",
+      "verification": "Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.",
+      "confidence": "observed",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/playwright.ts",
+          "quote": "export function buildScreenshotInstruction(\n  url: string,\n  fullPage: boolean = true,\n  viewport?: { width: number; height: number },\n): ScreenshotInstruction {\n  return {\n    url,\n    fullPage,\n    viewport: viewport || DEFAULTS.screenshotViewport,\n    description: `Navigate to ${url} and take a ${fullPage ? \"full-page\" : \"viewport\"} screenshot`,\n  };\n}\n\nexport interface ImageExtractionInstruction {\n  url: string;\n  selector: string;\n  limit: number;\n  description: string;\n}\n\nexport function buildImageExtractionInstruction(\n  url: string,\n  selector: string = \"img\",\n  limit: number = DEFAULTS.maxImages,\n): ImageExtractionInstruction {\n  return {\n    url,\n    selector,\n    limit,\n    description: `Navigate to ${url}, query all '${selector}' elements, extract src and alt attributes (limit ${limit})`,\n  };\n}\n\nexport function buildScrapeInstruction(url: string): {\n  url: string;\n  description: string;\n} {\n  return {\n    url,\n    description: `Navigate to ${url}, extract page title and main text content as markdown`,\n  };\n}"
+        }
+      ]
+    },
+    {
+      "id": "MEL-01",
+      "track": "improvements",
+      "kind": "reference",
+      "title": "Validar sessão e revisar as exceções de rotas",
+      "domain": "Segurança e produto",
+      "condition": "Um app consumidor usa o middleware de exemplo como barreira de acesso.",
+      "effect": "Proposta P1: validar token no servidor e substituir os atalhos de ponto/prefixo por regras de rota explícitas. Aplicar headers também às respostas antecipadas. Impacto: reduzir a diferença entre o redirecionamento da UI e autorização real.",
+      "exceptions": "Não implementado nesta revisão. Depende do contrato de sessão do backend; esforço médio, risco de bloquear rotas públicas legítimas. Os outros endpoints não foram auditados.",
+      "verification": "Proposto: testar cookie inválido/expirado, caminho com ponto, prefixo semelhante a API pública, rotas realmente públicas e headers em todos os retornos.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "src/middleware.ts",
+          "quote": "export function middleware(request: NextRequest) {\n  const { pathname } = request.nextUrl;\n\n  // Ignora assets estáticos e API routes públicas\n  if (\n    pathname.startsWith('/_next') ||\n    pathname.startsWith('/favicon') ||\n    pathname.includes('.') ||\n    publicApiRoutes.some((r) => pathname.startsWith(r))\n  ) {\n    return NextResponse.next();\n  }\n\n  // Checa se tem token (via cookie de session ou header)\n  // Em produção, validar JWT server-side aqui\n  const hasSession = request.cookies.has('refresh-token');\n\n  // Rota pública: permite acesso\n  if (publicRoutes.some((r) => pathname.startsWith(r))) {\n    // Se já autenticado, redireciona pra dashboard\n    if (hasSession && authRoutes.some((r) => pathname.startsWith(r))) {\n      return NextResponse.redirect(new URL('/dashboard', request.url));\n    }\n    return NextResponse.next();\n  }\n\n  // Rota protegida sem sessão: redireciona pra login\n  if (!hasSession) {\n    const loginUrl = new URL('/login', request.url);\n    loginUrl.searchParams.set('redirect', pathname);\n    return NextResponse.redirect(loginUrl);\n  }\n\n  // Security headers em todas as respostas\n  const response = NextResponse.next();\n  response.headers.set('X-Frame-Options', 'DENY');\n  response.headers.set('X-Content-Type-Options', 'nosniff');\n  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');\n\n  return response;\n}"
+        }
+      ]
+    },
+    {
+      "id": "MEL-02",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Priorizar a restrição mais forte em comandos compostos",
+      "domain": "Segurança das automações",
+      "condition": "Um comando contém mais de uma operação que casa com regras distintas.",
+      "effect": "Proposta P1: avaliar todas as correspondências antes de decidir e fazer closed prevalecer sobre gated. Impacto: a ordem dos segmentos não deve reduzir a restrição.",
+      "exceptions": "Não implementado. Esforço médio, risco de falsos positivos. A melhoria não torna regex um parser completo de shell.",
+      "verification": "Proposto: fixtures gated→closed, closed→gated, substituição de comando e escape; todas as combinações contendo closed devem negar.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "hooks/scripts/permission-ladder-guard.mjs",
+          "quote": "  const segments = [command];\n  for (const m of command.matchAll(/\\$\\(([^)]*)\\)|`([^`]*)`/g)) {\n    segments.push(m[1] ?? m[2] ?? \"\");\n  }\n  const flat = segments.flatMap((s) => s.split(/&&|\\|\\||[;|\\n]/));\n  return flat.map((s) => s.trim()).filter(Boolean);\n}\n\n// A shell treats `\"rm\"` and `rm` identically; the pattern's word-boundary\n// regex does not, because a straddling quote character breaks \\b. Strip\n// paired quotes immediately around a bareword before matching so this one\n// specific dodge (there's no way to close all of them with regex, see the\n// header note) doesn't slip through for free.\nfunction stripCommandQuoting(command) {\n  return command.replace(/(^|[\\s;&|])[\"']([\\w./-]+)[\"']/g, \"$1$2\");\n}\n\nlet inputBuffer = \"\";\nprocess.stdin.setEncoding(\"utf-8\");\nprocess.stdin.on(\"data\", (chunk) => { inputBuffer += chunk; });\n\nprocess.stdin.on(\"end\", () => {\n  const allow = () => {\n    process.stdout.write(JSON.stringify({ continue: true }));\n    process.exit(0);\n  };\n\n  if (isHookDisabled(\"permission-ladder-guard\")) return allow();\n\n  let input = {};\n  try { input = JSON.parse(inputBuffer); } catch { return allow(); }\n\n  const cfg = readHookConfig(\"permission_ladder_guard\", { enabled: false });\n  if (cfg.enabled !== true) return allow();\n\n  const command = extractCommand(input);\n  if (!command) return allow();\n\n  const segments = splitCompoundCommand(command).map(stripCommandQuoting);\n  let hit = null;\n  let matchedSegment = command;\n  for (const segment of segments) {\n    hit = LADDER.find((rule) => rule.pattern.test(segment));\n    if (hit) { matchedSegment = segment; break; }\n  }\n  if (!hit) return allow();\n\n  const isClosedLane = hit.lane === \"closed\";\n\n  // Escape hatch, same convention as design-anchor-guard and dev-guard — but\n  // it does not apply to a closed lane. A lane that any suffix can open is a\n  // threshold, not a closed lane, and thresholds are exactly what this is\n  // meant not to be.\n  if (!isClosedLane && /permission-ladder:\\s*allow/i.test(command)) return allow();\n\n  const reason ="
+        }
+      ]
+    },
+    {
+      "id": "MEL-03",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Distinguir arquivo ausente de falha de leitura",
+      "domain": "Confiabilidade e diagnóstico",
+      "condition": "readFile recebe erro de permissão, I/O ou arquivo inexistente.",
+      "effect": "Proposta P2: devolver ausência apenas para ENOENT e reportar as demais falhas com contexto sanitizado. Impacto: o catálogo não deve parecer vazio quando a leitura falhou.",
+      "exceptions": "Não implementado. Esforço pequeno; mudar de null para erro pode exigir ajuste dos consumidores e compatibilidade do contrato.",
+      "verification": "Proposto: testar arquivo ausente, permissão negada, leitura válida e propagação controlada do erro no serviço.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "mcp-server/src/services/file-reader.ts",
+          "quote": "export async function readFile(filePath: string): Promise<string | null> {\n  try {\n    return await fs.readFile(filePath, \"utf-8\");\n  } catch {\n    return null;\n  }\n}\n\nexport async function listSkills"
+        }
+      ]
+    },
+    {
+      "id": "MEL-04",
+      "track": "improvements",
+      "kind": "operational",
+      "title": "Validar a posição antes de consultar a etapa",
+      "domain": "Contratos, testes e DX",
+      "condition": "Um consumidor envia índice negativo, fracionário ou NaN a getNextStep.",
+      "effect": "Proposta P2: exigir inteiro não negativo e escolher contrato explícito de erro/null. Impacto: impedir retorno undefined quando o tipo anunciado promete etapa ou null.",
+      "exceptions": "Não implementado. Esforço pequeno; é preciso decidir e documentar compatibilidade de erro para clientes existentes.",
+      "verification": "Proposto: testar -1, 0, último índice, tamanho do pipeline, fração e NaN.",
+      "confidence": "inferred",
+      "evidence": [
+        {
+          "path": "mcp-server/src/lib/pipeline-engine.ts",
+          "quote": "export function getNextStep(\n  pipelineType: TaskType,\n  currentStep: number,\n): { id: string; name: string; purpose: string } | null {\n  const config = PIPELINES[pipelineType];\n  if (!config) return null;\n\n  const nextIndex = currentStep;\n  if (nextIndex >= config.steps.length) return null;\n\n  return config.steps[nextIndex];\n}"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "Cobertura parcial: apenas os oito arquivos listados foram revisados semanticamente. O inventário do restante não equivale a leitura humana/por agente.",
+    "Nenhum fluxo de autenticação, deploy ou RPA foi executado em produção.",
+    "Produto, UX/acessibilidade, infraestrutura/deploy, banco de dados e observabilidade fora dos trechos citados continuam pendentes; não foram preenchidos com recomendações genéricas.",
+    "Propostas de melhoria são inferências rastreáveis, não alterações autorizadas nos módulos auditados."
+  ]
+}

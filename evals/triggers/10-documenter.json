@@ -7,16 +7,26 @@
     "escrever feature doc da integração com Stripe",
     "criar runbook de troubleshooting pra o serviço de filas",
     "documentação completa do fluxo de autenticação",
+    "gera uma repo wiki com mapa C4 e deep dives dos módulos",
+    "documenta o repositório inteiro e valida os diagramas Mermaid",
+    "atualiza a arquitetura a partir do código e aponta drift com a documentação",
+    "preciso de um relatório de cobertura da documentação do código",
     "preciso registrar decisão de arquitetura sobre cache",
     "api doc com exemplos de request e response",
     "atualizar docs após a refatoração do módulo de billing",
-    "doc de operação pro time de SRE"
+    "doc de operação pro time de SRE",
+    "extrair as regras de negócio escondidas no código",
+    "documentar o RPA e os retries da automação de browser",
+    "fazer uma revisão de segurança do app e colocar na documentação",
+    "gerar um relatório de melhorias do repositório inteiro",
+    "criar um site HTML offline navegável para a documentação com busca"
   ],
   "shouldnt_trigger": [
     "criar componente React responsivo com Tailwind",
     "subir cluster Kubernetes com nginx ingress",
     "rodar scan semgrep no PR atual",
     "definir tokens visuais do design system",
-    "configurar tracking de eventos no PostHog"
+    "configurar tracking de eventos no PostHog",
+    "gerar um diagrama de marketing para a landing page"
   ]
 }

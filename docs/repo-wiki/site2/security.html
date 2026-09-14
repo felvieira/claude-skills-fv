@@ -1,0 +1,98 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Segurança · Repo-Wiki</title><link rel="stylesheet" href="assets/site.css"></head><body data-track="security"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="index.html">Repo-Wiki</a><nav aria-label="Páginas"><a href="automations.html" class="nav-link">Automações</a><a href="business-rules.html" class="nav-link">Regras de negócio e comportamento</a><a href="improvements.html" class="nav-link">Melhorias do repositório</a><a href="index.html" class="nav-link">claude-skills-fv — documentação do código</a><a href="rpa.html" class="nav-link">RPA</a><a href="security.html" class="nav-link">Segurança</a></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Segurança</span></nav><article id="content" class="content" data-page="security.html" data-track="security"><h1 id="seguranca">Segurança</h1>
+<p>Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.</p>
+<p>2 comportamentos descritos a partir de código lido. Cobertura parcial; não equivale a execução em produção.</p>
+<h2 id="sec-01-o-middleware-verifica-presenca-de-cookie-nao-validade-da-sessao">SEC-01 — O middleware verifica presença de cookie, não validade da sessão</h2>
+<p>Domínio: Autenticação. Natureza: reference. Evidência: observed.</p>
+<p><strong>Quando:</strong> Uma rota não dispensada passa pela checagem do middleware.</p>
+<p><strong>O que acontece:</strong> A presença do cookie refresh-token é usada como hasSession. Sem cookie, a rota protegida redireciona para login; nas rotas de login/cadastro, a presença do cookie redireciona para dashboard.</p>
+<p><strong>Exceções e limites:</strong> Não há validação JWT neste arquivo. Prefixos de APIs públicas e caminhos contendo ponto retornam antes da checagem. A proteção efetiva do backend não foi revisada; isto não é certificação de acesso seguro.</p>
+<p><strong>Verificação:</strong> Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.</p>
+<p><a class="evidence" href="evidence/src-middleware-ts-06263692.html#L16">evidence: src/middleware.ts:16</a></p>
+<pre><code class="language-text">export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Ignora assets estáticos e API routes públicas
+  if (
+    pathname.startsWith(&#39;/_next&#39;) ||
+    pathname.startsWith(&#39;/favicon&#39;) ||
+    pathname.includes(&#39;.&#39;) ||
+    publicApiRoutes.some((r) =&gt; pathname.startsWith(r))
+  ) {
+    return NextResponse.next();
+  }
+
+  // Checa se tem token (via cookie de session ou header)
+  // Em produção, validar JWT server-side aqui
+  const hasSession = request.cookies.has(&#39;refresh-token&#39;);
+
+  // Rota pública: permite acesso
+  if (publicRoutes.some((r) =&gt; pathname.startsWith(r))) {
+    // Se já autenticado, redireciona pra dashboard
+    if (hasSession &amp;&amp; authRoutes.some((r) =&gt; pathname.startsWith(r))) {
+      return NextResponse.redirect(new URL(&#39;/dashboard&#39;, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Rota protegida sem sessão: redireciona pra login
+  if (!hasSession) {
+    const loginUrl = new URL(&#39;/login&#39;, request.url);
+    loginUrl.searchParams.set(&#39;redirect&#39;, pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Security headers</code></pre>
+<h2 id="sec-02-o-guard-diferencia-pedir-aprovacao-de-negar-a-acao">SEC-02 — O guard diferencia pedir aprovação de negar a ação</h2>
+<p>Domínio: Permissão de ferramentas. Natureza: operational. Evidência: observed.</p>
+<p><strong>Quando:</strong> Com o guard habilitado, um comando Bash casa com uma regra.</p>
+<p><strong>O que acontece:</strong> A primeira correspondência decide: lane closed produz deny; as demais produzem ask, salvo escape explícito permitido apenas para essas demais lanes.</p>
+<p><strong>Exceções e limites:</strong> O padrão é desabilitado. Entrada JSON inválida, ferramenta diferente de Bash ou ausência de match libera. Regex não interpreta toda a linguagem de shell; combinações podem selecionar uma regra menos restritiva antes da closed.</p>
+<p><strong>Verificação:</strong> Leitura estática do código citado. O fluxo não foi executado em uma aplicação consumidora neste levantamento.</p>
+<p><a class="evidence" href="evidence/hooks-scripts-permission-ladder-guard-mjs-4dd91429.html#L104">evidence: hooks/scripts/permission-ladder-guard.mjs:104</a></p>
+<pre><code class="language-text">function extractCommand(input) {
+  const name = input?.tool_name || &quot;&quot;;
+  if (name === &quot;Bash&quot;) return input?.tool_input?.command || &quot;&quot;;
+  return &quot;&quot;;
+}
+
+// Splits</code></pre>
+<p><a class="evidence" href="evidence/hooks-scripts-permission-ladder-guard-mjs-4dd91429.html#L143">evidence: hooks/scripts/permission-ladder-guard.mjs:143</a></p>
+<pre><code class="language-text">  if (isHookDisabled(&quot;permission-ladder-guard&quot;)) return allow();
+
+  let input = {};
+  try { input = JSON.parse(inputBuffer); } catch { return allow(); }
+
+  const cfg = readHookConfig(&quot;permission_ladder_guard&quot;, { enabled: false });
+  if (cfg.enabled !== true) return allow();
+
+  const command = extractCommand(input);
+  if (!command) return allow();
+
+  const segments = splitCompoundCommand(command).map(stripCommandQuoting);
+  let hit = null;
+  let matchedSegment = command;
+  for (const segment of segments) {
+    hit = LADDER.find((rule) =&gt; rule.pattern.test(segment));
+    if (hit) { matchedSegment = segment; break; }
+  }
+  if (!hit) return allow();
+
+  const isClosedLane = hit.lane === &quot;closed&quot;;
+
+  // Escape hatch, same convention as design-anchor-guard and dev-guard — but
+  // it does not apply to a closed lane. A lane that any suffix can open is a
+  // threshold, not a closed lane, and thresholds are exactly what this is
+  // meant not to be.
+  if (!isClosedLane &amp;&amp; /permission-ladder:\s*allow/i.test(command)) return allow();
+
+  const reason =</code></pre>
+<p><a class="evidence" href="evidence/hooks-scripts-permission-ladder-guard-mjs-4dd91429.html#L216">evidence: hooks/scripts/permission-ladder-guard.mjs:216</a></p>
+<pre><code class="language-text">  process.stdout.write(JSON.stringify({
+    hookSpecificOutput: {
+      hookEventName: &quot;PreToolUse&quot;,
+      // Closed lane denies outright: there is no approval that opens it from
+      // inside the agent loop. Everything else asks a human.
+      permissionDecision: isClosedLane ? &quot;deny&quot; : &quot;ask&quot;,
+      permissionDecisionReason: reason,
+    },
+  }));</code></pre></article><footer class="footer">Gerado localmente. Índice: search-index.js</footer></main></div><script src="assets/search-index.js"></script><script src="assets/site.js"></script></body></html>

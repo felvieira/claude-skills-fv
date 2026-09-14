@@ -323,7 +323,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 |---|---|---|
 | 08 | **Context Manager** | rastrear focus, tasks abertas, hot files entre sessões |
 | 09 | **Orchestrator** | classificar complexidade da task e definir pipeline mínimo |
-| 10 | **Documenter** | registrar decisões, contratos de API, ADRs em docs vivos |
+| 10 | **Documenter** | registrar decisões, contratos, ADRs, trilhas funcionais e Repo-Wikis HTML/Markdown rastreáveis |
 | 11 | **Reviewer** | validar delta final antes de release |
 | 17 | **Image Generator** | gerar imagens originais via fal.ai (hero, ícones, ilustrações) |
 | 18 | **Repo Auditor** | mapear stack real, convenções, riscos antes de qualquer task grande |

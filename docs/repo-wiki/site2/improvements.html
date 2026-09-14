@@ -1,0 +1,149 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Melhorias do repositório · Repo-Wiki</title><link rel="stylesheet" href="assets/site.css"></head><body data-track="improvements"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="index.html">Repo-Wiki</a><nav aria-label="Páginas"><a href="automations.html" class="nav-link">Automações</a><a href="business-rules.html" class="nav-link">Regras de negócio e comportamento</a><a href="improvements.html" class="nav-link">Melhorias do repositório</a><a href="index.html" class="nav-link">claude-skills-fv — documentação do código</a><a href="rpa.html" class="nav-link">RPA</a><a href="security.html" class="nav-link">Segurança</a></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Melhorias do repositório</span></nav><article id="content" class="content" data-page="improvements.html" data-track="improvements"><h1 id="melhorias-do-repositorio">Melhorias do repositório</h1>
+<p>Leitura estática de oito arquivos de código: núcleo MCP, proteção de ferramentas e snippets de referência. Regras operacionais do kit são separadas de exemplos de aplicação; não há afirmação de produto ou RPA implantado.</p>
+<p>4 comportamentos descritos a partir de código lido. Cobertura parcial; não equivale a execução em produção.</p>
+<h2 id="mel-01-validar-sessao-e-revisar-as-excecoes-de-rotas">MEL-01 — Validar sessão e revisar as exceções de rotas</h2>
+<p>Domínio: Segurança e produto. Natureza: reference. Evidência: inferred.</p>
+<p><strong>Quando:</strong> Um app consumidor usa o middleware de exemplo como barreira de acesso.</p>
+<p><strong>O que acontece:</strong> Proposta P1: validar token no servidor e substituir os atalhos de ponto/prefixo por regras de rota explícitas. Aplicar headers também às respostas antecipadas. Impacto: reduzir a diferença entre o redirecionamento da UI e autorização real.</p>
+<p><strong>Exceções e limites:</strong> Não implementado nesta revisão. Depende do contrato de sessão do backend; esforço médio, risco de bloquear rotas públicas legítimas. Os outros endpoints não foram auditados.</p>
+<p><strong>Verificação:</strong> Proposto: testar cookie inválido/expirado, caminho com ponto, prefixo semelhante a API pública, rotas realmente públicas e headers em todos os retornos.</p>
+<p><a class="evidence" href="evidence/src-middleware-ts-06263692.html#L16">evidence: src/middleware.ts:16</a></p>
+<pre><code class="language-text">export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Ignora assets estáticos e API routes públicas
+  if (
+    pathname.startsWith(&#39;/_next&#39;) ||
+    pathname.startsWith(&#39;/favicon&#39;) ||
+    pathname.includes(&#39;.&#39;) ||
+    publicApiRoutes.some((r) =&gt; pathname.startsWith(r))
+  ) {
+    return NextResponse.next();
+  }
+
+  // Checa se tem token (via cookie de session ou header)
+  // Em produção, validar JWT server-side aqui
+  const hasSession = request.cookies.has(&#39;refresh-token&#39;);
+
+  // Rota pública: permite acesso
+  if (publicRoutes.some((r) =&gt; pathname.startsWith(r))) {
+    // Se já autenticado, redireciona pra dashboard
+    if (hasSession &amp;&amp; authRoutes.some((r) =&gt; pathname.startsWith(r))) {
+      return NextResponse.redirect(new URL(&#39;/dashboard&#39;, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Rota protegida sem sessão: redireciona pra login
+  if (!hasSession) {
+    const loginUrl = new URL(&#39;/login&#39;, request.url);
+    loginUrl.searchParams.set(&#39;redirect&#39;, pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Security headers em todas as respostas
+  const response = NextResponse.next();
+  response.headers.set(&#39;X-Frame-Options&#39;, &#39;DENY&#39;);
+  response.headers.set(&#39;X-Content-Type-Options&#39;, &#39;nosniff&#39;);
+  response.headers.set(&#39;Referrer-Policy&#39;, &#39;strict-origin-when-cross-origin&#39;);
+
+  return response;
+}</code></pre>
+<h2 id="mel-02-priorizar-a-restricao-mais-forte-em-comandos-compostos">MEL-02 — Priorizar a restrição mais forte em comandos compostos</h2>
+<p>Domínio: Segurança das automações. Natureza: operational. Evidência: inferred.</p>
+<p><strong>Quando:</strong> Um comando contém mais de uma operação que casa com regras distintas.</p>
+<p><strong>O que acontece:</strong> Proposta P1: avaliar todas as correspondências antes de decidir e fazer closed prevalecer sobre gated. Impacto: a ordem dos segmentos não deve reduzir a restrição.</p>
+<p><strong>Exceções e limites:</strong> Não implementado. Esforço médio, risco de falsos positivos. A melhoria não torna regex um parser completo de shell.</p>
+<p><strong>Verificação:</strong> Proposto: fixtures gated→closed, closed→gated, substituição de comando e escape; todas as combinações contendo closed devem negar.</p>
+<p><a class="evidence" href="evidence/hooks-scripts-permission-ladder-guard-mjs-4dd91429.html#L116">evidence: hooks/scripts/permission-ladder-guard.mjs:116</a></p>
+<pre><code class="language-text">  const segments = [command];
+  for (const m of command.matchAll(/\$\(([^)]*)\)|`([^`]*)`/g)) {
+    segments.push(m[1] ?? m[2] ?? &quot;&quot;);
+  }
+  const flat = segments.flatMap((s) =&gt; s.split(/&amp;&amp;|\|\||[;|\n]/));
+  return flat.map((s) =&gt; s.trim()).filter(Boolean);
+}
+
+// A shell treats `&quot;rm&quot;` and `rm` identically; the pattern&#39;s word-boundary
+// regex does not, because a straddling quote character breaks \b. Strip
+// paired quotes immediately around a bareword before matching so this one
+// specific dodge (there&#39;s no way to close all of them with regex, see the
+// header note) doesn&#39;t slip through for free.
+function stripCommandQuoting(command) {
+  return command.replace(/(^|[\s;&amp;|])[&quot;&#39;]([\w./-]+)[&quot;&#39;]/g, &quot;$1$2&quot;);
+}
+
+let inputBuffer = &quot;&quot;;
+process.stdin.setEncoding(&quot;utf-8&quot;);
+process.stdin.on(&quot;data&quot;, (chunk) =&gt; { inputBuffer += chunk; });
+
+process.stdin.on(&quot;end&quot;, () =&gt; {
+  const allow = () =&gt; {
+    process.stdout.write(JSON.stringify({ continue: true }));
+    process.exit(0);
+  };
+
+  if (isHookDisabled(&quot;permission-ladder-guard&quot;)) return allow();
+
+  let input = {};
+  try { input = JSON.parse(inputBuffer); } catch { return allow(); }
+
+  const cfg = readHookConfig(&quot;permission_ladder_guard&quot;, { enabled: false });
+  if (cfg.enabled !== true) return allow();
+
+  const command = extractCommand(input);
+  if (!command) return allow();
+
+  const segments = splitCompoundCommand(command).map(stripCommandQuoting);
+  let hit = null;
+  let matchedSegment = command;
+  for (const segment of segments) {
+    hit = LADDER.find((rule) =&gt; rule.pattern.test(segment));
+    if (hit) { matchedSegment = segment; break; }
+  }
+  if (!hit) return allow();
+
+  const isClosedLane = hit.lane === &quot;closed&quot;;
+
+  // Escape hatch, same convention as design-anchor-guard and dev-guard — but
+  // it does not apply to a closed lane. A lane that any suffix can open is a
+  // threshold, not a closed lane, and thresholds are exactly what this is
+  // meant not to be.
+  if (!isClosedLane &amp;&amp; /permission-ladder:\s*allow/i.test(command)) return allow();
+
+  const reason =</code></pre>
+<h2 id="mel-03-distinguir-arquivo-ausente-de-falha-de-leitura">MEL-03 — Distinguir arquivo ausente de falha de leitura</h2>
+<p>Domínio: Confiabilidade e diagnóstico. Natureza: operational. Evidência: inferred.</p>
+<p><strong>Quando:</strong> readFile recebe erro de permissão, I/O ou arquivo inexistente.</p>
+<p><strong>O que acontece:</strong> Proposta P2: devolver ausência apenas para ENOENT e reportar as demais falhas com contexto sanitizado. Impacto: o catálogo não deve parecer vazio quando a leitura falhou.</p>
+<p><strong>Exceções e limites:</strong> Não implementado. Esforço pequeno; mudar de null para erro pode exigir ajuste dos consumidores e compatibilidade do contrato.</p>
+<p><strong>Verificação:</strong> Proposto: testar arquivo ausente, permissão negada, leitura válida e propagação controlada do erro no serviço.</p>
+<p><a class="evidence" href="evidence/mcp-server-src-services-file-reader-ts-2b74c171.html#L8">evidence: mcp-server/src/services/file-reader.ts:8</a></p>
+<pre><code class="language-text">export async function readFile(filePath: string): Promise&lt;string | null&gt; {
+  try {
+    return await fs.readFile(filePath, &quot;utf-8&quot;);
+  } catch {
+    return null;
+  }
+}
+
+export async function listSkills</code></pre>
+<h2 id="mel-04-validar-a-posicao-antes-de-consultar-a-etapa">MEL-04 — Validar a posição antes de consultar a etapa</h2>
+<p>Domínio: Contratos, testes e DX. Natureza: operational. Evidência: inferred.</p>
+<p><strong>Quando:</strong> Um consumidor envia índice negativo, fracionário ou NaN a getNextStep.</p>
+<p><strong>O que acontece:</strong> Proposta P2: exigir inteiro não negativo e escolher contrato explícito de erro/null. Impacto: impedir retorno undefined quando o tipo anunciado promete etapa ou null.</p>
+<p><strong>Exceções e limites:</strong> Não implementado. Esforço pequeno; é preciso decidir e documentar compatibilidade de erro para clientes existentes.</p>
+<p><strong>Verificação:</strong> Proposto: testar -1, 0, último índice, tamanho do pipeline, fração e NaN.</p>
+<p><a class="evidence" href="evidence/mcp-server-src-lib-pipeline-engine-ts-74c72af0.html#L166">evidence: mcp-server/src/lib/pipeline-engine.ts:166</a></p>
+<pre><code class="language-text">export function getNextStep(
+  pipelineType: TaskType,
+  currentStep: number,
+): { id: string; name: string; purpose: string } | null {
+  const config = PIPELINES[pipelineType];
+  if (!config) return null;
+
+  const nextIndex = currentStep;
+  if (nextIndex &gt;= config.steps.length) return null;
+
+  return config.steps[nextIndex];
+}</code></pre></article><footer class="footer">Gerado localmente. Índice: search-index.js</footer></main></div><script src="assets/search-index.js"></script><script src="assets/site.js"></script></body></html>

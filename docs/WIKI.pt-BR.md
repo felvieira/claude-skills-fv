@@ -413,7 +413,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 #### Skill 10 — Documenter
 
-**O que faz:** registra decisões, contratos de API, operações e impactos em docs vivos. Atua transversal — toda mudança relevante de regra/contrato passa por aqui.
+**O que faz:** registra decisões, contratos de API, operações, impactos e Repo-Wikis rastreáveis em docs vivos, incluindo regras de negócio, segurança do app, automações/RPA, melhorias do repo e HTML offline pesquisável. Atua transversal — toda mudança relevante de regra/contrato passa por aqui.
 **Quando ativar:** feature ou refactor que muda comportamento documentado.
 
 #### Skill 11 — Reviewer

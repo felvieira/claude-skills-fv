@@ -1,0 +1,41 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Evidência · mcp-server/src/lib/pipeline-engine.ts · Repo-Wiki</title><link rel="stylesheet" href="../assets/site.css"></head><body data-track="evidence"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="../index.html">Repo-Wiki</a><nav aria-label="Páginas"></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Evidência · mcp-server/src/lib/pipeline-engine.ts</span></nav><article id="content" class="content" data-page="evidence/mcp-server-src-lib-pipeline-engine-ts-74c72af0.html" data-track="evidence"><h1>mcp-server/src/lib/pipeline-engine.ts</h1><p>Somente linhas citadas. Snapshot de código, não prova de execução.</p><pre><code><span class="source-line" id="L31"><a href="#L31">31</a>   bugfix: {</span>
+<span class="source-line" id="L32"><a href="#L32">32</a>     steps: [</span>
+<span class="source-line" id="L33"><a href="#L33">33</a>       { id: &quot;18-repo-auditor&quot;, name: &quot;Repo Auditor&quot;, purpose: &quot;entender contexto do bug&quot; },</span>
+<span class="source-line" id="L34"><a href="#L34">34</a>       { id: &quot;05-qa-testing&quot;, name: &quot;QA&quot;, purpose: &quot;reproduzir e testar fix&quot; },</span>
+<span class="source-line" id="L35"><a href="#L35">35</a>       { id: &quot;06-security-review&quot;, name: &quot;Security&quot;, purpose: &quot;validar se fix nao abre brecha&quot; },</span>
+<span class="source-line" id="L36"><a href="#L36">36</a>       { id: &quot;11-reviewer&quot;, name: &quot;Reviewer&quot;, purpose: &quot;validacao final&quot; },</span>
+<span class="source-line" id="L37"><a href="#L37">37</a>     ],</span>
+<span class="source-line" id="L38"><a href="#L38">38</a>     policies: [&quot;execution&quot;, &quot;handoffs&quot;, &quot;quality-gates&quot;],</span>
+<span class="source-line" id="L39"><a href="#L39">39</a>     templates: [&quot;handoff&quot;, &quot;review&quot;],</span>
+<span class="source-line" id="L40"><a href="#L40">40</a>   },</span>
+<span class="source-line" id="L41"><a href="#L41">41</a>   ui_improvement: {</span>
+<span class="source-line" id="L105"><a href="#L105">105</a>   hotfix: {</span>
+<span class="source-line" id="L106"><a href="#L106">106</a>     steps: [</span>
+<span class="source-line" id="L107"><a href="#L107">107</a>       { id: &quot;06-security-review&quot;, name: &quot;Security&quot;, purpose: &quot;validar fix critico&quot; },</span>
+<span class="source-line" id="L108"><a href="#L108">108</a>       { id: &quot;11-reviewer&quot;, name: &quot;Reviewer&quot;, purpose: &quot;validacao rapida&quot; },</span>
+<span class="source-line" id="L109"><a href="#L109">109</a>       { id: &quot;07-deploy&quot;, name: &quot;Deploy&quot;, purpose: &quot;deploy urgente&quot; },</span>
+<span class="source-line" id="L110"><a href="#L110">110</a>     ],</span>
+<span class="source-line" id="L111"><a href="#L111">111</a>     policies: [&quot;execution&quot;, &quot;quality-gates&quot;],</span>
+<span class="source-line" id="L112"><a href="#L112">112</a>     templates: [&quot;handoff&quot;],</span>
+<span class="source-line" id="L113"><a href="#L113">113</a>   },</span>
+<span class="source-line" id="L114"><a href="#L114">114</a>   release: {</span>
+<span class="source-line" id="L158"><a href="#L158">158</a> export function buildPipeline(taskType: TaskType): PipelineConfig &amp; { type: string } {</span>
+<span class="source-line" id="L159"><a href="#L159">159</a>   const config = PIPELINES[taskType];</span>
+<span class="source-line" id="L160"><a href="#L160">160</a>   return {</span>
+<span class="source-line" id="L161"><a href="#L161">161</a>     type: taskType,</span>
+<span class="source-line" id="L162"><a href="#L162">162</a>     ...config,</span>
+<span class="source-line" id="L163"><a href="#L163">163</a>   };</span>
+<span class="source-line" id="L164"><a href="#L164">164</a> }</span>
+<span class="source-line" id="L165"><a href="#L165">165</a> </span>
+<span class="source-line" id="L166"><a href="#L166">166</a> export function getNextStep(</span>
+<span class="source-line" id="L167"><a href="#L167">167</a>   pipelineType: TaskType,</span>
+<span class="source-line" id="L168"><a href="#L168">168</a>   currentStep: number,</span>
+<span class="source-line" id="L169"><a href="#L169">169</a> ): { id: string; name: string; purpose: string } | null {</span>
+<span class="source-line" id="L170"><a href="#L170">170</a>   const config = PIPELINES[pipelineType];</span>
+<span class="source-line" id="L171"><a href="#L171">171</a>   if (!config) return null;</span>
+<span class="source-line" id="L172"><a href="#L172">172</a> </span>
+<span class="source-line" id="L173"><a href="#L173">173</a>   const nextIndex = currentStep;</span>
+<span class="source-line" id="L174"><a href="#L174">174</a>   if (nextIndex &gt;= config.steps.length) return null;</span>
+<span class="source-line" id="L175"><a href="#L175">175</a> </span>
+<span class="source-line" id="L176"><a href="#L176">176</a>   return config.steps[nextIndex];</span>
+<span class="source-line" id="L177"><a href="#L177">177</a> }</span></code></pre></article><footer class="footer">Gerado localmente. Índice: local</footer></main></div><script src="../assets/search-index.js"></script><script src="../assets/site.js"></script></body></html>

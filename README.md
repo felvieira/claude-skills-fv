@@ -189,7 +189,7 @@ The MCP exposes 38 tools backed by the installed skills.
 |---|---|---|
 | 08 | **Context Manager** | tracks focus, open tasks, hot files and handoffs across sessions |
 | 09 | **Orchestrator** | defines the minimum sufficient pipeline, delegates to specialists, adapts on rejection |
-| 10 | **Documenter** | records decisions, API contracts, operations and impacts in living docs |
+| 10 | **Documenter** | records decisions, API contracts, operations, Repo-Wikis, functional tracks and searchable offline HTML |
 | 11 | **Reviewer** | validates the final delta before release — quality, scope and risk |
 | 17 | **Image Generator** | generates and adapts visual assets via fal.ai with t2i, i2i, rembg and Tauri icons support |
 | 18 | **Repo Auditor** | full snapshot of the repo — stack, conventions, risks, entry points and tech debt |
@@ -214,6 +214,18 @@ The MCP exposes 38 tools backed by the installed skills.
 | 44 | **Zoom Out** | builds a module map and topology of the codebase — complements smart-suggestions with a structural bird's-eye view |
 | 45 | **Handoff Context** | prospective handoff between sessions/agents — packages what the next session needs to continue without re-deriving context |
 | 65 | **Using Git Worktrees** | workspace isolation via git worktree — detects existing isolation, prefers native tooling (`EnterWorktree`/`ExitWorktree` or the kit's `/worktree` dispatcher) before raw `git worktree add`, mandatory test baseline before releasing the task for work |
+
+### Repo-Wiki: documentation generated in the target project
+
+When the Documenter skill runs inside a project, Repo-Wiki uses the current directory as its target and writes to `docs/repo-wiki/` in that same project by default. The output includes Markdown, a coverage report, and a navigable offline HTML site:
+
+```text
+<project>/docs/repo-wiki/README.md
+<project>/docs/repo-wiki/report.json
+<project>/docs/repo-wiki/site/index.html
+```
+
+Use `--repo`, `--output`, and `--site` for explicit destinations. The generator and builder return the effective absolute paths (`repo`, `markdown_dir`, `report`, `site`, and `index`), and the skill handoff must show them to the user together with inventoried/reviewed files, pending tracks, and verification results. The documentation must not merely say “docs generated.”
 
 ### Product and Design
 
@@ -938,6 +950,7 @@ Full third-party attribution (license + scope) is in [`NOTICE`](./NOTICE), prese
 | [ClickUp Agent Prompting Guide](https://clickup.com/blog/agent-prompting-guide/) | Inspired the Five Building Block framework and A→B→C layering | v1.2.0 |
 | [sandeco/reversa](https://github.com/sandeco/reversa) | Inspired the Detective Spec pipeline (skill 33) | v1.6.0 |
 | [aihero.dev](https://www.aihero.dev/5-agent-skills-i-use-every-day) | Inspired the documentation format used in WIKI / SKILLS-OVERVIEW | v1.5.0 |
+| [sopaco/deepwiki-rs](https://github.com/sopaco/deepwiki-rs) | Inspired the Documenter Repo-Wiki mode: staged code analysis, C4 composition, domain research, local knowledge chunking, provenance, cache and integrity reporting | v2.77.0 |
 | Anthropic Skills (`anthropic-skills:*`) | Inspired `policies/mcp-builder-patterns.md`, `policies/memory-consolidation.md`, `/consolidate-memory` | v1.5.0 |
 | Superpowers (`superpowers:*`) | Inspired `policies/verification-before-completion.md`, `policies/receiving-code-review.md`, parallelization framing | v1.5.0 |
 | Claude Code Setup | Inspired the `--recommend-automation` mode in the Repo Auditor skill | v1.5.0 |

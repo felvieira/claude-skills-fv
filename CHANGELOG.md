@@ -5,6 +5,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Adicionado
+
+- O Documenter ganhou o modo Repo-Wiki, inspirado em `sopaco/deepwiki-rs`/Litho e reimplementado no padrão do kit: pré-processamento, pesquisa por domínio, composição C4, boundaries, schema condicional, conhecimento local chunked, proveniência e execução incremental.
+- `docs/skill-guides/documenter-repository-intelligence.md` documenta o fluxo completo e `scripts/verify-docset.mjs` valida árvores Markdown geradas quanto a links quebrados, fences, placeholders e headings duplicados.
+- O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
+- `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
+
 ## [2.76.0] - 2026-09-12 — skill 74 nova (cena 3D interativa no browser)
 
 ### Adicionado

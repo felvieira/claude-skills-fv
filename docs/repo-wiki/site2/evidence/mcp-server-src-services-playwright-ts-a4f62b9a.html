@@ -1,0 +1,42 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Evidência · mcp-server/src/services/playwright.ts · Repo-Wiki</title><link rel="stylesheet" href="../assets/site.css"></head><body data-track="evidence"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="../index.html">Repo-Wiki</a><nav aria-label="Páginas"></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Evidência · mcp-server/src/services/playwright.ts</span></nav><article id="content" class="content" data-page="evidence/mcp-server-src-services-playwright-ts-a4f62b9a.html" data-track="evidence"><h1>mcp-server/src/services/playwright.ts</h1><p>Somente linhas citadas. Snapshot de código, não prova de execução.</p><pre><code><span class="source-line" id="L14"><a href="#L14">14</a> export function buildScreenshotInstruction(</span>
+<span class="source-line" id="L15"><a href="#L15">15</a>   url: string,</span>
+<span class="source-line" id="L16"><a href="#L16">16</a>   fullPage: boolean = true,</span>
+<span class="source-line" id="L17"><a href="#L17">17</a>   viewport?: { width: number; height: number },</span>
+<span class="source-line" id="L18"><a href="#L18">18</a> ): ScreenshotInstruction {</span>
+<span class="source-line" id="L19"><a href="#L19">19</a>   return {</span>
+<span class="source-line" id="L20"><a href="#L20">20</a>     url,</span>
+<span class="source-line" id="L21"><a href="#L21">21</a>     fullPage,</span>
+<span class="source-line" id="L22"><a href="#L22">22</a>     viewport: viewport || DEFAULTS.screenshotViewport,</span>
+<span class="source-line" id="L23"><a href="#L23">23</a>     description: `Navigate to ${url} and take a ${fullPage ? &quot;full-page&quot; : &quot;viewport&quot;} screenshot`,</span>
+<span class="source-line" id="L24"><a href="#L24">24</a>   };</span>
+<span class="source-line" id="L25"><a href="#L25">25</a> }</span>
+<span class="source-line" id="L26"><a href="#L26">26</a> </span>
+<span class="source-line" id="L27"><a href="#L27">27</a> export interface ImageExtractionInstruction {</span>
+<span class="source-line" id="L28"><a href="#L28">28</a>   url: string;</span>
+<span class="source-line" id="L29"><a href="#L29">29</a>   selector: string;</span>
+<span class="source-line" id="L30"><a href="#L30">30</a>   limit: number;</span>
+<span class="source-line" id="L31"><a href="#L31">31</a>   description: string;</span>
+<span class="source-line" id="L32"><a href="#L32">32</a> }</span>
+<span class="source-line" id="L33"><a href="#L33">33</a> </span>
+<span class="source-line" id="L34"><a href="#L34">34</a> export function buildImageExtractionInstruction(</span>
+<span class="source-line" id="L35"><a href="#L35">35</a>   url: string,</span>
+<span class="source-line" id="L36"><a href="#L36">36</a>   selector: string = &quot;img&quot;,</span>
+<span class="source-line" id="L37"><a href="#L37">37</a>   limit: number = DEFAULTS.maxImages,</span>
+<span class="source-line" id="L38"><a href="#L38">38</a> ): ImageExtractionInstruction {</span>
+<span class="source-line" id="L39"><a href="#L39">39</a>   return {</span>
+<span class="source-line" id="L40"><a href="#L40">40</a>     url,</span>
+<span class="source-line" id="L41"><a href="#L41">41</a>     selector,</span>
+<span class="source-line" id="L42"><a href="#L42">42</a>     limit,</span>
+<span class="source-line" id="L43"><a href="#L43">43</a>     description: `Navigate to ${url}, query all &#39;${selector}&#39; elements, extract src and alt attributes (limit ${limit})`,</span>
+<span class="source-line" id="L44"><a href="#L44">44</a>   };</span>
+<span class="source-line" id="L45"><a href="#L45">45</a> }</span>
+<span class="source-line" id="L46"><a href="#L46">46</a> </span>
+<span class="source-line" id="L47"><a href="#L47">47</a> export function buildScrapeInstruction(url: string): {</span>
+<span class="source-line" id="L48"><a href="#L48">48</a>   url: string;</span>
+<span class="source-line" id="L49"><a href="#L49">49</a>   description: string;</span>
+<span class="source-line" id="L50"><a href="#L50">50</a> } {</span>
+<span class="source-line" id="L51"><a href="#L51">51</a>   return {</span>
+<span class="source-line" id="L52"><a href="#L52">52</a>     url,</span>
+<span class="source-line" id="L53"><a href="#L53">53</a>     description: `Navigate to ${url}, extract page title and main text content as markdown`,</span>
+<span class="source-line" id="L54"><a href="#L54">54</a>   };</span>
+<span class="source-line" id="L55"><a href="#L55">55</a> }</span></code></pre></article><footer class="footer">Gerado localmente. Índice: local</footer></main></div><script src="../assets/search-index.js"></script><script src="../assets/site.js"></script></body></html>

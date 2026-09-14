@@ -1,0 +1,90 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Repo-Wiki offline builder"><title>Evidência · mcp-server/src/lib/cross-call-dedup.ts · Repo-Wiki</title><link rel="stylesheet" href="../assets/site.css"></head><body data-track="evidence"><a class="skip-link" href="#content">Pular para o conteúdo</a><div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="../index.html">Repo-Wiki</a><nav aria-label="Páginas"></nav></aside><main class="main"><header class="toolbar"><button type="button" class="menu-button" data-menu aria-label="Abrir menu">☰</button><label class="search-label" for="site-search">Buscar</label><input id="site-search" type="search" placeholder="Buscar na documentação (Ctrl+K)" autocomplete="off"><select id="track-filter" aria-label="Filtrar trilha"><option value="">Todas as trilhas</option><option value="business-rules">Regras de negócio</option><option value="security">Segurança</option><option value="automation">Automação/RPA</option><option value="improvements">Melhorias</option><option value="architecture">Arquitetura</option><option value="workflows">Workflows</option></select><button type="button" data-theme-toggle aria-label="Alternar tema">Tema</button></header><div id="search-results" class="search-results" hidden></div><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Repo-Wiki</a><span aria-hidden="true">/</span><span>Evidência · mcp-server/src/lib/cross-call-dedup.ts</span></nav><article id="content" class="content" data-page="evidence/mcp-server-src-lib-cross-call-dedup-ts-9eebcd64.html" data-track="evidence"><h1>mcp-server/src/lib/cross-call-dedup.ts</h1><p>Somente linhas citadas. Snapshot de código, não prova de execução.</p><pre><code><span class="source-line" id="L183"><a href="#L183">183</a>   constructor(opts: CrossCallDedupOptions = {}) {</span>
+<span class="source-line" id="L184"><a href="#L184">184</a>     this.windowSize = Math.max(1, opts.windowSize ?? 16);</span>
+<span class="source-line" id="L185"><a href="#L185">185</a>     this.threshold = Math.min(1, Math.max(0, opts.threshold ?? 0.85));</span>
+<span class="source-line" id="L186"><a href="#L186">186</a>   }</span>
+<span class="source-line" id="L187"><a href="#L187">187</a> </span>
+<span class="source-line" id="L188"><a href="#L188">188</a>   /**</span>
+<span class="source-line" id="L189"><a href="#L189">189</a>    * Check the cache. Does NOT insert. Returns a replacement string when the</span>
+<span class="source-line" id="L190"><a href="#L190">190</a>    * incoming text matches a recent call exactly or fuzzily.</span>
+<span class="source-line" id="L191"><a href="#L191">191</a>    */</span>
+<span class="source-line" id="L192"><a href="#L192">192</a>   check(text: string): DedupResult {</span>
+<span class="source-line" id="L193"><a href="#L193">193</a>     if (this.records.length === 0) return { replacement: null };</span>
+<span class="source-line" id="L194"><a href="#L194">194</a> </span>
+<span class="source-line" id="L195"><a href="#L195">195</a>     const exactHash = fnv1a64(text);</span>
+<span class="source-line" id="L196"><a href="#L196">196</a>     // Fast path: exact hash match. Walk newest-to-oldest.</span>
+<span class="source-line" id="L197"><a href="#L197">197</a>     for (let i = this.records.length - 1; i &gt;= 0; i--) {</span>
+<span class="source-line" id="L198"><a href="#L198">198</a>       const r = this.records[i];</span>
+<span class="source-line" id="L199"><a href="#L199">199</a>       if (r.exactHash === exactHash) {</span>
+<span class="source-line" id="L200"><a href="#L200">200</a>         return {</span>
+<span class="source-line" id="L201"><a href="#L201">201</a>           replacement: `[squeez-style: identical to call #${r.callId}${r.label ? ` (${r.label})` : &quot;&quot;}]`,</span>
+<span class="source-line" id="L202"><a href="#L202">202</a>           match: { callId: r.callId, kind: &quot;exact&quot;, similarity: 1, label: r.label },</span>
+<span class="source-line" id="L203"><a href="#L203">203</a>         };</span>
+<span class="source-line" id="L204"><a href="#L204">204</a>       }</span>
+<span class="source-line" id="L205"><a href="#L205">205</a>     }</span>
+<span class="source-line" id="L206"><a href="#L206">206</a> </span>
+<span class="source-line" id="L207"><a href="#L207">207</a>     // Fuzzy path: compute signature, scan window, pick best above threshold.</span>
+<span class="source-line" id="L208"><a href="#L208">208</a>     const sig = shingleMinHash(text);</span>
+<span class="source-line" id="L209"><a href="#L209">209</a>     let best: { record: CallRecord; sim: number } | null = null;</span>
+<span class="source-line" id="L210"><a href="#L210">210</a>     for (let i = this.records.length - 1; i &gt;= 0; i--) {</span>
+<span class="source-line" id="L211"><a href="#L211">211</a>       const r = this.records[i];</span>
+<span class="source-line" id="L212"><a href="#L212">212</a>       const sim = jaccard(sig, r.signature);</span>
+<span class="source-line" id="L213"><a href="#L213">213</a>       if (sim &gt;= this.threshold &amp;&amp; (best === null || sim &gt; best.sim)) {</span>
+<span class="source-line" id="L214"><a href="#L214">214</a>         best = { record: r, sim };</span>
+<span class="source-line" id="L215"><a href="#L215">215</a>       }</span>
+<span class="source-line" id="L216"><a href="#L216">216</a>     }</span>
+<span class="source-line" id="L217"><a href="#L217">217</a> </span>
+<span class="source-line" id="L218"><a href="#L218">218</a>     if (best !== null) {</span>
+<span class="source-line" id="L219"><a href="#L219">219</a>       const pct = Math.round(best.sim * 100);</span>
+<span class="source-line" id="L220"><a href="#L220">220</a>       return {</span>
+<span class="source-line" id="L221"><a href="#L221">221</a>         replacement: `[squeez-style: ~${pct}% similar to call #${best.record.callId}${best.record.label ? ` (${best.record.label})` : &quot;&quot;}]`,</span>
+<span class="source-line" id="L222"><a href="#L222">222</a>         match: {</span>
+<span class="source-line" id="L223"><a href="#L223">223</a>           callId: best.record.callId,</span>
+<span class="source-line" id="L224"><a href="#L224">224</a>           kind: &quot;fuzzy&quot;,</span>
+<span class="source-line" id="L225"><a href="#L225">225</a>           similarity: best.sim,</span>
+<span class="source-line" id="L226"><a href="#L226">226</a>           label: best.record.label,</span>
+<span class="source-line" id="L227"><a href="#L227">227</a>         },</span>
+<span class="source-line" id="L228"><a href="#L228">228</a>       };</span>
+<span class="source-line" id="L229"><a href="#L229">229</a>     }</span>
+<span class="source-line" id="L230"><a href="#L230">230</a> </span>
+<span class="source-line" id="L231"><a href="#L231">231</a>     return { replacement: null };</span>
+<span class="source-line" id="L232"><a href="#L232">232</a>   }</span>
+<span class="source-line" id="L233"><a href="#L233">233</a> </span>
+<span class="source-line" id="L234"><a href="#L234">234</a>   /**</span>
+<span class="source-line" id="L235"><a href="#L235">235</a>    * Insert a new call into the window. Caller decides whether to insert the</span>
+<span class="source-line" id="L239"><a href="#L239">239</a>   insert(text: string, label?: string): CallRecord {</span>
+<span class="source-line" id="L240"><a href="#L240">240</a>     const record: CallRecord = {</span>
+<span class="source-line" id="L241"><a href="#L241">241</a>       callId: this.nextId++,</span>
+<span class="source-line" id="L242"><a href="#L242">242</a>       exactHash: fnv1a64(text),</span>
+<span class="source-line" id="L243"><a href="#L243">243</a>       signature: shingleMinHash(text),</span>
+<span class="source-line" id="L244"><a href="#L244">244</a>       label,</span>
+<span class="source-line" id="L245"><a href="#L245">245</a>     };</span>
+<span class="source-line" id="L246"><a href="#L246">246</a>     this.records.push(record);</span>
+<span class="source-line" id="L247"><a href="#L247">247</a>     if (this.records.length &gt; this.windowSize) {</span>
+<span class="source-line" id="L248"><a href="#L248">248</a>       this.records.shift();</span>
+<span class="source-line" id="L249"><a href="#L249">249</a>     }</span>
+<span class="source-line" id="L250"><a href="#L250">250</a>     return record;</span>
+<span class="source-line" id="L251"><a href="#L251">251</a>   }</span>
+<span class="source-line" id="L252"><a href="#L252">252</a> </span>
+<span class="source-line" id="L253"><a href="#L253">253</a>   /**</span>
+<span class="source-line" id="L254"><a href="#L254">254</a>    * Convenience: check first, then insert (always). Returns the dedup result.</span>
+<span class="source-line" id="L255"><a href="#L255">255</a>    * Inserting after a match lets future calls match against the same anchor.</span>
+<span class="source-line" id="L256"><a href="#L256">256</a>    */</span>
+<span class="source-line" id="L257"><a href="#L257">257</a>   checkAndInsert(text: string, label?: string): DedupResult {</span>
+<span class="source-line" id="L258"><a href="#L258">258</a>     const result = this.check(text);</span>
+<span class="source-line" id="L259"><a href="#L259">259</a>     this.insert(text, label);</span>
+<span class="source-line" id="L260"><a href="#L260">260</a>     return result;</span>
+<span class="source-line" id="L261"><a href="#L261">261</a>   }</span>
+<span class="source-line" id="L262"><a href="#L262">262</a> </span>
+<span class="source-line" id="L263"><a href="#L263">263</a>   /** Current number of records in the window. */</span>
+<span class="source-line" id="L264"><a href="#L264">264</a>   size(): number {</span>
+<span class="source-line" id="L265"><a href="#L265">265</a>     return this.records.length;</span>
+<span class="source-line" id="L266"><a href="#L266">266</a>   }</span>
+<span class="source-line" id="L267"><a href="#L267">267</a> </span>
+<span class="source-line" id="L268"><a href="#L268">268</a>   /** Reset the window. Useful between sessions or for tests. */</span>
+<span class="source-line" id="L269"><a href="#L269">269</a>   clear(): void {</span>
+<span class="source-line" id="L270"><a href="#L270">270</a>     this.records = [];</span>
+<span class="source-line" id="L271"><a href="#L271">271</a>     this.nextId = 1;</span>
+<span class="source-line" id="L272"><a href="#L272">272</a>   }</span>
+<span class="source-line" id="L273"><a href="#L273">273</a> }</span>
+<span class="source-line" id="L274"><a href="#L274">274</a> </span>
+<span class="source-line" id="L275"><a href="#L275">275</a> // ─── Default singleton (most callers want a process-wide window) ─────────────</span></code></pre></article><footer class="footer">Gerado localmente. Índice: local</footer></main></div><script src="../assets/search-index.js"></script><script src="../assets/site.js"></script></body></html>
