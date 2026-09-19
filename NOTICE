@@ -383,6 +383,24 @@ yizhiyanhua-ai/fireworks-tech-graph
   elements (rect with rx, text, linearGradient, marker/arrow), not
   tested for foreignObject/filter/embedded custom fonts.
 
+zarazhangrui/frontend-slides
+  https://github.com/zarazhangrui/frontend-slides
+  License: MIT
+  Source of the Frontend Slides skill (77). engine/viewport-base.css is
+  copied near-verbatim (generic fixed-16:9-stage mechanism, no coupling
+  to the rest of the upstream repo) — same curation pattern applied to
+  the Scroll Storytelling skill (64). references/extract-pptx.py,
+  deploy.sh and export-pdf.sh are also copied near-verbatim (reviewed
+  for hardcoded credentials or hidden external calls before inclusion —
+  none found). The 12 named style presets (typography + color palette
+  per preset), the 3-preview discovery mechanism (Fase 2), the anti-
+  AI-slop principles, and a CSS gotcha about negating CSS functions
+  (right: -clamp(...) is silently discarded; wrap in calc(-1 * ...))
+  were translated and adapted. Maintenance note: the upstream repository
+  has been inactive since 2026-06-23 with unaddressed issues/PRs; this
+  kit assumes independent maintenance of the curated content going
+  forward, per explicit user decision (not a default assumption).
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).

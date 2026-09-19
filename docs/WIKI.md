@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 75 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 76 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (75)
+## 5. Skills (76)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -914,6 +914,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 77 — Frontend Slides
+
+**What it does:** HTML single-file presentation decks on a fixed 1920×1080 stage that scales uniformly (letterbox/pillarbox, never reflow). Before building the full deck, generates 3 single-slide previews (safe preset, bold template, wildcard) — show, don't describe. 12 named style presets with distinct typography/color, PPTX import, PDF export via Playwright, Vercel deploy.
+**When to activate:** any presentation/deck/slides request, converting an existing PPTX to web, or a deck that needs to run in any browser without PowerPoint/Keynote.
+**Takeaway:** the fixed-stage mechanism (`engine/viewport-base.css`) is copied near-verbatim under MIT, same curation pattern as skill 64. Maintenance note: upstream has been inactive since 2026-06-23 with unaddressed issues/PRs — this kit assumes independent maintenance going forward, an explicit user decision rather than a default.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1027,7 +1035,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **75 skills** in `skills/NN-name/SKILL.md`
+- **76 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1040,7 +1048,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 75 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 76 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1065,7 +1073,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 75 skills | ✓ | ✓ | ✓ |
+| 76 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

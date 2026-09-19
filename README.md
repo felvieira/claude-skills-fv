@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 75 Specialist Skills for Coding Agents
+# Dev Team Kit — 76 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.76.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-75-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-76-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -73,7 +73,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **75 specialists in total** (75 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **76 specialists in total** (76 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -85,7 +85,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 75 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
+The **Dev Team Kit** is a set of 76 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
 
 **What you get:**
 
@@ -109,7 +109,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 75 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 76 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -146,14 +146,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 75 skills (75 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 76 skills (76 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 75 skills | ✅ | ✅ | ✅ |
+| 76 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -181,7 +181,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 75 Specialists
+## The 76 Specialists
 
 ### Management and Coordination
 
@@ -207,7 +207,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 75 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 76 specialists |
 | 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
 | 39 | **Program Router** | decides which `programs/*.yml` pipeline to run from task classification — works alongside the orchestrator (ad-hoc) and the intent-classifier hook (suggestion) |
 | 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
@@ -266,6 +266,7 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 | 52 | **UI Polish** | the small details that make a UI read as refined instead of "ok" — concentric border radius, optical alignment, shadow vs. border, tabular numbers, scale-on-press, hit area, stagger on entry/exit animation |
 | 75 | **FFmpeg Media** | mechanical video/audio editing via local ffmpeg scripts — cut, join, caption burn, loudness normalization, silence detection, redaction, aspect-ratio fit, sync. Executes an edit, never decides one (no aesthetic judgment); closes the gap skill 27 explicitly leaves open for post-production |
 | 76 | **Diagram Validated** | generates deterministic SVG for 14 UML diagram types + architecture/flow across 12 named styles, validates geometry (orphan arrow, overlapping label, out-of-canvas node), then does a visual PNG readback before declaring done. "Evaluate, don't assert" — completion backed by validator + render evidence, not the model's own visual judgment |
+| 77 | **Frontend Slides** | HTML single-file decks on a fixed 1920×1080 stage that scales uniformly (letterbox, never reflow) — 12 named style presets, a 3-preview discovery phase (show, don't describe) before building the full deck, PPTX import, PDF export, Vercel deploy |
 
 ### Content and Discovery
 
@@ -687,7 +688,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 75 specialists (*/SKILL.md)
+├── skills/               ← 76 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```

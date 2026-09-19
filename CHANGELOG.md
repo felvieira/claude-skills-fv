@@ -14,6 +14,30 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.79.0] - 2026-09-19 — skill 77 nova (decks HTML em palco fixo)
+
+Fecha a fase 4 do plano de absorção da triagem de 20 skills externas. Decisão do usuário sobre a
+única bifurcação do plano: assumir manutenção própria do Frontend Slides como skill numerada
+completa, em vez de extrair só o CSS como referência — o repositório de origem está sem atividade
+desde 2026-06-23 com 68 issues/PRs em aberto, então esse compromisso é deliberado, não presunção.
+
+### Adicionado
+
+- **`skills/77-frontend-slides/`** (nova) — decks HTML single-file em palco fixo 1920×1080 que
+  escala uniformemente (letterbox, nunca reflow). Antes de construir o deck completo, gera 3
+  previews de uma única slide (preset seguro, template ousado, curinga) — mostra, não descreve. 12
+  presets visuais nomeados com tipografia e paleta próprias (`references/style-presets.md`),
+  import de PPTX (`references/extract-pptx.py`), export em PDF via Playwright
+  (`references/export-pdf.sh`), deploy no Vercel (`references/deploy.sh`). Adaptada de
+  `zarazhangrui/frontend-slides` (MIT).
+
+### Corrigido
+
+- `engine/viewport-base.css` copiado quase-verbatim (mesmo padrão de curadoria já usado na skill
+  64 com `scrollcraft.js`) — mecanismo genérico de palco fixo sem acoplamento ao resto do repo
+  original. Os três scripts de `references/` foram revisados linha a linha antes da inclusão
+  (checados por credencial hardcoded ou chamada externa oculta — nenhuma encontrada).
+
 ## [2.78.0] - 2026-09-19 — skill 76 nova (diagrama técnico com evidência, não afirmação)
 
 ### Adicionado

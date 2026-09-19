@@ -1,0 +1,22 @@
+{
+  "skill": "77-frontend-slides",
+  "should_trigger": [
+    "preciso criar uma apresentação pra pitch de investidor",
+    "gera os slides dessa apresentação em HTML",
+    "quero um deck de apresentação pra demo do produto",
+    "converte esse PPTX pra uma versão web",
+    "apresentação estilo Keynote mas sem instalar nada",
+    "preciso de um deck single-file pra essa aula",
+    "quero slides fixos 16:9 que nao quebrem em tela pequena",
+    "monta uma apresentação sem usar PowerPoint",
+    "preciso apresentar isso, faz um slide deck",
+    "quero exportar essa apresentação em PDF"
+  ],
+  "shouldnt_trigger": [
+    "cria uma landing page com scroll storytelling estilo Apple",
+    "escreve um relatorio longo em prosa sobre esse tema",
+    "gera um diagrama de arquitetura desse sistema",
+    "quero uma cena 3D interativa no browser",
+    "exporta esse video no formato certo pro TikTok"
+  ]
+}

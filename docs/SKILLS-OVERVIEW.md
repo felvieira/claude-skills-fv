@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 75 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 76 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 75 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-19 (v2.78.0 — skill 76 diagram-validated)
+> **Versão:** 76 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-09-19 (v2.79.0 — skill 77 frontend-slides)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 75 especialistas
+- [Skills por categoria](#skills-por-categoria) — 76 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -378,6 +378,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 74 | **Web3D Scene Runtime** | scene description → cena 3D interativa no browser (WebGPU com fallback WebGL2, câmera navegável, budget medido) |
 | 75 | **FFmpeg Media** | corte, junção, legenda, normalização de loudness, silêncio, redação, aspect ratio via ffmpeg local — executa edição, não decide gosto |
 | 76 | **Diagram Validated** | SVG determinístico pra 14 tipos UML + arquitetura/fluxo, valida geometria e faz readback em PNG — "avalie, não afirme" antes de declarar pronto |
+| 77 | **Frontend Slides** | decks HTML em palco fixo 1920×1080, 12 presets nomeados, 3 previews antes de construir o deck completo, export PDF, deploy Vercel |
 
 ### Conteúdo e Descoberta
 
