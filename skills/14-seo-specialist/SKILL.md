@@ -633,6 +633,42 @@ Arquivo opcional na raiz do site (analogia ao `robots.txt`), formato markdown, l
 
 Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado em markdown plano — útil para sites pequenos onde o LLM pode ingerir tudo.
 
+### Crawlers de IA — treino vs. citação
+
+Bloquear ou permitir um crawler de IA no `robots.txt` é decisão de negócio, não só técnica — e o mesmo provedor frequentemente roda dois bots com propósitos opostos. Confundir os dois faz o site ou vazar conteúdo pra treino sem querer, ou sumir de respostas citadas sem querer.
+
+| Provedor | Bot de treino (alimenta modelo) | Bot de citação em tempo real (busca ao responder) |
+|---|---|---|
+| OpenAI | `GPTBot` | `OAI-SearchBot` |
+| Anthropic | `ClaudeBot` | `Claude-SearchBot` / `Claude-User` |
+| Perplexity | — | `PerplexityBot` |
+| Google | (dados de busca, não um bot separado) | `Google-Extended` controla uso em AI Overviews/Gemini |
+
+Regra prática: se o objetivo é aparecer citado em resposta de chat sem contribuir para o treino do próximo modelo, bloquear o bot de treino e permitir o de busca/citação — não os dois juntos com uma regra genérica `User-agent: *`.
+
+```
+# robots.txt — exemplo: permite citação, bloqueia treino
+User-agent: GPTBot
+Disallow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+```
+
+### Thresholds de citabilidade de passagem
+
+Dado empírico sobre qual trecho um LLM efetivamente cita, além da estrutura qualitativa já coberta acima:
+
+- **Tamanho da passagem citável:** 134–167 palavras é a faixa mais citada — trecho menor que isso carece de contexto suficiente para ficar autocontido; trecho maior raramente é citado inteiro.
+- **Posição na página:** ~44% das citações vêm do primeiro terço do conteúdo. Não enterrar a resposta direta depois de contexto longo — o TL;DR do topo (já coberto acima) é o que mais captura essa faixa.
+- **Schema com prazo de validade:** `FAQPage` foi deprecado pelo Google em maio de 2026 para rich results de busca (embora LLMs generativos possam continuar lendo o schema para grounding). Verificar o status atual do schema antes de investir esforço nele — preferir `Article` + `HowTo` como base mais estável.
+
 ### GEO Checklist
 
 - [ ] TL;DR de 2-3 linhas no topo de cada artigo/página de conteúdo
@@ -652,6 +688,8 @@ Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado 
 - [ ] Listas numeradas ou com bullets para enumerações de 3+ itens
 - [ ] `llms.txt` na raiz do site listando conteúdo canônico
 - [ ] Página `/sobre` ou `/about` com missão editorial e bios
+- [ ] `robots.txt` distingue bot de treino de bot de citação por provedor (não usa regra genérica pros dois)
+- [ ] Resposta direta à query principal cai no primeiro terço da página, em passagem de 134-167 palavras autocontida
 
 ## SEO Local (Google Business Profile)
 

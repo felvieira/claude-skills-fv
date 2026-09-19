@@ -70,6 +70,11 @@ Para cada categoria de `policies/memory-consolidation.md`, listar candidatos:
 - Tags inconsistentes → normalize candidate
 - Backlinks quebrados → fix candidate
 
+#### 2.7 Poda por categoria (cap de curadoria)
+- Qualquer categoria com > 10 itens ativos (não archived) → marcar os excedentes como archive candidate, priorizando por idade e score, não por ordem de criação
+- Todo item promovido a "keep" nesta rodada precisa de uma linha `Do instead:` — uma ação concreta e não um resumo do problema. Se um candidato a manter não tiver essa linha, sinalizar para o usuário completá-la antes do apply, não aplicar como está
+- Objetivo: o vault funciona como runbook curado, não como log cronológico — cresce em qualidade, não em volume
+
 ### Passo 3 — Apresentar relatório dry-run
 
 Output estruturado para o usuário:
@@ -206,6 +211,7 @@ Depois, o relatório:
 - Apply sem dry-run — chance alta de surpresa
 - Auto-yes sem entender o que vai mudar — vault corrompe silenciosamente
 - Archive sem manter buscável — perde contexto de sessões antigas
+- Manter item "ativo" sem `Do instead:` — vira log que ninguém releva, não runbook (crédito: [blader/napkin](https://github.com/blader/napkin))
 
 ## Policies relevantes
 

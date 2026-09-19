@@ -19,12 +19,15 @@ Quando instalado em `.bot/` de outro repo, o agente deve ler o `AGENTS.md` da ra
 
 ## graphify
 
-This project has a graphify knowledge graph at graphify-out/.
+This project has a graphify knowledge graph at graphify-out/ (graphifyy >= 0.9.64).
 
 Rules:
 - Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
 - If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
-- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current
+- After modifying code files in this session, run `graphify update .` to keep the graph current
+- Para achar o caminho entre dois conceitos: `graphify path "A" "B"` (adicionar `--undirected` se nao achar) — use IDs qualificados (`caminho::simbolo`) quando o match for ambiguo
+- Para explicar um no e suas conexoes: `graphify explain "<node-id-ou-nome>"`
+- Para indice cross-project (varios repos em `D:\Repos`): `graphify merge-graphs` + `graphify global add`
 
 <!-- CLAUDE-MEMORY-SETUP -->
 ## Memoria Persistente (ai-memory)
@@ -42,7 +45,7 @@ servidor/binario/MCP.
 
 ### Graphify
 - Graph disponivel em: `graphify-out/graph.json` (gerado automaticamente)
-- Para atualizar apos refatoracoes: `graphify . --update`
+- Para atualizar apos refatoracoes: `graphify update .`
 - NAO edite arquivos dentro de `graphify-out/` manualmente
 
 ### Historico migrado

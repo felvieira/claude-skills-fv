@@ -1,6 +1,6 @@
 # Anti-AI Writing Patterns
 
-**Objetivo:** catálogo de 29 padrões que sinalizam texto gerado por IA, mais uma checklist de estilo (voz, ritmo, vocabulário banido) para saída publicada — landing pages, apps, posts de blog. Aplicar antes de publicar qualquer prosa que humanos vão ler: docs, PRDs, copy, changelogs, release notes, summarys, texto de UI.
+**Objetivo:** catálogo de 31 padrões que sinalizam texto gerado por IA, mais uma checklist de estilo (voz, ritmo, vocabulário banido) para saída publicada — landing pages, apps, posts de blog. Aplicar antes de publicar qualquer prosa que humanos vão ler: docs, PRDs, copy, changelogs, release notes, summarys, texto de UI.
 
 **Quando aplicar (obrigatório):**
 - skill 10 (documenter) — antes de finalizar docs de usuário
@@ -263,6 +263,20 @@
 
 - **Before:** `## Performance\n\nSpeed matters.\n\nWhen users hit a slow page...`
 - **After:** `## Performance\n\nWhen users hit a slow page...`
+
+### 30. Argumentar com ninguém
+
+**Problema:** Refutar uma objeção que o leitor não levantou, para parecer equilibrado ou antecipar críticas que ninguém fez. Cria a sensação de debate onde não há um.
+
+- **Before:** *"Now, you might think this approach is overkill. But it isn't — the complexity pays for itself at scale."*
+- **After:** *"This approach adds complexity, and it pays for itself once you're past a few thousand requests per second."*
+
+### 31. Escrever sobre a versão anterior
+
+**Problema:** Texto que descreve o processo de edição ou compara com um rascunho anterior, em vez de apresentar só o conteúdo final. Resíduo de revisão iterativa que vazou para a saída.
+
+- **Before:** *"Unlike the previous draft, this version focuses more on the actual mechanism rather than the motivation."*
+- **After:** *(a versão final simplesmente apresenta o mecanismo, sem mencionar que existiu um rascunho anterior)*
 
 ---
 
