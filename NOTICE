@@ -367,6 +367,22 @@ kajisho5/ffmpeg-skill
   planning-agent schema mechanism is the `contract --json` command
   (documented as such, not renamed).
 
+yizhiyanhua-ai/fireworks-tech-graph
+  https://github.com/yizhiyanhua-ai/fireworks-tech-graph
+  License: MIT
+  Source of the Diagram Validated skill (76). The "evaluate, don't
+  assert" governing principle (quoted verbatim from the upstream
+  README), the 14 UML diagram types, the 12 named visual styles, the
+  validate->render->check pipeline, and the geometry-verification
+  discipline (marker/reserved-region/label/canvas/edge-overlap/edge-
+  crossing checks) were translated and adapted. Deliberate divergence:
+  the upstream SVG->PNG conversion engine is Puppeteer/headless Chrome
+  (scripts/svg2png.js); this kit's skill uses ImageMagick (`magick`)
+  instead, to avoid the Node + Chromium-binary-download dependency —
+  visual fidelity tested and confirmed for common technical-diagram SVG
+  elements (rect with rx, text, linearGradient, marker/arrow), not
+  tested for foreignObject/filter/embedded custom fonts.
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).

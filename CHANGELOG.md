@@ -14,6 +14,28 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.78.0] - 2026-09-19 — skill 76 nova (diagrama técnico com evidência, não afirmação)
+
+### Adicionado
+
+- **`skills/76-diagram-validated/`** (nova) — geração de SVG determinístico para 14 tipos de
+  diagrama UML (class, sequence, state machine, ER, deployment, etc.) mais diagramas livres de
+  arquitetura/fluxo, em 12 estilos visuais nomeados. O princípio que governa — "avalie, não
+  afirme: conclusão sustentada por validador e evidência de render, não pelo modelo dizendo que o
+  diagrama parece correto" — é a mesma disciplina que as skills 11 e 53 aplicam a código, aplicada
+  a diagrama. Pipeline validate→render→check com verificação de geometria (integridade de
+  XML/marker, nó órfão, região reservada, rótulo, canvas, sobreposição/cruzamento de aresta).
+  Adaptada de `yizhiyanhua-ai/fireworks-tech-graph` (MIT).
+
+### Corrigido
+
+- Divergência deliberada do upstream: o motor de conversão SVG→PNG do projeto de origem usa
+  Puppeteer/Chrome headless, o que exigiria Node + download de binário Chromium (~200MB) só para
+  rasterizar. A skill usa ImageMagick (`magick`) em vez disso — testado neste ambiente e
+  confirmado funcional para retângulo com border-radius, texto, gradiente linear e marker/seta;
+  não testado para `foreignObject`, `filter` (blur/drop-shadow via SVG filter) ou fonte
+  customizada embutida, documentado como limitação conhecida na skill.
+
 ## [2.77.0] - 2026-09-19 — triagem de 20 skills de terceiros: 1 upgrade, 8 enxertos, skill 75 nova
 
 Triagem de 20 skills públicas do Claude Code (agrupadas em pesquisa, engenharia, criação e

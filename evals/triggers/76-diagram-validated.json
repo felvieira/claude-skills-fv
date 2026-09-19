@@ -1,0 +1,22 @@
+{
+  "skill": "76-diagram-validated",
+  "should_trigger": [
+    "preciso gerar um diagrama de arquitetura desse sistema",
+    "quero um diagrama de classe UML pra esse modulo",
+    "monta o diagrama de sequencia dessa chamada de API",
+    "preciso de um diagrama ER pra esse schema",
+    "gera um state machine diagram pro ciclo de vida do pedido",
+    "quero um diagrama de deployment com as zonas de infra",
+    "esse diagrama fica desalinhado toda vez que eu gero de novo",
+    "preciso de um diagrama com roteamento ortogonal sem seta cruzando nó",
+    "gera um diagrama de componentes desse servico",
+    "quero um SVG determinístico pro diagrama, nao um desenho a mao"
+  ],
+  "shouldnt_trigger": [
+    "quero ver o grafo de dependencias desse codebase",
+    "gera uma ilustracao decorativa pro hero da landing page",
+    "decide se esse conteudo deveria virar tabela ou diagrama",
+    "cria um icone customizado pro app",
+    "quero uma cena 3D interativa no browser"
+  ]
+}
