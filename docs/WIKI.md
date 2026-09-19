@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 73 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 74 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (73)
+## 5. Skills (74)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -898,6 +898,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 75 — FFmpeg Media
+
+**What it does:** mechanical video/audio editing via local ffmpeg scripts (stdlib Python + subprocess, no API, no upload) — cut, join, caption burn, loudness normalization, silence/scene detection, redaction (face/plate blur), aspect-ratio fit, sync, platform export presets. Enforces a strict mechanical-vs-subjective boundary: applies a named LUT or measures LUFS, never decides what's "the best highlight" or "looks cinematic."
+**When to activate:** cutting/joining existing clips, burning subtitles, normalizing audio for a platform, removing silence, changing aspect ratio, redacting a face, syncing multicam, or exporting to a platform preset.
+**Takeaway:** closes the gap skill 27 explicitly names as out of scope ("post-production editing — that's ffmpeg/media pipeline, not generation"). Lossless-first by default (stream-copy on keyframe cuts); `--json` is the source of truth for any measured number, never a prose summary line.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1011,7 +1019,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **73 skills** in `skills/NN-name/SKILL.md`
+- **74 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1024,7 +1032,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 73 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 74 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1049,7 +1057,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 73 skills | ✓ | ✓ | ✓ |
+| 74 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

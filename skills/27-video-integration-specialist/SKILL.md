@@ -25,7 +25,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 - tratar video como imagem sem considerar tempo, audio e custo por segundo
 - gerar asset operacional do kit (banner do repo, etc.) — isso e skill 17 (image)
-- editar video pos-producao tradicional (corte, legenda, mux) — isso e ffmpeg/pipeline de midia, nao geracao
+- editar video pos-producao tradicional (corte, legenda, mux) — isso e skill 75 (ffmpeg-media), nao geracao
 
 ## A diferenca fundamental: video e assincrono e caro
 
@@ -133,4 +133,5 @@ Para biblioteca ampliada de movimentos de câmera, shots e exemplos por objetivo
 - **Prompt Engineer (26)** itera o prompt cinematografico reutilizavel
 - **Frontend (04)** implementa a UX de espera (progress, notificacao)
 - **Observability SRE (20)** instrumenta latencia, taxa de falha e custo por job
+- **FFmpeg Media (75)** recebe o vídeo gerado quando precisa de pós-produção (corte, legenda, normalização de loudness) antes da entrega final
 - Seguir `policies/handoffs.md` e, quando util, `templates/ai-integration-plan.md`

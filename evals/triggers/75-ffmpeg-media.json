@@ -1,0 +1,22 @@
+{
+  "skill": "75-ffmpeg-media",
+  "should_trigger": [
+    "preciso cortar os primeiros 10 segundos desse video",
+    "como junto esses tres clipes num video so",
+    "quero queimar essa legenda .srt no video",
+    "normaliza esse audio pra -14 LUFS pro Reels",
+    "detecta e remove os trechos de silencio desse video",
+    "muda esse video de 16:9 pra 9:16 sem esticar a imagem",
+    "borra o rosto dessa pessoa no video",
+    "sincroniza esse audio separado com o video",
+    "extrai os metadados desse arquivo de video",
+    "exporta esse video no formato certo pro TikTok"
+  ],
+  "shouldnt_trigger": [
+    "gera um video a partir desse texto com IA",
+    "quero um avatar falando em video usando Sora ou Veo",
+    "transcreve o que essa pessoa fala nesse video",
+    "resume o conteudo desse video de 40 minutos",
+    "monta o pipeline de rig e animacao 2D desse personagem"
+  ]
+}

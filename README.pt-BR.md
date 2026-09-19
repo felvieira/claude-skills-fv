@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 73 Skills Especialistas para Coding Agents
+# Dev Team Kit — 74 Skills Especialistas para Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.76.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-73-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-74-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -73,7 +73,7 @@ Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que fu
 - **SEO** que otimiza antes do Google indexar — seu site nasce achável
 
 ### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **73 especialistas no total** (73 diretórios de skill instalados; o ID 16 é reservado). Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **74 especialistas no total** (74 diretórios de skill instalados; o ID 16 é reservado). Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
 
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
@@ -85,7 +85,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 73 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 74 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -109,7 +109,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 73 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 74 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -146,14 +146,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 73 skills (73 diretórios de skill instalados; o ID 16 é reservado).
+Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 74 skills (74 diretórios de skill instalados; o ID 16 é reservado).
 O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 73 skills | ✅ | ✅ | ✅ |
+| 74 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -181,7 +181,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 73 Especialistas
+## Os 74 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -207,7 +207,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 | 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 73 especialistas |
+| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 74 especialistas |
 | 38 | **Architecture Deepener** | encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural; pareia com skill 23 (Migration & Refactor) para execução |
 | 39 | **Program Router** | decide qual pipeline de `programs/*.yml` rodar a partir da classificação da task — trabalha junto do orchestrator (ad-hoc) e do hook intent-classifier (sugestão) |
 | 40 | **Parallel Dispatcher** | despacha N slices/reviews independentes pra subagents corretamente, evitando a armadilha skill-vs-agent; scatter-gather com isolamento via worktree |
@@ -264,6 +264,7 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 | 60 | **App Reference Architecture** | molde para apps novos que precisam de login + pagamento + push + web app + APK Android a partir de um único código-fonte Next.js + Tauri — auth dual, pagamento dual (Stripe + Google Play IAP), push dual, script de build estático, Docker/CI-CD, destilado de 3 apps reais em produção |
 | 47 | **Pattern Conformity** | detecta e codifica as convenções de código de um projeto existente (naming, estrutura, error handling, testing, async, DI, API design) em `memory/patterns.md`, pra código novo bater com o estilo da casa |
 | 52 | **UI Polish** | os detalhes pequenos que fazem uma UI parecer refinada em vez de "ok" — border radius concêntrico, alinhamento óptico, sombra vs. borda, tabular numbers, scale-on-press, hit area, stagger em animação de entrada/saída |
+| 75 | **FFmpeg Media** | edição mecânica de vídeo/áudio via scripts ffmpeg locais — corte, junção, queima de legenda, normalização de loudness, detecção de silêncio, redação, ajuste de aspect ratio, sincronização. Executa uma edição, nunca decide uma (sem julgamento estético); fecha o gap que a skill 27 deixa explicitamente aberto para pós-produção |
 
 ### Conteudo e Descoberta
 
@@ -662,7 +663,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py e utilitários
 ├── setup/                ← install.sh multi-plataforma
-├── skills/               ← 73 specialists (*/SKILL.md)
+├── skills/               ← 74 specialists (*/SKILL.md)
 ├── src/                  ← hooks, stores, components e middleware reutilizáveis
 └── templates/            ← handoff, plano, review, rejeição
 ```

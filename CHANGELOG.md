@@ -14,6 +14,76 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.77.0] - 2026-09-19 — triagem de 20 skills de terceiros: 1 upgrade, 8 enxertos, skill 75 nova
+
+Triagem de 20 skills públicas do Claude Code (agrupadas em pesquisa, engenharia, criação e
+growth), cada uma lida pelo SKILL.md real e cruzada contra as 74 skills já existentes. Resultado:
+nenhuma sobreposição justificava adoção integral — o trabalho foi extrair o mecanismo específico
+que faltava em cada caso, e criar uma skill nova só onde o próprio kit já declarava o gap.
+
+### Adicionado
+
+- **`skills/75-ffmpeg-media/`** (nova) — edição mecânica de vídeo/áudio via ffmpeg local (42
+  scripts Python, stdlib + subprocess, sem API/upload). Fecha o gap que a skill 27 nomeia
+  explicitamente como fora de escopo ("editar vídeo pós-produção — isso é ffmpeg/pipeline de
+  mídia, não geração"). Adaptada de `kajisho5/ffmpeg-skill` (MIT): tabela intenção→script→flags,
+  ordem de encadeamento prescrita (color→cut→join→silence→fit→caption→sync→audio→loudness→export),
+  estratégia lossless-first, e a fronteira mecânico-vs-subjetivo (mede LUFS, não decide "o melhor
+  highlight"). `references/catalogo-scripts.md` documenta os 42 scripts sob demanda.
+- **`policies/deliberate-simplification.md`** (nova, policy 63) — convenção de comentário
+  `simplify: <teto>, <caminho de upgrade>` mais harvester que gera ledger e sinaliza teto cruzado
+  como dívida técnica ativa. Conectada às skills 11 (correção antes de aprovar), 18 (consumidor do
+  ledger) e 23 (destino quando o teto foi cruzado). Inspirada no `ponytail-debt` de
+  `DietrichGebert/ponytail` — sem adotar a persona "dev preguiçoso" do projeto original, que
+  contradiz o SENIOR DEV OVERRIDE do kit.
+- **`skills/18-repo-auditor`** — seção obrigatória "Parece problema, mas está correto" (antídoto a
+  over-flagging: se vier vazia, a auditoria é rasa) e gate de orientação por churn (interseção
+  entre os 20 maiores arquivos e os 20 mais modificados nos últimos 6 meses). Mecanismo inspirado
+  em `ksimback/tech-debt-skill` — reimplementado do zero por falta de licença declarada upstream.
+- **`skills/48-research-prep`** — Pre-Flight de qualidade de query (Fase 1.5, detecta tópico
+  condenado antes de gastar a busca), modo de scoring por engajamento como alternativa ao
+  authority scoring (Fase 3, para perguntas de sentimento/recência em vez de correção técnica), e
+  ledger de evidências/claims em JSONL com gate de verificação de citação (Fase 3.5, resolve DOI e
+  detecta mismatch de título/ano). De `mvanhorn/last30days-skill` e
+  `199-biotechnologies/claude-deep-research-skill`.
+- **`skills/51-ux-research/references/sintese-tematica.md`** (novo) — pipeline de síntese temática
+  em 5 fases (familiarização → coding → temas → revisão → síntese) para 5+ sessões de entrevista,
+  onde o "3 bullets no caminho de volta" padrão da skill perde o que se repete entre participantes.
+  De `cookiy-ai/user-research-skill` (MIT) — as instruções de promoção da plataforma comercial
+  embutidas no upstream foram excluídas por completo, não adaptadas.
+- **`skills/27-video-integration-specialist/references/vocabulario-cinematografico.md`** (novo) —
+  biblioteca de movimentos de câmera e shots, princípio de "um verbo de movimento por shot", e
+  exemplos por objetivo (produto, institucional, testemunho). De `video-shotcraft` (Apache-2.0) —
+  sem adotar o stack de composição Remotion do upstream.
+- **`skills/12-motion-design`** — princípio de "um verbo de movimento por elemento" (aplicação do
+  vocabulário cinematográfico acima a motion de interface) e nota de determinismo em animação
+  gerada/randômica (seed fixo para reprodutibilidade, ex. `mulberry32`).
+- **`skills/10-documenter`** — tabela de roteamento de representação (quando usar Mermaid vs. CSS
+  Grid vs. tabela vs. Chart.js para conteúdo que não é diagrama técnico). De
+  `nicobailon/visual-explainer` (MIT) — sem adotar os 4 slash commands do upstream, que sobrepõem
+  as skills 11/31/45/53 do kit.
+- graphify atualizado de 0.4.11 para 0.9.64 (grafo reconstruído do zero por breaking change nos
+  IDs de nó) — ganha `graphify path`, `graphify explain`, `graphify merge-graphs`/`global add`
+  (índice cross-project), documentados na regra de 3 camadas do `CLAUDE.md` do projeto.
+- `policies/anti-ai-writing.md` ganha os 2 padrões do `blader/humanizer` que ainda faltavam
+  (§30 argumentar com ninguém, §31 escrever sobre a versão anterior) — 24 dos 25 padrões do
+  upstream já estavam cobertos antes desta sessão.
+- `commands/consolidate-memory.md` ganha regra de poda por categoria (cap de 10 itens + linha
+  `Do instead:` obrigatória), inspirada no `blader/napkin`.
+- `skills/14-seo-specialist` ganha matriz de crawlers de IA (bot de treino vs. bot de citação em
+  tempo real por provedor, ex. `GPTBot` vs. `OAI-SearchBot`) e thresholds de citabilidade de
+  passagem (134-167 palavras, primeiro terço da página). De `AgriciDaniel/claude-seo` (MIT).
+
+### Corrigido
+
+- `skills/64-scroll-storytelling` — nota de gap real encontrado ao investigar sobreposição com
+  `oso95/scroll-world`: o motor `engine/scrollcraft.js` cria Blob URL por clipe sem
+  `URL.revokeObjectURL` no cleanup. Sem impacto no limite atual de 2 atos `scrub` por página, mas
+  documentado como pré-requisito caso esse limite seja relaxado no futuro.
+- `skills/18-repo-auditor` — formato de atribuição inline não batia no detector de seção `##
+  Fontes` do `scripts/skill-quality-score.mjs`, derrubando o score pra 19/30 (abaixo do gate de
+  20) após os dois enxertos desta sessão. Corrigido movendo a atribuição para heading dedicado.
+
 ## [2.76.0] - 2026-09-12 — skill 74 nova (cena 3D interativa no browser)
 
 ### Adicionado

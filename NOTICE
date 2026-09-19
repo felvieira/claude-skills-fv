@@ -355,6 +355,18 @@ DietrichGebert/ponytail
   deliberately NOT adopted — it conflicts with this kit's directive to
   propose structural fixes whenever the architecture calls for them.
 
+kajisho5/ffmpeg-skill
+  https://github.com/kajisho5/ffmpeg-skill
+  License: MIT
+  Source of the FFmpeg Media skill (75). The 42 Python scripts (stdlib +
+  subprocess wrapping ffmpeg/ffprobe), the intent-to-script mapping table,
+  the prescribed chaining order (color/look -> cut -> join -> silence ->
+  fit -> caption/overlay -> sync -> audio -> loudness -> export), the
+  lossless-first strategy, and the mechanical-vs-subjective boundary were
+  translated and adapted to this kit's skill format. The upstream's
+  planning-agent schema mechanism is the `contract --json` command
+  (documented as such, not renamed).
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).
