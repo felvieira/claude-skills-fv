@@ -47,7 +47,7 @@ Além dos sinais positivos acima, certos marcadores de risco SUBTRAEM pontos qua
 
 Score final = `max(0, soma dos sinais positivos + soma das deduções, cada categoria capada)`.
 
-**Fontes:** modelo de dedução-com-cap inspirado na abordagem de health-scoring calibrado do projeto [repowise-dev/repowise](https://github.com/repowise-dev/repowise) (AGPL-3.0) — só o modelo conceitual foi adaptado, nenhum código ou peso específico de marcador foi copiado (a licença AGPL é o motivo de não herdar código).
+Modelo de dedução-com-cap e seção "Parece problema, mas está correto" — ver `## Fontes` no final deste arquivo.
 
 **Interpretação:**
 
@@ -78,7 +78,7 @@ Score final = `max(0, soma dos sinais positivos + soma das deduções, cada cate
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/handoffs.md`, `policies/tool-safety.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/persistence.md`, `policies/token-efficiency.md`, `policies/handoffs.md`, `policies/tool-safety.md`, `policies/evals.md` e `policies/deliberate-simplification.md` (consumidor do ledger de comentários `simplify:` — teto cruzado sem revisão vira achado de dívida técnica ativa).
 
 ### Deteccao de governanca
 
@@ -232,6 +232,20 @@ Para decidir quais splits gerar, verificar:
 - mudanca relevante de stack, assets, testes, deploy ou observabilidade
 - reestruturacao grande do repositorio
 
+## Gate de Orientação por Churn (dívida técnica)
+
+Antes de auditar dívida técnica em repo grande, priorizar onde investigar em vez de varrer tudo:
+
+```bash
+# 20 maiores arquivos por linha
+find . -name "*.ts" -o -name "*.tsx" -o -name "*.py" | xargs wc -l | sort -rn | head -20
+
+# 20 arquivos mais modificados nos últimos 6 meses
+git log --since="6 months ago" --name-only --pretty=format: | sort | uniq -c | sort -rn | head -20
+```
+
+A **interseção** das duas listas — arquivo grande E frequentemente modificado — é onde dívida técnica real se concentra: código que já é difícil de entender e que continua mudando, sinal de que ninguém teve confiança de refatorá-lo. Auditar a interseção primeiro; o resto entra na varredura padrão.
+
 ## Conteudo Minimo da Auditoria
 
 - stack principal e ferramentas detectadas
@@ -246,6 +260,22 @@ Para decidir quais splits gerar, verificar:
 Usar `templates/audit.md` como base e manter secoes curtas, atualizaveis e reutilizaveis.
 
 **Checkpoint antes de persistir:** para cada afirmação da auditoria ("usa Prisma", "testes com Vitest", "deploy via Docker"), confirmar contra um arquivo real do repo (`package.json`, `docker-compose.yml`, config de teste) — não contra memória de repos parecidos. Se uma seção não pôde ser confirmada, marcar explicitamente como não-verificado em vez de preencher por inferência silenciosa; uma auditoria com gap marcado é mais útil que uma completa e errada.
+
+### Seção obrigatória: "Parece problema, mas está correto"
+
+Toda auditoria de dívida técnica ou de risco tem viés de over-flagging: é fácil apontar padrão incomum, é difícil confirmar que ele é deliberado e correto no contexto. Antes de fechar o relatório, listar explicitamente 2-3 itens que **pareciam** dívida técnica à primeira vista mas, ao investigar o contexto (histórico do arquivo, comentário, ADR, constraint externa), se confirmaram como decisão correta.
+
+- Exemplos do que entra aqui: uma duplicação de código que existe porque os dois caminhos vão divergir em breve (feature flag em rollout); uma dependência "desatualizada" que está travada por incompatibilidade documentada; um arquivo grande que é gerado e não deveria ser modularizado.
+- **Se esta seção vier vazia, tratar como sinal de auditoria rasa** — não como "o repo não tem nenhum caso desses". Investigar de novo antes de aceitar zero itens.
+- Formato: `Item | Por que parecia problema | Por que está correto | Evidência (arquivo/commit/ADR)`.
+
+```markdown
+## Parece problema, mas está correto
+
+| Item | Por que parecia dívida | Por que está correto | Evidência |
+|---|---|---|---|
+| `checkout.ts` duplica validação de `cart.ts` | DRY violation óbvia | Os dois fluxos divergem no rollout do novo checkout (feature flag `NEW_CHECKOUT`) — unificar agora quebraria o rollback | `flags.ts:12`, ADR-014 |
+```
 
 ## Regras de Economia de Token
 
@@ -270,3 +300,8 @@ Entregar:
 - proxima skill que pode usar a auditoria
 
 Seguir `policies/handoffs.md` e, quando util, `templates/audit.md`.
+
+## Fontes
+
+- Modelo de dedução-com-cap do Harnessability Score inspirado na abordagem de health-scoring calibrado de [repowise-dev/repowise](https://github.com/repowise-dev/repowise) (AGPL-3.0) — só o modelo conceitual foi adaptado, nenhum código ou peso específico de marcador foi copiado (a licença AGPL é o motivo de não herdar código).
+- A seção "Parece problema, mas está correto" e o gate de orientação por churn foram inspirados no mecanismo de [ksimback/tech-debt-skill](https://github.com/ksimback/tech-debt-skill) (sem licença declarada) — por isso reimplementados integralmente com redação própria, sem copiar texto da fonte.

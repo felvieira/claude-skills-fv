@@ -235,6 +235,20 @@ Depois de gerar um diagrama de arquitetura, sequência ou fluxo nesta skill, con
 
 Isso não substitui teste automatizado quando o diagrama for gerado por script/CI; é o mínimo de rigor para um diagrama feito à mão ou por agente antes de entrar em doc publicada.
 
+## Roteamento de Representação (além de diagrama)
+
+Antes de decidir *qual tipo de diagrama*, decidir se o conteúdo é diagrama de verdade ou outra coisa que passa mais fácil como texto. Nem toda informação estruturada precisa virar desenho — a pergunta certa é "qual representação faz o leitor gastar menos esforço para extrair o dado".
+
+| Natureza do conteúdo | Representação | Quando NÃO usar |
+|---|---|---|
+| Fluxo com decisão/branching, processo passo a passo | Mermaid flowchart | Se o fluxo é linear sem ramificação — vira lista numerada |
+| Estrutura de componentes/camadas fixa | CSS Grid ou tabela | Se os componentes têm muitas relações cruzadas — vira diagrama de dependência (ver tabela acima) |
+| Comparação de valores entre categorias, série temporal | Tabela HTML (estático) ou Chart.js (interativo/dashboard) | Se são só 2-3 números — prosa resolve, gráfico é ruído |
+| Dados tabulares com múltiplas colunas | Tabela markdown/HTML | Se cada linha tem texto longo — vira lista com subitens, tabela fica ilegível |
+| Relação hierárquica simples (pai/filho, categoria/item) | Lista aninhada ou Mermaid `graph TD` | Se a hierarquia tem 1 nível só — não precisa de estrutura visual |
+
+Regra de decisão: se o conteúdo cabe numa tabela de até ~6 colunas sem quebrar, preferir tabela sobre diagrama — tabela é mais fácil de escanear e de manter atualizada que um SVG ou definição Mermaid.
+
 ## Handoff
 
 Seguir `policies/handoffs.md` e, quando util, `templates/doc-update.md`.
@@ -242,6 +256,7 @@ Seguir `policies/handoffs.md` e, quando util, `templates/doc-update.md`.
 ## Fontes
 
 - Catálogo de 39 tipos de diagrama editorial (architecture, flowchart, sequence, ER, state, swimlane, timeline, deployment, dependency graph, entre outros) e o princípio de verificação geométrica de label (`scripts/verify-geometry.py`, documentado em `docs/adr/0005-label-geometry-is-verified.md`) vêm de [cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design) (MIT) — curados aqui como tabela de nove tipos mapeados aos quatro níveis de documentação desta skill, e como prática recomendada descrita em texto; os templates HTML+SVG completos e os scripts `verify-*.py` não foram portados — gap medido por grep em "diagram" no kit antes de curar (só menções esparsas nas skills 44, 51 e em `skills/02-ui-ux-design/data/charts.csv`, sem catálogo dedicado de tipos com verificação).
+- Tabela de "Roteamento de Representação" acima (Mermaid vs. grid vs. tabela vs. Chart.js) inspirada no core de roteamento de conteúdo de [nicobailon/visual-explainer](https://github.com/nicobailon/visual-explainer) (MIT) — os quatro slash commands do projeto original (`/diff-review`, `/plan-review`, `/project-recap`, `/generate-slides`) não foram adotados por sobreporem as skills 11, 53, 31/45 respectivamente.
 
 ## Integração com Pipeline
 

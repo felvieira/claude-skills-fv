@@ -14,7 +14,7 @@ O Migration Refactor Specialist reduz risco em mudancas grandes que nao cabem no
 
 ## Governanca Global
 
-Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/stack-flexibility.md` e `policies/evals.md`.
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/tool-safety.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/deliberate-simplification.md` (destino natural quando o ledger de comentários `simplify:` aponta um teto já cruzado que exige refatoração real).
 
 ## Quando Usar
 

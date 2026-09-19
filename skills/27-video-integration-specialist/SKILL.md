@@ -101,6 +101,8 @@ Controles que mais mudam o resultado:
 
 Prompt reutilizavel e responsabilidade compartilhada com skill 26 (prompt-engineer).
 
+Para biblioteca ampliada de movimentos de câmera, shots e exemplos por objetivo (produto, institucional, testemunho) — ver `references/vocabulario-cinematografico.md`.
+
 ## Custo — controle antes de liberar
 
 - video custa **por segundo** — um clip de 10s pode valer 50-100x um still

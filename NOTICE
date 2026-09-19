@@ -287,6 +287,74 @@ bojieli/ai-agent-book
   taxonomy (agents/debugger.md), and the MAST failure taxonomy plus
   "new information" test before fan-out (skills/40-parallel-dispatcher/SKILL.md).
 
+199-biotechnologies/claude-deep-research-skill
+  https://github.com/199-biotechnologies/claude-deep-research-skill
+  License: not declared upstream at time of review (treated as idea
+  attribution only, no text or code reuse).
+  Inspired the evidence/claims JSONL ledger and the citation-verification
+  gate (Fase 3.5) in skills/48-research-prep/SKILL.md — reimplemented from
+  scratch in this kit's own format, no code copied.
+
+mvanhorn/last30days-skill
+  https://github.com/mvanhorn/last30days-skill
+  License: not declared upstream at time of review (treated as idea
+  attribution only, no text or code reuse — the upstream SKILL.md is
+  258KB/2424 lines, not copyable in any form).
+  Inspired the Query Quality Pre-Flight (Fase 1.5) and the engagement-based
+  scoring mode (Fase 3, as an alternative to authority scoring) in
+  skills/48-research-prep/SKILL.md.
+
+cookiy-ai/user-research-skill
+  https://github.com/cookiy-ai/user-research-skill
+  License: MIT
+  Inspired the 5-phase thematic synthesis pipeline (familiarização → coding
+  → temas → revisão → síntese) in
+  skills/51-ux-research/references/sintese-tematica.md, itself an
+  application of Braun & Clarke thematic analysis. Only the analysis
+  methodology was extracted — the upstream skill's product-promotion
+  instructions (suggesting the Cookiy platform mid-conversation) were
+  excluded entirely, not adapted.
+
+Vincentwei1021/video-shotcraft
+  https://github.com/Vincentwei1021/video-shotcraft
+  License: Apache-2.0
+  Inspired the camera-movement and shot-framing vocabulary tables, plus the
+  "one movement verb per shot" and fixed-seed determinism principles, in
+  skills/27-video-integration-specialist/references/vocabulario-cinematografico.md.
+  The upstream's 157 shot recipe cards were not copied verbatim — the
+  vocabulary was rewritten as a framework-agnostic reference; the upstream
+  Remotion composition stack was not adopted.
+
+ksimback/tech-debt-skill
+  https://github.com/ksimback/tech-debt-skill
+  License: none declared upstream (no LICENSE file — treated as idea
+  attribution only, no text reuse of any kind).
+  Inspired the mandatory "Parece problema, mas está correto" section and
+  the churn-based orientation gate (20 largest files ∩ 20 most-modified
+  files) in skills/18-repo-auditor/SKILL.md. Both were written from
+  scratch in this kit's own words — the absence of an upstream license
+  means the mechanism's *existence* was the idea taken, not any phrasing.
+
+nicobailon/visual-explainer
+  https://github.com/nicobailon/visual-explainer
+  License: MIT
+  Inspired the content-to-representation routing table (when to use
+  Mermaid vs. CSS Grid vs. table vs. Chart.js) referenced from
+  skills/10-documenter/SKILL.md. The upstream's four slash commands
+  (/diff-review, /plan-review, /project-recap, /generate-slides) were not
+  adopted — they overlap with this kit's skills 11, 53, 31/45 respectively.
+
+DietrichGebert/ponytail
+  https://github.com/DietrichGebert/ponytail
+  License: not declared upstream at time of review (treated as idea
+  attribution only, no text or code reuse).
+  Inspired policies/deliberate-simplification.md (the `simplify:` comment
+  convention and its harvester) — reimplemented from scratch with this
+  kit's own vocabulary and wired to skills 11/18/23. The upstream's "lazy
+  senior dev" core persona (7-step ladder before writing any code) was
+  deliberately NOT adopted — it conflicts with this kit's directive to
+  propose structural fixes whenever the architecture calls for them.
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).

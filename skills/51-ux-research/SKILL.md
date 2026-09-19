@@ -30,6 +30,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 - `references/metodos-pesquisa.md` — qualitativo vs quantitativo, recrutamento, roteiro de entrevista em profundidade, teste de usabilidade passo-a-passo, análise e síntese de insights, as 10 desculpas para não testar
 - `references/personas-jornada.md` — template de persona, mapa de empatia, mapa de jornada (journey map), arquitetura de informação, card sorting, taxonomia, proposição de valor
+- `references/sintese-tematica.md` — pipeline de 5 fases (familiarização → coding → temas → revisão → síntese) para quando 5+ sessões tornam o passo 4 padrão insuficiente
 
 Carregar apenas a referência que o entregável pedido exige.
 
@@ -114,6 +115,8 @@ Roteiro e passo-a-passo em `references/metodos-pesquisa.md`.
 
 Do livro: pesquisa não precisa de relatório formal tabulado. No caminho de volta da pesquisa, sair com **3 bullet points** que resumem o aprendizado do dia. O benefício real do teste não é o relatório — é a **exposição do time a usuários reais**. Sintetizar para decisão, não para arquivo.
 
+**Para 5+ sessões:** o "3 bullets no caminho de volta" tende a perder o que se repete entre participantes. Usar `references/sintese-tematica.md` (pipeline de 5 fases: familiarização → coding → temas → revisão → síntese) para agregar antes de destilar nos bullets finais.
+
 ### 5. Produzir o artefato (persona, jornada, AI, proposição de valor)
 
 Conforme o pedido. Templates em `references/personas-jornada.md`. Todo artefato cita as fontes de pesquisa que o embasam.
@@ -168,3 +171,5 @@ Rodar gate anti-AI e gate de integridade. Entregar para 01/02 com as fontes anex
 ## Fonte
 
 Conteúdo destilado de Fabricio Teixeira, *UX Design — Introdução e boas práticas no Design da Experiência do Usuário* (Casa do Código). Frameworks citados: disciplinas de UX (Dan Saffer), Kano Model (Noriaki Kano), estratégia dos cupcakes (Adaptive Path), pesquisa com usuários (Jared Spool / UIE).
+
+O pipeline de síntese temática em `references/sintese-tematica.md` foi adaptado do método de análise temática de Braun & Clarke, via o pipeline de síntese de pesquisa qualitativa do projeto cookiy-ai/user-research-skill (MIT) — extraída apenas a metodologia de análise; nenhuma referência à plataforma de origem foi trazida.

@@ -31,6 +31,7 @@ Esta skill herda comportamento base de `GLOBAL.md` e destas policies:
 - `policies/receiving-code-review.md` ← informa quem recebe feedback desta skill
 - `policies/token-efficiency.md`
 - `policies/evals.md`
+- `policies/deliberate-simplification.md` — comentário `simplify:` sem teto+caminho de upgrade é correção antes de aprovar, não motivo de rejeição total
 
 ### Constituicao como rubric primario
 
@@ -90,6 +91,7 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ☐ Artefatos de cada step existem (specs, designs, código, testes, security report)
 ☐ Ordem do pipeline respeitada (PO → Design → Backend → Frontend → QA → Security → Deploy)
 ☐ Spec original declara as 4 decisões estruturais (posse de dado, permissão por ator, estados/transições, ciclo de vida do cliente) — feature com dado de cliente sem isso declarado volta pro PO, não é achado de código
+☐ Se a entrega inclui auditoria de dívida/risco (skill 18): relatório tem seção "Parece problema, mas está correto" preenchida — vazia é sinal de auditoria rasa, não de repo limpo
 ```
 
 ### Código

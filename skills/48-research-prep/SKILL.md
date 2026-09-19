@@ -22,6 +22,10 @@ metadata:
 > **Princípio:** Escrever sem pesquisar é opinar sem evidência. Esta skill coleta, ranqueia e
 > estrutura fontes antes que qualquer skill de produção (docs, PRD, blog, prompt) comece a redigir.
 > Baseada em padrões de [addozhang/openclaw-forge](https://github.com/addozhang/openclaw-forge) (MIT).
+> O ledger de evidências/claims e o gate de verificação de citação (Fase 3.5) foram adaptados de
+> [199-biotechnologies/claude-deep-research-skill](https://github.com/199-biotechnologies/claude-deep-research-skill).
+> O Pre-Flight de qualidade de query (Fase 1.5) e o modo de scoring por engajamento (Fase 3) foram
+> adaptados de [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill).
 
 ## Quando Usar
 
@@ -76,6 +80,16 @@ Antes de pesquisar, definir:
 4. **Slug do output** — nome do arquivo em `memory/research/` (ex: `opentelemetry-node`, `pgvector-vs-pinecone`)
 
 Se o usuário não especificou profundidade, assumir `quick`.
+
+### Fase 1.5 — Pre-Flight de Qualidade da Query
+
+Antes de gastar tempo de busca, checar se o tópico tem risco alto de research raso:
+
+- **Termo ambíguo demais** — a query bate em múltiplos domínios não relacionados (ex.: "cache" sem contexto pode ser CPU cache, cache de HTTP, ou cache de CDN). Se sim, restringir o termo com o domínio explícito antes de buscar.
+- **Janela temporal sem conteúdo** — tecnologia lançada há menos de 1 mês tem pouca fonte de terceiros; ajustar expectativa de confiança para `low` de antemão, e priorizar fonte oficial e changelog.
+- **Keyword trap** — termo popular que satura a busca com conteúdo de marketing/SEO em vez de conteúdo técnico (ex.: nome de produto comercial que também é palavra comum). Se sim, adicionar termos técnicos que filtrem ruído (`site:github.com`, nome de API específica).
+
+Se qualquer sinal acima disparar, ajustar a query ou o escopo **antes** da Fase 2, não depois de já ter gasto o orçamento de busca.
 
 ### Fase 2 — Coleta Multi-Fonte
 
@@ -151,6 +165,39 @@ Descartar fontes com score < 4.0. Ranquear as demais.
 
 **Checkpoint:** se restarem menos de 3 fontes acima de 4.0, isso é sinal de que a Fase 2 coletou pouco ou de baixa qualidade — voltar e ampliar a busca (mais termos, mais `site:`) antes de aceitar um research raso. Não afrouxar o threshold de 4.0 pra "ter fonte suficiente" — a régua existe pra filtrar ruído, não pra ser contornada quando incomoda.
 
+### Fase 3 — Modo Alternativo: Scoring por Engajamento
+
+O Authority Scoring acima ranqueia por autoridade oficial — o eixo certo para "qual é a forma correta de usar essa API". Para perguntas sobre **percepção recente ou sentimento da comunidade** ("o que devs estão achando de X", "essa lib está sendo abandonada?", "qual a reação ao release Y"), autoridade oficial é o eixo errado — o fabricante nunca vai dizer que o próprio produto está com problema.
+
+Usar este modo alternativo quando o tópico pedir sentimento/recência em vez de correção técnica:
+
+| Dimensão | Peso | Critérios |
+|----------|------|-----------|
+| **Engajamento recente** | 50% | Discussão com atividade nos últimos 30 dias = 10; últimos 6 meses = 5; mais antigo = 1 |
+| **Volume de reação** | 30% | Muitos upvotes/comentários/reações = 10; moderado = 5; isolado = 1 |
+| **Diversidade de fonte** | 20% | Mesmo ponto aparece em 3+ threads/plataformas independentes = 10; só 1 fonte = 2 |
+
+Não misturar os dois scores no mesmo relatório — declarar no frontmatter do output qual modo foi usado (`scoring_mode: authority|engagement`), porque mudam o que "fonte boa" significa.
+
+### Fase 3.5 — Ledger de Evidências e Verificação de Citação
+
+Antes de escrever o output final, montar um ledger que separa claim de evidência de fonte — isso é o que permite auditar depois se uma afirmação do research realmente veio de algum lugar, em vez de ter sido sintetizada com confiança excessiva.
+
+Persistir em `memory/research/<slug>.evidence.jsonl` (uma linha por entrada, append-only):
+
+```jsonl
+{"type": "source", "id": "s1", "url": "https://docs.exemplo.com/api", "title": "...", "score": 8.5}
+{"type": "evidence", "id": "e1", "source_id": "s1", "quote": "trecho exato citado", "locator": "seção 'Rate Limits'"}
+{"type": "claim", "id": "c1", "text": "a API limita 100 req/min por padrão", "evidence_ids": ["e1"], "status": "supported"}
+```
+
+**Gate de verificação antes de aceitar uma claim como `supported`:**
+- a citação (`quote`) existe literalmente na fonte, não é paráfrase apresentada como citação direta
+- se a fonte é um paper ou tem DOI, o título e ano citados batem com o registro real (não confiar em título/ano lembrados de memória — checar contra a fonte)
+- uma claim sem `evidence_ids` correspondente não pode ir para o output final como afirmação categórica — vira `status: unsupported` e entra em "Gaps Identificados", não em "Recomendação"
+
+Esse ledger é o que sustenta a seção `## Fontes Ranqueadas` do output — cada trecho citado ali deve rastrear de volta a uma entrada `evidence` real neste arquivo.
+
 ### Fase 4 — Produção do Output
 
 Salvar em `memory/research/<slug>.md`:
@@ -161,9 +208,11 @@ topic: <tópico>
 slug: <slug>
 researched_at: YYYY-MM-DD
 depth: quick|deep
+scoring_mode: authority|engagement
 confidence: high|medium|low
 sources_collected: N
 sources_kept: M (score >= 4.0)
+evidence_ledger: memory/research/<slug>.evidence.jsonl
 ---
 
 # Research: <Tópico>
@@ -257,3 +306,4 @@ Próximo passo sugerido: skill 10 (documenter) | skill 01 (po-feature-spec) | sk
 - ❌ Re-pesquisar sem checar cache — Fase 0 existe para isso
 - ❌ Entrar em profundidade demais num subtópico — manter foco no tópico central definido na Fase 1
 - ❌ Recomendar sem evidência — toda recomendação deve citar pelo menos 1 fonte ranqueada
+- ❌ Marcar claim como `supported` sem checar o `quote` contra o texto real da fonte — paráfrase apresentada como citação direta é o erro mais comum do ledger

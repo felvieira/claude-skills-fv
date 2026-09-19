@@ -44,6 +44,13 @@ O device-ancora. Um movimento de camera pre-renderizado toca sob a mao do visita
 **No maximo dois atos scrub por pagina.** O terceiro deixa de ser surpresa, e e a coisa mais pesada da
 pagina.
 
+**Nota de memoria:** o motor cria um Blob URL por clipe via `URL.createObjectURL` e nao chama
+`URL.revokeObjectURL` quando o ato sai de vista. Com o limite de dois atos `scrub` por pagina isso raramente
+importa, mas numa pagina de vida longa (SPA que nao recarrega, ou variante que relaxar o limite de dois) o
+Blob URL nao liberado retem o video na memoria pelo resto da sessao. Se o build precisar de mais de dois
+atos `scrub`, adicionar `URL.revokeObjectURL(V.el.src)` no cleanup do ato ao sair de vista antes de relaxar
+o limite — nao relaxar o limite sem esse fix.
+
 ### Tempo do clipe nao e tempo do cue
 
 O bug mais danoso deste device, e invisivel em qualquer screenshot tirado isoladamente. Um stage pinado

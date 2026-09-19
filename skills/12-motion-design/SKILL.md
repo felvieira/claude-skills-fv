@@ -456,6 +456,14 @@ Sempre limpar (`.kill()`) no cleanup do `useEffect` — trigger órfão continua
 }
 ```
 
+### Um verbo de movimento por elemento
+
+Mesmo princípio de prompt de vídeo cinematográfico (skill 27) aplicado a UI: animar um elemento simultaneamente em translate + scale + rotate + opacity dilui a leitura do movimento — o olho não consegue separar qual mudança carrega o significado. Escolher **um** verbo dominante por elemento animado (entra deslizando, OU cresce, OU gira) e usar os demais atributos como suporte sutil (opacity acompanhando, não competindo).
+
+### Determinismo em animação gerada/randômica
+
+Quando a animação usa posição, delay ou seed aleatórios (partículas, confete, stagger com jitter), fixar a seed (`Math.random()` substituído por um PRNG seedado, ex. `mulberry32`) sempre que o resultado precisa ser **reproduzível** — comparar duas variações lado a lado, debugar um frame específico reportado por QA, ou re-renderizar um preview aprovado. `Math.random()` sem seed é aceitável só quando a variação a cada carregamento é o efeito desejado (ex: confete de celebração que nunca deve repetir o mesmo padrão).
+
 ## Hook de Reduced Motion
 
 ```typescript
