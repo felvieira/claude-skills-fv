@@ -401,6 +401,23 @@ zarazhangrui/frontend-slides
   kit assumes independent maintenance of the curated content going
   forward, per explicit user decision (not a default assumption).
 
+Mark Kashef — "The Perfect Agentic OS Kit" (/silver-platter skill)
+  https://markkashef.gumroad.com/l/perfect-agentic-os-kit
+  License: none declared upstream (pay-what-you-want digital product,
+  from CAD$0, distributed via Gumroad — not a GitHub repo with an SPDX
+  license; treated as idea attribution only, no text or code reuse).
+  Inspired the Business Discovery skill (78) — the concept of a plain-
+  language interview with a non-technical business owner that produces
+  a Pantry/Prep/Plate-style data map (renamed to Despensa/Bancada de
+  Preparo/Prato), 9 business archetypes, recipe cards with time-saved
+  estimates, a 30-day setup plan, and a "no developer" branch with a
+  freelancer hiring path. All prose, example dialogue, per-archetype
+  questions, recipe templates, and the two Python scripts
+  (audit_pasta_existente.py, renderizar_mapa.py) in skills/
+  78-business-discovery/ were written from scratch in Portuguese, in
+  this kit's own skill format — no text or code copied from the
+  original SKILL.md or its reference files.
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).

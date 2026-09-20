@@ -14,6 +14,42 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.80.0] - 2026-09-20 — skill 78 nova (discovery de negócio pra não-técnicos)
+
+O usuário trouxe uma pasta baixada (`skill_assets/`) com uma skill de terceiro — não parte da
+triagem de 20 skills das versões anteriores, um caso à parte investigado do zero. Domínio
+inexistente no kit até agora: discovery de ferramentas de negócio para dono não-técnico, antes de
+qualquer repositório de código existir.
+
+### Adicionado
+
+- **`skills/78-business-discovery/`** (nova) — entrevista em português simples com dono de negócio
+  não-técnico (Shopify, WhatsApp, planilha) que mapeia as ferramentas existentes num esquema
+  Despensa/Bancada de Preparo/Prato e gera uma visualização HTML autocontida (4 abas, Sankey
+  interativo em SVG puro, sem dependência externa), uma lista priorizada de oportunidades, e um
+  plano de 30 dias. Cobre 9 arquétipos de negócio com cadeia de pergunta própria, template de
+  receita e nota regulatória (dado sensível de saúde/jurídico) por arquétipo. Inclui o ramo "sem
+  desenvolvedor" com caminho de contratação de freelancer, obrigatório para os arquétipos de menor
+  maturidade técnica.
+- Dois scripts Python novos, sem dependência externa: `scripts/audit_pasta_existente.py`
+  (auditoria somente-leitura de `.claude/` existente, testado contra o próprio repo do kit) e
+  `scripts/renderizar_mapa.py` (motor de render HTML próprio, com Sankey desenhado em SVG puro por
+  concatenação de string com escape manual — testado ponta a ponta com dado de exemplo e verificado
+  visualmente no navegador, todas as 4 abas).
+
+### Corrigido
+
+- Investigação de proveniência antes de trazer qualquer coisa: o material original se descreve
+  como "free, open-source" mas a fonte real é um produto pague-o-quanto-quiser no Gumroad ("The
+  Perfect Agentic OS Kit", Mark Kashef), sem licença SPDX declarada. Tratado com o mesmo rigor já
+  aplicado ao `ksimback/tech-debt-skill` nesta sessão: ideia e estrutura absorvidas, todo texto,
+  exemplo, pergunta por arquétipo e código escritos do zero em português, na estrutura própria
+  deste kit — nada copiado do material original.
+- Fronteira explícita com a skill 51 (UX Research) documentada nos dois sentidos (SKILL.md da 78 e
+  entrada da WIKI): a 51 faz discovery de usuário/produto dentro de um time com codebase; a 78 faz
+  discovery de ferramentas/dados para quem ainda não tem repositório — evita colisão de trigger na
+  palavra "discovery", que já pertencia à 51.
+
 ## [2.79.0] - 2026-09-19 — skill 77 nova (decks HTML em palco fixo)
 
 Fecha a fase 4 do plano de absorção da triagem de 20 skills externas. Decisão do usuário sobre a

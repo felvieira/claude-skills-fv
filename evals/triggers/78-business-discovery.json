@@ -1,0 +1,22 @@
+{
+  "skill": "78-business-discovery",
+  "should_trigger": [
+    "quero mapear minhas ferramentas antes de automatizar",
+    "por onde eu começo a automatizar meu negócio",
+    "meu negócio usa planilha e whatsapp pra tudo",
+    "preciso de uma entrevista com o dono do negócio pra entender as ferramentas",
+    "quero um mapa de dados do meu negócio",
+    "sou dono de negócio sem programador, o que eu faço primeiro",
+    "faz uma auditoria de ferramentas do meu negócio",
+    "qual arquétipo de negócio se encaixa no meu caso",
+    "quero um plano de 30 dias pra automatizar minha loja",
+    "o que eu deveria automatizar primeiro no meu negócio"
+  ],
+  "shouldnt_trigger": [
+    "preciso escrever a especificação de uma nova feature",
+    "faz a pesquisa de usuário pra validar esse problema de produto",
+    "audita o repositório de código desse projeto",
+    "gera um diagrama de arquitetura desse sistema",
+    "quero cortar esse vídeo e normalizar o áudio"
+  ]
+}

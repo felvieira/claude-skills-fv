@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 76 Specialist Skills for Coding Agents
+# Dev Team Kit — 77 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.76.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-76-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-77-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -73,7 +73,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **76 specialists in total** (76 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **77 specialists in total** (77 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -85,7 +85,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 76 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
+The **Dev Team Kit** is a set of 77 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
 
 **What you get:**
 
@@ -109,7 +109,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 76 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 77 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -146,14 +146,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 76 skills (76 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 77 skills (77 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 76 skills | ✅ | ✅ | ✅ |
+| 77 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -181,7 +181,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 76 Specialists
+## The 77 Specialists
 
 ### Management and Coordination
 
@@ -207,7 +207,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 76 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 77 specialists |
 | 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
 | 39 | **Program Router** | decides which `programs/*.yml` pipeline to run from task classification — works alongside the orchestrator (ad-hoc) and the intent-classifier hook (suggestion) |
 | 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
@@ -251,6 +251,7 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 | 51 | **UX Research** | qualitative discovery — user interview scripts, research-based persona, journey mapping (moments of truth, pain point, opportunity), information architecture (card sort, tree test) and usability testing (SUS score, task success rate) |
 | 64 | **Scroll Storytelling** | full scrollytelling page architecture — where scroll is the narrative timeline, not a list of fade-in sections. At least 4 device families, photographic-by-default visual world, no continuous camera flythrough unless explicitly requested. Includes a zero-dependency vanilla JS/CSS runtime engine |
 | 73 | **SaaS Conversion Playbook** | audits and designs a SaaS/app subscription conversion funnel — playbook A (consumer/personal-result) vs. B (B2B tool/PLG) classification, onboarding screens, activation event, full paywall, in-app triggers and email lifecycle, with real benchmark targets (R/1K, TTV, trial-to-paid by commercial model) instead of guesswork |
+| 78 | **Business Discovery** | plain-language interview with a non-technical business owner (Shopify, WhatsApp, spreadsheets) that produces a self-contained HTML data map (interactive Sankey), a prioritized opportunity list, and a 30-day setup plan — 9 business archetypes, "no developer" branch with a freelancer-hiring path |
 
 ### Development
 
@@ -688,7 +689,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py and utilities
 ├── setup/                ← multi-platform install.sh
-├── skills/               ← 76 specialists (*/SKILL.md)
+├── skills/               ← 77 specialists (*/SKILL.md)
 ├── src/                  ← reusable hooks, stores, components and middleware
 └── templates/            ← handoff, plan, review, rejection
 ```

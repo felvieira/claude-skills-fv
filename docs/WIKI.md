@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 76 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 77 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (76)
+## 5. Skills (77)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -922,6 +922,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 78 — Business Discovery
+
+**What it does:** plain-language interview with a non-technical business owner (Shopify, WhatsApp, spreadsheets) that maps existing tools into a Pantry/Prep/Plate-style data map, then generates a self-contained HTML visualization (4 tabs, interactive Sankey), a prioritized opportunity list, and a 30-day setup plan. Covers 9 business archetypes (e-commerce, SaaS, professional services, healthcare clinic, wealth advisory, content creator, multi-location restaurant, real-estate brokerage, local trades). Audits any existing `.claude/` setup before asking questions, so it never re-asks what's already built.
+**When to activate:** a business owner (not a dev team) wants to know what to automate first, before any code repository exists.
+**Takeaway:** distinct from skill 51 (UX Research), which does user/problem discovery inside a team that already has a codebase — this skill runs *before* that, mapping tools and data for someone who may never have opened a terminal. Concept inspired by Mark Kashef's "Perfect Agentic OS Kit" (`/silver-platter`), distributed pay-what-you-want via Gumroad with no declared license — every line of prose, the 9 archetype question chains, recipe templates, and both Python scripts were written from scratch in Portuguese, in this kit's own format.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1035,7 +1043,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **76 skills** in `skills/NN-name/SKILL.md`
+- **77 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1048,7 +1056,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 76 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 77 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1073,7 +1081,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 76 skills | ✓ | ✓ | ✓ |
+| 77 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
