@@ -9,7 +9,7 @@
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
 > **Versão:** 77 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-20 (v2.80.0 — skill 78 business-discovery)
+> **Última atualização:** 2026-09-20 (v2.80.0 — skill 78 business-discovery; tabela de skills por categoria ganha coluna "Exemplo de prompt" nas 77 entradas)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -319,125 +319,125 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 
 ### Gestão e Coordenação
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 08 | **Context Manager** | rastrear focus, tasks abertas, hot files entre sessões |
-| 09 | **Orchestrator** | classificar complexidade da task e definir pipeline mínimo |
-| 10 | **Documenter** | registrar decisões, contratos, ADRs, trilhas funcionais e Repo-Wikis HTML/Markdown rastreáveis |
-| 11 | **Reviewer** | validar delta final antes de release |
-| 17 | **Image Generator** | gerar imagens originais via fal.ai (hero, ícones, ilustrações) |
-| 18 | **Repo Auditor** | mapear stack real, convenções, riscos antes de qualquer task grande |
-| 19 | **Asset Librarian** | catalogar logos, fontes, tokens visuais |
-| 20 | **Observability SRE** | logs estruturados, métricas, tracing, alerts, rollback plan |
-| 21 | **Data Analytics** | tracking events, funnels, KPIs |
-| 22 | **Accessibility** | WCAG 2.2, navegação por teclado, motion reduction |
-| 23 | **Migration & Refactor** | refactor incremental com feature flags + rollback |
-| 24 | **Release Manager** | changelog, versionamento, gradual rollout |
-| 25 | **AI Integration Architect** | adapters, gateways, streaming, fallbacks de inferência |
-| 26 | **Prompt Engineer** | escrever, testar e iterar prompts reutilizáveis |
-| 27 | **Video Integration** | generative video — UX, latência, formato |
-| 28 | **CLAUDE.md Generator** | gerar `CLAUDE.md` inteligente para repo consumidor |
-| 30 | **Cost Tracker** | custo de tokens por sessão, skill, model tier |
-| 31 | **Session Summary** | consolidar sessão para handoff entre conversas longas |
-| 32 | **Smart Suggestions** | sugerir próxima ação mais impactante baseado no estado real |
-| 35 | **Skill Author** | meta-skill para criar/editar/avaliar skills do próprio kit |
-| 38 | **Architecture Deepener** | encontra deep modules opportunities (deletion test, deepening), prep para refactor com testabilidade |
-| 39 | **Program Router** | decidir qual pipeline de `programs/*.yml` rodar a partir da classificação da task |
-| 40 | **Parallel Dispatcher** | despachar N slices/reviews independentes pra subagents sem cair na armadilha skill-vs-agent |
-| 44 | **Zoom Out** | mapa de módulos e topologia quando o agente está perdido em área desconhecida |
-| 45 | **Handoff Context** | empacotar o que a próxima sessão/agente precisa pra continuar sem re-derivar contexto |
-| 49 | **Context Budget** | auditar peso de contexto carregado (skills, agents, MCP, rules) — tokens por componente e headroom |
-| 65 | **Using Git Worktrees** | isolar workspace via git worktree, com baseline de testes obrigatória antes de liberar a task |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 08 | **Context Manager** | rastrear focus, tasks abertas, hot files entre sessões | "o que ficou pendente da sessão de ontem?" |
+| 09 | **Orchestrator** | classificar complexidade da task e definir pipeline mínimo | "quero migrar de REST pra GraphQL, por onde eu começo?" |
+| 10 | **Documenter** | registrar decisões, contratos, ADRs, trilhas funcionais e Repo-Wikis HTML/Markdown rastreáveis | "documenta a decisão de usar filas em vez de webhook" |
+| 11 | **Reviewer** | validar delta final antes de release | "revisa esse PR antes de eu pedir aprovação humana" |
+| 17 | **Image Generator** | gerar imagens originais via fal.ai (hero, ícones, ilustrações) | "gera uma hero image pra landing page de fintech" |
+| 18 | **Repo Auditor** | mapear stack real, convenções, riscos antes de qualquer task grande | "audita esse repositório antes de eu começar a feature" |
+| 19 | **Asset Librarian** | catalogar logos, fontes, tokens visuais | "cataloga os assets visuais espalhados nesse projeto" |
+| 20 | **Observability SRE** | logs estruturados, métricas, tracing, alerts, rollback plan | "define os logs e alertas pro serviço de pagamento" |
+| 21 | **Data Analytics** | tracking events, funnels, KPIs | "define o funil de eventos do onboarding" |
+| 22 | **Accessibility** | WCAG 2.2, navegação por teclado, motion reduction | "audita a acessibilidade desse formulário de checkout" |
+| 23 | **Migration & Refactor** | refactor incremental com feature flags + rollback | "migra esse módulo de callback pra async/await com segurança" |
+| 24 | **Release Manager** | changelog, versionamento, gradual rollout | "prepara o release da v2.3.0 com changelog" |
+| 25 | **AI Integration Architect** | adapters, gateways, streaming, fallbacks de inferência | "integra a Claude API no app com fallback de provider" |
+| 26 | **Prompt Engineer** | escrever, testar e iterar prompts reutilizáveis | "escreve e testa o prompt do classificador de ticket" |
+| 27 | **Video Integration** | generative video — UX, latência, formato | "adiciona geração de vídeo por IA no app com fluxo assíncrono" |
+| 28 | **CLAUDE.md Generator** | gerar `CLAUDE.md` inteligente para repo consumidor | "gera um CLAUDE.md pra esse projeto Next.js" |
+| 30 | **Cost Tracker** | custo de tokens por sessão, skill, model tier | "quanto essa sessão gastou em tokens até agora?" |
+| 31 | **Session Summary** | consolidar sessão para handoff entre conversas longas | "resume essa sessão pra eu continuar amanhã" |
+| 32 | **Smart Suggestions** | sugerir próxima ação mais impactante baseado no estado real | "o que eu deveria fazer agora nesse projeto?" |
+| 35 | **Skill Author** | meta-skill para criar/editar/avaliar skills do próprio kit | "cria uma skill nova pra lidar com webhooks do Stripe" |
+| 38 | **Architecture Deepener** | encontra deep modules opportunities (deletion test, deepening), prep para refactor com testabilidade | "esse módulo de auth vale a pena aprofundar antes do refactor?" |
+| 39 | **Program Router** | decidir qual pipeline de `programs/*.yml` rodar a partir da classificação da task | "qual program eu uso pra essa migração de banco?" |
+| 40 | **Parallel Dispatcher** | despachar N slices/reviews independentes pra subagents sem cair na armadilha skill-vs-agent | "despacha esses 4 slices de feature em paralelo" |
+| 44 | **Zoom Out** | mapa de módulos e topologia quando o agente está perdido em área desconhecida | "não conheço esse repo, me dá o mapa geral dos módulos" |
+| 45 | **Handoff Context** | empacotar o que a próxima sessão/agente precisa pra continuar sem re-derivar contexto | "empacota o contexto pra eu passar pra outro agente" |
+| 49 | **Context Budget** | auditar peso de contexto carregado (skills, agents, MCP, rules) — tokens por componente e headroom | "quanto contexto essa sessão está consumindo em skills carregadas?" |
+| 65 | **Using Git Worktrees** | isolar workspace via git worktree, com baseline de testes obrigatória antes de liberar a task | "isola essa task num worktree separado antes de mexer" |
 
 ### Produto e Design
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 01 | **PO** | spec, user stories, critérios de aceitação, prioridade |
-| 02 | **UI/UX Designer** | layout, design tokens, responsividade, heurísticas |
-| 29 | **Design Intelligence** | benchmark competitivo, screenshots, dossier estratégico |
-| 36 | **Web Asset Generator** | favicons, PWA icons, OG images, manifest, snippet HTML |
-| 56 | **Responsive Conversion** | converter UI desktop-first em mobile, corrigir layout quebrado, modal/bottom sheet |
-| 57 | **Mobile UX Foundations** | zona do polegar, dark mode físico, performance percebida, UX de auth/onboarding/permissão |
-| 58 | **i18n & Localization** | preparar pra outro idioma/região/direção de escrita antes de existir tradutor |
-| 63 | **Mobile Paywall & Checkout** | seleção de plano e checkout em app mobile — Play Billing vs PSP, estados de pagamento, cupão |
-| 64 | **Scroll Storytelling** | página onde o scroll é a timeline narrativa, com variedade de device por beat |
-| 73 | **SaaS Conversion Playbook** | funil de assinatura — playbook A/B, ativação, paywall, gatilhos in-app, lifecycle |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 01 | **PO** | spec, user stories, critérios de aceitação, prioridade | "escreve a spec de dark mode com persistência por usuário" |
+| 02 | **UI/UX Designer** | layout, design tokens, responsividade, heurísticas | "desenha o fluxo de checkout desse app mobile" |
+| 29 | **Design Intelligence** | benchmark competitivo, screenshots, dossier estratégico | "pesquisa como os concorrentes fazem onboarding" |
+| 36 | **Web Asset Generator** | favicons, PWA icons, OG images, manifest, snippet HTML | "gera o favicon e o OG image a partir desse logo" |
+| 56 | **Responsive Conversion** | converter UI desktop-first em mobile, corrigir layout quebrado, modal/bottom sheet | "essa tela quebra no celular, conserta o layout" |
+| 57 | **Mobile UX Foundations** | zona do polegar, dark mode físico, performance percebida, UX de auth/onboarding/permissão | "onde eu coloco a navegação principal nesse app mobile?" |
+| 58 | **i18n & Localization** | preparar pra outro idioma/região/direção de escrita antes de existir tradutor | "prepara essa tela pra suportar inglês e árabe (RTL)" |
+| 63 | **Mobile Paywall & Checkout** | seleção de plano e checkout em app mobile — Play Billing vs PSP, estados de pagamento, cupão | "desenha a tela de assinatura do app com Google Play Billing" |
+| 64 | **Scroll Storytelling** | página onde o scroll é a timeline narrativa, com variedade de device por beat | "quero uma landing page estilo Apple, com scroll cinematográfico" |
+| 73 | **SaaS Conversion Playbook** | funil de assinatura — playbook A/B, ativação, paywall, gatilhos in-app, lifecycle | "audita o funil de conversão trial-to-paid do nosso SaaS" |
 
 ### Desenvolvimento
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 03 | **Backend Engineer** | API REST/GraphQL, contratos, auth, validação, DB |
-| 04 | **Frontend Engineer** | React/Next.js, estado, performance, integração com API |
-| 12 | **Motion Designer** | animações, transições, micro-interações |
-| 15 | **Mobile / Tauri** | apps desktop e mobile com Tauri + React Native |
-| 52 | **UI Polish** | border radius concêntrico, alinhamento óptico, sombra vs borda, tabular numbers, scale on press, hit area |
-| 47 | **Pattern Conformity** | extrair e codificar as convenções de código do projeto em `memory/patterns.md` |
-| 60 | **App Reference Architecture** | molde de app novo com login + pagamento + push + web + APK a partir de um código-fonte |
-| 74 | **Web3D Scene Runtime** | scene description → cena 3D interativa no browser (WebGPU com fallback WebGL2, câmera navegável, budget medido) |
-| 75 | **FFmpeg Media** | corte, junção, legenda, normalização de loudness, silêncio, redação, aspect ratio via ffmpeg local — executa edição, não decide gosto |
-| 76 | **Diagram Validated** | SVG determinístico pra 14 tipos UML + arquitetura/fluxo, valida geometria e faz readback em PNG — "avalie, não afirme" antes de declarar pronto |
-| 77 | **Frontend Slides** | decks HTML em palco fixo 1920×1080, 12 presets nomeados, 3 previews antes de construir o deck completo, export PDF, deploy Vercel |
-| 78 | **Business Discovery** | entrevista em português simples com dono de negócio não-técnico, mapa de dados em HTML com Sankey, lista de oportunidades, plano de 30 dias — pra quem ainda não tem repositório |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 03 | **Backend Engineer** | API REST/GraphQL, contratos, auth, validação, DB | "implementa o endpoint POST /api/orders com validação" |
+| 04 | **Frontend Engineer** | React/Next.js, estado, performance, integração com API | "implementa a tela de listagem de pedidos com paginação" |
+| 12 | **Motion Designer** | animações, transições, micro-interações | "adiciona uma animação de entrada nos cards do dashboard" |
+| 15 | **Mobile / Tauri** | apps desktop e mobile com Tauri + React Native | "empacota esse app web como executável desktop com Tauri" |
+| 52 | **UI Polish** | border radius concêntrico, alinhamento óptico, sombra vs borda, tabular numbers, scale on press, hit area | "esse botão parece meio 'ok', deixa mais refinado" |
+| 47 | **Pattern Conformity** | extrair e codificar as convenções de código do projeto em `memory/patterns.md` | "extrai as convenções de código desse repo antes de eu codar" |
+| 60 | **App Reference Architecture** | molde de app novo com login + pagamento + push + web + APK a partir de um código-fonte | "quero um app novo com login, pagamento e APK Android, por onde começo?" |
+| 74 | **Web3D Scene Runtime** | scene description → cena 3D interativa no browser (WebGPU com fallback WebGL2, câmera navegável, budget medido) | "quero um modelo 3D no site que o visitante possa girar" |
+| 75 | **FFmpeg Media** | corte, junção, legenda, normalização de loudness, silêncio, redação, aspect ratio via ffmpeg local — executa edição, não decide gosto | "corta os primeiros 10 segundos desse vídeo e normaliza o áudio" |
+| 76 | **Diagram Validated** | SVG determinístico pra 14 tipos UML + arquitetura/fluxo, valida geometria e faz readback em PNG — "avalie, não afirme" antes de declarar pronto | "gera um diagrama de sequência dessa chamada de API" |
+| 77 | **Frontend Slides** | decks HTML em palco fixo 1920×1080, 12 presets nomeados, 3 previews antes de construir o deck completo, export PDF, deploy Vercel | "monta uma apresentação de pitch em HTML pra esse produto" |
+| 78 | **Business Discovery** | entrevista em português simples com dono de negócio não-técnico, mapa de dados em HTML com Sankey, lista de oportunidades, plano de 30 dias — pra quem ainda não tem repositório | "sou dono de um e-commerce sem programador, o que eu automatizo primeiro?" |
 
 ### Conteúdo e Descoberta
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 13 | **Marketing Copy** | copy de landing, CTAs, brand voice |
-| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap, keyword research, link building |
-| 50 | **Direct Response Copy** | headline com gatilho mental, anúncio, página de vendas, e-mail de venda, legenda de Instagram |
-| 51 | **UX Research** | discovery qualitativo: entrevista, persona, journey map, teste de usabilidade, arquitetura de informação |
-| 48 | **Research Prep** | pesquisa técnica multi-fonte antes de escrever docs/PRD/ADR, ranqueada por autoridade |
-| 54 | **Video Analysis** | analisar vídeo existente — frames, transcrição, perguntas sobre o que acontece na tela |
-| 55 | **Marketing Reporting & Analytics** | relatório de campanha, setup de GA4/GTM, auditoria de infra de dados de marketing |
-| 59 | **Closed-Loop Revenue** | fechar a cadeia clique pago → venda real → margem (GCLID/UTM, reconciliação, break-even ROAS) |
-| 61 | **Content Growth Engine** | conteúdo como sistema de aquisição — intenção comercial, cluster, citação em IA, pipeline |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 13 | **Marketing Copy** | copy de landing, CTAs, brand voice | "escreve o copy da landing page desse produto" |
+| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap, keyword research, link building | "otimiza essa página pra SEO e faz keyword research" |
+| 50 | **Direct Response Copy** | headline com gatilho mental, anúncio, página de vendas, e-mail de venda, legenda de Instagram | "escreve o anúncio de Facebook pra esse lançamento" |
+| 51 | **UX Research** | discovery qualitativo: entrevista, persona, journey map, teste de usabilidade, arquitetura de informação | "monta o roteiro de entrevista pra validar esse problema" |
+| 48 | **Research Prep** | pesquisa técnica multi-fonte antes de escrever docs/PRD/ADR, ranqueada por autoridade | "pesquisa as opções de fila de mensagem antes de eu decidir" |
+| 54 | **Video Analysis** | analisar vídeo existente — frames, transcrição, perguntas sobre o que acontece na tela | "transcreve esse vídeo e resume o que foi dito" |
+| 55 | **Marketing Reporting & Analytics** | relatório de campanha, setup de GA4/GTM, auditoria de infra de dados de marketing | "monta o relatório de performance da campanha do mês" |
+| 59 | **Closed-Loop Revenue** | fechar a cadeia clique pago → venda real → margem (GCLID/UTM, reconciliação, break-even ROAS) | "conecta o gasto de anúncio com a receita real de venda" |
+| 61 | **Content Growth Engine** | conteúdo como sistema de aquisição — intenção comercial, cluster, citação em IA, pipeline | "monta a estratégia de conteúdo pra ranquear e ser citado por IA" |
 
 ### Qualidade e Entrega
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 05 | **QA Engineer** | unit, integration, E2E, edge cases críticos |
-| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS |
-| 07 | **Deploy Engineer** | containerização, CI/CD, blue-green, rollback |
-| 33 | **Detective Spec** | engenharia reversa de spec em legado (zero writes no projeto) |
-| 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF |
-| 37 | **TDD Engineer** | red-green-refactor enforced, anti horizontal slicing (1 teste → 1 impl → repete) |
-| 53 | **Doubt-Driven Review** | revisão adversarial EM VOO antes de decisão não-trivial ficar de pé — complementa a 11, não substitui |
-| 43 | **Canary Deployment** | rollout gradual (1/10/50/100%) + 7 métricas + rollback automático |
-| 46 | **Post-Deploy Canary Monitor** | vigiar produção depois do canary fechar — error budget, latência, anomalia |
-| 62 | **Persona-Driven Issue Audit** | auditar produto existente via personas simuladas, ponta a ponta até PR, sem merge automático |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 05 | **QA Engineer** | unit, integration, E2E, edge cases críticos | "escreve os testes desse serviço de checkout" |
+| 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS | "revisa esse fluxo de login por vulnerabilidade" |
+| 07 | **Deploy Engineer** | containerização, CI/CD, blue-green, rollback | "monta o Dockerfile e o pipeline de CI/CD desse app" |
+| 33 | **Detective Spec** | engenharia reversa de spec em legado (zero writes no projeto) | "esse sistema legado não tem doc, extrai a spec do código" |
+| 34 | **Static Analysis** | scan automatizado via Semgrep + CodeQL com SARIF | "roda uma varredura de segurança nesse repositório" |
+| 37 | **TDD Engineer** | red-green-refactor enforced, anti horizontal slicing (1 teste → 1 impl → repete) | "implementa essa feature seguindo TDD estrito" |
+| 53 | **Doubt-Driven Review** | revisão adversarial EM VOO antes de decisão não-trivial ficar de pé — complementa a 11, não substitui | "antes de eu commitar essa decisão de arquitetura, questiona ela" |
+| 43 | **Canary Deployment** | rollout gradual (1/10/50/100%) + 7 métricas + rollback automático | "faz o deploy dessa versão em canary gradual" |
+| 46 | **Post-Deploy Canary Monitor** | vigiar produção depois do canary fechar — error budget, latência, anomalia | "monitora a produção depois desse último deploy" |
+| 62 | **Persona-Driven Issue Audit** | auditar produto existente via personas simuladas, ponta a ponta até PR, sem merge automático | "testa esse app como se fosse um usuário iniciante frustrado" |
 
 ### Publicação e Automação
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 41 | **Blog Publisher** | texto/assunto → post HTML + imagens → commit/push no repo do blog → URL pública |
-| 42 | **Blog Screenshot** | captura via Playwright pra post: viewport por destino, cookie banner, FOUT |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 41 | **Blog Publisher** | texto/assunto → post HTML + imagens → commit/push no repo do blog → URL pública | "publica um post sobre a nova feature no blog" |
+| 42 | **Blog Screenshot** | captura via Playwright pra post: viewport por destino, cookie banner, FOUT | "tira o screenshot dessa página pra ilustrar o post" |
 
 ### Desenvolvimento de Jogos
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 66 | **Game Architecture Design** | arquitetura e balanceamento numérico de jogo — a decisão antes do código de engine |
-| 67 | **Game Engine Development** | código real de engine: Unity C#, Unreal C++, ECS, profiling, networking multiplayer |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 66 | **Game Architecture Design** | arquitetura e balanceamento numérico de jogo — a decisão antes do código de engine | "define a arquitetura e o balanceamento desse RPG antes de codar" |
+| 67 | **Game Engine Development** | código real de engine: Unity C#, Unreal C++, ECS, profiling, networking multiplayer | "implementa o sistema de inventário em Unity C#" |
 
 ### Pipeline de Personagem
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 68 | **Character Animation 3D** | AccuRIG + Blender headless + IA de motion → rig e animação de personagem 3D |
-| 69 | **Character Pipeline 2D** | sprite/atlas 2D e contrato `MotionPlan.json` (LLM dirige intenção, não rotação de bone) |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 68 | **Character Animation 3D** | AccuRIG + Blender headless + IA de motion → rig e animação de personagem 3D | "faz o rig e a animação de caminhada desse personagem 3D" |
+| 69 | **Character Pipeline 2D** | sprite/atlas 2D e contrato `MotionPlan.json` (LLM dirige intenção, não rotação de bone) | "gera o spritesheet de animação desse personagem 2D" |
 
 ### Produção de Campanha
 
-| # | Skill | Quando ativar |
-|---|---|---|
-| 70 | **Campaign Research Strategy** | evidence ledger, claims autorizados e oportunidades antes de copy ou visual |
-| 71 | **Campaign Copywriting** | estratégia → rotas de copy rastreáveis e distintas, sem repesquisar nem inventar claim |
-| 72 | **Campaign Visual Direction** | conceito visual, bíblia de continuidade e shot intents, com overlays determinísticos |
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 70 | **Campaign Research Strategy** | evidence ledger, claims autorizados e oportunidades antes de copy ou visual | "pesquisa os claims que podemos usar nessa campanha antes do copy" |
+| 71 | **Campaign Copywriting** | estratégia → rotas de copy rastreáveis e distintas, sem repesquisar nem inventar claim | "escreve 3 rotas de copy diferentes pra essa campanha" |
+| 72 | **Campaign Visual Direction** | conceito visual, bíblia de continuidade e shot intents, com overlays determinísticos | "define a direção visual e a bíblia de continuidade da campanha" |
 
 ---
 
