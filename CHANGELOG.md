@@ -14,6 +14,26 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.81.0] - 2026-09-23 — skill 79 nova (react-useeffect-review, absorvida do wealthfolio/wealthfolio)
+
+Auditoria do repo [wealthfolio/wealthfolio](https://github.com/wealthfolio/wealthfolio) (app
+financeiro Tauri/React) em busca de algo aproveitável pro gastos-app achou uma skill Claude
+própria deles em `.claude/skills/react-useeffect/` que se mostrou genérica o suficiente pra
+trazer direto pro kit: destilada da doc oficial do React
+["You Might Not Need an Effect"](https://react.dev/learn/you-might-not-need-an-effect), sem
+nenhum acoplamento ao domínio financeiro daquele projeto.
+
+### Adicionado
+
+- Skill 79 (react-useeffect-review): checklist de quando NÃO usar `useEffect` — árvore de decisão
+  (event handler vs. calcular no render vs. `key` prop vs. Effect de verdade pra sincronização
+  externa), 9 antipadrões lado a lado com a correção em `anti-patterns.md` (estado derivado,
+  filtro em Effect, reset via Effect, lógica de evento em Effect, chains de Effects, notificar
+  parent via Effect, subir dado pro parent via Effect, fetch sem cleanup com race condition,
+  inicialização de app duplicada em dev-mode) e as alternativas detalhadas em `alternatives.md`
+  (`useMemo`, `key` prop, guardar ID em vez de objeto, `useSyncExternalStore`, lifting state up,
+  custom hook de fetch com cleanup).
+
 ## [2.80.0] - 2026-09-20 — skill 78 nova (discovery de negócio pra não-técnicos)
 
 O usuário trouxe uma pasta baixada (`skill_assets/`) com uma skill de terceiro — não parte da

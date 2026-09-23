@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 77 Skills Especialistas para Coding Agents
+# Dev Team Kit — 79 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.76.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-77-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.81.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-79-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -73,7 +73,7 @@ Um **engenheiro de QA** que segue o princípio "prove-it": se você disse que fu
 - **SEO** que otimiza antes do Google indexar — seu site nasce achável
 
 ### 🚀 Do zero ao deploy sem contratar 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **77 especialistas no total** (77 diretórios de skill instalados; o ID 16 é reservado). Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, acessibilidade (WCAG), refatoração, release, documentação — **79 especialistas no total** (79 diretórios de skill instalados; o ID 16 é reservado). Cada task vai pro profissional certo, com o modelo de IA certo (Haiku pro simples, Sonnet pro médio, Opus pra arquitetura) — você não paga Opus pra gerar boilerplate.
 
 ### 🔌 Funciona em tudo que você já usa
 Plugin nativo do **Claude Code** + MCP server universal que roda em **Cursor, Windsurf, Copilot, Gemini CLI** e qualquer agente compatível com MCP. **Zero vendor lock-in.** Trocou de ferramenta? Seu time vai junto.
@@ -85,7 +85,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 77 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 79 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -109,7 +109,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 77 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 79 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -146,14 +146,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 77 skills (77 diretórios de skill instalados; o ID 16 é reservado).
+Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 79 skills (79 diretórios de skill instalados; o ID 16 é reservado).
 O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 77 skills | ✅ | ✅ | ✅ |
+| 79 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -181,7 +181,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 77 Especialistas
+## Os 79 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -207,7 +207,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | 31 | **Session Summary** | consolida resumo de sessão para handoff limpo entre sessões longas |
 | 32 | **Smart Suggestions** | sugere a próxima ação mais impactante baseado no estado real do projeto |
 | 33 | **Detective Spec** | engenharia reversa de specs executáveis a partir de código legado — módulos, regras de negócio, fluxos, ADRs retroativos, zero writes fora de `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 77 especialistas |
+| 35 | **Skill Author** | meta-skill para criar, editar, avaliar e otimizar as próprias skills do kit — sustenta o kit conforme cresce além de 79 especialistas |
 | 38 | **Architecture Deepener** | encontra deepening opportunities (deletion test, deep modules) usando glossário de domínio + vocabulário arquitetural; pareia com skill 23 (Migration & Refactor) para execução |
 | 39 | **Program Router** | decide qual pipeline de `programs/*.yml` rodar a partir da classificação da task — trabalha junto do orchestrator (ad-hoc) e do hook intent-classifier (sugestão) |
 | 40 | **Parallel Dispatcher** | despacha N slices/reviews independentes pra subagents corretamente, evitando a armadilha skill-vs-agent; scatter-gather com isolamento via worktree |
@@ -252,6 +252,7 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 | 64 | **Scroll Storytelling** | arquitetura completa de página scrollytelling — onde o scroll é a timeline narrativa, não uma lista de seções com fade. No mínimo 4 famílias de device, mundo visual fotográfico por padrão, sem corrente contínua de câmera salvo pedido explícito. Inclui motor de runtime vanilla JS/CSS zero-dependência |
 | 73 | **SaaS Conversion Playbook** | audita e desenha o funil de conversão de assinatura de um SaaS/app — classificação playbook A (consumer/resultado pessoal) vs. B (ferramenta B2B/PLG), telas de onboarding, evento de ativação, paywall completo, gatilhos in-app e lifecycle de e-mail, com métricas-alvo de benchmark real (R/1K, TTV, trial-to-paid por modelo comercial) em vez de achismo |
 | 78 | **Business Discovery** | entrevista em português simples com dono de negócio não-técnico (Shopify, WhatsApp, planilha) que produz um mapa de dados em HTML autocontido (Sankey interativo), lista priorizada de oportunidades, e plano de 30 dias — 9 arquétipos de negócio, ramo "sem desenvolvedor" com caminho de contratação de freelancer |
+| 79 | **React useEffect Review** | checklist de quando NÃO usar `useEffect`, destilado da doc oficial do React "You Might Not Need an Effect" — árvore de decisão, 9 antipadrões lado a lado (estado derivado, filtro em Effect, reset via Effect, lógica de evento em Effect, chains de Effects, notificar parent, subir dado pro parent, fetch sem cleanup, init duplicado em dev) e as correções (`useMemo`, `key` prop, `useSyncExternalStore`, lifting state up, hook de fetch com cleanup) |
 
 ### Desenvolvimento
 
@@ -666,7 +667,7 @@ node scripts/auto-loop "task" --max-tokens 200000 --stop-when "tests cover the n
 ├── policies/             ← model-routing, tool-safety, cost-optimization, evals
 ├── scripts/              ← generate-image.py e utilitários
 ├── setup/                ← install.sh multi-plataforma
-├── skills/               ← 77 specialists (*/SKILL.md)
+├── skills/               ← 79 specialists (*/SKILL.md)
 ├── src/                  ← hooks, stores, components e middleware reutilizáveis
 └── templates/            ← handoff, plano, review, rejeição
 ```
