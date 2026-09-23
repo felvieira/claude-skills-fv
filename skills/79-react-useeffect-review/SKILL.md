@@ -24,6 +24,22 @@ Esta skill entra em dois momentos: (1) ao escrever um `useEffect` novo, como
 checklist antes de commitar; (2) ao revisar codigo/PR que usa `useEffect`,
 como lente pra achar o antipattern especifico e sugerir a alternativa direta.
 
+## Governanca Global
+
+Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`.
+
+## Quando Usar
+
+- escrever um `useEffect` novo, como checklist antes de commitar
+- revisar código/PR que usa `useEffect`, pra achar o antipattern específico
+- componente renderiza duas vezes de forma inesperada, ou tem race condition em fetch
+- estado parece sincronizado manualmente quando poderia ser calculado direto
+
+## Quando Nao Usar
+
+- a sincronização é de fato com um sistema externo (widget não-React, API de browser, subscription) — aí o Effect é a ferramenta certa
+- o código já usa `useSyncExternalStore`, `key` prop, ou calcula no render corretamente — nada a revisar
+
 ## Quick Reference
 
 | Situacao                       | NAO FACA                       | FACA                                   |
@@ -62,11 +78,26 @@ Precisa responder a algo?
 - [anti-patterns.md](./anti-patterns.md) — 9 antipatterns com exemplo ruim/bom lado a lado (estado derivado, filtro em Effect, reset via Effect, logica de evento em Effect, chain de Effects, notificar parent, subir dado pro parent, fetch sem cleanup, inicializacao duplicada em dev)
 - [alternatives.md](./alternatives.md) — as alternativas em detalhe (calcular no render, `useMemo`, `key` prop, guardar ID em vez de objeto, event handler, `useSyncExternalStore`, lifting state up, custom hook de fetch)
 
-## Nota de origem
+## Evidencia de Conclusao
 
-Conteudo adaptado do skill publico `react-useeffect` do repositorio
+- código revisado não tem `useEffect` cobrindo um dos 9 antipadrões de `anti-patterns.md`
+- toda sincronização com sistema externo restante está justificada (subscription, widget não-React, analytics)
+
+## Handoff
+
+- **Frontend Engineer (skill 04)** — recebe o código já revisado antes de integrar com o resto da feature
+- **Reviewer (skill 11)** — pode citar esta skill como critério de qualidade no checklist de código
+
+## Integracao com Pipeline
+
+- **Frontend Engineer (04):** consultar antes de escrever `useEffect` novo, ou ao revisar PR com hooks
+- **Reviewer (11):** critério de qualidade de código React durante review final
+
+## Fontes
+
+Conteúdo adaptado do skill público `react-useeffect` do repositório
 [wealthfolio/wealthfolio](https://github.com/wealthfolio/wealthfolio)
 (`.claude/skills/react-useeffect/`), que por sua vez destila a doc oficial
 ["You Might Not Need an Effect"](https://react.dev/learn/you-might-not-need-an-effect).
-Sem acoplamento a nenhum projeto especifico — aplicavel a qualquer codebase
+Sem acoplamento a nenhum projeto específico — aplicável a qualquer codebase
 React/Next.js do kit.

@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 77 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 79 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (77)
+## 5. Skills (79)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -930,6 +930,22 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 79 — React useEffect Review
+
+**What it does:** checklist for when NOT to use `useEffect`, distilled from the official React doc "You Might Not Need an Effect." Covers 9 anti-patterns side-by-side with the fix: derived state, filtering in an Effect, resetting via Effect, event logic in an Effect, Effect chains, notifying the parent via Effect, lifting data to the parent via Effect, fetch without cleanup (race condition), duplicate app init in dev mode. Decision tree: event handler vs. computing during render vs. `key` prop vs. a real Effect for external sync.
+**When to activate:** writing or reviewing a `useEffect`, `useState` for a derived value, state sync between components, or state reset on prop change.
+**Takeaway:** absorbed from `wealthfolio/wealthfolio`'s own `.claude/skills/react-useeffect/` during an audit for the gastos-app project — generic enough (zero coupling to their financial domain) to bring straight into the kit.
+
+---
+
+#### Skill 80 — Jev Opportunity Scout
+
+**What it does:** scans the current codebase for semantic decisions implemented as fragile heuristics — substring/regex classification, hardcoded keyword lists, or a generic LLM call doing prompt-and-parse to extract a category/score/boolean — and reports concrete migration candidates to a typed Jev (TypeSafe System One) judgment: exact file/line, the right primitive (Choice/Noul/Score), a ready-to-copy example call in the real API shape, and honest cost (calculated from the real `$0.042`/Mtok price, projected by volume when known).
+**When to activate:** "where could Jev help in this code," a classification `if/else` chain that's gotten unwieldy, or evaluating whether `typesafe-ai/skills` is worth integrating before installing it.
+**Takeaway:** read-only and assertive by design — `allowed-tools` has no `Bash`/`Write`/`Edit` on purpose (the skill analyzes and recommends; the skill 25 or direct implementation does the actual integration), but the report itself is meant to be concrete and opinionated, not a vague "maybe AI could help here." References `browser-use/jev-ultrafast` (installed and tested this session at `D:\Repos\GERAL\jev-ultrafast`, patched to route through OpenRouter instead of the TypeSafe direct-API waitlist) as live proof that the swap is worth it: 25% faster on a measured browser-automation task.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1043,7 +1059,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **77 skills** in `skills/NN-name/SKILL.md`
+- **79 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1056,7 +1072,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 77 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 79 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1081,7 +1097,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 77 skills | ✓ | ✓ | ✓ |
+| 79 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

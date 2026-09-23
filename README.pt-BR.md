@@ -214,6 +214,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | 44 | **Zoom Out** | constrói mapa de módulos e topologia do codebase — complementa smart-suggestions com visão estrutural de cima |
 | 45 | **Handoff Context** | pacote prospectivo de handoff entre sessões/agentes — empacota o que a próxima sessão precisa pra continuar sem re-derivar contexto |
 | 65 | **Using Git Worktrees** | isolamento de workspace via git worktree — detecta isolamento existente, prefere ferramenta nativa (`EnterWorktree`/`ExitWorktree` ou o dispatcher `/worktree` do kit) antes de `git worktree add` cru, baseline de testes obrigatória antes de liberar a task |
+| 80 | **Jev Opportunity Scout** | varre o codebase atual em busca de decisão semântica frágil (classificação por substring, lista de palavra-chave, chamada de LLM prompt-and-parse) e reporta candidatos concretos de migração pra um judgment tipado do Jev/TypeSafe System One — arquivo/linha, primitivo certo (Choice/Noul/Score), exemplo de chamada, custo real. Só leitura; nunca instala ou chama a API sozinha |
 
 ### Repo-Wiki: documentação do projeto no próprio projeto
 

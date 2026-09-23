@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 77 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 79 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 77 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-20 (v2.80.0 — skill 78 business-discovery; tabela de skills por categoria ganha coluna "Exemplo de prompt" nas 77 entradas)
+> **Versão:** 79 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-09-23 (v2.82.0 — skill 80 jev-opportunity-scout)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 77 especialistas
+- [Skills por categoria](#skills-por-categoria) — 79 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -380,6 +380,8 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 76 | **Diagram Validated** | SVG determinístico pra 14 tipos UML + arquitetura/fluxo, valida geometria e faz readback em PNG — "avalie, não afirme" antes de declarar pronto | "gera um diagrama de sequência dessa chamada de API" |
 | 77 | **Frontend Slides** | decks HTML em palco fixo 1920×1080, 12 presets nomeados, 3 previews antes de construir o deck completo, export PDF, deploy Vercel | "monta uma apresentação de pitch em HTML pra esse produto" |
 | 78 | **Business Discovery** | entrevista em português simples com dono de negócio não-técnico, mapa de dados em HTML com Sankey, lista de oportunidades, plano de 30 dias — pra quem ainda não tem repositório | "sou dono de um e-commerce sem programador, o que eu automatizo primeiro?" |
+| 79 | **React useEffect Review** | checklist de quando NÃO usar useEffect (9 antipadrões lado a lado com a correção), destilada da doc oficial do React | "por que esse componente renderiza duas vezes com esse useEffect?" |
+| 80 | **Jev Opportunity Scout** | varre o codebase por decisão semântica frágil (if/else de classificação, keyword hardcoded) e reporta candidato de migração pra judgment tipado do Jev, com custo real | "essa cadeia de if/else pra classificar ticket está frágil, tem algo melhor?" |
 
 ### Conteúdo e Descoberta
 

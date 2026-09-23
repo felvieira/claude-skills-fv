@@ -418,6 +418,30 @@ Mark Kashef — "The Perfect Agentic OS Kit" (/silver-platter skill)
   this kit's own skill format — no text or code copied from the
   original SKILL.md or its reference files.
 
+typesafe-ai/skills
+  https://github.com/typesafe-ai/skills
+  License: MIT
+  Domain knowledge about the Jev/System One primitives (Choice, Noul,
+  Score), request/response shapes, and pricing (used in skills/
+  80-jev-opportunity-scout/references/) came from the official
+  documentation at docs.typesafe.ai and this repository. No text or
+  code copied verbatim — the mechanism (scanning a codebase for fragile
+  heuristic decisions and reporting migration candidates) is this
+  kit's own, written from scratch. The official skill remains the
+  installation path for users who decide to integrate
+  (`npx skills add typesafe-ai/skills --skill typesafe-ai`).
+
+browser-use/jev-ultrafast
+  https://github.com/browser-use/jev-ultrafast
+  License: MIT
+  Referenced (not bundled) in skills/80-jev-opportunity-scout/
+  references/jev-ultrafast-local.md as a real, tested example of a
+  Jev-based decision replacing a full-LLM decision (25% faster on a
+  measured task). Installed locally at D:\Repos\GERAL\jev-ultrafast
+  with a 2-line patch (documented in the same reference file) making
+  the TypeSafe API URL configurable via env var, so it can route
+  through OpenRouter instead of the TypeSafe direct-API waitlist.
+
 Hanako (@hanakoxbt) — "Loops and Graphs"
   https://x.com/hanakoxbt/status/2091515787366306154
   License: none declared (a public post; no code accompanies it).

@@ -1,0 +1,22 @@
+{
+  "skill": "80-jev-opportunity-scout",
+  "should_trigger": [
+    "onde eu poderia usar o jev nesse projeto",
+    "faz sentido usar typesafe aqui nesse codigo",
+    "essa classificação está frágil, tem algo melhor",
+    "esse if/else de categoria está muito complicado",
+    "onde usar judgment tipado nesse serviço",
+    "detecta oportunidade de ia semântica nesse repo",
+    "esse roteamento por regex está ruim",
+    "analisa esse código pra ver onde IA ajudaria",
+    "jev opportunity scout",
+    "system one typesafe faria sentido aqui"
+  ],
+  "shouldnt_trigger": [
+    "integra a Claude API no app com fallback de provider",
+    "escreve o prompt reutilizavel desse classificador",
+    "gera uma imagem hero pra essa landing page",
+    "audita esse repositório antes de eu começar a feature",
+    "revisa esse fluxo de login por vulnerabilidade"
+  ]
+}

@@ -14,6 +14,45 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.82.0] - 2026-09-23 — skill 80 nova (scout de oportunidade Jev/TypeSafe) + jev-ultrafast instalado
+
+Usuário pediu avaliação de `typesafe-ai/skills` (skill oficial da TypeSafe pra construir com o
+System One/Jev). Investigação confirmou vendor lock-in numa API paga específica — a skill 25
+(AI Integration Architect) já cobre esse papel de forma agnóstica de fornecedor. Decisão do
+usuário: não trazer a skill oficial como está, mas criar uma skill própria que analisa o projeto
+atual e aponta *onde* um judgment tipado do Jev resolveria melhor que a heurística frágil já
+existente — sem nunca instalar ou chamar a API sozinha.
+
+### Adicionado
+
+- **`skills/80-jev-opportunity-scout/`** (nova) — varre o codebase por decisão semântica
+  implementada como heurística frágil (classificação por substring, lista de keyword hardcoded,
+  chamada de LLM genérico fazendo prompt-and-parse) e reporta candidatos concretos de migração
+  pra um judgment tipado do Jev (Choice/Noul/Score) — arquivo/linha exato, exemplo de chamada no
+  formato real da API, custo honesto calculado do preço real (`$0.042`/Mtok). Só leitura
+  (`allowed-tools` sem Bash/Write/Edit de propósito); a integração de fato fica pra skill 25 ou
+  pra `npx skills add typesafe-ai/skills --skill typesafe-ai`.
+- `references/o-que-e-jev.md`, `decision-shapes.md`, `pricing.md` — conhecimento de domínio
+  (primitivos, formato de request/response, preço) resumido da documentação oficial em
+  docs.typesafe.ai, não copiado verbatim.
+- `references/jev-ultrafast-local.md` documenta a instalação real de
+  [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast) (MIT) em
+  `D:\Repos\GERAL\jev-ultrafast` — um agente de navegador que troca decisão via LLM completo por
+  judgment do Jev, testado nesta sessão em 7.557ms numa tarefa real (abrir artigo específico da
+  Wikipedia). Patch de 2 linhas em `jev_ultrafast/model.py` torna a URL da API TypeSafe
+  configurável via env var, permitindo rotear pela OpenRouter (que já serve o Jev sem exigir a
+  waitlist da API direta) usando a `OPENROUTER_API_KEY` já existente no ambiente — confirmado
+  funcionando com chamada real (`noul: 0.75`, custo de `$0.000011844`).
+
+### Corrigido
+
+- Drift de contadores de skill em `docs/WIKI.md`, `docs/WIKI.pt-BR.md`, `docs/SKILLS-OVERVIEW.md`
+  e `mcp-server/package.json`: ainda diziam 77 apesar do repo já estar em 79 skills (o commit da
+  skill 79 não havia propagado esses 4 arquivos) — corrigidos direto para 80, incluindo as
+  entradas de WIKI que faltavam para a skill 79 (react-useeffect-review).
+- `VERSION` na raiz estava em 2.80.0 enquanto `plugin.json`/`marketplace.json` já apontavam
+  2.81.0 — drift entre arquivos de versão corrigido junto do bump para 2.82.0.
+
 ## [2.81.0] - 2026-09-23 — skill 79 nova (react-useeffect-review, absorvida do wealthfolio/wealthfolio)
 
 Auditoria do repo [wealthfolio/wealthfolio](https://github.com/wealthfolio/wealthfolio) (app
