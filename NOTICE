@@ -460,3 +460,15 @@ Hanako (@hanakoxbt) — "Loops and Graphs"
   remaining claims were either already enforced in code (loop with a check that
   can fail, loop-inside-node/graph-between-nodes, worker/code-node/gate) or
   judged disproportionate to mechanize.
+
+google/artemis
+  https://github.com/google/artemis
+  License: Apache-2.0
+  Referenced (not bundled) in skills/81-artemis-android-testing/ as the
+  underlying tool for natural-language Android UI testing on an emulator.
+  Installed locally at D:\Repos\GERAL\artemis (Flash/Pro execution
+  profiles, Accessibility Helper on-device, Gemini-backed Planner). No
+  code copied -- the skill documents the local setup, invocation protocol,
+  and failure diagnosis learned from a real install/debug session
+  (references/setup-local.md), written from scratch in this kit's own
+  format.

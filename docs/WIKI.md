@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 79 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 80 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -946,6 +946,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 81 — Artemis Android Testing
+
+**What it does:** runs a natural-language task ("open the login screen and check the button appears," "fill the sign-up form and confirm it saves") against a real Android emulator using `google/artemis`, already installed and configured locally at `D:\Repos\GERAL\artemis`. No instrumented test is written — Artemis drives the screen like a user would (via an on-device Accessibility Helper + Gemini Planner) and reports success/failure with a session video.
+**When to activate:** "test this APK on the emulator," "run this in Artemis," "check this on Android before I commit," verifying a screen/flow manually during development when an emulator is already available.
+**Takeaway:** action-capable (`allowed-tools` includes `Bash`, unlike the read-only skill 80) because the point is to actually drive the emulator, not just report candidates — but it assumes the local Artemis environment already exists and never tries to obtain or swap the `GEMINI_API_KEY` on its own (credential handling stays a human action). Includes a real failure-diagnosis table learned from an actual install/debug session: the "waiting for device" message that's almost always an auth error in disguise, and the daemon-doesn't-hot-reload-env gotcha after adding a key.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1059,7 +1067,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **79 skills** in `skills/NN-name/SKILL.md`
+- **80 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1072,7 +1080,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 79 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 80 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1097,7 +1105,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 79 skills | ✓ | ✓ | ✓ |
+| 80 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

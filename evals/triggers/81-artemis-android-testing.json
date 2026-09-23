@@ -1,0 +1,22 @@
+{
+  "skill": "81-artemis-android-testing",
+  "should_trigger": [
+    "testa esse apk no emulador",
+    "roda isso no artemis",
+    "abre o emulador e testa esse fluxo de login",
+    "verifica isso no android antes de eu commitar",
+    "testa a tela de cadastro no celular",
+    "simula um usuário tocando no botão de entrar",
+    "testa no emulador com IA se essa tela funciona",
+    "quero ver esse app funcionando no android antes de dar merge",
+    "instala esse apk e verifica se a tela de configurações abre",
+    "confirma que o formulário salva testando no emulador"
+  ],
+  "shouldnt_trigger": [
+    "escreve um teste de unidade pra essa função",
+    "cria um teste instrumentado com Espresso pra essa tela",
+    "revisa esse fluxo de login por vulnerabilidade",
+    "gera uma imagem hero pra essa landing page",
+    "testa essa API no Postman"
+  ]
+}
