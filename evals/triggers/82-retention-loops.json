@@ -1,0 +1,22 @@
+{
+  "skill": "82-retention-loops",
+  "should_trigger": [
+    "a retenção do meu app está baixa",
+    "o usuário não volta depois do primeiro uso",
+    "nosso D7 caiu, o que fazer",
+    "como criar um loop de hábito no produto",
+    "streak faz sentido nesse app?",
+    "quero deixar o app grudento sem ser manipulativo",
+    "por que o usuário volta em apps como Duolingo",
+    "switching cost ético sem bloquear export",
+    "o usuário some depois do primeiro dia",
+    "D30 muito baixo no nosso SaaS"
+  ],
+  "shouldnt_trigger": [
+    "desenhe o paywall do meu app com trial de 7 dias",
+    "revisa o contraste dessa tela",
+    "escreve a copy da landing page",
+    "configura o GA4 e o GTM do site",
+    "cria a migration do banco de usuários"
+  ]
+}

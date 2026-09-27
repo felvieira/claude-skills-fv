@@ -95,5 +95,48 @@
     "skills": ["03-backend-api"],
     "risk": "high",
     "requires_human_review": true
+  },
+  {
+    "name": "full growth brief routes to the 4-week action plan",
+    "prompt": "Você é um diretor de produto e growth. Transforme a descrição do meu produto num plano de ação operacional de 4 semanas, com paywall, retenção e distribuição",
+    "plugins": ["product-growth"],
+    "skills": ["83-growth-action-plan", "73-saas-conversion-playbook", "82-retention-loops"],
+    "exclude_plugins": ["release-ops"]
+  },
+  {
+    "name": "low D7 routes to retention, not to conversion",
+    "prompt": "meu app de habitos tem D7 baixo, o usuario nao volta depois do primeiro dia",
+    "plugins": ["product-growth"],
+    "skills": ["82-retention-loops"]
+  },
+  {
+    "name": "paywall flow pulls the conversion playbook alongside checkout UI",
+    "prompt": "quero um paywall multi-pagina depois do quiz, com timeline do trial",
+    "plugins": ["product-growth", "design-quality"],
+    "skills": ["73-saas-conversion-playbook", "63-mobile-paywall-checkout"]
+  },
+  {
+    "name": "onboarding for conversion reaches the SaaS playbook",
+    "prompt": "desenhar onboarding que converte e decidir entre freemium ou trial",
+    "plugins": ["product-growth"],
+    "skills": ["73-saas-conversion-playbook"]
+  },
+  {
+    "name": "cold app feeling routes to session psychology in UI/UX",
+    "prompt": "o app parece frio, a tela de sucesso diz so Pronto e a barra de progresso nao anda",
+    "plugins": ["product-growth"],
+    "skills": ["02-ui-ux-design"]
+  },
+  {
+    "name": "product page that does not sell routes to UI/UX",
+    "prompt": "a pagina de produto da minha loja nao vende, o botao de comprar fica longe da quantidade",
+    "plugins": ["product-growth"],
+    "skills": ["02-ui-ux-design"]
+  },
+  {
+    "name": "growth without ads through AI agents routes to content growth",
+    "prompt": "quero crescimento organico sem anuncio, que o chatgpt recomende meu app, com pagina for-ai e QR code de divulgacao",
+    "plugins": ["product-growth"],
+    "skills": ["61-content-growth-engine", "14-seo-specialist"]
   }
 ]

@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 80 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Versão:** 82 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -934,6 +934,22 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 ---
 
+#### Skill 82 — Retention Loops
+
+**O que faz:** diagnostica por que o usuário volta (ou não) em D1/D7/D30/D90. Audita as 5 táticas que aparecem juntas em apps de alta retenção — personalização que muda o canvas, aha rápido, loop de hábito na cadência real do job, comunidade só depois do resultado pessoal e switching cost ético (ativo que o usuário construiu, sempre exportável) — e prescreve um movimento por tática com tela, gatilho, copy e evento.
+**Quando ativar:** "retenção baixa", "o usuário não volta depois do primeiro dia", D7 caiu, decidir se streak ou comunidade fazem sentido neste produto.
+**Takeaway:** começa onde a skill 73 termina (ativação/trial→pago). Evento de retenção é "repetiu a ação central", nunca "abriu o app". O erro mais caro que ela evita é forçar cadência diária num job semanal; comunidade antes de densidade é chamada de cemitério de propósito.
+
+---
+
+#### Skill 83 — Growth Action Plan
+
+**O que faz:** transforma a descrição de um produto num plano operacional de 4 semanas cobrindo conversão, retenção, psicologia de sessão e distribuição por agentes de IA: diagnóstico em 8 linhas, funil canônico vs atual, até 8 telas, paywall, tabela de retenção, 3 telas auditadas, 8 apostas de distribuição, eventos + scorecard, backlog semanal e lista do que não fazer. Toda linha sai com tela, gatilho, copy, evento de analytics e dono.
+**Quando ativar:** "plano de ação de growth", "plano de 4 semanas pro meu app", "atue como diretor de produto e growth", auditoria completa do onboarding à retenção.
+**Takeaway:** não tem playbook próprio — cada seção do relatório lê a referência da skill dona do assunto (73 para funil/paywall, 82 para retenção, 02 para psicologia de sessão e página de produto, 61 para distribuição). Número de caso externo leva o rótulo ANALOGIA, inferência leva HIPOTESE, e o scorecard só aceita uma lista fixa de alvos. Pedido mais estreito vai direto para a skill dona.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents são especialistas dispatcháveis via `Task` tool. Diferente de skills (que são markdown carregado pelo orchestrator), subagents rodam em sessão isolada com contexto próprio. Ideal para tarefas com escopo bem definido que se beneficiam de fresh context.
@@ -1047,7 +1063,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 Schema oficial do Claude Code. Lista:
-- **80 skills** em `skills/NN-nome/SKILL.md`
+- **82 skills** em `skills/NN-nome/SKILL.md`
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1060,7 +1076,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 80 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 82 skills, hooks, 23 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1085,7 +1101,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 80 skills | ✓ | ✓ | ✓ |
+| 82 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

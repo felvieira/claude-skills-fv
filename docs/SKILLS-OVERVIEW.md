@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 80 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 82 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 80 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-23 (v2.82.0 — skill 80 jev-opportunity-scout)
+> **Versão:** 82 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-09-27 (v2.84.0 — skills 82 retention-loops e 83 growth-action-plan, categoria Growth e Conversão)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 79 especialistas
+- [Skills por categoria](#skills-por-categoria) — 82 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -362,7 +362,21 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 58 | **i18n & Localization** | preparar pra outro idioma/região/direção de escrita antes de existir tradutor | "prepara essa tela pra suportar inglês e árabe (RTL)" |
 | 63 | **Mobile Paywall & Checkout** | seleção de plano e checkout em app mobile — Play Billing vs PSP, estados de pagamento, cupão | "desenha a tela de assinatura do app com Google Play Billing" |
 | 64 | **Scroll Storytelling** | página onde o scroll é a timeline narrativa, com variedade de device por beat | "quero uma landing page estilo Apple, com scroll cinematográfico" |
-| 73 | **SaaS Conversion Playbook** | funil de assinatura — playbook A/B, ativação, paywall, gatilhos in-app, lifecycle | "audita o funil de conversão trial-to-paid do nosso SaaS" |
+
+A skill 02 também cobre psicologia de sessão (`references/session-psychology.md`) e página de produto/tela de compra (`references/product-page-conversion.md`) — listadas em Growth e Conversão abaixo porque é por esse caminho que o pedido costuma chegar.
+
+### Growth e Conversão
+
+Catálogo de roteamento: `plugins/catalog/product-growth.json`. Comece pela 83 quando o pedido cruza conversão, retenção e distribuição; vá direto para a skill dona quando o pedido é estreito.
+
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 83 | **Growth Action Plan** | plano de 4 semanas cruzando conversão, retenção, psicologia de sessão e distribuição; cada linha com tela, gatilho, copy, evento e dono | "atua como diretor de produto e growth e monta o plano de 4 semanas do meu app" |
+| 73 | **SaaS Conversion Playbook** | funil de assinatura — playbook A/B, ativação, paywall como fluxo (momento, n páginas, alavancas, win-back), gatilhos in-app, lifecycle | "audita o funil de conversão trial-to-paid do nosso SaaS" |
+| 82 | **Retention Loops** | por que o usuário volta em D1/D7/D30 — 5 táticas (personalização, aha, hábito, comunidade, switching cost ético) | "meu app tem D7 baixo, o usuário não volta depois do primeiro dia" |
+| 02 | **UI/UX Designer** (psicologia de sessão, PDP) | gradiente de meta, pico-fim, ilusão de trabalho honesta, sobrecarga de escolha; hierarquia e 15 erros de página de produto | "o app parece frio e a tela de sucesso só diz Pronto" |
+| 63 | **Mobile Paywall & Checkout** | UI do checkout in-app que o paywall da 73 precisa comunicar | "implementa a seleção de plano com Google Play Billing" |
+| 61 | **Content Growth Engine** (distribuição por agentes) | crescer sem anúncio: página `/for-ai`, swarm 1 pergunta = 1 URL, QR, comunidade 10x útil / 1x menção | "quero que o ChatGPT recomende meu app sem eu pagar anúncio" |
 
 ### Desenvolvimento
 
@@ -411,6 +425,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 43 | **Canary Deployment** | rollout gradual (1/10/50/100%) + 7 métricas + rollback automático | "faz o deploy dessa versão em canary gradual" |
 | 46 | **Post-Deploy Canary Monitor** | vigiar produção depois do canary fechar — error budget, latência, anomalia | "monitora a produção depois desse último deploy" |
 | 62 | **Persona-Driven Issue Audit** | auditar produto existente via personas simuladas, ponta a ponta até PR, sem merge automático | "testa esse app como se fosse um usuário iniciante frustrado" |
+| 81 | **Artemis Android Testing** | testar app Android real no emulador por linguagem natural (google/artemis), com vídeo da sessão | "testa esse apk no emulador: abre o login e confirma que o botão Entrar aparece" |
 
 ### Publicação e Automação
 

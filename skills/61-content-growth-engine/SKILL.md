@@ -10,7 +10,10 @@ description: |
   "pagina de precos", "comparativo X vs Y", "estudo de caso", "link interno", "linkagem interna",
   "atualizar conteudo antigo", "content refresh", "share of voice", "citacao em IA",
   "o chatgpt cita os concorrentes", "como medir se a marca aparece nas respostas de IA",
-  "chatgpt recomenda", "lead magnet", "trafego nao converte", "objecoes de venda".
+  "chatgpt recomenda", "lead magnet", "trafego nao converte", "objecoes de venda",
+  "crescimento organico", "growth sem ads", "crescer sem anuncio", "agente recomendar o app",
+  "pagina for-ai", "swarm de paginas", "qr code de divulgacao", "build in public",
+  "apostas de distribuicao".
 allowed-tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
 metadata:
   argument-hint: "[--fase=descobrir|criar|otimizar|medir] [--icp=<segmento>]"
@@ -277,6 +280,9 @@ Fundo de funil e onde a receita acontece e onde menos se investe. Aplicar `skill
 ### Monitoramento de citacao em IA
 Medir semanalmente, agir mensalmente — mesmo conjunto de prompts da Fase 1.5, 4 semanas de tendencia antes de mudar qualquer coisa. Trimestral e tarde demais para corrigir rota.
 
+### Distribuicao organica para app ou SaaS indie
+Quando o produto e app (ou SaaS self-serve sem time comercial) e o objetivo e crescer sem anuncio, o plano de clusters desta skill e pesado demais para comecar. Usar `references/distribuicao-por-agentes.md`: consulta-alvo do agente, cardapio de 10 apostas (pagina `/for-ai`, swarm 1 pergunta = 1 URL, artefato compartilhavel com QR, comunidade 10x util / 1x mencao, superficie de recall), prompts prontos, checklist de produto citavel e regra de matar a aposta em 14 dias sem sinal.
+
 ---
 
 ## Fase 5 — Alto impacto
@@ -349,6 +355,7 @@ Horizonte honesto: conteudo de fundo de funil pode converter em semanas; autorid
 ## Fontes
 
 - Taxonomia de 4 tipos de prompt (avaliacao/reputacao/comparacao/lacuna), conceito de "ghost ranking", 2-3 execucoes por prompt por variabilidade, e cadencia "medir semanal, agir mensal com 4 semanas de tendencia" vieram de [Backlinko — LLM Prompt Tracking](https://backlinko.com/llm-prompt-tracking), curados para o protocolo de baseline ja existente na Fase 1.5 (nao substituido, complementado — o protocolo original ja cobria sessao limpa, multi-modelo, e o vinculo com formato de conteudo da Fase 2)
+- `references/distribuicao-por-agentes.md` (2026-09-27): skill `ai-organic-growth` de um pacote consolidado pelo usuario, que resume o experimento publico Bola 2026 (Tech Mentor Maria). Entrou o cardapio de apostas, os prompts e o checklist de produto citavel; a parte tecnica de GEO (schema, llms.txt, tamanho de passagem) ja existia na skill 14 e nao foi duplicada
 
 ## Integracao com Pipeline
 

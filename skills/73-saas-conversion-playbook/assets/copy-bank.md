@@ -29,6 +29,29 @@ CTA: Começar 7 dias grátis
 Micro: Sem fidelidade · aviso 2 dias antes · seus dados ficam seus
 Saída: Continuar no Free com limites
 
+Variações de headline de resultado (ver `references/paywall-flow.md`):
+- Seu plano de [objetivo] está pronto. Agora é só seguir.
+- Você já viu o problema. O Pro tira [fricção] do caminho.
+- [Número do reveal] é o ponto de partida. O plano fecha o resto.
+
+Timeline em 3 linhas:
+- Hoje · R$ 0
+- [Dia] · aviso no e-mail e no app
+- [Dia] · primeira cobrança · cancele em 1 toque até lá
+
+CTA alternativos:
+- Desbloquear e [verbo da tarefa]
+- Continuar com o plano anual · R$ [x]/semana
+
+Microcopy alternativa:
+- O Free continua existindo. O Pro é [tarefa], não um cadeado no app inteiro.
+- Restaurar compras nesta tela.
+
+## Downsell por tempo
+
+- Mais 7 dias para terminar o que começou.
+- Sem desconto eterno. Só tempo.
+
 ## Feature gate
 
 Você descobriu [nome humano da feature]. No Pro, isso roda sozinho [cadência].

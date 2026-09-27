@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "product-growth",
+  "name": "Product Growth & Conversion",
+  "description": "Plans and audits the subscription funnel end to end: activation, paywall flow, retention loops, session psychology, product-page conversion, organic distribution through AI agents, and the 4-week growth action plan that ties them together.",
+  "availability": "bundled",
+  "risk": "low",
+  "trust": "core",
+  "policies": ["policies/evals.md", "policies/source-driven.md"],
+  "capabilities": [
+    {"id": "growth-action-plan", "when_any": ["plano de acao de growth", "plano de growth", "plano de 4 semanas", "plano de quatro semanas", "plano de produto e growth", "diretor de produto e growth", "relatorio de growth", "growth do meu app", "growth do meu saas", "plano de conversao e retencao", "funil ate retencao", "auditoria completa de app", "proximas 4 semanas"], "skills": ["83-growth-action-plan", "73-saas-conversion-playbook", "82-retention-loops"]},
+    {"id": "saas-conversion", "when_any": ["auditoria de conversao", "auditar meu saas", "trial to paid", "trial para pago", "freemium ou trial", "reverse trial", "hard paywall", "evento de ativacao", "funil de assinatura", "modelo de monetizacao", "onde colocar o paywall", "desenhar onboarding", "onboarding que converte", "quiz de onboarding", "cancel-save", "downsell", "gatilho de upgrade", "aha moment", "momento aha"], "skills": ["73-saas-conversion-playbook", "21-data-analytics"]},
+    {"id": "paywall-flow", "when_any": ["paywall", "paywall que converte", "paywall multi-pagina", "fluxo de paywall", "timeline do trial", "win-back", "winback", "friccao positiva", "quando mostrar o paywall", "teste de paywall"], "skills": ["73-saas-conversion-playbook", "63-mobile-paywall-checkout"]},
+    {"id": "retention", "when_any": ["retencao", "retencao baixa", "usuario nao volta", "usuario some", "d1", "d7", "d30", "loop de habito", "habito", "streak", "switching cost", "lock-in", "deixar o app grudento", "por que o usuario volta", "engajamento recorrente"], "skills": ["82-retention-loops", "21-data-analytics"]},
+    {"id": "session-psychology", "when_any": ["psicologia do app", "psicologia de ux", "app parece frio", "peak-end", "pico-fim", "goal gradient", "gradiente de meta", "labor illusion", "ilusao de trabalho", "choice overload", "sobrecarga de escolha", "tela de sucesso", "barra de progresso"], "skills": ["02-ui-ux-design", "82-retention-loops"]},
+    {"id": "product-page", "when_any": ["pdp", "pagina de produto", "ficha de produto", "tela de compra", "adicionar ao carrinho", "add to cart", "loja que nao vende", "botao de comprar"], "skills": ["02-ui-ux-design", "52-ui-polish"]},
+    {"id": "ai-organic-distribution", "when_any": ["crescimento organico", "growth sem ads", "crescer sem anuncio", "sem anuncio", "agente recomendar o app", "recomende meu app", "pagina for-ai", "for-ai", "swarm de paginas", "qr code de divulgacao", "build in public", "apostas de distribuicao", "distribuicao organica"], "skills": ["61-content-growth-engine", "14-seo-specialist"]}
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "skill": "83-growth-action-plan",
+  "should_trigger": [
+    "monte um plano de ação de growth para meu app",
+    "quero um plano de 4 semanas de produto e growth",
+    "atue como diretor de produto e growth e analise meu SaaS",
+    "gera um relatório de growth do meu app de dieta",
+    "plano de growth completo: conversão, retenção e distribuição",
+    "o que fazer nas próximas 4 semanas pra converter mais",
+    "auditoria completa de app do onboarding à retenção",
+    "plano operacional de conversão e retenção pro meu produto",
+    "funil até retenção do meu app de finanças",
+    "growth do meu app de hábitos em 4 semanas"
+  ],
+  "shouldnt_trigger": [
+    "implemente o componente de checkout em React",
+    "revise esse PR de backend",
+    "gere uma imagem hero para a landing",
+    "escreva testes e2e para o login",
+    "faça o deploy no docker"
+  ]
+}

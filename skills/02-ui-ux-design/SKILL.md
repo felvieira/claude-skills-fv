@@ -12,7 +12,9 @@ description: |
   "paleta", "esquema de cores", "estado vazio", "empty state", "quantas opções mostrar",
   "auditar a interface", "auditar essa tela", "revisar o design", "auditoria de UI",
   "avaliar a usabilidade", "achados de UX", "review de design", "dar um parecer",
-  "parecer sobre a usabilidade".
+  "parecer sobre a usabilidade", "psicologia do app", "o app parece frio", "peak-end",
+  "tela de sucesso", "barra de progresso", "labor illusion", "choice overload",
+  "página de produto", "PDP", "ficha de produto", "adicionar ao carrinho", "tela de compra".
 ---
 
 # UI/UX Designer - Interface e Usabilidade
@@ -23,7 +25,7 @@ O Designer é responsável por traduzir user stories em interfaces utilizáveis,
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/visual-diff-precision.md` (comparar dois screenshots/estados para achar diferença fina de posicionamento, espaçamento ou cor — obrigatória no modo Auditoria quando o achado depende de medir, não só descrever).
 
-Conteúdo sob demanda vive em `references/` (auditoria, marketing, produto, formulário) — não em `docs/skill-guides/`; tokens, breakpoints, componentes, skeleton e Nielsen já estão neste arquivo, não há guia externo duplicado.
+Conteúdo sob demanda vive em `references/` (auditoria, marketing, produto, formulário) — não em `docs/skill-guides/`; tokens, breakpoints, componentes, skeleton e Nielsen já estão neste arquivo, não há guia externo duplicado. Dois arquivos cobrem conversão de tela: `references/session-psychology.md` (como a sessão é sentida: gradiente de meta, pico-fim, ilusão de trabalho honesta, isolamento, sobrecarga de escolha, com mapa tela→efeito) e `references/product-page-conversion.md` (página de produto e tela de compra: hierarquia canônica mobile e os 15 erros clássicos).
 
 Para uso de MCPs de bibliotecas visuais como referencia ou aceleracao, consultar `docs/skill-guides/ui-component-mcps.md`.
 
@@ -480,8 +482,9 @@ Nielsen (abaixo) audita a interface pronta. Estas leis decidem a estrutura **ant
 | **Fadiga de decisão** | decisões seguidas degradam a qualidade da escolha | fluxo longo precisa de default sensato, não de mais uma pergunta. Todo campo opcional exibido é uma decisão cobrada |
 | **Ilusão de trabalho** | processo visivelmente "trabalhando" é percebido como mais valioso | vale para busca/análise real (mostrar as etapas). Delay artificial em operação instantânea é manipulação — não fazer |
 | **Divulgação progressiva** | complexidade não desaparece, mas pode ser adiada até que o usuário sinalize intenção | mostrar só o essencial na primeira tela; opção avançada, campo condicional e configuração rara ficam atrás de um "mostrar mais" explícito — nunca escondidos sem pista de que existem |
+| **Pico-fim (peak-end)** | a sessão é lembrada pelo melhor momento e pelo final, não pela média | tela de sucesso celebra o artefato criado, não o clique; fim de onboarding é um reveal, não "conta criada"; pós-checkout não termina em dashboard vazio |
 
-Não aplicar as 18 em toda tela. Elas entram quando a decisão está em disputa: quantas opções mostrar, onde por o botão, o que destacar, o que agrupar.
+Não aplicar as 19 em toda tela. Elas entram quando a decisão está em disputa: quantas opções mostrar, onde por o botão, o que destacar, o que agrupar. Para auditar a sensação de uma sessão inteira (quais efeitos pesam em qual tela, no máximo dois destaques por tela), usar `references/session-psychology.md`.
 
 ### Dark Patterns — Onde a Manipulação Vira Categoria, Não Exceção
 
@@ -599,6 +602,8 @@ Comunicar:
 - Modo dual auditoria/implementação, fluxo de 9 passos, classificação de achado (norma/evidência/heurística/preferência), priorização por severidade×alcance×frequência×confiança e definição de pronto vieram de um protocolo de auditoria/implementação UI/UX fornecido pelo usuário — extraídos para `references/audit-framework.md` após medir que 6 das 8 peças não existiam em nenhuma skill do kit, e as outras 2 estavam fragmentadas sem ponto de consolidação (`skills/11-reviewer` tinha só 1 eixo de severidade; `skills/22-accessibility-specialist` tinha impacto×esforço, não os 4 eixos do protocolo).
 - Astryx ([facebook/astryx](https://github.com/facebook/astryx), MIT) citado em "Bibliotecas de Componentes Prontos" (2026-08-22): design system open source do Meta (React 19 + StyleX, 150+ componentes, beta pública desde jan/2026, 12k+ stars), curado por ser o primeiro exemplo verificável de design system com infraestrutura dedicada a consumo por agente — não só claim de marketing, mas CLI com `--json`/`--dense`/error codes estáveis e suíte própria de testes medindo geração de código por LLM a partir da doc (confirmado lendo `README.md`, `packages/cli/README.md` e `CLAUDE.md` do repo real via `gh api`). Citado como referência de biblioteca de componentes, não integrado ao catálogo BM25 de `design_search.py` — são camadas diferentes (decisão de estilo vs. componente pronto).
 - Mecanismo de dupla avaliação cega (Avaliação A/B rodando em sub-agentes isolados sem contato entre si, com banner obrigatório de execução degradada quando isso não é possível) e o "Veredito de Especificidade" (julgar se a interface foi desenhada para o produto ou é intercambiável com a categoria, **antes** de ver evidência de detector, para não julgar sob âncora) vieram do comando `critique` de [pbakaus/impeccable](https://github.com/pbakaus/impeccable/blob/main/skill/reference/critique.md) — **Apache-2.0, não MIT** (repo ativo, último push 2026-08-26; confirmado via `gh api` antes de citar, não presumido pelas outras fontes desta lista que costumam ser MIT). Curado em `references/audit-framework.md`, seção "Dupla Avaliação Cega": o repo já usa as 10 heurísticas de Nielsen (não um framework próprio) com a mesma escala 0-4/40 que esta skill já tinha em "Heurísticas de Nielsen - Checklist" — não duplicada, só referenciada. Só entrou o que era gap real medido por grep contra o kit: o fluxo de 9 passos do `audit-framework.md` já cobria inspeção, classificação de achado e priorização, mas nenhum passo previa duas avaliações isoladas nem um julgamento de especificidade anterior à evidência técnica. Ficaram de fora: o detector determinístico (`detect.mjs` é só um loader que importa `detector/detect-antipatterns.mjs`, arquivo não distribuído no source público do repo — as regras internas do detector não foram confirmadas, então não foram portadas), o sistema de persistência de snapshot/trend em `.impeccable/critique/`, as 5 personas fixas de teste e as integrações específicas de harness (Codex).
+
+- `references/session-psychology.md` e `references/product-page-conversion.md` (2026-09-27) vieram de duas skills (`app-ux-psychology` e `product-page-conversion`) de um pacote de UX/conversão consolidado pelo usuário, que resumem vídeos de Wyatt Feaster e do canal uxpeak. Medido por grep antes: gradiente de meta e ilusão de trabalho já estavam na tabela de leis; entrou só o que faltava (pico-fim, mapa tela→efeito, protocolo de auditoria de sessão, hierarquia e os 15 erros de PDP). Números das fontes não foram verificados e não aparecem como garantia.
 
 ## Integração com Pipeline
 

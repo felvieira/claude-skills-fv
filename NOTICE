@@ -472,3 +472,24 @@ google/artemis
   and failure diagnosis learned from a real install/debug session
   (references/setup-local.md), written from scratch in this kit's own
   format.
+
+User-consolidated UX/conversion/growth skill pack (2026-09)
+  Seven skills supplied by the user, themselves summaries of public
+  videos/studies. License: none declared (idea attribution only; the
+  text was rewritten in this kit's format, and no number from the
+  sources was independently verified -- every case figure is labeled
+  ANALOGIA where it appears). Upstream material summarized by the pack:
+  - Mobbin + Jonathan Parra, "We Studied 2995 Paywalls" -> skills/
+    73-saas-conversion-playbook/references/paywall-flow.md
+  - Wyatt Feaster, "I Analyzed 1000 Apps With High Retention Rates" ->
+    skills/82-retention-loops/
+  - Wyatt Feaster, "The psychology trick that makes any app feel 10x
+    better" -> skills/02-ui-ux-design/references/session-psychology.md
+  - uxpeak, "This UI/UX Redesign Will Teach You More Than 100 Tutorials
+    Combined" -> skills/02-ui-ux-design/references/
+    product-page-conversion.md
+  - Tech Mentor Maria, "15000 Installs on Day One" (Bola 2026) ->
+    skills/61-content-growth-engine/references/distribuicao-por-agentes.md
+  The pack's saas-conversion-audit skill was identical to skill 73 and
+  was not re-imported. skills/83-growth-action-plan/ is the user's own
+  report prompt, incorporated near-verbatim.

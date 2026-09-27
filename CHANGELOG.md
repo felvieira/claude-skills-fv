@@ -14,6 +14,59 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.84.0] - 2026-09-27 — growth e conversão: skills 82 e 83, catálogo `product-growth`
+
+Usuário mandou um pacote de 7 skills de UX/conversão/growth para melhorar as do kit e pediu uma
+skill que gere relatório a partir de um prompt próprio de "diretor de produto e growth". Cada
+skill do pacote foi medida por grep/diff contra o kit antes de entrar.
+
+### Adicionado
+
+- **`skills/82-retention-loops/`** (nova) — retenção pós-ativação: as 5 táticas de apps de alta
+  retenção (personalização que muda o canvas, aha rápido, loop de hábito na cadência real,
+  comunidade depois do resultado pessoal, switching cost ético), evento de retenção como repetição
+  da ação central, scorecard D1/D7/D30/D90. Era a única lacuna real: nenhuma skill cobria retenção.
+- **`skills/83-growth-action-plan/`** (nova) — o prompt do usuário virou skill: plano operacional de
+  4 semanas em 10 seções, cada linha com tela, gatilho, copy, evento e dono. Não tem playbook
+  próprio; cada seção lê a referência da skill dona (73, 82, 02, 61, 21).
+- `skills/73-saas-conversion-playbook/references/paywall-flow.md` — paywall como fluxo: momento,
+  arquitetura (1/2/3–4 páginas, feature-gate, win-back), três alavancas, padrões nomeados, ordem de
+  teste. Mais variações de copy de paywall e downsell em `assets/copy-bank.md`.
+- `skills/02-ui-ux-design/references/session-psychology.md` (5 efeitos de sessão com mapa
+  tela→efeito e protocolo de auditoria) e `references/product-page-conversion.md` (hierarquia
+  canônica de PDP e os 15 erros). Linha "Pico-fim" na tabela de leis cognitivas.
+- `skills/61-content-growth-engine/references/distribuicao-por-agentes.md` — cardápio de 10 apostas
+  de distribuição orgânica com viés para agentes de IA, prompts prontos, checklist de produto
+  citável, regra de matar a aposta em 14 dias.
+- **`plugins/catalog/product-growth.json`** (novo) — categoria Growth e Conversão no roteador. A
+  skill 73 não estava em nenhum catálogo: "onboarding" e "paywall" nunca chegavam nela.
+- 7 casos novos em `evals/routing/plugin-routing.json` (30/30) e evals de trigger das skills 82 e 83.
+
+### Não entrou
+
+- `saas-conversion-audit` do pacote: playbook, intake e copy-bank idênticos aos da skill 73.
+
+### Corrigido
+
+- README dizia "81 installed skill directories" desde a 2.83.0; o certo era 80 (ID 16 é reservado,
+  diretórios = skills). Agora 82.
+- `docs/SKILLS-OVERVIEW.md` não tinha a linha da skill 81 e o índice dizia "79 especialistas".
+  A 73 saiu de "Produto e Design" para a nova seção "Growth e Conversão".
+
+## [2.83.0] - 2026-09-23 — skill 81 nova (teste de app Android via google/artemis)
+
+Entrada adicionada em 2026-09-27; o commit original (`5e8aa44`) não atualizou este arquivo.
+
+### Adicionado
+
+- **`skills/81-artemis-android-testing/`** (nova) — testa app Android real no emulador por
+  linguagem natural usando [google/artemis](https://github.com/google/artemis) (Apache-2.0),
+  instalado em `D:\Repos\GERAL\artemis`. Protocolo de invocação, leitura do resultado pela trace
+  real (não pelo retorno do CLI) e tabela de diagnóstico de falha aprendida na instalação.
+- `references/setup-local.md` — setup reproduzível: `.env` com fallback `GEMINI_API_KEY` →
+  `GOOGLE_API_KEY`, AVD, Accessibility Helper, `scrcpy`/`ffmpeg` via winget e as duas pegadinhas de
+  PATH.
+
 ## [2.82.0] - 2026-09-23 — skill 80 nova (scout de oportunidade Jev/TypeSafe) + jev-ultrafast instalado
 
 Usuário pediu avaliação de `typesafe-ai/skills` (skill oficial da TypeSafe pra construir com o

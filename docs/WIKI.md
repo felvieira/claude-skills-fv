@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 80 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 82 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -954,6 +954,22 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 82 — Retention Loops
+
+**What it does:** diagnoses why users come back (or don't) at D1/D7/D30/D90. Audits the 5 tactics that show up together in high-retention apps — personalization that changes the canvas, fast aha, a habit loop at the job's real cadence, community only after a personal result, and ethical switching cost (an asset the user built, always exportable) — and prescribes one move per tactic with screen, trigger, copy and event.
+**When to activate:** "retention is low," "users don't come back after day one," D7 dropped, deciding whether a streak or community makes sense for this product.
+**Takeaway:** picks up where skill 73 stops (activation/trial-to-paid). Retention event is "repeated the core action," never "opened the app." Forcing a daily cadence on a weekly job is the most expensive mistake it guards against; community before density is called a graveyard on purpose.
+
+---
+
+#### Skill 83 — Growth Action Plan
+
+**What it does:** turns a product description into a 4-week operational plan across conversion, retention, session psychology and AI-agent distribution: an 8-line diagnosis, canonical vs current funnel, up to 8 screens, paywall, retention table, 3 audited screens, 8 distribution bets, events + scorecard, weekly backlog and a "not doing" list. Every line carries screen, trigger, copy, analytics event and owner.
+**When to activate:** "growth action plan," "4-week plan for my app," "act as a product & growth director," a full audit from onboarding to retention.
+**Takeaway:** has no playbook of its own — each report section reads the reference of the skill that owns the subject (73 for funnel/paywall, 82 for retention, 02 for session psychology and product pages, 61 for distribution). Numbers from outside cases are labeled ANALOGIA, inferences HIPOTESE, and the scorecard only accepts a fixed list of targets. Narrower asks go straight to the owning skill.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1067,7 +1083,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **80 skills** in `skills/NN-name/SKILL.md`
+- **82 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1080,7 +1096,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 80 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 82 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1105,7 +1121,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 80 skills | ✓ | ✓ | ✓ |
+| 82 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
