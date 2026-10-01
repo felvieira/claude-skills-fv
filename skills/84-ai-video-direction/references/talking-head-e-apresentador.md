@@ -83,10 +83,13 @@ duração ou dividir.
 | PixVerse V6 image-to-video | 0,26 | 64 s | identidade boa; sorriso exagerado, olhos fechando no fim |
 | Grok Imagine Video 1.5 reference-to-video | 0,71 | 66 s | reinterpretou a sala (monitor, abajur, janela mudaram) |
 | LTX 2.5 Pro image-to-video (mín. 6 s) | 0,72 | 51 s | **pior**: rosto deforma, expressões exageradas, cabelo mudou |
+| Genjutsu motion-transfer (fonte = clipe do Wan 3.0 aparado em 5,0 s, 480p) | 1,59 (+0,50 da fonte) | ~632 s | **repete a atuação e a fala da fonte** no rosto da imagem: identidade e fala OK (cobertura 0,92), mas sai em 480p e com 4,7 s (a saída segue o vídeo-fonte preparado); na prática o mesmo vídeo do Wan por mais dinheiro |
 
-Genjutsu foi recusado na hora com "Your credit balance is too low to complete this request" (saldo
-da API menor que o esperado; falha **não cobrada**) e ficou sem medição. Seedance 2.0, Wan 3.0 Prime,
-Wan 2.7 e Happy Horse 1.1 tinham preço estimado mas não foram comparados.
+A primeira tentativa do Genjutsu foi recusada na hora com "Your credit balance is too low to complete
+this request" (falha **não cobrada**); refeita depois da recarga. Seedance 2.0, Wan 3.0 Prime, Wan 2.7
+e Happy Horse 1.1 tinham preço estimado mas não foram comparados. Genjutsu não existe no fal; os
+equivalentes lá são Kling 3.0 Motion Control (`fal-ai/kling-video/v3/standard/motion-control`,
+US$ 0,126/s, aceita `keep_original_sound`) e Wan 2.2 Animate Replace (US$ 0,08/s a 720p).
 
 Escolha: Seedance 2.5 quando identidade é tudo e há orçamento; Wan 3.0 para volume; H3 quando a
 resolução vertical alta importa.
