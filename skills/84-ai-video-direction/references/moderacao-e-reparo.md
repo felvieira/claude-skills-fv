@@ -52,7 +52,7 @@ aberto) ou mudar o ângulo.
 | rosto pequeno, boca ilegível no talking head | quadro-base peito para cima, rosto grande | trocar de modelo (Seedance 2.5, Wan 3.0, H3 foram os melhores) |
 | rosto amplia ou deforma | tirar o parâmetro de câmera do endpoint ou o push-in do prompt (nunca os dois) | image-to-video com plano fixo |
 | boca exagerada, sorriso forçado, olhos fechando | "natural conversational rhythm", "small warm smile", menos ênfase | outro modelo |
-| reference-to-video mudou o cenário | "start from this exact composition" | endpoint image-to-video com o quadro-base |
+| reference-to-video mudou o cenário | a frase "start from this exact composition" **não** garante (o Grok recebeu a mesma frase e refez a sala) | endpoint image-to-video com o quadro-base |
 | fala não cabe no clipe | ~11 palavras por 5 s | alongar a duração ou dividir |
 
 Uma variável por tentativa quando se está **diagnosticando** a causa. Se várias contradições já são

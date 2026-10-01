@@ -13,7 +13,7 @@ uma rodada medida em 30/09/2026: mesmo quadro-base, mesma fala em PT-BR, 5 s, ve
 | peito para cima, cabeça e ombros em ~70% da largura, olhos na linha do terço superior | rosto grande e lip sync muito melhor |
 | a folha de identidade (retrato + corpo + rótulos + insets) como primeiro quadro não serve | gerar um **quadro-base limpo** a partir da folha |
 | endpoints image-to-video tratam a imagem como **primeiro quadro** | cena preservada |
-| reference-to-video trata a imagem como **referência** | a cena pode mudar (Grok refez monitor, abajur e janela); no Seedance 2.5 preservou bem com "start from this exact composition" |
+| reference-to-video trata a imagem como **referência** | a cena pode mudar (Grok refez monitor, abajur e janela). Os dois receberam o mesmo prompt com "start from this exact composition": o Seedance 2.5 preservou a sala e o Grok não, então a diferença é do modelo, não da frase. Quando a composição importa, usar image-to-video |
 | `camera_movement: dolly_in` do LTX somado ao push-in escrito no prompt | rosto ampliado demais, cabelo mudou: **nunca** combinar parâmetro de câmera com movimento no prompt |
 
 ## 2. Quadro-base
