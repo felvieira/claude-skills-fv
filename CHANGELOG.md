@@ -14,6 +14,32 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.85.0] - 2026-09-30 — skill 84 (direção de vídeo com IA)
+
+Usuário fez à mão um filme de cerca de 3 minutos em 7 épocas com Seedance 2.5 na API da Higgsfield
+e pediu que tudo o que foi aprendido vire skill: os 4 guias-base de storytelling e prompt, as regras
+nascidas de cerca de 25 regerações diagnosticadas quadro a quadro, os scripts de geração e pós, a
+auditoria do produto contra o método e uma rodada medida de apresentador falando em 13 modelos.
+Nenhum dado pessoal entrou: exemplos usam personagem A/B e "@seu.perfil".
+
+### Adicionado
+
+- **`skills/84-ai-video-direction/`** (nova) — do briefing ao MP4: história (3 propostas com
+  motores diferentes), roteiro, direção (scene engine, acting task com estímulo → resposta, beats,
+  mapa do mundo, leis de física, STATE IN/OUT), folhas de personagem e placas de cenário, prompt v4
+  autocontido por clipe de 5–8 s, Seedance 2.5 reference-to-video (só folhas + placa), QA por folha
+  de 8 quadros e STT com rubrica 0–2, reparo local e pós (fala nativa, trilha por sequência com
+  crossfade, ducking por sidechain, SFX, cartelas e legendas via libass, −14 LUFS). 13 referências
+  por tema, 5 templates e a lista das 41 armadilhas de um pipeline automático.
+- `references/talking-head-e-apresentador.md` — rodada medida de apresentador falando em PT-BR
+  (9:16, 5 s, 13 modelos da Higgsfield): quadro-base peito para cima, prompt vencedor, orçamento de
+  fala (~11 palavras em 5 s), ranking com preço e tempo, Genjutsu, conferência por STT com LCS e
+  motion graphics em ASS. `higgsfield-api.md` traz os corpos verificados de cada endpoint e o
+  catálogo com preço real.
+- `plugins/catalog/ai-integration.json`: capacidade `ai-video-direction`; 2 casos em
+  `evals/routing/plugin-routing.json`; `evals/triggers/84-ai-video-direction.json`.
+- `docs/SKILLS-OVERVIEW.md`: seção "Produção de Vídeo com IA"; entradas "Skill 84" nas duas wikis.
+
 ## [2.84.0] - 2026-09-27 — growth e conversão: skills 82 e 83, catálogo `product-growth`
 
 Usuário mandou um pacote de 7 skills de UX/conversão/growth para melhorar as do kit e pediu uma

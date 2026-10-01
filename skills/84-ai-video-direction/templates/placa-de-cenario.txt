@@ -1,0 +1,18 @@
+# Placa de cenário: uma por lugar + trecho + eixo
+# Motor: Grok Imagine 2.0 na Higgsfield (xai/grok-imagine-image-2.0), quality: medium, resolution: 2k, aspect_ratio: 16:9.
+# Regra: TODO landmark, apoio e mecanismo que os prompts dos clipes vão citar precisa estar aqui.
+# Para resgate: placa vista do lado do perigo (do vazio, de baixo), com o apoio seguro longe ou fora do quadro.
+# QA: zero pessoas/animais/figuras, zero texto, todos os landmarks presentes, época certa,
+#     visivelmente diferente das outras placas do mesmo lugar.
+
+Master location plate, completely empty of people, 16:9.
+<Lugar>, <época>, <hora e situação em uma frase>.
+GEOMETRY:
+1. <LANDMARK PRINCIPAL> - <posição no quadro>, <material>, <tamanho em metros>; <mecanismo da ação e seu ponto de contato, ex.: one thick tether rope runs from under the basket down to a large cast-iron hand winch anchored in the ground beside the platform>.
+2. <LANDMARK SECUNDÁRIO> - <lado esquerdo/direito>, <material>, <detalhe da época>.
+3. <FUNDO / HORIZONTE> - <o que se vê ao longe e em que direção>.
+ATMOSPHERE: <ar, névoa, cinza caindo, vento, umidade>.
+LIGHT: <hora>, <fontes motivadas da época>, <reflexos>, <o ponto mais claro>.
+PHYSICS: <materiais legíveis>. Human scale: <altura de porta, coluna, cesto, degrau em metros>.
+OPTICS: 35mm, eye height <1.6> m, <standing at X> looking <direção do eixo, ex.: down the street toward the volcano>, gentle edge falloff, fine grain.
+STYLE: photorealistic cinematography, natural material texture, restrained cinematic contrast, no text, no signage, no letters, no numbers, no logos, no watermark, no posters, no graffiti. The image contains no people, no animals and no figures of any kind. 16:9.

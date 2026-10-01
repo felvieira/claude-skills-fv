@@ -1,0 +1,62 @@
+### META
+nome: S<n>v<versao>_<lugar>
+titulo: <titulo da sequencia>
+refs: base/folha_A_<epoca>.png | base/folha_B_<epoca>.png | base/placa_<lugar>_<trecho>.png
+refs_C3: base/folha_A_<epoca>.png | base/folha_B_<epoca>.png | base/placa_<lugar>_<outro_trecho_ou_eixo>.png
+
+### SHARED
+ACTIVE REFERENCES
+Image 1 is CHARACTER A: use it for his face, <barba, oculos, cabelo> and outfit - <peca 1>, <peca 2>, <peca 3>, <equipamento do genero e onde fica>. Ignore the grey background and the faceless panels. He is <1.80> m tall.
+Image 2 is CHARACTER B: use it for her face, <cabelo, oculos ou "No glasses"> and outfit - <peca 1>, <peca 2>, <peca 3>. Ignore the grey background and the faceless panels. She is <1.65> m tall.
+Image 3 is the LOCATION of this clip: geometry, materials and light only, not the camera.
+
+WORLD MAP AND PHYSICS RULES
+<Lugar, epoca, hora.> <Landmarks fixos e onde ficam.> THE <OBJETO QUE SE MOVE>: <regra de movimento: para onde vai, o que nunca faz>. THE <AMEACA>: <onde esta, para onde avanca; sempre por tras dos personagens>. GRAVITY: gravity is real and constant. <Cordas pendem para baixo; ninguem voa nem plana; quem sai do chao fica pendurado na vertical abaixo das maos, bracos esticados, pernas soltas; salto sobe e desce.> <Quem esta onde do primeiro ao ultimo momento.> <O que sustenta cada corpo.> <Distancia da vitima ao apoio seguro: "at least N metres away, out of reach".>
+
+LOOK
+Photoreal live-action, <epoca>. <Luz motivada: fontes, direcao, efeito no rosto.> <Paleta.> 35mm film texture, fine grain. Natural motion blur on fast moves, clear held poses.
+
+AUDIO POLICY
+All speech is Brazilian Portuguese, spoken only by the named character, with lip sync; exactly the lines written, once each. Background voices are unintelligible murmur, never English words. Diegetic sound only, no music.
+
+CONTINUITY
+Exactly these two people plus <figurantes com tarefa>. <Cor> belongs only to CHARACTER B: no other <cor> <peca>; the crowd wears <paleta>. No other woman resembles CHARACTER B. <Adereco> stays on in every shot; it never comes off. Both wrists bare. <Epoca> details only; no <anacronismos>, no readable writing.
+
+### CLIP C1 | 8
+FORMAT: One 8-second clip, 21:9, three shots with two hard cuts.
+SCENE CONTEXT: <o que acontece e por que, em uma frase>.
+Image 3 here is the <VISTA>: <landmarks desta vista que o texto vai citar>.
+STATE IN: <first frame is pure swirling white-gold light | estado exato do fim do clipe anterior>.
+SHOT 1 - 0 to 2 s - <JOB EM MAIUSCULAS> (<enquadramento>, camera <altura, lado, distancia, mira>)
+<Primeiro quadro. Acao em causa -> efeito, verbos observaveis.>
+SHOT 2 - 2 to 5.5 s - <JOB> (<enquadramento e camera>)
+First frame: <quem esta onde>. Stimulus: <evento visivel>. Response: <mudanca visivel>. <Personagem> says, <intencao>, in Brazilian Portuguese: "<fala exata>" <Outro> answers: "<fala exata>"
+SHOT 3 - 5.5 to 8 s - <JOB> (<enquadramento e camera>)
+<Aviso ou gatilho com causa visivel.>
+STATE OUT: <posicao e lado de cada personagem, o que cada mao segura, cada objeto e quem o segura, ameaca, multidao>.
+AUDIO: <ambiente>, <SFX das acoes>, the two lines, <som final>.
+
+### CLIP C2 | 7
+FORMAT: One 7-second clip, 21:9, four shots with three hard cuts.
+SCENE CONTEXT: <...>
+Image 3 here is the <VISTA>, as in clip C1.
+STATE IN: <copia literal do STATE OUT do C1>
+SHOT 1 - 0 to 1.5 s - THE WARNING (insert on <mecanismo>)
+<sintoma da falha>
+SHOT 2 - 1.5 to 3 s - <...>
+SHOT 3 - 3 to 4.5 s - THE MISS (<...>)
+<a primeira tatica falha de verdade>
+SHOT 4 - 4.5 to 7 s - <...>
+<adaptacao>
+STATE OUT: <...>
+AUDIO: <...>
+
+### CLIP C4 | 5
+FORMAT: One continuous 5-second shot, 21:9, no cuts. Slow motion from 1 second to the end.
+SCENE CONTEXT: <o toque / o resgate> while the action keeps moving into the transition.
+Image 3 here is the <VISTA>.
+STATE IN: <...>
+CAMERA: <posicao fisica durante o plano inteiro>.
+Action: <a acao continua>; from 1 s, smooth slow motion: <contato descrito com calma: their open hands meet gently, fingertips first, then palm to palm>; both are calm and smiling; <o objeto redondo da epoca> fills with a soft spiral of swirling white-gold light that gently spreads and fills the frame while they are still moving.
+STATE OUT: warm swirling white-gold light with <o gesto> at its centre.
+AUDIO: <ambiente>, then a soft airy hush, a rising shimmer and a heartbeat.

@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 82 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
+> **Version:** 83 skills · 16 subagents · 45 slash commands · 63 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -970,6 +970,14 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 84 — AI Video Direction
+
+**What it does:** runs an AI-generated film end to end: story (3 proposals with different engines, then a bible), script with literal lines in the project language (PT-BR by default), scene direction (scene engine, per-character acting task with stimulus → response, beats, world map, physics laws, STATE IN/OUT per clip), character sheets and location plates as references, one self-contained v4 prompt per 5–8 s clip, Seedance 2.5 reference-to-video on the Higgsfield API (sheets + plate only, no start frame), QA from an 8-frame contact sheet plus STT, local repair, and post (native lip-synced speech, one score per sequence with crossfade at the transition, sidechain ducking, generated SFX, chapter cards and subtitles via libass, −14 LUFS).
+**When to activate:** "make a video with AI", "write the Seedance prompt", "character sheet", "reference-to-video", a generated clip came out wrong (floating body, object reappearing, speech in the wrong language, moderation block).
+**Takeaway:** every rule comes from a paid mistake in a real 3-minute, 7-era film (a hat that fell and left the character bald, a gate the prompt described but the plate didn't have, a crowd running toward the volcano). Announces the estimated cost before every paid round and never claims a clip was checked without looking at its frames and its audio. `references/armadilhas-do-produto.md` lists the 41 holes found when auditing an automated pipeline against the manual method. Integrating video into an app stays with skill 27; plain editing with skill 75.
+
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1083,7 +1091,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **82 skills** in `skills/NN-name/SKILL.md`
+- **83 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **45 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1096,7 +1104,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 82 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 83 skills, hooks, 45 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1121,7 +1129,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 82 skills | ✓ | ✓ | ✓ |
+| 83 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

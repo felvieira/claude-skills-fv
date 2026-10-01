@@ -6,8 +6,8 @@
 
 # Dev Team Kit — 79 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.84.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-82-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.85.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -109,7 +109,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 82 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 83 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -146,14 +146,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 82 skills (82 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 83 skills (83 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 82 skills | ✅ | ✅ | ✅ |
+| 83 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |

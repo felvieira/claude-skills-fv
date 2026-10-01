@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 82 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 83 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 82 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-27 (v2.84.0 — skills 82 retention-loops e 83 growth-action-plan, categoria Growth e Conversão)
+> **Versão:** 83 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-09-30 (v2.85.0 — skill 84 ai-video-direction, categoria Produção de Vídeo com IA)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 82 especialistas
+- [Skills por categoria](#skills-por-categoria) — 83 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -455,6 +455,14 @@ Catálogo de roteamento: `plugins/catalog/product-growth.json`. Comece pela 83 q
 | 70 | **Campaign Research Strategy** | evidence ledger, claims autorizados e oportunidades antes de copy ou visual | "pesquisa os claims que podemos usar nessa campanha antes do copy" |
 | 71 | **Campaign Copywriting** | estratégia → rotas de copy rastreáveis e distintas, sem repesquisar nem inventar claim | "escreve 3 rotas de copy diferentes pra essa campanha" |
 | 72 | **Campaign Visual Direction** | conceito visual, bíblia de continuidade e shot intents, com overlays determinísticos | "define a direção visual e a bíblia de continuidade da campanha" |
+
+### Produção de Vídeo com IA
+
+Catálogo de roteamento: `plugins/catalog/ai-integration.json` (capacidade `ai-video-direction`). A 84 dirige e produz; a 27 integra vídeo num app; a 75 só edita; a 54 analisa vídeo pronto.
+
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 84 | **AI Video Direction** | filme ou vídeo gerado por IA de ponta a ponta: história, roteiro, folhas de personagem, placas de cenário, prompt v4 por clipe, Seedance 2.5 reference-to-video na Higgsfield, QA por folha de quadros, reparo, trilha por sequência, legendas e loudness | "quero um vídeo de 1 minuto com IA, eu e minha esposa em três épocas, falando em português" |
 
 ---
 

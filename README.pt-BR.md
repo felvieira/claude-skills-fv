@@ -2,8 +2,8 @@
 
 # Dev Team Kit — 79 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.84.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-82-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.85.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 

@@ -1,0 +1,22 @@
+{
+  "skill": "84-ai-video-direction",
+  "should_trigger": [
+    "quero gerar vídeo com IA de um casal em três épocas, com falas em português",
+    "escreve o prompt de vídeo do Seedance para a cena do resgate",
+    "monta a folha de personagem dela para usar como referência no vídeo",
+    "faz a placa de cenário da rua de Pompeia vazia para o clipe 3",
+    "o clipe da Higgsfield saiu com ele flutuando, conserta a física",
+    "como usar reference-to-video só com as folhas e a placa",
+    "preciso de direção de cena para um curta de 30 segundos",
+    "o lip sync saiu em inglês, a fala tinha que ser em português",
+    "quero trilha por sequência com crossfade no portal, não uma música só",
+    "help me write a cinematic prompt for an AI film with two characters"
+  ],
+  "shouldnt_trigger": [
+    "integra a API de vídeo no app com webhook e fila",
+    "corta os primeiros 10 segundos desse vídeo e normaliza o áudio",
+    "transcreve esse vídeo do youtube e resume",
+    "cria o Dockerfile multistage do backend",
+    "define a paleta de cores do design system"
+  ]
+}

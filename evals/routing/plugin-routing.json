@@ -138,5 +138,17 @@
     "prompt": "quero crescimento organico sem anuncio, que o chatgpt recomende meu app, com pagina for-ai e QR code de divulgacao",
     "plugins": ["product-growth"],
     "skills": ["61-content-growth-engine", "14-seo-specialist"]
+  },
+  {
+    "name": "seedance prompt with character sheets routes to AI video direction",
+    "prompt": "escreve o prompt do Seedance para a cena do resgate usando a folha de personagem e a placa de cenario",
+    "plugins": ["ai-integration"],
+    "skills": ["84-ai-video-direction"]
+  },
+  {
+    "name": "AI film request routes to AI video direction",
+    "prompt": "quero gerar video com ia de um casal em tres epocas, com lip sync em portugues",
+    "plugins": ["ai-integration"],
+    "skills": ["84-ai-video-direction"]
   }
 ]
