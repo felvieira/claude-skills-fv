@@ -17,7 +17,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { filesChangedSince, gitSnapshot, parseFrontmatter, redactSecrets } from "../../hooks/scripts/memory-lib.mjs";
-import { buildPacket, freshnessVerdict, mergeKeep, MAX_PACKET_CHARS, renderPacket } from "../../hooks/scripts/compaction-lib.mjs";
+import { buildPacket, freshnessVerdict, hasContent, mergeKeep, MAX_PACKET_CHARS, renderPacket } from "../../hooks/scripts/compaction-lib.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DISPATCHER = join(root, "hooks", "scripts", "runtime-dispatcher.mjs");
@@ -245,11 +245,83 @@ test("dispatcher: PreCompact grava o pacote e o proximo prompt o recebe uma unic
   }
 });
 
+// ----------------------------------------------------- Codex e desconhecidos
+
+const cx = (payload) => ({ timestamp: "2026-10-03T00:00:00Z", type: "response_item", payload });
+const cxMsg = (role, type, text) => cx({ type: "message", role, content: [{ type, text }] });
+
+function codexTranscript() {
+  return transcript([
+    { type: "session_meta", payload: { id: "s", cwd: "x" } },
+    cxMsg("developer", "input_text", "instrucoes enormes do sistema que nao sao fala da pessoa"),
+    cxMsg("user", "input_text", "<environment_context>\n<cwd>/repo</cwd>\n</environment_context>"),
+    cxMsg("user", "input_text", "# AGENTS.md instructions for /repo\n\n<INSTRUCTIONS>regras</INSTRUCTIONS>"),
+    cxMsg("user", "input_text", "Implemente o pacote de recuperacao tambem para o Codex, com testes e sem quebrar o Claude."),
+    cxMsg("assistant", "output_text", `Plano pronto.\n\nPendente: ligar o PreCompact no .codex/hooks.json\nchave ${fake.openrouter()}`),
+    cx({ type: "function_call", name: "shell_command", call_id: "c1", arguments: JSON.stringify({ command: "npm test", workdir: "/repo" }) }),
+    cx({ type: "function_call_output", call_id: "c1", output: "Exit code: 1\nWall time: 2s\nOutput:\nFAIL" }),
+    cx({ type: "function_call", name: "shell", call_id: "c2", arguments: JSON.stringify({ command: ["bash", "-lc", "node scripts/check-consistency.mjs"] }) }),
+    cx({ type: "function_call_output", call_id: "c2", output: JSON.stringify({ output: "ok", metadata: { exit_code: 0, duration_seconds: 1 } }) }),
+    cx({ type: "function_call", name: "shell_command", call_id: "c3", arguments: JSON.stringify({ command: "npm run lint" }) }),
+    cx({ type: "function_call_output", call_id: "c3", output: "tudo certo, sem codigo de saida registrado" }),
+    cx({ type: "function_call", name: "shell_command", call_id: "c4", arguments: JSON.stringify({ command: "pytest -q" }) }),
+    cxMsg("assistant", "output_text", "Hooks do Codex ligados."),
+  ]);
+}
+
+test("codex: adaptador le fala, pendencia e verificacoes; ignora contexto injetado e segredo", () => {
+  const packet = buildPacket({ transcriptText: codexTranscript(), sessionId: "cx-1", snapshot: { available: false } });
+  assert.equal(packet.source_format, "codex");
+  assert.match(packet.objective, /pacote de recuperacao tambem para o Codex/); // nem developer nem <environment_context>
+  assert.deepEqual(packet.keep.map((k) => k.text), ["ligar o PreCompact no .codex/hooks.json"]);
+  assert.deepEqual(packet.verification, [
+    { cmd: "npm test", status: "failed" },
+    { cmd: "node scripts/check-consistency.mjs", status: "passed" }, // argv de shell -> ultimo elemento
+    { cmd: "npm run lint", status: "unknown" }, // saida sem codigo: nao inventa "passou"
+    { cmd: "pytest -q", status: "unknown" }, // sem saida registrada
+  ]);
+  assert.ok(!JSON.stringify(packet).includes(fake.openrouter()));
+});
+
+test("formato desconhecido: nenhum pacote util, e o dispatcher nao grava arquivo", () => {
+  const unknown = transcript([{ foo: 1 }, { bar: "baz", items: [1, 2] }]);
+  const packet = buildPacket({ transcriptText: unknown, sessionId: "u-1", snapshot: { available: false } });
+  assert.equal(packet.source_format, "unknown");
+  assert.equal(hasContent(packet), false);
+
+  const cwd = tmp("memhooks-unk");
+  try {
+    const tpath = join(cwd, "t.jsonl");
+    writeFileSync(tpath, unknown);
+    runHook(DISPATCHER, { session_id: "unk-1", cwd, transcript_path: tpath, hook_event_name: "PreCompact" }, cwd, ["PreCompact"]);
+    assert.ok(!existsSync(join(cwd, ".auto", "compaction", "unk-1.json")));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("codex: payload do dispatcher (PreCompact -> UserPromptSubmit) entrega o pacote uma vez", () => {
+  const cwd = tmp("memhooks-cxdisp");
+  try {
+    const tpath = join(cwd, "rollout.jsonl");
+    writeFileSync(tpath, codexTranscript());
+    const base = { session_id: "cx-sess", cwd, transcript_path: tpath };
+    runHook(DISPATCHER, { ...base, hook_event_name: "PreCompact" }, cwd, ["PreCompact"]);
+    const first = runHook(DISPATCHER, { ...base, hook_event_name: "UserPromptSubmit", prompt: "segue" }, cwd, ["UserPromptSubmit"]);
+    const ctx = first.hookSpecificOutput?.additionalContext ?? "";
+    assert.match(ctx, /Recuperacao pos-compactacao/);
+    assert.match(ctx, /\[FALHOU\] npm test/);
+    assert.match(ctx, /\[resultado nao registrado\] pytest -q/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 test("dispatcher: PreCompact sem transcript ou com id perigoso falha aberto e nao escreve fora de .auto", () => {
   const cwd = tmp("memhooks-bad");
   try {
     const out = runHook(DISPATCHER, { session_id: "../../evil", cwd, hook_event_name: "PreCompact" }, cwd, ["PreCompact"]);
-    assert.equal(out.continue, true);
+    assert.deepEqual(out, {}); // PreCompact responde {} (valido em todos os hosts)
     assert.ok(!existsSync(join(cwd, "..", "..", "evil.json")));
     assert.ok(!existsSync(join(cwd, ".auto", "compaction")));
   } finally {
@@ -338,6 +410,46 @@ test("filtro informativo: 'acho que e' nao e confundido com 'o que e'", () => {
     assert.match(detect(cwd, "acho que e o tailwind"), /LearnedSkill matched: tw/);
     rmSync(join(cwd, ".bot", ".hook-session.json"), { force: true });
     assert.equal(detect(cwd, "o que e tailwind?"), ""); // pergunta informativa de verdade continua calada
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+// ------------------------------------------- ponte learned-skills -> ai-memory
+
+test("ponte: planeja paginas por estado, redige segredo e monta o comando docker (sem executar nada)", async () => {
+  const { planPages, buildCommand } = await import("../../scripts/learned-skills-to-ai-memory.mjs");
+  const cwd = tmp("memhooks-bridge");
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    learned(cwd, "usar-redis", { triggers: '["usar redis", "cache de sessao"]', created: today, score: "0.5", last_used: today, uses: "0", state: "rejected", reason: "p95 dobrou" },
+      `## Contexto\nfoi revertido. chave ${fake.openrouter()}\n`);
+    learned(cwd, "fix-jwt", { trigger: '["jwt"]', created: today, score: "0.8", last_used: today, uses: "0" });
+
+    const pages = planPages(join(cwd, ".bot", "learned-skills"));
+    assert.deepEqual(pages.map((p) => [p.path, p.kind, p.pinned]), [
+      ["learned-skills/fix-jwt.md", "gotcha", false],
+      ["learned-skills/usar-redis.md", "decision", true],
+    ]);
+    const redis = pages[1];
+    assert.ok(redis.tags.includes("state-rejected") && redis.tags.includes("learned-skill"));
+    assert.match(redis.body, /estado: \*\*rejected\*\* — p95 dobrou/);
+    assert.ok(!redis.body.includes(fake.openrouter()), "segredo foi para a pagina");
+    assert.ok(pages[0].tags.includes("jwt"), "grafia 'trigger:' tambem vira tag");
+
+    const docker = buildCommand(redis, { transport: "docker", container: "ai-memory", project: "meu-app" });
+    assert.equal(docker.cmd, "docker");
+    assert.deepEqual(docker.args.slice(0, 5), ["exec", "-i", "ai-memory", "ai-memory", "write-page"]);
+    assert.ok(docker.args.includes("--pinned") && docker.args.includes("--project"));
+    assert.deepEqual(docker.args.slice(docker.args.indexOf("--body"), docker.args.indexOf("--body") + 2), ["--body", "-"]);
+
+    const native = buildCommand(redis, { transport: "native", bin: "ai-memory" });
+    assert.equal(native.cmd, "ai-memory");
+
+    // dry-run via CLI nao pode executar nada nem falhar
+    const dry = spawnSync(process.execPath, [join(root, "scripts", "learned-skills-to-ai-memory.mjs"), "--dir", join(cwd, ".bot", "learned-skills")], { encoding: "utf8" });
+    assert.equal(dry.status, 0);
+    assert.match(dry.stdout, /Nada foi gravado/);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

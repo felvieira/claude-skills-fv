@@ -52,8 +52,13 @@ for (const [event, blocks] of Object.entries(codexRaw.hooks || {})) {
         console.error(`❌ Codex ${event} hook must resolve the dispatcher from the git root`);
         missing++;
       }
-      if (!windows.includes("git rev-parse --show-toplevel") || !windows.includes("runtime-dispatcher.mjs")) {
-        console.error(`❌ Codex ${event} hook is missing its Windows git-root command override`);
+      // Dois formatos validos no Windows: via git-root (cmd/PowerShell especificos) ou
+      // o shell-agnostico `node hooks/scripts/runtime-dispatcher.mjs <Evento>` (so `node` +
+      // caminho relativo, funciona igual em PowerShell e cmd; exige abrir o Codex na raiz).
+      const windowsViaGitRoot = windows.includes("git rev-parse --show-toplevel") && windows.includes("runtime-dispatcher.mjs");
+      const windowsAgnostic = new RegExp(`^node hooks/scripts/runtime-dispatcher\\.mjs ${event}$`).test(windows.trim());
+      if (!windowsViaGitRoot && !windowsAgnostic) {
+        console.error(`❌ Codex ${event} hook needs a Windows command override (git-root form or "node hooks/scripts/runtime-dispatcher.mjs ${event}")`);
         missing++;
       }
     }

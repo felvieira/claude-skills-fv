@@ -154,7 +154,9 @@ function run() {
   // an empty JSON object, while a blocked stop uses decision/reason. The
   // generic `continue` field is valid for turn/tool hooks but is rejected by
   // Codex's Stop parser.
-  const response = event === "Stop" ? {} : { continue: true };
+  // PreCompact tambem responde `{}`: o contrato de saida desse evento nao esta
+  // documentado de forma estavel entre hosts, e `{}` e valido em todos.
+  const response = event === "Stop" || event === "PreCompact" ? {} : { continue: true };
   const contexts = [];
   const systemMessages = [];
 

@@ -34,9 +34,22 @@ O texto entregue abre com um aviso: dados historicos **nao confiaveis**, pista e
 - O pacote vive no projeto (`.auto/` ja e gitignored) e e apagado na entrega. Nao e memoria de longo prazo e **nao e capturado pelo backend de memoria**: por isso nao conflita com a regra de exclusividade de [`memory-backends.md`](memory-backends.md) e fica ativo mesmo com `ai-memory`.
 - Opt-out: `hooks/config.json → compaction_recovery.enabled = false`, ou `DEVKIT_DISABLED_HOOKS=precompact-capture`.
 
+## Compatibilidade por agente (verificada em 2026-10-03, nesta máquina)
+
+Cada agente grava o transcript de um jeito; `compaction-lib.mjs` traduz para eventos neutros e **formato desconhecido gera nenhum pacote** (nunca um pacote vazio).
+
+| Agente | Hooks do kit rodam? | `PreCompact` | Transcript | Estado |
+|---|---|---|---|---|
+| Claude Code | sim (plugin, `hooks/hooks.json`) | sim | JSONL `message.content[]` | testado com transcrito real (4,2 MB) |
+| Codex 0.155 | sim, se aberto na raiz do repo (`.codex/hooks.json`) | o binário contém `PreCompact`, `PostCompact` e `transcript_path`; o `~/.codex/hooks.json` global já registra `PreCompact` | `rollout-*.jsonl` (`response_item`: `message`, `function_call`, `function_call_output`) — adaptador próprio | testado com 3 rollouts reais; **nenhuma compactação real do Codex observada ainda** |
+| Grok Build | **não**: o `config.toml` tem `[compat.claude] hooks = false`; ele só lê `~/.grok/hooks/*.json` (onde o ai-memory já está) | o binário contém `PreCompact` e `transcript_path` | não verificado | só `AGENTS.md` e MCP valem; hooks do kit não |
+| OpenCode, Cursor, Gemini CLI | não testado | — | — | só `AGENTS.md`/MCP |
+
+Codex em modo "code" roda o shell dentro de JS (`tools.exec_command({cmd:"..."})`): o comando é extraído, mas o resultado do script não traz o código de saída, então a verificação aparece como `resultado nao registrado` — nunca como `passou`.
+
 ## Limites conhecidos (nao esconder)
 
-- Dependem do host: so Claude Code (e hosts que expõem `PreCompact` com `transcript_path` em JSONL) alimentam a captura. Em Codex nao foi verificado; `.codex/hooks.json` nao registra o evento.
+- Dependem do host: o hook só alimenta a captura onde o host dispara `PreCompact` com `transcript_path` num formato que `compaction-lib.mjs` entende (hoje Claude Code e Codex).
 - "Fechado" nao e detectado: um item some por **idade** (2 compactacoes), nao por ter sido resolvido na conversa.
 - Em execucao autonoma sem prompt (`/auto`, `/loop`), a entrega acontece no proximo `PostToolUse`.
 - Um transcript grande so tem o fim lido (aviso `so o fim do transcript foi lido` no pacote).

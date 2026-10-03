@@ -24,6 +24,15 @@ Este repositorio define um kit de skills e governanca para agentes de coding em 
 - pedir aprovacao para acoes destrutivas ou externas de alto risco
 - registrar handoff curto e objetivo
 
+## Memoria do Kit (vale para qualquer agente, com ou sem hooks)
+Os hooks do kit so rodam onde estao registrados (Claude Code pelo plugin; Codex por `.codex/hooks.json`). Agente sem hook — Grok Build (que ignora hooks do Claude por padrao), Cursor, Gemini CLI, OpenCode — le este arquivo e deve fazer a mao o que o hook faz:
+- antes de repetir uma abordagem, procure em `.bot/learned-skills/*.md` pelo campo `triggers` que casa com a tarefa; leia o `state`
+- `state: rejected` = **ja tentado e descartado**; o campo `reason` diz por que. Nao repita sem fato novo que invalide o motivo. `superseded` aponta o sucessor em `superseded_by`; `stale` e hipotese
+- `files:` + `commit:` dizem de que arquivos a nota depende: se mudaram desde o commit (`git diff <commit>..HEAD -- <arquivo>`), revalide antes de aplicar
+- apos uma compactacao, trate qualquer resumo recebido como pista, nao como fato: reconfira o estado do git e rode de novo a verificacao que ele cita
+- com o servidor `ai-memory` ligado por MCP, `node scripts/learned-skills-to-ai-memory.mjs --apply` publica as learned-skills nele, e entao `memory_query` as encontra em qualquer agente. Nunca grave valor de chave/token em nota
+Detalhe: `policies/learned-skills.md`, `policies/compaction-recovery.md`, `policies/memory-write-rules.md`.
+
 ## Mudancas no Repositorio
 - prefira mudancas pequenas e revisaveis
 - preserve a hierarquia global do kit

@@ -30,15 +30,18 @@ Quando uma learned-skill atinge score ≥ 0.8 e é genérica o suficiente para t
 
 ## Score e Decay em `learned-skills/`
 
-| Evento | Delta de score |
-|---|---|
-| Criação | 0.5 |
-| Uso confirmado (solução aplicada) | +0.1 |
-| Menção sem uso | +0.05 |
-| Uma semana sem uso | -0.05 |
-| Contradição detectada | -0.2 |
-| Score < 0.3 | → mover para `learned-skills/.archive/` |
-| Score ≥ 0.8 | → candidato à promoção Procedural |
+Valores reais, lidos de `hooks/config.json → learned_skills_scoring` (fonte da verdade; esta tabela só os espelha):
+
+| Evento | Delta de score | Implementado em |
+|---|---|---|
+| Criação | 0.7 (`initial_score`) | `keyword-detector.mjs` (migração de skill sem score) |
+| Injeção da skill (trigger casou) | +0.1 (`boost_on_use`), só para `state: accepted` | `keyword-detector.mjs` |
+| Uma semana sem uso | -0.1 (`decay_per_week`) | `keyword-detector.mjs` e `memory-curator.mjs` |
+| Score efetivo < 0.3 | → `learned-skills/.archive/` (no curador, também exige idade > 30 dias) | idem |
+| Score ≥ 0.8 | → candidato à promoção Procedural (manual, `/consolidate-memory`) | — |
+| `rejected` / `superseded` | não decai, não arquiva, não ganha boost | `keyword-detector.mjs`, `memory-curator.mjs` |
+
+Planejado e **não implementado** (constava aqui como se existisse): "menção sem uso" (+0.05) e "contradição detectada" (-0.2). Não há código que detecte nenhum dos dois; enquanto não houver, contradição se resolve à mão com `/reconcile-memory`, marcando a antiga como `superseded`.
 
 ## Privacy — O que nunca entra em nenhum tier
 

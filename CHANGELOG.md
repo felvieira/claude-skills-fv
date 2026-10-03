@@ -14,6 +14,51 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.87.0] - 2026-10-03 — memória entre agentes: Codex, Grok, ponte com ai-memory
+
+Usuário pediu para verificar se a memória nova funciona com Claude, Codex, Grok etc. Verificado na
+máquina, com transcritos e binários reais (não só fixtures). Resultado: funcionava só no Claude.
+
+### Corrigido
+
+- **O extrator do pacote pós-compactação só entendia o formato do Claude Code.** O Codex grava
+  `rollout-*.jsonl` com outro esquema (`response_item` → `message` / `function_call` /
+  `function_call_output`) e o parser leria zero registros. Agora há um adaptador por agente que
+  traduz para eventos neutros; contexto injetado pelo Codex (`<environment_context>`,
+  `# AGENTS.md instructions`, `## My request:`) não vira "objetivo".
+- **Formato desconhecido gerava pacote vazio** que só gastaria contexto na entrega. Agora não grava
+  nada (`hasContent`). O Grok Build entra nesse caso até alguém verificar o formato dele.
+- **Comando de verificação saía como `Set-Location ...`**: agora só conta um segmento que *começa* com
+  a ferramenta (`node scripts/check-consistency.mjs`, `npm test`...), não qualquer comando que cite
+  a palavra. Codex em modo `exec` (shell dentro de JS) tem o comando extraído, status "não registrado".
+- `PreCompact` responde `{}` (o contrato de saída não é estável entre hosts; `{}` vale em todos).
+- `.codex/hooks.json` registra `PreCompact`. `scripts/check-hook-scripts-exist.mjs` exigia a forma
+  "git-root" no Windows e reprovava a forma shell-agnóstica `node hooks/scripts/...` que o próprio
+  arquivo documenta; agora aceita as duas.
+- `policies/memory-tiers.md` prometia "menção sem uso +0,05" e "contradição -0,2" que nenhum código
+  implementa, e números (0,5 / -0,05) diferentes do `hooks/config.json` (0,7 / -0,1). A tabela agora
+  espelha a config e marca o que não existe.
+
+### Adicionado
+
+- **`scripts/learned-skills-to-ai-memory.mjs`**: publica as learned-skills no ai-memory (dry-run por
+  padrão; `--apply` grava via `docker exec ai-memory ai-memory write-page`, o servidor que o MCP lê —
+  o `write-page` do binário nativo grava num data-dir à parte). `rejected`/`superseded` viram
+  `decision` fixada. É o caminho para o "já tentado e descartado" chegar a Codex e Grok, que falam
+  com o ai-memory por MCP.
+- Seção **"Memória do Kit"** no `AGENTS.md`: agente sem hook (Grok, Cursor, Gemini, OpenCode) aprende
+  a ler `.bot/learned-skills/`, respeitar `state`/`reason`/`files`/`commit` e tratar resumo
+  pós-compactação como pista.
+- Tabela de **compatibilidade por agente** em `policies/compaction-recovery.md`, com o que foi
+  verificado e o que não foi.
+- 4 testes novos (22 no total): Codex ponta a ponta, formato desconhecido, ponte, filtro de segmento.
+
+### Achados sem correção nesta versão
+
+- O Grok Build tem `[compat.claude] hooks = false`: não lê os hooks do plugin; só `~/.grok/hooks/*.json`.
+- O dispatcher custa ~500–670 ms por evento (Pre/PostToolUse, UserPromptSubmit) porque dispara cada
+  script em processo próprio, em série; um `node` vazio custa 55 ms.
+
 ## [2.86.0] - 2026-10-03 — memória: recuperação pós-compactação, estados de decisão, frescor, redação, eval
 
 Usuário pediu o que valia pegar de [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) (memória de

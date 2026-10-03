@@ -5,7 +5,7 @@
  * por este hook. Ver policies/compaction-recovery.md.
  */
 import { isHookDisabled, readHookConfig } from "./utils.mjs";
-import { buildPacket, loadPacket, readTail, savePacket } from "./compaction-lib.mjs";
+import { buildPacket, hasContent, loadPacket, readTail, savePacket } from "./compaction-lib.mjs";
 
 let raw = "";
 process.stdin.setEncoding("utf-8");
@@ -31,7 +31,9 @@ process.stdin.on("end", () => {
       sessionId,
       previous: loadPacket(cwd, sessionId),
     });
-    savePacket(cwd, packet);
+    // Formato desconhecido ou sessao sem nada util: melhor nenhum pacote do que
+    // um pacote vazio que so gastaria contexto na entrega.
+    if (hasContent(packet)) savePacket(cwd, packet);
   } catch {
     // best-effort
   }

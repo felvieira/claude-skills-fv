@@ -67,6 +67,10 @@ Com `files:` e `commit:` preenchidos, na injecao o hook compara `git diff <commi
 
 Quando ha arquivos sujos no `git status`, uma skill que cita um deles ganha `+0.15` no ranking de injecao — so desempata; nunca passa por cima de score e trigger.
 
+## Fora do Claude Code
+
+Os hooks acima só rodam onde estão registrados. Para Codex, Grok e Cursor — que falam com o `ai-memory` por MCP — `node scripts/learned-skills-to-ai-memory.mjs` (dry-run por padrão; `--apply` grava via `docker exec ai-memory`, o mesmo servidor que o MCP consulta) publica cada learned-skill como página (`rejected`/`superseded` viram `decision` fixada), com o corpo já redigido. Sem hook, o `AGENTS.md` ensina o agente a ler `.bot/learned-skills/` e respeitar o `state`.
+
 ## Os dois caminhos de captura
 
 | Caminho | Hook | Quando | Natureza |
