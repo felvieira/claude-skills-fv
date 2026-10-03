@@ -6,8 +6,8 @@ Hierarquia de 4 tiers de memória do kit, inspirada no modelo de consolidação 
 
 | Tier | Artefato | Lifecycle | Quem gerencia |
 |---|---|---|---|
-| **Working** | `devkit_working_set`, `.auto/progress.md`, `.auto/plan.md` | Sessão atual | Hook Stop / runner |
-| **Episodic** | `devkit_context_pack`, `docs/repo-audit/current.md` | Por sessão ou feature | Hook SessionEnd / skill 31 |
+| **Working** | `devkit_working_set`, `.auto/progress.md`, `.auto/plan.md`, `.auto/compaction/<sessão>.json` (pacote pós-compactação, ver `policies/compaction-recovery.md`) | Sessão atual; o pacote é apagado ao ser entregue | Hook Stop / PreCompact / runner |
+| **Episodic** | `devkit_context_pack`, `docs/repo-audit/current.md` | Por sessão ou feature | Hook Stop (o kit não registra `SessionEnd`) / skill 31 |
 | **Semantic** | `learned-skills/*.md` com score 0-1 | Persiste; decay semanal | Post-tool-verifier hook / skill 30 |
 | **Procedural** | `skills/*/SKILL.md`, `programs/`, `templates/` | Permanente; versionado | Skill 35 (Skill Author) |
 

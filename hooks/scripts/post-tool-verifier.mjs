@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { isHookDisabled } from './utils.mjs';
+import { gitSnapshot } from './memory-lib.mjs';
 
 function detectDebuggingPattern(input) {
   const toolName = input.tool_name || '';
@@ -61,6 +62,8 @@ process.stdin.on('end', () => {
     if (passesQualityGate(history)) {
       const fileName = (input.tool_input.file_path || "").split(/[\\/]/).pop() || "<file>";
       const skillStem = fileName.replace(/\.[^.]+$/, "").replace(/[^a-z0-9-]/gi, "-").toLowerCase() || "fix";
+      const snap = gitSnapshot();
+      const headSha = snap.available ? snap.head.slice(0, 12) : "<git-sha-ou-remova-a-linha>";
       const template = [
         `[post-tool-verifier] ⚠ Debugging pattern detected (multi-file or multi-edit session)`,
         ``,
@@ -82,9 +85,12 @@ process.stdin.on('end', () => {
         ``,
         `  ---`,
         `  name: ${skillStem}`,
-        `  trigger: ["<keyword-from-symptom>", "<keyword-from-root-cause>"]`,
+        `  triggers: ["<keyword-from-symptom>", "<keyword-from-root-cause>"]`,
         `  created: ${new Date().toISOString().slice(0, 10)}`,
         `  source_file: ${fileName}`,
+        `  state: accepted`,
+        `  files: ["<path/the/fix/touches>"]`,
+        `  commit: ${headSha}`,
         `  ---`,
         ``,
         `  # When you see this pattern again`,

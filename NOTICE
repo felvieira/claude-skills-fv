@@ -493,3 +493,17 @@ User-consolidated UX/conversion/growth skill pack (2026-09)
   The pack's saas-conversion-audit skill was identical to skill 73 and
   was not re-imported. skills/83-growth-action-plan/ is the user's own
   report prompt, incorporated near-verbatim.
+
+vshulcz/deja-vu
+  https://github.com/vshulcz/deja-vu
+  License: MIT
+  Idea-level inspiration, no code copied. Inspired policies/compaction-recovery.md
+  (capture a bounded packet at PreCompact; hand it back once; compare the git
+  state at delivery; never infer a passed verification without a recorded
+  result), the rejected/superseded/stale lifecycle states and the freshness line
+  in policies/learned-skills.md, working-tree-aware ranking, the negative-control
+  design of scripts/eval-memory-recall.mjs, and the value-shape redaction plus
+  transcript audit in scripts/memory-secrets-scan.mjs. Deliberately not adopted:
+  the command-warning hook (the project's own measurement found it did not
+  change outcomes), the Go binary, the multi-harness parsers and the embedding
+  sidecar. The retention numbers quoted from its README were not verified here.

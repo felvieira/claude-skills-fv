@@ -1167,7 +1167,7 @@ server.registerTool(
             const raw = await fs.promises.readFile(path.join(learnedDir, file), "utf-8");
             const nameMatch = raw.match(/^name:\s*(.+)$/m);
             const descMatch = raw.match(/^description:\s*(.+)$/m);
-            const triggersMatch = raw.match(/^triggers:\s*\[([^\]]+)\]/m);
+            const triggersMatch = raw.match(/^triggers?:\s*\[([^\]]+)\]/m);
             const typeMatch = raw.match(/^type:\s*(.+)$/m);
             return {
               file,

@@ -17,9 +17,12 @@ Se algum critério falha → **não salve**. Um vault cheio de fixes triviais de
 ```markdown
 ---
 name: <slug-kebab-case>
-trigger: ["<keyword-do-sintoma>", "<keyword-da-causa>"]
+triggers: ["<keyword-do-sintoma>", "<keyword-da-causa>"]
 created: YYYY-MM-DD
 source_file: <arquivo onde o bug vivia>
+state: accepted            # accepted | rejected | superseded | stale  (opcional; padrao accepted)
+files: [<caminhos que o fix toca>]   # opcional: habilita frescor e ranking por arvore suja
+commit: <sha do HEAD ao salvar>      # opcional: ponto de comparacao do frescor
 ---
 
 # <título: o padrão que você vai ver de novo>
@@ -39,6 +42,30 @@ source_file: <arquivo onde o bug vivia>
 ```
 
 Segue `policies/memory-write-rules.md` (anti-fabricação: não invente; `TBD` pro incerto).
+
+> O campo e `triggers:` (plural). O template antigo do `post-tool-verifier` gerava `trigger:` e o loader so lia `triggers:`, entao skills salvas pelo template **nunca eram injetadas**. O loader (`keyword-detector.mjs`) e a leitura do MCP agora aceitam as duas grafias; o template gera a correta.
+
+## Estados — o que foi tentado e descartado tambem e memoria
+
+| `state` | Significa | Na injecao | Decay/archive |
+|---|---|---|---|
+| `accepted` (padrao) | solucao que funcionou | resumo + "How to use"; ganha boost ao ser usada | sim (score/decay abaixo) |
+| `rejected` | abordagem **tentada e revertida**; exige `reason:` | cabecalho `⛔ REJEITADA`, o motivo e "nao repita sem fato novo que o invalide" | **nao** |
+| `superseded` | trocada por outra; use `superseded_by:` | cabecalho `↪ SUPERADA` apontando o sucessor | **nao** |
+| `stale` | referencia stack/arquivo que mudou; revisar | cabecalho `⚠ DESATUALIZADA`, tratar como hipotese | sim |
+
+`rejected` e `superseded` sao **registro de decisao**, nao dica que perde valor por falta de uso: nao decaem, nao sao arquivadas pelo `memory-curator` e nao ganham boost quando mostradas (senao um aviso de "nao faca" viraria "popular"). E o que impede o agente de gastar uma sessao reinventando um beco ja explorado — o mesmo erro de "false absence" de [`memory-write-rules.md`](memory-write-rules.md), so que sobre o que **nao** funcionou.
+
+Regra de captura de `rejected`: so registre quando houver **motivo observado** (medicao, erro, regressao). "Nao gostei" nao e motivo; sem `reason`, o aviso diz `(motivo nao registrado)` e perde utilidade.
+
+## Frescor e ranking pela arvore de trabalho
+
+Com `files:` e `commit:` preenchidos, na injecao o hook compara `git diff <commit>..HEAD` mais a arvore suja contra os caminhos citados:
+
+- algum mudou => linha `Frescor: N arquivo(s) citado(s) mudaram desde <sha>: ...`. Revalide antes de aplicar;
+- nada mudou, sem git ou commit desconhecido => **silencio** (nao afirma o que nao sabe).
+
+Quando ha arquivos sujos no `git status`, uma skill que cita um deles ganha `+0.15` no ranking de injecao — so desempata; nunca passa por cima de score e trigger.
 
 ## Os dois caminhos de captura
 
@@ -81,6 +108,9 @@ O `memory-curator` aplica decay/archive autonomamente no SessionStart (parte mec
 - `hooks/scripts/auto-skillify.mjs` — captura por cadência.
 - `hooks/scripts/keyword-detector.mjs` — leitura + injeção + boost de score.
 - `hooks/scripts/memory-curator.mjs` — decay/archive autônomo.
+- `hooks/scripts/memory-lib.mjs` — frontmatter, frescor via git e redacao de segredos compartilhados.
+- `scripts/eval-memory-recall.mjs` + `bench/memory/` — eval de injecao: positivos devem trazer a resposta, controles negativos devem injetar zero.
+- `policies/compaction-recovery.md` — pacote pos-compactacao (outro fluxo, mesma biblioteca).
 - `policies/memory-write-rules.md` — regras de escrita (anti-fabricação).
 - `policies/self-correcting-sensors.md` — filosofia dos sensores conservadores.
 - `policies/memory-tiers.md` — onde os learned-skills habitam na hierarquia 4-tier.

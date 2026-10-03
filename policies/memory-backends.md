@@ -28,8 +28,13 @@ nova e pesada que o kit historicamente não pedia.
 
 1. Detecta `docker version` — se ausente, fica no vault nativo, sem perguntar.
 2. Se Docker existe, sobe (ou reaproveita) o container `ai-memory` em
-   `127.0.0.1:49374`, idempotente, sem perguntar (mesmo padrão de "npx MCPs
-   auto-instalam" que o kit já usa).
+   `127.0.0.1:39374` (override: `DEVKIT_AI_MEMORY_PORT`), idempotente, sem
+   perguntar (mesmo padrão de "npx MCPs auto-instalam" que o kit já usa). A
+   porta não é 49374 porque, no Windows, 49152+ é a faixa dinâmica que o
+   Hyper-V/WSL2 reserva e o Docker às vezes falha em silêncio ao publicá-la.
+   O container sobe com `-e AI_MEMORY_SERVER_URL=...` e `serve --bind 0.0.0.0:<porta>`:
+   sem a variável o healthcheck interno tenta a porta padrão e o container
+   fica `unhealthy` mesmo respondendo.
 3. Se o binário CLI `ai-memory` está no PATH, registra hooks + MCP para
    `claude-code` automaticamente (`install-hooks` / `install-mcp`).
 4. Grava o backend ativo em `~/.dev-team-kit/memory-backend.json` — a fonte

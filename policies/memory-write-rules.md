@@ -48,8 +48,12 @@ No frontmatter (`confidence: high`) ou inline (`(confidence: speculation)`).
 ### 7. Cross-links pelo padrão do vault
 Decisões e logs referenciam projeto/feature por wikilink `[[projeto]]` quando o vault os suporta, pro grafo ser navegável.
 
+### 8. Redação por formato antes de gravar
+Nada com cara de credencial entra em nota, log de evento ou pacote de recuperação. `hooks/scripts/memory-lib.mjs → redactSecrets` troca chave de provedor, JWT, bloco PEM, `Bearer`, credencial em URL e atribuição `*_KEY=`/`*_TOKEN=`/`password:` por `[redacted:<tipo>]` **pelo formato do valor** — filtrar só pelo nome do campo deixa passar a chave colada em texto livre. É reconhecimento de formato, não detecção de segredo: formato desconhecido passa. Transcritos que **já** carregam segredos são listados (sem imprimir o valor) por `node scripts/memory-secrets-scan.mjs`; limpar o rastro não desfaz o vazamento, rotacione a credencial.
+
 ## Anti-padrões
 
+- ❌ Gravar valor de chave/token numa nota "só pra lembrar" — registre onde ela mora, nunca o valor.
 - ❌ "Não há nada sobre isso no vault" sem grep exaustivo (false absence).
 - ❌ Inventar uma pendência/decisão pra preencher seção vazia.
 - ❌ Claim externo sem `(as of YYYY-MM, fonte)` — vira fato eterno que ninguém revalida.

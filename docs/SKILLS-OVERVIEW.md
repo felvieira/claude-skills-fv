@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 83 skills + 16 subagents + 45 commands + 63 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 83 skills + 16 subagents + 45 commands + 64 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 83 skills, 16 subagents, 45 slash commands, 63 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-09-30 (v2.85.0 — skill 84 ai-video-direction, categoria Produção de Vídeo com IA)
+> **Versão:** 83 skills, 16 subagents, 45 slash commands, 64 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-10-03 (v2.86.0 — memória: pacote pós-compactação, estados de learned-skill, frescor, redação, eval)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -503,7 +503,7 @@ Diferença vs skill: subagent é despachado via `Task` tool, roda isolado, devol
 
 ## Policies que governam tudo
 
-63 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
+64 policies compartilhadas em `policies/`. Não precisa ler todas — as 5 mais importantes:
 
 ### `tool-safety.md`
 Tools com mínimo privilégio, tratar input externo como não confiável, gate de aprovação para acões médio/alto risco.
@@ -522,6 +522,9 @@ Hard guardrail do `/detective-spec`: writes restritos a `.detective/` e `_detect
 
 ### `vertical-slices.md`
 **Obrigatória para toda feature multi-camada.** Quebra a entrega em fatias verticais (DB + back + front + teste e2e por feature) em vez de horizontal (todo o front, depois todo o back). Habilita paralelização real entre features independentes via `/worktree` ou `/loop --parallel N`. Anti-padrão número 1 do kit: "front primeiro, back depois" — proibido para feature multi-camada. Orchestrator (skill 09) recusa plano layer-first.
+
+### `compaction-recovery.md`
+Antes de o host compactar a conversa, o hook `PreCompact` guarda um pacote de até 4 KiB com o que o resumo costuma perder — objetivo, pendências declaradas ("Manter até fechar"), comandos de verificação **com o resultado lido do transcript** e o estado do git — e o devolve uma vez no próximo prompt ou tool call, com veredito de frescor ("inalterado" / "MUDOU") e aviso de dados não confiáveis. Sem LLM, sem índice, tudo redigido por formato antes de ir pro disco. Ideia vinda do deja-vu (MIT), reimplementada em Node puro.
 
 Demais policies em `policies/`: `execution.md`, `handoffs.md`, `token-efficiency.md`, `quality-gates.md`, `evals.md`, `persistence.md`, `confusion-management.md`, `anti-rationalization.md`, `hooks.md`, `cost-optimization.md`, `code-exploration.md`, `iterative-retrieval.md`, `search-first.md`, `documentation-i18n.md`, `stack-flexibility.md`, `context-engineering.md`.
 

@@ -22,7 +22,9 @@ import { homedir } from "node:os";
 
 const CONTAINER = "ai-memory";
 const IMAGE = "akitaonrails/ai-memory:latest";
-const PORT = 49374;
+// 39374, nao 49374: no Windows a faixa dinamica 49152+ e reservada pelo
+// Hyper-V/WSL2 e o Docker as vezes falha em silencio ao publicar a porta.
+const PORT = Number(process.env.DEVKIT_AI_MEMORY_PORT) || 39374;
 const MARKER_DIR = join(homedir(), ".dev-team-kit");
 const BACKEND_MARKER = join(MARKER_DIR, "memory-backend.json");
 
@@ -76,8 +78,10 @@ function startContainer() {
     "run", "-d", "--name", CONTAINER,
     "--restart", "unless-stopped",
     "-p", `127.0.0.1:${PORT}:${PORT}`,
+    "-e", `AI_MEMORY_SERVER_URL=http://127.0.0.1:${PORT}`,
     "-v", "ai-memory-data:/data",
     IMAGE,
+    "serve", "--transport", "http", "--bind", `0.0.0.0:${PORT}`, "--enable-web",
   ], { stdio: "ignore" });
   return { started: res.status === 0, reason: "created" };
 }
@@ -105,7 +109,7 @@ function main() {
   const ok = started || reason === "already-running";
   if (!ok) {
     console.log("[ai-memory] failed to start container — falling back to native vault");
-    console.log(`[ai-memory] you can retry manually: docker run -d --name ${CONTAINER} --restart unless-stopped -p 127.0.0.1:${PORT}:${PORT} -v ai-memory-data:/data ${IMAGE}`);
+    console.log(`[ai-memory] you can retry manually: docker run -d --name ${CONTAINER} --restart unless-stopped -p 127.0.0.1:${PORT}:${PORT} -e AI_MEMORY_SERVER_URL=http://127.0.0.1:${PORT} -v ai-memory-data:/data ${IMAGE} serve --transport http --bind 0.0.0.0:${PORT} --enable-web`);
     writeBackendMarker("native", { reason: "docker-run-failed" });
     return;
   }

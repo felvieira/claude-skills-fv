@@ -11,6 +11,7 @@
 
 import fs   from 'fs';
 import path from 'path';
+import { redact } from './memory-lib.mjs';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MAX_BYTES       = 10 * 1024 * 1024;   // 10 MB rotation threshold
@@ -69,10 +70,16 @@ function buildTraceTags() {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Truncate a string to MAX_STR_LEN chars */
+/**
+ * Redige por FORMATO do valor e so depois trunca: truncar primeiro poderia
+ * cortar uma chave no meio e deixar o prefixo passar. A lista SENSITIVE_KEYS
+ * abaixo so enxerga o NOME do campo; uma chave colada em texto livre (um
+ * comando Bash, por exemplo) so e pega aqui.
+ */
 function truncate(s) {
   if (typeof s !== 'string') return s;
-  return s.length > MAX_STR_LEN ? s.slice(0, MAX_STR_LEN) + '…' : s;
+  const safe = redact(s);
+  return safe.length > MAX_STR_LEN ? safe.slice(0, MAX_STR_LEN) + '…' : safe;
 }
 
 /** Shallow-normalize args: truncate strings, redact sensitive keys */

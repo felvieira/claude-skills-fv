@@ -1,0 +1,17 @@
+{
+  "description": "Eval de injecao de memoria (learned-skills) via keyword-detector. Positivos devem trazer a resposta; controles negativos devem injetar ZERO. Inspirado no desenho de bench do deja-vu (vshulcz/deja-vu): o que importa nao e so achar, e nao injetar quando nada e relevante.",
+  "thresholds": { "positives_carry_answer": 1.0, "negatives_inject_zero": 1.0, "median_positive_tokens_max": 700 },
+  "positives": [
+    { "name": "jwt: causa e fix", "prompt": "o login quebrou com jwt kid mismatch depois do deploy", "skill": "jwt-kid-mismatch", "must_contain": ["JWKS", "rotateKey"] },
+    { "name": "porta no Windows", "prompt": "o docker nao publica a porta 49374 no windows", "skill": "windows-port-range", "must_contain": ["49152"] },
+    { "name": "rejeitada traz o motivo", "prompt": "vamos usar redis para guardar a sessao?", "skill": "redis-sessions", "must_contain": ["REJEITADA", "p95"] },
+    { "name": "superada aponta o sucessor", "prompt": "preciso seguir a receita do prisma 4 para migrar", "skill": "prisma-4", "must_contain": ["SUPERADA", "prisma-6-migration"] },
+    { "name": "tailwind: safelist", "prompt": "a classe sumiu em producao, acho que e o tailwind", "skill": "tailwind-purge", "must_contain": ["safelist"] }
+  ],
+  "negatives": [
+    { "name": "tarefa sem relacao", "prompt": "renomeia essa variavel para camelCase" },
+    { "name": "pergunta informativa sobre tema com memoria", "prompt": "explica como funciona o jwt" },
+    { "name": "pedido de teste generico", "prompt": "escreve um teste para o componente de botao" },
+    { "name": "pergunta fora do dominio", "prompt": "qual a capital da frança" }
+  ]
+}

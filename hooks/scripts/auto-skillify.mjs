@@ -99,7 +99,7 @@ process.stdin.on("end", () => {
     `  3. Custou debugging real (>15 min, hipótese-driven)`,
     ``,
     `Se os 3 forem verdadeiros → crie .bot/learned-skills/<slug>.md com frontmatter`,
-    `(name, trigger[], created, source_file) + seções Symptom / Root cause / Fix /`,
+    `(name, triggers[], created, source_file, state, files[], commit) + seções Symptom / Root cause / Fix /`,
     `How NOT to fix it. Siga policies/memory-write-rules.md (não fabrique; TBD pro incerto).`,
     ``,
     `Se NENHUM critério bate → ignore e siga. Skill-slot é caro; fix genérico não merece.`,

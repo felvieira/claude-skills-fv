@@ -48,7 +48,19 @@ const EVENT_SCRIPTS = {
     "graph-update-post-tool.mjs",
   ],
   Stop: ["context-guard-stop.mjs", "persistent-mode.mjs", "stop-savings-summary.mjs"],
+  PreCompact: ["precompact-capture.mjs"],
 };
+
+// Eventos onde um pacote de recuperacao pendente e entregue. SessionStart fica
+// de fora de proposito: nem todo host honra additionalContext ali, e o pacote
+// so e apagado quando entregue.
+const RECOVERY_EVENTS = new Set(["UserPromptSubmit", "PostToolUse"]);
+
+function hasPendingCompactionPacket(payload) {
+  const sid = String(payload.session_id || "").replace(/[^A-Za-z0-9_-]/g, "");
+  if (!sid) return false;
+  return fs.existsSync(path.join(payload.cwd || process.cwd(), ".auto", "compaction", `${sid}.json`));
+}
 
 function readInput() {
   try {
@@ -146,7 +158,12 @@ function run() {
   const contexts = [];
   const systemMessages = [];
 
-  for (const script of EVENT_SCRIPTS[event]) {
+  const scripts = [...EVENT_SCRIPTS[event]];
+  if (RECOVERY_EVENTS.has(event) && hasPendingCompactionPacket(payload)) {
+    scripts.unshift("compaction-recover.mjs");
+  }
+
+  for (const script of scripts) {
     const result = spawnSync(process.execPath, [path.join(scriptsDir, script)], {
       cwd: process.cwd(),
       env: { ...process.env, CLAUDE_PLUGIN_ROOT: process.env.CLAUDE_PLUGIN_ROOT || kitRoot },

@@ -14,6 +14,60 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.86.0] - 2026-10-03 — memória: recuperação pós-compactação, estados de decisão, frescor, redação, eval
+
+Usuário pediu o que valia pegar de [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) (memória de
+histórico para agentes, MIT) para melhorar a memória do kit. Decisão: **não instalar** (traria hooks
+próprios de SessionStart/UserPromptSubmit/PreToolUse em cima do ai-memory e do kit, e
+`memory-backends.md` proíbe dois sistemas de captura em paralelo) e reimplementar 5 mecanismos em
+Node puro, sem LLM. Cada lacuna foi confirmada no kit antes de escrever código.
+
+### Adicionado
+
+- **Pacote de recuperação pós-compactação** (`hooks/scripts/precompact-capture.mjs`,
+  `compaction-recover.mjs`, `compaction-lib.mjs`, evento `PreCompact` em `hooks/hooks.json`). O kit
+  não tinha nenhum hook de compactação. Antes de compactar guarda objetivo, pendências declaradas,
+  comandos de verificação **com o resultado lido do transcript** e o estado do git; na entrega
+  (uma vez, no próximo prompt ou tool call) diz se o repositório mudou. Ver
+  `policies/compaction-recovery.md`.
+- **Estados de learned-skill** `accepted | rejected | superseded | stale` com `reason`,
+  `superseded_by`; `rejected` e `superseded` não decaem, não são arquivadas e não ganham boost.
+  O agente passa a ver "já tentado e descartado, porque Y" em vez de refazer o beco.
+- **Frescor e ranking pela árvore de trabalho** (`files:` + `commit:` no frontmatter): linha
+  `Frescor: N arquivo(s) citado(s) mudaram desde <sha>`, em silêncio quando não dá para saber; skill
+  que cita arquivo sujo no `git status` desempata com +0,15.
+- **`hooks/scripts/memory-lib.mjs`**: redação de segredos por **formato do valor** (chaves de
+  provedor, JWT, PEM, Bearer, credencial em URL, `*_KEY=`), frontmatter e frescor via git.
+- **`scripts/memory-secrets-scan.mjs`**: lista quais transcritos (`~/.claude/projects`,
+  `~/.codex/sessions`) carregam credenciais — tipo e contagem, nunca o valor; `--scrub` reescreve e
+  guarda `.pre-scrub`. Lê em streaming (há transcritos acima de 500 MB).
+- **`scripts/eval-memory-recall.mjs` + `bench/memory/`**: eval de injeção com controles negativos —
+  positivos devem trazer a resposta, negativos devem injetar zero. Hoje: 5/5 e 4/4, mediana de 163
+  tokens contra 430 de despejar tudo. `scripts/tests/memory-hooks.test.mjs` (18 testes) e os dois
+  passos novos em `.github/workflows/validate.yml`.
+
+### Corrigido
+
+- **Learned-skills salvas pelo template nunca eram injetadas**: o template do `post-tool-verifier`
+  gerava `trigger:` e o loader (hook e MCP) só lia `triggers:`. Template e `policies/learned-skills.md`
+  agora usam `triggers:`; os leitores aceitam as duas grafias.
+- **Filtro "pergunta informativa" silenciava memória legítima**: `/o que [eé]/` sem fronteira de
+  palavra casava "acho que é". Achado pelo próprio eval novo.
+- **`session-event-logger` só redigia pelo nome do campo**: uma chave colada num comando Bash passava.
+  Agora redige por formato e só depois trunca (truncar antes podia deixar o prefixo da chave).
+- **Porta do ai-memory**: 49374 (faixa dinâmica reservada pelo Hyper-V/WSL2 no Windows) em
+  `scripts/ai-memory-setup.mjs`, `scripts/dashboard-server.mjs` e `policies/memory-backends.md` →
+  39374 (override `DEVKIT_AI_MEMORY_PORT`); o container sobe com `AI_MEMORY_SERVER_URL` e
+  `serve --bind`. O dashboard apontava para uma porta morta.
+- `policies/memory-tiers.md` citava um hook `SessionEnd` que o kit não registra.
+
+### Não entrou
+
+- Aviso de comando perigoso por PreToolUse: o próprio deja-vu mediu que "um comando avisado falhou
+  tanto quanto qualquer outro" e deixou desligado por padrão.
+- Binário Go, parsers de 35 agentes, índice invertido e sidecar de embeddings: outro produto, e o
+  ai-memory já cobre busca.
+
 ## [2.85.0] - 2026-09-30 — skill 84 (direção de vídeo com IA)
 
 Usuário fez à mão um filme de cerca de 3 minutos em 7 épocas com Seedance 2.5 na API da Higgsfield

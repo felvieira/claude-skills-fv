@@ -5,6 +5,12 @@ import {
 } from "fs";
 import { join } from "path";
 import { readHookConfig, resolveBotPath, isHookDisabled } from "./utils.mjs";
+import { parseFrontmatter, gitSnapshot, filesChangedSince } from "./memory-lib.mjs";
+
+const LEARNED_STATES = new Set(["accepted", "rejected", "superseded", "stale"]);
+// Bonus de ranking (so desempata, nunca passa por cima de relevancia/score):
+// a skill fala de arquivo que a arvore de trabalho esta mexendo agora.
+const DIRTY_FILE_BONUS = 0.15;
 
 function sanitize(text) {
   return text
@@ -18,7 +24,8 @@ function sanitize(text) {
 }
 
 const INFORMATIONAL_PATTERNS = [
-  /o que [eé]/i, /como funciona/i, /explica/i, /explain/i,
+  // \b: sem fronteira, "acho que é" casava como "o que é" e silenciava memoria legitima.
+  /\bo que [eé]\b/i, /como funciona/i, /explica/i, /explain/i,
   /what is/i, /how does/i, /what does/i, /tell me about/i,
   /what\s+(?:is|are|does)/i, /como usar/i, /para que serve/i,
 ];
@@ -120,7 +127,9 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
 
     try {
       let content = readFileSync(filePath, "utf-8");
-      const triggersMatch = content.match(/^triggers:\s*\[([^\]]+)\]/m);
+      // `trigger:` (singular) era o que o template do post-tool-verifier gerava;
+      // aceitar os dois evita descartar em silencio skills ja salvas.
+      const triggersMatch = content.match(/^triggers?:\s*\[([^\]]+)\]/m);
       const nameMatch = content.match(/^name:\s*(.+)$/m);
       const descMatch = content.match(/^description:\s*(.+)$/m);
       if (!triggersMatch || !nameMatch) continue;
@@ -147,8 +156,13 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
 
       const effectiveScore = score - weeksAgo(lastUsed) * decayPerWeek;
 
+      // `rejected` e `superseded` sao registro de decisao, nao dica que perde
+      // valor por falta de uso: nao entram no decay/archive automatico.
+      const earlyState = parseFrontmatter(content).data.state;
+      const decays = earlyState !== "rejected" && earlyState !== "superseded";
+
       // Auto-archive if below threshold
-      if (effectiveScore < archiveThreshold) {
+      if (decays && effectiveScore < archiveThreshold) {
         try {
           mkdirSync(archiveDir, { recursive: true });
           renameSync(filePath, join(archiveDir, file));
@@ -160,7 +174,15 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
         .split(",")
         .map((t) => t.replace(/['"]/g, "").trim().toLowerCase());
 
+      const fm = parseFrontmatter(content).data;
+      const state = LEARNED_STATES.has(fm.state) ? fm.state : "accepted";
+
       learned.push({
+        state,
+        reason: typeof fm.reason === "string" ? fm.reason : "",
+        supersededBy: typeof fm.superseded_by === "string" ? fm.superseded_by : "",
+        files: Array.isArray(fm.files) ? fm.files : [],
+        commit: typeof fm.commit === "string" ? fm.commit : "",
         name: nameMatch[1].trim(),
         description: descMatch ? descMatch[1].trim() : "",
         triggers,
@@ -176,6 +198,60 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
 
   // Sort by effective score descending — highest confidence first
   return learned.sort((a, b) => b.effectiveScore - a.effectiveScore);
+}
+
+const STATE_HEADERS = {
+  accepted: "💡 LearnedSkill matched",
+  rejected: "⛔ LearnedSkill REJEITADA — ja tentado e descartado",
+  superseded: "↪ LearnedSkill SUPERADA",
+  stale: "⚠ LearnedSkill possivelmente DESATUALIZADA",
+};
+
+function freshnessLine(skill) {
+  if (!skill.commit || skill.files.length === 0) return "";
+  const changed = filesChangedSince(skill.commit, skill.files);
+  // null (nao sei) e [] (nada mudou) ficam em silencio de proposito.
+  if (!changed || changed.length === 0) return "";
+  const shown = changed.slice(0, 4).join(", ");
+  const more = changed.length > 4 ? ` (+${changed.length - 4})` : "";
+  return `Frescor: ${changed.length} arquivo(s) citado(s) mudaram desde ${skill.commit.slice(0, 7)}: ${shown}${more}. Revalide antes de aplicar.`;
+}
+
+function renderLearnedSkill(skill) {
+  const lines = [`[keyword-detector] ${STATE_HEADERS[skill.state] || STATE_HEADERS.accepted}: ${skill.name}`, ``];
+
+  if (skill.state === "rejected") {
+    lines.push(
+      `Esta abordagem JA FOI TENTADA e descartada${skill.reason ? `. Motivo: ${skill.reason}` : " (motivo nao registrado)"}.`,
+      `Nao repita sem um fato novo que invalide o motivo acima.`,
+      ``,
+    );
+  } else if (skill.state === "superseded") {
+    lines.push(
+      `Substituida${skill.supersededBy ? ` por: ${skill.supersededBy}` : ""}${skill.reason ? `. Motivo: ${skill.reason}` : ""}.`,
+      `Use a versao nova; o conteudo abaixo e so historico.`,
+      ``,
+    );
+  } else if (skill.state === "stale") {
+    lines.push(`Marcada como desatualizada${skill.reason ? `: ${skill.reason}` : ""}. Trate como hipotese, nao como fato.`, ``);
+  } else {
+    lines.push(`Why this matters: a previous session captured a reusable solution for this trigger. Applying it now skips re-derivation.`, ``);
+  }
+
+  lines.push(`Skill summary: ${skill.description}`, skill.summary, ``);
+
+  const fresh = freshnessLine(skill);
+  if (fresh) lines.push(fresh, ``);
+
+  if (skill.state === "accepted") {
+    lines.push(`How to use: treat the bullets above as guidance for this turn. If the situation matches, follow the steps; if it doesn't, ignore and proceed normally (skip-cost is zero).`, ``);
+  }
+  lines.push(
+    `Source: ${skill.filePath || "(learned-skill)"}`,
+    `Score: ${skill.score?.toFixed?.(2) ?? "?"} (effective ${skill.effectiveScore?.toFixed?.(2) ?? "?"}, uses=${skill.uses ?? 0}, state=${skill.state})`,
+    `References: policies/learned-skills.md`,
+  );
+  return lines.join("\n");
 }
 
 function getSessionState() {
@@ -243,7 +319,21 @@ process.stdin.on("end", () => {
   const learnedDir = existsSync(resolveBotPath("learned-skills"))
     ? resolveBotPath("learned-skills")
     : null;
-  const learnedSkills = learnedDir ? loadLearnedSkills(learnedDir, scoringCfg) : [];
+  let learnedSkills = learnedDir ? loadLearnedSkills(learnedDir, scoringCfg) : [];
+
+  // Ranking ciente da arvore de trabalho: skill que cita arquivo hoje sujo no
+  // git passa na frente em empate de relevancia. Sem git, nada muda.
+  if (learnedSkills.some((s) => s.files.length > 0)) {
+    const snap = gitSnapshot();
+    if (snap.available && snap.dirty.length > 0) {
+      const asPath = (f) => f.replace(/\\/g, "/").replace(/\/+$/, "");
+      const touchesDirty = (s) => s.files.some((f) =>
+        snap.dirty.some((d) => d === asPath(f) || d.startsWith(`${asPath(f)}/`)));
+      learnedSkills = learnedSkills
+        .map((s) => ({ ...s, rank: s.effectiveScore + (touchesDirty(s) ? DIRTY_FILE_BONUS : 0) }))
+        .sort((a, b) => b.rank - a.rank);
+    }
+  }
 
   let learnedCount = injectedThisSession.filter((n) => n.startsWith("learned:")).length;
   const maxLearned = cfg.max_learned_skills_per_session || 3;
@@ -260,27 +350,13 @@ process.stdin.on("end", () => {
     });
     if (!matched) continue;
 
-    additionalContextParts.push(
-      [
-        `[keyword-detector] 💡 LearnedSkill matched: ${learnedSkill.name}`,
-        ``,
-        `Why this matters: a previous session captured a reusable solution for this trigger. Applying it now skips re-derivation.`,
-        ``,
-        `Skill summary: ${learnedSkill.description}`,
-        learnedSkill.summary,
-        ``,
-        `How to use: treat the bullets above as guidance for this turn. If the situation matches, follow the steps; if it doesn't, ignore and proceed normally (skip-cost is zero).`,
-        ``,
-        `Source: ${learnedSkill.filePath || "(learned-skill)"}`,
-        `Score: ${learnedSkill.score?.toFixed?.(2) ?? "?"} (effective ${learnedSkill.effectiveScore?.toFixed?.(2) ?? "?"}, uses=${learnedSkill.uses ?? 0})`,
-        `References: policies/learned-skills.md`,
-      ].join("\n")
-    );
+    additionalContextParts.push(renderLearnedSkill(learnedSkill));
     injectedThisSession.push(key);
     learnedCount++;
 
-    // Boost score on successful injection
-    if (learnedSkill.filePath) {
+    // Boost so para skill aceita: nota rejeitada/superada/velha nao ganha
+    // pontos por ser mostrada (senao um aviso de "nao faca" viraria popular).
+    if (learnedSkill.filePath && learnedSkill.state === "accepted") {
       updateSkillOnUse(learnedSkill.filePath, learnedSkill, scoringCfg.boost_on_use ?? 0.1);
     }
   }

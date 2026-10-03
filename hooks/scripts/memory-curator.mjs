@@ -217,6 +217,8 @@ function passDecayAndArchive() {
       if (meta.score === undefined) continue; // so learned-skills tem score
       let score = parseFloat(meta.score);
       if (Number.isNaN(score)) continue;
+      // rejected/superseded sao registro de decisao: nao decaem nem arquivam por desuso.
+      if (meta.state === "rejected" || meta.state === "superseded") continue;
       const age = ageDays(f, meta);
 
       // decay: -decay_per_week por semana desde last_used

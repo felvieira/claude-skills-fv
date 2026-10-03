@@ -26,7 +26,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 const DASHBOARD_DIR = join(REPO_ROOT, "docs", "preview");
 const PORT = Number(process.env.DASHBOARD_PORT) || 4173;
-const AI_MEMORY_URL = process.env.AI_MEMORY_URL || "http://127.0.0.1:49374/mcp";
+const AI_MEMORY_URL = process.env.AI_MEMORY_URL || "http://127.0.0.1:39374/mcp";
 // The MCP server auto-resolves "current project" from recent hook activity,
 // not from this process's cwd — that can silently point at whatever project
 // another concurrent agent session last touched. Every route below always
