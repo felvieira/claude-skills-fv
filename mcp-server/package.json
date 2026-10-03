@@ -44,5 +44,8 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "overrides": {
+    "fast-uri": "3.1.3"
   }
 }
