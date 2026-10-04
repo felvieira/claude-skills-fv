@@ -4,9 +4,9 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 79 Specialist Skills for Coding Agents
+# Dev Team Kit — 83 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.88.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.89.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -73,7 +73,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **79 specialists in total** (79 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **79 specialists in total** (83 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -289,7 +289,7 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 | # | Skill | What it does |
 |---|---|---|
 | 63 | **Mobile Paywall & Checkout** | UI/UX of plan selection and payment checkout in mobile apps — billing-architecture decision (Play Billing vs. external PSP, not purely visual), the flow periodicity → plan → coupon → pay → authenticate → confirm, target-plan hierarchy without manipulation, payment states with the rule that "returned from 3DS" is neither approved nor declined by itself, and a coupon field collapsed by default — a visible field signals a better price exists and sends coupon-less users hunting for one |
-| 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR, and runs even with zero personas pre-written: infers proto-personas from the repo itself (routes, forms, error copy), offers a non-blocking human confirmation window, then a fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 agents each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
+| 62 | **Persona-Driven Issue Audit** | mass-audits an existing product via simulated personas end to end to PR, and runs even with zero personas pre-written: infers proto-personas from the repo itself (routes, forms, error copy), offers a non-blocking human confirmation window, then a fresh-context tester per persona, issue dedup by route + root cause (never title), a solution-analysis agent that comments cause and trade-offs without fixing, a fleet of up to 10 parallel workers, each taking one issue to PR (high confidence) or `wontfix`/`needs-human` with a specific reason, review with the same bar as any other PR, and a light human triage for what survives — no automatic merge |
 | 05 | **QA Engineer** | unit, integration, E2E tests, coverage and critical edge cases |
 | 06 | **Security Reviewer** | OWASP Top 10, headers, CORS, CSRF, XSS, injection and data exposure |
 | 34 | **Static Analysis** | automated security and bug scan via Semgrep + CodeQL with SARIF output, severity triage and CI integration — feeds findings to skill 06 |

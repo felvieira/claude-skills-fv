@@ -51,6 +51,33 @@ const EVENT_SCRIPTS = {
   PreCompact: ["precompact-capture.mjs"],
 };
 
+// Scripts de Pre/PostToolUse que SAEM SEM FAZER NADA quando a ferramenta nao e uma das abaixo (cada
+// um tem um `if (toolName !== ...) process.exit(0)` proprio). Nao spawnar evita um processo node
+// (~55 ms + carga do modulo) por script, por chamada de ferramenta — medido: ~600 ms -> ~300 ms num
+// Read/Grep. A lista espelha o filtro de cada script; scripts/tests/memory-hooks.test.mjs prova a
+// equivalencia (rodar o script com uma ferramenta fora da lista nao produz nada) e quebra se uma
+// lista divergir. Scripts que tratam toda ferramenta (session-event-logger, simplify-ignore,
+// pre-tool-enforcer, design-anchor-guard, permission-ladder-guard) nao entram aqui.
+// Desligar: DEVKIT_NO_TOOL_FILTER=1.
+const TOOL_FILTERS = {
+  "agent-dispatch-validator.mjs": ["Agent", "Task"],
+  "investigate-first-guard.mjs": ["AskUserQuestion"],
+  "model-routing-hook.mjs": ["EnterPlanMode", "ExitPlanMode", "Agent"],
+  "post-tool-verifier.mjs": ["Edit", "Write"],
+  "claim-verifier.mjs": ["Bash", "Edit", "Write", "NotebookEdit", "mcp__Desktop_Commander__write_file", "mcp__Desktop_Commander__edit_block", "mcp__Desktop_Commander__start_process"],
+  "constitution-watcher.mjs": ["Edit", "Write", "MultiEdit"],
+  "ai-writing-detector.mjs": ["Write", "Edit", "MultiEdit"],
+  "graph-update-post-tool.mjs": ["Edit", "Write", "NotebookEdit"],
+  "conflict-resolution-reminder.mjs": ["AskUserQuestion", "Bash"],
+};
+
+function shouldSkipByTool(script, event, toolName) {
+  if (event !== "PreToolUse" && event !== "PostToolUse") return false;
+  if (process.env.DEVKIT_NO_TOOL_FILTER === "1") return false;
+  const allowed = TOOL_FILTERS[script];
+  return Boolean(allowed) && !allowed.includes(toolName);
+}
+
 // Perfil "so memoria" (`runtime-dispatcher.mjs <Evento> memory` ou DEVKIT_RUNTIME_PROFILE=memory):
 // para agentes que nao falam o vocabulario do kit (Grok Build, Cursor...). Roda so o que e memoria —
 // injecao de learned-skills (sem gatilhos de skill) e captura pre-compactacao — e nenhum dos gates
@@ -175,7 +202,10 @@ function run() {
     scripts.unshift("compaction-recover.mjs");
   }
 
+  const trace = [];
   for (const script of scripts) {
+    if (shouldSkipByTool(script, event, payload.tool_name)) continue;
+    trace.push(script);
     const result = spawnSync(process.execPath, [path.join(scriptsDir, script)], {
       cwd: process.cwd(),
       env: {
@@ -199,6 +229,12 @@ function run() {
     } catch {
       appendError(event, script, { ...result, error: new Error("invalid hook JSON") });
     }
+  }
+
+  if (process.env.DEVKIT_DISPATCH_TRACE) {
+    try {
+      fs.appendFileSync(process.env.DEVKIT_DISPATCH_TRACE, `${JSON.stringify({ event, tool: payload.tool_name, memoryOnly, scripts: trace })}\n`);
+    } catch { /* diagnostico opcional */ }
   }
 
   // Stop has a stricter response schema in Codex. Keep block decisions, but
@@ -225,7 +261,11 @@ function run() {
 }
 
 try {
-  run();
+  if (process.argv[2] === "--print-tool-filters") {
+    process.stdout.write(JSON.stringify({ filters: TOOL_FILTERS, events: EVENT_SCRIPTS }));
+  } else {
+    run();
+  }
 } catch {
   process.stdout.write(JSON.stringify({ continue: true }));
 }

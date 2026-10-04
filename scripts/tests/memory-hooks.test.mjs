@@ -603,3 +603,58 @@ test("controle negativo: prompt sem relacao com nenhuma skill injeta zero", () =
     rmSync(cwd, { recursive: true, force: true });
   }
 });
+
+// ------------------------------------------------- filtro por ferramenta
+function toolFilters() {
+  const res = spawnSync(process.execPath, [DISPATCHER, "--print-tool-filters"], { encoding: "utf8" });
+  assert.equal(res.status, 0, res.stderr);
+  return JSON.parse(res.stdout);
+}
+
+test("filtro por ferramenta: script fora da lista nao produz saida nenhuma (equivalencia)", () => {
+  const { filters, events } = toolFilters();
+  const cwd = tmp("memhooks-filter");
+  try {
+    for (const [script, allowed] of Object.entries(filters)) {
+      const event = events.PreToolUse.includes(script) ? "PreToolUse" : "PostToolUse";
+      for (const tool of ["Read", "Grep", "Glob", "WebFetch"].filter((t) => !allowed.includes(t))) {
+        const out = runHook(
+          join(root, "hooks", "scripts", script),
+          { hook_event_name: event, session_id: "filtertest", cwd, tool_name: tool, tool_input: { file_path: join(cwd, "x.ts"), command: "ls" }, tool_response: {} },
+          cwd,
+        );
+        const { continue: cont, ...rest } = out; // `{continue:true}` e o "nada a dizer" de varios sensores
+        assert.ok(cont !== false && Object.keys(rest).length === 0, `${script} produziu saida para ${tool}: ${JSON.stringify(out).slice(0, 200)}`);
+      }
+    }
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("filtro por ferramenta: dispatcher nao spawna script filtrado e DEVKIT_NO_TOOL_FILTER desliga", () => {
+  const cwd = tmp("memhooks-trace");
+  const traceFile = join(cwd, "trace.jsonl");
+  const run = (event, tool, extraEnv = {}) => {
+    const res = spawnSync(process.execPath, [DISPATCHER, event], {
+      cwd,
+      input: JSON.stringify({ session_id: "tracetest", cwd, tool_name: tool, tool_input: {}, tool_response: {} }),
+      encoding: "utf8",
+      env: { ...process.env, CLAUDE_PLUGIN_ROOT: root, DEVKIT_DISPATCH_TRACE: traceFile, ...extraEnv },
+    });
+    assert.equal(res.status, 0, res.stderr);
+    const lines = readFileSync(traceFile, "utf8").trim().split("\n");
+    return JSON.parse(lines[lines.length - 1]).scripts;
+  };
+  try {
+    const read = run("PostToolUse", "Read");
+    assert.ok(!read.includes("post-tool-verifier.mjs") && !read.includes("claim-verifier.mjs"));
+    assert.ok(read.includes("session-event-logger.mjs"), "scripts sem filtro continuam rodando");
+    assert.ok(run("PostToolUse", "Edit").includes("post-tool-verifier.mjs"));
+    assert.ok(run("PreToolUse", "Agent").includes("agent-dispatch-validator.mjs"));
+    assert.ok(!run("PreToolUse", "Bash").includes("agent-dispatch-validator.mjs"));
+    assert.ok(run("PostToolUse", "Read", { DEVKIT_NO_TOOL_FILTER: "1" }).includes("post-tool-verifier.mjs"));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});

@@ -600,6 +600,20 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.89.0] - 2026-10-04
+
+### Alterado
+
+- Dispatcher: scripts de PreToolUse/PostToolUse que só agem em certas ferramentas (`post-tool-verifier`, `claim-verifier`, `agent-dispatch-validator`, etc.) deixam de ser spawnados para as demais. Medido: PostToolUse num `Read` ~630 ms -> ~190 ms. `DEVKIT_NO_TOOL_FILTER=1` desliga; `DEVKIT_DISPATCH_TRACE=<arquivo>` registra o que rodou. Testes provam a equivalência (script filtrado não produz saída para a ferramenta excluída).
+- `plugin.json`/`marketplace.json`: `description` de 38 mil caracteres (changelog acumulado) trocada por descrição concisa com contagens reais.
+- READMEs: contagens de skills corrigidas (83).
+
+### Corrigido
+
+- CI "Validate Plugin" falhava havia vários commits: o eval `scs-002` dependia de `.bot/.edit-history.json` local; agora o eval semeia o estado e o restaura (hermético).
+
+---
+
 ## [2.72.0] - 2026-09-04 — backend `ai-memory` opcional, auto-plugado quando Docker está disponível
 
 O kit ganha um segundo backend de memória persistente, opcional e mutuamente

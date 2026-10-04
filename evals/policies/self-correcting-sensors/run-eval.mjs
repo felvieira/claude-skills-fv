@@ -109,6 +109,23 @@ function setupTestSideState(hookName) {
     });
   }
 
+  if (hookName === "post-tool-verifier") {
+    // O gate de qualidade so dispara depois de >=3 arquivos editados (ou 3 edicoes no mesmo).
+    // Esse historico mora em .bot/.edit-history.json, gitignorado: numa maquina com sessoes
+    // anteriores ele existe e o eval passa; num clone limpo (CI) nao existe e o eval falhava.
+    // Semeia um historico conhecido e restaura o original, para o resultado nao depender da maquina.
+    const historyFile = join(REPO_ROOT, ".bot", ".edit-history.json");
+    const original = existsSync(historyFile) ? readFileSync(historyFile, "utf-8") : null;
+    mkdirSync(join(REPO_ROOT, ".bot"), { recursive: true });
+    writeFileSync(historyFile, JSON.stringify({ "eval/a.ts": 1, "eval/b.ts": 1, "eval/c.ts": 1 }));
+    cleanupActions.push(() => {
+      try {
+        if (original === null) unlinkSync(historyFile);
+        else writeFileSync(historyFile, original);
+      } catch {}
+    });
+  }
+
   if (hookName === "ai-writing-detector") {
     // Patch the actual config path that utils.mjs resolves to. The resolver
     // prefers .bot/hooks/config.json over hooks/config.json — patch both
