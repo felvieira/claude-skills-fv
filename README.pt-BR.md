@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 83 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.92.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.93.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -170,6 +170,8 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | Plataforma | Skills | Hooks | MCP | Slash Commands | Notas |
 |---|:---:|:---:|:---:|:---:|---|
 | **Claude Code** | ✅ | ✅ | ✅ | ✅ | suporte completo — plugin nativo |
+| **Codex** | ✅ | ✅ | ✅ | ❌ | hooks por `.codex/hooks.json` (abra a sessão na raiz do repo) ou pelo plugin do Codex; sem slash commands — use os scripts da CLI |
+| **Grok Build** | ✅ via `AGENTS.md` | ⚠️ opt-in | ✅ | ❌ | ignora o plugin do Claude (`[compat.claude] hooks = false`); `install-memory-hooks.mjs --runtime grok` registra a memória (+ guardas opcionais) |
 | **Cursor** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md, MCP via config |
 | **Windsurf** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via rules, MCP via `.windsurf/mcp.json` |
 | **GitHub Copilot** | ✅ via `.bot/` | ❌ | ❌ | ❌ | skills via `.github/copilot-instructions.md` |
@@ -178,6 +180,21 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | **Antigravity** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via config local |
 
 > Para plataformas sem hooks nativos, as mesmas regras estão em `policies/hooks.md` — o agente as aplica manualmente.
+
+### O que funciona onde
+
+"Verificado" quer dizer que rodou contra o agente de verdade (Grok 1.0.41, Codex 0.155), não só nos testes do kit.
+
+| Recurso | Claude Code | Codex | Grok Build | Cursor · Gemini · OpenCode · outros |
+|---|---|---|---|---|
+| Conjunto completo de hooks (gates, sensores) | ✅ | ✅ (`.codex/hooks.json`) | ❌ de propósito | ❌ |
+| Injeção de learned-skills | ✅ | ✅ | ✅ verificado — perfil `memory-deferred` (o Grok descarta o contexto do `UserPromptSubmit`, então entrega no primeiro `PostToolUse`) | ler `.bot/learned-skills/` à mão (`AGENTS.md`) |
+| Recuperação pós-compactação | ✅ | ✅ testado em rollouts reais; nenhuma compactação real observada | ✅ verificado (`/compact` → pacote → entregue uma vez) | ❌ |
+| Guardas `/careful` e `/freeze` | ✅ slash commands | ✅ pela CLI; caminhos do `apply_patch` são lidos; ⚠️ não verificado de ponta a ponta (o sandbox do Windows bloqueou escrita no ambiente de teste) | ✅ verificado — instale com `--guards`, ligue pela CLI | ❌ |
+| `skill-usage` (uso real) | ✅ | ✅ | ❌ (precisa do logger completo de `PostToolUse`) | ❌ |
+| Evals de triggers (`--split`, `--compare`) | ✅ | ✅ | ✅ | ✅ (Node puro, sem agente) |
+
+Agentes sem slash commands acionam as guardas pelo shell: `node scripts/session-guard-cli.mjs careful on|off`, `freeze <pasta>|off`, `status`. Para pôr as guardas no Grok ou numa instalação global do Codex: `node scripts/install-memory-hooks.mjs --runtime grok --guards --apply`.
 
 ---
 

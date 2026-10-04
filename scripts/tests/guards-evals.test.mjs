@@ -177,3 +177,99 @@ test("eval-triggers --compare: KEEP, REVERT por regressao e REVERT por overfitti
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+// ------------------------------------------------ multiplataforma (Grok, Codex)
+function guarded(cwd, payload, env = {}, profile = "guards") {
+  const res = spawnSync(process.execPath, [DISPATCHER, "PreToolUse", profile], {
+    cwd,
+    input: JSON.stringify({ cwd, ...payload }),
+    encoding: "utf8",
+    env: { ...process.env, CLAUDE_PLUGIN_ROOT: root, ...env },
+  });
+  assert.equal(res.status, 0, res.stderr);
+  return JSON.parse(res.stdout || "{}");
+}
+
+test("grok: payload camelCase (toolName/toolInput) e ferramentas write/search_replace/run_terminal_command", () => {
+  const cwd = repo();
+  try {
+    mkdirSync(join(cwd, "src"), { recursive: true });
+    spawnSync(process.execPath, [CLI, "freeze", "src"], { cwd });
+    const grok = (toolName, toolInput) => guarded(cwd, { hookEventName: "pre_tool_use", sessionId: "gk", toolName, toolInput });
+
+    assert.equal(decision(grok("write", { file_path: join(cwd, "out.txt"), contents: "x" })), "deny");
+    assert.equal(decision(grok("search_replace", { file_path: join(cwd, "out.txt"), old_string: "a", new_string: "b" })), "deny");
+    assert.equal(decision(grok("write", { file_path: join(cwd, "src", "ok.txt"), contents: "x" })), undefined);
+    assert.equal(decision(grok("read_file", { target_file: join(cwd, "out.txt") })), undefined);
+
+    spawnSync(process.execPath, [CLI, "careful", "on"], { cwd });
+    assert.equal(decision(grok("run_terminal_command", { command: "echo DROP TABLE users" })), "deny");
+    assert.equal(decision(grok("run_terminal_command", { command: "git status" })), undefined);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("codex: apply_patch (texto cru e embutido em JS do modo code) respeita o /freeze", () => {
+  const cwd = repo();
+  try {
+    mkdirSync(join(cwd, "src"), { recursive: true });
+    spawnSync(process.execPath, [CLI, "freeze", "src"], { cwd });
+    const codex = (tool_input) => guarded(cwd, { session_id: "cx", tool_name: "apply_patch", tool_input }, {}, "guards");
+
+    const raw = (file) => `*** Begin Patch\n*** Add File: ${file}\n+oi\n*** End Patch`;
+    assert.equal(decision(codex(raw("out.txt"))), "deny", "caminho relativo fora de src");
+    assert.equal(decision(codex(raw("src/ok.txt"))), undefined);
+    assert.equal(decision(codex({ input: raw(join(cwd, "out.txt").replace(/\\/g, "/")) })), "deny", "absoluto com /");
+
+    // modo code: o patch vem como string JS numa linha so, com \n literal
+    const js = (file) => `const r = await tools.apply_patch("*** Begin Patch\\n*** Add File: ${file}\\n+oi\\n*** End Patch"); text(r)`;
+    assert.equal(decision(codex({ code: js("out.txt") })), "deny");
+    assert.equal(decision(codex({ code: js("src/ok.txt") })), undefined);
+
+    // varios arquivos no mesmo patch: um fora basta para negar
+    const multi = `*** Begin Patch\n*** Update File: src/a.ts\n@@\n-a\n+b\n*** Update File: lib/b.ts\n@@\n-a\n+b\n*** End Patch`;
+    assert.equal(decision(codex(multi)), "deny");
+
+    // caminho do Windows escapado em JS ("D:\\\\x")
+    const win = `await tools.apply_patch("*** Begin Patch\\n*** Add File: ${join(cwd, "out.txt").replace(/\\/g, "\\\\")}\\n+oi\\n*** End Patch")`;
+    assert.equal(decision(codex({ code: win })), "deny");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("perfil guards: so session-guard e permission-ladder-guard, e nada roda sem estado ligado", () => {
+  const cwd = repo();
+  const trace = join(cwd, "trace.jsonl");
+  try {
+    guarded(cwd, { session_id: "g", tool_name: "Bash", tool_input: { command: "ls" } }, { DEVKIT_DISPATCH_TRACE: trace });
+    guarded(cwd, { session_id: "g", tool_name: "Write", tool_input: { file_path: join(cwd, "x") } }, { DEVKIT_DISPATCH_TRACE: trace });
+    const lines = readFileSync(trace, "utf8").trim().split("\n").map((l) => JSON.parse(l));
+    assert.deepEqual(lines[0].scripts, ["permission-ladder-guard.mjs"]); // Bash: so a guarda de comandos
+    assert.deepEqual(lines[1].scripts, [], "Write sem /freeze: nenhum processo"); // session-guard pulado pelo dispatcher
+    assert.ok(!lines.flatMap((l) => l.scripts).some((s) => /pre-tool-enforcer|design-anchor/.test(s)), "nenhum gate do kit completo");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("install-memory-hooks --guards: registra PreToolUse no perfil guards (Grok e bloco do Codex)", () => {
+  const home = mkdtempSync(join(tmpdir(), "guards-home-"));
+  const script = join(root, "scripts", "install-memory-hooks.mjs");
+  try {
+    const withGuards = spawnSync(process.execPath, [script, "--runtime", "grok", "--guards", "--apply", "--home", home], { encoding: "utf8" });
+    assert.equal(withGuards.status, 0, withGuards.stderr);
+    const cfg = JSON.parse(readFileSync(join(home, ".grok", "hooks", "dev-team-kit-memory.json"), "utf8"));
+    assert.match(cfg.hooks.PreToolUse[0].hooks[0].command, / PreToolUse guards$/);
+
+    spawnSync(process.execPath, [script, "--runtime", "grok", "--apply", "--home", home]);
+    const plain = JSON.parse(readFileSync(join(home, ".grok", "hooks", "dev-team-kit-memory.json"), "utf8"));
+    assert.ok(!plain.hooks.PreToolUse, "sem --guards nao registra PreToolUse");
+
+    const codex = spawnSync(process.execPath, [script, "--runtime", "codex", "--guards"], { encoding: "utf8" });
+    assert.match(codex.stdout, /PreToolUse guards/);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+  }
+});

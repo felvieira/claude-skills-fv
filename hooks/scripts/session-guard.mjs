@@ -16,6 +16,42 @@ import { isInside, readGuards } from "./session-guards-lib.mjs";
 
 const EDIT_TOOLS = new Set(["Edit", "Write", "MultiEdit", "NotebookEdit"]);
 
+/**
+ * Caminhos que a chamada vai escrever. Claude/Grok trazem `file_path`/`notebook_path`/`path`; o Codex
+ * edita por `apply_patch`, onde os caminhos estao DENTRO do texto do patch
+ * (`*** Update File: x`, `*** Add File: y`, `*** Delete File: z`, `*** Move to: w`).
+ */
+const PATCH_HEADER = "\\*\\*\\* (?:Add File|Update File|Delete File|Move to):\\s*";
+
+/** Caminhos de um patch. Texto cru: um por linha. No modo "code" do Codex o patch vem dentro de JS
+ *  (`tools.apply_patch("...\n*** Update File: x\n...")`), numa linha so, com `\n` literal e `\\` no lugar de `\`. */
+function patchPaths(text) {
+  if (!text.includes("*** ")) return [];
+  const out = [];
+  if (/[\r\n]/.test(text)) {
+    for (const m of text.matchAll(new RegExp(`^${PATCH_HEADER}(.+?)\\s*$`, "gm"))) out.push(m[1]);
+  } else {
+    for (const m of text.matchAll(new RegExp(`${PATCH_HEADER}((?:[^"'\\\\]|\\\\\\\\)+?)\\s*(?=\\\\n|\\\\r|["']|$)`, "g"))) out.push(m[1].replace(/\\\\/g, "\\"));
+  }
+  return out;
+}
+
+function editTargets(toolInput) {
+  const found = new Set();
+  const visit = (v) => {
+    if (typeof v === "string") {
+      for (const p of patchPaths(v)) found.add(p);
+    } else if (Array.isArray(v)) {
+      v.forEach(visit);
+    } else if (v && typeof v === "object") {
+      for (const key of ["file_path", "notebook_path", "path", "target_file"]) if (typeof v[key] === "string" && v[key]) found.add(v[key]);
+      Object.values(v).forEach(visit);
+    }
+  };
+  visit(toolInput);
+  return [...found];
+}
+
 let buffer = "";
 process.stdin.setEncoding("utf-8");
 process.stdin.on("data", (c) => { buffer += c; });
@@ -30,11 +66,9 @@ process.stdin.on("end", () => {
     const { freeze } = readGuards(cwd);
     if (!freeze) return allow();
 
-    const ti = input.tool_input || {};
-    const raw = ti.file_path || ti.notebook_path || ti.path;
-    if (!raw) return allow();
-    const target = resolve(cwd, raw);
-    if (isInside(freeze, target)) return allow();
+    const targets = editTargets(input.tool_input).map((p) => resolve(cwd, p));
+    const target = targets.find((t) => !isInside(freeze, t));
+    if (!target) return allow();
 
     process.stdout.write(JSON.stringify({
       hookSpecificOutput: {

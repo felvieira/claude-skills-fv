@@ -600,6 +600,30 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.93.0] - 2026-10-04
+
+Multiplataforma: o que as novidades das 2.90–2.92 precisavam para funcionar fora do Claude Code, verificado contra o Grok 1.0.41 e o Codex 0.155 reais.
+
+### Corrigido
+
+- **Dispatcher lia só o vocabulário do Claude/Codex.** O Grok manda `toolName`/`toolInput`/`toolResult` (camelCase) e chama a escrita de `write`; sem isso as guardas ficariam cegas lá. Agora `toolInput`/`toolResult` são lidos e `write` vira `Write`.
+- **`/freeze` não via o `apply_patch` do Codex**: o caminho vai dentro do texto do patch (`*** Update File: x`), e no modo "code" o patch vem embutido em JS numa linha só, com `\n` literal e `\\` no lugar de `\`. O `session-guard` extrai os caminhos dos dois formatos (e de patches com vários arquivos: um fora basta para negar).
+- **Tabela "Supported Platforms" não listava Codex nem Grok Build.** Reescrita, com a nova tabela "o que funciona onde" separando *verificado contra o agente real* de *só testado no kit*.
+
+### Adicionado
+
+- Perfil `guards` do dispatcher e `install-memory-hooks.mjs --guards`: registra só `PreToolUse` com `session-guard` + `permission-ladder-guard` no Grok (ou imprime o bloco do Codex global). Opcional; inerte até alguém ligar `/careful` ou `/freeze`.
+- `AGENTS.md`: seção de guardas para agentes sem slash commands (CLI `session-guard-cli.mjs`) e a regra por convenção onde não há hook.
+- Trace do dispatcher (`DEVKIT_DISPATCH_TRACE`) registra o formato da entrada da ferramenta (sem conteúdo) e a decisão.
+- 4 testes novos (Grok camelCase, `apply_patch` cru/JS/multi-arquivo, perfil `guards`, `--guards`).
+
+### Verificado no agente real
+
+- **Grok:** `/freeze` impediu a criação de arquivo fora da pasta; `/careful` negou `DROP TABLE` (lane fechada) em `run_terminal_command`.
+- **Codex:** o hook `session-guard` roda no `apply_patch` (confirmado no trace). A negação ponta a ponta **não** foi comprovada: o sandbox do Codex no Windows bloqueia escrita mesmo sem guarda ativa, então o resultado não distingue guarda de sandbox. Coberto por teste de payload.
+
+---
+
 ## [2.92.0] - 2026-10-04
 
 Itens da revisão de claude.dev ("Lessons from building Claude Code: how we use skills" e "Automating eval design and hillclimbing").

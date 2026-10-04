@@ -100,6 +100,13 @@ const MEMORY_PROFILE_SCRIPTS = {
 // so e apagado quando entregue.
 const RECOVERY_EVENTS = new Set(["UserPromptSubmit", "PostToolUse"]);
 
+// Perfil "guards" (`... PreToolUse guards`): so as guardas sob demanda (/freeze e /careful), para
+// agentes que nao carregam o conjunto completo do kit (Grok Build, instalacao global do Codex).
+// Ficam inertes ate alguem ligar uma guarda; sem estado, o custo e um unico processo por chamada.
+const GUARDS_PROFILE_SCRIPTS = {
+  PreToolUse: ["session-guard.mjs", "permission-ladder-guard.mjs"],
+};
+
 function hasPendingCompactionPacket(payload) {
   const sid = String(payload.session_id || "").replace(/[^A-Za-z0-9_-]/g, "");
   if (!sid) return false;
@@ -125,7 +132,7 @@ function canonicalToolName(value) {
   const name = raw.toLowerCase().replace(/^functions\./, "");
   if (/exec_command|write_stdin|shell|bash|powershell|terminal/.test(name)) return "Bash";
   if (/apply_patch|edit_file|replace/.test(name)) return "Edit";
-  if (/write_file/.test(name)) return "Write";
+  if (/write_file|^write$/.test(name)) return "Write"; // `write` e a ferramenta de escrita do Grok Build
   if (/read_file|read_mcp_resource|view_image/.test(name)) return "Read";
   if (/grep|search_text|ripgrep/.test(name)) return "Grep";
   if (/glob|find_files/.test(name)) return "Glob";
@@ -134,8 +141,9 @@ function canonicalToolName(value) {
 }
 
 function normalize(input, event) {
-  const toolInput = input.tool_input ?? input.input ?? input.arguments ?? {};
-  const toolOutput = input.tool_response ?? input.tool_result ?? input.output ?? input.result ?? {};
+  // Grok Build usa camelCase (`toolName`, `toolInput`, `toolResult`); Claude/Codex, snake_case.
+  const toolInput = input.tool_input ?? input.toolInput ?? input.input ?? input.arguments ?? {};
+  const toolOutput = input.tool_response ?? input.tool_result ?? input.toolResponse ?? input.toolResult ?? input.output ?? input.result ?? {};
   return {
     ...input,
     hook_event_name: event,
@@ -145,6 +153,14 @@ function normalize(input, event) {
     tool_result: input.tool_result ?? toolOutput,
     prompt: input.prompt ?? input.user_prompt ?? input.message ?? "",
   };
+}
+
+/** Forma (nao o conteudo) de um valor, para o trace: chaves de objeto, tipo e tamanho de string. */
+function shapeOf(v, depth = 0) {
+  if (typeof v === "string") return `str(${v.length})`;
+  if (Array.isArray(v)) return depth > 2 ? "[...]" : v.slice(0, 3).map((x) => shapeOf(x, depth + 1));
+  if (v && typeof v === "object") return depth > 2 ? "{...}" : Object.fromEntries(Object.entries(v).slice(0, 8).map(([k, x]) => [k, shapeOf(x, depth + 1)]));
+  return typeof v;
 }
 
 function appendError(event, script, result) {
@@ -208,7 +224,8 @@ function run() {
   // o que seria injetado no prompt fica guardado e sai no primeiro PostToolUse.
   const deferred = process.argv[3] === "memory-deferred" || process.env.DEVKIT_RUNTIME_PROFILE === "memory-deferred";
   const memoryOnly = deferred || process.argv[3] === "memory" || process.env.DEVKIT_RUNTIME_PROFILE === "memory";
-  const scripts = [...(memoryOnly ? MEMORY_PROFILE_SCRIPTS[event] || [] : EVENT_SCRIPTS[event])];
+  const guardsOnly = process.argv[3] === "guards" || process.env.DEVKIT_RUNTIME_PROFILE === "guards";
+  const scripts = [...(guardsOnly ? GUARDS_PROFILE_SCRIPTS[event] || [] : memoryOnly ? MEMORY_PROFILE_SCRIPTS[event] || [] : EVENT_SCRIPTS[event])];
   const recoveryHere = deferred ? event === "PostToolUse" : RECOVERY_EVENTS.has(event);
   if (recoveryHere && hasPendingCompactionPacket(payload)) {
     scripts.unshift("compaction-recover.mjs");
@@ -253,7 +270,7 @@ function run() {
 
   if (process.env.DEVKIT_DISPATCH_TRACE) {
     try {
-      fs.appendFileSync(process.env.DEVKIT_DISPATCH_TRACE, `${JSON.stringify({ event, tool: payload.tool_name, memoryOnly, scripts: trace, keys: Object.keys(input), transcript: Boolean(payload.transcript_path) })}\n`);
+      fs.appendFileSync(process.env.DEVKIT_DISPATCH_TRACE, `${JSON.stringify({ event, tool: payload.tool_name, memoryOnly, scripts: trace, keys: Object.keys(input), transcript: Boolean(payload.transcript_path), input_shape: shapeOf(payload.tool_input), decision: response.hookSpecificOutput?.permissionDecision })}\n`);
     } catch { /* diagnostico opcional */ }
   }
 

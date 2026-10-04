@@ -16,6 +16,7 @@
  *   node scripts/install-memory-hooks.mjs --runtime grok --apply      # grava ~/.grok/hooks/dev-team-kit-memory.json
  *   node scripts/install-memory-hooks.mjs --runtime grok --uninstall  # remove so o arquivo do kit
  *   node scripts/install-memory-hooks.mjs --runtime codex             # imprime o bloco para ~/.codex/hooks.json (nao edita)
+ *   --guards           tambem registra PreToolUse com o perfil "guards" (/careful e /freeze) — opcional
  *   --kit-root <dir>   raiz do kit (padrao: o repo deste script); precisa ser um caminho estavel
  *   --home <dir>       HOME alternativo (testes)
  *
@@ -38,7 +39,7 @@ const FILE_NAME = "dev-team-kit-memory.json";
 
 const fwd = (p) => String(p).replace(/\\/g, "/"); // CLAUDE.md global: barra normal em JSON de hook
 
-export function buildHooksConfig(kitRoot, runtime = "codex") {
+export function buildHooksConfig(kitRoot, runtime = "codex", { guards = false } = {}) {
   const dispatcher = `${fwd(kitRoot)}/hooks/scripts/runtime-dispatcher.mjs`;
   const { profile, events } = PROFILES[runtime];
   const hooks = {};
@@ -46,6 +47,13 @@ export function buildHooksConfig(kitRoot, runtime = "codex") {
     hooks[event] = [{
       matcher: "",
       hooks: [{ type: "command", command: `node "${dispatcher}" ${event} ${profile}`, timeout: 30 }],
+    }];
+  }
+  // Opcional: /careful e /freeze (perfil "guards"). Inertes ate alguem liga-los; custam 1 processo por chamada.
+  if (guards) {
+    hooks.PreToolUse = [{
+      matcher: "",
+      hooks: [{ type: "command", command: `node "${dispatcher}" PreToolUse guards`, timeout: 30 }],
     }];
   }
   return { hooks };
@@ -75,7 +83,7 @@ function main() {
 
   if (runtime === "codex") {
     console.log("Bloco para mesclar em ~/.codex/hooks.json (nao editado automaticamente: o arquivo global tem hooks de outras ferramentas):\n");
-    const cfg = buildHooksConfig(kitRoot, "codex");
+    const cfg = buildHooksConfig(kitRoot, "codex", { guards: args.includes("--guards") });
     for (const blocks of Object.values(cfg.hooks)) for (const b of blocks) delete b.matcher;
     console.log(JSON.stringify(cfg, null, 2));
     return;
@@ -87,7 +95,7 @@ function main() {
     return;
   }
 
-  const cfg = buildHooksConfig(kitRoot, "grok");
+  const cfg = buildHooksConfig(kitRoot, "grok", { guards: args.includes("--guards") });
   if (!apply) {
     console.log(`Dry-run. Gravaria ${target}:\n`);
     console.log(JSON.stringify(cfg, null, 2));
@@ -96,7 +104,8 @@ function main() {
   }
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, `${JSON.stringify(cfg, null, 2)}\n`, "utf8");
-  console.log(`Gravado: ${target}\nEventos: ${PROFILES.grok.events.join(", ")} (perfil "${PROFILES.grok.profile}": sem gates de prompt/ferramenta).`);
+  const events = Object.keys(cfg.hooks).join(", ");
+  console.log(`Gravado: ${target}\nEventos: ${events} (perfil "${PROFILES.grok.profile}": sem gates de prompt/ferramenta${cfg.hooks.PreToolUse ? "; PreToolUse so com as guardas /careful e /freeze" : ""}).`);
   console.log("Reinicie o Grok Build para carregar. Para desfazer: --uninstall.");
 }
 

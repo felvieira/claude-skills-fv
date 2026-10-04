@@ -33,6 +33,9 @@ Os hooks do kit so rodam onde estao registrados (Claude Code pelo plugin; Codex 
 - com o servidor `ai-memory` ligado por MCP, `node scripts/learned-skills-to-ai-memory.mjs --apply` publica as learned-skills nele, e entao `memory_query` as encontra em qualquer agente. Nunca grave valor de chave/token em nota
 Detalhe: `policies/learned-skills.md`, `policies/compaction-recovery.md`, `policies/memory-write-rules.md`.
 
+## Guardas sob demanda (/careful, /freeze) em qualquer agente
+Sem slash commands (Codex, Grok Build, Cursor...), ligue pelo shell: `node scripts/session-guard-cli.mjs careful on|off` e `freeze <pasta>|off` (`status` mostra). Onde o hook esta registrado (Claude, Codex pelo `.codex/hooks.json`, Grok com `install-memory-hooks.mjs --runtime grok --guards --apply`) o bloqueio e mecanico. **Sem hook, a regra vale por convencao**: com `freeze` ativo, nao edite fora da pasta; com `careful` ativo, nao rode `rm -rf`, `git push --force`, `git reset --hard`, deploy nem SQL destrutivo sem confirmacao explicita da pessoa. Estado em `.auto/session-guards.json` (do projeto, expira em 8 h).
+
 ## Mudancas no Repositorio
 - prefira mudancas pequenas e revisaveis
 - preserve a hierarquia global do kit
