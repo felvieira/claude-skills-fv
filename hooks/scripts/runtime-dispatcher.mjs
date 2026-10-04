@@ -13,6 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { consumePendingContext, savePendingContext } from "./deferred-context.mjs";
+import { guardsPath } from "./session-guards-lib.mjs";
 
 const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
 const kitRoot = path.resolve(scriptsDir, "..", "..");
@@ -33,6 +34,7 @@ const EVENT_SCRIPTS = {
     "agent-dispatch-validator.mjs",
     "investigate-first-guard.mjs",
     "design-anchor-guard.mjs",
+    "session-guard.mjs",
     "permission-ladder-guard.mjs",
     "pre-tool-enforcer.mjs",
     "model-routing-hook.mjs",
@@ -70,11 +72,15 @@ const TOOL_FILTERS = {
   "ai-writing-detector.mjs": ["Write", "Edit", "MultiEdit"],
   "graph-update-post-tool.mjs": ["Edit", "Write", "NotebookEdit"],
   "conflict-resolution-reminder.mjs": ["AskUserQuestion", "Bash"],
+  "permission-ladder-guard.mjs": ["Bash"],
+  "session-guard.mjs": ["Edit", "Write", "MultiEdit", "NotebookEdit"],
 };
 
-function shouldSkipByTool(script, event, toolName) {
+function shouldSkipByTool(script, event, toolName, cwd) {
   if (event !== "PreToolUse" && event !== "PostToolUse") return false;
   if (process.env.DEVKIT_NO_TOOL_FILTER === "1") return false;
+  // /freeze desligado (caso comum): sem arquivo de estado nao ha o que checar, nem spawna.
+  if (script === "session-guard.mjs" && !fs.existsSync(guardsPath(cwd || process.cwd()))) return true;
   const allowed = TOOL_FILTERS[script];
   return Boolean(allowed) && !allowed.includes(toolName);
 }
@@ -210,7 +216,7 @@ function run() {
 
   const trace = [];
   for (const script of scripts) {
-    if (shouldSkipByTool(script, event, payload.tool_name)) continue;
+    if (shouldSkipByTool(script, event, payload.tool_name, payload.cwd)) continue;
     trace.push(script);
     const result = spawnSync(process.execPath, [path.join(scriptsDir, script)], {
       cwd: process.cwd(),

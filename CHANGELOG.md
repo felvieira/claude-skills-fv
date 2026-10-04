@@ -600,6 +600,24 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.92.0] - 2026-10-04
+
+Itens da revisão de claude.dev ("Lessons from building Claude Code: how we use skills" e "Automating eval design and hillclimbing").
+
+### Adicionado
+
+- **`/careful` e `/freeze`** — guardas sob demanda. `/careful on` liga o `permission-ladder-guard` sem editar config (gated pede confirmação, lane fechada nega); `/freeze <pasta>` faz o novo hook `session-guard` negar Edit/Write/MultiEdit/NotebookEdit fora da pasta. Estado em `.auto/session-guards.json`, do **projeto** (não da sessão) e com expiração de 8 h; `off` apaga. Limites documentados: regex sobre texto, e o freeze não vê `sed -i`/redirecionamento via Bash.
+- **Treino/teste no eval de triggers**: `eval-triggers.mjs --split` (70/30 por hash estável de `skill|prompt`, com alerta se a folga passar de 10 pp) e `--compare base.json` (KEEP / REVERT / NO-CHANGE; `--strict` falha no REVERT). Só treino subiu = overfitting = REVERT. Primeira medição: treino 96,9% / teste 96,7% (folga 0,2 pp), então as descrições não estão moldadas às fixtures.
+- **Seção Gotchas** no template de skill (skill 35) com a regra de que cada gotcha vem de falha observada, e uma linha informativa no `/skill-health`. Nenhuma skill existente ganhou gotcha inventada.
+- 7 testes novos (`scripts/tests/guards-evals.test.mjs`, no CI).
+
+### Alterado
+
+- Dispatcher: `permission-ladder-guard` (só Bash) entra no filtro por ferramenta; `session-guard` só é spawnado se existir `.auto/session-guards.json`. Custo zero quando as guardas estão desligadas.
+- Contagens: 47 comandos.
+
+---
+
 ## [2.91.0] - 2026-10-04
 
 ### Adicionado

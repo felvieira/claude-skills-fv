@@ -38,6 +38,9 @@ jobs:
       - name: Memory hooks tests (redaction, compaction recovery, learned-skill states)
         run: node --test scripts/tests/memory-hooks.test.mjs
 
+      - name: Guards (/careful, /freeze) and trigger-eval train/test tests
+        run: node --test scripts/tests/guards-evals.test.mjs
+
       - name: Memory injection eval (positives carry the answer, negatives inject zero)
         run: node scripts/eval-memory-recall.mjs --strict
 

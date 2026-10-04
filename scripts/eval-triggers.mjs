@@ -21,6 +21,13 @@
  *   node scripts/eval-triggers.mjs --skill 43-canary-deployment      # uma fixture só
  *   node scripts/eval-triggers.mjs --min-should 80 --max-shouldnt 20 # threshold custom
  *   node scripts/eval-triggers.mjs --strict                          # exit 1 se qualquer skill fail
+ *   node scripts/eval-triggers.mjs --split --json > base.json        # 70% treino / 30% teste (hash estavel)
+ *   node scripts/eval-triggers.mjs --compare base.json [--strict]    # KEEP / REVERT / NO-CHANGE
+ *
+ * Treino/teste (ideia de "Automating eval design and hillclimbing", claude.dev): ao ajustar a
+ * descricao de uma skill para passar nas fixtures, o ganho so vale se o conjunto de TESTE tambem
+ * nao piora. Se so o treino sobe, a descricao foi moldada as fixtures (overfitting): REVERT. A
+ * divisao e por hash de "skill|prompt" — estavel quando se acrescentam prompts novos.
  */
 
 import { readFile, readdir } from "node:fs/promises";
@@ -45,6 +52,8 @@ const flag = (name) => {
 const asJson = argv.includes("--json");
 const strict = argv.includes("--strict");
 const skillFilter = flag("--skill");
+const split = argv.includes("--split") || typeof flag("--compare") === "string";
+const compareFile = typeof flag("--compare") === "string" ? flag("--compare") : null;
 const minShould = Number(flag("--min-should") ?? 80); // %
 const maxShouldnt = Number(flag("--max-shouldnt") ?? 20); // %
 
@@ -182,7 +191,7 @@ async function evaluateFixture(fixture) {
   const shouldnt = evalPool(shouldnt_trigger);
   const passed = should.pct >= minShould && shouldnt.pct <= maxShouldnt;
 
-  return {
+  const result = {
     skill,
     error: null,
     triggers_count: triggers.length,
@@ -190,6 +199,57 @@ async function evaluateFixture(fixture) {
     shouldnt,
     passed,
   };
+  if (split) result.split = splitScores(skill, should.samples, shouldnt.samples);
+  return result;
+}
+
+// ─── Treino/teste ────────────────────────────────────────────────────────────
+function fnv1a(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+const isTest = (skill, prompt) => fnv1a(`${skill}|${prompt}`) % 10 >= 7; // ~30%
+
+/** Acertos = should casado + shouldnt NAO casado; devolve contagens (nao % por skill: amostra pequena). */
+function splitScores(skill, shouldSamples, shouldntSamples) {
+  const out = { train: { n: 0, ok: 0 }, test: { n: 0, ok: 0 } };
+  const add = (s, correct) => {
+    const bucket = isTest(skill, s.prompt) ? out.test : out.train;
+    bucket.n += 1;
+    if (correct) bucket.ok += 1;
+  };
+  for (const s of shouldSamples) add(s, s.matched);
+  for (const s of shouldntSamples) add(s, !s.matched);
+  return out;
+}
+
+const pct = (ok, n) => (n ? Math.round((ok / n) * 1000) / 10 : 0);
+
+function aggregateSplit(results) {
+  const sum = { train: { n: 0, ok: 0 }, test: { n: 0, ok: 0 } };
+  for (const r of results) {
+    if (!r.split) continue;
+    for (const k of ["train", "test"]) { sum[k].n += r.split[k].n; sum[k].ok += r.split[k].ok; }
+  }
+  const train_acc = pct(sum.train.ok, sum.train.n);
+  const test_acc = pct(sum.test.ok, sum.test.n);
+  return { train_n: sum.train.n, test_n: sum.test.n, train_acc, test_acc, gap: Math.round((train_acc - test_acc) * 10) / 10 };
+}
+
+/** KEEP so se treino e teste nao pioram e um deles sobe; subir so o treino = overfitting. */
+function compareSplits(base, now, epsilon = 0.5) {
+  const dTrain = Math.round((now.train_acc - base.train_acc) * 10) / 10;
+  const dTest = Math.round((now.test_acc - base.test_acc) * 10) / 10;
+  let verdict = "NO-CHANGE";
+  let why = "treino e teste iguais ao baseline";
+  if (dTrain < -epsilon || dTest < -epsilon) { verdict = "REVERT"; why = "regressao (treino ou teste caiu)"; }
+  else if (dTrain > epsilon && dTest <= epsilon) { verdict = "REVERT"; why = "so o treino subiu: a descricao foi moldada as fixtures (overfitting)"; }
+  else if (dTrain > epsilon || dTest > epsilon) { verdict = "KEEP"; why = "treino e teste nao pioraram e houve ganho"; }
+  return { verdict, why, d_train: dTrain, d_test: dTest };
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -206,6 +266,22 @@ const summary = {
   error_count: results.filter((r) => r.error).length,
   thresholds: { min_should_pct: minShould, max_shouldnt_pct: maxShouldnt },
 };
+
+if (split) summary.split = aggregateSplit(results);
+if (compareFile) {
+  let baseline;
+  try {
+    baseline = JSON.parse((await readFile(compareFile, "utf8")).replace(/^﻿/, "")); // PowerShell grava BOM
+  } catch (err) {
+    console.error(`Nao consegui ler o baseline ${compareFile}: ${err.message}`);
+    process.exit(2);
+  }
+  if (!baseline?.summary?.split) {
+    console.error("Baseline sem treino/teste: gere com `--split --json > base.json`.");
+    process.exit(2);
+  }
+  summary.compare = compareSplits(baseline.summary.split, summary.split);
+}
 
 if (asJson) {
   console.log(JSON.stringify({ summary, results }, null, 2));
@@ -250,6 +326,17 @@ if (asJson) {
       `${summary.failed_count} failed, ${summary.error_count} errored`,
   );
 
+  if (summary.split) {
+    const s = summary.split;
+    console.log("");
+    console.log(`Treino/teste (acuracia = should casado + shouldnt nao casado): treino ${s.train_acc}% (n=${s.train_n}) | teste ${s.test_acc}% (n=${s.test_n}) | folga ${s.gap} pp`);
+    if (s.gap > 10) console.log("  ! folga > 10 pp: os gatilhos podem estar moldados as fixtures de treino.");
+  }
+  if (summary.compare) {
+    const c = summary.compare;
+    console.log(`Comparacao com baseline: ${c.verdict} — ${c.why} (treino ${c.d_train >= 0 ? "+" : ""}${c.d_train} pp, teste ${c.d_test >= 0 ? "+" : ""}${c.d_test} pp)`);
+  }
+
   // Detail of failures (top 3 misses per pool)
   const failures = results.filter((r) => !r.passed && !r.error);
   if (failures.length > 0) {
@@ -275,5 +362,5 @@ if (asJson) {
 
 if (strict) {
   const fatal = summary.failed_count + summary.error_count;
-  if (fatal > 0) process.exit(1);
+  if (fatal > 0 || summary.compare?.verdict === "REVERT") process.exit(1);
 }

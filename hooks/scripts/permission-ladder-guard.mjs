@@ -39,6 +39,7 @@
 
 import { appendFileSync, mkdirSync } from "fs";
 import { isHookDisabled, readHookConfig, resolveBotPath } from "./utils.mjs";
+import { readGuards } from "./session-guards-lib.mjs";
 
 // Each pattern maps to the ladder row it belongs to (policies/tool-safety.md).
 // `requires` is what the policy says must accompany approval — surfaced in
@@ -145,8 +146,9 @@ process.stdin.on("end", () => {
   let input = {};
   try { input = JSON.parse(inputBuffer); } catch { return allow(); }
 
+  // Ligado por config (sempre) ou por /careful (sob demanda, expira em 8 h).
   const cfg = readHookConfig("permission_ladder_guard", { enabled: false });
-  if (cfg.enabled !== true) return allow();
+  if (cfg.enabled !== true && !readGuards(input.cwd || process.cwd()).careful) return allow();
 
   const command = extractCommand(input);
   if (!command) return allow();
@@ -195,7 +197,7 @@ process.stdin.on("end", () => {
         `Ver policies/tool-safety.md ("Permission ladder") para a régua completa.`,
         `Se já confirmado com o usuário nesta conversa, adicione o sufixo`,
         `" # permission-ladder: allow" ao comando e rode de novo.`,
-        `Desligar: hooks/config.json -> permission_ladder_guard.enabled=false`,
+        `Desligar: /careful off (modo sob demanda) ou hooks/config.json -> permission_ladder_guard.enabled=false`,
       ].join("\n");
 
   try {

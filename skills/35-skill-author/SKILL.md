@@ -99,6 +99,10 @@ Especificas do dominio.
 ## Anti-Padroes
 O que evitar (especifico, nao generico).
 
+## Gotchas
+Falhas REAIS ja vistas ao usar esta skill, uma linha cada, no formato "o que parece / o que e de fato / como detectar".
+Comece vazia e cresca a cada falha (nao invente gotcha para preencher a secao). Ver "Gotchas" abaixo.
+
 ## Evidencia de Conclusao ★
 Como saber se a skill cumpriu seu objetivo.
 
@@ -108,6 +112,16 @@ Para qual skill/persona/agente entregar resultado.
 ## Integracao com Pipeline ★
 Como esta skill se conecta com Orchestrator (09), Context Manager (08), Documenter (10), Reviewer (11) e outras relevantes.
 ```
+
+### Gotchas (a secao de maior valor)
+
+Origem: "Lessons from building Claude Code: how we use skills" (claude.dev). O que o modelo ja sabe nao precisa estar na skill; o que ele erra repetidamente, sim.
+
+- **Cada gotcha vem de uma falha observada**, nao de previsao. Fontes validas: um `learned-skill` aceito (`.bot/learned-skills/`), um bug que voltou, um comentario de review repetido, uma linha do CHANGELOG com "corrigido". Se nao ha fonte, nao escreva.
+- **Formato**: uma linha — sintoma → causa real → como confirmar. Ex.: "staging responde 200 mesmo com o webhook falho → olhe `payment_events` para o estado real".
+- **Especifico do seu sistema**: "valide inputs" e generico e nao entra; "a tabela `subscriptions` e append-only, use a maior `version`" entra.
+- **Mantenha**: quando um `learned-skill` com `files:` da skill for aceito, promova a regra para a secao Gotchas e marque o learned-skill `superseded` (ver `policies/learned-skills.md`).
+- `node scripts/skill-health.mjs` lista as skills ainda sem a secao (informativo — nao e erro: skill nova pode nao ter falha conhecida ainda).
 
 ### Description: Triggering
 

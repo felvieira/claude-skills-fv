@@ -95,6 +95,7 @@ function loadSkills() {
         path: skillFile,
         size: content.length,
         mtime: stats.mtime,
+        hasGotchas: /^#{2,3}\s+(gotchas|armadilhas|pegadinhas)\b/im.test(content),
       };
     })
     .filter(Boolean);
@@ -297,6 +298,14 @@ function generateReport() {
     lines.push(`- ${flagged.no_evals.length} skills sem fixture:`);
     for (const s of flagged.no_evals) lines.push(`  - ${s.slug}`);
   }
+  lines.push('');
+
+  // Informativo: nao entra em "allClean". Gotchas vem de falha real (skill 35), nao se inventa para zerar a lista.
+  const noGotchas = skills.filter(s => !s.hasGotchas);
+  lines.push(`### Skills sem seção Gotchas (informativo)`);
+  lines.push('');
+  lines.push(`- ${skills.length - noGotchas.length}/${skills.length} têm a seção. Crescer a partir de falhas reais (learned-skills aceitos, bugs que voltaram) — ver skill 35.`);
+  if (noGotchas.length) lines.push(`- Sem a seção: ${noGotchas.map(s => s.slug).join(', ')}`);
   lines.push('');
 
   lines.push(`### Subagents com description curta (<80 chars)`);

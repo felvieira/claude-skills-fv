@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 83 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.91.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.92.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -748,7 +748,7 @@ consumer-repo/
     └── templates/
 ```
 
-The consumer repo also receives `.claude/commands/` (45 slash commands) at the root, installed by `setup/install.sh`.
+The consumer repo also receives `.claude/commands/` (47 slash commands) at the root, installed by `setup/install.sh`.
 
 
 ---
