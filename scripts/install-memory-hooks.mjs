@@ -7,7 +7,9 @@
  * plugin) e so carrega `~/.grok/hooks/*.json`. Registrar o conjunto completo do
  * kit la despejaria gates de prompt/ferramenta escritos no vocabulario do
  * Claude. O perfil "memory" do dispatcher roda so a injecao de learned-skills
- * (sem gatilhos de skill) e a captura pre-compactacao.
+ * (sem gatilhos de skill) e a captura pre-compactacao. No Grok o perfil e
+ * "memory-deferred": o host descarta o contexto do UserPromptSubmit, entao ele e
+ * guardado ali e entregue no primeiro PostToolUse.
  *
  * Uso:
  *   node scripts/install-memory-hooks.mjs --runtime grok              # dry-run: mostra o arquivo
@@ -25,18 +27,25 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const MEMORY_EVENTS = ["UserPromptSubmit", "PreCompact"];
+// O Grok descarta o additionalContext do UserPromptSubmit (doc: "an allowing hook's stdout /
+// additionalContext is discarded"), mas aceita em PostToolUse. Por isso o perfil dele e
+// `memory-deferred` (guarda no prompt, entrega no primeiro PostToolUse) e registra PostToolUse.
+const PROFILES = {
+  grok: { profile: "memory-deferred", events: ["UserPromptSubmit", "PostToolUse", "PreCompact"] },
+  codex: { profile: "memory", events: ["UserPromptSubmit", "PreCompact"] },
+};
 const FILE_NAME = "dev-team-kit-memory.json";
 
 const fwd = (p) => String(p).replace(/\\/g, "/"); // CLAUDE.md global: barra normal em JSON de hook
 
-export function buildHooksConfig(kitRoot) {
+export function buildHooksConfig(kitRoot, runtime = "codex") {
   const dispatcher = `${fwd(kitRoot)}/hooks/scripts/runtime-dispatcher.mjs`;
+  const { profile, events } = PROFILES[runtime];
   const hooks = {};
-  for (const event of MEMORY_EVENTS) {
+  for (const event of events) {
     hooks[event] = [{
       matcher: "",
-      hooks: [{ type: "command", command: `node "${dispatcher}" ${event} memory`, timeout: 30 }],
+      hooks: [{ type: "command", command: `node "${dispatcher}" ${event} ${profile}`, timeout: 30 }],
     }];
   }
   return { hooks };
@@ -66,7 +75,7 @@ function main() {
 
   if (runtime === "codex") {
     console.log("Bloco para mesclar em ~/.codex/hooks.json (nao editado automaticamente: o arquivo global tem hooks de outras ferramentas):\n");
-    const cfg = buildHooksConfig(kitRoot);
+    const cfg = buildHooksConfig(kitRoot, "codex");
     for (const blocks of Object.values(cfg.hooks)) for (const b of blocks) delete b.matcher;
     console.log(JSON.stringify(cfg, null, 2));
     return;
@@ -78,7 +87,7 @@ function main() {
     return;
   }
 
-  const cfg = buildHooksConfig(kitRoot);
+  const cfg = buildHooksConfig(kitRoot, "grok");
   if (!apply) {
     console.log(`Dry-run. Gravaria ${target}:\n`);
     console.log(JSON.stringify(cfg, null, 2));
@@ -87,7 +96,7 @@ function main() {
   }
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, `${JSON.stringify(cfg, null, 2)}\n`, "utf8");
-  console.log(`Gravado: ${target}\nEventos: ${MEMORY_EVENTS.join(", ")} (perfil "memory": sem gates de prompt/ferramenta).`);
+  console.log(`Gravado: ${target}\nEventos: ${PROFILES.grok.events.join(", ")} (perfil "${PROFILES.grok.profile}": sem gates de prompt/ferramenta).`);
   console.log("Reinicie o Grok Build para carregar. Para desfazer: --uninstall.");
 }
 

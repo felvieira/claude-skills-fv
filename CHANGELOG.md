@@ -600,6 +600,26 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.90.0] - 2026-10-04
+
+### Corrigido
+
+- **Grok Build: a recuperação pós-compactação não funcionava, e as learned-skills também não chegavam ao modelo.** Verificado rodando o Grok 1.0.41 de verdade: o payload traz `transcript_path` apontando para `updates.jsonl` (eventos de UI, formato "desconhecido" ⇒ nenhum pacote), e a doc do host diz que o `additionalContext` de um `UserPromptSubmit` é descartado. A afirmação anterior de que as learned-skills funcionavam no Grok estava errada.
+
+### Adicionado
+
+- Adaptador `grok` em `compaction-lib.mjs` para o `chat_history.jsonl` (`<user_query>`, `tool_calls`, `tool_result` com `exit: N`) e `resolveTranscriptPath` (troca `updates.jsonl` pelo irmão `chat_history.jsonl`).
+- Perfil `memory-deferred` no dispatcher (`deferred-context.mjs`): no Grok o contexto do prompt é guardado em `.auto/pending-context/` e entregue uma vez no primeiro `PostToolUse`; o pacote de recuperação só é consumido ali. `install-memory-hooks.mjs --runtime grok` agora registra `UserPromptSubmit`, `PostToolUse` e `PreCompact` nesse perfil (reaplicar com `--apply`). Codex segue no perfil `memory`.
+- `DEVKIT_DISPATCH_TRACE` registra também as chaves do payload e se havia transcript (sem valores).
+- 5 testes novos (adaptador, dispatcher com payload real do Grok, perfil adiado, expiração em 30 min).
+
+### Alterado
+
+- `policies/compaction-recovery.md` e READMEs: linha do Grok passa de "não verificado" para verificado de ponta a ponta, com a limitação do host (turno sem ferramenta não recebe contexto).
+- Removido o `.serena` do repo (Serena desinstalado; ai-memory + graphify cobrem memória e navegação).
+
+---
+
 ## [2.89.0] - 2026-10-04
 
 ### Alterado

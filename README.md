@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 83 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.89.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.90.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-83-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -419,7 +419,7 @@ flowchart LR
 
 ### Memory beyond Claude Code
 
-Hooks only run where they are registered. Codex loads `.codex/hooks.json` (it registers `PreCompact` too); **Grok Build ignores the Claude plugin** (`[compat.claude] hooks = false`) and only reads `~/.grok/hooks/*.json`. For agents that don't speak this kit's vocabulary, the dispatcher has a `memory` profile — learned-skill injection and pre-compaction capture only, no prompt/tool gates (~130 ms per prompt instead of ~750 ms measured):
+Hooks only run where they are registered. Codex loads `.codex/hooks.json` (it registers `PreCompact` too); **Grok Build ignores the Claude plugin** (`[compat.claude] hooks = false`) and only reads `~/.grok/hooks/*.json`. For agents that don't speak this kit's vocabulary, the dispatcher has a `memory` profile — learned-skill injection and pre-compaction capture only, no prompt/tool gates (~130 ms per prompt instead of ~750 ms measured). Grok discards the context a `UserPromptSubmit` hook returns, so its install uses `memory-deferred`: the context is stored at prompt time and delivered once on the first `PostToolUse` (verified end to end against Grok 1.0.41, including post-`/compact` recovery from its `chat_history.jsonl`):
 
 ```bash
 node scripts/install-memory-hooks.mjs --runtime grok            # dry-run

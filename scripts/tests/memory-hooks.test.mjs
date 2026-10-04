@@ -499,9 +499,11 @@ test("install-memory-hooks: dry-run nao grava; --apply grava so o arquivo do kit
     const applied = run("--apply");
     assert.equal(applied.status, 0, applied.stderr);
     const cfg = JSON.parse(readFileSync(target, "utf8"));
-    assert.deepEqual(Object.keys(cfg.hooks).sort(), ["PreCompact", "UserPromptSubmit"]);
+    assert.deepEqual(Object.keys(cfg.hooks).sort(), ["PostToolUse", "PreCompact", "UserPromptSubmit"]);
     const cmd = cfg.hooks.UserPromptSubmit[0].hooks[0].command;
-    assert.match(cmd, /^node ".*\/hooks\/scripts\/runtime-dispatcher\.mjs" UserPromptSubmit memory$/);
+    // Grok descarta o contexto do UserPromptSubmit => perfil adiado, entregue no PostToolUse
+    assert.match(cmd, /^node ".*\/hooks\/scripts\/runtime-dispatcher\.mjs" UserPromptSubmit memory-deferred$/);
+    assert.match(cfg.hooks.PostToolUse[0].hooks[0].command, / PostToolUse memory-deferred$/);
     assert.ok(!cmd.includes("\\"), "caminho de hook deve usar barra normal");
     assert.equal(readFileSync(join(home, ".grok", "hooks", "ai-memory.json"), "utf8"), '{"hooks":{}}');
 
@@ -654,6 +656,132 @@ test("filtro por ferramenta: dispatcher nao spawna script filtrado e DEVKIT_NO_T
     assert.ok(run("PreToolUse", "Agent").includes("agent-dispatch-validator.mjs"));
     assert.ok(!run("PreToolUse", "Bash").includes("agent-dispatch-validator.mjs"));
     assert.ok(run("PostToolUse", "Read", { DEVKIT_NO_TOOL_FILTER: "1" }).includes("post-tool-verifier.mjs"));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+// ------------------------------------------------------------------ Grok Build
+// Forma capturada de uma sessao real (grok 1.0.41): ~/.grok/sessions/<cwd codificado>/<id>/chat_history.jsonl
+function grokTranscript() {
+  const call = (id, name, args) => ({ id, name, arguments: JSON.stringify(args) });
+  return transcript([
+    { type: "system", content: "You are Grok 4.6 released by xAI." },
+    { type: "user", content: [{ type: "text", text: "<user_info>\nOS Version: windows\nWorkspace Path: C:\\proj\n</user_info>" }] },
+    { type: "user", content: [{ type: "text", text: "<system-reminder>\nskills disponiveis\n</system-reminder>" }] },
+    { type: "user", content: [{ type: "text", text: "<user_query>\nImplemente a recuperacao pos-compactacao tambem para o Grok Build, com testes.\n</user_query>" }], prompt_index: 0 },
+    { type: "user", content: [{ type: "text", text: "<system-reminder>\nMCP servers connecting\n</system-reminder>" }], synthetic_reason: "system_reminder" },
+    { type: "reasoning", id: "rs_1", summary: [], encrypted_content: "xxxx", status: "completed" },
+    {
+      type: "assistant",
+      content: `Plano pronto.\n\nPendente: registrar o adaptador no dispatcher\nchave ${fake.openrouter()}`,
+      tool_calls: [call("t1", "run_terminal_command", { command: "npm test" }), call("t2", "read_file", { target_file: "a.txt" }), call("t3", "run_terminal_command", { command: "node scripts/check-consistency.mjs" })],
+    },
+    { type: "tool_result", tool_call_id: "t2", content: "1→ola\n" },
+    { type: "tool_result", tool_call_id: "t1", content: "exit: 1\nFAIL" },
+    { type: "tool_result", tool_call_id: "t3", content: "exit: 0\nok" },
+    { type: "assistant", content: "Adaptador do Grok pronto." },
+  ]);
+}
+
+test("grok: adaptador le o pedido real (<user_query>), pendencia e verificacoes; ignora contexto injetado e segredo", () => {
+  const packet = buildPacket({ transcriptText: grokTranscript(), sessionId: "gk-1", snapshot: { available: false } });
+  assert.equal(packet.source_format, "grok");
+  assert.match(packet.objective, /recuperacao pos-compactacao tambem para o Grok Build/);
+  assert.ok(!/user_info|system-reminder/.test(packet.objective));
+  assert.deepEqual(packet.keep.map((k) => k.text), ["registrar o adaptador no dispatcher"]);
+  assert.deepEqual(packet.verification, [
+    { cmd: "npm test", status: "failed" },
+    { cmd: "node scripts/check-consistency.mjs", status: "passed" },
+  ]);
+  assert.ok(!JSON.stringify(packet).includes(fake.openrouter()));
+});
+
+test("grok: transcript_path aponta para updates.jsonl; usa o chat_history.jsonl ao lado, grava e entrega uma vez", () => {
+  const cwd = tmp("memhooks-grok");
+  const dir = tmp("memhooks-grokses");
+  try {
+    const sid = "01a1088f-a26b-7543-a9dc-65cd8ec89e28";
+    // updates.jsonl e fluxo de eventos de UI (formato desconhecido para o pacote); o historico fica ao lado
+    writeFileSync(join(dir, "updates.jsonl"), transcript([{ method: "session/update", params: { update: { sessionUpdate: "user_message_chunk" } } }]));
+    writeFileSync(join(dir, "chat_history.jsonl"), grokTranscript());
+    const run = (event, extra = {}) => {
+      // Payload do Grok 1.0.41: chaves camelCase e snake_case juntas
+      const res = spawnSync(process.execPath, [DISPATCHER, event, "memory"], {
+        cwd,
+        input: JSON.stringify({ hookEventName: event.toLowerCase(), sessionId: sid, session_id: sid, cwd, transcriptPath: join(dir, "updates.jsonl"), transcript_path: join(dir, "updates.jsonl"), ...extra }),
+        encoding: "utf8",
+        env: { ...process.env, CLAUDE_PLUGIN_ROOT: root },
+      });
+      assert.equal(res.status, 0, res.stderr);
+      return res.stdout.trim() ? JSON.parse(res.stdout) : {};
+    };
+    run("PreCompact");
+    assert.ok(existsSync(join(cwd, ".auto", "compaction", `${sid}.json`)));
+    const first = run("UserPromptSubmit", { prompt: "segue" });
+    const ctx = first.hookSpecificOutput?.additionalContext ?? "";
+    assert.match(ctx, /Recuperacao pos-compactacao/);
+    assert.match(ctx, /\[FALHOU\] npm test/);
+    assert.ok(!existsSync(join(cwd, ".auto", "compaction", `${sid}.json`)), "entregue uma vez e apagado");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// --------------------------------------------- perfil memory-deferred (Grok)
+test("memory-deferred: contexto do prompt nao sai no UserPromptSubmit; sai uma vez no primeiro PostToolUse", () => {
+  const cwd = tmp("memhooks-defer");
+  try {
+    learned(cwd, "deploy-vps", { triggers: '["deploy na vps"]', created: "2026-10-01", score: "0.70", last_used: new Date().toISOString().slice(0, 10), uses: "0" });
+    const sid = "defer-1";
+    const run = (event, extra = {}) => runHook(DISPATCHER, { hook_event_name: event, session_id: sid, cwd, ...extra }, cwd, [event, "memory-deferred"]);
+
+    const prompt = run("UserPromptSubmit", { prompt: "como faco o deploy na vps agora?" });
+    assert.ok(!/LearnedSkill/.test(JSON.stringify(prompt)), "o Grok descarta isso; nao pode ser gasto aqui");
+    assert.ok(existsSync(join(cwd, ".auto", "pending-context", `${sid}.json`)));
+
+    const first = run("PostToolUse", { tool_name: "Read", tool_input: {}, tool_response: {} });
+    assert.match(first.hookSpecificOutput?.additionalContext ?? "", /LearnedSkill/);
+    assert.ok(!existsSync(join(cwd, ".auto", "pending-context", `${sid}.json`)));
+
+    const second = run("PostToolUse", { tool_name: "Read", tool_input: {}, tool_response: {} });
+    assert.ok(!second.hookSpecificOutput, "entregue uma vez");
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("memory-deferred: pacote de recuperacao so e consumido no PostToolUse (nao se perde no UserPromptSubmit)", () => {
+  const cwd = tmp("memhooks-defer2");
+  try {
+    const sid = "defer-2";
+    const tpath = join(cwd, "chat_history.jsonl");
+    writeFileSync(tpath, grokTranscript());
+    const run = (event, extra = {}) => runHook(DISPATCHER, { hook_event_name: event, session_id: sid, cwd, transcript_path: tpath, ...extra }, cwd, [event, "memory-deferred"]);
+    run("PreCompact");
+    const packetFile = join(cwd, ".auto", "compaction", `${sid}.json`);
+    assert.ok(existsSync(packetFile));
+
+    run("UserPromptSubmit", { prompt: "segue" });
+    assert.ok(existsSync(packetFile), "UserPromptSubmit do Grok descarta o contexto: nao pode consumir o pacote");
+
+    const out = run("PostToolUse", { tool_name: "Read", tool_input: {}, tool_response: {} });
+    assert.match(out.hookSpecificOutput?.additionalContext ?? "", /Recuperacao pos-compactacao/);
+    assert.ok(!existsSync(packetFile));
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("memory-deferred: contexto adiado vencido (30 min) e descartado em vez de entregue velho", async () => {
+  const { consumePendingContext, pendingContextPath, savePendingContext } = await import("../../hooks/scripts/deferred-context.mjs");
+  const cwd = tmp("memhooks-defer3");
+  try {
+    assert.ok(savePendingContext(cwd, "s-old", "texto"));
+    assert.equal(consumePendingContext(cwd, "s-old", Date.now() + 31 * 60 * 1000), "");
+    assert.ok(!existsSync(pendingContextPath(cwd, "s-old")));
+    assert.equal(consumePendingContext(cwd, "../escape", Date.now()), ""); // id perigoso nao vira caminho
   } finally {
     rmSync(cwd, { recursive: true, force: true });
   }

@@ -12,6 +12,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { consumePendingContext, savePendingContext } from "./deferred-context.mjs";
 
 const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
 const kitRoot = path.resolve(scriptsDir, "..", "..");
@@ -84,6 +85,7 @@ function shouldSkipByTool(script, event, toolName) {
 // de prompt/ferramenta. Alem de remover ruido, custa 1-2 processos em vez de 6-8 por evento.
 const MEMORY_PROFILE_SCRIPTS = {
   UserPromptSubmit: ["keyword-detector.mjs"],
+  PostToolUse: [], // so o perfil memory-deferred faz algo aqui (entrega o contexto guardado)
   PreCompact: ["precompact-capture.mjs"],
 };
 
@@ -196,9 +198,13 @@ function run() {
   const contexts = [];
   const systemMessages = [];
 
-  const memoryOnly = process.argv[3] === "memory" || process.env.DEVKIT_RUNTIME_PROFILE === "memory";
+  // `memory-deferred` = `memory` para hosts que descartam o contexto do UserPromptSubmit (Grok Build):
+  // o que seria injetado no prompt fica guardado e sai no primeiro PostToolUse.
+  const deferred = process.argv[3] === "memory-deferred" || process.env.DEVKIT_RUNTIME_PROFILE === "memory-deferred";
+  const memoryOnly = deferred || process.argv[3] === "memory" || process.env.DEVKIT_RUNTIME_PROFILE === "memory";
   const scripts = [...(memoryOnly ? MEMORY_PROFILE_SCRIPTS[event] || [] : EVENT_SCRIPTS[event])];
-  if (RECOVERY_EVENTS.has(event) && hasPendingCompactionPacket(payload)) {
+  const recoveryHere = deferred ? event === "PostToolUse" : RECOVERY_EVENTS.has(event);
+  if (recoveryHere && hasPendingCompactionPacket(payload)) {
     scripts.unshift("compaction-recover.mjs");
   }
 
@@ -231,9 +237,17 @@ function run() {
     }
   }
 
+  if (deferred && event === "UserPromptSubmit" && contexts.length) {
+    savePendingContext(payload.cwd || process.cwd(), payload.session_id, contexts.join("\n\n"));
+    contexts.length = 0;
+  } else if (deferred && event === "PostToolUse") {
+    const pending = consumePendingContext(payload.cwd || process.cwd(), payload.session_id);
+    if (pending) contexts.push(pending);
+  }
+
   if (process.env.DEVKIT_DISPATCH_TRACE) {
     try {
-      fs.appendFileSync(process.env.DEVKIT_DISPATCH_TRACE, `${JSON.stringify({ event, tool: payload.tool_name, memoryOnly, scripts: trace })}\n`);
+      fs.appendFileSync(process.env.DEVKIT_DISPATCH_TRACE, `${JSON.stringify({ event, tool: payload.tool_name, memoryOnly, scripts: trace, keys: Object.keys(input), transcript: Boolean(payload.transcript_path) })}\n`);
     } catch { /* diagnostico opcional */ }
   }
 

@@ -5,7 +5,7 @@
  * por este hook. Ver policies/compaction-recovery.md.
  */
 import { isHookDisabled, readHookConfig } from "./utils.mjs";
-import { buildPacket, hasContent, loadPacket, readTail, savePacket } from "./compaction-lib.mjs";
+import { buildPacket, hasContent, loadPacket, readTail, resolveTranscriptPath, savePacket } from "./compaction-lib.mjs";
 
 let raw = "";
 process.stdin.setEncoding("utf-8");
@@ -21,7 +21,7 @@ process.stdin.on("end", () => {
     const transcript = input.transcript_path;
     if (!sessionId || !transcript) return done();
 
-    const tail = readTail(transcript);
+    const tail = readTail(resolveTranscriptPath(transcript));
     if (!tail) return done();
 
     const cwd = input.cwd || process.cwd();

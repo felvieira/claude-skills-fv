@@ -17,9 +17,10 @@
  * para uma lista neutra de eventos; as extracoes nao conhecem nenhum agente.
  *   claude: JSONL de {type, message:{role, content:[text|tool_use|tool_result]}}
  *   codex : JSONL de {type:"response_item", payload:{message|function_call|function_call_output}}
+ *   grok  : chat_history.jsonl de {type:"user"|"assistant"|"tool_result", content, tool_calls}
  */
 import { closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, unlinkSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { gitSnapshot, redact } from "./memory-lib.mjs";
 
 export const PACKET_VERSION = 1;
@@ -41,7 +42,7 @@ export function verifySegment(command) {
   }
   return "";
 }
-const SHELL_TOOLS = /^(?:Bash|PowerShell|shell|shell_command|exec_command|local_shell)$/;
+const SHELL_TOOLS = /^(?:Bash|PowerShell|shell|shell_command|exec_command|local_shell|run_terminal_command)$/;
 
 export function sanitizeSessionId(id) {
   return String(id || "").replace(/[^A-Za-z0-9_-]/g, "");
@@ -55,6 +56,16 @@ export function packetPath(cwd, sessionId) {
 // ---------------------------------------------------------------------------
 // Leitura do transcript, so o fim
 // ---------------------------------------------------------------------------
+
+/**
+ * O Grok aponta `transcript_path` para `updates.jsonl` (fluxo de eventos de UI, sem texto de
+ * ferramenta util). O historico da conversa fica no `chat_history.jsonl` ao lado.
+ */
+export function resolveTranscriptPath(path) {
+  if (!/[\\/]updates\.jsonl$/.test(String(path))) return path;
+  const sibling = join(dirname(path), "chat_history.jsonl");
+  return existsSync(sibling) ? sibling : path;
+}
 
 export function readTail(path, maxBytes = TAIL_BYTES) {
   let fd;
@@ -202,14 +213,59 @@ function fromCodex(records) {
   return events;
 }
 
+// Grok Build: `chat_history.jsonl` da sessao (~/.grok/sessions/<cwd codificado>/<id>/), uma mensagem
+// por linha: {type:"system"|"user"|"assistant"|"tool_result"|"reasoning", ...}. O turno de "user" com
+// o pedido real traz `<user_query>`; os demais (`<user_info>`, `<system-reminder>`, `synthetic_reason`)
+// sao contexto injetado. O resultado do shell comeca com "exit: <codigo>".
+const GROK_TYPES = new Set(["system", "user", "assistant", "tool_result", "reasoning"]);
+
+function grokUserText(content) {
+  const raw = Array.isArray(content) ? codexText(content) : typeof content === "string" ? content : "";
+  const query = raw.match(/<user_query>\s*([\s\S]*?)\s*<\/user_query>/);
+  return query ? query[1].trim() : stripInjectedBlocks(raw);
+}
+
+function grokCommand(call) {
+  let args = null;
+  try { args = JSON.parse(call.arguments); } catch { /* sem JSON */ }
+  return typeof args?.command === "string" ? args.command : "";
+}
+
+function grokResultStatus(content) {
+  const exit = typeof content === "string" ? content.match(/^\s*exit:\s*(-?\d+)/i) : null;
+  if (exit) return Number(exit[1]) === 0 ? "passed" : "failed";
+  return "unknown";
+}
+
+function fromGrok(records) {
+  const events = [];
+  for (const rec of records) {
+    if (rec?.type === "user" && !rec.synthetic_reason) {
+      const text = grokUserText(rec.content);
+      if (text) events.push({ kind: "text", role: "user", text });
+    } else if (rec?.type === "assistant") {
+      if (typeof rec.content === "string" && rec.content.trim()) events.push({ kind: "text", role: "assistant", text: rec.content.trim() });
+      for (const call of Array.isArray(rec.tool_calls) ? rec.tool_calls : []) {
+        if (SHELL_TOOLS.test(call?.name || "")) events.push({ kind: "tool_use", id: call.id, command: grokCommand(call) });
+      }
+    } else if (rec?.type === "tool_result" && rec.tool_call_id) {
+      events.push({ kind: "tool_result", id: rec.tool_call_id, status: grokResultStatus(rec.content) });
+    }
+  }
+  return events;
+}
+
 export function detectFormat(records) {
   let claude = 0;
   let codex = 0;
+  let grok = 0;
   for (const rec of records.slice(0, 200)) {
     if (rec?.type === "response_item" || rec?.type === "session_meta") codex++;
     else if (rec?.message && typeof rec.message === "object") claude++;
+    else if (GROK_TYPES.has(rec?.type) && !rec.payload && "content" in rec) grok++;
   }
-  if (!claude && !codex) return "unknown";
+  if (!claude && !codex && !grok) return "unknown";
+  if (grok > claude && grok > codex) return "grok";
   return codex > claude ? "codex" : "claude";
 }
 
@@ -218,6 +274,7 @@ export function normalizeTranscript(text) {
   const format = detectFormat(records);
   if (format === "claude") return { format, events: fromClaude(records) };
   if (format === "codex") return { format, events: fromCodex(records) };
+  if (format === "grok") return { format, events: fromGrok(records) };
   return { format, events: [] };
 }
 
