@@ -600,6 +600,14 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.91.0] - 2026-10-04
+
+### Adicionado
+
+- `scripts/skill-usage.mjs`: mede o uso real das skills a partir do `.auto/events.jsonl` (a tool `Skill` que o `session-event-logger` já registrava), com `--root`, `--since-days` e `--json`. Ideia vinda de "Lessons from building Claude Code: how we use skills" (claude.dev): logar invocações para achar skills populares e as que não disparam. Primeira leitura nos repos do mantenedor: 67 chamadas em 40/83 skills — amostra fina demais para concluir; vale como sinal. 1 teste novo.
+
+---
+
 ## [2.90.0] - 2026-10-04
 
 ### Corrigido

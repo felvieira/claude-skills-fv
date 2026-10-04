@@ -9,7 +9,7 @@
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
 > **Versão:** 83 skills, 16 subagents, 45 slash commands, 64 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-04 (v2.90.0 — memória no Grok Build verificada de ponta a ponta)
+> **Última atualização:** 2026-10-04 (v2.91.0 — uso real de skills medido de .auto/events.jsonl)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---

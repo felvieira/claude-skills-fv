@@ -31,6 +31,8 @@ argument-hint: "[--out=docs/skill-health.md]"
 - top 10 skills por description quality
 - ações sugeridas (links pra `/humanize`, skill 35, eval-triggers)
 
+**Uso real (complemento):** `/skill-health` só olha o texto das skills. Para saber quais foram chamadas de fato, rode `node scripts/skill-usage.mjs --root <pasta com seus projetos>` (lê `.auto/events.jsonl`, que o `session-event-logger` já grava). Skill nunca chamada é sinal para rever descrição/gatilho, não para apagar — e skills injetadas por hook não passam pela tool `Skill`.
+
 **Comando real:**
 ```bash
 node scripts/skill-health.mjs

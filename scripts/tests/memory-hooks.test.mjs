@@ -786,3 +786,33 @@ test("memory-deferred: contexto adiado vencido (30 min) e descartado em vez de e
     rmSync(cwd, { recursive: true, force: true });
   }
 });
+
+// ----------------------------------------------------------- uso real de skills
+test("skill-usage: conta so a tool Skill, normaliza o prefixo do plugin e respeita --since-days", () => {
+  const base = tmp("memhooks-usage");
+  try {
+    const proj = join(base, "projA");
+    mkdirSync(join(proj, ".auto"), { recursive: true });
+    const day = 86400000;
+    const ev = (tool, skill, ageDays) => JSON.stringify({ ts: new Date(Date.now() - ageDays * day).toISOString(), tool, args: skill ? { skill } : {} });
+    writeFileSync(join(proj, ".auto", "events.jsonl"), [
+      ev("Skill", "dev-team-kit-fv:09-orchestrator", 1),
+      ev("Skill", "09-orchestrator", 2),
+      ev("Skill", "09-orchestrator", 200), // fora da janela de 30 dias
+      ev("Skill", "artifact-design", 1), // skill de fora do kit
+      ev("Read", "", 1), // outra ferramenta: ignorada
+      "linha corrompida {",
+    ].join("\n"));
+    const run = (...a) => JSON.parse(spawnSync(process.execPath, [join(root, "scripts", "skill-usage.mjs"), "--root", base, "--json", ...a], { encoding: "utf8" }).stdout);
+
+    const all = run();
+    assert.equal(all.rows.find((r) => r.skill === "09-orchestrator").calls, 3);
+    assert.deepEqual(all.outsiders, [{ skill: "artifact-design", calls: 1 }]);
+
+    const recent = run("--since-days=30");
+    assert.equal(recent.rows.find((r) => r.skill === "09-orchestrator").calls, 2);
+    assert.ok(recent.never_called < recent.kit_skills);
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
