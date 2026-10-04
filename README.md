@@ -53,7 +53,7 @@ AI loves to read everything: the entire output of an `npm install`, repeated sta
 Instead of a generic agent that "guesses" the implementation, the kit has an **orchestrator** that reads your request, classifies the complexity, and assembles the minimum sufficient pipeline. If you're vague, it asks. If you're clear, it runs. It never makes things up.
 
 ### 🗂️ Persistent memory across sessions
-Most agents forget everything when you close the window. This one **remembers**: what you decided, which files matter, the patterns your project follows, the bugs that came up before. Result: less rework, fewer tokens spent re-contextualizing, and far sharper answers each session.
+Most agents forget everything when you close the window. This one **remembers**: what you decided, which files matter, the patterns your project follows, the bugs that came up before. Result: less rework, fewer tokens spent re-contextualizing, and far sharper answers each session. It also remembers what **didn't** work (`state: rejected` + the reason, so the agent doesn't re-try a dead end), survives context compaction with a recovery packet, and can share that memory with Codex, Grok Build and other agents.
 
 ### 🤖 Autonomous mode — fire and forget
 Hand off a complex task with `/auto` or `/loop` and go grab a coffee. The agent runs, tests, fixes, validates and **only stops when it's ready, working and tested**. There's a safety circuit: if it gets stuck on the same error 3 times, it detects and warns — no burning API for nothing.
@@ -181,7 +181,7 @@ The MCP exposes 38 tools backed by the installed skills.
 
 ---
 
-## The 79 Specialists
+## The 83 Specialists
 
 ### Management and Coordination
 
@@ -411,9 +411,25 @@ flowchart LR
 | `topic-shift-detector` | UserPromptSubmit | warns when the subject changed (infra→data) so the old topic doesn't inflate token cost silently | standard, strict |
 | `intent-classifier` | UserPromptSubmit | classifies prompt intent to route enrichment | standard, strict |
 | `memory-curator` | SessionStart (async) | autonomous vault maintenance: decay/archive/dedup in pure JS, delegates the semantic part to the present agent | standard, strict |
-| `session-event-logger` | multiple | telemetry of hook events to `.bot/*.jsonl` for `/insights` | standard, strict |
+| `session-event-logger` | multiple | telemetry of hook events to `.bot/*.jsonl` for `/insights`; secrets are redacted by value shape before truncation | standard, strict |
+| `precompact-capture` | PreCompact | before the host compacts the conversation, stores a ≤4 KiB packet (objective, declared open items, verification commands **with the result read from the transcript**, git state); reads Claude Code and Codex transcripts, writes nothing for an unknown format | all |
+| `compaction-recover` | UserPromptSubmit / PostToolUse | hands that packet back once, with a freshness verdict ("unchanged" / "CHANGED since capture") and an untrusted-data frame; the dispatcher only spawns it when a packet exists | all |
 
-> 27 hook scripts total in `hooks/scripts/` — the table above lists the user-facing ones. Toggle any via `DEVKIT_DISABLED_HOOKS` or the `minimal` profile.
+> 29 hook scripts are registered in `hooks/scripts/runtime-dispatcher.mjs` (plus the shared libs `utils`, `memory-lib` and `compaction-lib`) — the table above lists the user-facing ones. Toggle any via `DEVKIT_DISABLED_HOOKS` or the `minimal` profile.
+
+### Memory beyond Claude Code
+
+Hooks only run where they are registered. Codex loads `.codex/hooks.json` (it registers `PreCompact` too); **Grok Build ignores the Claude plugin** (`[compat.claude] hooks = false`) and only reads `~/.grok/hooks/*.json`. For agents that don't speak this kit's vocabulary, the dispatcher has a `memory` profile — learned-skill injection and pre-compaction capture only, no prompt/tool gates (~130 ms per prompt instead of ~750 ms measured):
+
+```bash
+node scripts/install-memory-hooks.mjs --runtime grok            # dry-run
+node scripts/install-memory-hooks.mjs --runtime grok --apply    # writes only ~/.grok/hooks/dev-team-kit-memory.json
+node scripts/learned-skills-to-ai-memory.mjs --project <name>   # dry-run; --apply publishes learned-skills to ai-memory via docker exec
+node scripts/memory-secrets-scan.mjs                            # which agent transcripts carry credentials (type and count, never the value)
+node scripts/eval-memory-recall.mjs --strict                    # injection eval: positives carry the answer, negative controls inject zero
+```
+
+Per-agent compatibility (what was verified and what was not) is in [`policies/compaction-recovery.md`](./policies/compaction-recovery.md); learned-skill states, freshness and accepted formats in [`policies/learned-skills.md`](./policies/learned-skills.md).
 
 ### Hook Profiles
 
@@ -491,7 +507,7 @@ See `docs/skill-guides/subagents.md` for the full guide on when to use each.
 
 ---
 
-## MCP Server — 36 Tools for Any MCP Client
+## MCP Server — 38 Tools for Any MCP Client
 
 ```json
 {
@@ -986,6 +1002,7 @@ Full third-party attribution (license + scope) is in [`NOTICE`](./NOTICE), prese
 | [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book) | Inspired KV-cache-aware prompt construction, persistent-memory prompt-injection risk + sidecar tool-call validation, cross-vendor handoff trajectory portability, 4-destination learning-signal routing, agentic failure-layer taxonomy, and the MAST failure taxonomy + "new information" test before fan-out | unreleased |
 | [Hanako — Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) | Inspired the false-edge validator rule ("and then" is not a dependency), the return envelope with SCOPE (return the unit, not the batch), `split_by` on parallel blocks, the closed lane in the permission ladder, and the `bad_plan` fix destination | unreleased |
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Second piece by an author already cited for harness-categories; after gap analysis against the kit, inspired the task-contract schema, structured tool-response shape + named permission ladder, fix-destination failure taxonomy, and the "accepted outputs / human review minutes" target metric | unreleased |
+| [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspired the PreCompact recovery packet (`policies/compaction-recovery.md`), the `rejected`/`superseded`/`stale` learned-skill states and freshness line, working-tree-aware ranking, the negative-control memory eval and the value-shape redaction + transcript audit. Not adopted: the command-warning hook (its own measurement found no effect), the Go binary, 35-agent parsers and embeddings. Its published numbers were not independently verified | v2.86.0 |
 
 Every entry above is an **idea-level** inspiration. We do not bundle code from these projects; our implementations are independent and aligned with this kit's zero-runtime-dep, markdown-first conventions. When a project's approach didn't fit (LangGraph runtime, proxy servers, Python CLIs, etc.), we said so in [`NOTICE`](./NOTICE).
 

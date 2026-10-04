@@ -53,7 +53,7 @@ A IA adora ler tudo: o output inteiro de um `npm install`, stack traces repetido
 Em vez de um agente genérico que "chuta" a implementação, o kit tem um **orquestrador** que lê seu pedido, classifica a complexidade, e monta o pipeline mínimo necessário. Se você for vago, ele pergunta. Se for claro, ele executa. Nunca sai inventando.
 
 ### 🗂️ Memória persistente entre sessões
-A maioria dos agentes esquecem tudo quando você fecha a janela. Esse aqui **lembra**: o que você decidiu, quais arquivos são importantes, que padrões o seu projeto segue, que bugs apareceram antes. Resultado: menos retrabalho, menos token gasto recontextualizando, e respostas muito mais assertivas a cada sessão.
+A maioria dos agentes esquecem tudo quando você fecha a janela. Esse aqui **lembra**: o que você decidiu, quais arquivos são importantes, que padrões o seu projeto segue, que bugs apareceram antes. Resultado: menos retrabalho, menos token gasto recontextualizando, e respostas muito mais assertivas a cada sessão. Também lembra o que **não** funcionou (`state: rejected` + o motivo, para o agente não repetir um beco sem saída), sobrevive à compactação de contexto com um pacote de recuperação e pode compartilhar essa memória com Codex, Grok Build e outros agentes.
 
 ### 🤖 Modo autônomo — manda e esquece
 Dá uma task complexa com `/auto` ou `/loop` e vai tomar um café. O agente executa, testa, corrige, valida e **só para quando está pronto, funcional e testado**. Tem circuito de segurança: se travar no mesmo erro 3x, detecta e avisa — não fica queimando API à toa.
@@ -181,7 +181,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ---
 
-## Os 79 Especialistas
+## Os 83 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -388,6 +388,22 @@ flowchart LR
 | `post-tool-verifier` | PostToolUse | detecta debugging patterns, sugere extração de learned skill | standard, strict |
 | `model-routing-hook` | PreToolUse | sugere troca de modelo em plan mode e valida subagent spawns | standard, strict |
 | `simplify-ignore` | PreToolUse + PostToolUse | Protege blocos `simplify-ignore-start/end` de simplificação automática | standard, strict |
+| `precompact-capture` | PreCompact | antes de o host compactar a conversa, guarda um pacote de até 4 KiB (objetivo, pendências declaradas, comandos de verificação **com o resultado lido do transcrito**, estado do git); lê transcritos do Claude Code e do Codex e não grava nada para formato desconhecido | todos |
+| `compaction-recover` | UserPromptSubmit / PostToolUse | devolve esse pacote uma vez, com veredito de frescor ("inalterado" / "MUDOU desde a captura") e aviso de dado não confiável; o dispatcher só o dispara quando existe um pacote | todos |
+
+### Memória além do Claude Code
+
+Hook só roda onde está registrado. O Codex carrega `.codex/hooks.json` (que também registra `PreCompact`); o **Grok Build ignora o plugin do Claude** (`[compat.claude] hooks = false`) e só lê `~/.grok/hooks/*.json`. Para agentes que não falam o vocabulário do kit, o dispatcher tem o perfil `memory` — só injeção de learned-skills e captura pré-compactação, sem gates de prompt/ferramenta (~130 ms por prompt contra ~750 ms medidos):
+
+```bash
+node scripts/install-memory-hooks.mjs --runtime grok            # dry-run
+node scripts/install-memory-hooks.mjs --runtime grok --apply    # grava só ~/.grok/hooks/dev-team-kit-memory.json
+node scripts/learned-skills-to-ai-memory.mjs --project <nome>   # dry-run; --apply publica as learned-skills no ai-memory via docker exec
+node scripts/memory-secrets-scan.mjs                            # quais transcritos de agente carregam credenciais (tipo e contagem, nunca o valor)
+node scripts/eval-memory-recall.mjs --strict                    # eval de injeção: positivos trazem a resposta, controles negativos injetam zero
+```
+
+A compatibilidade por agente (o que foi verificado e o que não) está em [`policies/compaction-recovery.md`](./policies/compaction-recovery.md); estados, frescor e formatos aceitos das learned-skills em [`policies/learned-skills.md`](./policies/learned-skills.md).
 
 ### Perfis de Hook
 
@@ -465,7 +481,7 @@ Ver `docs/skill-guides/subagents.md` para guia completo de quando usar cada um.
 
 ---
 
-## MCP Server — 36 Tools para Qualquer Cliente MCP
+## MCP Server — 38 Tools para Qualquer Cliente MCP
 
 ```json
 {
@@ -962,6 +978,7 @@ A atribuição completa (licença + escopo) está em [`NOTICE`](./NOTICE), prese
 | [bojieli/ai-agent-book](https://github.com/bojieli/ai-agent-book) | Inspirou KV-cache-aware prompt construction, o risco de prompt injection via memória persistente + sidecar tool-call validation, handoff cross-vendor com trajetória portável, roteamento de sinal de aprendizado em 4 destinos, taxonomia de falha agêntica por camada, e a taxonomia MAST + teste de "informação nova" antes de paralelizar | não lançado |
 | [Hanako — Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) | Inspirou a regra de aresta falsa no validador ("and then" não é dependência), o envelope de retorno com SCOPE (retornar a unidade, não o lote), `split_by` em blocos paralelos, a lane fechada na permission ladder, e o destino de fix `bad_plan` | não lançado |
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Segunda peça da mesma autora já citada por harness-categories; após análise de gap contra o kit, inspirou o schema de task contract, a resposta estruturada de tool + permission ladder nomeada, a taxonomia de falha por destino-de-fix, e a métrica-alvo "accepted outputs / human review minutes" | não lançado |
+| [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspirou o pacote de recuperação no PreCompact (`policies/compaction-recovery.md`), os estados `rejected`/`superseded`/`stale` e a linha de frescor das learned-skills, o ranking pela árvore de trabalho, o eval de memória com controles negativos e a redação por formato + auditoria de transcritos. Não adotado: o aviso de comando (a própria medição do projeto não achou efeito), o binário Go, os parsers de 35 agentes e embeddings. Os números publicados por ele não foram verificados de forma independente | v2.86.0 |
 
 Toda inspiração acima é em nível de **ideia**. Não empacotamos código desses projetos; nossas implementações são independentes e alinhadas às convenções do kit (zero runtime deps, markdown-first). Quando a abordagem de um projeto não se encaixava (LangGraph runtime, servidores proxy, CLIs Python, etc.), registramos isso em [`NOTICE`](./NOTICE).
 

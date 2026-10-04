@@ -27,6 +27,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
   Windows): o estado `rejected` era ignorado e `score`/`uso` deixavam de ser gravados em silêncio.
   Achado porque a primeira página de teste da ponte saiu como `accepted`.
 
+### Documentação
+
+- `README.md` e `README.pt-BR.md`: a memória nova (`precompact-capture`, `compaction-recover`, perfil
+  `memory`, estados `rejected`, scripts de instalação, ponte, auditor e eval) não estava descrita —
+  só o badge de versão tinha mudado. Seção "Memória além do Claude Code", linhas na tabela de hooks,
+  atribuição ao deja-vu e contagens velhas corrigidas ("79 Especialistas" → 83, "36 Tools" → 38,
+  "27 hook scripts" → 29 registrados no dispatcher).
+
 ### Adicionado
 
 - **Perfil `memory` do dispatcher** (`runtime-dispatcher.mjs <Evento> memory` ou
