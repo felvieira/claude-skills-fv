@@ -51,6 +51,15 @@ const EVENT_SCRIPTS = {
   PreCompact: ["precompact-capture.mjs"],
 };
 
+// Perfil "so memoria" (`runtime-dispatcher.mjs <Evento> memory` ou DEVKIT_RUNTIME_PROFILE=memory):
+// para agentes que nao falam o vocabulario do kit (Grok Build, Cursor...). Roda so o que e memoria —
+// injecao de learned-skills (sem gatilhos de skill) e captura pre-compactacao — e nenhum dos gates
+// de prompt/ferramenta. Alem de remover ruido, custa 1-2 processos em vez de 6-8 por evento.
+const MEMORY_PROFILE_SCRIPTS = {
+  UserPromptSubmit: ["keyword-detector.mjs"],
+  PreCompact: ["precompact-capture.mjs"],
+};
+
 // Eventos onde um pacote de recuperacao pendente e entregue. SessionStart fica
 // de fora de proposito: nem todo host honra additionalContext ali, e o pacote
 // so e apagado quando entregue.
@@ -160,7 +169,8 @@ function run() {
   const contexts = [];
   const systemMessages = [];
 
-  const scripts = [...EVENT_SCRIPTS[event]];
+  const memoryOnly = process.argv[3] === "memory" || process.env.DEVKIT_RUNTIME_PROFILE === "memory";
+  const scripts = [...(memoryOnly ? MEMORY_PROFILE_SCRIPTS[event] || [] : EVENT_SCRIPTS[event])];
   if (RECOVERY_EVENTS.has(event) && hasPendingCompactionPacket(payload)) {
     scripts.unshift("compaction-recover.mjs");
   }
@@ -168,7 +178,11 @@ function run() {
   for (const script of scripts) {
     const result = spawnSync(process.execPath, [path.join(scriptsDir, script)], {
       cwd: process.cwd(),
-      env: { ...process.env, CLAUDE_PLUGIN_ROOT: process.env.CLAUDE_PLUGIN_ROOT || kitRoot },
+      env: {
+        ...process.env,
+        CLAUDE_PLUGIN_ROOT: process.env.CLAUDE_PLUGIN_ROOT || kitRoot,
+        ...(memoryOnly ? { DEVKIT_LEARNED_ONLY: "1" } : {}),
+      },
       input: serialized,
       encoding: "utf8",
       timeout: 5000,

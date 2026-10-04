@@ -42,7 +42,7 @@ Cada agente grava o transcript de um jeito; `compaction-lib.mjs` traduz para eve
 |---|---|---|---|---|
 | Claude Code | sim (plugin, `hooks/hooks.json`) | sim | JSONL `message.content[]` | testado com transcrito real (4,2 MB) |
 | Codex 0.155 | sim, se aberto na raiz do repo (`.codex/hooks.json`) | o binário contém `PreCompact`, `PostCompact` e `transcript_path`; o `~/.codex/hooks.json` global já registra `PreCompact` | `rollout-*.jsonl` (`response_item`: `message`, `function_call`, `function_call_output`) — adaptador próprio | testado com 3 rollouts reais; **nenhuma compactação real do Codex observada ainda** |
-| Grok Build | **não**: o `config.toml` tem `[compat.claude] hooks = false`; ele só lê `~/.grok/hooks/*.json` (onde o ai-memory já está) | o binário contém `PreCompact` e `transcript_path` | não verificado | só `AGENTS.md` e MCP valem; hooks do kit não |
+| Grok Build | **só com registro próprio**: o `config.toml` tem `[compat.claude] hooks = false`, então ele não lê o plugin; só `~/.grok/hooks/*.json`. `node scripts/install-memory-hooks.mjs --runtime grok --apply` registra o perfil `memory` (learned-skills + captura) | o binário contém `PreCompact` e `transcript_path` | **não verificado**: formato desconhecido ⇒ nenhum pacote. A injeção de learned-skills funciona; a recuperação pós-compactação fica inerte até alguém verificar o transcrito do Grok | `AGENTS.md`, MCP e perfil `memory` valem |
 | OpenCode, Cursor, Gemini CLI | não testado | — | — | só `AGENTS.md`/MCP |
 
 Codex em modo "code" roda o shell dentro de JS (`tools.exec_command({cmd:"..."})`): o comando é extraído, mas o resultado do script não traz o código de saída, então a verificação aparece como `resultado nao registrado` — nunca como `passou`.

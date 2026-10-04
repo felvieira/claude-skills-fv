@@ -415,6 +415,107 @@ test("filtro informativo: 'acho que e' nao e confundido com 'o que e'", () => {
   }
 });
 
+// ------------------------------- formatos reais de gatilho + perfil "memory"
+
+test("frontmatter: lista YAML em bloco e learned-skill com 'trigger:' em bloco sao injetadas", () => {
+  const { data } = parseFrontmatter('---\nname: x\ntrigger:\n  - "Input buffer unsupported"\n  - \'facePhotoBase64\'\ncreated: 2026-06-20\n---\ncorpo');
+  assert.deepEqual(data.trigger, ["Input buffer unsupported", "facePhotoBase64"]);
+  assert.equal(data.created, "2026-06-20");
+
+  const cwd = tmp("memhooks-block");
+  try {
+    const dir = join(cwd, ".bot", "learned-skills");
+    mkdirSync(dir, { recursive: true });
+    const today = new Date().toISOString().slice(0, 10);
+    writeFileSync(join(dir, "a.md"), `---\nname: a\ntrigger:\n  - "buffer unsupported"\ncreated: ${today}\nscore: 0.80\nlast_used: ${today}\nuses: 0\n---\n## Fix\n- usar a URL\n`);
+    // sem `name:` (so `title:`) e sem gatilho nenhum: o primeiro entra pelo titulo, o segundo e ignorado
+    writeFileSync(join(dir, "b.md"), `---\ntitle: Zod catch apaga tudo\ntriggers: ["zod catch"]\nscore: 0.80\nlast_used: ${today}\nuses: 0\n---\n- use safeParse por item\n`);
+    writeFileSync(join(dir, "c.md"), "# Nota sem frontmatter\n\ntexto");
+    assert.match(detect(cwd, "erro: buffer unsupported na imagem"), /LearnedSkill matched: a/);
+    rmSync(join(cwd, ".bot", ".hook-session.json"), { force: true });
+    assert.match(detect(cwd, "meu zod catch esta apagando o array"), /LearnedSkill matched: Zod catch apaga tudo/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("BOM e CRLF (arquivos gravados no Windows): parser le e o loader ainda grava score/uso", () => {
+  const withBom = "﻿---\r\nname: win\r\ntriggers: [\"caso windows\"]\r\nstate: rejected\r\nreason: teste\r\n---\r\ncorpo\r\n";
+  const { data } = parseFrontmatter(withBom);
+  assert.equal(data.state, "rejected");
+  assert.deepEqual(data.triggers, ["caso windows"]);
+
+  const cwd = tmp("memhooks-crlf");
+  try {
+    const dir = join(cwd, ".bot", "learned-skills");
+    mkdirSync(dir, { recursive: true });
+    const file = join(dir, "win.md");
+    writeFileSync(file, "﻿---\r\nname: win\r\ntriggers: [\"caso windows\"]\r\n---\r\n- passo\r\n");
+    assert.match(detect(cwd, "tenho um caso windows aqui"), /LearnedSkill matched: win/);
+    const after = readFileSync(file, "utf8");
+    assert.ok(after.startsWith("﻿---\r\n"), "BOM e CRLF devem ser preservados");
+    assert.match(after, /score: 0\.8/); // migracao + boost gravados mesmo com CRLF
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("dispatcher perfil 'memory': injeta learned-skill e nao roda gates do kit", () => {
+  const cwd = tmp("memhooks-profile");
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    learned(cwd, "redis-no", { triggers: '["usar redis"]', created: today, score: "0.5", last_used: today, uses: "0", state: "rejected", reason: "p95 dobrou" });
+    const base = { session_id: "mem-1", cwd, hook_event_name: "UserPromptSubmit", prompt: "vamos usar redis? faca tudo" };
+    const mem = runHook(DISPATCHER, base, cwd, ["UserPromptSubmit", "memory"]);
+    const ctx = mem.hookSpecificOutput?.additionalContext ?? "";
+    assert.match(ctx, /REJEITADA/);
+    assert.ok(!/PreExecutionGate|Smart routing|pre-build-gate|context-turn-counter|Checkpoint de codifica/i.test(ctx), "gate do kit vazou para o perfil memory");
+
+    // o pacote de recuperacao tambem continua sendo entregue no perfil memory
+    const tpath = join(cwd, "t.jsonl");
+    writeFileSync(tpath, sampleTranscript());
+    runHook(DISPATCHER, { session_id: "mem-1", cwd, transcript_path: tpath, hook_event_name: "PreCompact" }, cwd, ["PreCompact", "memory"]);
+    const next = runHook(DISPATCHER, { ...base, prompt: "segue" }, cwd, ["UserPromptSubmit", "memory"]);
+    assert.match(next.hookSpecificOutput?.additionalContext ?? "", /Recuperacao pos-compactacao/);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
+test("install-memory-hooks: dry-run nao grava; --apply grava so o arquivo do kit; --uninstall remove so ele", () => {
+  const home = tmp("memhooks-home");
+  const script = join(root, "scripts", "install-memory-hooks.mjs");
+  const run = (...a) => spawnSync(process.execPath, [script, "--runtime", "grok", "--home", home, ...a], { encoding: "utf8" });
+  try {
+    mkdirSync(join(home, ".grok", "hooks"), { recursive: true });
+    writeFileSync(join(home, ".grok", "hooks", "ai-memory.json"), '{"hooks":{}}'); // arquivo de outra ferramenta
+    const target = join(home, ".grok", "hooks", "dev-team-kit-memory.json");
+
+    const dry = run();
+    assert.equal(dry.status, 0);
+    assert.match(dry.stdout, /Nada foi gravado/);
+    assert.ok(!existsSync(target));
+
+    const applied = run("--apply");
+    assert.equal(applied.status, 0, applied.stderr);
+    const cfg = JSON.parse(readFileSync(target, "utf8"));
+    assert.deepEqual(Object.keys(cfg.hooks).sort(), ["PreCompact", "UserPromptSubmit"]);
+    const cmd = cfg.hooks.UserPromptSubmit[0].hooks[0].command;
+    assert.match(cmd, /^node ".*\/hooks\/scripts\/runtime-dispatcher\.mjs" UserPromptSubmit memory$/);
+    assert.ok(!cmd.includes("\\"), "caminho de hook deve usar barra normal");
+    assert.equal(readFileSync(join(home, ".grok", "hooks", "ai-memory.json"), "utf8"), '{"hooks":{}}');
+
+    run("--uninstall");
+    assert.ok(!existsSync(target));
+    assert.ok(existsSync(join(home, ".grok", "hooks", "ai-memory.json")), "nao pode remover arquivo de outra ferramenta");
+
+    const bad = spawnSync(process.execPath, [script, "--runtime", "grok", "--home", home, "--kit-root", tmp("memhooks-nokit")], { encoding: "utf8" });
+    assert.equal(bad.status, 1); // kit-root sem dispatcher
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+  }
+});
+
 // ------------------------------------------- ponte learned-skills -> ai-memory
 
 test("ponte: planeja paginas por estado, redige segredo e monta o comando docker (sem executar nada)", async () => {

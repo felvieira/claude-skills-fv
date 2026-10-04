@@ -82,20 +82,24 @@ function summarizeLearnedSkill(content) {
 }
 
 function updateFrontmatter(content, updates) {
-  if (!content.startsWith("---\n")) return content;
-  const endIdx = content.indexOf("\n---", 4);
-  if (endIdx === -1) return content;
-  let fm = content.slice(4, endIdx);
-  const body = content.slice(endIdx + 4);
+  // Tolera BOM e CRLF (arquivos gravados no Windows); antes so aceitava "---\n" puro e
+  // deixava de gravar score/uso nessas notas sem avisar.
+  const bom = content.startsWith("﻿") ? "﻿" : "";
+  const text = bom ? content.slice(1) : content;
+  const m = text.match(/^---(\r?\n)([\s\S]*?)\r?\n---/);
+  if (!m) return content;
+  const eol = m[1];
+  let fm = m[2];
+  const body = text.slice(m[0].length);
   for (const [key, value] of Object.entries(updates)) {
     const regex = new RegExp(`^${key}:.*$`, "m");
     if (regex.test(fm)) {
       fm = fm.replace(regex, `${key}: ${value}`);
     } else {
-      fm += `\n${key}: ${value}`;
+      fm += `${eol}${key}: ${value}`;
     }
   }
-  return `---\n${fm}\n---${body}`;
+  return `${bom}---${eol}${fm}${eol}---${body}`;
 }
 
 function weeksAgo(dateStr) {
@@ -129,10 +133,14 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
       let content = readFileSync(filePath, "utf-8");
       // `trigger:` (singular) era o que o template do post-tool-verifier gerava;
       // aceitar os dois evita descartar em silencio skills ja salvas.
-      const triggersMatch = content.match(/^triggers?:\s*\[([^\]]+)\]/m);
-      const nameMatch = content.match(/^name:\s*(.+)$/m);
+      // Formatos reais encontrados em 54 notas de 10 repos: `trigger: [a, b]` (48), lista YAML em
+      // bloco (`trigger:\n  - "x"`) e notas sem gatilho nenhum. parseFrontmatter cobre os dois
+      // primeiros; a ultima categoria nao tem como casar e e ignorada de proposito.
+      const fm0 = parseFrontmatter(content).data;
+      const rawTriggers = Array.isArray(fm0.triggers) ? fm0.triggers : Array.isArray(fm0.trigger) ? fm0.trigger : [];
+      const nameValue = (typeof fm0.name === "string" && fm0.name) || (typeof fm0.title === "string" && fm0.title) || file.replace(/\.md$/, "");
       const descMatch = content.match(/^description:\s*(.+)$/m);
-      if (!triggersMatch || !nameMatch) continue;
+      if (rawTriggers.length === 0) continue;
 
       // Parse score fields with migration for missing ones
       const scoreMatch = content.match(/^score:\s*([\d.]+)/m);
@@ -170,9 +178,7 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
         continue;
       }
 
-      const triggers = triggersMatch[1]
-        .split(",")
-        .map((t) => t.replace(/['"]/g, "").trim().toLowerCase());
+      const triggers = rawTriggers.map((t) => String(t).trim().toLowerCase()).filter(Boolean);
 
       const fm = parseFrontmatter(content).data;
       const state = LEARNED_STATES.has(fm.state) ? fm.state : "accepted";
@@ -183,7 +189,7 @@ function loadLearnedSkills(learnedDir, scoringCfg) {
         supersededBy: typeof fm.superseded_by === "string" ? fm.superseded_by : "",
         files: Array.isArray(fm.files) ? fm.files : [],
         commit: typeof fm.commit === "string" ? fm.commit : "",
-        name: nameMatch[1].trim(),
+        name: nameValue.trim(),
         description: descMatch ? descMatch[1].trim() : "",
         triggers,
         summary: summarizeLearnedSkill(content),
@@ -361,7 +367,8 @@ process.stdin.on("end", () => {
     }
   }
 
-  const skills = loadSkillTriggers();
+  // Perfil "so memoria" (agentes que nao falam o vocabulario do kit): sem gatilhos de skill.
+  const skills = process.env.DEVKIT_LEARNED_ONLY === "1" ? [] : loadSkillTriggers();
   for (const skill of skills) {
     const matched = skill.triggers.some((trigger) => {
       if (!clean.toLowerCase().includes(trigger)) return false;

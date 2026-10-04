@@ -66,16 +66,26 @@ function unquote(s) {
   return s.trim().replace(/^["']|["']$/g, "");
 }
 
-export function parseFrontmatter(content) {
-  const match = String(content).match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!match) return { data: {}, body: String(content) };
+export function parseFrontmatter(rawContent) {
+  // BOM (editores e o PowerShell 5.1 do Windows gravam UTF-8 com BOM) quebraria o `^---`.
+  const content = String(rawContent).replace(/^﻿/, "");
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!match) return { data: {}, body: content };
   const data = {};
-  for (const line of match[1].split(/\r?\n/)) {
-    const kv = line.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
+  const lines = match[1].split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
     if (!kv) continue;
     const raw = kv[2].trim();
     if (raw.startsWith("[") && raw.endsWith("]")) {
       data[kv[1]] = raw.slice(1, -1).split(",").map(unquote).filter(Boolean);
+    } else if (raw === "") {
+      // lista YAML em bloco: `chave:` seguida de linhas `  - valor`
+      const items = [];
+      while (i + 1 < lines.length && /^\s+-\s+/.test(lines[i + 1])) {
+        items.push(unquote(lines[++i].replace(/^\s+-\s+/, "")));
+      }
+      data[kv[1]] = items.length ? items.filter(Boolean) : "";
     } else {
       data[kv[1]] = unquote(raw);
     }

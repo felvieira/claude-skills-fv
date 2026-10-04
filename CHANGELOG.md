@@ -14,6 +14,31 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 - O Repo-Wiki agora extrai trilhas separadas de regras de negócio, automações/RPA, segurança do app e melhorias transversais do repositório, com estados de confiança e lacunas explícitas.
 - `scripts/generate-repo-wiki.mjs` gera o catálogo Markdown/JSON; `scripts/build-repo-wiki.mjs` cria HTML offline com busca, filtros, evidências locais e SVG; `scripts/verify-repo-wiki.mjs` e `scripts/test-repo-wiki.mjs` validam o contrato e fixtures de app/RPA/mínimo.
 
+## [2.88.0] - 2026-10-04 — perfil "memory", hooks no Grok, ponte validada, 48 notas que nunca tinham sido injetadas
+
+### Corrigido
+
+- **48 de 54 learned-skills (10 repos) nunca eram injetadas**: usavam `trigger:` (nenhuma usava
+  `triggers:`); outras usavam lista YAML em bloco, que o loader (só `[a, b]` inline) também não lia;
+  5 não têm gatilho nenhum. O parser agora cobre lista em bloco, `title:` no lugar de `name:` e o
+  nome do arquivo como fallback. Nota sem gatilho continua ignorada (não há como casar). As notas
+  antigas passam a ser injetadas a partir da próxima vez que casarem.
+- `parseFrontmatter` e `updateFrontmatter` não toleravam **BOM nem CRLF** (arquivos gravados no
+  Windows): o estado `rejected` era ignorado e `score`/`uso` deixavam de ser gravados em silêncio.
+  Achado porque a primeira página de teste da ponte saiu como `accepted`.
+
+### Adicionado
+
+- **Perfil `memory` do dispatcher** (`runtime-dispatcher.mjs <Evento> memory` ou
+  `DEVKIT_RUNTIME_PROFILE=memory`): só injeção de learned-skills (sem gatilhos de skill) e captura
+  pré-compactação, sem os gates de prompt/ferramenta escritos no vocabulário do Claude. Latência por
+  prompt medida: 754 ms → 132 ms (−82%).
+- **`scripts/install-memory-hooks.mjs`**: registra o perfil `memory` no Grok Build
+  (`~/.grok/hooks/dev-team-kit-memory.json`, só esse arquivo; `--uninstall` remove só ele) e imprime
+  o bloco para o Codex sem editar o `hooks.json` global. Aplicado nesta máquina.
+- **Ponte learned-skills → ai-memory validada** no servidor real: página gravada via `docker exec`,
+  lida de volta com `state: rejected` e fixada, e apagada em seguida. 3 testes novos (26 no total).
+
 ## [2.87.0] - 2026-10-03 — memória entre agentes: Codex, Grok, ponte com ai-memory
 
 Usuário pediu para verificar se a memória nova funciona com Claude, Codex, Grok etc. Verificado na

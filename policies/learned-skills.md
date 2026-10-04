@@ -67,6 +67,14 @@ Com `files:` e `commit:` preenchidos, na injecao o hook compara `git diff <commi
 
 Quando ha arquivos sujos no `git status`, uma skill que cita um deles ganha `+0.15` no ranking de injecao — so desempata; nunca passa por cima de score e trigger.
 
+## Formatos aceitos pelo loader
+
+Medido em 54 notas de 10 repos: 48 usavam `trigger: [a, b]` (singular), nenhuma `triggers:`; algumas usavam lista YAML em bloco (`trigger:\n  - "x"`); 5 não tinham gatilho nenhum. O loader aceita `triggers`/`trigger`, inline ou em bloco, com `name:` ou `title:` (ou o nome do arquivo), BOM e CRLF. Nota **sem gatilho** não tem como casar e é ignorada de propósito — acrescente `triggers:` para ela passar a valer. Atenção: as notas antigas só começam a ser injetadas agora; a primeira vez que casarem, o hook grava `score`/`last_used`/`uses` no frontmatter delas.
+
+## Perfil "memory" para agentes sem o vocabulário do kit
+
+`runtime-dispatcher.mjs <Evento> memory` (ou `DEVKIT_RUNTIME_PROFILE=memory`) roda só a injeção de learned-skills — sem gatilhos de skill — e a captura pré-compactação; nenhum gate de prompt ou ferramenta. Latência medida por prompt: ~750 ms no perfil completo, ~130 ms no `memory`. Registro: `node scripts/install-memory-hooks.mjs --runtime grok --apply` (grava só `~/.grok/hooks/dev-team-kit-memory.json`; `--uninstall` remove só ele; `--runtime codex` imprime o bloco para mesclar no `~/.codex/hooks.json`, que o script não edita porque o arquivo global tem hooks de outras ferramentas). O caminho do kit gravado é o do repo que tem o script: tem que ser estável.
+
 ## Fora do Claude Code
 
 Os hooks acima só rodam onde estão registrados. Para Codex, Grok e Cursor — que falam com o `ai-memory` por MCP — `node scripts/learned-skills-to-ai-memory.mjs` (dry-run por padrão; `--apply` grava via `docker exec ai-memory`, o mesmo servidor que o MCP consulta) publica cada learned-skill como página (`rejected`/`superseded` viram `decision` fixada), com o corpo já redigido. Sem hook, o `AGENTS.md` ensina o agente a ler `.bot/learned-skills/` e respeitar o `state`.
