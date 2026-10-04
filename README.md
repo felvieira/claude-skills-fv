@@ -190,7 +190,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | Full hook set (gates, sensors) | ✅ | ✅ (`.codex/hooks.json`) | ❌ by design | ❌ |
 | Learned-skill injection | ✅ | ✅ | ✅ verified — profile `memory-deferred` (Grok drops `UserPromptSubmit` context, so it is delivered on the first `PostToolUse`) | read `.bot/learned-skills/` by hand (`AGENTS.md`) |
 | Post-compaction recovery | ✅ | ✅ tested on real rollouts; no real compaction observed | ✅ verified (`/compact` → packet → delivered once) | ❌ |
-| `/careful`, `/freeze` guards | ✅ slash commands | ✅ via the CLI; `apply_patch` paths are parsed; ⚠️ not verified end to end (the Windows sandbox blocked writes in the test environment) | ✅ verified — install with `--guards`, toggle with the CLI | ❌ |
+| `/careful`, `/freeze` guards | ✅ slash commands | ✅ verified — `apply_patch` arrives as `{command: <patch>}`, the guard reads its paths and Codex shows the block; toggle with the CLI | ✅ verified — install with `--guards`, toggle with the CLI | ❌ |
 | `skill-usage` (real usage report) | ✅ | ✅ | ❌ (needs the full `PostToolUse` logger) | ❌ |
 | Trigger evals (`--split`, `--compare`) | ✅ | ✅ | ✅ | ✅ (plain Node, no agent needed) |
 

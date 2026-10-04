@@ -620,7 +620,7 @@ Multiplataforma: o que as novidades das 2.90–2.92 precisavam para funcionar fo
 ### Verificado no agente real
 
 - **Grok:** `/freeze` impediu a criação de arquivo fora da pasta; `/careful` negou `DROP TABLE` (lane fechada) em `run_terminal_command`.
-- **Codex:** o hook `session-guard` roda no `apply_patch` (confirmado no trace). A negação ponta a ponta **não** foi comprovada: o sandbox do Codex no Windows bloqueia escrita mesmo sem guarda ativa, então o resultado não distingue guarda de sandbox. Coberto por teste de payload.
+- **Codex:** com `/freeze` ligado, o `apply_patch` foi negado e o Codex exibiu a mensagem de bloqueio, sem criar o arquivo (`decision=deny` no trace). O payload real é `tool_input = {command: <patch>}`. Obs.: o sandbox do Codex no Windows também bloqueia escrita sem guarda ativa, então a prova é a decisão e a mensagem, não a ausência do arquivo.
 
 ---
 

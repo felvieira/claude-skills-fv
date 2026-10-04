@@ -220,6 +220,7 @@ test("codex: apply_patch (texto cru e embutido em JS do modo code) respeita o /f
     const raw = (file) => `*** Begin Patch\n*** Add File: ${file}\n+oi\n*** End Patch`;
     assert.equal(decision(codex(raw("out.txt"))), "deny", "caminho relativo fora de src");
     assert.equal(decision(codex(raw("src/ok.txt"))), undefined);
+    assert.equal(decision(codex({ command: raw("out.txt") })), "deny", "formato real do Codex 0.155: tool_input = {command: <patch>}");
     assert.equal(decision(codex({ input: raw(join(cwd, "out.txt").replace(/\\/g, "/")) })), "deny", "absoluto com /");
 
     // modo code: o patch vem como string JS numa linha so, com \n literal

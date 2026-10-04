@@ -190,7 +190,7 @@ O MCP expoe 38 tools apoiadas pelas skills instaladas.
 | Conjunto completo de hooks (gates, sensores) | ✅ | ✅ (`.codex/hooks.json`) | ❌ de propósito | ❌ |
 | Injeção de learned-skills | ✅ | ✅ | ✅ verificado — perfil `memory-deferred` (o Grok descarta o contexto do `UserPromptSubmit`, então entrega no primeiro `PostToolUse`) | ler `.bot/learned-skills/` à mão (`AGENTS.md`) |
 | Recuperação pós-compactação | ✅ | ✅ testado em rollouts reais; nenhuma compactação real observada | ✅ verificado (`/compact` → pacote → entregue uma vez) | ❌ |
-| Guardas `/careful` e `/freeze` | ✅ slash commands | ✅ pela CLI; caminhos do `apply_patch` são lidos; ⚠️ não verificado de ponta a ponta (o sandbox do Windows bloqueou escrita no ambiente de teste) | ✅ verificado — instale com `--guards`, ligue pela CLI | ❌ |
+| Guardas `/careful` e `/freeze` | ✅ slash commands | ✅ verificado — o `apply_patch` chega como `{command: <patch>}`, a guarda lê os caminhos e o Codex mostra o bloqueio; ligue pela CLI | ✅ verificado — instale com `--guards`, ligue pela CLI | ❌ |
 | `skill-usage` (uso real) | ✅ | ✅ | ❌ (precisa do logger completo de `PostToolUse`) | ❌ |
 | Evals de triggers (`--split`, `--compare`) | ✅ | ✅ | ✅ | ✅ (Node puro, sem agente) |
 
