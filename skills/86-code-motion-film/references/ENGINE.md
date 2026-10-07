@@ -16,6 +16,8 @@ const x = track(0, [{ at: 1.5, to: 40 }], presets.default);
 window.seek = (t) => { /* limpa e desenha tudo como f(t) */ };
 ```
 
+Para filmes de verdade use o palco pronto, em vez de reescrever câmera, letras, texto digitado, corte com clarão e grão: `import { createStage, typed } from "/_lib/stage.mjs"` (veja `assets/example-launch/index.html`). `render-seek` aceita `--blur N` (motion blur por N subquadros, obturador 180°).
+
 Regras do motor: nenhuma leitura de relógio, nenhum `Math.random()` sem semente, nenhuma animação CSS por tempo real
 (se usar DOM, controle `animation-delay` negativo ou escreva estilos em `seek`), fontes e imagens carregadas antes
 de `window.ready`.

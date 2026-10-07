@@ -11,6 +11,10 @@ O hábito que mais separa o clipe bom do "meio sem graça": o modelo lê imagens
 4. **Corrija** (uma linha de cada) e **renderize os mesmos quadros de novo**. Repita até todas as notas >= 8.
 5. Só então o render completo, e olhe o MP4 em movimento uma vez (ritmo e som).
 
+## Régua
+
+Pontue com os 11 critérios de `QUALIDADE.md` (escala, uma cor de destaque, peso tipográfico, detalhe de interface, câmera, cortes na batida, fundo que respira, movimento com intenção, grão e blur, som, ciclo fechado). "Funciona" não é nota 8.
+
 ## O que procurar
 
 Sobreposições nas trocas de estado, elementos fora do centro/da área segura, texto cortado, contraste, quadro 0 ≠ quadro final em loop,

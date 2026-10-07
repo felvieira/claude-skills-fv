@@ -79,6 +79,8 @@ Cole no `<build>` ou `<direction>` conforme a peça. São regras de engenharia, 
 6. **Construa** com `motion.mjs`/`render-seek.mjs`, rode o **laço de crítica** (`CRITIQUE.md`) e só então o render completo.
 7. **Registre a origem:** cite o criador no README da peça se a ideia veio de uma entrada.
 
+Para o nível de acabamento esperado, veja `QUALIDADE.md` e o filme `assets/example-launch/` (brief de diretor T2 que passa no linter + código + partitura).
+
 Exemplo feito assim: `assets/example-recipe/` reproduz **o tipo** de peça "animação de receita, do copo vazio ao drinque pronto" (uma entrada T0 da galeria) com brief, código e renderização nossos. A crítica achou 4 defeitos antes do render final (líquido invisível por um `NaN` silencioso na cor, cubo de gelo atravessando o copo, casca encostando no subtítulo, cor final de mistura errada).
 
 ## Direitos e uso

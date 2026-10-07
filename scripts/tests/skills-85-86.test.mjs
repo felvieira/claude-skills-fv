@@ -481,3 +481,63 @@ test("filme de receita: o liquido aparece (pixel vermelho no copo) e o titulo vo
     server.close();
   }
 });
+
+// ================================================================== 86: padrao de qualidade (filme Relay, stage, blur, partitura)
+import { clamp01, ease, mixHex, typed } from "../../skills/86-code-motion-film/scripts/stage.mjs";
+
+test("audio-synth: partitura limita bateria por batidas, eventos entram no tempo certo e tudo e deterministico", () => {
+  const score = { bpm: 120, seconds: 4, drums: [[4, 8]], bass: false, events: [{ t: 1, type: "impact" }, { t: 0.2, type: "type" }] };
+  const a = synth(score), b = synth(score);
+  assert.deepEqual(a.samples.slice(0, 4000), b.samples.slice(0, 4000));
+  const rms = (t0, t1) => { let s = 0, n = 0; for (let i = Math.floor(t0 * a.rate); i < Math.floor(t1 * a.rate); i++) { s += a.samples[i] ** 2; n++; } return Math.sqrt(s / n); };
+  assert.ok(rms(0.5, 0.56) < 0.001, "batida 1 (0,5 s) sem bateria: so silencio");
+  assert.ok(rms(2.0, 2.06) > 0.05, "batida 4 (2,0 s) dentro da faixa: bumbo audivel");
+  assert.ok(rms(1.0, 1.1) > 0.1, "impacto em 1,0 s");
+  assert.ok(rms(0.2, 0.22) > 0.005, "tecla em 0,2 s");
+  const legacy = synth({ bpm: 120, seconds: 2 });
+  assert.ok(legacy.samples.slice(0, 4000).some((v) => Math.abs(v) > 0.05), "sem drums: comportamento original (kick sempre)");
+});
+
+test("stage: ajudantes puros (typed, ease, clamp01, mixHex)", () => {
+  assert.equal(typed("relay ship", 0.2, 10, 0.1), "");
+  assert.equal(typed("relay ship", 0.2, 10, 0.5), "rel");
+  assert.equal(typed("relay ship", 0.2, 10, 9), "relay ship");
+  assert.equal(clamp01(-3), 0); assert.equal(clamp01(2), 1);
+  assert.equal(ease(0), 0); assert.equal(ease(1), 1); assert.ok(ease(0.5) > 0.5, "ease-out");
+  assert.equal(mixHex("#000000", "#ffffff", 0.5), "rgb(128,128,128)");
+  assert.equal(mixHex("#000000", "#ff0000", 5), "rgb(255,0,0)");
+});
+
+test("brief do filme Relay passa no linter (--strict) e o filme tem partitura valida", () => {
+  const dir = join(SK, "assets", "example-launch");
+  assert.deepEqual(lintBrief(readFileUtf8(join(dir, "BRIEF.md"))).findings, []);
+  assert.equal(spawnSync(process.execPath, [BRIEF_LINT, join(dir, "BRIEF.md"), "--strict"]).status, 0);
+  const score = JSON.parse(readFileUtf8(join(dir, "score.json")));
+  assert.equal(score.bpm, 120);
+  assert.equal(score.seconds, 15);
+  assert.ok(score.events.length > 20 && score.events.every((e) => e.t >= 0 && e.t < 15), "eventos dentro dos 15 s");
+});
+
+test("filme Relay: loop fecha (primeiro = ultimo quadro) e --blur mantem a duracao", { skip: skipRender, timeout: 240000 }, () => {
+  const out = mkdtempSync(join(tmpdir(), "relay-"));
+  try {
+    const page = join(SK, "assets", "example-launch", "index.html");
+    const run = (...a) => spawnSync(process.execPath, [RENDER, page, "--size", "640x360", ...a], { encoding: "utf8", env: process.env });
+    const s = run("--stills", "0,14.999", "--stills-dir", join(out, "s"));
+    assert.equal(s.status, 0, s.stderr);
+    // o grao muda por quadro (numero do quadro), entao compara a estrutura: reduz os dois a 16x9 em escala de cinza
+    const small = (f) => spawnSync("ffmpeg", ["-v", "error", "-i", join(out, "s", f), "-vf", "scale=16:9,format=gray", "-f", "rawvideo", "-"], { encoding: "buffer" }).stdout;
+    const [f0, f1] = readdirSync(join(out, "s")).sort();
+    const A = small(f0), B = small(f1);
+    let diff = 0; for (let i = 0; i < A.length; i++) diff = Math.max(diff, Math.abs(A[i] - B[i]));
+    assert.ok(A.length === 144 && diff <= 12, `ultimo quadro deveria igualar o primeiro (diferenca maxima ${diff})`);
+
+    const m = run("--out", join(out, "b.mp4"), "--duration", "1", "--fps", "10", "--blur", "3");
+    assert.equal(m.status, 0, m.stderr);
+    assert.match(m.stdout, /motion blur 3/);
+    const probe = spawnSync("ffprobe", ["-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames", "-of", "default=nw=1", join(out, "b.mp4")], { encoding: "utf8" }).stdout;
+    assert.match(probe, /nb_read_frames=10/, "3 subquadros por quadro, mas 10 quadros de saida");
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+});

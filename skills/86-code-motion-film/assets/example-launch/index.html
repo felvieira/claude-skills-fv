@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Relay — filme de lançamento em código</title>
+<style>html,body{margin:0;background:#0b0b0c;overflow:hidden}canvas{display:block}</style>
+<canvas id="c"></canvas>
+<script type="module">
+// "Relay": filme de lancamento de 15 s, em loop, seguindo BRIEF.md. Conceito proprio (terminal -> keynote).
+// Tudo e funcao do tempo: window.seek(t) pinta o quadro exato. Sem relogio, timers ou Math.random; o grao vem do numero do quadro.
+// Composto num espaco de 1920x1080; outros tamanhos escalam (letterbox).
+import { presets, progress, mix, spring, pulse } from "/_lib/motion.mjs";
+import { createStage, typed, ease, clamp01, mixHex, SPRINGS } from "/_lib/stage.mjs";
+
+const q = new URLSearchParams(location.search);
+const W = Number(q.get("w") || innerWidth), H = Number(q.get("h") || innerHeight);
+const cv = document.getElementById("c");
+window.DURATION = 15;
+
+const BPM = 120;
+const INK = "#0b0b0c", PAPER = "#f1efe7", LIME = "#c6ff3d", DIM = "#8a8a8f", EDGE = "#2a2a2d", CARD = "#121214";
+const HEAD = '"Segoe UI Black","Arial Black","Helvetica Neue",Impact,sans-serif';
+const BODY = '"Segoe UI Semibold","Segoe UI",system-ui,sans-serif';
+const MONO = 'Consolas,"Cascadia Mono","DejaVu Sans Mono",monospace';
+const { slam: SLAM, settle: SETTLE, snap: SNAP } = SPRINGS;
+const st = createStage({ canvas: cv, w: W, h: H, ink: INK, flash: PAPER, head: HEAD });
+const { ctx, setFont, rr, camera, letters } = st;
+const DW = st.dw, DH = st.dh;
+
+// ------------------------------------------------------------------ 1) terminal (0-2 s)
+function prompt(cmd, solid, t) {
+  setFont(72, MONO);
+  ctx.fillStyle = LIME; ctx.fillText("$", 160, 400);
+  const pre = ctx.measureText("$ ").width;
+  ctx.fillStyle = PAPER; ctx.fillText(cmd, 160 + pre, 400);
+  const cx = 160 + pre + ctx.measureText(cmd).width;
+  if (solid || Math.floor(t * 4) % 2 === 0) { ctx.fillStyle = LIME; ctx.fillRect(cx + 6, 400 - 58, 38, 76); }
+}
+const TLINES = [["build", "1.2s", 1.1], ["test", "0.8s", 1.3], ["deploy", "1.9s", 1.5], ["live", "4.2s total", 1.7]];
+function sceneTerminal(t) {
+  ctx.fillStyle = INK; ctx.fillRect(0, 0, DW, DH);
+  ctx.save(); camera(1 + 0.05 * progress(t, 0, 2), 960, 540);
+  setFont(34, MONO); ctx.fillStyle = DIM; ctx.fillText("relay — ship", 160, 130); ctx.textAlign = "right"; ctx.fillText("main · a3f9c1e", 1760, 130); ctx.textAlign = "left";
+  const cmd = typed("relay ship", 0.2, 15, t);
+  const entered = t >= 1.05;
+  if (!entered) prompt(cmd, t < 0.2 || cmd.length > 0 && cmd.length < 10, t);
+  else { prompt("relay ship", false, 9); } // comando completo; o cursor some quando as linhas entram
+  if (entered) {
+    for (const [i, [name, dur, at]] of TLINES.entries()) {
+      const s = spring(SETTLE, t - at); if (s <= 0) continue;
+      const y = 560 + i * 120;
+      ctx.save(); ctx.globalAlpha = clamp01(s * 1.5); ctx.translate(mix(-30, 0, s), 0);
+      setFont(72, MONO); ctx.fillStyle = LIME; ctx.fillText(">", 160, y);
+      ctx.fillStyle = PAPER; ctx.fillText(name, 280, y);
+      ctx.fillStyle = i === 3 ? LIME : DIM; ctx.fillText(dur, 880, y);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+// ------------------------------------------------------------------ 2) SHIP FASTER. (2-4 s)
+function sceneShip(t, g) {
+  ctx.fillStyle = LIME; ctx.fillRect(0, 0, DW, DH);
+  const bp = 1 + 0.012 * pulse(g, BPM, 9);
+  ctx.save(); camera((1 + 0.07 * ease(t / 2)) * bp, 960, 540);
+  // etiqueta de interface (detalhe de UI no canto)
+  rr(120, 96, 330, 64, 32); ctx.fillStyle = INK; ctx.fill();
+  setFont(30, MONO); ctx.fillStyle = LIME; ctx.fillText("NEW  relay 2.0", 156, 138);
+  setFont(30, MONO); ctx.fillStyle = INK; ctx.textAlign = "right"; ctx.fillText("01 / 05", 1800, 138); ctx.textAlign = "left";
+  letters("SHIP", 960, 520, 500, INK, t, { align: "center", delay: 0.04, stagger: 0.075 });
+  letters("FASTER.", 960, 900, 330, INK, t, { align: "center", delay: 1.0, stagger: 0.06 });
+  ctx.restore();
+}
+
+// ------------------------------------------------------------------ 3) pipeline (4-8 s)
+const NODES = [["Build", "1.2s", 0.9], ["Test", "0.8s", 1.7], ["Review", "0.6s", 2.5], ["Deploy", "1.9s", 3.2], ["Live", "4.2s", 3.7]];
+const NX = (i) => 330 + i * 300;
+function scenePipeline(t) {
+  ctx.fillStyle = PAPER; ctx.fillRect(0, 0, DW, DH);
+  ctx.save(); camera(mix(1, 1.07, ease(t / 4)), mix(960, 1010, ease(progress(t, 0.3, 3.7))), 540);
+  const s0 = spring(SETTLE, t), dy = (1 - s0) * 140;
+  ctx.save(); ctx.globalAlpha = clamp01(s0 * 2); ctx.translate(0, dy);
+  // cartao
+  ctx.save(); ctx.shadowColor = "rgba(11,11,12,.30)"; ctx.shadowBlur = 90; ctx.shadowOffsetY = 40; rr(130, 190, 1660, 720, 44); ctx.fillStyle = CARD; ctx.fill(); ctx.restore();
+  rr(130, 190, 1660, 720, 44); ctx.strokeStyle = EDGE; ctx.lineWidth = 2; ctx.stroke();
+  // cabecalho
+  rr(190, 250, 250, 58, 29); ctx.strokeStyle = LIME; ctx.lineWidth = 2; ctx.stroke();
+  setFont(28, MONO); ctx.fillStyle = LIME; ctx.fillText("relay ship", 222, 288);
+  ctx.fillStyle = DIM; ctx.fillText("a3f9c1e · main · 3 files changed", 470, 288);
+  const live = t >= NODES[4][2];
+  ctx.textAlign = "right"; ctx.fillStyle = live ? LIME : DIM; ctx.fillText(live ? "● live in 4.2s" : "● deploying", 1730, 288); ctx.textAlign = "left";
+  // conector
+  ctx.lineCap = "round"; ctx.lineWidth = 8; ctx.strokeStyle = EDGE; ctx.beginPath(); ctx.moveTo(NX(0), 520); ctx.lineTo(NX(4), 520); ctx.stroke();
+  let lineX = NX(0);
+  for (let i = 1; i < 5; i++) if (t > NODES[i - 1][2]) lineX = mix(NX(i - 1), NX(i), ease((t - NODES[i - 1][2]) / (NODES[i][2] - NODES[i - 1][2])));
+  ctx.strokeStyle = LIME; ctx.beginPath(); ctx.moveTo(NX(0), 520); ctx.lineTo(lineX, 520); ctx.stroke();
+  // nos
+  for (const [i, [label, dur, at]] of NODES.entries()) {
+    const cx = NX(i), done = t >= at, active = !done && (i === 0 || t >= NODES[i - 1][2]);
+    if (done) {
+      const s = spring(presets.snappy, t - at), k = clamp01((t - at) / 0.5);
+      ctx.save(); ctx.translate(cx, 520); ctx.scale(mix(0.82, 1, s), mix(0.82, 1, s));
+      ctx.beginPath(); ctx.arc(0, 0, 58, 0, Math.PI * 2); ctx.fillStyle = LIME; ctx.fill();
+      ctx.strokeStyle = INK; ctx.lineWidth = 11; ctx.lineJoin = "round";
+      const c = clamp01((t - at) / 0.28); // check desenhado por dash
+      ctx.beginPath(); ctx.moveTo(-20, 2); ctx.lineTo(-6, 17); ctx.lineTo(22, -16);
+      ctx.setLineDash([80, 80]); ctx.lineDashOffset = 80 * (1 - ease(c)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.restore();
+      ctx.save(); ctx.globalAlpha = (1 - k) * 0.8; ctx.strokeStyle = LIME; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(cx, 520, mix(60, 125, ease(k)), 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    } else {
+      ctx.beginPath(); ctx.arc(cx, 520, 58, 0, Math.PI * 2); ctx.fillStyle = CARD; ctx.fill();
+      ctx.lineWidth = active ? 8 : 6; ctx.strokeStyle = active ? LIME : EDGE;
+      ctx.beginPath(); if (active) ctx.arc(cx, 520, 58, t * 9, t * 9 + Math.PI * 1.35); else ctx.arc(cx, 520, 58, 0, Math.PI * 2); ctx.stroke();
+    }
+    setFont(38, BODY); ctx.fillStyle = done || active ? PAPER : DIM; ctx.textAlign = "center"; ctx.fillText(label, cx, 650);
+    setFont(28, MONO); ctx.fillStyle = done ? LIME : EDGE; ctx.fillText(done ? dur : "—", cx, 700); ctx.textAlign = "left";
+  }
+  // log (ultimas 3 linhas concluidas)
+  const doneIdx = NODES.map((n, i) => [n, i]).filter(([n]) => t >= n[2]).map(([, i]) => i).slice(-3);
+  for (const [row, i] of doneIdx.entries()) {
+    const [label, dur, at] = NODES[i], a = clamp01((t - at) / 0.15);
+    setFont(30, MONO); ctx.globalAlpha = a * (row === doneIdx.length - 1 ? 1 : 0.55);
+    ctx.fillStyle = LIME; ctx.fillText("✓", 190, 790 + row * 44); ctx.fillStyle = PAPER; ctx.fillText(`${label.toLowerCase().padEnd(8, " ")}${dur}`, 236, 790 + row * 44); ctx.globalAlpha = 1;
+  }
+  ctx.restore(); ctx.restore();
+}
+
+// ------------------------------------------------------------------ 4) a metrica (8-11 s)
+const BARS = 24;
+function sceneMetric(t, g) {
+  ctx.fillStyle = INK; ctx.fillRect(0, 0, DW, DH);
+  const bp = 1 + 0.01 * pulse(g, BPM, 9);
+  ctx.save(); camera(mix(1, 1.06, ease(t / 3)) * bp, 960, 540);
+  // "antes" riscado
+  setFont(44, MONO); ctx.fillStyle = DIM; ctx.fillText("was 38.0s", 140, 190);
+  const strike = ease((t - 0.5) / 0.35); ctx.strokeStyle = PAPER; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(140, 176); ctx.lineTo(140 + 250 * strike, 176); ctx.stroke();
+  // numero com avanco fixo por digito (nao treme)
+  const k = spring({ stiffness: 40, damping: 13, mass: 1 }, t - 0.25), v = mix(38.0, 4.2, k), txt = v.toFixed(1), size = 620;
+  const col = mixHex(PAPER, LIME, ease((t - 1.55) / 0.2));
+  setFont(size, HEAD, -0.03 * size); ctx.fillStyle = col;
+  let x = 130; const adv = (ch) => (ch === "." ? 0.3 * size : 0.605 * size);
+  for (const ch of txt) { ctx.fillText(ch, x, 760); x += adv(ch); }
+  setFont(300, HEAD, -8); ctx.fillStyle = LIME; ctx.fillText("s", x + 20, 760); ctx.letterSpacing = "0px";
+  // legenda digitada
+  setFont(34, MONO); ctx.fillStyle = DIM; ctx.fillText(typed("median deploy time  →  relay ship", 0.7, 38, t), 140, 830);
+  // sublinhado do valor travado
+  const u = spring(SETTLE, t - 1.55); if (u > 0) { ctx.fillStyle = LIME; ctx.fillRect(140, 850, 760 * clamp01(u), 12); }
+  // barras das ultimas execucoes
+  for (let i = 0; i < BARS; i++) {
+    const s = spring(SETTLE, t - 0.5 - i * 0.035), h = 170 * Math.pow(0.9, i) * s + 8;
+    ctx.fillStyle = i === BARS - 1 ? LIME : "rgba(241,239,231,.82)"; ctx.fillRect(140 + i * 72, 1030 - h, 46, h);
+  }
+  ctx.restore();
+}
+
+// ------------------------------------------------------------------ 5) faixas gigantes (11-14 s)
+const ROWS = [["BUILD", PAPER, INK, 1], ["TEST", INK, PAPER, -1], ["SHIP", LIME, INK, 1], ["REPEAT", PAPER, INK, -1]];
+function sceneRows(t, g) {
+  const bp = 1 + 0.008 * pulse(g, BPM, 9);
+  ctx.save(); camera(mix(1, 1.045, ease(t / 3)) * bp, 960, 540);
+  for (const [i, [word, bg, fg, dir]] of ROWS.entries()) {
+    ctx.fillStyle = bg; ctx.fillRect(-40, i * 270 - 1, DW + 80, 272);
+    const s = spring(SNAP, t - i * 0.5), off = dir * 2400 * (1 - s);
+    setFont(250, HEAD, -10); const wWord = ctx.measureText(word).width, period = wWord + 150;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, i * 270, DW, 270); ctx.clip(); ctx.fillStyle = fg;
+    for (let n = -9; n <= 9; n++) { const x = 110 + off + n * period; if (x < DW + 40 && x + wWord > -40) ctx.fillText(word, x, i * 270 + 225); }
+    ctx.restore();
+  }
+  ctx.letterSpacing = "0px"; ctx.restore();
+}
+
+// ------------------------------------------------------------------ 6) marca + volta ao terminal (14-15 s)
+function sceneEnd(t) {
+  ctx.fillStyle = INK; ctx.fillRect(0, 0, DW, DH);
+  const fade = 1 - ease((t - 0.7) / 0.18); // tudo some e sobra so o prompt (= primeiro quadro)
+  ctx.save(); ctx.globalAlpha = fade; camera(1 + 0.02 * ease(t), 960, 540);
+  const wmW = letters("relay", 920, 600, 400, PAPER, t, { align: "center", delay: 0, stagger: 0.025, cfg: SNAP, drop: -220, rot: 0.05 });
+  const dot = spring(SNAP, t - 0.3); ctx.beginPath(); ctx.arc(960 + wmW / 2 - 6, 590 - 28 * (1 - dot), 36 * dot, 0, Math.PI * 2); ctx.fillStyle = LIME; ctx.fill();
+  setFont(46, MONO); ctx.fillStyle = PAPER; const tag = "ship without the wait."; ctx.fillText(typed(tag, 0.1, 55, t), 960 - ctx.measureText(tag).width / 2, 730);
+  ctx.restore();
+  if (t >= 0.7) { ctx.save(); ctx.globalAlpha = ease((t - 0.7) / 0.18); setFont(34, MONO); ctx.fillStyle = DIM; ctx.fillText("relay — ship", 160, 130); ctx.textAlign = "right"; ctx.fillText("main · a3f9c1e", 1760, 130); ctx.textAlign = "left"; prompt("", true, 0); ctx.restore(); }
+}
+
+// ------------------------------------------------------------------ montagem, cortes e grao
+const SCENES = [{ at: 0, draw: sceneTerminal }, { at: 2, draw: sceneShip }, { at: 4, draw: scenePipeline }, { at: 8, draw: sceneMetric }, { at: 11, draw: sceneRows }, { at: 14, draw: sceneEnd }];
+window.seek = (t) => st.frame(t, SCENES, window.DURATION);
+window.ready = Promise.resolve();
+window.seek(0);
+</script>

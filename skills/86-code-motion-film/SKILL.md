@@ -96,6 +96,7 @@ node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, 
 | 2 Brief | `references/BRIEF.md` | uma frase testa o motor; spec de estados e brief de diretor testam a ideia |
 | 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
 | 2c Padrão | `references/PADRAO.md` | camadas T0–T3, anatomia do brief de diretor, blocos reutilizáveis, como reproduzir uma entrada; índice em `references/INDICE-GALERIA.md` |
+| 2d Qualidade | `references/QUALIDADE.md` | o piso de entrega: régua de 11 critérios e o filme de referência `assets/example-launch` (usa `skills/86-code-motion-film/scripts/stage.mjs`) |
 | 3 Molas | `references/SPRINGS.md` | preset por papel, uma mola por mudança de alvo, `track()` |
 | 4 Som | `references/SOUND.md` | trilha fornecida (medir) ou sintetizada na mesma linha do tempo; cortes em BPM |
 | 5 Crítica | `references/CRITIQUE.md` | quadros-chave → nota → três piores → corrigir, até 8+ |
@@ -114,6 +115,10 @@ node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --stills
 
 # trilha sintetizada travada em 120 BPM, com tick nos cortes
 node skills/86-code-motion-film/scripts/audio-synth.mjs --bpm 120 --seconds 6 --cuts 0,1.5,3,4.5 --out score.wav
+
+# trilha com partitura (bateria por faixa de batidas, riser/impacto/clique/digitação em segundos) e render final com motion blur
+node skills/86-code-motion-film/scripts/audio-synth.mjs --score score.json --out score.wav
+node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --size 1920x1080 --blur 4 --audio score.wav --out out/film.mp4
 ```
 
 ```bash
@@ -126,9 +131,9 @@ node skills/86-code-motion-film/scripts/prompt-motion.mjs search kinetic --limit
 node skills/86-code-motion-film/scripts/prompt-motion.mjs analyze
 ```
 
-Exemplos completos e renderizáveis: `assets/example` (forma que se transforma, em loop) e `assets/example-recipe` (animação de receita, reproduzida a partir do padrão, com `BRIEF.md` que passa no linter).
+Exemplos completos e renderizáveis: `assets/example` (forma que se transforma, em loop) e `assets/example-recipe` (animação de receita) são **provas de pipeline**. O **piso de qualidade** é `assets/example-launch` (filme de lançamento "Relay": cinco cenas, câmera, tipografia em escala de quadro, grão, motion blur, trilha com `score.json`); copie a estrutura dele e use `skills/86-code-motion-film/scripts/stage.mjs`, não reescreva os ajudantes.
 
-Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mjs"`.
+Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mjs"` e `import { createStage, typed } from "/_lib/stage.mjs"` (palco 1920x1080 com letterbox, câmera, letras que caem, corte com clarão e grão).
 
 ## Anti-Padroes
 
@@ -157,6 +162,7 @@ Falhas vistas construindo o exemplo desta skill:
 - **Cor com `NaN` não dá erro: o canvas ignora o `fillStyle` e usa o anterior.** Na animação de receita o líquido ficou invisível (desenhado na cor do papel) porque uma função de mistura recebeu um array onde esperava hex. Só a folha de quadros mostrou. Funções de cor aceitam hex **ou** [r,g,b], e vale conferir um pixel.
 - **Sinal invertido na altura de uma camada** fez um cubo de gelo atravessar o fundo do copo; e camadas de líquido têm de somar a altura do copo. Confira o último quadro de cada etapa.
 - **Reproduzir um pedido curto da galeria não é copiar a frase**: 92% das entradas são frases de uma linha (30 delas a mesma). Escreva um brief próprio na camada certa (`PADRAO.md`) e verifique com `brief-lint`.
+- **Render que roda não é filme bom.** Os dois primeiros exemplos eram provas de pipeline: texto médio, sem câmera, nada que alguém mostraria. Meça pela régua de `references/QUALIDADE.md` e parta do `assets/example-launch`.
 - **Sem esforço alto o resultado vira "texto centralizado em gradiente"**: dê referência e peça os quadros-chave antes do código final.
 
 ## Evidencia de Conclusao

@@ -1,0 +1,29 @@
+{
+  "bpm": 120,
+  "seconds": 15,
+  "drums": [[4, 28]],
+  "clap": [[8, 28]],
+  "bass": [[8, 28]],
+  "events": [
+    {"t": 0.40, "type": "type"}, {"t": 0.47, "type": "type"}, {"t": 0.54, "type": "type"}, {"t": 0.61, "type": "type"},
+    {"t": 0.68, "type": "type"}, {"t": 0.75, "type": "type"}, {"t": 0.82, "type": "type"}, {"t": 0.89, "type": "type"},
+    {"t": 0.96, "type": "type"}, {"t": 1.03, "type": "type"},
+    {"t": 1.10, "type": "click"}, {"t": 1.30, "type": "click"}, {"t": 1.50, "type": "click"}, {"t": 1.70, "type": "click"},
+    {"t": 1.0, "type": "riser", "len": 1.0},
+    {"t": 2.0, "type": "impact"},
+    {"t": 3.0, "type": "impact", "len": 0.8},
+    {"t": 3.9, "type": "riser", "len": 0.1},
+    {"t": 4.0, "type": "impact"},
+    {"t": 4.9, "type": "chime"}, {"t": 5.7, "type": "chime"}, {"t": 6.5, "type": "chime"}, {"t": 7.2, "type": "chime"}, {"t": 7.7, "type": "chime"},
+    {"t": 7.0, "type": "riser", "len": 1.0},
+    {"t": 8.0, "type": "impact"},
+    {"t": 8.5, "type": "whoosh"},
+    {"t": 9.55, "type": "impact", "len": 0.9},
+    {"t": 10.0, "type": "riser", "len": 1.0},
+    {"t": 11.0, "type": "impact"},
+    {"t": 11.0, "type": "whoosh"}, {"t": 12.0, "type": "whoosh"}, {"t": 12.5, "type": "whoosh"}, {"t": 13.0, "type": "whoosh"},
+    {"t": 13.0, "type": "riser", "len": 1.0},
+    {"t": 14.0, "type": "impact"},
+    {"t": 14.3, "type": "type"}, {"t": 14.4, "type": "type"}, {"t": 14.5, "type": "type"}
+  ]
+}

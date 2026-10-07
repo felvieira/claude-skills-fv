@@ -6,7 +6,7 @@
  * quadro e editar uma linha + renderizar de novo.
  *
  *   node render-seek.mjs <pagina.html> --out film.mp4 [--duration 3] [--fps 30] [--size 1280x720]
- *                        [--audio trilha.wav] [--query "w=1080&h=1920"]
+ *                        [--audio trilha.wav] [--query "w=1080&h=1920"] [--blur 4 [--shutter 0.5]]
  *   node render-seek.mjs <pagina.html> --stills 0,1.5,2.9 [--sheet folha.png] [--stills-dir dir]
  *                        # so alguns quadros (critique loop): PNGs + folha de contato em uma imagem so
  *
@@ -68,7 +68,7 @@ async function openPage(page, port, file, query) {
 async function main() {
   const a = process.argv.slice(2);
   const v = (n, d) => { const i = a.indexOf(n); return i !== -1 ? a[i + 1] : d; };
-  const pageArg = a.find((x, i) => !x.startsWith("--") && !["--out", "--duration", "--fps", "--size", "--audio", "--query", "--stills", "--sheet", "--stills-dir"].includes(a[i - 1]));
+  const pageArg = a.find((x, i) => !x.startsWith("--") && !["--out", "--duration", "--fps", "--size", "--audio", "--query", "--stills", "--sheet", "--stills-dir", "--blur", "--shutter"].includes(a[i - 1]));
   if (!pageArg) { console.error("Uso: render-seek.mjs <pagina.html> --out film.mp4 | --stills 0,1.5 [--sheet folha.png]"); process.exit(2); }
   const pagePath = resolve(pageArg);
   if (!existsSync(pagePath)) { console.error(`Nao encontrei ${pagePath}`); process.exit(2); }
@@ -128,17 +128,25 @@ async function main() {
     if (!out) { console.error("Faltou --out film.mp4 (ou use --stills)."); process.exit(2); }
     const frames = Math.round(duration * fps);
     const audio = v("--audio");
-    const ff = spawn(FFMPEG, ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps), "-i", "-", ...(audio ? ["-i", resolve(audio)] : []), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-movflags", "+faststart", ...(audio ? ["-c:a", "aac", "-shortest"] : []), resolve(out)], { stdio: ["pipe", "inherit", "inherit"] });
+    // Motion blur por subquadros: N capturas por quadro, espalhadas por `shutter` do intervalo (0.5 = obturador de 180 graus)
+    // e combinadas pelo ffmpeg (tmix). Como seek(t) e pura, isso e exato: nenhum borrado "falso", so a media de instantes reais.
+    const blur = Math.max(1, Math.min(16, Math.round(Number(v("--blur", 1)))));
+    const shutter = Math.max(0.05, Math.min(1, Number(v("--shutter", 0.5))));
+    const vf = blur > 1 ? ["-vf", `tmix=frames=${blur},select='eq(mod(n,${blur}),${blur - 1})'`, "-r", String(fps), "-fps_mode", "cfr"] : [];
+    const ff = spawn(FFMPEG, ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps * blur), "-i", "-", ...(audio ? ["-i", resolve(audio)] : []), ...vf, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "17", "-movflags", "+faststart", ...(audio ? ["-c:a", "aac", "-shortest"] : []), resolve(out)], { stdio: ["pipe", "inherit", "inherit"] });
     const done = new Promise((ok, fail) => { ff.on("close", (c) => (c === 0 ? ok() : fail(new Error(`ffmpeg saiu com ${c}`)))); ff.on("error", fail); });
     for (let f = 0; f < frames; f++) {
-      await page.evaluate((t) => window.seek(t), f / fps);
-      await nextPaint(page);
-      const png = await page.screenshot({ type: "png" });
-      if (!ff.stdin.write(png)) await new Promise((r) => ff.stdin.once("drain", r));
+      for (let s = 0; s < blur; s++) {
+        const t = Math.max(0, (f + (blur === 1 ? 0 : shutter * ((s + 0.5) / blur - 0.5))) / fps);
+        await page.evaluate((tt) => window.seek(tt), t);
+        await nextPaint(page);
+        const png = await page.screenshot({ type: "png" });
+        if (!ff.stdin.write(png)) await new Promise((r) => ff.stdin.once("drain", r));
+      }
     }
     ff.stdin.end();
     await done;
-    console.log(`${resolve(out)} — ${frames} quadros @ ${fps} fps (${(frames / fps).toFixed(2)} s), ${width}x${height}`);
+    console.log(`${resolve(out)} — ${frames} quadros @ ${fps} fps (${(frames / fps).toFixed(2)} s), ${width}x${height}${blur > 1 ? `, motion blur ${blur} subquadros, obturador ${Math.round(shutter * 360)}°` : ""}`);
   } finally {
     await browser.close();
     server.close();

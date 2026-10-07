@@ -600,6 +600,25 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.97.0] - 2026-10-07
+
+Piso de qualidade do motion: o filme de referência "Relay" e as peças que o tornam reproduzível.
+
+### Adicionado
+
+- **`assets/example-launch/`**: filme de lançamento de 15 s, 1920x1080, em loop, 120 BPM (terminal, "SHIP FASTER." na cor de destaque, cartão de pipeline, métrica 38,0 s para 4,2 s com barras, faixas gigantes, marca e volta ao prompt). Traz `BRIEF.md` de diretor que passa no linter e `score.json` (partitura).
+- **`scripts/stage.mjs`**: palco reutilizável (espaço 1920x1080 com letterbox, câmera, `letters()`, `typed()`, corte com clarão de 2 quadros, grão em função do quadro). O refactor do Relay sobre ele deixou 10 quadros idênticos byte a byte.
+- **`references/QUALIDADE.md`**: régua de 11 critérios verificáveis num quadro parado (escala, uma cor de destaque, peso tipográfico, detalhe de interface, câmera, cortes na batida, fundo que respira, movimento com intenção, grão e blur, som, ciclo fechado) e a ordem para chegar lá.
+- `render-seek --blur N [--shutter 0.5]`: motion blur por N subquadros combinados no ffmpeg.
+- `audio-synth --score partitura.json`: bateria e baixo por faixa de batidas, palmas nos tempos 2 e 4 e eventos em segundos (impact, riser, click, type, whoosh, chime, clap).
+- 4 testes novos (34 no arquivo): partitura e determinismo, ajudantes do stage, brief do Relay, loop do Relay e contagem de quadros com blur.
+
+### Mudado
+
+- `SKILL.md`, `CRITIQUE.md`, `ENGINE.md`, `PADRAO.md`: apontam para o piso de qualidade; os dois primeiros exemplos passam a ser descritos como provas de pipeline.
+
+---
+
 ## [2.96.0] - 2026-10-07
 
 Padrão interno de brief de motion, extraído da leitura completa da galeria prompt-motion.com, mais uma reprodução de ponta a ponta feita por ele.
