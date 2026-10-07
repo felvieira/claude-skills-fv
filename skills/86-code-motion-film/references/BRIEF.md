@@ -5,6 +5,20 @@
 "showreel de 15 s para um currículo, vá com tudo" define um gênero com regras conhecidas e dá um clipe. Centenas de pedidos iguais
 produzem filmes que rimam entre si. Use a frase para testar o motor e logo passe para um brief que contenha uma ideia.
 
+## Antes de escrever: ler o produto
+
+O brief é escrito para **este** produto, com o nome dele grafado como ele grafa. Tire o nome da primeira fonte que responder: o que o usuário disse; o manifesto do app
+(`CFBundleDisplayName`/`CFBundleName` no Info.plist, `app_name` em `res/values/strings.xml`, `productName` no `tauri.conf.json` ou `package.json`, `name` em `app.json`,
+`pubspec.yaml` ou `Cargo.toml`); o título do README ou do site; o nome da pasta, arrumado. Se as fontes discordam ou só sobrou a pasta, pergunte uma vez, oferecendo o que achou.
+**Nunca invente um nome.**
+
+Leia também: o que faz, em uma frase, com as palavras do próprio produto (README, onboarding, loja, estados vazios); três a cinco fluxos reais que valem filmar, com os nomes do app
+e achados no código, não adivinhados; o visual (cores do tema, fontes, logotipo, ícone, molas); a plataforma; as afirmações, **só o que o código ou o texto dele sustenta**; e o que
+existe como material (capturas, gravações, um build). Para o tipo do filme, `TIPOS.md`; para o estilo, `ESTILOS.md`.
+
+Faça o brief ser deste produto: nomeie recursos pelos nomes do app, telas pelos títulos, dados pelo que realmente guardam; nada emprestado de outro filme (nem slogans, nem ideias de
+cena, nem a frase final do exemplo); toda cena mostra o produto fazendo algo real; se uma frase serviria a qualquer app, reescreva até servir só a este.
+
 ## Marca/produto
 
 Acrescente a URL do produto, "use screenshot, logo e assets reais" e "precisa de música". O modelo busca os assets sozinho.

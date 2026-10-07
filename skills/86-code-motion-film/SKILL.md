@@ -95,6 +95,7 @@ node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, 
 | 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
 | 2c Padrão | `references/PADRAO.md` | camadas T0–T3, anatomia do brief de diretor, blocos reutilizáveis, como reproduzir uma entrada; índice em `references/INDICE-GALERIA.md` |
 | 2d Qualidade | `references/QUALIDADE.md` | o piso de entrega: régua de 11 critérios e o filme de referência `assets/example-launch` (usa `skills/86-code-motion-film/scripts/stage.mjs`) |
+| 2d Guias | `references/TIPOS.md`, `ESTILOS.md`, `EFEITOS.md`, `AGENTES.md` | forma do filme, estilo com assinatura, efeitos puros (`fx.mjs`), ações por agente |
 | 3b Vocabulário | `references/VOCABULARIO.md` | chegar, assentar, sair, encaixar, deslizar, derivar; objeto-relé; pausas; transições a partir do produto |
 | 3 Molas | `references/SPRINGS.md` | preset por papel, uma mola por mudança de alvo, `track()` |
 | 4 Som | `references/SOUND.md` | trilha fornecida (medir) ou sintetizada na mesma linha do tempo; cortes em BPM |
@@ -144,7 +145,7 @@ node skills/86-code-motion-film/scripts/prompt-motion.mjs analyze
 
 Exemplos completos e renderizáveis: `assets/example` (forma que se transforma, em loop) e `assets/example-recipe` (animação de receita) são **provas de pipeline**. O **piso de qualidade** é `assets/example-launch` (filme de lançamento "Relay": cinco cenas, câmera, tipografia em escala de quadro, grão, motion blur, trilha com `score.json`); copie a estrutura dele e use `skills/86-code-motion-film/scripts/stage.mjs`, não reescreva os ajudantes.
 
-Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mjs"` e `import { createStage, typed } from "/_lib/stage.mjs"` (palco 1920x1080 com letterbox, câmera, letras que caem, corte com clarão e grão).
+Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mjs"` e `import { createStage, typed } from "/_lib/stage.mjs"` e `import { countUp, shake, ... } from "/_lib/fx.mjs"` (palco 1920x1080 com letterbox, câmera, letras que caem, corte com clarão e grão).
 
 ## Anti-Padroes
 

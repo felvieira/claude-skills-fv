@@ -600,6 +600,25 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.100.0] - 2026-10-07
+
+Skill 86: o que ajuda a IA a decidir sozinha, só o que é lícito trazer (ideias de kaventro/motion-designer, MIT; textos, paletas e código próprios, registrado no `NOTICE`).
+
+### Adicionado
+
+- **`references/TIPOS.md`**: 11 tipos de filme com duração, formato e estrutura; a história em três atos, palavra de destaque, painéis, som e personagem; regras para vídeos que não são de app (gravação por baixo nunca é alterada).
+- **`references/ESTILOS.md`**: 6 estilos como decisões completas (nativo da marca, tinta e limão, papel e tinta, meia-noite, bloco de cor, guia de campo), cada um com tokens, molas por papel e um movimento-assinatura, e a tabela de escolha por produto.
+- **`references/EFEITOS.md`** e **`scripts/fx.mjs`**: efeitos como funções puras do tempo (`hash`, `noise`, `stepOf`, `stagger`, `countUp`, `shake`, `ambient` que fecha o loop, `dashFor`, `wipeRect`, `irisRadius`, `kenBurns`, `confetti`), mais a regra do efeito-assinatura e do que não pôr sobre a interface de um produto.
+- **`references/AGENTES.md`**: ações do fluxo (planejar, perguntar, olhar, delegar, segundo plano, enviar) por agente, como delegar bem e como esperar; nomes de ferramentas de outros agentes ficam marcados como não verificados.
+- `references/BRIEF.md`: seção "ler o produto antes" (de onde tirar o nome, o que ler, como tornar o brief daquele produto).
+- 7 testes novos (`scripts/tests/skill-86-fx.test.mjs`, no CI): determinismo e faixas de `hash`/`noise`, extremos exatos de cada efeito, loop fechado do `ambient`, decaimento do `shake`, e coerência entre guias, `SKILL.md` e funções documentadas.
+
+### Decisões
+
+- Ficaram de fora, por serem pesados ou fora do alcance de um guia: modelos de moldura de dispositivo, geração local de música e voz, empacotador de arquivo único e lista de sites de música (licenças mudam; `SHIP.md` manda conferir a licença vigente).
+
+---
+
 ## [2.99.0] - 2026-10-07
 
 Skill 86 ganha o que o repositório kaventro/motion-designer (MIT) fazia melhor: provar o determinismo, escutar a trilha e revisar com disciplina. Implementações e textos próprios; nada copiado (`NOTICE`).

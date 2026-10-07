@@ -54,7 +54,7 @@ jobs:
 
       - name: Skill 86 film tools (determinism check, beat analysis, frame ranges)
 
-        run: node --test scripts/tests/skill-86-film-tools.test.mjs
+        run: node --test scripts/tests/skill-86-film-tools.test.mjs scripts/tests/skill-86-fx.test.mjs
 
       - name: Memory injection eval (positives carry the answer, negatives inject zero)
         run: node scripts/eval-memory-recall.mjs --strict

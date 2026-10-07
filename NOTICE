@@ -518,7 +518,8 @@ kaventro/motion-designer
   scripts/beats.mjs (tempo, downbeat, per-bar energy, drops, whole-bar
   cuts), the clean-context reviewer protocol with per-dimension scores and
   the failure catalogue in references/REVISORES.md, the motion vocabulary in
-  references/VOCABULARIO.md, the supersampling and range/tile options of
+  references/VOCABULARIO.md, the film-type, style and effects decision guides (references/TIPOS.md, ESTILOS.md, EFEITOS.md), the agent-actions table (references/AGENTES.md), the
+  read-the-product-first section of references/BRIEF.md, the supersampling and range/tile options of
   scripts/render-seek.mjs and the rights checklist in references/SHIP.md.
   All implementations and texts were written independently. Not adopted:
   the device-frame templates, the SF Symbols/asset packers, the local
