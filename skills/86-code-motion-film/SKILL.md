@@ -68,23 +68,41 @@ levar e o que não levar; se há trilha própria (medir BPM) ou se sintetiza; ch
 `SPEC.xml`, `stills/` + folha de crítica com notas, `out/film-16x9.mp4` (+ `9x16`, `1x1`), `poster.png`,
 `README.md` (como re-renderizar). Fonte limpa: tudo regenera com um comando.
 
+## Passo 0 — Pré-requisitos: verificar e, se faltar, instalar (sempre antes de renderizar)
+
+O render precisa de **ffmpeg/ffprobe**, do pacote **playwright** e do **Chromium** dele. Não presuma que existem.
+
+```bash
+node skills/86-code-motion-film/scripts/doctor.mjs            # verifica e PROVA com um render de verdade (3 quadros -> MP4 -> ffprobe)
+node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, instala e prova de novo
+```
+
+- Rode o `doctor` no começo do trabalho. Se sair com erro, rode `--install` e **diga ao usuário o que foi instalado**: o Playwright vai para a pasta de
+  ferramentas do kit (`~/.dev-team-kit/motion-tools`, sem tocar no package.json de nenhum projeto), o Chromium (~200 MB) para o cache do Playwright e o ffmpeg pelo
+  gerenciador do sistema (winget/choco, brew, apt). Se não houver gerenciador ou faltar permissão (ex.: sudo), o doctor imprime o comando exato: peça ao usuário
+  para rodá-lo e rode o doctor de novo. `--install --dry-run` mostra os comandos sem executar nada; no Linux use `--with-deps` para as bibliotecas do Chromium.
+- O Chromium só conta como pronto se **abrir** (uma instalação interrompida deixa o executável mas não o "headless shell"; o doctor detecta e refaz).
+- O `render-seek` confere tudo antes de começar e, se faltar algo, para com o comando acima. Não declare "renderizei" sem o doctor ter passado.
+
 ## Fluxo
 
 | Etapa | Arquivo | O que decide |
 |---|---|---|
+| 0 Pré-requisitos | `skills/86-code-motion-film/scripts/doctor.mjs` | ffmpeg + Playwright + Chromium presentes e provados |
 | 1 Motor | `references/ENGINE.md` | rota A (`seek(t)` + Playwright + ffmpeg, zero dependência) ou B (framework) |
 | 2 Brief | `references/BRIEF.md` | uma frase testa o motor; spec de estados e brief de diretor testam a ideia |
+| 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
 | 3 Molas | `references/SPRINGS.md` | preset por papel, uma mola por mudança de alvo, `track()` |
 | 4 Som | `references/SOUND.md` | trilha fornecida (medir) ou sintetizada na mesma linha do tempo; cortes em BPM |
 | 5 Crítica | `references/CRITIQUE.md` | quadros-chave → nota → três piores → corrigir, até 8+ |
 | 6 Entrega | `references/SHIP.md` | formatos pelo layout, poster, README, empacotar como skill |
 
-Ordem: 1 → 2 → 3 → 4 → 5 (repete) → 6. Esforço alto (xhigh/max) para filme novo; médio para correção e re-render.
+Ordem: 0 → 1 → 2 → 3 → 4 → 5 (repete) → 6. Esforço alto (xhigh/max) para filme novo; médio para correção e re-render.
 
 ## Comandos (ver `scripts/`)
 
 ```bash
-# render completo (Playwright + Chromium + ffmpeg no PATH; PLAYWRIGHT_DIR se o pacote estiver em outra pasta)
+# render completo (rode o doctor antes; PLAYWRIGHT_DIR aponta para outra pasta com node_modules/playwright)
 node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --out out/film.mp4 --duration 6 --fps 30 --size 1280x720 --audio score.wav
 
 # quadros-chave + folha numa imagem só, para a crítica
@@ -116,10 +134,16 @@ Falhas vistas construindo o exemplo desta skill:
 - **Sobreposição nas trocas de estado**: rótulo ainda visível por baixo do spinner em t=1,6 e spinner sobrando por baixo do rótulo seguinte em t=3,1.
   Escalone entradas e saídas (rótulo some → spinner entra; spinner sai → rótulo entra) e use mola de texto rápida e crítica.
 - **`xstack` do ffmpeg exige 2+ entradas**: folha de um quadro só precisa de caminho próprio (`-vf scale`).
+- **"Chromium ok" não é "Chromium abre"**: o Playwright novo usa um *headless shell* separado e uma instalação interrompida deixa só o executável completo.
+  O `doctor` decide por **abrir o navegador**, não por o arquivo existir.
+- **`Unable to update lock ... __dirlock`** derruba o `playwright install` no meio (visto no Windows, em disco secundário): o doctor remove o lock obsoleto e tenta de novo (até 3 vezes).
+- **O Node acha `node_modules` de pastas-pai**, então um Playwright global esconde a falta do pacote no projeto. `PLAYWRIGHT_DIR` e a pasta de ferramentas são resolvidos
+  de forma estrita (a pasta tem de conter `node_modules/playwright`).
 - **Sem esforço alto o resultado vira "texto centralizado em gradiente"**: dê referência e peça os quadros-chave antes do código final.
 
 ## Evidencia de Conclusao
 
+- `doctor.mjs` com exit 0 (inclui o render de prova) na máquina onde o filme foi gerado
 - render reproduzível: o mesmo comando gera o mesmo MP4 (compare dois quadros com `ffmpeg`/hash)
 - folha de crítica com notas por quadro-chave, todas >= 8, e os três piores problemas de cada rodada registrados
 - primeiro quadro = último quadro quando for loop; duração = compassos inteiros quando houver BPM

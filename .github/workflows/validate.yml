@@ -41,7 +41,11 @@ jobs:
       - name: Guards (/careful, /freeze) and trigger-eval train/test tests
         run: node --test scripts/tests/guards-evals.test.mjs
 
-      - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth; render only when Playwright is present)
+      - name: Install and prove the motion-film render stack (ffmpeg + Playwright + Chromium)
+        run: node skills/86-code-motion-film/scripts/doctor.mjs --install --with-deps
+        timeout-minutes: 15
+
+      - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth, doctor and a real render)
         run: node --test scripts/tests/skills-85-86.test.mjs
 
       - name: Memory injection eval (positives carry the answer, negatives inject zero)

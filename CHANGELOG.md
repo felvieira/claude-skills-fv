@@ -600,6 +600,26 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.95.0] - 2026-10-07
+
+A skill 86 deixa de presumir que o render funciona: verifica, instala o que faltar e prova com um render de verdade. Tudo isto foi executado, incluindo uma instalação do zero.
+
+### Adicionado
+
+- **`doctor.mjs`** (skill 86, passo 0): confere ffmpeg/ffprobe, o pacote `playwright` e um Chromium que **abre**; `--install` instala o que faltar (Playwright na pasta de ferramentas do kit `~/.dev-team-kit/motion-tools`, Chromium no cache do Playwright, ffmpeg por winget/choco/scoop, brew ou apt); `--install --dry-run` mostra o plano; `--with-deps` instala as bibliotecas do Chromium no Linux; termina com um render de prova (3 quadros -> MP4 -> ffprobe).
+- `deps.mjs` (busca e estado das dependências) e `render-seek` com **preflight**: se faltar algo para antes de abrir o navegador e imprime o comando exato.
+- `references/MODELOS.md`: famílias de estilo para nomear como referência, com a fonte e o limite declarados (galeria prompt-motion.com: estrutura verificada; categorias vindas de resumo automático, não conferidas entrada a entrada; nenhum prompt de criador foi copiado).
+- 6 testes novos e o render real **sem pular nada**; o CI roda o `doctor --install --with-deps` e os testes de render passam a executar de verdade (antes eram pulados sem Playwright).
+
+### Corrigido (achado ao instalar do zero em um ambiente limpo)
+
+- O `doctor` dizia "Chromium ok" porque o executável existia, mas o Playwright novo usa um **headless shell** separado e uma instalação interrompida deixa só o completo: o navegador não abria. Agora o critério é **abrir**.
+- `playwright install` caiu depois de baixar 100% com `Unable to update lock ... __dirlock` (lock obsoleto, Windows, disco secundário): o doctor remove o lock e tenta de novo (até 3 vezes) e se recupera sozinho.
+- A busca do Playwright subia pelas pastas-pai e um `node_modules` global escondia a falta do pacote: `PLAYWRIGHT_DIR` e a pasta de ferramentas agora são estritos.
+- `--stills` gravava na pasta da página (sujando `assets/`): o padrão passou a ser `./motion-stills`.
+
+---
+
 ## [2.94.0] - 2026-10-07
 
 Duas skills novas, vindas de um artigo de motion design com Opus 5.5 (Movez, set/2026) e de um pack de ilustração de 8 arquivos. Em vez de copiar os textos, reimplementamos o método como código testável.

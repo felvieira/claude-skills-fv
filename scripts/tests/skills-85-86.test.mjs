@@ -17,7 +17,7 @@ import { barsFor, beatGrid, dampingRatio, layout, overshoot, presets, pulse, set
 import { encodeWav, synth } from "../../skills/86-code-motion-film/scripts/audio-synth.mjs";
 import { contrast, flattenPath, hexToRgb, lintPalette, lintSvg } from "../svg-icon-lint.mjs";
 import { innerSvg, rootStyleAttrs, toJsx } from "../svg-icon-export.mjs";
-import { loadPlaywright } from "../../skills/86-code-motion-film/scripts/render-seek.mjs";
+import { allOk, browsersPath, findPlaywright, isMissingBrowserError, missing, playwrightBases, toolsDir } from "../../skills/86-code-motion-film/scripts/deps.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const EXAMPLES = join(root, "skills", "85-illustration-studio", "assets", "examples");
@@ -202,9 +202,14 @@ test("exportador: helpers de SVG -> JSX", () => {
 });
 
 // ================================================================== 86: render real (opcional)
-const playwrightOk = (() => { try { loadPlaywright(); return true; } catch { return false; } })();
-const ffmpegOk = spawnSync("ffmpeg", ["-version"], { encoding: "utf8" }).status === 0;
-const skipRender = !playwrightOk ? "Playwright nao encontrado (defina PLAYWRIGHT_DIR)" : !ffmpegOk ? "ffmpeg ausente" : false;
+// O veredito vem do proprio doctor (ffmpeg + playwright + Chromium que ABRE). Em CI, o passo anterior roda `doctor --install`.
+const DOCTOR = join(root, "skills", "86-code-motion-film", "scripts", "doctor.mjs");
+const doctorJson = (args = [], env = {}) => {
+  const r = spawnSync(process.execPath, [DOCTOR, "--json", ...args], { encoding: "utf8", env: { ...process.env, ...env }, timeout: 180000 });
+  try { return { ...JSON.parse(r.stdout), status: r.status }; } catch { return { ok: false, missing: ["doctor sem saida"], status: r.status, stderr: r.stderr }; }
+};
+const health = doctorJson(["--no-smoke"]);
+const skipRender = health.ok ? false : `dependencias do render ausentes: ${(health.missing || []).join(", ")} (rode doctor.mjs --install)`;
 
 test("render-seek: MP4 com a duracao pedida, quadros iguais em dois renders e centro correto", { skip: skipRender, timeout: 120000 }, () => {
   const out = mkdtempSync(join(tmpdir(), "rseek-"));
@@ -228,4 +233,83 @@ test("render-seek: MP4 com a duracao pedida, quadros iguais em dois renders e ce
   } finally {
     rmSync(out, { recursive: true, force: true });
   }
+});
+
+// ================================================================== 86: dependencias (doctor)
+test("deps: pasta de ferramentas e ordem de busca do Playwright (estrita para env e ferramentas)", () => {
+  const saved = { t: process.env.DEVKIT_TOOLS_DIR, p: process.env.PLAYWRIGHT_DIR };
+  const base = mkdtempSync(join(tmpdir(), "deps-"));
+  try {
+    process.env.DEVKIT_TOOLS_DIR = join(base, "tools");
+    delete process.env.PLAYWRIGHT_DIR;
+    assert.equal(toolsDir(), join(base, "tools"));
+    let bases = playwrightBases();
+    assert.deepEqual(bases.slice(0, 1).map((b) => [b.dir, b.strict]), [[join(base, "tools"), true]]);
+    assert.equal(bases.at(-1).strict, false, "o projeto e esta pasta seguem a resolucao normal do Node");
+
+    process.env.PLAYWRIGHT_DIR = join(base, "pw");
+    bases = playwrightBases();
+    assert.deepEqual(bases[0], { dir: join(base, "pw"), strict: true }, "PLAYWRIGHT_DIR tem prioridade");
+
+    // pacote falso em tools/node_modules/playwright: achado; um filho SEM o pacote nao herda o do pai
+    const fake = (dir) => { mkdirSync(join(dir, "node_modules", "playwright"), { recursive: true }); writeFileSync(join(dir, "node_modules", "playwright", "package.json"), '{"name":"playwright","main":"index.js"}'); writeFileSync(join(dir, "node_modules", "playwright", "index.js"), "module.exports={chromium:{executablePath:()=>'x'}};"); };
+    delete process.env.PLAYWRIGHT_DIR;
+    fake(join(base, "tools"));
+    assert.equal(findPlaywright()?.base, join(base, "tools"));
+    process.env.PLAYWRIGHT_DIR = join(base, "tools", "sub"); // dentro de uma pasta que TEM node_modules/playwright
+    mkdirSync(join(base, "tools", "sub"), { recursive: true });
+    assert.equal(findPlaywright()?.base, join(base, "tools"), "PLAYWRIGHT_DIR estrito sem o pacote cai para a pasta de ferramentas, nao para o pai");
+  } finally {
+    if (saved.t === undefined) delete process.env.DEVKIT_TOOLS_DIR; else process.env.DEVKIT_TOOLS_DIR = saved.t;
+    if (saved.p === undefined) delete process.env.PLAYWRIGHT_DIR; else process.env.PLAYWRIGHT_DIR = saved.p;
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("deps: o que falta vira instrucao de acao; erro de navegador ausente e reconhecido", () => {
+  const ok = { node: { ok: true, version: "22" }, ffmpeg: { ok: true }, playwright: { ok: true }, chromium: { ok: true } };
+  assert.equal(allOk(ok), true);
+  assert.deepEqual(missing({ ...ok, ffmpeg: { ok: false } }), ["ffmpeg/ffprobe"]);
+  assert.deepEqual(missing({ ...ok, playwright: { ok: false }, chromium: { ok: false } }), ["pacote playwright"]);
+  assert.deepEqual(missing({ ...ok, chromium: { ok: false } }), ["Chromium do Playwright"]);
+  assert.deepEqual(missing({ ...ok, node: { ok: false, version: "16.0.0" } }), ["Node >= 18 (achei 16.0.0)"]);
+  assert.ok(isMissingBrowserError("browserType.launch: Executable doesn't exist at /x/chrome-headless-shell"));
+  assert.ok(isMissingBrowserError("Please run: npx playwright install"));
+  assert.ok(!isMissingBrowserError("net::ERR_CONNECTION_REFUSED"));
+  assert.ok(browsersPath().length > 0);
+});
+
+test("doctor: sem ffmpeg ele diz o que falta e, com --install --dry-run, mostra o plano sem executar nada", () => {
+  const r = doctorJson(["--no-smoke", "--install", "--dry-run"], { DEVKIT_SIMULATE_MISSING: "ffmpeg" });
+  assert.equal(r.ok, false);
+  assert.equal(r.status, 1);
+  assert.ok(r.missing.includes("ffmpeg/ffprobe"));
+  assert.ok(r.actions.some((a) => a.step === "ffmpeg"));
+  // com um gerenciador de pacotes disponivel o plano nomeia o ffmpeg; sem nenhum, devolve a dica manual
+  const ffAction = r.actions.find((a) => a.step === "ffmpeg");
+  assert.ok(r.planned.some((c) => /ffmpeg/.test(c)) || /\S/.test(ffAction.hint || ""), "plano ou dica manual");
+  assert.ok(r.planned.every((c) => !/rm |del /.test(c)));
+});
+
+test("doctor: sem --install nao instala nem altera nada (so verifica)", () => {
+  const r = doctorJson(["--no-smoke"], { DEVKIT_SIMULATE_MISSING: "ffmpeg" });
+  assert.equal(r.ok, false);
+  assert.deepEqual(r.actions, []);
+  assert.deepEqual(r.planned, []);
+});
+
+test("render-seek sem ffmpeg para ANTES de abrir o navegador e diz o comando exato", () => {
+  const res = spawnSync(process.execPath, [RENDER, join(root, "skills", "86-code-motion-film", "assets", "example", "index.html"), "--stills", "0", "--stills-dir", join(tmpdir(), "nao-deve-existir-rs")], { encoding: "utf8", env: { ...process.env, DEVKIT_SIMULATE_MISSING: "ffmpeg" } });
+  assert.equal(res.status, 1);
+  assert.match(res.stderr, /Faltam dependencias do render: ffmpeg\/ffprobe/);
+  assert.match(res.stderr, /doctor\.mjs" --install|doctor\.mjs --install/);
+  assert.ok(!existsSync(join(tmpdir(), "nao-deve-existir-rs")));
+});
+
+test("doctor completo: tudo presente => ok e prova com um render de verdade", { skip: skipRender, timeout: 240000 }, () => {
+  const r = doctorJson([]);
+  assert.equal(r.ok, true, JSON.stringify(r).slice(0, 600));
+  assert.equal(r.smoke.ok, true);
+  assert.match(r.smoke.detail, /MP4 verificado com ffprobe/);
+  assert.equal(r.state.chromium.ok, true);
 });

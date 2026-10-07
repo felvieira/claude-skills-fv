@@ -14,25 +14,34 @@
  * `/_lib/motion.mjs` aponta para scripts/motion.mjs desta skill (file:// bloqueia modulos no Chromium,
  * entao um servidor local efemero serve a pasta da pagina).
  *
- * Requisitos: ffmpeg no PATH e o pacote `playwright` com Chromium (npm i -D playwright && npx playwright
- * install chromium). Se estiver em outro lugar: PLAYWRIGHT_DIR=<pasta que contem node_modules/playwright>.
+ * Requisitos: ffmpeg/ffprobe, o pacote `playwright` e o Chromium dele. NAO precisa instalar a mao: rode
+ *   node doctor.mjs --install      (verifica, instala o que falta e prova com um render de verdade)
+ * O render-seek confere tudo antes de comecar e, se faltar algo, diz exatamente esse comando. O Playwright
+ * e procurado em PLAYWRIGHT_DIR, na pasta de ferramentas do kit (~/.dev-team-kit/motion-tools), no projeto e aqui.
  */
 import { spawn, spawnSync } from "node:child_process";
 import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
-import { createRequire } from "node:module";
 import { dirname, extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { allOk, checkDeps, findPlaywright, isMissingBrowserError, missing } from "./deps.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webp": "image/webp" };
 
 export function loadPlaywright() {
-  const bases = [process.env.PLAYWRIGHT_DIR, process.cwd(), here].filter(Boolean);
-  for (const base of bases) {
-    try { return createRequire(join(resolve(base), "noop.js"))("playwright"); } catch { /* proxima base */ }
-  }
-  throw new Error("Pacote `playwright` nao encontrado. Instale: npm i -D playwright && npx playwright install chromium (ou defina PLAYWRIGHT_DIR).");
+  const found = findPlaywright();
+  if (!found) throw new Error(`Pacote \`playwright\` nao encontrado. Rode: node ${join(here, "doctor.mjs")} --install`);
+  return found.module;
+}
+
+/** Garante ffmpeg, Playwright e Chromium ANTES de gastar tempo; senao diz exatamente o que rodar. */
+export function preflight() {
+  const state = checkDeps();
+  if (allOk(state)) return state;
+  const err = new Error(`Faltam dependencias do render: ${missing(state).join(", ")}.\nInstale e valide com: node ${join(here, "doctor.mjs")} --install`);
+  err.code = "DEPS_MISSING";
+  throw err;
 }
 
 export function serve(root) {
@@ -70,9 +79,18 @@ async function main() {
   for (const [k, val] of new URLSearchParams(v("--query", ""))) params.set(k, val);
   const query = params.toString();
 
+  const deps = preflight();
+  const FFMPEG = deps.ffmpeg.ffmpeg.cmd;
   const { chromium } = loadPlaywright();
   const { server, port } = await serve(dirname(pagePath));
-  const browser = await chromium.launch();
+  let browser;
+  try {
+    browser = await chromium.launch();
+  } catch (e) {
+    server.close();
+    if (isMissingBrowserError(e.message)) throw new Error(`O Chromium do Playwright nao esta instalado por completo.\nInstale e valide com: node ${join(here, "doctor.mjs")} --install`);
+    throw e;
+  }
   try {
     const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
     page.on("pageerror", (e) => { console.error(`erro na pagina: ${e.message}`); process.exitCode = 1; });
@@ -81,7 +99,8 @@ async function main() {
 
     if (v("--stills")) {
       const times = v("--stills").split(",").map(Number).filter(Number.isFinite);
-      const dir = resolve(v("--stills-dir", pagePath.replace(/\.html?$/i, "") + "-stills"));
+      // padrao: ./motion-stills no diretorio de trabalho (nunca ao lado da pagina: assets/ nao e lugar de saida)
+      const dir = resolve(v("--stills-dir", "motion-stills"));
       mkdirSync(dir, { recursive: true });
       const files = [];
       for (const [k, t] of times.entries()) {
@@ -99,7 +118,7 @@ async function main() {
         const stack = `${files.map((_, k) => `[s${k}]`).join("")}xstack=inputs=${files.length}:layout=${files.map((_, k) => `${(k % cols) * 640}_${Math.floor(k / cols) * Math.round((640 * height) / width)}`).join("|")}[o]`;
         // xstack exige 2+ entradas: com um quadro so, apenas reduz
         const filter = files.length === 1 ? ["-vf", "scale=640:-1"] : ["-filter_complex", `${scaled};${stack}`, "-map", "[o]"];
-        const r = spawnSync("ffmpeg", ["-y", "-loglevel", "error", ...inputs, ...filter, "-frames:v", "1", resolve(v("--sheet"))], { encoding: "utf8" });
+        const r = spawnSync(FFMPEG, ["-y", "-loglevel", "error", ...inputs, ...filter, "-frames:v", "1", resolve(v("--sheet"))], { encoding: "utf8" });
         if (r.status !== 0) console.error(`folha falhou: ${r.stderr}`); else console.log(`folha: ${resolve(v("--sheet"))} (${cols}x${rows})`);
       }
       return;
@@ -109,7 +128,7 @@ async function main() {
     if (!out) { console.error("Faltou --out film.mp4 (ou use --stills)."); process.exit(2); }
     const frames = Math.round(duration * fps);
     const audio = v("--audio");
-    const ff = spawn("ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps), "-i", "-", ...(audio ? ["-i", resolve(audio)] : []), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-movflags", "+faststart", ...(audio ? ["-c:a", "aac", "-shortest"] : []), resolve(out)], { stdio: ["pipe", "inherit", "inherit"] });
+    const ff = spawn(FFMPEG, ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps), "-i", "-", ...(audio ? ["-i", resolve(audio)] : []), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-movflags", "+faststart", ...(audio ? ["-c:a", "aac", "-shortest"] : []), resolve(out)], { stdio: ["pipe", "inherit", "inherit"] });
     const done = new Promise((ok, fail) => { ff.on("close", (c) => (c === 0 ? ok() : fail(new Error(`ffmpeg saiu com ${c}`)))); ff.on("error", fail); });
     for (let f = 0; f < frames; f++) {
       await page.evaluate((t) => window.seek(t), f / fps);

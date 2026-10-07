@@ -13,7 +13,7 @@
         "repo": "felvieira/claude-skills-fv"
       },
       "description": "85 specialist skills + 16 dispatchable subagents + 47 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, growth, retention, observability, detective-spec, static-analysis and more. Spec-driven development (/constitution, /analyze, /checklist), path-scoped rules, anti-AI writing (/humanize), persistent memory with learned-skills (accepted/rejected states, freshness, post-compaction recovery, Codex/Grok memory profile), and a skills-vs-agents disambiguation hook. Release notes live in CHANGELOG.md, not here.",
-      "version": "2.94.0",
+      "version": "2.95.0",
       "category": "development",
       "tags": [
         "skills",

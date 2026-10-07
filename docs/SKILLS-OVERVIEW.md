@@ -9,7 +9,7 @@
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
 > **Versão:** 85 skills, 16 subagents, 47 slash commands, 64 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-07 (v2.94.0 — skills 85 Illustration Studio e 86 Code Motion Film)
+> **Última atualização:** 2026-10-07 (v2.95.0 — skill 86 verifica e instala as dependências do render)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---

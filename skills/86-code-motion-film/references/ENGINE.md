@@ -33,6 +33,12 @@ node scripts/render-seek.mjs film/index.html --stills 2.5 --stills-dir a && node
 # os dois PNG devem ter o mesmo hash
 ```
 
+## Dependências (verificar e instalar)
+
+`node scripts/doctor.mjs` confere e prova (render real de 3 quadros); `--install` instala o que faltar (Playwright na pasta de ferramentas do kit, Chromium no cache do
+Playwright, ffmpeg pelo gerenciador do sistema). Variáveis: `PLAYWRIGHT_DIR` (pasta com `node_modules/playwright`), `DEVKIT_TOOLS_DIR` (pasta de ferramentas),
+`PLAYWRIGHT_BROWSERS_PATH` (cache dos navegadores). Ordem de busca do pacote: `PLAYWRIGHT_DIR` → pasta de ferramentas → projeto atual → pasta da skill.
+
 ## Custo
 
 Quadro a quadro com screenshot PNG: o exemplo (640×360, 144 quadros) renderiza em torno de 8 s nesta máquina; 1080p a 60 fps
