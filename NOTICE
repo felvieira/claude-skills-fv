@@ -507,3 +507,19 @@ vshulcz/deja-vu
   the command-warning hook (the project's own measurement found it did not
   change outcomes), the Go binary, the multi-harness parsers and the embedding
   sidecar. The retention numbers quoted from its README were not verified here.
+
+kaventro/motion-designer
+  https://github.com/kaventro/motion-designer
+  License: MIT
+  Idea-level inspiration, no code or text copied. Inspired in skill 86
+  (skills/86-code-motion-film/): the determinism verifier
+  scripts/check-film.mjs (static scan for clocks/timers/randomness/CSS
+  animation, seek-order independence, loop closure), the audio analysis
+  scripts/beats.mjs (tempo, downbeat, per-bar energy, drops, whole-bar
+  cuts), the clean-context reviewer protocol with per-dimension scores and
+  the failure catalogue in references/REVISORES.md, the motion vocabulary in
+  references/VOCABULARIO.md, the supersampling and range/tile options of
+  scripts/render-seek.mjs and the rights checklist in references/SHIP.md.
+  All implementations and texts were written independently. Not adopted:
+  the device-frame templates, the SF Symbols/asset packers, the local
+  voice and music generation models and the single-file bundler.

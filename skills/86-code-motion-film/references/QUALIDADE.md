@@ -25,9 +25,10 @@ ver a folha de quadros. Cada item é verificável olhando um quadro parado.
 
 ## Como chegar lá (ordem)
 
+0. **Determinismo primeiro**: `check-film.mjs` sem falhas; sem isso a folha de quadros pode enganar.
 1. **Brief de diretor** (`PADRAO.md`, camada T2) com paleta, fontes, regra de câmera, proibidos e mapa de batidas; `brief-lint --strict` passa.
 2. **Cenas como funções** `draw(tempoLocal, tempoGlobal)` sobre `createStage` (`skills/86-code-motion-film/scripts/stage.mjs`): `letters()`, `typed()`, `camera()`, `frame()` com corte, clarão e grão já prontos.
-3. **Primeira folha** com 12–18 quadros: dois por cena (entrada e assentado) mais o primeiro e o último. Pontue com a régua acima.
+3. **Primeira folha** (revisores com notas por dimensão: `REVISORES.md`) com 12–18 quadros: dois por cena (entrada e assentado) mais o primeiro e o último. Pontue com a régua acima.
 4. **Corrija pelo pior item**, renderize os mesmos quadros e repita. O Relay precisou de duas rodadas: terminal pequeno demais (critério 1), câmera cortando o cartão (5) e marca final sem tempo para ser lida (6).
 5. **Trilha**: `audio-synth.mjs --score partitura.json` (`drums`, `clap`, `bass` por faixa de batidas; `events`: impact, riser, click, type, whoosh, chime, clap).
 6. **Render final** com `--blur 4 --audio`; `ffprobe` confirma duração, resolução e faixa de áudio.

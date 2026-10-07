@@ -158,6 +158,12 @@
     "skills": ["84-ai-video-direction"]
   },
   {
+    "name": "music cut and determinism check route to code motion film",
+    "prompt": "descobre o bpm e o drop da musica para cortar o filme na batida e verificar determinismo do filme",
+    "plugins": ["ai-integration"],
+    "skills": ["86-code-motion-film"]
+  },
+  {
     "name": "icon set request routes to illustration studio",
     "prompt": "preciso de um conjunto de icones svg para o app, com traco de 2px e uma cor de destaque",
     "plugins": ["design-quality"],

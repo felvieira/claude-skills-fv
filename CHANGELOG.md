@@ -600,6 +600,26 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.99.0] - 2026-10-07
+
+Skill 86 ganha o que o repositório kaventro/motion-designer (MIT) fazia melhor: provar o determinismo, escutar a trilha e revisar com disciplina. Implementações e textos próprios; nada copiado (`NOTICE`).
+
+### Adicionado
+
+- **`scripts/check-film.mjs`**: verifica em 4 passos que um filme `seek(t)` é função pura do tempo: fonte sem relógio, timer, `Math.random` nem animação CSS (comentários não acusam); nenhum erro de página a cada 0,1 s; o mesmo instante dá o mesmo quadro em qualquer ordem de seek; o loop fecha (o quadro **depois** do último iguala o primeiro, com tolerância para o grão). Os três exemplos do repo passam; estado preso, loop aberto e erro de página são pegos por fixtures.
+- **`scripts/beats.mjs`**: `analyze` acha andamento (autocorrelação do fluxo espectral em log + pente de batidas), fase (pelo grave quando o bumbo é consistente, com compensação de latência da janela), tempo forte, energia por compasso e levantadas/quedas; `cut` corta compassos inteiros com fades de 8 ms e duração exata. Testado em 3 andamentos sintéticos (erro de fase abaixo de 40 ms) e no corte (8,732041 s contra 8,732036 s).
+- **`references/REVISORES.md`**: protocolo de revisão com contexto limpo (despacho, folhas, relatório com 7 notas e catálogo de 12 falhas), regra de tempo de leitura, entregáveis de render (loop mudo, poster, cópia menor).
+- **`references/VOCABULARIO.md`**: chegar, assentar, sair, encaixar, deslizar, derivar; objeto-relé; cor de destaque com um só significado; pausas em batidas inteiras; transições a partir do produto; armadilhas.
+- `render-seek`: `--stills de:até:passo` (faixas), `--tile N` (miniaturas do tamanho de um celular) e `--scale N` (supersampling com redução lanczos).
+- `references/SHIP.md`: checklist de direitos (música, voz, marcas, dados, funcionalidades, prévia de loja). `references/SOUND.md`: fluxo com `beats.mjs`. `references/GOTCHAS.md`: lista completa (o `SKILL.md` ficou com as 5 que mais custaram e voltou a 27/30 no `skill-quality-score`).
+- 6 testes novos (`scripts/tests/skill-86-film-tools.test.mjs`, no CI) e um eval de roteamento.
+
+### Corrigido
+
+- Autocorrelação do `beats.mjs` lia um índice além do vetor (`NaN`), o andamento saía 0 e o refino entrava em laço infinito; encontrado ao testar e coberto por teste.
+
+---
+
 ## [2.98.0] - 2026-10-07
 
 Skill 84 (direção de vídeo com IA) ganha o passo que faltava antes do prompt: transformar uma ideia ou produto num pacote com fatos verificados. Material-base: seis documentos do usuário (motor de briefing, guias de storytelling e de prompt, plano de produção revisado), reescritos aqui com texto próprio.

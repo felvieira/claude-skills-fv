@@ -28,7 +28,15 @@ Escolha B quando há equipe/reuso, timeline longa com muitas cenas ou componente
 **Remotion** (React). Peça explicitamente: sem isso o modelo prefere a rota A. Se o ambiente tiver a skill do framework
 (`hyperframes`, `remotion-best-practices`), use-a para a estrutura e use `motion.mjs` (molas, batidas) como biblioteca.
 
-## Determinismo — checagem
+## Determinismo — verificador
+
+```bash
+node skills/86-code-motion-film/scripts/check-film.mjs film/index.html          # fonte limpa, sem erro de página, mesmo quadro em qualquer ordem, loop fechado (--no-loop se não é loop)
+```
+
+Ele falha com a lista do que achou. Rode antes de gastar render e depois de cada correção.
+
+## Determinismo — checagem manual
 
 ```bash
 node scripts/render-seek.mjs film/index.html --stills 2.5 --stills-dir a && node scripts/render-seek.mjs film/index.html --stills 2.5 --stills-dir b

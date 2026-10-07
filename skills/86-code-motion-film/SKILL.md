@@ -12,7 +12,8 @@ description: |
   "showreel", "vídeo de lançamento", "launch video", "vídeo de produto em código", "mola fechada",
   "renderizar html em mp4", "playwright ffmpeg vídeo", "trilha sintetizada", "animação determinística",
   "critique loop de vídeo", "motion reel", "film from code", "code-rendered video",
-  "prompt-motion", "brief de diretor", "reproduzir vídeo de motion", "padrão de brief de motion".
+  "prompt-motion", "brief de diretor", "reproduzir vídeo de motion", "padrão de brief de motion",
+  "verificar determinismo do filme", "bpm da música", "cortar trilha no compasso", "drop da música", "revisores de vídeo".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *), Bash(ffmpeg *), Bash(ffprobe *)
 metadata:
   argument-hint: "<ideia ou URL do produto> [duração] [formato 16:9|9:16|1:1] [referência]"
@@ -24,9 +25,6 @@ metadata:
 O modelo não emite MP4: escreve um programa, e outra coisa transforma o programa em quadros. O que
 separa o clipe "meio sem graça" do bom é o harness em volta: um motor determinístico, referência, molas
 com massa, som no mesmo relógio e um laço em que o modelo **olha os próprios quadros**.
-
-> Origem das ideias: artigo "How to build motion design studio with Opus 5.5" (Movez, set/2026), mais o que
-> quebrou ao reimplementar aqui. As partes de código desta skill são nossas e estão testadas.
 
 ## Governança Global
 
@@ -97,9 +95,11 @@ node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, 
 | 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
 | 2c Padrão | `references/PADRAO.md` | camadas T0–T3, anatomia do brief de diretor, blocos reutilizáveis, como reproduzir uma entrada; índice em `references/INDICE-GALERIA.md` |
 | 2d Qualidade | `references/QUALIDADE.md` | o piso de entrega: régua de 11 critérios e o filme de referência `assets/example-launch` (usa `skills/86-code-motion-film/scripts/stage.mjs`) |
+| 3b Vocabulário | `references/VOCABULARIO.md` | chegar, assentar, sair, encaixar, deslizar, derivar; objeto-relé; pausas; transições a partir do produto |
 | 3 Molas | `references/SPRINGS.md` | preset por papel, uma mola por mudança de alvo, `track()` |
 | 4 Som | `references/SOUND.md` | trilha fornecida (medir) ou sintetizada na mesma linha do tempo; cortes em BPM |
-| 5 Crítica | `references/CRITIQUE.md` | quadros-chave → nota → três piores → corrigir, até 8+ |
+| 4b Determinismo | `skills/86-code-motion-film/scripts/check-film.mjs` | prova que o filme é função de `t` antes de olhar quadros |
+| 5 Crítica | `references/CRITIQUE.md`, `references/REVISORES.md` | quadros-chave → revisores com notas → catálogo de falhas → corrigir, até 8+ |
 | 6 Entrega | `references/SHIP.md` | formatos pelo layout, poster, README, empacotar como skill |
 
 Ordem: 0 → 1 → 2 → 3 → 4 → 5 (repete) → 6. Esforço alto (xhigh/max) para filme novo; médio para correção e re-render.
@@ -115,6 +115,17 @@ node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --stills
 
 # trilha sintetizada travada em 120 BPM, com tick nos cortes
 node skills/86-code-motion-film/scripts/audio-synth.mjs --bpm 120 --seconds 6 --cuts 0,1.5,3,4.5 --out score.wav
+
+# prova de determinismo (fonte limpa, sem erro, mesmo quadro em qualquer ordem, loop fechado)
+node skills/86-code-motion-film/scripts/check-film.mjs film/index.html          # --no-loop se o filme não é loop
+
+# escutar uma trilha: andamento, compasso 1, drops; e cortar compassos inteiros
+node skills/86-code-motion-film/scripts/beats.mjs analyze trilha.mp3
+node skills/86-code-motion-film/scripts/beats.mjs cut trilha.mp3 --bpm 110 --bar1 0.30 --bars 3-10 --out corte.wav
+
+# revisão: faixa de quadros (de:até:passo), miniaturas do tamanho de um celular, supersampling
+node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --stills 3.7:4.3:0.05 --sheet qa/corte.png --tile 360
+node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --size 1920x1080 --scale 2 --blur 4 --audio score.wav --out out/film.mp4
 
 # trilha com partitura (bateria por faixa de batidas, riser/impacto/clique/digitação em segundos) e render final com motion blur
 node skills/86-code-motion-film/scripts/audio-synth.mjs --score score.json --out score.wav
@@ -146,24 +157,13 @@ Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mj
 
 ## Gotchas
 
-Falhas vistas construindo o exemplo desta skill:
+Lista completa em `references/GOTCHAS.md`. As que mais custaram:
 
 - **Canvas com tamanho fixo × viewport diferente**: a forma saiu fora do centro e o MP4 "rodou sem erro". Só a folha de quadros mostrou.
-  A página lê `?w=&h=` (o `render-seek` passa o de `--size`) e cai para `innerWidth/innerHeight`, nunca um número fixo.
 - **`file://` bloqueia `import` de módulo no Chromium**: por isso o renderizador serve a pasta numa porta local efêmera e mapeia `/_lib/` para `scripts/`.
-- **Sobreposição nas trocas de estado**: rótulo ainda visível por baixo do spinner em t=1,6 e spinner sobrando por baixo do rótulo seguinte em t=3,1.
-  Escalone entradas e saídas (rótulo some → spinner entra; spinner sai → rótulo entra) e use mola de texto rápida e crítica.
-- **`xstack` do ffmpeg exige 2+ entradas**: folha de um quadro só precisa de caminho próprio (`-vf scale`).
 - **"Chromium ok" não é "Chromium abre"**: o Playwright novo usa um *headless shell* separado e uma instalação interrompida deixa só o executável completo.
-  O `doctor` decide por **abrir o navegador**, não por o arquivo existir.
-- **`Unable to update lock ... __dirlock`** derruba o `playwright install` no meio (visto no Windows, em disco secundário): o doctor remove o lock obsoleto e tenta de novo (até 3 vezes).
-- **O Node acha `node_modules` de pastas-pai**, então um Playwright global esconde a falta do pacote no projeto. `PLAYWRIGHT_DIR` e a pasta de ferramentas são resolvidos
-  de forma estrita (a pasta tem de conter `node_modules/playwright`).
-- **Cor com `NaN` não dá erro: o canvas ignora o `fillStyle` e usa o anterior.** Na animação de receita o líquido ficou invisível (desenhado na cor do papel) porque uma função de mistura recebeu um array onde esperava hex. Só a folha de quadros mostrou. Funções de cor aceitam hex **ou** [r,g,b], e vale conferir um pixel.
-- **Sinal invertido na altura de uma camada** fez um cubo de gelo atravessar o fundo do copo; e camadas de líquido têm de somar a altura do copo. Confira o último quadro de cada etapa.
-- **Reproduzir um pedido curto da galeria não é copiar a frase**: 92% das entradas são frases de uma linha (30 delas a mesma). Escreva um brief próprio na camada certa (`PADRAO.md`) e verifique com `brief-lint`.
+- **Filme que muda conforme a ordem do seek engana a folha de quadros.** `check-film.mjs` pega estado preso, loop aberto e erro de página antes de qualquer olhar. Loop é "o quadro **depois** do último (`t = DURATION`) igual ao primeiro", não "o último quadro": um pulso preso à batida difere no último quadro por construção e só recomeça no primeiro.
 - **Render que roda não é filme bom.** Os dois primeiros exemplos eram provas de pipeline: texto médio, sem câmera, nada que alguém mostraria. Meça pela régua de `references/QUALIDADE.md` e parta do `assets/example-launch`.
-- **Sem esforço alto o resultado vira "texto centralizado em gradiente"**: dê referência e peça os quadros-chave antes do código final.
 
 ## Evidencia de Conclusao
 
@@ -183,3 +183,9 @@ do quadro de capa), 13/50 (texto na tela), 12 (se a cena virar animação dentro
 
 Entra depois do posicionamento (01/13) quando a entrega é um filme; o orchestrator (09) pode chamá-la. Mantenha
 uma sessão por marca: o motor, a síntese de áudio e a exportação já existem na segunda peça.
+
+## Fontes
+
+- Artigo "How to build motion design studio with Opus 5.5" (Movez, set/2026), mais o que quebrou ao reimplementar aqui; as partes de código desta skill são nossas e estão testadas.
+- Galeria prompt-motion.com: só o padrão destilado entra no repo; os textos ficam na biblioteca local (`references/PADRAO.md`).
+- https://github.com/kaventro/motion-designer (MIT): inspirou o verificador de determinismo, a análise de andamento e drops, os revisores com notas e o vocabulário de movimento. Nada foi copiado (`NOTICE`).

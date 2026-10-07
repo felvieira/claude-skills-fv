@@ -15,6 +15,11 @@ O hábito que mais separa o clipe bom do "meio sem graça": o modelo lê imagens
 
 Pontue com os 11 critérios de `QUALIDADE.md` (escala, uma cor de destaque, peso tipográfico, detalhe de interface, câmera, cortes na batida, fundo que respira, movimento com intenção, grão e blur, som, ciclo fechado). "Funciona" não é nota 8.
 
+## Quem olha
+
+Para filmes de mais de uns 10 s, delegue a leitura dos quadros a revisores com contexto limpo, com notas por dimensão e catálogo de falhas: `REVISORES.md`.
+Antes de olhar, prove o determinismo com `skills/86-code-motion-film/scripts/check-film.mjs`.
+
 ## O que procurar
 
 Sobreposições nas trocas de estado, elementos fora do centro/da área segura, texto cortado, contraste, quadro 0 ≠ quadro final em loop,

@@ -6,8 +6,9 @@
  * quadro e editar uma linha + renderizar de novo.
  *
  *   node render-seek.mjs <pagina.html> --out film.mp4 [--duration 3] [--fps 30] [--size 1280x720]
- *                        [--audio trilha.wav] [--query "w=1080&h=1920"] [--blur 4 [--shutter 0.5]]
- *   node render-seek.mjs <pagina.html> --stills 0,1.5,2.9 [--sheet folha.png] [--stills-dir dir]
+ *                        [--audio trilha.wav] [--query "w=1080&h=1920"] [--blur 4 [--shutter 0.5]] [--scale 2]
+ *   node render-seek.mjs <pagina.html> --stills 0,1.5,2.9 [--sheet folha.png] [--stills-dir dir] [--tile 640]
+ *                        # faixas: --stills 11.8:13.4:0.05 (de:ate:passo); --tile 360 = miniaturas do tamanho de um celular
  *                        # so alguns quadros (critique loop): PNGs + folha de contato em uma imagem so
  *
  * A pagina pode exportar `window.DURATION` (s) e `window.ready` (Promise). Imports de modulo locais:
@@ -65,17 +66,33 @@ async function openPage(page, port, file, query) {
   if (!(await page.evaluate(() => typeof window.seek === "function"))) throw new Error("A pagina precisa expor window.seek(t).");
 }
 
+/** "0,1.5,2.9" e/ou faixas "11.8:13.4:0.05" (inclusive nas pontas) -> lista de instantes. */
+export function parseTimes(spec) {
+  const out = [];
+  for (const tok of String(spec).split(",").filter(Boolean)) {
+    if (tok.includes(":")) {
+      const [a, b, st = 0.05] = tok.split(":").map(Number);
+      if (![a, b, st].every(Number.isFinite) || st <= 0 || b < a) continue;
+      for (let i = 0; a + i * st <= b + 1e-9; i++) out.push(Math.round((a + i * st) * 1e6) / 1e6);
+    } else if (Number.isFinite(Number(tok))) out.push(Number(tok));
+  }
+  return out;
+}
+
 async function main() {
   const a = process.argv.slice(2);
   const v = (n, d) => { const i = a.indexOf(n); return i !== -1 ? a[i + 1] : d; };
-  const pageArg = a.find((x, i) => !x.startsWith("--") && !["--out", "--duration", "--fps", "--size", "--audio", "--query", "--stills", "--sheet", "--stills-dir", "--blur", "--shutter"].includes(a[i - 1]));
+  const pageArg = a.find((x, i) => !x.startsWith("--") && !["--out", "--duration", "--fps", "--size", "--audio", "--query", "--stills", "--sheet", "--stills-dir", "--blur", "--shutter", "--tile", "--scale"].includes(a[i - 1]));
   if (!pageArg) { console.error("Uso: render-seek.mjs <pagina.html> --out film.mp4 | --stills 0,1.5 [--sheet folha.png]"); process.exit(2); }
   const pagePath = resolve(pageArg);
   if (!existsSync(pagePath)) { console.error(`Nao encontrei ${pagePath}`); process.exit(2); }
   const [width, height] = String(v("--size", "1280x720")).split("x").map(Number);
   const fps = Number(v("--fps", 30));
+  // --scale N: supersampling. A pagina desenha em N vezes o tamanho e o ffmpeg reduz (texto pequeno nao cintila).
+  const scale = Math.max(1, Math.min(4, Number(v("--scale", 1)) || 1));
+  const rw = Math.round(width * scale), rh = Math.round(height * scale);
   // w/h sempre na URL (a pagina desenha para o tamanho do quadro); --query acrescenta/sobrepoe
-  const params = new URLSearchParams(`w=${width}&h=${height}`);
+  const params = new URLSearchParams(`w=${rw}&h=${rh}`);
   for (const [k, val] of new URLSearchParams(v("--query", ""))) params.set(k, val);
   const query = params.toString();
 
@@ -92,13 +109,13 @@ async function main() {
     throw e;
   }
   try {
-    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+    const page = await browser.newPage({ viewport: { width: rw, height: rh }, deviceScaleFactor: 1 });
     page.on("pageerror", (e) => { console.error(`erro na pagina: ${e.message}`); process.exitCode = 1; });
     await openPage(page, port, pagePath.slice(dirname(pagePath).length + 1).replace(/\\/g, "/"), query);
     const duration = Number(v("--duration", await page.evaluate(() => window.DURATION || 3)));
 
     if (v("--stills")) {
-      const times = v("--stills").split(",").map(Number).filter(Number.isFinite);
+      const times = parseTimes(v("--stills"));
       // padrao: ./motion-stills no diretorio de trabalho (nunca ao lado da pagina: assets/ nao e lugar de saida)
       const dir = resolve(v("--stills-dir", "motion-stills"));
       mkdirSync(dir, { recursive: true });
@@ -112,12 +129,13 @@ async function main() {
       }
       console.log(`${files.length} quadro(s) em ${dir}`);
       if (v("--sheet")) {
+        const tile = Math.max(120, Number(v("--tile", 640)) || 640); // --tile 360 = largura de um celular no feed
         const cols = Math.min(files.length, 3), rows = Math.ceil(files.length / cols);
         const inputs = files.flatMap((f) => ["-i", f]);
-        const scaled = files.map((_, k) => `[${k}:v]scale=640:-1[s${k}]`).join(";");
-        const stack = `${files.map((_, k) => `[s${k}]`).join("")}xstack=inputs=${files.length}:layout=${files.map((_, k) => `${(k % cols) * 640}_${Math.floor(k / cols) * Math.round((640 * height) / width)}`).join("|")}[o]`;
+        const scaled = files.map((_, k) => `[${k}:v]scale=${tile}:-1[s${k}]`).join(";");
+        const stack = `${files.map((_, k) => `[s${k}]`).join("")}xstack=inputs=${files.length}:layout=${files.map((_, k) => `${(k % cols) * tile}_${Math.floor(k / cols) * Math.round((tile * height) / width)}`).join("|")}[o]`;
         // xstack exige 2+ entradas: com um quadro so, apenas reduz
-        const filter = files.length === 1 ? ["-vf", "scale=640:-1"] : ["-filter_complex", `${scaled};${stack}`, "-map", "[o]"];
+        const filter = files.length === 1 ? ["-vf", `scale=${tile}:-1`] : ["-filter_complex", `${scaled};${stack}`, "-map", "[o]"];
         const r = spawnSync(FFMPEG, ["-y", "-loglevel", "error", ...inputs, ...filter, "-frames:v", "1", resolve(v("--sheet"))], { encoding: "utf8" });
         if (r.status !== 0) console.error(`folha falhou: ${r.stderr}`); else console.log(`folha: ${resolve(v("--sheet"))} (${cols}x${rows})`);
       }
@@ -132,7 +150,8 @@ async function main() {
     // e combinadas pelo ffmpeg (tmix). Como seek(t) e pura, isso e exato: nenhum borrado "falso", so a media de instantes reais.
     const blur = Math.max(1, Math.min(16, Math.round(Number(v("--blur", 1)))));
     const shutter = Math.max(0.05, Math.min(1, Number(v("--shutter", 0.5))));
-    const vf = blur > 1 ? ["-vf", `tmix=frames=${blur},select='eq(mod(n,${blur}),${blur - 1})'`, "-r", String(fps), "-fps_mode", "cfr"] : [];
+    const chain = [...(scale > 1 ? [`scale=${width}:${height}:flags=lanczos`] : []), ...(blur > 1 ? [`tmix=frames=${blur}`, `select='eq(mod(n,${blur}),${blur - 1})'`] : [])];
+    const vf = chain.length ? ["-vf", chain.join(","), ...(blur > 1 ? ["-r", String(fps), "-fps_mode", "cfr"] : [])] : [];
     const ff = spawn(FFMPEG, ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps * blur), "-i", "-", ...(audio ? ["-i", resolve(audio)] : []), ...vf, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "17", "-movflags", "+faststart", ...(audio ? ["-c:a", "aac", "-shortest"] : []), resolve(out)], { stdio: ["pipe", "inherit", "inherit"] });
     const done = new Promise((ok, fail) => { ff.on("close", (c) => (c === 0 ? ok() : fail(new Error(`ffmpeg saiu com ${c}`)))); ff.on("error", fail); });
     for (let f = 0; f < frames; f++) {
@@ -146,7 +165,7 @@ async function main() {
     }
     ff.stdin.end();
     await done;
-    console.log(`${resolve(out)} — ${frames} quadros @ ${fps} fps (${(frames / fps).toFixed(2)} s), ${width}x${height}${blur > 1 ? `, motion blur ${blur} subquadros, obturador ${Math.round(shutter * 360)}°` : ""}`);
+    console.log(`${resolve(out)} — ${frames} quadros @ ${fps} fps (${(frames / fps).toFixed(2)} s), ${width}x${height}${blur > 1 ? `, motion blur ${blur} subquadros, obturador ${Math.round(shutter * 360)}°` : ""}${scale > 1 ? `, supersampling ${scale}x` : ""}`);
   } finally {
     await browser.close();
     server.close();
