@@ -12,6 +12,11 @@
 
 ### ✨ Novidades
 
+- **v2.100.0** — a skill 86 ganha guias de decisão (tipos de filme, seis estilos com movimento-assinatura, efeitos como funções puras em `fx.mjs`, tabela de ações por agente).
+- **v2.99.0** — a skill 86 prova que um filme é determinístico (`check-film.mjs`), escuta uma trilha atrás de andamento, tempo forte e drops e corta compassos inteiros (`beats.mjs`), e revisa quadros com revisores de contexto limpo que dão notas em sete dimensões.
+- **v2.98.0** — a skill 84 ganha um motor de briefing (ideia → fatos verificados → pacote de planos; o `briefing-qa.mjs` reprova número sem fonte) e dez modelos de prompt por tipo de clipe.
+- **v2.97.0** — a skill 86 traz um filme de referência em 1080p ("Relay") e uma régua de qualidade, com motion blur e trilha com partitura.
+
 Veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico completo de versões.
 
 **Como usar:** ver [`docs/quickstart.md`](docs/quickstart.md) com os 4 cenários (gerar imagem CLI, swarm com geração automática, bootstrap do template, adapters em runtime).
@@ -344,6 +349,14 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 | 70 | **Campaign Research Strategy** | pesquisa mercado, concorrentes, público e voz do consumidor pra formar base estratégica verificável antes de copy ou direção visual — produz evidence ledger, claims autorizados, oportunidades priorizadas e guardrails |
 | 71 | **Campaign Copywriting** | transforma uma estratégia de pesquisa com evidence ledger em rotas de copy rastreáveis, distintas e adequadas ao canal — nunca repesquisa, nunca inventa claim |
 | 72 | **Campaign Visual Direction** | converte estratégia e copy aprovadas em conceito visual, bíblia de continuidade, papéis de referência e shot intents estruturados — separa referência de identidade de referência de linguagem, reserva texto/UI pra overlays determinísticos |
+
+### Vídeo com IA, Ilustração e Motion Renderizado em Código
+
+| # | Skill | O que faz |
+|---|---|---|
+| 84 | **AI Video Direction** | dirige uma produção de vídeo gerado por IA de ponta a ponta: história, scene engine e tarefas de atuação, folhas de personagem e placas de cenário, um prompt por clipe (Seedance via Higgsfield), QA quadro a quadro, reparo e pós (fala nativa, trilha por sequência, loudness). Desde a v2.98.0 começa por um **motor de briefing** (ideia → fatos verificados → pacote de planos; o `briefing-qa.mjs` reprova número, preço ou depoimento sem fonte) e traz dez modelos de prompt por tipo de clipe. Dinheiro só sai depois que cada etapa barata foi aprovada |
+| 85 | **Illustration Studio** | conjuntos de ícones e ilustrações consistentes em SVG, com linter (`svg-icon-lint.mjs`: paleta, contraste, peso de traço, pontos de ancoragem) e exportador (sprite, componentes React, folha de contato) que recusa um conjunto com erros |
+| 86 | **Code Motion Film** | filmes de motion design escritos como programa: a página expõe `seek(t)`, o Chromium headless captura cada quadro e o ffmpeg codifica, então o render é determinístico e corrigir é editar uma linha. Inclui doctor de dependências que instala e prova a pilha, molas em forma fechada, grade de batidas e trilha sintetizada, `check-film.mjs` (fonte limpa, mesmo quadro em qualquer ordem de seek, loop fechado), `beats.mjs` (andamento, tempo forte, drops, cortes em compassos inteiros), revisores de contexto limpo com notas, motion blur e supersampling, guias de tipo/estilo/efeito e um filme de referência em 1080p com régua de qualidade de 11 critérios. Os textos da galeria ficam numa biblioteca local, nunca no repositório |
 
 ---
 

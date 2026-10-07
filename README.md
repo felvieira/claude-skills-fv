@@ -16,6 +16,11 @@
 
 ### ✨ What's new
 
+- **v2.100.0** — skill 86 gets decision guides (film types, six styles with a signature move, pure-function effects in `fx.mjs`, per-agent action table).
+- **v2.99.0** — skill 86 can prove a film is deterministic (`check-film.mjs`), listen to a track for tempo, downbeat and drops and cut whole bars (`beats.mjs`), and review frames with clean-context reviewers that score seven dimensions.
+- **v2.98.0** — skill 84 gets a briefing engine (idea → verified facts → shot pack, `briefing-qa.mjs` rejects numbers without a source) and ten clip-type prompt templates.
+- **v2.97.0** — skill 86 ships a 1080p reference film ("Relay") and a quality bar, with motion blur and a scored soundtrack.
+
 See [`CHANGELOG.md`](CHANGELOG.md) for the full version history.
 
 ### 📖 Full Wiki — recommended starting point
@@ -360,6 +365,14 @@ The init script creates `~/.dev-team-kit/blog-config.json` so the skill knows wh
 | 70 | **Campaign Research Strategy** | researches market, competitors, audience and consumer voice to form a verifiable strategic base before copy or visual direction — produces an evidence ledger, authorized claims, prioritized opportunities and guardrails |
 | 71 | **Campaign Copywriting** | transforms a research strategy with evidence ledger into traceable, distinct, channel-appropriate copy routes — never re-researches, never invents claims |
 | 72 | **Campaign Visual Direction** | converts approved strategy and copy into visual concept, continuity bible, reference roles and structured shot intents — separates identity references from language references, reserves text/UI for deterministic overlays |
+
+### AI Video, Illustration and Code-Rendered Motion
+
+| # | Skill | What it does |
+|---|---|---|
+| 84 | **AI Video Direction** | directs a generated-video production end to end: story, scene engine and acting tasks, character sheets and location plates, one prompt per clip (Seedance via Higgsfield), frame-by-frame QA, repair and post (native speech, per-sequence score, loudness). Since v2.98.0 it starts from a **briefing engine** (idea → verified facts → shot pack; `briefing-qa.mjs` rejects any number, price or testimonial without a source) and ships ten clip-type prompt templates. Money is spent only after each cheap step is approved |
+| 85 | **Illustration Studio** | consistent icon sets and illustrations as SVG, with a linter (`svg-icon-lint.mjs`: palette, contrast, stroke weight, anchor points) and an exporter (sprite, React components, contact sheet) that refuses a set with errors |
+| 86 | **Code Motion Film** | motion-design films written as a program: the page exposes `seek(t)`, headless Chromium captures each frame and ffmpeg encodes it, so renders are deterministic and a fix is one edited line. Includes a dependency doctor that installs and proves the stack, closed-form springs, a beat grid and a synthesized score, `check-film.mjs` (clean source, same frame in any seek order, closed loop), `beats.mjs` (tempo, downbeat, drops, whole-bar cuts), clean-context reviewers with scores, motion blur and supersampling, film-type/style/effect guides and a 1080p reference film with an 11-point quality bar. Gallery texts stay in a local library, never in the repo |
 
 ---
 
