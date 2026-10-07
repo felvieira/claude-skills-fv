@@ -313,3 +313,171 @@ test("doctor completo: tudo presente => ok e prova com um render de verdade", { 
   assert.match(r.smoke.detail, /MP4 verificado com ffprobe/);
   assert.equal(r.state.chromium.ok, true);
 });
+
+// ================================================================== 86: padrao, biblioteca local e linter de brief
+import { analyze, classify, FEATURES, indexMarkdown, libDir, loadLibrary, parseEntry, searchEntries } from "../../skills/86-code-motion-film/scripts/prompt-motion.mjs";
+import { lintBrief } from "../../skills/86-code-motion-film/scripts/brief-lint.mjs";
+import { serve } from "../../skills/86-code-motion-film/scripts/render-seek.mjs";
+
+const SK = join(root, "skills", "86-code-motion-film");
+const BRIEF_LINT = join(SK, "scripts", "brief-lint.mjs");
+const errs = (r) => r.findings.filter((f) => f.level === "error").map((f) => f.rule);
+const readFileUtf8 = (p) => readFileSync(p, "utf8").replace(/^﻿/, "");
+
+test("prompt-motion: parseEntry le titulo, criador, tipo, modelo, esforco e o texto (DOM inventado, sem conteudo de ninguem)", () => {
+  const dom = {
+    title: "Pulsing dot study",
+    text: "All videos\nA\nAda Exemplo\n@ada_exemplo\nView post\n(opens in a new tab)\nPulsing dot study\nPrompt\nCopy\nmake a 12-second film about a pulsing dot.\nno gradients.\n\nThis prompt was taken directly from @ada_exemplo’s post\n(opens in a new tab)\n.\n\nModel\nOpus 5.5\nEffort\nHigh\nPosted\nOct 1, 2026",
+    links: [["View post", "https://x.com/ada_exemplo/status/123"]],
+    video: "https://media.example.invalid/v.mp4",
+  };
+  const e = parseEntry("ada-exemplo-aaaaaa", dom);
+  assert.equal(e.title, "Pulsing dot study");
+  assert.equal(e.creator, "Ada Exemplo");
+  assert.equal(e.handle, "ada_exemplo");
+  assert.equal(e.kind, "prompt");
+  assert.equal(e.model, "Opus 5.5");
+  assert.equal(e.effort, "High");
+  assert.equal(e.posted, "Oct 1, 2026");
+  assert.equal(e.prompt, "make a 12-second film about a pulsing dot.\nno gradients.");
+  assert.equal(e.post_url, "https://x.com/ada_exemplo/status/123");
+  const sk = parseEntry("x-bbbbbb", { title: "Pack", links: [["v", "https://x.com/z/status/9"]], text: "All videos\nZed\n@z\nPack\nSkill\nCopy\nA skill that does a thing.\n\nnpx skills add a/b\nCopy\nView repo\n\nModel\nOpus 5.5\nPosted\nOct 4, 2026" });
+  assert.equal(sk.kind, "skill");
+  assert.match(sk.prompt, /^A skill that does a thing/);
+});
+
+test("prompt-motion: camadas T0..T3 e skill sao decididas pela ESTRUTURA", () => {
+  const e = (prompt, kind = "prompt") => ({ kind, prompt, prompt_chars: prompt.length });
+  assert.equal(classify(e("make a 15 second reel, go all out")), "T0");
+  assert.equal(classify(e("x".repeat(400))), "T0", "texto longo sem estrutura continua T0");
+  assert.equal(classify(e("A skill.", "skill")), "skill");
+  assert.equal(classify(e("Make a film.\n\nRULES\n- no gradients\n- no glow\n- never use stock\n\nCRAFT\n- springs\n".padEnd(260, " "))), "T1");
+  const t2 = "<inputs>Ask me for X</inputs>\n<direction>Banned: a, b, c</direction>\n<structure>120 BPM</structure>\n<build>seek(t)</build>";
+  assert.equal(classify(e(t2)), "T2");
+  const t3 = `${t2}\n${"S1 f0–71 a. S2 f72–100 b. S3 f101–158 c. S4 f159–200 d. ".repeat(10)}`.padEnd(1600, " ");
+  assert.equal(classify(e(t3)), "T3");
+});
+
+test("prompt-motion: analyze conta camadas, duplicatas e caracteristicas; 'motion graphics' nao vira 'grafico/dados'", () => {
+  const mk = (slug, prompt, extra = {}) => ({ slug, kind: "prompt", prompt, prompt_chars: prompt.length, title: slug, handle: "h", effort: null, ...extra });
+  const lib = { synced_at: "2026-10-07T00:00:00Z", entries: [
+    mk("a", "make a dynamic 15-second motion graphics video, showreel, go all out"),
+    mk("b", "make a dynamic 15-second motion graphics video, showreel, go all out"),
+    mk("c", "a bar chart that draws itself in a dashboard"),
+    mk("d", "<inputs>Ask me for x</inputs><direction>Banned: a, b, c. one accent</direction><structure>120 BPM</structure><build>seek(t) closed-form springs, one HTML file, Playwright and ffmpeg</build>"),
+  ] };
+  const a = analyze(lib);
+  assert.equal(a.entradas, 4);
+  assert.equal(a.distintos, 3);
+  assert.equal(a.entradas_em_duplicata, 2);
+  assert.equal(a.maior_duplicata.copias, 2);
+  assert.equal(a.tiers.T2.n, 1);
+  const byName = (g, n) => a[g].find((x) => x.name === n)?.n ?? 0;
+  assert.equal(byName("estilo", "grafico/dados"), 1, "so a entrada do grafico de barras");
+  assert.equal(byName("duracao", "15 s"), 2);
+  assert.equal(byName("estilo", "showreel/reel"), 2);
+  assert.equal(byName("estrutura", "seek/deterministico"), 1);
+  assert.ok(Object.values(FEATURES).every((g) => g.every(([name, re]) => name && re instanceof RegExp)));
+});
+
+test("prompt-motion: busca por termos (sem acento) e indice sem NENHUM texto de prompt", () => {
+  const es = [
+    { slug: "a-111111", title: "Kinetic type reel", handle: "a", kind: "prompt", prompt: "tipografia cinetica ritmada", prompt_chars: 27, url: "u1", post_url: "p1" },
+    { slug: "b-222222", title: "Other", handle: "b", kind: "prompt", prompt: "nada a ver", prompt_chars: 10, url: "u2", post_url: "p2" },
+  ];
+  assert.deepEqual(searchEntries(es, ["cinética"]).map((e) => e.slug), ["a-111111"]);
+  assert.deepEqual(searchEntries(es, ["kinetic"]).map((e) => e.slug), ["a-111111"], "titulo conta");
+  assert.deepEqual(searchEntries(es, ["zzz"]), []);
+  const md = indexMarkdown({ synced_at: "2026-10-07T00:00:00Z", entries: es });
+  assert.match(md, /Kinetic type reel/);
+  assert.match(md, /\[@a\]\(https:\/\/x\.com\/a\)/);
+  assert.ok(!md.includes("tipografia cinetica ritmada"), "o indice nao pode conter o texto do prompt");
+});
+
+test("prompt-motion: a biblioteca fica FORA do repositorio (e respeita DEVKIT_PM_DIR)", () => {
+  const saved = process.env.DEVKIT_PM_DIR;
+  try {
+    delete process.env.DEVKIT_PM_DIR;
+    const dir = libDir();
+    assert.ok(!dir.startsWith(root), `biblioteca em ${dir} esta dentro do repo`);
+    assert.match(dir, /\.dev-team-kit/);
+    process.env.DEVKIT_PM_DIR = join(tmpdir(), "pm-x");
+    assert.equal(libDir(), join(tmpdir(), "pm-x"));
+    assert.deepEqual(loadLibrary().entries, [], "biblioteca inexistente = vazia, sem erro");
+  } finally {
+    if (saved === undefined) delete process.env.DEVKIT_PM_DIR; else process.env.DEVKIT_PM_DIR = saved;
+  }
+});
+
+test("GUARDA DE DIREITOS: nenhum prompt da biblioteca local aparece literalmente em arquivos do repositorio", { skip: !existsSync(join(libDir(), "library.json")) && "sem biblioteca local (rode prompt-motion.mjs sync)" }, () => {
+  const lib = loadLibrary();
+  const norm = (s) => s.toLowerCase().replace(/\s+/g, " ").trim();
+  const texts = [];
+  const walk = (d) => {
+    for (const ent of readdirSync(d, { withFileTypes: true })) {
+      if (ent.name === ".git" || ent.name === "node_modules" || ent.name === "graphify-out") continue;
+      const p = join(d, ent.name);
+      if (ent.isDirectory()) walk(p);
+      else if (/\.(md|mjs|js|json|html|yml|yaml|txt)$/i.test(ent.name) && statSyncSize(p) < 3e6) texts.push(norm(readFileSync(p, "utf8")));
+    }
+  };
+  for (const d of ["skills", "docs", "policies", "plugins", "evals", "templates", "scripts", "commands", "agents"]) if (existsSync(join(root, d))) walk(join(root, d));
+  for (const f of readdirSync(root)) if (/\.md$/i.test(f)) texts.push(norm(readFileSync(join(root, f), "utf8")));
+  const haystack = texts.join("\n");
+  const leaks = lib.entries.filter((e) => norm(e.prompt).length >= 80 && haystack.includes(norm(e.prompt).slice(0, 80))).map((e) => e.slug);
+  assert.deepEqual(leaks, [], `prompt(s) copiado(s) literalmente no repo: ${leaks.slice(0, 5).join(", ")}`);
+});
+function statSyncSize(p) { try { return readFileSync(p).length; } catch { return Infinity; } }
+
+test("brief-lint: os briefs dos exemplos passam, os templates so falham por campos [EDITE]", () => {
+  for (const f of ["assets/example/BRIEF.md", "assets/example-recipe/BRIEF.md"]) {
+    const r = lintBrief(readFileUtf8(join(SK, f)));
+    assert.deepEqual(r.findings, [], `${f}: ${JSON.stringify(r.findings)}`);
+  }
+  assert.deepEqual(errs(lintBrief(readFileUtf8(join(SK, "assets/templates/director-brief.md")))), ["template-fields"]);
+  assert.deepEqual(errs(lintBrief(readFileUtf8(join(SK, "assets/templates/quick-brief.md")), { profile: "quick" })), ["template-fields"]);
+  assert.equal(spawnSync(process.execPath, [BRIEF_LINT, join(SK, "assets/example/BRIEF.md"), "--strict"]).status, 0);
+  assert.equal(spawnSync(process.execPath, [BRIEF_LINT, join(SK, "assets/templates/director-brief.md"), "--strict"]).status, 1);
+});
+
+test("brief-lint: cada parte do padrao e cobrada separadamente", () => {
+  const good = readFileUtf8(join(SK, "assets/example/BRIEF.md"));
+  const without = (tagName) => good.replace(new RegExp(`<${tagName}>[\\s\\S]*?</${tagName}>`, "i"), "");
+  for (const t of ["inputs", "direction", "structure", "build", "start"]) assert.ok(errs(lintBrief(without(t))).includes(`tag-${t}`), `sem <${t}>`);
+  assert.ok(lintBrief(without("gotchas")).findings.some((f) => f.rule === "tag-gotchas" && f.level === "warn"));
+  assert.ok(errs(lintBrief(good.replace(/Proibido:[^\n]*/, "Sem gradientes."))).includes("direction-banned"));
+  assert.ok(errs(lintBrief(good.replace(/120 BPM[^\n]*\n(b\d+[^\n]*\n)+/i, "um filme bonito e calmo\n"))).includes("structure-time"));
+  assert.ok(errs(lintBrief(good.replace(/seek\(t\)/g, "uma funcao"))).includes("build-seek"));
+  assert.ok(errs(lintBrief(good.replace(/Peça-me: [^\n]*/, "Use o produto X."))).includes("inputs-ask"));
+  assert.ok(errs(lintBrief(good.replace(/Peça-me os inputs e, antes de escrever qualquer código, mostre-me[^\n]*/, "Construa o filme."))).includes("start-ask"));
+  assert.ok(errs(lintBrief(good.replace(/Peça-me os inputs e, antes de escrever qualquer código, mostre-me[^\n]*/, "Peça-me os inputs e construa."))).includes("start-show"));
+  assert.ok(errs(lintBrief(`${good}\nUse {{PRODUCT}} aqui.`)).includes("placeholders"));
+  // quick
+  const quick = "Faça um filme de 15 s sobre um produto. Cores #111 e #eee, música a 120 BPM. Sem gradientes e sem jargão. Estilo editorial com referência clara e regras de acabamento bem definidas aqui.";
+  assert.deepEqual(errs(lintBrief(quick, { profile: "quick" })), []);
+  assert.ok(errs(lintBrief("Faça um filme bonito, sem gradientes. Cores e música.", { profile: "quick" })).includes("quick-duration"));
+});
+
+test("filme de receita: o liquido aparece (pixel vermelho no copo) e o titulo volta no fim", { skip: skipRender, timeout: 120000 }, async () => {
+  const { chromium } = (await import("../../skills/86-code-motion-film/scripts/deps.mjs")).findPlaywright().module;
+  const { server, port } = await serve(join(SK, "assets", "example-recipe"));
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: 640, height: 360 } });
+    await page.goto(`http://127.0.0.1:${port}/index.html?w=640&h=360`);
+    const px = async (t, x, y) => page.evaluate(([tt, xx, yy]) => { window.seek(tt); const d = document.getElementById("c").getContext("2d").getImageData(xx, yy, 1, 1).data; return [d[0], d[1], d[2]]; }, [t, x, y]);
+    // t=11.9: copo cheio; ponto dentro do copo, na altura do liquido (centro x=320; liquido ocupa a metade de baixo do copo)
+    const full = await px(11.9, 300, 205);
+    assert.ok(full[0] > full[1] + 60 && full[0] > full[2] + 60, `liquido final deveria ser vermelho-escuro, veio rgb(${full})`);
+    const empty = await px(0.5, 300, 205);
+    assert.deepEqual(empty, [246, 239, 228], "no inicio o copo esta vazio (cor do papel)");
+    // determinismo: o mesmo instante dá o mesmo pixel em chamadas diferentes
+    assert.deepEqual(await px(9.4, 300, 205), await px(9.4, 300, 205));
+    // loop de titulo: no quadro final o titulo esta de volta (pixel escuro no texto "NEGRONI")
+    const title = await page.evaluate(() => { window.seek(11.9); const c = document.getElementById("c").getContext("2d"); const d = c.getImageData(250, 55, 140, 28).data; let dark = 0; for (let i = 0; i < d.length; i += 4) if (d[i] < 90 && d[i + 1] < 90) dark++; return dark; });
+    assert.ok(title > 50, `titulo ausente no ultimo quadro (${title} pixels escuros)`);
+  } finally {
+    await browser.close();
+    server.close();
+  }
+});

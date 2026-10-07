@@ -600,6 +600,29 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.96.0] - 2026-10-07
+
+Padrão interno de brief de motion, extraído da leitura completa da galeria prompt-motion.com, mais uma reprodução de ponta a ponta feita por ele.
+
+### Adicionado
+
+- **`references/PADRAO.md`**: o que as 231 entradas mostram (92% são pedidos de uma frase; a mesma frase de showreel aparece em 30; só ~6% têm estrutura de brief), as quatro camadas T0–T3, a anatomia do brief de diretor (`<inputs> <direction> <structure> <build> <gotchas> <start>`), blocos reutilizáveis em texto nosso e o passo a passo para reproduzir uma entrada.
+- **`prompt-motion.mjs`**: sincroniza o **texto** da galeria com Playwright (poucas conexões, pausas, sem baixar vídeo) para uma biblioteca **local fora do repo** (`~/.dev-team-kit/prompt-motion/`), com `search`, `show`, `tier`, `stats`, `analyze` (números reproduzíveis) e `index`.
+- **`brief-lint.mjs`** e dois templates (`assets/templates/`): confere tags, lista de proibidos, mapa de tempo, regras de build (`seek(t)`, determinismo, molas fechadas, crítica) e o "mostre antes de construir"; campos `[EDITE: ...]` não preenchidos são erro.
+- **`references/INDICE-GALERIA.md`**: 231 entradas com camada, tamanho, título, criador e links. Nenhum texto de prompt.
+- **`assets/example-recipe/`**: reprodução do *tipo* "animação de receita" (uma entrada T0), com `BRIEF.md` que passa no linter, filme em `seek(t)`, crítica e render (12,0 s, 1280x720, H.264 + AAC, determinístico).
+- 9 testes novos, incluindo a **trava de direitos**: falha se qualquer prompt da biblioteca local aparecer literalmente em arquivo do repo (verificada plantando uma cópia) e uma checagem de pixel do filme de receita.
+
+### Decisão sobre direitos
+
+O rodapé da galeria diz que vídeos e prompts pertencem aos criadores e o repositório do kit é público. Por isso o texto literal dos prompts **não** vai para o repo: fica na biblioteca local para estudo e reprodução, e o repo recebe só o padrão destilado, os templates, as ferramentas e um índice com atribuição e links.
+
+### Achado ao reproduzir
+
+- Cor com `NaN` não dá erro no canvas: o `fillStyle` é ignorado e o líquido foi desenhado na cor do papel (invisível). Só a folha de quadros mostrou. Também apareceram um cubo de gelo atravessando o copo (sinal invertido) e a casca encostando no subtítulo. Registrado nos Gotchas.
+
+---
+
 ## [2.95.0] - 2026-10-07
 
 A skill 86 deixa de presumir que o render funciona: verifica, instala o que faltar e prova com um render de verdade. Tudo isto foi executado, incluindo uma instalação do zero.

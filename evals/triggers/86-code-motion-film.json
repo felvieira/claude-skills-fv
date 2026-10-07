@@ -10,7 +10,9 @@
     "renderizar html em mp4 sem depender de framework",
     "gera um motion reel vertical da marca",
     "build a launch video in code for my SaaS",
-    "montar o critique loop de vídeo: renderizar os quadros e pontuar"
+    "montar o critique loop de vídeo: renderizar os quadros e pontuar",
+    "quero reproduzir um vídeo de motion da galeria prompt-motion com o nosso padrão",
+    "escreve o brief de diretor do filme de lançamento com tags inputs e direction"
   ],
   "shouldnt_trigger": [
     "gera um vídeo com IA de um casal falando em português",

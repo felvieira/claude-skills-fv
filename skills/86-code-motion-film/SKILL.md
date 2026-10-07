@@ -11,7 +11,8 @@ description: |
   Trigger em: "filme de motion", "motion design com código", "vídeo em código", "seek(t)",
   "showreel", "vídeo de lançamento", "launch video", "vídeo de produto em código", "mola fechada",
   "renderizar html em mp4", "playwright ffmpeg vídeo", "trilha sintetizada", "animação determinística",
-  "critique loop de vídeo", "motion reel", "film from code", "code-rendered video".
+  "critique loop de vídeo", "motion reel", "film from code", "code-rendered video",
+  "prompt-motion", "brief de diretor", "reproduzir vídeo de motion", "padrão de brief de motion".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *), Bash(ffmpeg *), Bash(ffprobe *)
 metadata:
   argument-hint: "<ideia ou URL do produto> [duração] [formato 16:9|9:16|1:1] [referência]"
@@ -39,7 +40,9 @@ Regras sem exceção:
    commit). Voz, vídeo e imagem pagos: mostrar custo estimado e esperar o ok antes de cada rodada.
 2. **Nunca declarar o filme "pronto" sem ter olhado os quadros.** Render que terminou sem erro não é filme bom:
    o laço de crítica (`references/CRITIQUE.md`) é obrigatório e achou bugs que o MP4 escondia.
-3. **Assets de terceiros** (logo, screenshot de produto, referência) só com direito de uso; referência dá
+3. **Prompts e vídeos de galerias pertencem aos criadores.** Os textos ficam só na sua biblioteca local (`~/.dev-team-kit/prompt-motion/`), nunca no repositório. Reproduza o
+   **tipo** de peça com um brief próprio (`references/PADRAO.md`) e cite o criador se a ideia veio de uma entrada.
+4. **Assets de terceiros** (logo, screenshot de produto, referência) só com direito de uso; referência dá
    estilo, não conteúdo.
 
 ## Quando Usar
@@ -92,6 +95,7 @@ node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, 
 | 1 Motor | `references/ENGINE.md` | rota A (`seek(t)` + Playwright + ffmpeg, zero dependência) ou B (framework) |
 | 2 Brief | `references/BRIEF.md` | uma frase testa o motor; spec de estados e brief de diretor testam a ideia |
 | 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
+| 2c Padrão | `references/PADRAO.md` | camadas T0–T3, anatomia do brief de diretor, blocos reutilizáveis, como reproduzir uma entrada; índice em `references/INDICE-GALERIA.md` |
 | 3 Molas | `references/SPRINGS.md` | preset por papel, uma mola por mudança de alvo, `track()` |
 | 4 Som | `references/SOUND.md` | trilha fornecida (medir) ou sintetizada na mesma linha do tempo; cortes em BPM |
 | 5 Crítica | `references/CRITIQUE.md` | quadros-chave → nota → três piores → corrigir, até 8+ |
@@ -112,7 +116,18 @@ node skills/86-code-motion-film/scripts/render-seek.mjs film/index.html --stills
 node skills/86-code-motion-film/scripts/audio-synth.mjs --bpm 120 --seconds 6 --cuts 0,1.5,3,4.5 --out score.wav
 ```
 
-Exemplo completo e renderizável: `assets/example/index.html` (uma forma, sem corte, em loop, em 120 BPM).
+```bash
+# padrão de brief: confere tags, proibidos, mapa de tempo, regras de build, "mostre antes de construir"
+node skills/86-code-motion-film/scripts/brief-lint.mjs meu-brief.md --strict          # templates em assets/templates/
+
+# biblioteca LOCAL da galeria prompt-motion.com (texto fora do repo; requer o doctor): sync, search, show, tier, analyze
+node skills/86-code-motion-film/scripts/prompt-motion.mjs sync
+node skills/86-code-motion-film/scripts/prompt-motion.mjs search kinetic --limit 8
+node skills/86-code-motion-film/scripts/prompt-motion.mjs analyze
+```
+
+Exemplos completos e renderizáveis: `assets/example` (forma que se transforma, em loop) e `assets/example-recipe` (animação de receita, reproduzida a partir do padrão, com `BRIEF.md` que passa no linter).
+
 Na página: `import { track, presets, layout, snapToBeat } from "/_lib/motion.mjs"`.
 
 ## Anti-Padroes
@@ -139,10 +154,14 @@ Falhas vistas construindo o exemplo desta skill:
 - **`Unable to update lock ... __dirlock`** derruba o `playwright install` no meio (visto no Windows, em disco secundário): o doctor remove o lock obsoleto e tenta de novo (até 3 vezes).
 - **O Node acha `node_modules` de pastas-pai**, então um Playwright global esconde a falta do pacote no projeto. `PLAYWRIGHT_DIR` e a pasta de ferramentas são resolvidos
   de forma estrita (a pasta tem de conter `node_modules/playwright`).
+- **Cor com `NaN` não dá erro: o canvas ignora o `fillStyle` e usa o anterior.** Na animação de receita o líquido ficou invisível (desenhado na cor do papel) porque uma função de mistura recebeu um array onde esperava hex. Só a folha de quadros mostrou. Funções de cor aceitam hex **ou** [r,g,b], e vale conferir um pixel.
+- **Sinal invertido na altura de uma camada** fez um cubo de gelo atravessar o fundo do copo; e camadas de líquido têm de somar a altura do copo. Confira o último quadro de cada etapa.
+- **Reproduzir um pedido curto da galeria não é copiar a frase**: 92% das entradas são frases de uma linha (30 delas a mesma). Escreva um brief próprio na camada certa (`PADRAO.md`) e verifique com `brief-lint`.
 - **Sem esforço alto o resultado vira "texto centralizado em gradiente"**: dê referência e peça os quadros-chave antes do código final.
 
 ## Evidencia de Conclusao
 
+- `brief-lint.mjs --strict` com exit 0 no `BRIEF.md` da peça (tags, proibidos, mapa de tempo, regras de build)
 - `doctor.mjs` com exit 0 (inclui o render de prova) na máquina onde o filme foi gerado
 - render reproduzível: o mesmo comando gera o mesmo MP4 (compare dois quadros com `ffmpeg`/hash)
 - folha de crítica com notas por quadro-chave, todas >= 8, e os três piores problemas de cada rodada registrados
