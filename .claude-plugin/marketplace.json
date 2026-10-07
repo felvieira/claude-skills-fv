@@ -1,6 +1,6 @@
 {
   "name": "claude-skills-fv",
-  "description": "Dev Team Kit — 83 specialist skills + 16 dispatchable subagents + 43 slash commands for coding agents. Spec-driven development, path-scoped rules system, anti-AI writing, memory consolidation, silent-failure hunting, context budgeting, skills-vs-agents disambiguation and more.",
+  "description": "Dev Team Kit — 85 specialist skills + 16 dispatchable subagents + 47 slash commands for coding agents. Spec-driven development, path-scoped rules system, anti-AI writing, memory consolidation, silent-failure hunting, context budgeting, skills-vs-agents disambiguation and more.",
   "owner": {
     "name": "felvieira",
     "url": "https://github.com/felvieira"
@@ -12,8 +12,8 @@
         "source": "github",
         "repo": "felvieira/claude-skills-fv"
       },
-      "description": "83 specialist skills + 16 dispatchable subagents + 47 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, growth, retention, observability, detective-spec, static-analysis and more. Spec-driven development (/constitution, /analyze, /checklist), path-scoped rules, anti-AI writing (/humanize), persistent memory with learned-skills (accepted/rejected states, freshness, post-compaction recovery, Codex/Grok memory profile), and a skills-vs-agents disambiguation hook. Release notes live in CHANGELOG.md, not here.",
-      "version": "2.93.0",
+      "description": "85 specialist skills + 16 dispatchable subagents + 47 slash commands for coding agents — orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, growth, retention, observability, detective-spec, static-analysis and more. Spec-driven development (/constitution, /analyze, /checklist), path-scoped rules, anti-AI writing (/humanize), persistent memory with learned-skills (accepted/rejected states, freshness, post-compaction recovery, Codex/Grok memory profile), and a skills-vs-agents disambiguation hook. Release notes live in CHANGELOG.md, not here.",
+      "version": "2.94.0",
       "category": "development",
       "tags": [
         "skills",

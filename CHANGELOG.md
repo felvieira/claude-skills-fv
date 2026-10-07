@@ -600,6 +600,23 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.94.0] - 2026-10-07
+
+Duas skills novas, vindas de um artigo de motion design com Opus 5.5 (Movez, set/2026) e de um pack de ilustração de 8 arquivos. Em vez de copiar os textos, reimplementamos o método como código testável.
+
+### Adicionado
+
+- **Skill 85 — Illustration Studio.** Conjunto de ícones/ilustrações SVG num estilo só, em 8 etapas (BRIEF, STYLE, GRID, PALETTE, SHAPES, REFERENCE, CHECK, EXPORT), uma referência por etapa. `scripts/svg-icon-lint.mjs` verifica o que é mecânico (viewBox 24, traço 2 com pontas e juntas redondas, cantos >= 2, pixels inteiros, margem de segurança 2, sem transform/id solto, no máximo 12 pontos por caminho, um destaque por ícone, paleta e contraste AA, peso de tinta desigual como aviso). `scripts/svg-icon-export.mjs` gera `sprite.svg`, `Icons.tsx` e a folha de contato (PNG via Chrome headless). Conjunto de exemplo de 8 ícones em `assets/examples/`, aprovado pelo linter.
+- **Skill 86 — Code Motion Film.** Filme de motion escrito como programa (`seek(t)`), renderizado por Chromium + ffmpeg: `motion.mjs` (molas em forma fechada, `track()` com uma mola por mudança, grade de batidas, layout relativo), `audio-synth.mjs` (trilha WAV travada em BPM, sem dependências), `render-seek.mjs` (render determinístico, quadros-chave e folha para o laço de crítica). Referências: motor, brief (frase de teste, spec de estados, brief de diretor), molas, som, crítica, entrega. Exemplo renderizável de uma forma sem corte em loop.
+- Roteamento (`design-quality` e `ai-integration`), fixtures de trigger (10/5 cada) e 4 evals de rota; entradas no WIKI (en/pt-BR) e no SKILLS-OVERVIEW. Contagem: 85 skills.
+- 15 testes novos em `scripts/tests/skills-85-86.test.mjs` (no CI): matemática das molas (caso crítico conhecido, continuidade entre regimes, `track` puro e contínuo), síntese de áudio, cada regra do linter, exportador, e render real com checagem de determinismo quando há Playwright.
+
+### Verificado construindo
+
+- O render real funciona (MP4 H.264 + AAC, 144 quadros em ~8 s) e o **laço de crítica achou 3 defeitos que o MP4 escondia**: forma fora do centro (canvas de tamanho fixo × viewport), rótulo por baixo do spinner (t=1,6) e spinner por baixo do rótulo seguinte (t=3,1). O linter achou um arco de nuvem fora da margem; olhar a folha de contato achou os atributos de traço herdados perdidos ao reembrulhar o SVG. Tudo isso está nos Gotchas das duas skills.
+
+---
+
 ## [2.93.0] - 2026-10-04
 
 Multiplataforma: o que as novidades das 2.90–2.92 precisavam para funcionar fora do Claude Code, verificado contra o Grok 1.0.41 e o Codex 0.155 reais.

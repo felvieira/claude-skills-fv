@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 83 skills · 16 subagents · 47 slash commands · 64 policies · 29 hooks · 22 rules
+> **Version:** 85 skills · 16 subagents · 47 slash commands · 64 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorbed from addyosmani/agent-skills. Recent line: v2.35 auto-skillify · v2.36 direct-response-copy · v2.37 ux-research + ebook absorption · v2.38 ui-polish · v2.39 ponytail+repowise+COMPILOT · v2.40 doubt-driven-review)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -976,6 +976,18 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** "make a video with AI", "write the Seedance prompt", "character sheet", "reference-to-video", a generated clip came out wrong (floating body, object reappearing, speech in the wrong language, moderation block).
 **Takeaway:** every rule comes from a paid mistake in a real 3-minute, 7-era film (a hat that fell and left the character bald, a gate the prompt described but the plate didn't have, a crowd running toward the volcano). Announces the estimated cost before every paid round and never claims a clip was checked without looking at its frames and its audio. `references/armadilhas-do-produto.md` lists the 41 holes found when auditing an automated pipeline against the manual method. Integrating video into an app stays with skill 27; plain editing with skill 75.
 
+#### Skill 85 — Illustration Studio
+
+**What it does:** builds an SVG icon/illustration set that looks like one hand drew it. Eight steps, one reference file each: BRIEF (subject, where and at what size, three mood words, what it must never look like), STYLE (2 px stroke with round caps/joins, 2 px corners, at most one accent fill per icon, equal visual weight), GRID (24 px canvas, 2 px safe margin, keylines circle 20 / square 18, optical size, whole-pixel points), PALETTE (six colors with hex and role, AA contrast), SHAPES (circles, rects and arcs; no path over 12 points; named groups), REFERENCE (take the style never the content, measure, write rules not adjectives), CHECK (render at 16/24/48, squint test, weights side by side, score 1–10, fix below 8) and EXPORT (clean SVG, sprite, React components, contact sheet). `scripts/svg-icon-lint.mjs` enforces the mechanical rules and flags weight outliers; `scripts/svg-icon-export.mjs` writes `sprite.svg`, `Icons.tsx` and a contact sheet (PNG with headless Chrome).
+**When to activate:** "icon set", "desenhar ícones", "pacote de ícones", "sprite de ícones", inconsistent icons, "make the new icons match the old set", extracting a style from a reference.
+**Takeaway:** every rule is a number a linter or a ruler can fail ("stroke 2, radius 2, one accent"), never an adjective. The example set in `assets/examples/` passes the linter and the build caught real defects (a cloud arc leaving the safe margin, a contact sheet rendering solid black because the root's inherited stroke attributes were lost on re-wrapping). Favicons/PWA/OG stay with skill 36; raster images with 17.
+
+#### Skill 86 — Code Motion Film
+
+**What it does:** a motion-design film written as a program. The page exposes `seek(t)` (paints the exact frame for any instant), headless Chromium calls it frame by frame, ffmpeg stitches the MP4: deterministic render, a fix is one line plus a re-render. Covers the one-line prompt (tests the engine, not the idea) vs a state-list spec and a director's brief, closed-form springs with `track()` (one spring per change of target, never restarted), a score locked to BPM (supplied and measured, or synthesized on the same timeline), the critique loop (render key frames onto one sheet, score, write the three worst problems, fix, repeat until 8+), and every format (16:9, 9:16, 1:1) from one timeline through a layout function. Tested code: `motion.mjs`, `audio-synth.mjs`, `render-seek.mjs`.
+**When to activate:** "filme de motion", "showreel", "vídeo de lançamento em código", "seek(t)", "mola fechada", "trilha sintetizada", "renderizar html em mp4".
+**Takeaway:** the prompt is 10% of the video, the harness is the rest. The example film was rendered for real, and the critique loop found three defects the MP4 hid (shape off-centre because the canvas had a fixed size, a label under the spinner at t=1.6, the spinner under the next label at t=3.1). Model-generated video stays with skill 84; UI animation inside a product with 12; plain editing with 75.
+
 ---
 
 ## 6. Subagents (16)
@@ -1091,7 +1103,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 Official Claude Code schema. Lists:
-- **83 skills** in `skills/NN-name/SKILL.md`
+- **85 skills** in `skills/NN-name/SKILL.md`
 - **16 agents** in `.claude/agents/<name>.md`
 - **47 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1104,7 +1116,7 @@ Official Claude Code schema. Lists:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 83 skills, hooks, 47 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
+Installs globally: 85 skills, hooks, 47 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`).
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1129,7 +1141,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 83 skills | ✓ | ✓ | ✓ |
+| 85 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

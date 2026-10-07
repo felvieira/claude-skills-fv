@@ -150,5 +150,29 @@
     "prompt": "quero gerar video com ia de um casal em tres epocas, com lip sync em portugues",
     "plugins": ["ai-integration"],
     "skills": ["84-ai-video-direction"]
+  },
+  {
+    "name": "icon set request routes to illustration studio",
+    "prompt": "preciso de um conjunto de icones svg para o app, com traco de 2px e uma cor de destaque",
+    "plugins": ["design-quality"],
+    "skills": ["85-illustration-studio"]
+  },
+  {
+    "name": "sprite and react components from svgs routes to illustration studio",
+    "prompt": "quero um sprite de icones e componentes react a partir desses svgs",
+    "plugins": ["design-quality"],
+    "skills": ["85-illustration-studio"]
+  },
+  {
+    "name": "launch video in code routes to code motion film",
+    "prompt": "quero um filme de motion de 15 segundos feito em codigo, renderizado em mp4 com playwright e ffmpeg",
+    "plugins": ["ai-integration"],
+    "skills": ["86-code-motion-film"]
+  },
+  {
+    "name": "closed-form springs and synthesized score route to code motion film",
+    "prompt": "monta o showreel com mola fechada e uma trilha sintetizada travada no bpm",
+    "plugins": ["ai-integration"],
+    "skills": ["86-code-motion-film"]
   }
 ]

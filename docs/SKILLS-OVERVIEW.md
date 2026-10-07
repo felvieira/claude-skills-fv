@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 83 skills + 16 subagents + 47 commands + 64 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 85 skills + 16 subagents + 47 commands + 64 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 83 skills, 16 subagents, 47 slash commands, 64 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-04 (v2.93.0 — guardas e memória verificadas no Grok e no Codex; tabela de plataformas corrigida)
+> **Versão:** 85 skills, 16 subagents, 47 slash commands, 64 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-10-07 (v2.94.0 — skills 85 Illustration Studio e 86 Code Motion Film)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 83 especialistas
+- [Skills por categoria](#skills-por-categoria) — 85 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -458,11 +458,20 @@ Catálogo de roteamento: `plugins/catalog/product-growth.json`. Comece pela 83 q
 
 ### Produção de Vídeo com IA
 
-Catálogo de roteamento: `plugins/catalog/ai-integration.json` (capacidade `ai-video-direction`). A 84 dirige e produz; a 27 integra vídeo num app; a 75 só edita; a 54 analisa vídeo pronto.
+Catálogo de roteamento: `plugins/catalog/ai-integration.json` (capacidade `ai-video-direction`). A 84 dirige e produz vídeo gerado por modelo; a 86 renderiza filme de motion escrito em código; a 27 integra vídeo num app; a 75 só edita; a 54 analisa vídeo pronto.
 
 | # | Skill | Quando ativar | Exemplo de prompt |
 |---|---|---|---|
 | 84 | **AI Video Direction** | filme ou vídeo gerado por IA de ponta a ponta: história, roteiro, folhas de personagem, placas de cenário, prompt v4 por clipe, Seedance 2.5 reference-to-video na Higgsfield, QA por folha de quadros, reparo, trilha por sequência, legendas e loudness | "quero um vídeo de 1 minuto com IA, eu e minha esposa em três épocas, falando em português" |
+| 86 | **Code Motion Film** | filme de motion escrito como programa: `seek(t)` determinístico, Playwright + ffmpeg, molas em forma fechada com `track()`, trilha travada em BPM, brief de diretor, laço de crítica até nota 8+ e exportação 16:9/9:16/1:1 | "faz um filme de lançamento de 15 s do meu app, em código, com trilha na batida e versão vertical" |
+
+### Ícones e Ilustração
+
+Catálogo de roteamento: `plugins/catalog/design-quality.json` (capacidade `icon-illustration`). A 85 cria o conjunto e confere as regras; favicon/PWA/OG é a 36; imagem raster por IA, a 17; diagrama, a 76.
+
+| # | Skill | Quando ativar | Exemplo de prompt |
+|---|---|---|---|
+| 85 | **Illustration Studio** | conjunto de ícones/ilustrações SVG num estilo só: brief, regras de traço, grade 24, paleta de 6 cores, formas componíveis, linter determinístico, folha de contato, sprite e componentes React | "desenha um conjunto de 24 ícones com traço de 2px e uma cor de destaque, e exporta sprite e React" |
 
 ---
 

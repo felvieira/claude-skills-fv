@@ -1,0 +1,22 @@
+{
+  "skill": "86-code-motion-film",
+  "should_trigger": [
+    "quero um filme de motion de 15 segundos para o lançamento do app",
+    "faz um showreel de motion design para o meu currículo",
+    "escreve o seek(t) do filme e renderiza com playwright e ffmpeg",
+    "preciso de um vídeo de lançamento do produto, feito em código",
+    "usa mola fechada em vez de easing no filme",
+    "quero uma trilha sintetizada travada em 120 bpm",
+    "renderizar html em mp4 sem depender de framework",
+    "gera um motion reel vertical da marca",
+    "build a launch video in code for my SaaS",
+    "montar o critique loop de vídeo: renderizar os quadros e pontuar"
+  ],
+  "shouldnt_trigger": [
+    "gera um vídeo com IA de um casal falando em português",
+    "corta os primeiros 10 segundos desse vídeo e normaliza o áudio",
+    "integra a API de vídeo no app com webhook",
+    "adiciona hover e transição suave no botão",
+    "cria os slides da apresentação do trimestre"
+  ]
+}

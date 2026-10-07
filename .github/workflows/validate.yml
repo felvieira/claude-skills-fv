@@ -41,6 +41,9 @@ jobs:
       - name: Guards (/careful, /freeze) and trigger-eval train/test tests
         run: node --test scripts/tests/guards-evals.test.mjs
 
+      - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth; render only when Playwright is present)
+        run: node --test scripts/tests/skills-85-86.test.mjs
+
       - name: Memory injection eval (positives carry the answer, negatives inject zero)
         run: node scripts/eval-memory-recall.mjs --strict
 

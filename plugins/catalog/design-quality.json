@@ -32,6 +32,7 @@
     {"id": "accessibility", "when_any": ["acessibilidade", "acessível", "a11y", "wcag", "leitor de tela"], "skills": ["22-accessibility-specialist"]},
     {"id": "motion", "when_any": ["animacao", "transicao", "microinteracao", "reduced motion", "shared element", "layout animation", "haptic", "vibracao", "quando nao animar", "animacao demais", "piscando"], "skills": ["12-motion-design", "52-ui-polish"]},
     {"id": "user-research", "when_any": ["pesquisa com usuario", "entrevista", "journey map", "teste de usabilidade"], "skills": ["51-ux-research"]},
-    {"id": "mobile-paywall-checkout", "when_any": ["paywall", "tela de assinatura", "checkout de assinatura", "plan card", "purchase sheet", "campo de cupao", "cupom no checkout", "billing period selector", "checkout de pagamento mobile", "preco anual vs mensal", "selecao de plano"], "skills": ["63-mobile-paywall-checkout", "02-ui-ux-design"]}
+    {"id": "mobile-paywall-checkout", "when_any": ["paywall", "tela de assinatura", "checkout de assinatura", "plan card", "purchase sheet", "campo de cupao", "cupom no checkout", "billing period selector", "checkout de pagamento mobile", "preco anual vs mensal", "selecao de plano"], "skills": ["63-mobile-paywall-checkout", "02-ui-ux-design"]},
+    {"id": "icon-illustration", "when_any": ["conjunto de icones", "icon set", "icones svg", "desenhar icones", "pacote de icones", "icon pack", "line icons", "ilustracao vetorial", "ilustracoes vetoriais", "estilo de icone", "keyline", "sprite de icones", "grade de icones", "illustration studio", "icones consistentes"], "skills": ["85-illustration-studio", "02-ui-ux-design"]}
   ]
 }

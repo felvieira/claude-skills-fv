@@ -1,0 +1,22 @@
+{
+  "skill": "85-illustration-studio",
+  "should_trigger": [
+    "preciso de um conjunto de ícones para o app, 24 no total",
+    "desenha um icon set com traço de 2px e uma cor de destaque",
+    "monta um pacote de ícones para o dashboard",
+    "os ícones SVG estão inconsistentes, ajusta o estilo de ícone",
+    "quero um sprite de ícones e componentes react a partir desses svgs",
+    "desenhar ícones de clima: sol, nuvem, chuva",
+    "confere a grade de ícones e a keyline do conjunto",
+    "create a line icons set for a fitness app",
+    "ilustrações vetoriais no mesmo estilo para o onboarding",
+    "quero ícones consistentes com a mesma espessura em todo o produto"
+  ],
+  "shouldnt_trigger": [
+    "gera um favicon e o manifest do PWA",
+    "cria o Dockerfile multistage do backend",
+    "gera uma foto realista de um produto na mesa",
+    "anima o menu com spring e hover",
+    "define o schema do banco de dados"
+  ]
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1f1c19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect data-name="corpo" x="4" y="8" width="16" height="12" rx="2"/>
+  <path data-name="visor" d="M9 8l1-2h4l1 2"/>
+  <circle data-name="lente" cx="12" cy="14" r="3" fill="#f4bda4"/>
+</svg>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Exemplo — uma forma, sem corte</title>
+<style>html,body{margin:0;background:#fbf8f3;overflow:hidden}canvas{display:block}</style>
+<canvas id="c"></canvas>
+<script type="module">
+// Filme de exemplo da skill 86: UMA forma que vira botao -> carregando -> cartao -> botao, sem cortar.
+// Tudo e funcao do tempo: window.seek(t) pinta o quadro exato; nada usa relogio, requestAnimationFrame
+// nem Math.random. O ultimo quadro iguala o primeiro (loop). Os instantes caem na grade de 120 BPM.
+import { track, presets, layout, beatGrid, snapToBeat, pulse } from "/_lib/motion.mjs";
+
+const q = new URLSearchParams(location.search);
+// Tamanho do quadro: ?w=&h= (o render-seek passa o de --size); sem isso, o viewport. Nunca um tamanho fixo.
+const W = Number(q.get("w") || innerWidth), H = Number(q.get("h") || innerHeight);
+const cv = document.getElementById("c");
+cv.width = W; cv.height = H;
+const ctx = cv.getContext("2d");
+const L = layout(W, H);
+
+const BPM = 120;
+window.DURATION = 6; // 12 batidas
+const [t0, t1, t2, t3] = [0, 1.5, 3, 4.5].map((t) => snapToBeat(t, BPM)); // mudancas de estado travadas no BPM
+
+// Lista de estados (unidades u = 1% do lado menor): largura, altura, raio, cor, rotulo
+const S = {
+  button: { w: 38, h: 12, r: 6, color: [201, 99, 61], label: "Pagar" },
+  loader: { w: 12, h: 12, r: 6, color: [31, 28, 25], label: "" },
+  card:   { w: L.portrait ? 80 : 52, h: L.portrait ? 44 : 30, r: 4, color: [244, 189, 164], label: "Pago" },
+};
+const seq = [[t1, S.loader], [t2, S.card], [t3, S.button]];
+const from = S.button;
+const prop = (get, cfg) => track(get(from), seq.map(([at, s]) => ({ at, to: get(s) })), cfg);
+
+// molas por papel: container = default, raio = snappy, cor = default, texto = type (sem sobrepasso)
+const w = prop((s) => s.w, presets.default), h = prop((s) => s.h, presets.default), r = prop((s) => s.r, presets.snappy);
+const col = [0, 1, 2].map((i) => prop((s) => s.color[i], presets.default));
+// Cada rotulo tem a PROPRIA opacidade (uma mola por mudanca): "Pagar" some no loader e volta no fim; "Pago" so no cartao.
+// Mola de texto RAPIDA e critica (zeta = 1: sem sobrepasso): a critica por quadros mostrou o rotulo ainda
+// visivel por cima do spinner com a mola `type` padrao (~0.5 s para assentar).
+const fastType = { stiffness: 900, damping: 60, mass: 1 };
+const aPagar = track(1, [{ at: t1, to: 0 }, { at: t3, to: 1 }], fastType);
+const aPago = track(0, [{ at: t2 + 0.1, to: 1 }, { at: t3, to: 0 }], fastType);
+
+function roundRect(x, y, wd, ht, rad) {
+  const rr = Math.max(0, Math.min(rad, wd / 2, ht / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y); ctx.arcTo(x + wd, y, x + wd, y + ht, rr); ctx.arcTo(x + wd, y + ht, x, y + ht, rr);
+  ctx.arcTo(x, y + ht, x, y, rr); ctx.arcTo(x, y, x + wd, y, rr); ctx.closePath();
+}
+
+window.seek = (t) => {
+  ctx.fillStyle = "#fbf8f3"; ctx.fillRect(0, 0, W, H);
+  const wd = w(t) * L.u, ht = h(t) * L.u, rad = r(t) * L.u;
+  const [R, G, B] = col.map((c) => Math.round(c(t)));
+
+  // sombra suave: da massa ao elemento
+  ctx.save(); ctx.shadowColor = "rgba(31,28,25,.18)"; ctx.shadowBlur = 3 * L.u; ctx.shadowOffsetY = 1 * L.u;
+  ctx.fillStyle = `rgb(${R},${G},${B})`; roundRect(L.cx - wd / 2, L.cy - ht / 2, wd, ht, rad); ctx.fill(); ctx.restore();
+
+  // loader: arco girando enquanto o estado "loader" esta ativo (angulo = f(t))
+  if (t >= t1 + 0.12 && t < t2 + 0.1) { // entra depois do rotulo sumir e sai antes do proximo entrar: nunca dois textos/glifos empilhados
+    const k = Math.min(1, (t - t1 - 0.12) / 0.25) * (t < t2 ? 1 : Math.max(0, 1 - (t - t2) / 0.1));
+    ctx.save(); ctx.globalAlpha = k; ctx.strokeStyle = "#fbf8f3"; ctx.lineWidth = 1.2 * L.u; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.arc(L.cx, L.cy, 3 * L.u, t * 8, t * 8 + Math.PI * 1.4); ctx.stroke(); ctx.restore();
+  }
+
+  // rotulos (opacidades independentes, ambas f(t))
+  ctx.font = `600 ${3.2 * L.u}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (const [text, alpha, color] of [[S.button.label, aPagar(t), "#fbf8f3"], [S.card.label, aPago(t), "#1f1c19"]]) {
+    ctx.save(); ctx.globalAlpha = Math.max(0, Math.min(1, alpha)); ctx.fillStyle = color; ctx.fillText(text, L.cx, L.cy); ctx.restore();
+  }
+
+  // pulso preso a batida: anel discreto no canto, so para mostrar o BPM
+  const p = pulse(t, BPM, 8);
+  ctx.save(); ctx.globalAlpha = 0.5 * p; ctx.strokeStyle = "#1f1c19"; ctx.lineWidth = 0.4 * L.u;
+  ctx.beginPath(); ctx.arc(L.safe.x + 2 * L.u, L.safe.y + 2 * L.u, (1 + 2 * (1 - p)) * L.u, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+};
+
+window.beats = beatGrid(BPM, 12);
+window.ready = Promise.resolve();
+window.seek(0);
+</script>

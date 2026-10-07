@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#1f1c19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle data-name="nucleo" cx="12" cy="12" r="4" fill="#f4bda4"/>
+  <g data-name="raios-retos"><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></g>
+  <g data-name="raios-diagonais"><path d="M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2"/></g>
+</svg>
