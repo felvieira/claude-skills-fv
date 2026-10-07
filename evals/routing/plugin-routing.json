@@ -152,6 +152,12 @@
     "skills": ["84-ai-video-direction"]
   },
   {
+    "name": "app promo video from an idea routes to AI video direction briefing",
+    "prompt": "tenho so a ideia do app e quero um comercial com ia, monta o briefing de video antes de gerar",
+    "plugins": ["ai-integration"],
+    "skills": ["84-ai-video-direction"]
+  },
+  {
     "name": "icon set request routes to illustration studio",
     "prompt": "preciso de um conjunto de icones svg para o app, com traco de 2px e uma cor de destaque",
     "plugins": ["design-quality"],

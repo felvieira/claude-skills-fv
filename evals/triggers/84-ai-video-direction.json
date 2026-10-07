@@ -10,7 +10,9 @@
     "preciso de direção de cena para um curta de 30 segundos",
     "o lip sync saiu em inglês, a fala tinha que ser em português",
     "quero trilha por sequência com crossfade no portal, não uma música só",
-    "help me write a cinematic prompt for an AI film with two characters"
+    "help me write a cinematic prompt for an AI film with two characters",
+    "tenho só a ideia de um app e quero um comercial de 20 segundos com IA, monta o briefing antes do prompt",
+    "o gerador está inventando funcionalidade que o app não tem; como garantir que só entre fato do briefing"
   ],
   "shouldnt_trigger": [
     "integra a API de vídeo no app com webhook e fila",

@@ -1,0 +1,86 @@
+{
+  "meta": { "product_name": "Contaclara", "category": "publicitario", "category_override": null, "platform": "reels", "duration_sec": 20, "language": "pt-BR" },
+  "idea_card": {
+    "raw": "app Contaclara, as pessoas usam IA de forma facil para categorizar gastos e sugerir economias",
+    "claims": [
+      { "text": "categoriza gastos com IA", "quote": "usam IA de forma facil para categorizar gastos" },
+      { "text": "sugere economias", "quote": "sugerir economias" }
+    ],
+    "urls": [],
+    "assets": [],
+    "gaps": ["logo", "print da interface", "preco", "prova", "publico declarado"]
+  },
+  "source_digest": {
+    "verified_claims": [],
+    "unverified_claims": ["categoriza gastos com IA", "sugere economias"],
+    "conflicts": [],
+    "offer": null,
+    "proof": [],
+    "visual": { "logo": null, "colors": [], "ui_available": false },
+    "voice": null
+  },
+  "market_frame": {
+    "category_job": "saber para onde o dinheiro foi sem ter de montar planilha",
+    "saturated_promises": ["controle suas financas", "economize todo mes", "organize sua vida financeira", "o melhor app do mercado"],
+    "wedge": "sem cunha verificada: filmar a preguica de categorizar, nao a superioridade da IA",
+    "do_not_say": ["melhor app do mercado", "economiza por cento", "ia magica"]
+  },
+  "persona": {
+    "who": "pessoa que abre a fatura do cartao no fim do mes e adia categorizar",
+    "trigger_moment": "a fatura aberta no celular, a categoria 'mercado' jurada como sob controle",
+    "visible_pain": "o dedo hesita sobre uma lista longa de compras iguais",
+    "blocking_belief": "isso e para quem entende de dinheiro",
+    "language": ["depois eu vejo isso", "foi tudo mercado", "nem sei onde foi", "que preguica", "isso aqui nao fecha", "como assim delivery"],
+    "after_state": "duas linhas se separam na tela e ele para de defender o gasto"
+  },
+  "cast_world": {
+    "on_screen": "adulto em casa, a noite, moletom, fala curta, nao olha para a camera",
+    "buyer_is_on_screen": true,
+    "wardrobe": "moletom cinza e camiseta escura",
+    "speech": "frases curtas, coloquiais, sem explicar o produto",
+    "place": "cozinha a noite com a fatura aberta no celular e uma caixa de entrega sobre a bancada",
+    "why_this_place": "a bancada prova a dor: o gasto que ele chamava de mercado esta ali",
+    "product_role": "phone-in-hand"
+  },
+  "message": {
+    "event": "ele defende o gasto do mercado ate a IA separar o que era mercado do que era delivery",
+    "promise": "Categoriza seus gastos com IA",
+    "proof_shown": "demonstracao do mecanismo: duas linhas se separam na tela",
+    "objection_killed": "isso e para quem entende de dinheiro, derrubada por um toque",
+    "cta": "ver o diagnostico",
+    "will_not_say": ["economiza", "o melhor app"]
+  },
+  "format": {
+    "category": "publicitario",
+    "why": "app sem historia pedida; produto entra como tatica do personagem.",
+    "override_risk": null,
+    "devices": ["live", "ui-insert"],
+    "end_lock": { "card": true, "wordmark": true, "tagline": null, "cta_line": "Categoriza com IA" }
+  },
+  "story_spine": {
+    "event": "ele defende o gasto do mercado ate a IA separar o que era mercado do que era delivery",
+    "goal": "fechar a fatura marcando tudo como mercado",
+    "obstacle": "uma lista longa de compras parecidas na tela do celular",
+    "tactic": "passar o dedo marcando linha a linha, depois abrir o app e pedir a categorizacao",
+    "reversal": "a propria categorizacao separa duas linhas que ele jurava serem iguais",
+    "value_shift": "defende o gasto → para de defender"
+  },
+  "beats": [
+    { "n": 1, "verb": "hesita", "who": "ele", "body": "o dedo para sobre a lista", "world": "cozinha, fatura aberta", "value": "adia → encara", "camera_job": "hook", "needs_vo": false, "asset_refs": [] },
+    { "n": 2, "verb": "marca", "who": "ele", "body": "passa o dedo marcando tudo como mercado", "world": "a caixa de entrega ao lado", "value": "seguro → teimoso", "camera_job": "performance", "needs_vo": false, "asset_refs": [] },
+    { "n": 3, "verb": "abre", "who": "ele", "body": "abre o app no celular", "world": "bancada", "value": "teimoso → curioso", "camera_job": "device", "needs_vo": false, "asset_refs": ["ui-01"] },
+    { "n": 4, "verb": "toca", "who": "ele", "body": "toca em categorizar", "world": "tela com listas", "value": "curioso → atento", "camera_job": "object-detail", "needs_vo": false, "asset_refs": ["ui-01"] },
+    { "n": 5, "verb": "separa", "who": "tela", "body": "duas linhas se separam", "world": "lista na tela", "value": "tudo mercado → mercado e delivery", "camera_job": "transformation", "needs_vo": false, "asset_refs": ["ui-01"] },
+    { "n": 6, "verb": "fecha", "who": "cartela", "body": "marca e chamada", "world": "fundo neutro", "value": "historia → marca", "camera_job": "impact", "needs_vo": false, "asset_refs": ["end-01"] }
+  ],
+  "assets": [
+    { "id": "ui-01", "kind": "ui-capture", "must_show": "lista de gastos com categorias como forma", "must_not_invent": "valores, percentuais, nomes de estabelecimentos", "source": "gerar a partir de descricao" },
+    { "id": "end-01", "kind": "end-card", "must_show": "marca Contaclara e a chamada Categoriza com IA", "must_not_invent": "tagline, logo se nao houver", "source": "motion" }
+  ],
+  "generator_pack": {
+    "shots": [],
+    "supers": [{ "text": "Contaclara" }, { "text": "Categoriza com IA" }],
+    "vo": []
+  },
+  "qa": { "pass": false, "fails": [] }
+}

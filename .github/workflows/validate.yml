@@ -48,6 +48,10 @@ jobs:
       - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth, doctor and a real render)
         run: node --test scripts/tests/skills-85-86.test.mjs
 
+      - name: Skill 84 briefing engine and prompt library
+
+        run: node --test scripts/tests/skill-84.test.mjs
+
       - name: Memory injection eval (positives carry the answer, negatives inject zero)
         run: node scripts/eval-memory-recall.mjs --strict
 

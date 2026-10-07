@@ -600,6 +600,26 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.98.0] - 2026-10-07
+
+Skill 84 (direção de vídeo com IA) ganha o passo que faltava antes do prompt: transformar uma ideia ou produto num pacote com fatos verificados. Material-base: seis documentos do usuário (motor de briefing, guias de storytelling e de prompt, plano de produção revisado), reescritos aqui com texto próprio.
+
+### Adicionado
+
+- **`references/briefing-engine.md`**: pipeline de 11 estágios (entrada → digest da fonte → mercado → persona → elenco → mensagem → roteador de categoria → espinha → beats e assets → pacote do gerador → portão de QA), roteador de 7 categorias com espinha e fechamento, e os prompts de cada estágio. Regra central: fato só entra se veio do cliente ou de uma fonte lida; o resto vira lacuna.
+- **`scripts/briefing-qa.mjs`** + `templates/briefing.json` e `briefing-exemplo.json`: portão mecânico que reprova número, preço ou percentual sem fonte, promessa acima de 8 palavras, espinha incompleta, verbo que não se filma, beat sem valor "antes → depois", quantidade de beats incompatível com a duração, mais de 2 dispositivos, publicitário sem cartela/marca/chamada, marca nos primeiros segundos e interface sem `must_not_invent`.
+- **`templates/prompts-por-tipo.md`**: 10 modelos de clipe (olhar entre dois, gesto de cuidado, interrupção que revela a dinâmica, reação a um aparelho, soleira, gesto único com pose-alvo, abraço, cerimônia, memória de viagem, objeto simbólico), todos com tempo por plano, primeiro quadro ocupado e saída pensada para o corte.
+- **`references/quadro-composto-e-revisao.md`**: o caminho B de identidade (quadro composto → imagem para vídeo) com a divergência registrada em relação ao caminho A, que é o padrão e tem evidência; lista de revisão do plano com 14 perguntas; manifesto por chamada; critérios de revisão visual.
+- `qa.md` ganha o teste A/B de caminho de identidade.
+- 6 testes novos (`scripts/tests/skill-84.test.mjs`, rodados no CI) e um eval de roteamento.
+
+### Decisões
+
+- **Caminho B não foi validado por nós.** A skill continua mandando `reference-to-video` só com folhas e placa; o quadro composto fica documentado como alternativa para testar em um clipe barato antes de adotar.
+- **Nada de dado pessoal no repositório público.** O plano de origem era de pessoas reais; os modelos usam [A]/[B] e um teste falha se qualquer nome, local ou data do plano aparecer nos arquivos.
+
+---
+
 ## [2.97.0] - 2026-10-07
 
 Piso de qualidade do motion: o filme de referência "Relay" e as peças que o tornam reproduzível.

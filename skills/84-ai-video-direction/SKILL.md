@@ -10,7 +10,8 @@ description: |
   "higgsfield", "prompt de vídeo", "storytelling", "roteiro de vídeo", "folha de personagem",
   "placa de cenário", "reference-to-video", "direção de cena", "lip sync",
   "trilha por sequência", "continuidade entre clipes", "AI video direction", "AI film",
-  "video prompt", "character sheet", "scene direction", "talking head".
+  "video prompt", "character sheet", "scene direction", "talking head", "briefing de vídeo",
+  "ideia para vídeo", "vídeo publicitário com IA", "comercial de app com IA", "motor de briefing", "quadro composto".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *), Bash(ffmpeg *), Bash(ffprobe *)
 metadata:
   argument-hint: "<ideia, história ou roteiro> [duração] [proporção] [idioma das falas]"
@@ -74,6 +75,8 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 
 1. **Brief e modo de autoria** (criar, adaptar história real, dirigir roteiro, compilar estrito,
    reparar). Perguntar só o que muda o resultado central; o resto vira suposição registrada.
+   Se a entrada é uma **ideia, produto, app ou site** ("divulgue X"), passe antes pelo **motor de briefing**
+   (`references/briefing-engine.md`) e valide com `skills/84-ai-video-direction/scripts/briefing-qa.mjs`: fato só entra com fonte.
 2. **História:** 3 propostas com motores diferentes, escolher, bíblia e ficha de personagem.
 3. **Roteiro:** cada fala faz algo; o tom da fala acompanha o nível de perigo.
 4. **Direção:** scene engine, acting task por personagem, beats, mapa e leis de física, STATE IN/OUT.
@@ -90,6 +93,8 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 | Arquivo | Ler quando |
 |---|---|
 | `references/fluxo.md` | ordem, paralelismo, pastas, ledger, contrato de dados |
+| `references/briefing-engine.md` | a entrada é ideia/produto/app: pipeline 0–10, categoria, prompts de estágio, QA mecânico |
+| `references/quadro-composto-e-revisao.md` | identidade por quadro composto (caminho B), lista de revisão do plano, manifesto por chamada |
 | `references/historia-e-direcao.md` | história, engine, romance, ação, resgate, falas |
 | `references/arquitetura-do-prompt.md` | prompt v4 de um clipe, com 2 exemplos |
 | `references/camera-e-otica.md` | câmera, eixo, FOV, dispositivos, luz, veto |
@@ -102,7 +107,7 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 | `references/audio-e-pos.md` | fala nativa, trilha, ducking, SFX, legendas, loudness |
 | `references/custos-e-orcamento.md` | estimar, ledger, o que não é cobrado |
 | `references/armadilhas-do-produto.md` | 41 furos de um pipeline automático |
-| `templates/` | brief, prompt v4, folha, placa, checklist de QA |
+| `templates/` | brief, prompt v4, folha, placa, checklist de QA, **briefing.json** (+ exemplo), **prompts-por-tipo.md** (10 tipos de clipe) |
 
 ## Guia-base → onde está na skill
 
@@ -112,6 +117,8 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 | Guia de storytelling (engine, acting task, beat, frases-mãe) | `historia-e-direcao`, `templates/brief.md` |
 | Prompt Builder v4.4.2 (câmera, FOV, dispositivos, 180°, veto, luz) | `camera-e-otica` |
 | Padrão de cenas (blocos, locks, multidão, densidade, defaults) | `arquitetura-do-prompt`, `fisica-e-continuidade` |
+| Motor de briefing (ideia → roteiro de vídeo, 11 estágios, portão de QA) | `briefing-engine`, `skills/84-ai-video-direction/scripts/briefing-qa.mjs`, `templates/briefing*.json` |
+| Plano de produção revisado (quadro composto, revisão de plano, prompts por clipe) | `quadro-composto-e-revisao`, `templates/prompts-por-tipo.md` |
 
 ## Regras de ouro
 
@@ -134,6 +141,7 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 
 | Racionalização | Realidade |
 |---|---|
+| "o modelo recebe a ideia e se vira" | sem digest, o roteiro inventa funcionalidade, número e depoimento; passe pelo motor de briefing |
 | "um clipe longo sai mais coeso" | 22 s com 11 ações falhou em ordem e física; 4 clipes de 5 a 8 s passaram |
 | "mais adjetivo resolve" | o modelo obedece geografia, apoio e causa; "aura de perigo" não gera nada |
 | "a placa é só ambiente" | a placa dita o ângulo e os objetos que existem; o que não está nela o modelo inventa |
@@ -146,6 +154,7 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 - custo anunciado e aprovado antes de cada rodada; ledger com previsto × real por item
 - cada clipe entregue tem folha de quadros olhada, fala conferida e laudo com rubrica
 - STATE OUT(n) = STATE IN(n+1) em toda emenda de continuidade
+- briefing de ideia/produto: `briefing-qa.mjs` com exit 0 (nenhum número, preço ou depoimento sem fonte)
 - MP4 final medido: duração, −14 LUFS, pico real, legendas sem colisão
 
 ## Handoff
@@ -159,11 +168,11 @@ Pasta por sequência: `NN_nome/{entrega,base,prompts,arquivado}`. Versão nova n
 ## Integração com Pipeline
 
 O orquestrador (09) aciona esta skill para produzir ou dirigir vídeo, não para integrar API.
-Fluxo típico: `84 (história → clipes → QA) → 75 (cortes finos) → 84 (pós)`. Quem constrói pipeline
+Fluxo típico: `84 (história → clipes → QA) → 75 (cortes finos) → 84 (pós)`. Quem parte de uma ideia ou produto começa por `references/briefing-engine.md`. Quem constrói pipeline
 automático lê `references/armadilhas-do-produto.md` e entrega para 25 e 27.
 
 ## Fontes
 
-Filme manual de 3 min em 7 épocas (set/2026, cerca de 25 regerações diagnosticadas), os 4 guias-base
-do usuário (tabela acima) e a auditoria do video-os-ai contra o filme (30/09/2026). Preços medidos
+Filme manual de 3 min em 7 épocas (set/2026, cerca de 25 regerações diagnosticadas), os guias-base
+do usuário (tabela acima, incluindo o motor de briefing e o plano de produção revisado) e a auditoria do video-os-ai contra o filme (30/09/2026). Preços medidos
 com `/estimate` em 29 e 30/09/2026; conferir antes de orçar.

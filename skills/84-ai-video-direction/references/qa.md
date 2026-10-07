@@ -94,6 +94,12 @@ APROVEITÁVEL: 0–3,0 s e 3,8–7,0 s
 DECISÃO: aprovado com corte em 3,0/3,8 | regerar beat 2 | reprovado
 ```
 
+## 7b. Teste A/B de caminho (identidade)
+
+Antes de trocar o caminho de identidade num filme inteiro (referências × quadro composto, `quadro-composto-e-revisao.md`), compare num clipe barato: mesmo prompt, mesmo modelo, mesma
+duração, só o caminho muda. Extraia 3 quadros de cada (início, meio, fim), ponha ao lado das fotos de referência e pontue o rosto de 0 a 2. Registre o placar e o custo. Uma tentativa por
+caminho não prova nada: se a diferença for pequena, repita uma vez com outro trecho antes de decidir.
+
 ## 8. QA do filme final
 
 | Medida | Comando | Alvo |

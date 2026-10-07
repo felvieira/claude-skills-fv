@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "product_name": "",
+    "category": "publicitario",
+    "category_override": null,
+    "platform": "reels",
+    "duration_sec": 20,
+    "language": "pt-BR"
+  },
+  "idea_card": {
+    "raw": "",
+    "claims": [{ "text": "", "quote": "" }],
+    "urls": [],
+    "assets": [],
+    "gaps": []
+  },
+  "source_digest": {
+    "verified_claims": [],
+    "unverified_claims": [],
+    "conflicts": [],
+    "offer": null,
+    "proof": [],
+    "visual": { "logo": null, "colors": [], "ui_available": false },
+    "voice": null
+  },
+  "market_frame": { "category_job": "", "saturated_promises": [], "wedge": "", "do_not_say": [] },
+  "persona": { "who": "", "trigger_moment": "", "visible_pain": "", "blocking_belief": "", "language": [], "after_state": "" },
+  "cast_world": { "on_screen": "", "buyer_is_on_screen": true, "wardrobe": "", "speech": "", "place": "", "why_this_place": "", "product_role": "phone-in-hand" },
+  "message": { "event": "", "promise": "", "proof_shown": "", "objection_killed": "", "cta": "", "will_not_say": [] },
+  "format": {
+    "category": "publicitario",
+    "why": "",
+    "override_risk": null,
+    "devices": [],
+    "end_lock": { "card": true, "wordmark": true, "tagline": null, "cta_line": "" }
+  },
+  "story_spine": { "event": "", "goal": "", "obstacle": "", "tactic": "", "reversal": "", "value_shift": "" },
+  "beats": [
+    { "n": 1, "verb": "", "who": "", "body": "", "world": "", "value": "antes → depois", "camera_job": "hook", "needs_vo": false, "asset_refs": [] }
+  ],
+  "assets": [
+    { "id": "end-01", "kind": "end-card", "must_show": "", "must_not_invent": "", "source": "motion" }
+  ],
+  "generator_pack": { "shots": [], "supers": [], "vo": [] },
+  "qa": { "pass": false, "fails": [] }
+}
