@@ -600,6 +600,19 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.101.0] - 2026-10-07
+
+Subagentes revisados contra o guia "Prompting best practices" da Anthropic (modelos atuais). Os agentes já não usavam caixa alta de ordem (o guia avisa que modelos recentes disparam demais com isso); faltavam regras de autonomia e segurança, de testes, de escopo e de honestidade do relatório.
+
+### Adicionado
+
+- **`policies/subagent-conduct.md`**: fonte única do bloco "Conduta" dos subagentes, com o motivo de cada regra. Bloco comum (investigar antes de afirmar e declarar o que não foi verificado; relatório que se sustenta sozinho; leituras independentes na mesma rodada; escopo é o pedido), perfil de **leitura** (só leitura) e perfil de **escrita** (reversível por padrão e confirmação antes de ação destrutiva ou visível a outros, sem `--no-verify` nem descartar arquivos desconhecidos; o teste verifica e não define a solução, nunca enfraquecer teste para ficar verde; limpar o que criou para iterar).
+- **`scripts/sync-agent-conduct.mjs`**: injeta o bloco certo em cada `agents/*.md` (perfil pelas ferramentas do frontmatter, `codeql-runner` como exceção explícita) e confere divergência (`--write` corrige).
+- Os 16 agentes passam a carregar o bloco. O `orchestrator` ganha a regra de quando delegar e quando trabalhar direto e o que passar a um subagente (que não vê a conversa).
+- 7 testes (`scripts/tests/agents-conduct.test.mjs`, no CI): nenhum agente diverge da política, perfil certo por agente, idempotência, e trava contra linguagem de ordem em caixa alta.
+
+---
+
 ## [2.100.0] - 2026-10-07
 
 Skill 86: o que ajuda a IA a decidir sozinha, só o que é lícito trazer (ideias de kaventro/motion-designer, MIT; textos, paletas e código próprios, registrado no `NOTICE`).

@@ -2,7 +2,7 @@
 
 # Dev Team Kit — 85 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.100.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.101.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-85-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -12,7 +12,7 @@
 
 ### ✨ Novidades
 
-- **v2.100.0** — a skill 86 ganha guias de decisão (tipos de filme, seis estilos com movimento-assinatura, efeitos como funções puras em `fx.mjs`, tabela de ações por agente).
+- **v2.101.0** — a skill 86 ganha guias de decisão (tipos de filme, seis estilos com movimento-assinatura, efeitos como funções puras em `fx.mjs`, tabela de ações por agente).
 - **v2.99.0** — a skill 86 prova que um filme é determinístico (`check-film.mjs`), escuta uma trilha atrás de andamento, tempo forte e drops e corta compassos inteiros (`beats.mjs`), e revisa quadros com revisores de contexto limpo que dão notas em sete dimensões.
 - **v2.98.0** — a skill 84 ganha um motor de briefing (ideia → fatos verificados → pacote de planos; o `briefing-qa.mjs` reprova número sem fonte) e dez modelos de prompt por tipo de clipe.
 - **v2.97.0** — a skill 86 traz um filme de referência em 1080p ("Relay") e uma régua de qualidade, com motion blur e trilha com partitura.

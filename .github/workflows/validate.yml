@@ -48,6 +48,9 @@ jobs:
       - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth, doctor and a real render)
         run: node --test scripts/tests/skills-85-86.test.mjs
 
+      - name: Subagent conduct block (agents match policies/subagent-conduct.md)
+        run: node --test scripts/tests/agents-conduct.test.mjs
+
       - name: Skill 84 briefing engine and prompt library
 
         run: node --test scripts/tests/skill-84.test.mjs
