@@ -32,6 +32,11 @@ Atalhos por fase de desenvolvimento:
 - Personas de review: `.bot/personas/` (code-reviewer, security-auditor, test-engineer)
 - Context engineering: `.bot/policies/context-engineering.md`
 
+## Ferramentas em Node (qualquer agente)
+- skills de mídia (84, 85, 86) trazem scripts em Node puro que funcionam em Windows, macOS e Linux; comece por `node .bot/skills/86-code-motion-film/scripts/doctor.mjs`
+- ações que variam por agente (planejar, olhar imagem, delegar, segundo plano): `.bot/skills/86-code-motion-film/references/AGENTES.md`
+- sem `Agent`/`Task`, use `.bot/agents/*.md` como prompt de papel, lendo o arquivo inteiro (inclui o bloco "Conduta")
+
 ## Defaults
 - responder curto por padrao
 - agir primeiro quando houver default seguro

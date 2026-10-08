@@ -140,6 +140,26 @@ Stack já decidida (não reabrir): Docker Compose + Postgres 16 + Redis 7 + MinI
 - `.claude/commands/` = slash commands por fase de desenvolvimento
 - `.claude/agents/` = subagents despachaveis via Task tool
 
+## Ferramentas de mídia e conduta dos subagentes (qualquer agente)
+
+As skills 84 (vídeo com IA), 85 (ilustração) e 86 (filme em código) trazem ferramentas em **Node puro** (Node 20+), sem depender de slash command nem de hook: funcionam igual em
+Claude Code, Codex, Grok Build, Cursor, Gemini CLI, OpenCode e outros, em Windows, macOS e Linux. Em repo consumidor, prefixe os caminhos com `.bot/`.
+
+```bash
+node skills/86-code-motion-film/scripts/doctor.mjs --install    # verifica e instala ffmpeg, Playwright e Chromium (winget/choco, brew ou apt) e prova com um render
+node skills/86-code-motion-film/scripts/check-film.mjs film/index.html   # o filme é função pura do tempo? (fonte limpa, mesmo quadro em qualquer ordem, loop fechado)
+node skills/86-code-motion-film/scripts/beats.mjs analyze trilha.mp3     # andamento, compasso 1, drops; `cut` corta compassos inteiros
+node skills/84-ai-video-direction/scripts/briefing-qa.mjs briefing.json  # reprova número, preço ou depoimento sem fonte no briefing de vídeo
+node scripts/svg-icon-lint.mjs <pasta-ou-arquivo.svg>                    # linter de ícones e ilustrações (skill 85)
+```
+
+- As ações que variam por agente (planejar, perguntar, olhar uma imagem, delegar, rodar em segundo plano, enviar arquivo) estão numa tabela em `skills/86-code-motion-film/references/AGENTES.md`.
+  Onde o seu agente não tem uma delas, o fluxo diz o que fazer no lugar; nunca finja que viu uma imagem que não abriu.
+- **Subagentes sem despacho** (agentes que não têm `Agent`/`Task`): os arquivos de `agents/*.md` servem como **prompt de papel**. Leia o arquivo inteiro, inclusive o bloco "Conduta" no fim
+  (investigar antes de afirmar, declarar o que não foi verificado, escopo é o pedido; os que escrevem também confirmam antes de ação destrutiva e nunca enfraquecem teste). A fonte desse bloco é
+  `policies/subagent-conduct.md`; `node scripts/sync-agent-conduct.mjs` confere que nenhum agente divergiu.
+- Texto de terceiros (galerias de prompts, por exemplo) fica fora do repositório: a biblioteca local de `prompt-motion.mjs` vive em `~/.dev-team-kit/prompt-motion/`.
+
 ## Subagents Despacháveis (`agents/`) vs Skills (`skills/NN-*/`)
 
 ⚠ **REGRA CRÍTICA — ler antes de despachar qualquer trabalho paralelo.**
@@ -148,7 +168,7 @@ O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
 | Universo | Localização | Invocação | Convenção de nome |
 |---|---|---|---|
-| **Skills** (48 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`48-` |
+| **Skills** (85 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`86-` (o 16 é reservado) |
 | **Subagents** (16 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
 **Apenas estes 16 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
