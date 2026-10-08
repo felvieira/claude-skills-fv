@@ -32,7 +32,7 @@ jobs:
         run: node --test scripts/tests/memory-hooks.test.mjs scripts/tests/guards-evals.test.mjs
 
       - name: Subagent conduct, briefing engine and effects (pure Node)
-        run: node --test scripts/tests/agents-conduct.test.mjs scripts/tests/skill-84.test.mjs scripts/tests/skill-86-fx.test.mjs
+        run: node --test scripts/tests/main-guard.test.mjs scripts/tests/agents-conduct.test.mjs scripts/tests/skill-84.test.mjs scripts/tests/skill-86-fx.test.mjs
 
       - name: Install and prove the motion-film render stack (ffmpeg + Playwright + Chromium)
         run: node skills/86-code-motion-film/scripts/doctor.mjs --install

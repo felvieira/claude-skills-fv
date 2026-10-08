@@ -460,6 +460,8 @@ O hook `context-guard-stop` opera em dois níveis:
 
 O kit inclui 16 subagents Claude Code em `.claude/agents/`, prontos para despachar com a `Task` tool ou invocar pelo prompt.
 
+Todo agente termina com o mesmo bloco de **Conduta**, gerado de uma fonte única (`policies/subagent-conduct.md`) e protegido por teste: investigar antes de afirmar e dizer o que não foi verificado, devolver um relatório que se sustenta sozinho, agrupar leituras independentes, ficar dentro do pedido. Os agentes que escrevem também confirmam antes de qualquer ação destrutiva ou visível a outros (sem `--no-verify`, sem descartar arquivos desconhecidos), nunca enfraquecem um teste para ele passar e limpam o que criaram. Agentes sem ferramenta de despacho (Codex, Grok, Cursor, Gemini, OpenCode) usam o arquivo como prompt de papel (veja `AGENTS.md`).
+
 ### Core (5)
 | Subagent | Quando usar | Tools |
 |---|---|---|

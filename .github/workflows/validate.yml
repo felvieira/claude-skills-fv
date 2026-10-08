@@ -48,6 +48,9 @@ jobs:
       - name: Skills 85/86 tests (icon linter/exporter, springs, audio synth, doctor and a real render)
         run: node --test scripts/tests/skills-85-86.test.mjs
 
+      - name: Portability (scripts run through symlinked paths)
+        run: node --test scripts/tests/main-guard.test.mjs
+
       - name: Subagent conduct block (agents match policies/subagent-conduct.md)
         run: node --test scripts/tests/agents-conduct.test.mjs
 

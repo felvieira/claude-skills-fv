@@ -343,6 +343,8 @@ async function main() {
 // Only run the CLI when invoked directly — parseYAML/validate are imported by
 // dashboard-server.mjs to render the program graph, and main() calls
 // process.exit(), which would kill the server on import.
-const invokedDirectly = process.argv[1] &&
-  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+// Compara pelo caminho real: argv[1] pode vir por link simbolico (macOS /var -> /private/var) e import.meta.url nao.
+import { realpathSync } from "fs";
+const sameFile = (a, b) => { try { return realpathSync(a) === realpathSync(b); } catch { return path.resolve(a) === path.resolve(b); } };
+const invokedDirectly = process.argv[1] && sameFile(process.argv[1], fileURLToPath(import.meta.url));
 if (invokedDirectly) main();

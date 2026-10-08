@@ -151,4 +151,7 @@ async function main() {
   process.exit(failed ? 1 : 0);
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) main().catch((e) => { console.error(e.message); process.exit(1); });
+// compara pelo caminho real: process.argv[1] pode vir por link simbolico (macOS /var -> /private/var) e import.meta.url nao; sem isso o script sai em silencio sem rodar
+import { realpathSync as realpathMain } from "node:fs";
+const isMainModule = (url) => { try { return realpathMain(process.argv[1]) === realpathMain(fileURLToPath(url)); } catch { return process.argv[1] === fileURLToPath(url); } };
+if (process.argv[1] && isMainModule(import.meta.url)) main().catch((e) => { console.error(e.message); process.exit(1); });

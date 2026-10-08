@@ -11,6 +11,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { encodeWav } from "../../skills/86-code-motion-film/scripts/audio-synth.mjs";
+import { findFfmpeg } from "../../skills/86-code-motion-film/scripts/deps.mjs";
 import { analyzeSamples, cutBars } from "../../skills/86-code-motion-film/scripts/beats.mjs";
 import { checkFilm, scanSource } from "../../skills/86-code-motion-film/scripts/check-film.mjs";
 import { parseTimes } from "../../skills/86-code-motion-film/scripts/render-seek.mjs";
@@ -18,6 +19,8 @@ import { parseTimes } from "../../skills/86-code-motion-film/scripts/render-seek
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SK = join(root, "skills", "86-code-motion-film");
 const RENDER = join(SK, "scripts", "render-seek.mjs");
+// ffmpeg recem-instalado (winget/brew) pode nao estar no PATH desta sessao: use o caminho que o proprio kit resolve
+const FFPROBE = findFfmpeg().ffprobe ? findFfmpeg().ffprobe.cmd : "ffprobe";
 const near = (a, b, eps) => assert.ok(Math.abs(a - b) <= eps, `${a} != ${b} (±${eps})`);
 
 const doctor = spawnSync(process.execPath, [join(SK, "scripts", "doctor.mjs"), "--no-smoke", "--json"], { encoding: "utf8", env: process.env });
@@ -110,7 +113,7 @@ test("beats cut: compassos inteiros com duracao exata; render --scale reduz para
     const wav = join(out, "m.wav");
     writeFileSync(wav, encodeWav(song({ bpm: 120, offset: 0, seconds: 20 }), 22050));
     const r = cutBars(wav, { bpm: 120, bar1: 0, a: 2, b: 5, out: join(out, "c.wav") });
-    const dur = Number(spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", join(out, "c.wav")], { encoding: "utf8" }).stdout);
+    const dur = Number(spawnSync(FFPROBE, ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", join(out, "c.wav")], { encoding: "utf8" }).stdout);
     near(dur, 8, 0.02); // 4 compassos a 120 BPM = 8 s
     near(r.start, 2, 1e-6);
 
@@ -118,7 +121,7 @@ test("beats cut: compassos inteiros com duracao exata; render --scale reduz para
     const run = spawnSync(process.execPath, [RENDER, page, "--size", "320x180", "--scale", "2", "--duration", "1", "--fps", "10", "--out", join(out, "s.mp4")], { encoding: "utf8", env: process.env });
     assert.equal(run.status, 0, run.stderr);
     assert.match(run.stdout, /supersampling 2x/);
-    const probe = spawnSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", join(out, "s.mp4")], { encoding: "utf8" }).stdout.trim();
+    const probe = spawnSync(FFPROBE, ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", join(out, "s.mp4")], { encoding: "utf8" }).stdout.trim();
     assert.equal(probe, "320,180");
   } finally { rmSync(out, { recursive: true, force: true }); }
 });

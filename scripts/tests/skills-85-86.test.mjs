@@ -17,13 +17,17 @@ import { barsFor, beatGrid, dampingRatio, layout, overshoot, presets, pulse, set
 import { encodeWav, synth } from "../../skills/86-code-motion-film/scripts/audio-synth.mjs";
 import { contrast, flattenPath, hexToRgb, lintPalette, lintSvg } from "../svg-icon-lint.mjs";
 import { innerSvg, rootStyleAttrs, toJsx } from "../svg-icon-export.mjs";
-import { allOk, browsersPath, findPlaywright, isMissingBrowserError, missing, playwrightBases, toolsDir } from "../../skills/86-code-motion-film/scripts/deps.mjs";
+import { allOk, browsersPath, findFfmpeg, findPlaywright, isMissingBrowserError, missing, playwrightBases, toolsDir } from "../../skills/86-code-motion-film/scripts/deps.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const EXAMPLES = join(root, "skills", "85-illustration-studio", "assets", "examples");
 const LINT = join(root, "scripts", "svg-icon-lint.mjs");
 const EXPORT = join(root, "scripts", "svg-icon-export.mjs");
 const RENDER = join(root, "skills", "86-code-motion-film", "scripts", "render-seek.mjs");
+// ffmpeg recem-instalado (winget/brew) pode nao estar no PATH desta sessao: use o caminho que o proprio kit resolve
+const FF = findFfmpeg();
+const FFPROBE = FF.ffprobe ? FF.ffprobe.cmd : "ffprobe";
+const FFMPEG = FF.ffmpeg ? FF.ffmpeg.cmd : "ffmpeg";
 const near = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps, `${a} != ${b} (±${eps})`);
 
 // ================================================================== 86: molas
@@ -218,7 +222,7 @@ test("render-seek: MP4 com a duracao pedida, quadros iguais em dois renders e ce
     const run = (...a) => spawnSync(process.execPath, [RENDER, page, "--size", "320x180", ...a], { encoding: "utf8", env: process.env });
     const mp4 = run("--out", join(out, "f.mp4"), "--duration", "1", "--fps", "12");
     assert.equal(mp4.status, 0, mp4.stderr);
-    const probe = spawnSync("ffprobe", ["-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames,width,height", "-of", "default=nw=1", join(out, "f.mp4")], { encoding: "utf8" }).stdout;
+    const probe = spawnSync(FFPROBE, ["-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames,width,height", "-of", "default=nw=1", join(out, "f.mp4")], { encoding: "utf8" }).stdout;
     assert.match(probe, /width=320/);
     assert.match(probe, /nb_read_frames=12/);
 
@@ -526,7 +530,7 @@ test("filme Relay: loop fecha (primeiro = ultimo quadro) e --blur mantem a durac
     const s = run("--stills", "0,14.999", "--stills-dir", join(out, "s"));
     assert.equal(s.status, 0, s.stderr);
     // o grao muda por quadro (numero do quadro), entao compara a estrutura: reduz os dois a 16x9 em escala de cinza
-    const small = (f) => spawnSync("ffmpeg", ["-v", "error", "-i", join(out, "s", f), "-vf", "scale=16:9,format=gray", "-f", "rawvideo", "-"], { encoding: "buffer" }).stdout;
+    const small = (f) => spawnSync(FFMPEG, ["-v", "error", "-i", join(out, "s", f), "-vf", "scale=16:9,format=gray", "-f", "rawvideo", "-"], { encoding: "buffer" }).stdout;
     const [f0, f1] = readdirSync(join(out, "s")).sort();
     const A = small(f0), B = small(f1);
     let diff = 0; for (let i = 0; i < A.length; i++) diff = Math.max(diff, Math.abs(A[i] - B[i]));
@@ -535,7 +539,7 @@ test("filme Relay: loop fecha (primeiro = ultimo quadro) e --blur mantem a durac
     const m = run("--out", join(out, "b.mp4"), "--duration", "1", "--fps", "10", "--blur", "3");
     assert.equal(m.status, 0, m.stderr);
     assert.match(m.stdout, /motion blur 3/);
-    const probe = spawnSync("ffprobe", ["-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames", "-of", "default=nw=1", join(out, "b.mp4")], { encoding: "utf8" }).stdout;
+    const probe = spawnSync(FFPROBE, ["-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries", "stream=nb_read_frames", "-of", "default=nw=1", join(out, "b.mp4")], { encoding: "utf8" }).stdout;
     assert.match(probe, /nb_read_frames=10/, "3 subquadros por quadro, mas 10 quadros de saida");
   } finally {
     rmSync(out, { recursive: true, force: true });

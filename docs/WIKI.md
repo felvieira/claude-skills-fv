@@ -1054,7 +1054,7 @@ Review-only agent with zero tolerance for silent failures: empty `catch{}`, erro
 
 ---
 
-## 7. Policies (62)
+## 7. Policies (65)
 
 Policies are shared rules that govern skill behavior. Every skill cites the policies it follows. **Top 5 most important:**
 
@@ -1093,6 +1093,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 | `persistence.md` | When and how to persist context |
 | `search-first.md` | Research required before implementing |
 | `source-driven.md` | Every claim anchored in a source (file:line, ADR, commit) |
+| `subagent-conduct.md` | Single source of the "Conduct" block at the end of every `agents/*.md` (verify before claiming, self-contained report, confirm destructive actions, tests verify and never define the solution); `scripts/sync-agent-conduct.mjs` keeps the agents in sync |
 | `stack-flexibility.md` | Skills don't couple to a single vendor |
 | `token-efficiency.md` | Output compression to save tokens |
 
