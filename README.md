@@ -6,7 +6,7 @@
 
 # Dev Team Kit — 85 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.101.0-0f766e)
+![Version](https://img.shields.io/badge/version-2.102.0-0f766e)
 ![Skills](https://img.shields.io/badge/skills-85-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
@@ -16,7 +16,7 @@
 
 ### ✨ What's new
 
-- **v2.101.0** — skill 86 gets decision guides (film types, six styles with a signature move, pure-function effects in `fx.mjs`, per-agent action table).
+- **v2.102.0** — skill 86 gets decision guides (film types, six styles with a signature move, pure-function effects in `fx.mjs`, per-agent action table).
 - **v2.99.0** — skill 86 can prove a film is deterministic (`check-film.mjs`), listen to a track for tempo, downbeat and drops and cut whole bars (`beats.mjs`), and review frames with clean-context reviewers that score seven dimensions.
 - **v2.98.0** — skill 84 gets a briefing engine (idea → verified facts → shot pack, `briefing-qa.mjs` rejects numbers without a source) and ten clip-type prompt templates.
 - **v2.97.0** — skill 86 ships a 1080p reference film ("Relay") and a quality bar, with motion blur and a scored soundtrack.
@@ -185,6 +185,10 @@ The MCP exposes 38 tools backed by the installed skills.
 | **Antigravity** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via local config |
 
 > For platforms without native hooks, the same rules live in `policies/hooks.md` — the agent applies them manually.
+
+### Operating systems
+
+The hooks, guards, trigger evals, subagent conduct block and the media tools (skills 84, 85, 86, including a real render with ffmpeg + Chromium) run in CI on **Linux** (`Validate`), **macOS** and **Windows** (`Cross-OS`) on every push. That job caught three portability bugs that the Linux run could not see, all fixed in v2.102.0: `/freeze` denied files inside a frozen folder when the path went through a symlink (macOS `/var` → `/private/var`); 15 scripts exited silently, doing nothing, when started through a symlinked path; and the conduct sync tool did not understand CRLF line endings from a Windows `autocrlf` checkout. Not yet exercised on a real agent: the new tools under Cursor, Gemini CLI or OpenCode (they are plain Node, so nothing depends on the agent, but only Claude Code, Codex and Grok Build were driven for real).
 
 ### What works where
 

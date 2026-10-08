@@ -600,6 +600,29 @@ skill 74 em 100% should / 0% shouldnt), `skill-quality-score` (skill 74 em 26/30
 
 ---
 
+## [2.102.0] - 2026-10-08
+
+Portabilidade provada, não presumida: novo workflow **Cross-OS** roda no macOS e no Windows (o `Validate` roda no Linux) os hooks, as guardas, o bloco de conduta, as ferramentas de mídia e um render real. Ele achou três defeitos que o Linux não enxergava.
+
+### Corrigido
+
+- **`/freeze` e links simbólicos** (`hooks/scripts/session-guards-lib.mjs`): a guarda comparava caminhos sem resolver links. No macOS o diretório temporário é `/var/...` mas `process.cwd()` devolve `/private/var/...`, então um arquivo dentro da pasta congelada era **negado**. Afetava também quem tem o projeto numa pasta em link simbólico. `isInside` agora compara caminhos canônicos (`canonicalPath` resolve o trecho que existe, também nomes curtos 8.3 do Windows, e mantém o resto). Teste de regressão que falha no código antigo.
+- **15 scripts saíam em silêncio por caminho com link simbólico**: o padrão `resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))` compara um caminho que o Node não resolve com um que ele resolve; por link simbólico (ou junction no Windows) a igualdade falha, `main()` não roda e o processo termina com código 0 e sem saída. Todos os scripts afetados (skills 84, 85, 86, `validate-program`, `eval-plugin-routing`, `sync-agent-conduct` e outros) passam a comparar por `realpath`; `scripts/tests/main-guard.test.mjs` proíbe o padrão antigo e roda os scripts por um link.
+- **CRLF (checkout do Windows com `autocrlf`)**: `scripts/sync-agent-conduct.mjs` não achava os blocos em arquivos CRLF. Passa a comparar em LF e a devolver a cada arquivo o fim de linha que ele tinha; teste com o repo inteiro convertido para CRLF.
+- **Testes chamavam `ffprobe`/`ffmpeg` pelo nome**, o que falha logo depois de o `winget`/`brew` instalar na mesma sessão (o PATH não se atualiza). Os testes usam o caminho que o próprio kit resolve (`findFfmpeg`), como o `doctor` e o `render-seek` já faziam.
+
+### Adicionado
+
+- `.github/workflows/cross-os.yml` (macOS e Windows): hooks, guardas, conduta, briefing, efeitos, `doctor --install` e as suítes de render real.
+- `AGENTS.md` e `templates/AGENTS-root.md`: seção "Ferramentas de mídia e conduta dos subagentes (qualquer agente)", com os comandos em Node puro e a regra de usar `agents/*.md` como prompt de papel onde não há despacho de subagentes. A contagem de skills do `AGENTS.md` (48) estava desatualizada e foi corrigida para 85.
+- READMEs: seção "Operating systems / Sistemas operacionais" com o que foi verificado e o que não foi, e o parágrafo da conduta na seção de subagentes; WIKI: política `subagent-conduct.md` na lista.
+
+### Limites honestos
+
+- As ferramentas novas ainda não foram conduzidas por um Cursor, Gemini CLI ou OpenCode reais; são Node puro, mas só Claude Code, Codex e Grok Build foram exercitados de verdade.
+
+---
+
 ## [2.101.0] - 2026-10-07
 
 Subagentes revisados contra o guia "Prompting best practices" da Anthropic (modelos atuais). Os agentes já não usavam caixa alta de ordem (o guia avisa que modelos recentes disparam demais com isso); faltavam regras de autonomia e segurança, de testes, de escopo e de honestidade do relatório.
