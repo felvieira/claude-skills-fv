@@ -4,7 +4,7 @@
  */
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { test } from "node:test";
@@ -272,5 +272,22 @@ test("install-memory-hooks --guards: registra PreToolUse no perfil guards (Grok 
     assert.match(codex.stdout, /PreToolUse guards/);
   } finally {
     rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("guards-lib: pasta em link simbolico (macOS /var -> /private/var) conta como a mesma pasta", () => {
+  const real = mkdtempSync(join(tmpdir(), "guards-real-"));
+  const link = `${real}-link`;
+  try {
+    mkdirSync(join(real, "src"), { recursive: true });
+    try { symlinkSync(real, link, "junction"); } catch (e) { return; } // sem permissao para criar link: nada a provar aqui
+    assert.equal(isInside(join(real, "src"), join(link, "src", "a.ts")), true, "arquivo dentro, citado pelo link");
+    assert.equal(isInside(join(link, "src"), join(real, "src", "a.ts")), true, "arquivo dentro, citado pelo caminho real");
+    assert.equal(isInside(join(link, "src"), join(real, "src-old", "a.ts")), false, "prefixo parecido continua fora");
+    assert.equal(isInside(join(link, "src"), join(link, "novo", "arquivo-que-nao-existe.ts")), false, "caminho inexistente fora da pasta");
+    assert.equal(isInside(join(link, "src"), join(link, "src", "novo", "ainda-nao-existe.ts")), true, "caminho inexistente dentro da pasta");
+  } finally {
+    rmSync(link, { recursive: true, force: true });
+    rmSync(real, { recursive: true, force: true });
   }
 });

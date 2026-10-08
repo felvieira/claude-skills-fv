@@ -8,8 +8,8 @@
  * comando). Por isso expira em 8 h e `/careful off` / `/freeze off` apagam na hora. Duas sessoes
  * abertas no mesmo repo compartilham a guarda.
  */
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
-import { dirname, join, parse, resolve, sep } from "node:path";
+import { existsSync, mkdirSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, parse, resolve, sep } from "node:path";
 
 export const GUARD_TTL_MS = 8 * 60 * 60 * 1000;
 const ROOT_MARKERS = [".git", "package.json", ".claude"];
@@ -68,9 +68,30 @@ export function writeGuards(cwd, patch, now = Date.now()) {
   return readGuards(cwd, now);
 }
 
-/** true se `target` esta dentro de `dir` (ou e ele). Compara sem diferenciar maiuscula no Windows. */
+/**
+ * Caminho canonico: resolve links simbolicos (e nomes curtos 8.3 no Windows) do trecho que existe e mantem o resto como veio.
+ * Sem isso, `/var/x` e `/private/var/x` (macOS), ou uma pasta de projeto em link simbolico, parecem lugares diferentes.
+ */
+export function canonicalPath(p) {
+  const full = resolve(p);
+  let cur = full;
+  const rest = [];
+  for (;;) {
+    try {
+      const real = realpathSync(cur);
+      return rest.length ? join(real, ...rest.reverse()) : real;
+    } catch {
+      const up = dirname(cur);
+      if (up === cur) return full;
+      rest.push(basename(cur));
+      cur = up;
+    }
+  }
+}
+
+/** true se `target` esta dentro de `dir` (ou e ele). Compara caminhos canonicos, sem diferenciar maiuscula no Windows. */
 export function isInside(dir, target, platform = process.platform) {
-  const norm = (p) => (platform === "win32" ? resolve(p).toLowerCase() : resolve(p));
+  const norm = (p) => (platform === "win32" ? canonicalPath(p).toLowerCase() : canonicalPath(p));
   const base = norm(dir);
   const t = norm(target);
   if (t === base) return true;

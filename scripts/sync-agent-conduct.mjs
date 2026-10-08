@@ -17,8 +17,11 @@ const POLICY = join(root, "policies", "subagent-conduct.md");
 const AGENTS = join(root, "agents");
 const WRITE_OVERRIDES = new Set(["codeql-runner"]); // so tem Bash, mas constroi bancos de dados no disco
 
+// checkout no Windows com autocrlf traz CRLF: compara sempre em LF e devolve ao arquivo o fim de linha que ele tinha
+const toLF = (text) => text.split("\r\n").join("\n");
+
 const section = (text, name) => {
-  const m = text.match(new RegExp(`<!-- ${name} -->\\n([\\s\\S]*?)\\n<!-- /${name} -->`));
+  const m = toLF(text).match(new RegExp(`<!-- ${name} -->\\n([\\s\\S]*?)\\n<!-- /${name} -->`));
   if (!m) throw new Error(`policies/subagent-conduct.md: bloco <!-- ${name} --> nao encontrado`);
   return m[1].trim();
 };
@@ -47,12 +50,14 @@ export function listAgents() {
 export function sync({ write = false } = {}) {
   const policy = readFileSync(POLICY, "utf8");
   return listAgents().map(({ name, file }) => {
-    const content = readFileSync(file, "utf8");
+    const raw = readFileSync(file, "utf8");
+    const crlf = raw.includes("\r\n");
+    const content = toLF(raw);
     const fm = (content.match(/^---\n([\s\S]*?)\n---/) || [, ""])[1];
     const profile = profileFor(name, fm);
     const next = applyBlock(content, expectedBlock(profile, policy));
     const ok = next === content;
-    if (!ok && write) writeFileSync(file, next);
+    if (!ok && write) writeFileSync(file, crlf ? next.split("\n").join("\r\n") : next);
     return { name, profile, ok };
   });
 }
