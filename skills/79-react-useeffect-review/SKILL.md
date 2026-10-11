@@ -1,14 +1,11 @@
 ---
 name: react-useeffect-review
 description: |
-  Checklist de quando NAO usar useEffect, baseado na doc oficial do React
-  ("You Might Not Need an Effect"). Use ao escrever ou revisar useEffect,
-  useState pra valor derivado, data fetching, sincronizacao de estado entre
-  componentes, ou reset de estado ao trocar prop. Trigger em: "useEffect",
-  "efeito colateral", "estado derivado", "sincronizar estado", "resetar
-  estado quando prop muda", "race condition no fetch", "effect chain",
-  "notificar parent via effect", "inicializacao duplicada em dev",
-  "useSyncExternalStore", "por que renderizou duas vezes".
+  Checklist React para decidir quando não usar useEffect em estado derivado, fetch,
+  sincronização e reset de props. Trigger em: "useEffect", "estado derivado",
+  "race condition no fetch", "sincronizar estado", "resetar estado quando prop muda",
+  "effect chain", "notificar parent via effect", "useSyncExternalStore",
+  "por que renderizou duas vezes".
 ---
 
 # React useEffect — Quando NAO Usar

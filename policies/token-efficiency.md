@@ -50,7 +50,7 @@ o vilao silencioso: **cada prompt carrega TODO o historico da sessao**, entao a 
 | # | Tatica | Como o kit ajuda |
 |---|--------|------------------|
 | 1 | **/clear ao mudar de assunto** | 🤖 `topic-shift-detector.mjs` (UserPromptSubmit) avisa em mudanca de dominio obvia |
-| 2 | **Cuidado com MCPs** (vao em todo prompt) | 🤖 `session-start.mjs` reporta MCPs do projeto; preferir skills (lazy-load) |
+| 2 | **Cuidado com MCPs** (vao em todo prompt) | 🤖 `session-start.mjs` reporta MCPs do projeto; preferir skills (body lazy). Description das skills do plugin **nao e lazy** — teto 400 chars, ver `skill-catalog-budget.mjs` |
 | 3 | **Manda tudo de uma vez** (fragmentar = pagar historico N×) | 👤 habito manual — kit nao ve o futuro do prompt |
 | 4 | **Modelo certo** (Opus caro, Sonnet/Haiku resolvem) | 🤖 `model-routing-hook.mjs` sugere tier por task |
 | 5 | **CLAUDE.md enxuto** (< 200 linhas, indice nao enciclopedia) | 🤖 `session-start.mjs` avisa se CLAUDE.md/AGENTS.md passa de 200 linhas |

@@ -1,0 +1,20 @@
+{
+  "skill": "65-using-git-worktrees",
+  "should_trigger": [
+    "criar um worktree para trabalhar isolado",
+    "preciso verificar a baseline de testes antes da task",
+    "ja estou num worktree e quero detectar aninhamento",
+    "usar EnterWorktree para separar esta implementacao",
+    "como fazer git worktree add sem sujar o branch",
+    "preparar workspace isolado para trabalho paralelo",
+    "confirmar que a baseline esta limpa",
+    "evitar worktree dentro de worktree"
+  ],
+  "shouldnt_trigger": [
+    "criar uma branch simples para o bug",
+    "fazer deploy Docker em producao",
+    "revisar um contrato de API",
+    "configurar o design system",
+    "medir tokens do contexto"
+  ]
+}

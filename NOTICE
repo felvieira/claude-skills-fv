@@ -8,20 +8,29 @@ you may not use this file except in compliance with the License.
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 ================================================================================
-Third-party attribution (idea-level inspiration)
+Third-party attribution (inspiration and adapted material)
 ================================================================================
 
-This kit was inspired by several open-source projects. Each entry below records
-the upstream project, its license, and a one-line description of what the kit
-implementation took from that direction.
-
-No code from these projects is bundled or copied. Every kit artifact mentioned
-is an independent re-implementation in our markdown-first, zero-runtime-dep
-conventions. The `README.md → Acknowledgements` section provides additional
-context; this file exists to satisfy Apache-2.0 §4(d) and is required to be
-preserved in redistributions.
+The projects below inspired independent kit implementations, except where
+explicitly marked as adapted material. Skill 87 adapts text from REA under MIT;
+its local LICENSE-REA retains the upstream license and copyright. The
+`README.md → Acknowledgements` section provides additional context; this file
+also records attribution for redistributions.
 
 --------------------------------------------------------------------------------
+morluto/rea
+  https://github.com/morluto/rea
+  License: MIT
+  skills/87-reverse-engineer-anything/SKILL.md and its five local references
+  adapt REA's reverse-engineer-anything skill at commit
+  6d8f95e38dfc847d911430483b812ff4951b373d. Its copyright and full MIT
+  license are preserved in skills/87-reverse-engineer-anything/LICENSE-REA.
+
+Washi1337/ghidra-nativeaot
+  https://github.com/Washi1337/ghidra-nativeaot
+  License: MIT
+  Referenced as an optional external analyzer in REA's native-artifact guide;
+  no plugin code is included.
 
 github/spec-kit
   https://github.com/github/spec-kit

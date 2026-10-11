@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 85 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
-> **Última atualização:** 2026-07-10 (v2.40.0 — skill 53 doubt-driven-review, absorvida de addyosmani/agent-skills)
+> **Versão:** 86 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
+> **Última atualização:** 2026-10-10 (skill 87 — REA para artefatos distribuídos)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (79)
+## 5. Skills (86)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -704,11 +704,11 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 #### Skill 49 — Context Budget
 
-**O que faz:** audita o peso de contexto carregado — CLAUDE.md (global + projeto), descrições de agents/*.md, descrições de MCP servers ativos, rules path-scoped disparadas, skills invocadas na sessão, e histórico de conversa acumulado. Estima tokens por componente, reporta headroom disponível e emite alertas de overflow em 80%/95%.
+**O que faz:** audita componentes de contexto observáveis — arquivos de instrução raiz, `systemMessage`/`additionalContext` capturado dos hooks, descrições de MCP ativas, rules path-scoped, skills invocadas e histórico quando há telemetria. Inventário em disco e `caracteres ÷ 4` são proxies, não prova de tokens do provider ou headroom.
 **Quando ativar:** sessão parece lenta ou respostas degradam (possível overflow de contexto); depois de habilitar um MCP server novo; antes de `/swarm` ou `/loop --parallel`; repo com `.bot/` instalado.
-**Problema que resolve:** bloat de contexto invisível — você não sabe qual componente está comendo 40% da sua janela até as respostas começarem a degradar.
-**Diferente de:** Skill 30 (Cost Tracker) rastreia custo de completions em runtime; Context Budget rastreia o que já está carregado antes de qualquer completion.
-**Takeaway:** descrições de agents/*.md costumam ser o maior custo fixo — 16 agents × ~500 tokens cada = 8k tokens sempre presentes.
+**Problema que resolve:** bloat invisível — separa bytes em disco, inventário do catálogo, payload observado do hook e componentes que continuam desconhecidos.
+**Diferente de:** Skill 30 (Cost Tracker) rastreia custo de completions em runtime; Context Budget audita contexto pré-completion somente quando o host expõe os dados.
+**Takeaway:** descrições de agents/*.md e catálogos de skills são candidatos a custo fixo, não “sempre presentes” até capturar o catálogo/payload ativo do host. Use os scripts de inventário antes de propor mudanças.
 
 #### Skill 50 — Direct Response Copy
 
@@ -968,6 +968,12 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** "filme de motion", "showreel", "vídeo de lançamento em código", "seek(t)", "mola fechada", "trilha sintetizada", "renderizar html em mp4".
 **Takeaway:** o prompt é 10% do vídeo, o resto é o harness. O filme de exemplo foi renderizado de verdade e o laço de crítica achou três defeitos que o MP4 escondia (forma fora do centro por canvas de tamanho fixo, rótulo por baixo do spinner em t=1,6, spinner por baixo do rótulo seguinte em t=3,1). Vídeo gerado por modelo fica na skill 84; animação de UI dentro de um produto, na 12; só editar, na 75.
 
+#### Skill 87 — Reverse Engineer Anything (REA)
+
+**O que faz:** investiga binários, APKs, ASARs, firmware e comportamento no browser/runtime com evidência rastreável usando o toolkit externo [REA](https://github.com/morluto/rea). Separa observação, inferência e desconhecido; escolhe a menor ferramenta adequada ao alvo.
+**Quando ativar:** uma feature só existe em app compilado/empacotado; é preciso decompilar, comparar versões distribuídas ou observar comportamento que o código-fonte não estabelece. Para repositórios **com fonte** legada, use Detective Spec (33) ou Repo Auditor (18).
+**Takeaway:** [`skills/87-reverse-engineer-anything/SKILL.md`](../skills/87-reverse-engineer-anything/SKILL.md) traz o fluxo, não o servidor MCP do REA. Se faltarem tools, rode doctor e um setup escopado em dry-run com `--skill=false` para não instalar outra cópia da skill. Aprove explicitamente mudanças externas e reinicie o agente após registrar. Instale pré-requisitos só quando o alvo exigir.
+
 ---
 
 ## 6. Subagents (16)
@@ -1083,8 +1089,8 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 
 ### Manifesto: `.claude-plugin/plugin.json`
 
-Schema oficial do Claude Code. Lista:
-- **85 skills** em `skills/NN-nome/SKILL.md`
+O plugin descobre automaticamente as pastas de skill:
+- **86 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1097,7 +1103,7 @@ Schema oficial do Claude Code. Lista:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 85 skills, hooks, 47 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`).
+Instala globalmente: 86 skills, hooks, 47 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1122,7 +1128,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 85 skills | ✓ | ✓ | ✓ |
+| 86 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

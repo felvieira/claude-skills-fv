@@ -29,6 +29,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const arg = (f) => { const i = process.argv.indexOf(f); return i >= 0 ? process.argv[i + 1] : null; };
 const DRY = process.argv.includes("--dry-run");
 const VAULT = arg("--path") || process.env.CLAUDE_MEMORY_VAULT || defaultVaultPath();
+const UPGRADE_AI_MEMORY = process.argv.includes("--upgrade-ai-memory");
+const AI_MEMORY_BACKUP = arg("--backup-to");
 
 const DIRS = ["logs", "architecture", "templates", "secrets", "inbox"];
 
@@ -143,18 +145,23 @@ function main() {
     console.log(`   Dica: para usar outro path, defina CLAUDE_MEMORY_VAULT=<path> no seu ambiente.`);
   }
 
-  // --- ai-memory backend (opt-out via DEVKIT_MEMORY_BACKEND=native) ---
-  // Best-effort, non-fatal: se Docker não estiver disponível ou o setup
-  // falhar por qualquer razão, o vault nativo criado acima já é funcional
-  // como fallback. Ver scripts/ai-memory-setup.mjs e policies/memory-backends.md.
+  // O install normal é best-effort. Upgrade explícito tem semântica estrita:
+  // qualquer falha precisa chegar ao instalador, sem fingir sucesso no fallback.
   if (!DRY) {
     console.log("");
     try {
-      execFileSync(process.execPath, [join(__dirname, "ai-memory-setup.mjs")], {
+      if (UPGRADE_AI_MEMORY && !AI_MEMORY_BACKUP) throw new Error("--upgrade-ai-memory requires --backup-to");
+      execFileSync(process.execPath, [join(__dirname, "ai-memory-setup.mjs"),
+        ...(UPGRADE_AI_MEMORY ? ["--upgrade", "--backup-to", AI_MEMORY_BACKUP] : [])], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
-    } catch {
+    } catch (error) {
+      if (UPGRADE_AI_MEMORY) {
+        if (!error.status) console.error(`[ai-memory] ${error.message}`);
+        process.exitCode = error.status || 1;
+        return;
+      }
       console.log("[ai-memory] setup opcional falhou — vault nativo continua ativo normalmente.");
     }
   }

@@ -64,9 +64,8 @@ Toda skill segue este template (campos obrigatorios marcados ★):
 ---
 name: nome-curto-com-hifen ★
 description: | ★
-  Resumo de 2-3 linhas explicando quando usar.
-  Inclui triggers naturais para descoberta automatica.
-  Trigger em: "palavra1", "palavra2", "frase tipica", ...
+  Uma frase de propósito (≤160 chars). Trigger em: ≤12 frases.
+  Teto total 400 chars — a description vai no system prompt de todo turno.
 argument-hint: "[descricao dos argumentos opcional]"
 allowed-tools: Read, Grep, Glob, Bash(comando *), Edit, Write
 ---
@@ -125,13 +124,12 @@ Origem: "Lessons from building Claude Code: how we use skills" (claude.dev). O q
 
 ### Description: Triggering
 
-A `description` no frontmatter e o que o orchestrator/Claude le para decidir invocar. Otimizar para descoberta:
+A `description` no frontmatter e o catalogo do harness: Claude/Codex/Grok injetam `name` + `description` de **todas** as skills do plugin em todo turno. O body e lazy; a description nao. Otimizar para descoberta **e** budget:
 
-**Boa description:**
+**Boa description (≤400 chars, ≤12 triggers):**
 ```yaml
 description: |
-  Skill de scan automatizado de codigo para vulnerabilidades via Semgrep e CodeQL.
-  Use antes de toda release ou em PRs grandes.
+  Scan SAST via Semgrep e CodeQL. Use antes de release ou em PRs grandes.
   Trigger em: "semgrep", "codeql", "static analysis", "scan de seguranca", "SAST", "varredura".
 ```
 
@@ -140,7 +138,9 @@ description: |
 description: Skill que faz coisas relacionadas a seguranca.
 ```
 
-Diferenca: a boa lista palavras-gatilho explicitas (que sao matched no input do usuario) + delimita quando usar.
+**Description gorda (tambem ruim):** 800–1200 chars com 30+ triggers. Codex emite "Skill descriptions were shortened" e corta os triggers do fim. Prosa de protocolo vai no body.
+
+Medir: `node scripts/skill-catalog-budget.mjs`. Policy: `policies/skill-manifest.md`.
 
 ### Allowed-tools
 

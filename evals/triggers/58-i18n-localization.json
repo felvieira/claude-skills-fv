@@ -1,0 +1,20 @@
+{
+  "skill": "58-i18n-localization",
+  "should_trigger": [
+    "preparar a aplicação para internacionalizacao",
+    "preciso adicionar localizacao em arabe com RTL",
+    "testar expansao de texto com pseudolocale",
+    "formatar data numero e moeda por locale",
+    "o texto traduzido quebrou o layout",
+    "como tratar plural e outro idioma",
+    "corrigir strings hardcoded antes da traducao",
+    "o timezone e o formato de moeda estao errados"
+  ],
+  "shouldnt_trigger": [
+    "definir a paleta do design system",
+    "configurar o webhook do backend",
+    "auditar a acessibilidade WCAG",
+    "criar um paywall de assinatura",
+    "renderizar um filme em mp4"
+  ]
+}

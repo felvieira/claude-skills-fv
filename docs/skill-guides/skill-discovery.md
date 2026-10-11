@@ -11,6 +11,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Refactor / simplify** | `/simplify` → QA (05) → Reviewer (11) |
 | **Review / deploy** | `/review` → `/ship` |
 | **Dúvida / exploração** | Context Manager (08) → Repo Auditor (18) |
+| **App/binary/APK/ASAR entregue sem fonte** | REA (87) — análise de artefato/runtime com evidência; toolkit externo só quando necessário |
 | **Melhoria de UI** | Design Intelligence (29) → UI/UX (02) → Frontend (04) → QA (05) |
 | **Integração de IA** | AI Integration Architect (25) → Prompt Engineer (26) → Backend (03) |
 | **Documentação** | Documenter (10) → Reviewer (11) |

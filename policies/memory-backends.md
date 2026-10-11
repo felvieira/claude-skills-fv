@@ -21,35 +21,63 @@ de qualidade de busca e continuidade entre agentes, mas **exige Docker**
 rodando (ou WSL2/binário nativo experimental no Windows) — uma dependência
 nova e pesada que o kit historicamente não pedia.
 
-## Decisão automática no install
+## Install, diagnóstico e upgrade
 
-`scripts/ai-memory-setup.mjs`, chamado do fim de `scripts/init-vault.mjs`
-(que por sua vez roda no fim de `setup/install.sh`):
+`scripts/init-vault.mjs` roda no fim de `setup/install.sh` e chama
+`scripts/ai-memory-setup.mjs`:
 
-1. Detecta `docker version` — se ausente, fica no vault nativo, sem perguntar.
-2. Se Docker existe, sobe (ou reaproveita) o container `ai-memory` em
-   `127.0.0.1:39374` (override: `DEVKIT_AI_MEMORY_PORT`), idempotente, sem
-   perguntar (mesmo padrão de "npx MCPs auto-instalam" que o kit já usa). A
-   porta não é 49374 porque, no Windows, 49152+ é a faixa dinâmica que o
-   Hyper-V/WSL2 reserva e o Docker às vezes falha em silêncio ao publicá-la.
-   O container sobe com `-e AI_MEMORY_SERVER_URL=...` e `serve --bind 0.0.0.0:<porta>`:
-   sem a variável o healthcheck interno tenta a porta padrão e o container
-   fica `unhealthy` mesmo respondendo.
-3. Se o binário CLI `ai-memory` está no PATH, registra hooks + MCP para
-   `claude-code` automaticamente (`install-hooks` / `install-mcp`).
-4. Grava o backend ativo em `~/.dev-team-kit/memory-backend.json` — a fonte
-   da verdade que os hooks nativos consultam para saber se devem ceder.
+1. Sem Docker, mantém o vault nativo. `--no-input`/`--profile lean` sem
+   pedido explícito de upgrade não baixam imagem Docker; `--memory-backend native`
+   força o vault nativo.
+2. Primeira instalação Docker: baixa `akitaonrails/ai-memory:latest`, inicia
+   servidor local em `127.0.0.1:39374` (override: `DEVKIT_AI_MEMORY_PORT`) com
+   volume nomeado `ai-memory-data:/data`. A porta evita a faixa dinâmica
+   49152+ às vezes reservada pelo Hyper-V no Windows. Quando há host CLI
+   compatível, registra hooks/MCP do Claude Code e troca o marcador
+   `~/.dev-team-kit/memory-backend.json` para `ai-memory`.
+3. Instalação repetida **não** recria nem atualiza silenciosamente um servidor
+   já existente: verifica o contrato do container; se reconhecido, mantém o
+   servidor e avisa que a versão remota ainda não foi verificada. Container
+   personalizado, volume órfão ou Docker indisponível exigem revisão humana.
+   `node scripts/ai-memory-setup.mjs --check` inspeciona sem modificar o
+   marcador; `--skip` ou `DEVKIT_MEMORY_BACKEND=native` escolhe o nativo.
+
+Para atualizar um container standalone do kit, use:
+
+```bash
+node scripts/ai-memory-setup.mjs --upgrade --backup-to /caminho/absoluto/novo/ai-memory.tar.gz
+# Ou durante instalação interativa ou explícita não interativa:
+bash setup/install.sh /caminho/do/repo --upgrade-ai-memory --backup-to /caminho/absoluto/novo/ai-memory.tar.gz
+```
+
+O arquivo de backup deve ser **novo, fora do volume Docker**, num diretório
+existente. O upgrade valida o container e a saúde do servidor, executa
+`ai-memory backup` e verifica a cópia externa antes de baixar a nova imagem,
+recriar o servidor com o mesmo volume e conferir o healthcheck. O container anterior
+fica parado, nomeado `ai-memory-previous-*`; não é removido. A CLI do host
+também precisa ser atual: `ai-memory upgrade` em instalações binárias
+compatíveis baixa um release com SHA-256 verificado. Se a CLI for antiga
+(anterior a 2.3), baixe o binário e o `.sha256` de
+[Releases do ai-memory](https://github.com/akitaonrails/ai-memory/releases/latest),
+confira o checksum, preserve o executável antigo e só então rode o upgrade do
+kit. Para agentes além do Claude Code, revise os hooks/MCP registrados conforme
+[documentação Windows](https://github.com/akitaonrails/ai-memory/blob/main/docs/windows.md)
+e reexecute o instalador de hooks deles quando necessário.
+
+**Rollback:** migrações do banco são forward-only; jamais reinicie o container
+antigo contra o volume possivelmente migrado. Se o servidor novo falhar,
+restaure o backup externo em volume separado seguindo a
+[documentação upstream](https://github.com/akitaonrails/ai-memory/blob/main/docs/install.md#keeping-ai-memory-up-to-date).
+Sem backup verificável ou diante de configuração customizada, o kit recusa
+o upgrade automático em vez de perder dados ou segredos.
 
 ## Escolha explícita do usuário
 
-- `bash setup/install.sh --memory-backend native` — força o vault nativo
-  mesmo com Docker disponível.
-- `bash setup/install.sh --memory-backend ai-memory` — força a tentativa do
-  ai-memory (falha graciosamente pro nativo se Docker não existir).
-- `--profile lean` / `--no-input` sempre caem no nativo — uma instalação
-  não-interativa nunca deve baixar uma imagem Docker (~200MB) silenciosamente.
-- Standalone: `node scripts/ai-memory-setup.mjs --skip` ou
-  `DEVKIT_MEMORY_BACKEND=native` em qualquer ambiente.
+- `bash setup/install.sh --memory-backend native` — força o vault nativo.
+- `bash setup/install.sh --memory-backend ai-memory` — tenta ativar o
+  ai-memory; instalação normal não atualiza um servidor existente.
+- `--profile lean` / `--no-input` caem no nativo **exceto** quando o usuário
+  pede `--upgrade-ai-memory --backup-to` explicitamente.
 
 ## Mutuamente exclusivo, nunca os dois em paralelo
 
@@ -72,8 +100,8 @@ não deve ser editado diretamente (risco de corromper o índice SQLite vivo).
 
 ## Anti-padrões
 
-- ❌ Baixar/subir Docker silenciosamente num install `--no-input` — sempre
-  cair no nativo nesse modo.
+- ❌ Baixar/subir Docker silenciosamente num install `--no-input` sem pedido
+  explícito de upgrade e backup externo — usar o vault nativo nesse caso.
 - ❌ Rodar `memory-curator.mjs` e o `ai-memory` juntos sem `--force` explícito.
 - ❌ Editar arquivos direto dentro do volume Docker do `ai-memory`
   (`docker volume inspect ai-memory-data`) — usar `write-page`/`read-page`

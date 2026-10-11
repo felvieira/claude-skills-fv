@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 85 Skills Especialistas para Coding Agents
+# Dev Team Kit — 86 Skills Especialistas para Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.102.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-85-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-86-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -90,7 +90,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 85 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 86 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -114,7 +114,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 85 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 86 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -151,14 +151,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 85 skills (85 diretórios de skill instalados; o ID 16 é reservado).
+Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 86 skills (86 diretórios de skill instalados; o ID 16 é reservado).
 O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 85 skills | ✅ | ✅ | ✅ |
+| 86 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -207,7 +207,7 @@ Agentes sem slash commands acionam as guardas pelo shell: `node scripts/session-
 
 ---
 
-## Os 85 Especialistas
+## Os 86 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -241,6 +241,7 @@ Agentes sem slash commands acionam as guardas pelo shell: `node scripts/session-
 | 45 | **Handoff Context** | pacote prospectivo de handoff entre sessões/agentes — empacota o que a próxima sessão precisa pra continuar sem re-derivar contexto |
 | 65 | **Using Git Worktrees** | isolamento de workspace via git worktree — detecta isolamento existente, prefere ferramenta nativa (`EnterWorktree`/`ExitWorktree` ou o dispatcher `/worktree` do kit) antes de `git worktree add` cru, baseline de testes obrigatória antes de liberar a task |
 | 80 | **Jev Opportunity Scout** | varre o codebase atual em busca de decisão semântica frágil (classificação por substring, lista de palavra-chave, chamada de LLM prompt-and-parse) e reporta candidatos concretos de migração pra um judgment tipado do Jev/TypeSafe System One — arquivo/linha, primitivo certo (Choice/Noul/Score), exemplo de chamada, custo real. Só leitura; nunca instala ou chama a API sozinha |
+| 87 | **Reverse Engineer Anything (REA)** | examina binários distribuídos, APKs, ASARs e evidências de apps em execução com o toolkit externo REA; análise de repositório-fonte continua na skill 33 |
 
 ### Repo-Wiki: documentação do projeto no próprio projeto
 
@@ -299,10 +300,12 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 
 ### Conteudo e Descoberta
 
+**Auditorias SEO profundas (Claude Code, opt-in):** [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) oferece `/seo audit <url>`, SEO local, ecommerce, hreflang, Google e agent-readiness quando instalado separadamente. A skill 14 continua agnóstica; o kit **não** instala o plugin externo nem seu hook permanente de edição. [Instalação e limites](skills/14-seo-specialist/references/claude-seo.md).
+
 | # | Skill | O que faz |
 |---|---|---|
 | 13 | **Marketing Copy** | copy de produto, CTAs, landing pages, brand voice e mensagens de conversão |
-| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap e discoverability |
+| 14 | **SEO Specialist** | SEO técnico/on-page, local, produtos, hreflang e GEO; plugin opcional para auditoria completa no Claude Code |
 | 48 | **Research Prep** | pesquisa técnica multi-fonte antes de escrever docs/PRDs/ADRs/artigos — docs oficiais + GitHub + Stack Overflow + papers, ranqueados por autoridade, output em `memory/research/<slug>.md`; alimenta as skills 10, 01, 26, 41 |
 | 49 | **Context Budget** | audita o peso de contexto carregado na sessão (skills, agents, MCP descriptions, rules, CLAUDE.md) — estima tokens por componente, headroom disponível e alertas de overflow. Distinto da skill 30 (cost-tracker), que rastreia custo de completions em runtime |
 | 50 | **Direct Response Copy** | copy de direct response — headlines com gatilho mental, anúncios, e-mails de venda, legendas de Instagram, roteiro de VSL e páginas de venda construídas sobre frameworks consagrados (AIDA, PAS, 4 Ps), distinta da copy mais ampla de marca/landing da skill 13 |
@@ -439,6 +442,15 @@ node scripts/eval-memory-recall.mjs --strict                    # eval de injeç
 
 A compatibilidade por agente (o que foi verificado e o que não) está em [`policies/compaction-recovery.md`](./policies/compaction-recovery.md); estados, frescor e formatos aceitos das learned-skills em [`policies/learned-skills.md`](./policies/learned-skills.md).
 
+O backend opcional Docker `ai-memory` **não é atualizado silenciosamente**
+numa reinstalação do kit: migrações do SQLite só avançam. Inspecione sem
+alterações com `node scripts/ai-memory-setup.mjs --check`. Para atualizar
+um servidor reconhecido pelo kit com backup novo fora do volume, rode
+`node scripts/ai-memory-setup.mjs --upgrade --backup-to /caminho/absoluto/novo/ai-memory.tar.gz`
+(ou `bash setup/install.sh <repo> --upgrade-ai-memory --backup-to <arquivo-novo-absoluto>`).
+Veja [`policies/memory-backends.md`](policies/memory-backends.md) para upgrade
+da CLI Windows, recusas de containers desconhecidos e rollback.
+
 ### Perfis de Hook
 
 Controlados pela variável de ambiente `DEVKIT_HOOK_PROFILE` (padrão: `standard`):
@@ -457,6 +469,29 @@ Controlados pela variável de ambiente `DEVKIT_HOOK_PROFILE` (padrão: `standard
 O hook `context-guard-stop` opera em dois níveis:
 - **50%** — aviso não-bloqueante: sugere `/compact` enquanto ainda há margem
 - **75%** — bloqueio inteligente: exibe hint da task atual, arquivos editados na sessão e decisões do working set antes de bloquear
+
+### Custo de contexto e catálogo — inventário medido, não telemetria do host
+
+O kit agora separa os bytes armazenados em disco do payload que o host realmente envia ao modelo. O inventário local atual é:
+
+| Escopo | Inventário em disco | Estimativa `chars ÷ 4` |
+|---|---:|---:|
+| 86 descrições de skills | 56.398 chars / 57.056 bytes UTF-8 | ~14.100 tokens proxy |
+| Entradas do catálogo (`nome + descrição`) | 57.991 chars / 58.649 bytes | ~14.498 tokens proxy |
+| Candidatos de instrução raiz (`GLOBAL.md`, `AGENTS.md`, `CLAUDE.md`) | 19.804 chars / 19.981 bytes | carregamento pelo host não observado |
+| Código do `SessionStart` | 12.480 chars / 12.518 bytes | payload emitido não observado |
+
+Os números de tokens são **proxies, não tokens medidos no provedor ou no host**. Capture um `systemMessage` real e passe-o para `scripts/skill-health.mjs` ou `scripts/skill-catalog-budget.mjs` com `--observed <json>` para medir o payload observado. Uma captura de smoke test do hook produziu 423 chars; isso também não é telemetria de tokens do provedor. Os corpos completos de `SKILL.md` são lazy e não devem ser contabilizados como custo fixo do catálogo sem evidência do host.
+
+O compactor do catálogo roda em dry-run por padrão. A proposta atual remove 28.703 caracteres das descrições (~7.176 tokens proxy por turno), mas removeria 89 linhas de triggers presentes em fixtures positivos. Por isso ele preserva linhas completas, reporta os fixtures afetados e bloqueia o `--apply` normal até que as perdas sejam revisadas. Não use `--apply` durante uma auditoria.
+
+O inventário e os alertas gerados ficam em [`docs/skill-health.md`](docs/skill-health.md). Valide routing e cobertura de triggers com:
+
+```bash
+node scripts/eval-triggers.mjs --strict       # 86/86
+node scripts/eval-plugin-routing.mjs          # 44/44
+node --test scripts/tests/*.test.mjs          # 121 passed, 0 failed, 6 skipped
+```
 
 ---
 

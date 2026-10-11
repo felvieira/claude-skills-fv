@@ -31,7 +31,7 @@ Eles **não são intercambiáveis**:
 
 ### Skills numeradas (`skills/NN-name/SKILL.md`)
 
-73 skills hoje. Sempre prefixo numérico `01-` a `74-` (+ futuras; o ID 16 foi descontinuado e nunca reaproveitado).
+86 skills hoje. Sempre prefixo numérico `01-` a `87-` (+ futuras; o ID 16 foi descontinuado e nunca reaproveitado).
 
 ```typescript
 // CORRETO
@@ -62,6 +62,7 @@ Skill({ skill: "dev-team-kit-fv:code-reviewer" })  // não é skill
 Apenas estes nomes são `subagent_type` válidos para o kit:
 
 ```
+dev-team-kit-fv:anti-ai-writing
 dev-team-kit-fv:code-reviewer
 dev-team-kit-fv:codeql-runner
 dev-team-kit-fv:debugger
@@ -72,6 +73,7 @@ dev-team-kit-fv:detective-flows
 dev-team-kit-fv:orchestrator
 dev-team-kit-fv:sarif-parsing
 dev-team-kit-fv:security-auditor
+dev-team-kit-fv:silent-failure-hunter
 dev-team-kit-fv:semgrep-scanner
 dev-team-kit-fv:semgrep-triager
 dev-team-kit-fv:test-engineer

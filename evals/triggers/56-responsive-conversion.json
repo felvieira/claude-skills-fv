@@ -1,0 +1,20 @@
+{
+  "skill": "56-responsive-conversion",
+  "should_trigger": [
+    "o layout responsivo quebra no celular e cria scroll horizontal",
+    "o modal estoura a viewport em telas pequenas",
+    "preciso converter esta tela desktop para mobile",
+    "o componente nao pega 100% da largura",
+    "como tratar safe area e notch nessa tela",
+    "quero um bottom sheet com confirmacao de exclusao",
+    "a grade fica cortando na tela em tablets",
+    "defina o padrao de undo para uma acao destrutiva"
+  ],
+  "shouldnt_trigger": [
+    "criar um design system novo para a landing",
+    "configurar uma API de pagamentos",
+    "rodar testes e2e do checkout",
+    "auditar a seguranca do login",
+    "escrever uma campanha de email"
+  ]
+}

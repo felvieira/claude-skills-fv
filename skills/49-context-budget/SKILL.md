@@ -1,15 +1,13 @@
 ---
 name: context-budget
 description: |
-  Audita o peso de contexto carregado na sessão — CLAUDE.md, agents, MCP descriptions, rules
-  ativas, skills invocadas e histórico acumulado. Estima tokens por componente, reporta headroom
-  disponível e emite alertas de overflow. Distinto do cost-tracker (skill 30) que rastreia
-  tokens gastos em completions runtime.
+  Audita o peso de contexto efetivamente observável na sessão — instruções raiz, hooks,
+  MCP anunciados, rules ativas e skills invocadas. Estima tokens; headroom apenas
+  quando o host informa janela e uso real. Distinto do cost-tracker (skill 30).
   Trigger em: "contexto inchado", "context overflow", "quanto contexto estou usando",
-  "peso do contexto", "context budget", "tokens carregados", "sessao lenta",
-  "respostas degradadas", "headroom de contexto", "custo fixo de contexto",
-  "overhead de rules", "overhead dos agents", "impacto do MCP no contexto",
-  "espaco no context window", "quanto cabe no context window"
+  "sessao lenta", "respostas degradadas", "context budget", "tokens carregados",
+  "custo fixo de contexto", "overhead de rules", "overhead dos agents",
+  "impacto do MCP no contexto", "headroom de contexto"
 metadata:
   id: 49-context-budget
   version: 1.0.0
@@ -20,7 +18,7 @@ metadata:
 
 ## Objetivo
 
-Auditar o peso de contexto carregado em uma sessão Claude Code: quais skills/agents/MCP/rules/CLAUDE.md estão contribuindo para o overhead de tokens, quanto custa cada componente, e o que pode ser cortado ou adiado sem perder funcionalidade.
+Auditar o peso **observável** de contexto carregado nesta sessão: instruções raiz, saída de hooks, regras ativas, skills invocadas e catálogo de tools MCP habilitadas. Não confunda bytes em disco com tokens enviados ao modelo.
 
 **Distinção crítica:**
 - Skill 30 (`cost-tracker`) → rastreia tokens/$ gastos em runtime (completions, tool calls)
@@ -41,116 +39,55 @@ Auditar o peso de contexto carregado em uma sessão Claude Code: quais skills/ag
 Listar o que está no contexto da sessão:
 
 ```
-1. CLAUDE.md (global + projeto)
-2. .claude/rules/**/*.md (path-scoped — quais foram ativados?)
-3. skills/ carregadas via Skill() nesta sessão
-4. agents/ descrições (sempre presentes no system prompt)
-5. MCP server descriptions (presentes para cada server ativo)
-6. Arquivos abertos/lidos na sessão
-7. Histórico de conversa acumulado
+1. Instruções raiz efetivamente carregadas (AGENTS.md/CLAUDE.md, global e projeto, conforme host)
+2. Catalogo de skills do plugin: name + description de TODAS as skills habilitadas (todo turno; nao e lazy)
+3. Body de SKILL.md / subagents invocados nesta sessao (lazy — so os disparados)
+4. Rules path-scoped ativas nesta tarefa
+5. Descrições/schema de tools MCP realmente anunciadas pelo host (todo turno, por servidor enabled)
+6. Contexto adicional emitido por hooks, arquivos lidos e histórico desta sessão
 ```
 
 ### Fase 1 — Estimar peso por componente
 
-Para cada componente, estimar tokens:
+Estimar tokens somente para componentes **observados**, com caracteres ÷ 4 como proxy explícito:
 
-```
-regra geral: ~4 chars por token (aproximação BPE)
+- Bytes no arquivo medem armazenamento, não provam que o host carregou aquele arquivo.
+- `scripts/skill-catalog-budget.mjs` e `scripts/skill-health.mjs` reportam inventário local em chars e bytes; seus tokens são **proxy, não medição**.
+- Descrições/schema de MCP ou agents são diferentes dos corpos completos em `agents/*.md`; sem catálogo runtime, reportar como não mensurado.
+- Histórico, prefixo de sistema e cache do provedor exigem telemetria da sessão para medição real; não inventar percentual de headroom.
 
-- ler tamanho do arquivo em bytes
-- tokens ≈ bytes / 4
-- overhead real pode ser 10-20% maior (BPE não é linear)
-```
+Para separar as camadas:
 
-**Comando de varredura rápida:**
+1. **Em disco:** bytes UTF-8 dos arquivos conhecidos.
+2. **Inventário de catálogo:** `name + description` encontrados no frontmatter; não afirmar que o host injetou todos.
+3. **Payload observado:** capture o JSON do hook e passe `--observed <arquivo>` aos scripts; conte `systemMessage`/`additionalContext`.
+4. **Host não exposto:** MCP, prefixo, cache, histórico e skills não anunciadas permanecem “não mensurados”.
 
-```bash
-# Peso dos arquivos de contexto fixo
-find . -name "CLAUDE.md" -o -name "GLOBAL.md" | xargs wc -c 2>/dev/null
-
-# Peso das rules ativas
-find .claude/rules/ -name "*.md" | xargs wc -c 2>/dev/null
-
-# Peso dos agents (sempre no system prompt)
-find agents/ -name "*.md" | xargs wc -c 2>/dev/null
-
-# Peso das skills (sob demanda — verificar quais foram invocadas)
-find skills/ -name "SKILL.md" | xargs wc -c 2>/dev/null | tail -1
-```
+Não execute `--apply` durante uma auditoria. A compactação pode descartar triggers; revise o relatório e rode os evals antes de qualquer mudança.
 
 ### Fase 2 — Categorizar por urgência
 
-| Categoria | Critério | Ação |
-|-----------|----------|------|
-| **Sempre presente** | CLAUDE.md, GLOBAL.md, agents/*.md, MCP descriptions | Auditar tamanho, propor corte |
-| **Sob demanda** | skills/ via Skill() | Verificar se foi invocada sem necessidade |
-| **Path-scoped** | .claude/rules/*.md | Verificar se paths: glob está restrito |
-| **Histórico** | Conversa acumulada | Considerar `/clear` ou nova sessão |
+| Categoria | Fonte | Como medir |
+|---|---|---|
+| **Sempre presente quando o host carrega** | Instruções raiz, `name`+`description` de cada skill do plugin, schema das tools MCP enabled | Medir os arquivos/payloads reais. Catalogo do kit: `node scripts/skill-catalog-budget.mjs` |
+| **Sob demanda** | Body do SKILL.md e corpos de subagents invocados | Verificar os invocados |
+| **Path-scoped** | .claude/rules/*.md | Verificar paths/globs ativados |
+| **Histórico** | Conversa acumulada | Consultar telemetria do host |
 
 ### Fase 3 — Relatório de budget
 
-Output padrão:
-
-```
-## Context Budget — [repo] — [data]
-
-### Componentes fixos (sempre carregados)
-| Componente          | Arquivo              | Tokens est. | % budget |
-|---------------------|---------------------|-------------|----------|
-| CLAUDE.md (global)  | ~/.claude/CLAUDE.md  | ~2.400      | 12%      |
-| CLAUDE.md (projeto) | ./CLAUDE.md          | ~800        | 4%       |
-| GLOBAL.md           | ./GLOBAL.md          | ~1.200      | 6%       |
-| agents/ (16 agents) | agents/*.md          | ~8.000      | 40%      |
-| MCP descriptions    | (runtime)            | ~2.000      | 10%      |
-| **Subtotal fixo**   |                      | **~14.400** | **72%**  |
-
-### Componentes dinâmicos (esta sessão)
-| Componente           | Tokens est. | Necessário? |
-|----------------------|-------------|-------------|
-| rules/common/*.md    | ~3.200      | ✓ se editando código |
-| rules/typescript/*.md| ~800        | ✓ se arquivo .ts ativo |
-| skill 09-orchestrator| ~1.200      | ✓ foi invocada |
-| skill 11-reviewer    | ~900        | ? verificar |
-| histórico conversa   | ~4.000      | — acumula   |
-| **Subtotal dinâmico**| **~10.100** | —           |
-
-### Resumo
-- **Total estimado:** ~24.500 tokens (~98 KB)
-- **Budget disponível (claude-sonnet-4.5):** 200.000 tokens
-- **Headroom:** ~175.500 tokens (88%)
-- **Status:** ✅ Saudável
-
-### Recomendações
-1. `agents/*.md` representa 40% do budget fixo — considerar frontmatter description mais curto
-2. `rules/common/` sempre presente — OK para repo de código
-3. Histórico acumula ~500 tokens/turno — considerar `/clear` a cada 50 turnos
-```
+Reporte, quando observável, caracteres e estimativa por fonte: instruções raiz (global/projeto), saída real dos hooks, skills invocadas, rules ativas e catálogo MCP habilitado. Informe separadamente o que está **apenas em disco** e o que o host não expôs. Use tamanho de janela do modelo somente se comprovado pela sessão; sem isso, não estime headroom nem use tabelas fictícias como evidência.
 
 ### Fase 4 — Alertas de overflow
 
-Thresholds por modelo:
-
-| Modelo | Context window | Alerta (80%) | Crítico (95%) |
-|--------|---------------|--------------|---------------|
-| claude-haiku-3.5 | 200k tokens | 160k | 190k |
-| claude-sonnet-4.5 | 200k tokens | 160k | 190k |
-| claude-opus-4.5 | 200k tokens | 160k | 190k |
+Use o limite efetivo da janela do modelo fornecido pelo host, se disponível. Calcule alertas em 80% e 95% da janela **medida**; sem limite ou histórico da sessão, apenas descreva crescimento observado, sem declarar overflow.
 
 **Sinais de overflow iminente:**
 - Respostas ficam genéricas ou "esquecem" instruções anteriores
 - Tool calls começam a falhar com erros estranhos
 - `/savings` mostra context_tokens subindo exponencialmente
 
-**Ações corretivas:**
-```
-1. /clear — descarta histórico (mantém system prompt)
-2. Nova sessão — fresh start completo
-3. Remover MCP servers não usados (claude mcp remove <name>)
-4. Encurtar agents/*.md descriptions
-5. Revisar .claude/rules/ — paths: glob muito amplo?
-```
-
-**Checkpoint:** aplicar a ação mais barata primeiro (1 ou 2, reversível e imediata) → medir de novo (Fase 1) → se o sintoma persistir, aplicar a próxima ação da lista. Não pular direto pra remover MCP server ou editar `agents/*.md` sem confirmar que o `/clear` sozinho não resolveu — são mudanças mais permanentes pra um sintoma que às vezes é só histórico acumulado.
+**Ações corretivas:** reduza leitura/reinjeção desnecessária; carregue skill e rule quando o alvo justificar; desabilite MCP não usado **apenas após verificar os ativos e obter aprovação para modificar configuração**. Para histórico longo, compacte de forma controlada ou abra sessão nova com handoff. Não altere agentes globais baseado só no inventário de arquivos.
 
 ## Integração com kit
 

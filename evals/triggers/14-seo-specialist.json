@@ -10,13 +10,25 @@
     "preciso de canonical em todas as paginas paginadas",
     "GEO/AEO: como otimizar pra Claude e Perplexity citarem",
     "llms.txt na raiz do site, formato canonico",
-    "Answer Engine optimization pra aparecer em AI Overview"
+    "Answer Engine optimization pra aparecer em AI Overview",
+    "faça uma auditoria SEO completa no site antes do lançamento",
+    "Google Business Profile da clínica diverge do telefone no site",
+    "Merchant Center mostra preço diferente da página de produto",
+    "hreflang da versão pt-BR está sem retorno em en-US",
+    "SEO agentic: agentes conseguem usar nossa página de docs?",
+    "SEO drift: a atualização de ontem afetou indexação?",
+    "INP piorou no mobile, quais páginas estão afetadas?",
+    "Google-Extended bloqueado impede AI Overviews?",
+    "FAQPage ainda ajuda nos rich results e citações por IA?"
   ],
   "shouldnt_trigger": [
     "configurar JWT com refresh token rotation",
     "criar migration pra dropar coluna deprecated",
     "rodar test suite em modo watch local",
     "subir docker compose com postgres e redis",
-    "implementar middleware de rate limit no backend"
+    "implementar middleware de rate limit no backend",
+    "definir schema da tabela users no banco relacional",
+    "configurar extension OAuth do Google API em backend",
+    "drift de migrations do banco após deploy"
   ]
 }

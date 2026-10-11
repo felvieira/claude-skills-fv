@@ -48,47 +48,7 @@ Sem slash commands (Codex, Grok Build, Cursor...), ligue pelo shell: `node scrip
 
 ## Slash Commands
 
-Atalhos por fase de desenvolvimento — use em vez de lembrar nomes de skills:
-
-| Command | O que faz |
-|---------|-----------|
-| `/spec` | Especificar feature com critérios de aceitação |
-| `/plan` | Classificar task e montar pipeline |
-| `/build` | Implementar com stack do projeto |
-| `/test` | Escrever e rodar testes |
-| `/review` | Review final + security audit |
-| `/simplify` | Simplificar e refatorar código |
-| `/ship` | Release e deploy |
-| `/pipeline` | Pipeline completo end-to-end |
-| `/best` | Auditoria de boas práticas, clean code e DRY |
-| `/auto` | Agente autônomo — executa task completa sem intervenção |
-| `/loop` | Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass (`node scripts/auto-loop.mjs "task"`) |
-| `/worktree` | Cria git worktree isolado, copia `.env*`, valida ambiente em background |
-| `/detective-spec` | Engenharia reversa de specs em legado — extrai contratos sem tocar no código (skill 33) |
-| `/catalog-project` | Sintetiza repo-audit + detective-spec + narrativa de produto (resumo/planos/FAQ) + histórico de sessões + dados operacionais (envs/endereços/métricas) em `.project-memory/manifest.yaml` versionado no repo consumidor — tudo sempre rastreável a evidência, alimenta o catálogo cross-repo `project-brain` |
-| `/grill-me` | Interrogatório relentless de plano até convergência (uma pergunta + resposta sugerida por turno) |
-| `/to-prd` | Converte conversa atual em PRD publicado no issue tracker (label `needs-triage`) |
-| `/to-issues` | Quebra PRD em N issues independentes (vertical slices) e publica no tracker |
-| `/pipeline-discovery` | Pipeline COMPLETO discovery: grill-me → to-prd → to-issues → loop+TDD → ship |
-| `/constitution` | Bootstrap/update `memory/constitution.md` com princípios governantes (Code Quality, Testing, UX, Performance, Security) |
-| `/checklist` | Checklist contextual por feature ("unit tests for English") — Completeness, Clarity, Consistency, Coverage, Edge Cases |
-| `/analyze` | Cross-artifact consistency check (read-only) entre constituição → spec → plan → issues. CRITICAL bloqueia `/build` |
-| `/humanize` | Remove os 29 padrões de AI-generated writing de qualquer prosa (docs, PRDs, copy, changelogs) |
-| `/consolidate-memory` | Manutenção do vault de memória persistente — merge duplicatas, archive stale, prune índice. Workflow seguro com snapshot |
-| `/savings` | **(v2.4.0)** Mostra o que o kit salvou na sessão/janela: tokens economizados, USD, riscos prevenidos, hot files, decisões do gate. Auditoria em `policies/savings-metrics.md`. Mini-resumo automático no Stop hook. |
-| `/drift-scan` | **(v2.5.0)** Continuous drift detection contra todo o codebase: dead-code, large-files, stale-todos, dep-staleness, doc-code drift, test-coverage. Inspirado em Birgitta Böckeler — ver `docs/inspiration/harness-engineering.md`. |
-| `/context-budget` | **(v2.26.0)** Audita peso de contexto carregado na sessão: skills/agents/MCP/rules/CLAUDE.md — tokens estimados por componente, headroom disponível, alertas de overflow. Distinto do `/savings` (que rastreia completions runtime). |
-| `/spec-kit` | **(v2.28.0)** Pipeline SDD unificado: specify → plan → tasks → implement com checkpoints explícitos e Adversarial Verifier inline. Inspirado no GitHub Spec Kit (88k stars). `--phase specify` / `--phase plan` / `--skip-checkpoints` para CI. |
-| `/insights` | **(v2.28.0)** Recomendações baseadas em uso real: lê JSONLs de telemetria dos hooks (gate decisions, investigate-first bloqueios, tool repetitions, conflict-resolutions) e recomenda o que calibrar. Similar ao `/Insights` nativo mas lê dados do kit. |
-| `/careful` | **(v2.92.0)** Liga sob demanda o `permission-ladder-guard`: `rm -rf`, force-push, `reset --hard`, deploy pedem confirmação; `DROP TABLE`/produção nega. Estado do projeto, expira em 8 h. Limite: regex sobre texto, não parser de shell. |
-| `/freeze` | **(v2.92.0)** `/freeze <pasta>` bloqueia Edit/Write fora dela até `/freeze off`. Útil ao depurar. Não cobre `sed -i`/redirecionamento via Bash. |
-| `/run-program` | Executa pipeline declarativo YAML (programs/*.yml) com **7 step types** (command/prompt/bash/gate/loop/parallel/conditional), `context: fresh` per step, `provider`/`model` routing, `trigger_rule` para parallel. 6 programs: pipeline-discovery, spec-driven-development, loop-polishing, detective-spec, **adversarial-dev** (GAN), **comprehensive-review** (5-agent parallel) |
-| _(auto)_ | **Auto-orchestration** (v1.8.0): hook `intent-classifier` sugere program adequado baseado em intent do prompt. Skill 39 (program-router) confirma. 4 níveis de autonomia em `policies/auto-orchestration.md` |
-| `/swarm` | **TOTAL AUTONOMY** (v2.0.0): do prompt ao PR mergeable. Worktree isolado + Ralph loop (fresh context per story) + 4-agent parallel review + self-fix CRITICAL/HIGH + auto PR. Em modo Autonomous (Nível 3), o hook auto-roteia features pra `/swarm`. Inspirado em Ralph/fix-issue/comprehensive-review do archon. |
-| _(via /run-program)_ | **`refactor-safely`** (v2.1.0): pipeline com behavior preservation — baseline tests + analyze read-only + atomic plan + execute com type-check hooks + verify + PR. Use pra refactor de módulos grandes. |
-| _(doc)_ | **`docs/USE-CASES.md`** (v2.1.0): mapeia 17 cenários de dev no dia-a-dia → comando apropriado. Hook intent-classifier v2 roteia auto baseado nesses cenários. |
-
-Navegação de skills: `docs/skill-guides/skill-discovery.md`
+Use atalhos por fase quando couber: `/spec` → `/plan` → `/build` → `/test` → `/review` → `/ship`; `/pipeline` reúne o fluxo completo. `/context-budget` mede contexto, `/savings` mede economia runtime. Para os demais atalhos, carregue `docs/skill-guides/skill-discovery.md` ou o comando específico em `commands/` **somente quando necessário**. Não carregue o catálogo inteiro em cada sessão.
 
 ## Modos de execução autônomos
 
@@ -168,78 +128,15 @@ O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
 | Universo | Localização | Invocação | Convenção de nome |
 |---|---|---|---|
-| **Skills** (85 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`86-` (o 16 é reservado) |
+| **Skills** (86 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`87-` (o 16 é reservado) |
 | **Subagents** (16 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
 **Apenas estes 16 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
 
 Detalhes completos: `policies/skills-vs-agents.md`. Hook fail-fast: `hooks/scripts/agent-dispatch-validator.mjs`.
 
-### Tabela de Subagents (todos os 16 válidos)
+### Despacho sob demanda
 
-| Subagent | Especialidade | Espelho-skill (carregar playbook) | Tools |
-|----------|---------------|------------------------------------|-------|
-| `code-reviewer` | Review senior: correctness, design, readability, performance, security | `11-reviewer` | Read, Grep, Glob, Bash |
-| `security-auditor` | Audit de segurança: OWASP, auth, injeção, CORS, deps | `06-security-review` | Read, Grep, Glob, Bash |
-| `test-engineer` | QA Prove-It: happy path, error, edge case, regression, performance | `05-qa-testing` | Read, Grep, Glob, Bash, Edit, Write |
-| `orchestrator` | Tech Lead: classifica task, define pipeline mínimo, coordena skills | `09-orchestrator` | todas |
-| `debugger` | Root cause sistemático: hipótese → evidência → fix mínimo | — | Read, Grep, Glob, Bash, Edit |
-| `detective-contracts` | Detetive de contratos de módulo (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
-| `detective-business-rules` | Detetive de regras de negócio escondidas (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
-| `detective-flows` | Detetive de fluxos end-to-end (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
-| `detective-adrs` | Detetive de decisões arquiteturais retroativas (legado) — read-only | `33-detective-spec` (fase) | Read, Grep, Glob, Bash |
-| `semgrep-scanner` | Scans Semgrep em paralelo por linguagem, agrega SARIF | `34-static-analysis` (fase) | Read, Grep, Glob, Bash |
-| `semgrep-triager` | Triagem TP/FP/needs-investigation lendo contexto fonte | `34-static-analysis` (fase) | Read, Grep, Glob, Write |
-| `codeql-runner` | Orquestra build de database CodeQL + queries (taint tracking interprocedural) | `34-static-analysis` (fase) | Read, Grep, Glob, Bash |
-| `sarif-parsing` | Parse, dedup e agrega múltiplos SARIF (Semgrep + CodeQL) | `34-static-analysis` (fase) | Read, Glob, Bash, Write |
-| `variant-analysis` | Caça variantes de bug confirmado e gera custom rule reusável | `34-static-analysis` (fase) | Read, Grep, Glob, Bash, Write |
-| `anti-ai-writing` | Review de prosa: detecta os 29 padrões de AI-generated writing em docs/PRDs/copy | `41-blog-publisher` / `/humanize` | Read, Grep, Glob, Write |
-| `silent-failure-hunter` | Review-only: caça falhas silenciosas — `catch{}` vazio, `.catch(()=>[])`, stack trace perdido, fallback que esconde falha, rollback faltando | `06-security-review` (lente estreita) | Read, Grep, Glob, Bash |
+Os nomes e papéis válidos ficam em `agents/*.md` e `policies/skills-vs-agents.md`; consulte o agente escolhido antes de despachar. Passe um prompt autocontido ao `Agent`, pois ele não vê a conversa principal. Para paralelizar slices, use `general-purpose` isolado por worktree e peça que cada agente invoque `Skill(...)` **dentro** da própria sessão. Exemplo em `templates/parallel-slice-prompt.md` e `skills/40-parallel-dispatcher/SKILL.md`.
 
-### Como invocar (CORRETO)
-
-**Subagent isolado** (turno separado, contexto novo):
-
-```typescript
-Agent({
-  subagent_type: "dev-team-kit-fv:code-reviewer",
-  description: "Review changes in src/auth",
-  prompt: "Review the diff in src/auth/. Focus on token handling and CSRF."
-})
-```
-
-**Skill no contexto atual** (carregar playbook):
-
-```typescript
-Skill({ skill: "dev-team-kit-fv:11-reviewer" })  // carrega playbook de review
-Skill({ skill: "dev-team-kit-fv:04-frontend-integration" })  // carrega playbook frontend
-```
-
-**Paralelizar N slices** (cada subagent invoca skill internamente):
-
-```typescript
-// 1 message, N tool calls em paralelo
-for (const slice of slices) Agent({
-  subagent_type: "general-purpose",
-  isolation: "worktree",
-  description: `Slice ${slice.id}`,
-  prompt: `
-    PRIMEIRO PASSO OBRIGATÓRIO: invoque Skill({ skill: "dev-team-kit-fv:04-frontend-integration" }).
-    Depois implemente: ${slice.description}
-    Critérios: ${slice.acceptance.join("; ")}
-  `
-})
-```
-
-Ver `templates/parallel-slice-prompt.md` para template canônico. Ver `skills/40-parallel-dispatcher/SKILL.md` para skill especializada em paralelização.
-
-### Anti-padrão (não fazer)
-
-```typescript
-// ❌ TODOS quebram com InputValidationError — esses nomes são SKILLS, não agents
-Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
-Agent({ subagent_type: "dev-team-kit-fv:05-qa-testing", ... })
-Agent({ subagent_type: "dev-team-kit-fv:09-orchestrator", ... })
-```
-
-O hook `agent-dispatch-validator` (v2.2.0+) bloqueia esses casos e devolve mensagem acionável.
+Nunca passe uma skill numerada (`dev-team-kit-fv:04-frontend-integration`) em `subagent_type`: o hook `agent-dispatch-validator` bloqueia essa confusão. Use `Skill(skill: "dev-team-kit-fv:04-frontend-integration")` para carregar o playbook na sessão atual; `Agent(subagent_type: "dev-team-kit-fv:code-reviewer", ...)` para delegar a um subagent real.

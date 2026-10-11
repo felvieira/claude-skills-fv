@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 85 Specialist Skills for Coding Agents
+# Dev Team Kit — 86 Specialist Skills for Coding Agents
 
 ![Version](https://img.shields.io/badge/version-2.102.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-85-1d4ed8)
+![Skills](https://img.shields.io/badge/skills-86-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -114,7 +114,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 85 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 86 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -151,14 +151,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 85 skills (85 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 86 skills (86 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 85 skills | ✅ | ✅ | ✅ |
+| 86 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -207,7 +207,7 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 
 ---
 
-## The 85 Specialists
+## The 86 Specialists
 
 ### Management and Coordination
 
@@ -241,6 +241,7 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 | 45 | **Handoff Context** | prospective handoff between sessions/agents — packages what the next session needs to continue without re-deriving context |
 | 65 | **Using Git Worktrees** | workspace isolation via git worktree — detects existing isolation, prefers native tooling (`EnterWorktree`/`ExitWorktree` or the kit's `/worktree` dispatcher) before raw `git worktree add`, mandatory test baseline before releasing the task for work |
 | 80 | **Jev Opportunity Scout** | scans the current codebase for fragile semantic decisions (substring classification, keyword lists, prompt-and-parse LLM calls) and reports concrete migration candidates to a typed Jev/TypeSafe System One judgment — file/line, right primitive (Choice/Noul/Score), example call, real cost. Read-only; never installs or calls the API itself |
+| 87 | **Reverse Engineer Anything (REA)** | examines shipped binaries, APKs, ASARs and app/runtime evidence via the external REA toolkit; normal source-repository analysis stays with Detective Spec (33) |
 
 ### Repo-Wiki: documentation generated in the target project
 
@@ -299,10 +300,12 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 
 ### Content and Discovery
 
+**Deep SEO audits (Claude Code, opt-in):** [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) provides `/seo audit <url>`, local, ecommerce, hreflang, Google and agent-readiness workflows when separately installed. Skill 14 remains the cross-client fallback; the kit does **not** install the external plugin or its always-on edit hook. [Install and capability guide](skills/14-seo-specialist/references/claude-seo.md).
+
 | # | Skill | What it does |
 |---|---|---|
 | 13 | **Marketing Copy** | product copy, CTAs, landing pages, brand voice and conversion messaging |
-| 14 | **SEO Specialist** | metadata, schema.org, Core Web Vitals, sitemap and discoverability |
+| 14 | **SEO Specialist** | technical/on-page SEO, local, products, hreflang and GEO; optional Claude Code plugin for full-site auditing |
 | 61 | **Content Growth Engine** | content as an acquisition system, not a publishing calendar: search intent from sales calls and support tickets (never from search volume alone), clusters ordered by commercial intent, an AI-citation baseline measured against a fixed prompt set, realistic production cadence sized against actual capacity, a refresh quota so the library doesn't rot, sales objections turned into bottom-funnel pages, and success measured in pipeline — not sessions |
 | 48 | **Research Prep** | multi-source technical research before writing docs/PRDs/ADRs/articles — official docs + GitHub + Stack Overflow + papers, scored by authority, output to `memory/research/<slug>.md`; feeds skills 10, 01, 26, 41 |
 | 49 | **Context Budget** | audits loaded context weight (skills, agents, MCP descriptions, rules, CLAUDE.md) — estimates tokens per component, headroom available and overflow alerts. Distinct from skill 30 (cost-tracker) which tracks runtime completion costs |
@@ -465,6 +468,15 @@ node scripts/eval-memory-recall.mjs --strict                    # injection eval
 
 Per-agent compatibility (what was verified and what was not) is in [`policies/compaction-recovery.md`](./policies/compaction-recovery.md); learned-skill states, freshness and accepted formats in [`policies/learned-skills.md`](./policies/learned-skills.md).
 
+The optional Docker `ai-memory` backend is **not silently upgraded** when you
+reinstall the kit: its SQLite migrations are forward-only. Inspect without
+changes: `node scripts/ai-memory-setup.mjs --check`. Upgrade a recognized
+kit-owned server with a new, external backup archive:
+`node scripts/ai-memory-setup.mjs --upgrade --backup-to /absolute/new/ai-memory.tar.gz`
+(or `bash setup/install.sh <repo> --upgrade-ai-memory --backup-to <absolute-new-path>`).
+See [`policies/memory-backends.md`](policies/memory-backends.md) for Windows
+host CLI upgrades, unknown-container refusal and rollback.
+
 ### Hook Profiles
 
 Controlled by the env variable `DEVKIT_HOOK_PROFILE` (default: `standard`):
@@ -483,6 +495,29 @@ Controlled by the env variable `DEVKIT_HOOK_PROFILE` (default: `standard`):
 The `context-guard-stop` hook operates on two levels:
 - **50%** — non-blocking warning: suggests `/compact` while there's still margin
 - **75%** — smart block: shows current task hint, files edited in the session and decisions from the working set before blocking
+
+### Context and catalog cost — measured inventory, not host telemetry
+
+The kit now separates bytes stored on disk from the payload a host actually sends to a model. The current local inventory is:
+
+| Scope | On-disk inventory | `chars ÷ 4` estimate |
+|---|---:|---:|
+| 86 skill descriptions | 56,398 chars / 57,056 UTF-8 bytes | ~14,100 proxy tokens |
+| Catalog entries (`name + description`) | 57,991 chars / 58,649 bytes | ~14,498 proxy tokens |
+| Root instruction candidates (`GLOBAL.md`, `AGENTS.md`, `CLAUDE.md`) | 19,804 chars / 19,981 bytes | host loading not observed |
+| `SessionStart` source | 12,480 chars / 12,518 bytes | emitted payload not observed |
+
+The token figures are **proxies, not measured provider or host tokens**. Capture an actual `systemMessage` and pass it to `scripts/skill-health.mjs` or `scripts/skill-catalog-budget.mjs` with `--observed <json>` to measure the observed payload. A smoke capture of the hook produced 423 chars; that is still not provider token telemetry. Complete `SKILL.md` bodies are lazy and must not be counted as fixed catalog cost without host evidence.
+
+The catalog compactor is dry-run by default. Its current proposal removes 28,703 description characters (~7,176 proxy tokens per turn), but would drop 89 positive-fixture trigger lines. It therefore preserves complete trigger lines, reports the affected fixtures and blocks normal `--apply` until the losses are reviewed. Do not use `--apply` during an audit.
+
+The generated inventory and flags are in [`docs/skill-health.md`](docs/skill-health.md). Verify routing and trigger coverage with:
+
+```bash
+node scripts/eval-triggers.mjs --strict       # 86/86
+node scripts/eval-plugin-routing.mjs          # 44/44
+node --test scripts/tests/*.test.mjs          # 121 passed, 0 failed, 6 skipped
+```
 
 ---
 

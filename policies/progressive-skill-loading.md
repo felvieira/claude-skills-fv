@@ -8,9 +8,11 @@ Convenção absorvida de [bytedance/deer-flow](https://github.com/bytedance/deer
 
 ## Princípio
 
-> Skills são markdown. Não carregar SKILL.md no contexto antes de existir trigger explícito (palavra-chave, intent classification, pedido direto).
+> O **body** do `SKILL.md` é lazy. A **description** do frontmatter não é.
 
-Custo: cada skill numerada tem **300-1500 tokens**. 39 skills × média 800 = ~31k tokens. Pré-carregar é meio token budget de Sonnet jogado fora.
+Hosts podem anunciar `name` + `description` de skills habilitadas em todo turno, mas isso depende da superfície e pode incluir truncamento ou seleção. Só o playbook (o markdown depois do `---`) entra quando `Skill()` dispara em hosts com loading progressivo.
+
+Teto de design da description: primeira frase ≤160 chars, ≤12 triggers, total ≤400 chars. Ultrapassar o teto é um sinal de revisão, não prova de truncamento pelo host. Medir inventário com `node scripts/skill-catalog-budget.mjs`; use payload capturado para afirmar custo observado. Policy: `policies/skill-manifest.md`.
 
 ## Mecanismo
 
@@ -20,7 +22,7 @@ O kit já implementa loading progressivo via 4 hooks coordenados. Esta policy s�
 |---|---|---|---|
 | `keyword-detector` | UserPromptSubmit | Skill numerada cujos triggers batem com o prompt | `hooks/scripts/keyword-detector.mjs` |
 | `pre-execution-gate` | UserPromptSubmit (score>0.7) | Pergunta antes de carregar | `hooks/scripts/pre-execution-gate.mjs` |
-| `session-start` | SessionStart | Apenas `skill-discovery.md` (decision tree), não as skills em si | `hooks/scripts/session-start.mjs` |
+| `session-start` | SessionStart | Aponta para `skill-discovery.md` (árvore completa sob demanda), não injeta o conteúdo nem todas as skills | `hooks/scripts/session-start.mjs` |
 | `pre-tool-enforcer` | PreToolUse:Edit/Write | Relê arquivo antes de editar (não é skill, é stale-state) | `hooks/scripts/pre-tool-enforcer.mjs` |
 
 ## Fluxo típico
@@ -73,5 +75,5 @@ Pra skills externas (publicáveis), ver `policies/skill-manifest.md` (frontmatte
 - `policies/context-engineering.md` — hierarquia de 5 níveis e trust levels
 - `policies/cost-optimization.md` — métrica de tokens economizados
 - `hooks/scripts/keyword-detector.mjs` — implementação do match por trigger
-- `docs/skill-guides/skill-discovery.md` — decision tree task→skill (carregada no SessionStart)
+- `docs/skill-guides/skill-discovery.md` — decision tree task→skill (referenciada no SessionStart; lida sob demanda)
 - DeerFlow upstream: README.md → seção "Skills & Tools" descreve o framing original

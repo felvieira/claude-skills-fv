@@ -1,0 +1,20 @@
+{
+  "skill": "59-closed-loop-revenue",
+  "should_trigger": [
+    "o analytics nao bate com a receita do backend",
+    "preciso reconciliar GCLID UTM e transaction_id",
+    "enviar conversao offline para a plataforma de anuncios",
+    "calcular margem de contribuicao e break-even ROAS",
+    "a campanha tem ROAS alto mas nao gera lucro",
+    "medir qualidade de lead ate a venda no CRM",
+    "corrigir conversao duplicada e consent mode",
+    "definir um measurement plan para o funil"
+  ],
+  "shouldnt_trigger": [
+    "criar um dashboard React responsivo",
+    "configurar banco de dados e webhook",
+    "escrever anuncio e email de vendas",
+    "fazer auditoria OWASP na autenticacao",
+    "cortar audio de um video"
+  ]
+}

@@ -21,9 +21,8 @@ Skills atuais (sem os campos novos) **continuam válidas**. Todos os campos v2 s
 ---
 name: po-feature-spec
 description: |
-  Skill do Product Owner para especificação de features. Use quando precisar
-  definir requisitos de negócio, escrever user stories...
-  Trigger em: "nova feature", "especificação", "user story", ...
+  PO spec: user stories, critérios de aceitação, MVP, backlog.
+  Trigger em: "nova feature", "especificação", "user story", "PRD", "backlog".
 # ─── v1 fields (kept) ──────────────────────────────────────────────────────
 argument-hint: "[feature_name]"
 allowed-tools: [Read, Write, Edit]
@@ -36,6 +35,18 @@ requires:                 # other skill ids this one depends on
   - 09-orchestrator
 ---
 ```
+
+## Catalog budget (description)
+
+`description` é inventário de catálogo e pode ser carregada pelo host, mas a superfície pode filtrar, truncar ou reformatar o payload. O body do `SKILL.md` continua sob demanda quando o host suporta loading progressivo.
+
+| Peça | Teto | Por quê |
+|------|------|---------|
+| Primeira frase (propósito) | ≤160 chars | Mantém o propósito legível sob truncamento/seleção |
+| `Trigger em:` | ≤12 frases | Mantém o conjunto de roteamento revisável |
+| Total | ≤400 chars | 86 skills × 400 ≈ 8.6k **proxy tokens**; não é medição de payload do host |
+
+Prosa longa, gotchas, protocolo: **body**, nunca description. `skill-health.mjs` flagra description >400. Primeiro rode `node scripts/skill-catalog-budget.mjs` sem `--apply`; o relatório marca triggers cobertos por fixture que seriam descartados. Só aplique após revisar evals; `--force` ignora essa proteção.
 
 ## Campos v2 — contrato
 

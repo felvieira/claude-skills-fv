@@ -11,11 +11,11 @@ Audita o **overhead de contexto fixo e dinâmico** da sessão atual.
 
 ## O que faz
 
-1. Varre componentes fixos: `CLAUDE.md` (global + projeto), `GLOBAL.md`, `agents/*.md`, descrições de MCP ativos
-2. Varre componentes dinâmicos: rules ativadas nesta sessão, skills invocadas, histórico acumulado
-3. Estima tokens por componente (bytes ÷ 4, aproximação BPE)
-4. Reporta tabela com % do budget e headroom disponível
-5. Emite alertas se algum componente está inchado ou se o total ultrapassa 80% do context window
+1. Identifica instruções raiz efetivamente carregadas e saída de hooks da sessão
+2. Separa o catálogo (name+description de **todas** as skills do plugin, todo turno) do body lazy (SKILL.md só quando Skill() dispara) e das rules ativas
+3. Estima tokens observáveis com caracteres ÷ 4 (aproximação, não telemetria do modelo)
+4. Reporta catálogo de MCP/agents ativos apenas se o host expuser descrições reais
+5. Calcula headroom somente se o limite da janela e o uso da sessão forem conhecidos
 
 ## Quando usar
 
@@ -34,23 +34,13 @@ Skill carregada: `dev-team-kit-fv:49-context-budget`
 
 ## Output esperado
 
-```
+```text
 ## Context Budget — [repo] — [data]
-
-### Fixo (~14.400 tokens, 72% do subtotal)
-- CLAUDE.md global: ~2.400 tokens
-- agents/ (16): ~8.000 tokens
-- MCP servers (N): ~X tokens
-...
-
-### Dinâmico (esta sessão)
-- rules/common/: ~3.200 tokens
-- skills invocadas: ~N tokens
-- histórico: ~N tokens
-
-### Status: ✅ Saudável | ⚠️ Atenção | 🚨 Overflow iminente
-### Headroom: X tokens (Y%)
-
-### Recomendações (se houver)
-...
+Instruções raiz: N caracteres (~N/4 tokens estimados)
+Hook SessionStart: N caracteres (~N/4)
+Skills invocadas/rules ativas: ...
+MCP/agents ativos: mensurado pelo host | indisponível
+Arquivos apenas instalados: não somados ao contexto
+Janela/headroom: mensurado | não disponível
+Recomendações: apenas para componentes comprovadamente carregados
 ```

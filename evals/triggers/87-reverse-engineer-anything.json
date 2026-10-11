@@ -1,0 +1,23 @@
+{
+  "skill": "87-reverse-engineer-anything",
+  "should_trigger": [
+    "quero usar REA para entender esse executável instalado",
+    "analisar binário PE e citar a evidência das funções",
+    "decompilar APK desse aplicativo sem ter código-fonte",
+    "inspecionar ASAR desse Electron para descobrir as rotas IPC",
+    "analisar app Electron sem código-fonte e comparar duas versões",
+    "reverse engineer this binary and show evidence",
+    "inspecionar firmware local e listar as regiões encontradas",
+    "entender o app no browser sem código-fonte e mostrar as chamadas de rede",
+    "comparar versões compiladas e localizar mudança no binário",
+    "preciso de engenharia reversa de aplicativo fechado via rea-agents"
+  ],
+  "shouldnt_trigger": [
+    "extrai specs de um repositório legado com código-fonte completo",
+    "documenta a arquitetura do backend que estamos desenvolvendo",
+    "rode Semgrep neste PR e revise as vulnerabilidades",
+    "testa um APK nosso no emulador e grave o vídeo",
+    "gere o APK Android do projeto Tauri e publique na loja",
+    "o que é um binário PE? Não tenho artefato para investigar"
+  ]
+}

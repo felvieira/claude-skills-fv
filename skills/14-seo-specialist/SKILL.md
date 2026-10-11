@@ -1,17 +1,19 @@
 ---
 name: seo-specialist
 description: |
-  Skill do Especialista SEO para páginas e sistemas em motores de busca tradicionais e otimização para
-  ser citado por LLMs (ChatGPT, Claude, Perplexity, Google AI Overviews): meta tags, Open Graph, sitemap,
-  schema markup, Core Web Vitals, performance, imagens, fontes, acessibilidade para SEO, pesquisa de
-  palavra-chave (intent, cauda longa), priorização por volume/dificuldade, estratégia de backlinks e
-  autoridade de domínio.
-  Trigger em: "SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals",
-  "performance", "LCP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine",
-  "LLM citation", "AI Overview", "llms.txt", "generative engine optimization", "answer engine optimization",
-  "keyword research", "pesquisa de palavra-chave", "palavra-chave", "keyword", "cauda longa", "long tail",
-  "search intent", "volume de busca", "KEI", "link building", "backlink", "off-page", "guest posting",
-  "autoridade de domínio", "anchor text", "nofollow".
+  Especialista SEO agnóstico: auditoria técnica e on-page, metadados, indexação, sitemap,
+  dados estruturados, Core Web Vitals (LCP, INP, CLS), pesquisa de palavras-chave,
+  links, SEO local, produtos, hreflang e GEO/AEO. No Claude Code, pode encaminhar
+  auditorias amplas ao plugin oficial claude-seo quando instalado sob demanda.
+  Trigger em: "SEO", "auditoria SEO", "meta tags", "Open Graph metadata", "sitemap",
+  "schema markup", "Core Web Vitals", "performance", "LCP", "INP", "CLS", "ranking",
+  "canonical", "robots.txt", "GEO", "AEO", "Answer Engine", "LLM citation",
+  "AI Overview", "llms.txt", "keyword research", "pesquisa de palavra-chave",
+  "palavra-chave", "keyword", "cauda longa", "long tail", "search intent",
+  "volume de busca", "KEI", "link building", "backlink", "off-page",
+  "guest posting", "autoridade de domínio", "anchor text", "nofollow",
+  "SEO local", "Google Business Profile", "Merchant Center", "hreflang",
+  "SEO ecommerce", "SEO drift", "SEO agentic", "Google-Extended", "FAQPage".
 ---
 
 # SEO Specialist - Otimização para Motores de Busca
@@ -22,9 +24,15 @@ O Especialista SEO é responsável por garantir que o sistema e landing pages se
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/quality-gates.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md`, `policies/tool-safety.md` e `policies/anti-ai-writing.md`.
 
-**Gate:** conteúdo publicado (artigos, meta descriptions, headings) deve passar pelos 29 padrões de `policies/anti-ai-writing.md` antes de finalizar. Conteúdo com tells de IA penaliza percepção de autenticidade e pode afetar E-E-A-T.
+**Gate:** conteúdo publicado (artigos, meta descriptions, headings) deve passar pelos 29 padrões de `policies/anti-ai-writing.md` antes de finalizar. Priorizar clareza, fontes e autoria verificáveis; não prometer efeito direto sobre ranking.
 
 Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-guides/seo-specialist.md` apenas quando necessario.
+
+## Auditoria completa com claude-seo (opcional)
+
+Esta skill continua útil em Claude, Codex, Grok e outros clientes, sem plugin externo. **Apenas no Claude Code e quando o plugin oficial estiver instalado**, para crawling/auditoria multietapa, Google APIs, mapas, ecommerce, hreflang, drift ou agent-readiness, usar `/seo audit <url>` ou o subcomando documentado do plugin `AgriciDaniel/claude-seo` em vez de simular ferramentas indisponíveis. Não inventar flags (`/seo audit --report pdf` não é comando documentado) nem subcomandos (`/seo onpage` não existe). O plugin não é instalado pelo kit nem carregado em todos os projetos.
+
+Antes de qualquer varredura, delimitar domínio, permissão, volume e dados acessíveis. Se `/seo` não existir na sessão, avaliar apenas arquivos/páginas efetivamente acessíveis com esta skill e indicar que cobertura de site, GSC, métricas reais e relatório PDF não foram realizados. Consulta `site:` não prova o inventário indexado. Não instalar dependências nem cadastrar APIs silenciosamente. Procedimento de instalação, diagnóstico, limites e atribuição: [references/claude-seo.md](references/claude-seo.md), consultar **só** para fluxo de auditoria externa ou pedido de instalação.
 
 ## Quando Usar
 
@@ -52,7 +60,7 @@ Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-
 
 1. Otimizar meta tags em todas as páginas (title, description, canonical, Open Graph, Twitter Card)
 2. Implementar schema markup (JSON-LD) para dados estruturados
-3. Garantir excelência em Core Web Vitals (LCP, FID, CLS, INP, TTFB)
+3. Medir Core Web Vitals (LCP, INP, CLS) e diagnosticar TTFB separadamente
 4. Configurar sitemap.xml e robots.txt
 5. Otimizar imagens e fontes para performance máxima
 6. Garantir acessibilidade (impacta diretamente o SEO)
@@ -95,9 +103,9 @@ Antes de fechar a lista de keywords de uma página/pauta, decomponha a keyword p
 
 A coluna **Intent** classifica: `informacional` (tutorial, "como"), `transacional` (compra/contratação), `navegacional` (marca). Isso direciona o tipo de página e o tom do Copy.
 
-### Nota sobre densidade de keyword
+### Nota sobre repetição de keyword
 
-Keyword research **decide** os termos; não autoriza repeti-los. **Keyword stuffing** (repetir à exaustão) é penalizado pelo Penguin desde 2012 — 2 a 3 ocorrências naturais por página bastam. O aviso vive aqui porque é onde a tentação nasce; o tuning de conteúdo é do Copy.
+Keyword research decide os termos; não autoriza repetição artificial. Escreva para a intenção de busca e revise legibilidade. Não há número universal de ocorrências nem densidade que garanta ranking; evitar keyword stuffing.
 
 ### Handoff de Keyword Research
 
@@ -286,52 +294,17 @@ export function OrganizationSchema({
 }
 ```
 
-**src/components/seo/FAQSchema.tsx**
+**FAQPage:** adicionar apenas quando descreve FAQs reais e elegíveis no HTML, sem prometer rich result no Google nem vantagem comprovada em citações de IA. O Google encerrou rich results de FAQ para todos os sites em maio de 2026. Se o usuário quiser apenas perguntas e respostas visíveis, não introduzir schema por padrão. Ver [atualizações da Busca](https://developers.google.com/search/updates#faq-deprecation).
 
-```typescript
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+## Core Web Vitals — métricas atuais
 
-export function FAQSchema({ items }: { items: FAQItem[] }) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: items.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer,
-      },
-    })),
-  };
+| Métrica | Limiar bom (75º percentil de campo) | Observação |
+|---|---|---|
+| LCP | ≤ 2,5 s | carregamento do maior elemento visível |
+| INP | ≤ 200 ms | responsividade; substituiu FID em março de 2024 |
+| CLS | ≤ 0,1 | estabilidade visual |
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
-```
-
-## Core Web Vitals - Metas Obrigatórias
-
-```
-Métrica        Alvo         Descrição
-─────────────────────────────────────────────────────────────
-LCP            < 2.5s       Largest Contentful Paint — tempo até o maior elemento visível
-FID            < 100ms      First Input Delay — tempo de resposta à primeira interação
-CLS            < 0.1        Cumulative Layout Shift — estabilidade visual da página
-INP            < 200ms      Interaction to Next Paint — responsividade geral
-TTFB           < 800ms      Time to First Byte — velocidade do servidor
-```
-
-Todas as métricas devem estar na zona **verde** do Google PageSpeed Insights.
-
-**Checkpoint:** rodar PageSpeed Insights (ou Lighthouse local) → se qualquer métrica ficar fora da zona verde, aplicar a otimização correspondente (LCP alto → lazy load de imagem abaixo do fold; CLS alto → dimensões reservadas em imagem/ad; TTFB alto → cache/CDN) → rodar de novo. Repetir até as 5 métricas estarem verdes na mesma medição — não é aceitável "3 de 5 verde, os outros 2 são aceitáveis".
+TTFB ajuda a diagnosticar atrasos do servidor; **não** é Core Web Vital. Priorizar dados de campo quando disponíveis; Lighthouse e PageSpeed em laboratório ajudam no diagnóstico, não substituem evidência de usuários reais. Se uma métrica estiver ruim, identificar a causa, corrigir e medir novamente; não assumir que uma execução isolada representa o site todo.
 
 ## Otimizações Obrigatórias
 
@@ -535,32 +508,21 @@ Regras:
 
 ### GEO/AEO
 
-Ver seção dedicada `## GEO/AEO — Otimização para LLMs e Answer Engines` abaixo, com checklist completo de citação por motores generativos (clear claims, quotable headings, FAQ/HowTo schema, E-E-A-T, tabelas, llms.txt).
+Ver seção dedicada abaixo. A base para visibilidade nas experiências de IA do Google continua sendo conteúdo útil, indexável e elegível para snippet; schema, `llms.txt` e tamanho de parágrafo não garantem citação.
 
 ## GEO/AEO — Otimização para LLMs e Answer Engines
 
-LLMs como ChatGPT, Claude, Perplexity e Google AI Overviews viraram a primeira camada de descoberta para muitos usuários — eles fazem a pergunta no chat antes de abrir o Google. GEO (Generative Engine Optimization) e AEO (Answer Engine Optimization) cobrem técnicas para tornar o conteúdo extraível, citável e referenciável por esses sistemas. Diferente de SEO clássico (que otimiza ranking em SERP), GEO/AEO otimiza para ser a fonte que o LLM cita textualmente na resposta gerada.
+Experiências de busca por IA podem apresentar conteúdo de páginas indexáveis. Não há técnica comprovada de formatação que garanta citação. Partir de conteúdo original, acessível e útil, com evidências e respostas diretas quando fizer sentido para o leitor; verificar resultados em dados de busca quando disponíveis.
 
-### Conteúdo citável
+### Conteúdo legível
 
-LLMs extraem trechos curtos e atômicos. Estruture o conteúdo para facilitar essa extração:
+- Atribuir dados e afirmações a fontes verificáveis; usar headings descritivos e respostas claras.
+- Usar listas, parágrafos e tabelas quando melhorarem a leitura, não para atingir um tamanho prescrito para LLMs.
+- Manter as informações essenciais no HTML renderizado e acessível; conferir indexação e controles de snippet.
 
-- **Clear atomic claims:** 1 fato por sentença. Evite parágrafos com múltiplas afirmações concatenadas — o LLM precisa conseguir citar uma frase isolada sem perder contexto.
-  - Ruim: "A Vitamina D é importante para os ossos e também tem papel no sistema imune, sendo que sua deficiência afeta 50% da população em climas frios."
-  - Bom: "A Vitamina D regula a absorção de cálcio. Sua deficiência afeta 50% da população em climas frios (Holick, 2024)."
-- **Quotable H2/H3 como perguntas:** headings em forma de pergunta direta batem com a query do usuário no LLM. "Como configurar SSL no Nginx" extrai melhor que "Configuração de SSL".
-- **Parágrafos curtos:** máximo 3-4 frases. Blocos longos são descartados na extração.
-- **TL;DR no topo:** 2-3 linhas resumindo o artigo logo após o H1. LLMs frequentemente citam o TL;DR como resposta direta.
-- **Listas numeradas e com bullets:** estruturas enumeradas são extraídas com fidelidade muito maior que prosa corrida.
+### Dados estruturados
 
-### Structured data específico
-
-Além do schema clássico (Website, Organization), priorize tipos que LLMs consomem para grounding:
-
-- **FAQPage schema** (já tem template em `FAQSchema.tsx` — ver seção `## Schema Markup - JSON-LD` acima): cada par pergunta/resposta vira candidato a citação direta em AI Overviews.
-- **FAQ pós-artigo baseada em pergunta real do leitor:** adicionar um bloco de FAQ ao final de todo artigo, com perguntas extraídas de fontes reais (comentários, suporte, "as pessoas também perguntam" do Google, fan-out do keyword research acima) — não perguntas inventadas pra preencher espaço. Backlinko documentou 32% de lift de tráfego orgânico num experimento controlado com 21 posts ao adicionar esse bloco. Marcar com `FAQPage` schema.
-- **HowTo schema:** para tutoriais e procedimentos. Cada `step` é extraído individualmente.
-- **Article schema com metadados completos:** `author` (com `@type: Person` e `url` para bio), `datePublished`, `dateModified` (LLMs ranqueiam por frescor — conteúdo sem `dateModified` perde relevância em queries que pedem informação atual), `publisher`, `headline`, `description`.
+Usar tipos suportados pelas diretrizes atuais e que reflitam o conteúdo visível. `Article` pode descrever autoria e datas reais; nunca falsificar frescor. `FAQPage` não gera mais rich results do Google e não tem benefício de citação em IA confirmado; `HowTo` rich results foram removidos em 2023. Não adicionar ambos como tática de GEO. Confirmar elegibilidade na [documentação de dados estruturados do Google](https://developers.google.com/search/docs/appearance/structured-data/search-gallery).
 
 ```typescript
 const articleSchema = {
@@ -582,31 +544,15 @@ const articleSchema = {
 };
 ```
 
-### E-E-A-T para LLMs
+### Transparência editorial
 
-Experience, Expertise, Authoritativeness, Trustworthiness. LLMs filtram fontes por sinais de autoridade explícitos:
-
-- **Bio do autor visível na página:** nome, credenciais, link para perfil profissional. Não basta no schema — precisa estar no HTML renderizado.
-- **Fontes externas linkadas:** sempre que citar dado, estudo ou stat, link para a fonte primária. LLMs verificam grounding via outbound links.
-- **Datas claras em todo conteúdo:** `<time datetime="2025-03-20">20 de março de 2025</time>` visível no corpo, não só no schema.
-- **Contradições explícitas:** não use "alguns dizem X" — atribua nominalmente. "Smith (2024) defende X, mas Jones (2025) contradiz com Y baseado em dados de Z." Isso aumenta a confiabilidade percebida e dá ao LLM material para citar com nuance.
-- **Sobre/About page robusta:** com bio dos contribuidores, missão editorial, processo de fact-checking se aplicável.
-
-### Tabelas e listas
-
-LLMs extraem tabelas com altíssima fidelidade — frequentemente reproduzem a tabela inteira na resposta. Use tabelas sempre que comparar:
-
-- Planos/preços
-- Features entre alternativas
-- Antes/depois
-- Especificações técnicas
-- Prós/contras
-
-Listas com bullets ou numeradas vencem prosa para qualquer enumeração. Se tem mais de 3 itens equivalentes, vire lista.
+- Mostrar autoria, datas e fontes primárias quando úteis para o leitor; não afirmar que links externos garantem grounding ou ranqueamento.
+- Manter página sobre a organização, contato e processo editorial quando pertinentes ao negócio.
+- Usar tabelas e listas para comparações quando melhorarem a leitura, não como requisito de indexação ou citação.
 
 ### llms.txt
 
-Arquivo opcional na raiz do site (analogia ao `robots.txt`), formato markdown, lista o conteúdo canônico e legível por LLMs. Não é padrão oficial mas começou a ser respeitado por crawlers de Anthropic, OpenAI e Perplexity.
+Arquivo Markdown opcional que pode servir como índice para ferramentas que explicitamente o suportem; não é requisito de indexação, arquivo especial usado pelo Google Search nem alavanca comprovada de AI Overviews. Priorizar sitemap, HTML acessível e controles documentados de crawling/snippet. Só publicar se houver consumidor identificado e manutenção do conteúdo.
 
 **public/llms.txt**
 
@@ -631,20 +577,20 @@ Arquivo opcional na raiz do site (analogia ao `robots.txt`), formato markdown, l
 - [FAQ](https://site.com/faq): perguntas frequentes
 ```
 
-Versão estendida `llms-full.txt` pode incluir o conteúdo completo concatenado em markdown plano — útil para sites pequenos onde o LLM pode ingerir tudo.
+`llms-full.txt` também é opcional; conteúdo duplicado pode exigir manutenção adicional. Não afirmar que algum crawler específico usa estes arquivos sem documentação do provedor.
 
 ### Crawlers de IA — treino vs. citação
 
 Bloquear ou permitir um crawler de IA no `robots.txt` é decisão de negócio, não só técnica — e o mesmo provedor frequentemente roda dois bots com propósitos opostos. Confundir os dois faz o site ou vazar conteúdo pra treino sem querer, ou sumir de respostas citadas sem querer.
 
-| Provedor | Bot de treino (alimenta modelo) | Bot de citação em tempo real (busca ao responder) |
+| Provedor | Controle de treinamento/uso | Controle de busca/citação |
 |---|---|---|
-| OpenAI | `GPTBot` | `OAI-SearchBot` |
-| Anthropic | `ClaudeBot` | `Claude-SearchBot` / `Claude-User` |
-| Perplexity | — | `PerplexityBot` |
-| Google | (dados de busca, não um bot separado) | `Google-Extended` controla uso em AI Overviews/Gemini |
+| OpenAI | `GPTBot` | `OAI-SearchBot` (ver documentação atual) |
+| Anthropic | `ClaudeBot` | Consultar a documentação atual de `Claude-SearchBot` / `Claude-User` |
+| Perplexity | Consultar documentação atual | `PerplexityBot` |
+| Google | `Google-Extended` controla usos de treinamento/grounding de produtos Gemini fora da Busca | Indexação e exibição em AI Overviews/AI Mode dependem do Googlebot e controles normais da Busca; `Google-Extended` não bloqueia Search |
 
-Regra prática: se o objetivo é aparecer citado em resposta de chat sem contribuir para o treino do próximo modelo, bloquear o bot de treino e permitir o de busca/citação — não os dois juntos com uma regra genérica `User-agent: *`.
+Definir política para cada provedor com base em [crawlers oficiais do Google](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) e regras aplicáveis. Bloqueios de treino não garantem citação; testar efeitos de `robots.txt` sem confundir Google-Extended com Googlebot.
 
 ```
 # robots.txt — exemplo: permite citação, bloqueia treino
@@ -661,35 +607,18 @@ User-agent: Claude-SearchBot
 Allow: /
 ```
 
-### Thresholds de citabilidade de passagem
+### Verificação de citabilidade
 
-Dado empírico sobre qual trecho um LLM efetivamente cita, além da estrutura qualitativa já coberta acima:
-
-- **Tamanho da passagem citável:** 134–167 palavras é a faixa mais citada — trecho menor que isso carece de contexto suficiente para ficar autocontido; trecho maior raramente é citado inteiro.
-- **Posição na página:** ~44% das citações vêm do primeiro terço do conteúdo. Não enterrar a resposta direta depois de contexto longo — o TL;DR do topo (já coberto acima) é o que mais captura essa faixa.
-- **Schema com prazo de validade:** `FAQPage` foi deprecado pelo Google em maio de 2026 para rich results de busca (embora LLMs generativos possam continuar lendo o schema para grounding). Verificar o status atual do schema antes de investir esforço nele — preferir `Article` + `HowTo` como base mais estável.
+Não há faixa universal de palavras, posição na página ou schema que garanta citação em respostas geradas. Registrar URL, consulta, data e motor da observação quando comparar presença em respostas; mudanças de conteúdo devem preservar utilidade para pessoas e ser avaliadas por dados observados.
 
 ### GEO Checklist
 
-- [ ] TL;DR de 2-3 linhas no topo de cada artigo/página de conteúdo
-- [ ] H2/H3 formulados como perguntas diretas quando aplicável
-- [ ] Parágrafos com máximo 3-4 frases
-- [ ] Claims atômicos (1 fato por sentença) em conteúdo factual
-- [ ] FAQPage schema implementado em páginas com FAQ
-- [ ] Bloco de FAQ pós-artigo com perguntas reais do leitor (não inventadas)
-- [ ] Fan-out query mapper rodado: sub-perguntas da keyword principal sem cobertura viraram pauta/seção
-- [ ] HowTo schema em tutoriais e procedimentos
-- [ ] Article schema com `author`, `datePublished`, `dateModified`, `publisher`
-- [ ] Bio do autor visível no HTML (não só no schema)
-- [ ] Fontes externas linkadas para todo dado/stat citado
-- [ ] Datas visíveis no corpo do conteúdo via `<time datetime="">`
-- [ ] Atribuições nominais em vez de "alguns dizem"
-- [ ] Tabelas comparativas usadas sempre que comparar 2+ itens
-- [ ] Listas numeradas ou com bullets para enumerações de 3+ itens
-- [ ] `llms.txt` na raiz do site listando conteúdo canônico
-- [ ] Página `/sobre` ou `/about` com missão editorial e bios
-- [ ] `robots.txt` distingue bot de treino de bot de citação por provedor (não usa regra genérica pros dois)
-- [ ] Resposta direta à query principal cai no primeiro terço da página, em passagem de 134-167 palavras autocontida
+- [ ] Conteúdo original e útil, com resposta clara à intenção de busca.
+- [ ] Página relevante indexável e elegível para snippet segundo os controles do provedor.
+- [ ] Fontes e autoria verificáveis quando houver afirmações factuais.
+- [ ] Dados estruturados representam fielmente o conteúdo visível e um recurso ainda suportado.
+- [ ] Métricas e citações reportadas como observadas, não prometidas.
+- [ ] Decisão explícita sobre `llms.txt` e crawlers de treino; sem tratá-los como requisitos do Google.
 
 ## SEO Local (Google Business Profile)
 
@@ -697,70 +626,28 @@ Aplicável quando o projeto representa um negócio com presença física ou áre
 
 ### NAP Consistency (Name, Address, Phone)
 
-Comparar Nome, Endereço e Telefone em três fontes: HTML visível (rodapé/contato), `LocalBusiness` schema, e Google Business Profile. Qualquer divergência entre as três é **crítica** — resolver antes de qualquer outra otimização local.
+Comparar nome, endereço público e telefone entre site, perfil e diretórios, quando disponíveis. Negócios de área de serviço podem ocultar endereço; não publicar dado privado para satisfazer schema. Divergências comprovadas devem ser investigadas, sem atribuir peso de ranking sem medição.
 
-Multi-loja: cada página de localização precisa de schema `LocalBusiness` próprio com `@id` único e `branchOf` apontando pra Organization da matriz.
+Para múltiplas unidades, cada página deve identificar claramente a unidade real e manter informações próprias; se usar `LocalBusiness`, conferir o subtipo e propriedades que correspondem ao estabelecimento. Não inventar coordenadas, estrelas, reviews nem horários. Validar com a [documentação LocalBusiness](https://developers.google.com/search/docs/appearance/structured-data/local-business).
 
-### Schema por vertical (não usar `LocalBusiness` genérico)
+### Google Business Profile e avaliações
 
-| Vertical | Tipo correto | Evitar |
-|---|---|---|
-| Restaurante | `Restaurant` + `Menu`/`MenuItem` | — |
-| Saúde | `MedicalClinic`/`Hospital`/`Dentist` | `MedicalBusiness` (genérico demais) |
-| Jurídico | `LegalService` + `Person`/`Service` por área de atuação | `Attorney` (deprecated) |
-| Serviço em domicílio | subtipo de `Service` + `areaServed` com cidades nomeadas | — |
-| Imobiliária | `RealEstateAgent` + `Person` + `RealEstateListing` por imóvel | — |
-| Concessionária | `AutoDealer`, com schema separado pra vendas/serviço | `VehicleListing` como tipo principal |
-
-Obrigatório em todos: `name`, `address` (com sub-propriedades `PostalAddress`), `geo` com 5+ decimais de precisão. Recomendado: `openingHoursSpecification`, `telephone` com link `tel:`, `aggregateRating`.
-
-### GBP — sinais e anti-padrões
-
-- **Categoria primária** é o sinal individual de maior peso — categoria errada é o principal fator negativo de ranking local.
-- **Nunca** linkar o GBP pra página mais forte do site — risco de suprimir ranqueamento orgânico sob updates de diversidade.
-- Fotos/vídeo aumentam pedidos de rota em ~45%; horário de funcionamento visível é fator relevante.
-- Posts do GBP não têm impacto direto de ranking — não priorizar sobre outras táticas.
-
-### Review intelligence
-
-- Recência pesa mais que volume — cadência de novas reviews é o sinal primário.
-- Limiar de credibilidade: 10+ reviews totais.
-- Sempre responder reviews (impacto de percepção alto), mas **nunca fazer review gating** (pré-filtrar cliente satisfeito antes de direcionar pra plataforma pública) — viola política de engajamento falso do Google e regras da FTC.
-- Setores regulados: saúde não pode confirmar/negar que um reviewer é paciente (HIPAA); jurídico precisa considerar sigilo profissional na resposta.
-
-### Doorway page — detecção rápida
-
-Teste do RicketyRoo: se trocar o nome da cidade no texto e o conteúdo continuar fazendo sentido, é doorway page — penalizado desde o Core Update de março de 2024. Piso de qualidade: cada página de localização precisa de conteúdo substancialmente único (não só o nome da cidade trocado).
+- Verificar categoria, horário, contato e URL de destino com o responsável pelo negócio; não recomendar uma página aleatória para o GBP.
+- Reviews autênticas ajudam pessoas a decidir. Não manipular avaliações nem fazer review gating; setores regulados exigem cuidado com privacidade nas respostas.
+- Páginas de cidades só são úteis quando mostram diferenças reais de oferta, equipe, localização ou atendimento; evitar páginas quase idênticas geradas trocando o nome da cidade.
 
 ## SEO E-commerce
 
-### Schema de produto — `Product` + `Offer`
+### Dados estruturados e feed
 
-Campos obrigatórios: `name`, `image` (array com 1+ URL de alta resolução), `offers` do tipo `Offer` (nunca `AggregateOffer` para um produto único).
-
-Campos que habilitam rich results: `sku`, `brand`, `gtin13`/`gtin14`/`mpn`, `aggregateRating`, `review` (mínimo 1), `shippingDetails` (tipo `ShippingDetails`), `hasMerchantReturnPolicy` (tipo `MerchantReturnPolicy`). Produtos adultos exigem `hasAdultConsideration`.
-
-### Regras de validação não-negociáveis
-
-- Preço como string numérica sem símbolo de moeda: `"29.99"`, nunca `"$29.99"`.
-- `priceCurrency` em código ISO 4217 (`USD`, `BRL`, `EUR`).
-- `availability` usa a URL completa do enum do Schema.org.
-- `brand.name` nunca vazio ou `"N/A"`.
-- Se `aggregateRating` estiver presente, `ratingValue` e `reviewCount` são obrigatórios juntos.
-- `priceValidUntil` em ISO 8601.
+Representar produto, preço, moeda e disponibilidade reais, mantendo a página, o JSON-LD e o feed sincronizados. `Product` e `Offer` são tipos frequentes para oferta única; `AggregateOffer` pode ser apropriado a múltiplos vendedores/faixas, não é proibido em geral. Reviews e notas precisam refletir avaliações genuínas mostradas na página. Verificar requisitos **por recurso** na [documentação de Product do Google](https://developers.google.com/search/docs/appearance/structured-data/product) e [especificação do Merchant Center](https://support.google.com/merchants/answer/7052112); feed de produtos e markup de busca são contratos distintos.
 
 ### Página de produto — checklist
 
-- [ ] Título ≤ 60 caracteres com keyword principal + marca
-- [ ] Meta description ≤ 155 caracteres com preço/benefício + CTA
-- [ ] 3+ imagens, 800px+, alt text descritivo (não genérico)
-- [ ] H1 único correspondendo ao nome do produto
-- [ ] Descrição 200+ palavras, própria (nunca copiar texto do fabricante)
-- [ ] Breadcrumbs: Home > Categoria > Subcategoria > Produto
-
-### Feed de marketplace (Google Merchant Center)
-
-Usar `Offer`, nunca `AggregateOffer`. Manter preço consistente entre listagem orgânica e Shopping Ads. Campos hoje exigidos pelo Merchant Center: `name`, `image`, `offers`.
+- [ ] Título e descrição únicos que ajudam a escolher o produto, sem contagem mínima arbitrária.
+- [ ] Imagens reais com texto alternativo apropriado; conferir qualidade, disponibilidade e política do marketplace.
+- [ ] Preço, frete, política de devolução e estoque consistentes com a oferta publicada.
+- [ ] Breadcrumbs e links internos que representem categorias reais.
 
 ## SEO Internacional (hreflang)
 
@@ -774,21 +661,10 @@ Aplicável a sites com múltiplas versões de idioma/região.
 <link rel="alternate" hreflang="x-default" href="https://site.com/pagina" />
 ```
 
-- Código de idioma: ISO 639-1 minúsculo (`pt`, `en`) + código de região ISO 3166-1 Alpha-2 maiúsculo (`BR`, `US`) — formato `idioma-REGIÃO`.
-- Protocolo consistente em todo o conjunto (todo HTTPS, nunca misturar com HTTP).
-- URLs devem casar exatamente com a canonical, inclusive barra final.
-
-### Erros mais comuns
-
-| Erro | Correção |
-|---|---|
-| Falta a tag auto-referenciada | Toda página do conjunto deve apontar pra si mesma também |
-| Link unidirecional (A→B sem B→A) | Implementar malha bidirecional completa |
-| Código inválido (`eng`, `jp`, `en-uk`) | Usar estritamente ISO 639-1 + ISO 3166-1 |
-| hreflang em URL não-canonical | Aplicar apenas nas URLs canônicas |
-| Região sem prefixo de idioma | Nunca usar só o código de país |
-
-`x-default`: um único por conjunto, geralmente apontando pra versão em inglês ou seletor de idioma; precisa receber link de retorno de todas as outras versões.
+- Usar código de idioma válido e região opcional quando necessária; URL absoluta e indexável.
+- Conjuntos alternativos devem ter links de retorno e indicar a própria versão.
+- Cada alternativo precisa apontar para a URL canônica do seu próprio idioma; não canonicalizar todas as traduções para uma língua.
+- `x-default` é opcional para uma página não específica de idioma/região (por exemplo, seletor); validar segundo a [documentação hreflang](https://developers.google.com/search/docs/specialty/international/localized-versions).
 
 ## Quando precisar de imagem (Open Graph card, Twitter card, hero pra blog post)
 
@@ -823,17 +699,16 @@ Meta descriptions: SEO NAO reescreve o copy — apenas otimiza formato, keywords
 
 ### Entrega para QA
 
-1. Meta tags testadas em todas as páginas (Open Graph Debugger, Twitter Card Validator)
-2. Schema markup validado (Google Rich Results Test)
-3. Sitemap.xml configurado e acessível
-4. Core Web Vitals na zona verde (Google PageSpeed Insights)
-5. Lighthouse score > 90 em todas as categorias (Performance, Accessibility, Best Practices, SEO)
+1. Inspecionar metadata, canonical, robots e HTML renderizado das páginas alvo.
+2. Validar apenas schemas elegíveis e conteúdo correspondente, sem prometer rich result.
+3. Confirmar sitemap.xml e acesso das URLs relevantes.
+4. Comparar LCP, INP e CLS de campo se houver dados; indicar ausência de dados quando não houver.
+5. Registrar teste de laboratório separadamente e informar escopo da auditoria executada.
 
 ## Fontes Externas
 
-- GEO/AEO patterns inspired by [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) (MIT) — comprehensive SEO skill with deep GEO coverage.
-- FAQ pós-artigo (32% de lift documentado) e fan-out query mapper adaptados de [Backlinko — "How to Track LLM Prompts"](https://backlinko.com/llm-prompt-tracking).
-- Seções de SEO Local (GBP/NAP), E-commerce (schema de produto) e Internacional (hreflang) também inspiradas em AgriciDaniel/claude-seo, que implementa essas verticais como sub-skills executáveis com dispatch paralelo e integrações MCP (DataForSEO, Ahrefs); aqui curado como referência estática, sem replicar a arquitetura de agentes/MCP da fonte.
+- Integração opcional com [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo), versão analisada v2.4.2, licença [MIT](https://github.com/AgriciDaniel/claude-seo/blob/v2.4.2/LICENSE). Comandos, 26 skills e 19 agentes permanecem no plugin oficial, não são copiados para o catálogo do kit. Procedimento em [references/claude-seo.md](references/claude-seo.md).
+- Orientação da [Busca com IA do Google](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), [crawlers comuns](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) e [atualizações de FAQ](https://developers.google.com/search/updates#faq-deprecation) prevalece sobre heurísticas de GEO sem evidência.
 
 ## Regra de Código
 

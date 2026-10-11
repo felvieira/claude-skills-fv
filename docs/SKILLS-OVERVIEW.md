@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 85 skills + 16 subagents + 47 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 86 skills + 16 subagents + 47 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 85 skills, 16 subagents, 47 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-08 (v2.102.0 — portabilidade verificada em Linux, macOS e Windows; workflow Cross-OS)
+> **Versão:** 86 skills, 16 subagents, 47 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-10-10 (skill 87 — REA para engenharia reversa de artefatos distribuídos)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 85 especialistas
+- [Skills por categoria](#skills-por-categoria) — 86 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -426,6 +426,7 @@ Catálogo de roteamento: `plugins/catalog/product-growth.json`. Comece pela 83 q
 | 46 | **Post-Deploy Canary Monitor** | vigiar produção depois do canary fechar — error budget, latência, anomalia | "monitora a produção depois desse último deploy" |
 | 62 | **Persona-Driven Issue Audit** | auditar produto existente via personas simuladas, ponta a ponta até PR, sem merge automático | "testa esse app como se fosse um usuário iniciante frustrado" |
 | 81 | **Artemis Android Testing** | testar app Android real no emulador por linguagem natural (google/artemis), com vídeo da sessão | "testa esse apk no emulador: abre o login e confirma que o botão Entrar aparece" |
+| 87 | **Reverse Engineer Anything (REA)** | engenharia reversa com evidência de binários, APKs, ASARs, apps e runtime sem fonte; requer toolkit REA externo quando necessário | "inspeciona esse ASAR de Electron sem código-fonte e mostra a evidência" |
 
 ### Publicação e Automação
 

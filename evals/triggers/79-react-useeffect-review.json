@@ -1,0 +1,20 @@
+{
+  "skill": "79-react-useeffect-review",
+  "should_trigger": [
+    "devo usar useEffect para calcular estado derivado",
+    "revisar um effect chain no componente React",
+    "o fetch tem race condition dentro do useEffect",
+    "como sincronizar estado entre componentes",
+    "resetar estado quando prop muda",
+    "notificar parent via effect",
+    "por que renderizou duas vezes",
+    "quando usar useSyncExternalStore em vez de useEffect"
+  ],
+  "shouldnt_trigger": [
+    "criar um endpoint de autenticação",
+    "fazer uma auditoria de segurança OWASP",
+    "definir a paleta da interface",
+    "preparar um worktree isolado",
+    "converter uma tela desktop para mobile"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "skill": "57-mobile-ux-foundations",
+  "should_trigger": [
+    "onde colocar a navegacao na zona do polegar",
+    "preciso definir dark mode e contraste para OLED",
+    "o app parece lento durante o loading, qual feedback usar",
+    "desenhar login passwordless com passkey e biometria",
+    "como fazer permission priming antes de pedir GPS",
+    "quero um onboarding com checklist e momento aha",
+    "avaliar feedback tatil e haptic no fluxo mobile",
+    "o texto ampliado quebra a escala de fonte"
+  ],
+  "shouldnt_trigger": [
+    "corrigir scroll horizontal de uma pagina existente",
+    "criar o endpoint de autenticação",
+    "fazer pesquisa de palavras-chave SEO",
+    "revisar um useEffect do React",
+    "preparar um worktree isolado"
+  ]
+}

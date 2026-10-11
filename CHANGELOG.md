@@ -7,7 +7,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ## [Unreleased]
 
+### Corrigido
+- **Catalog budget das skills**: Claude/Codex/Grok injetam `name` + `description` de **todas** as skills do plugin em todo turno (~14k tokens hoje, 75/86 descriptions >400 chars). O body continua lazy; a description não. `skill-health.mjs` agora reporta chars/tokens do catálogo e flagra description gorda. Policy em `skill-manifest.md` + `progressive-skill-loading.md`. Skill 35 e skill 49 passam a tratar o catálogo como custo fixo. Medir/compactar: `node scripts/skill-catalog-budget.mjs` (`--apply` reescreve o bloco `description`).
+
 ### Adicionado
+- Skill 14: integração sob demanda com `AgriciDaniel/claude-seo` no Claude Code, sem instalação global nem cópia de skills/agentes; guia de `/seo doctor`, `/seo setup` e `/seo audit`, com fallback honesto para outros clientes. Atualizadas orientações de INP/FID, FAQ/HowTo, `llms.txt`, `Google-Extended`, SEO local, produtos e hreflang conforme documentação oficial; fixtures de roteamento ampliadas.
+- Skill 87 **Reverse Engineer Anything (REA)**: fluxo para investigar artefatos distribuídos (binários, APKs, ASARs, apps web) com evidência, separando-o da skill 33 para repositórios-fonte. O toolkit/MCP do REA continua uma dependência externa opt-in; integração documenta diagnóstico e setup escopado sem instalação automática.
+- Auditoria de contexto: `AGENTS.md` vira índice sob demanda para comandos/subagents (4.708 → 2.637 tokens estimados, caracteres ÷ 4); `/context-budget` separa o que está em disco do que foi carregado, sem inventar headroom. A injeção de discovery no SessionStart foi reduzida sem remover o guia.
+- `ai-memory` Docker: upgrade explícito com backup externo verificado antes da troca de imagem, reconhecimento estrito de containers do kit (inclusive legado sem label), preservação do container anterior e recusa de configurações desconhecidas; o install normal avisa que a versão remota não foi verificada.
 
 - O Documenter ganhou o modo Repo-Wiki, inspirado em `sopaco/deepwiki-rs`/Litho e reimplementado no padrão do kit: pré-processamento, pesquisa por domínio, composição C4, boundaries, schema condicional, conhecimento local chunked, proveniência e execução incremental.
 - `docs/skill-guides/documenter-repository-intelligence.md` documenta o fluxo completo e `scripts/verify-docset.mjs` valida árvores Markdown geradas quanto a links quebrados, fences, placeholders e headings duplicados.

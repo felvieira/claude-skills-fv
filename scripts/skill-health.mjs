@@ -29,6 +29,9 @@ const AGENTS_DIR = join(ROOT, 'agents');
 const COMMANDS_DIR = join(ROOT, 'commands');
 const POLICIES_DIR = join(ROOT, 'policies');
 const EVALS_DIR = join(ROOT, 'evals', 'triggers');
+const PROXY_CHARS_PER_TOKEN = 4;
+const ROOT_INSTRUCTION_FILES = ['GLOBAL.md', 'AGENTS.md', 'CLAUDE.md'];
+const SESSION_START_FILE = join(ROOT, 'hooks', 'scripts', 'session-start.mjs');
 const OUT = join(ROOT, 'docs', 'skill-health.md');
 
 // ─── Frontmatter parser (handles YAML: simple, "quoted", | multiline) ───────
@@ -84,7 +87,7 @@ function loadSkills() {
       const content = readFileSync(skillFile, 'utf8');
       const meta = parseFrontmatter(content);
       const stats = statSync(skillFile);
-      const description = meta.description || '';
+      const description = (meta.description || '').replace(/\s+/g, ' ').trim();
       return {
         kind: 'skill',
         dir: d,
@@ -92,8 +95,12 @@ function loadSkills() {
         name: meta.name || d,       // nome curto (frontmatter)
         description,
         descLength: description.length,
+        descBytes: Buffer.byteLength(description, 'utf8'),
+        catalogEntryChars: String(meta.name || d).length + 1 + description.length,
+        catalogEntryBytes: Buffer.byteLength(String(meta.name || d), 'utf8') + 1 + Buffer.byteLength(description, 'utf8'),
         path: skillFile,
         size: content.length,
+        diskBytes: stats.size,
         mtime: stats.mtime,
         hasGotchas: /^#{2,3}\s+(gotchas|armadilhas|pegadinhas)\b/im.test(content),
       };
@@ -107,7 +114,7 @@ function loadAgents() {
       const path = join(AGENTS_DIR, f);
       const content = readFileSync(path, 'utf8');
       const meta = parseFrontmatter(content);
-      const description = meta.description || '';
+      const description = (meta.description || '').replace(/\s+/g, ' ').trim();
       return {
         kind: 'agent',
         slug: basename(f, '.md'),
@@ -125,7 +132,7 @@ function loadCommands() {
       const path = join(COMMANDS_DIR, f);
       const content = readFileSync(path, 'utf8');
       const meta = parseFrontmatter(content);
-      const description = meta.description || '';
+      const description = (meta.description || '').replace(/\s+/g, ' ').trim();
       return {
         kind: 'command',
         slug: basename(f, '.md'),
@@ -136,6 +143,52 @@ function loadCommands() {
       };
     });
 }
+
+function staticCostInventory() {
+  const files = ROOT_INSTRUCTION_FILES.map((relativePath) => {
+    const path = join(ROOT, relativePath);
+    if (!existsSync(path)) return { path: relativePath, exists: false, chars: 0, bytes: 0 };
+    const content = readFileSync(path, 'utf8');
+    return {
+      path: relativePath,
+      exists: true,
+      chars: content.length,
+      bytes: Buffer.byteLength(content, 'utf8'),
+    };
+  });
+  const hook = existsSync(SESSION_START_FILE)
+    ? readFileSync(SESSION_START_FILE, 'utf8')
+    : '';
+  return {
+    rootInstructions: files,
+    rootInstructionChars: files.reduce((total, file) => total + file.chars, 0),
+    rootInstructionBytes: files.reduce((total, file) => total + file.bytes, 0),
+    sessionStartSourceChars: hook.length,
+    sessionStartSourceBytes: Buffer.byteLength(hook, 'utf8'),
+  };
+}
+
+function observedPayload() {
+  const index = process.argv.indexOf('--observed');
+  const relativePath = index >= 0 ? process.argv[index + 1] : null;
+  if (!relativePath || relativePath.startsWith('--')) return null;
+  try {
+    const raw = readFileSync(resolve(ROOT, relativePath), 'utf8');
+    const parsed = JSON.parse(raw);
+    const message = typeof parsed === 'string'
+      ? parsed
+      : parsed.systemMessage || parsed.hookSpecificOutput?.additionalContext || '';
+    return {
+      source: relativePath,
+      chars: String(message).length,
+      bytes: Buffer.byteLength(String(message), 'utf8'),
+      proxyTokens: Math.ceil(String(message).length / PROXY_CHARS_PER_TOKEN),
+    };
+  } catch (error) {
+    return { source: relativePath, error: error.message };
+  }
+}
+
 
 // ─── Load eval fixtures (JSON format with should_trigger/shouldnt_trigger) ──
 function loadEvals() {
@@ -242,6 +295,8 @@ function generateReport() {
   const agents = loadAgents();
   const commands = loadCommands();
   const evals = loadEvals();
+  const staticCosts = staticCostInventory();
+  const observed = observedPayload();
 
   // Cross-section overlap
   const overlaps = detectOverlap([...skills, ...agents, ...commands]);
@@ -268,12 +323,25 @@ function generateReport() {
   lines.push('');
   lines.push('## Sumário');
   lines.push('');
+  const catalogDescriptionChars = skills.reduce((total, skill) => total + skill.descLength, 0);
+  const catalogDescriptionBytes = skills.reduce((total, skill) => total + skill.descBytes, 0);
+  const catalogEntryChars = skills.reduce((total, skill) => total + skill.catalogEntryChars, 0);
+  const catalogEntryBytes = skills.reduce((total, skill) => total + skill.catalogEntryBytes, 0);
+  const fat = skills.filter(s => s.descLength > 400);
+  flagged.fat_description = fat;
+
   lines.push(`- **Skills:** ${skills.length}`);
   lines.push(`- **Subagents:** ${agents.length}`);
   lines.push(`- **Commands:** ${commands.length}`);
   lines.push(`- **Eval fixtures:** ${Object.keys(evals).length}`);
   lines.push(`- **Overlaps detectados (cross-section):** ${overlaps.length}`);
   lines.push(`- **Dead policies (zero refs externas):** ${deadPolicies.length}`);
+  lines.push(`- **Description inventory on disk:** ${catalogDescriptionChars.toLocaleString('en-US')} chars / ${catalogDescriptionBytes.toLocaleString('en-US')} UTF-8 bytes (~${Math.ceil(catalogDescriptionChars / PROXY_CHARS_PER_TOKEN).toLocaleString('en-US')} proxy tokens; not measured host payload)`);
+  lines.push(`- **Catalog entry inventory on disk:** ${catalogEntryChars.toLocaleString('en-US')} chars / ${catalogEntryBytes.toLocaleString('en-US')} UTF-8 bytes (name + description; ~${Math.ceil(catalogEntryChars / PROXY_CHARS_PER_TOKEN).toLocaleString('en-US')} proxy tokens)`);
+  lines.push(`- **Root instruction candidates on disk:** ${staticCosts.rootInstructionChars.toLocaleString('en-US')} chars / ${staticCosts.rootInstructionBytes.toLocaleString('en-US')} UTF-8 bytes; host loading not observed`);
+  lines.push(`- **SessionStart source on disk:** ${staticCosts.sessionStartSourceChars.toLocaleString('en-US')} chars / ${staticCosts.sessionStartSourceBytes.toLocaleString('en-US')} UTF-8 bytes; emitted payload not observed`);
+  lines.push(`- **Observed host payload:** ${observed ? `${observed.chars ?? 'error'} chars / ${observed.bytes ?? 'error'} bytes (~${observed.proxyTokens ?? 'error'} proxy tokens) from ${observed.source}` : 'not available; pass --observed <json> with captured systemMessage'}`);
+  lines.push(`- **Fat descriptions (>400 chars):** ${fat.length}/${skills.length} — exceeds design target; host truncation/selection is not inferred`);
   lines.push('');
 
   lines.push('## Flags');
@@ -283,6 +351,19 @@ function generateReport() {
   lines.push('');
   if (!flagged.weak_description.length) lines.push('- (nenhuma — todas têm descriptions ricas)');
   else for (const s of flagged.weak_description) lines.push(`- ${s.slug} — \`${s.descLength}\` chars`);
+  lines.push('');
+
+  lines.push(`### Skills com description gorda (>400 chars) — catalog bloat`);
+  lines.push('');
+  lines.push('Descriptions acima de 400 chars são inventário local acima do alvo. O host pode carregar, truncar, selecionar ou reformatar o catálogo; só um payload capturado prova o que foi enviado. O body do `SKILL.md` é lazy conforme o host. Teto de design: 160 chars na primeira frase + ≤12 triggers, total ≤400. Ver `policies/skill-manifest.md` e `scripts/skill-catalog-budget.mjs`.');
+  lines.push('');
+  if (!fat.length) lines.push('- (nenhuma)');
+  else {
+    lines.push(`- ${fat.length} skills acima do teto. Top 15:`);
+    for (const s of fat.slice().sort((a, b) => b.descLength - a.descLength).slice(0, 15)) {
+      lines.push(`  - ${s.slug} — \`${s.descLength}\` chars`);
+    }
+  }
   lines.push('');
 
   lines.push(`### Skills sem "Trigger em:" no description`);
@@ -349,6 +430,7 @@ function generateReport() {
   lines.push('## Ações sugeridas');
   lines.push('');
   if (flagged.weak_description.length) lines.push(`- Estender description curtas via \`/humanize\` ou skill 35 (skill-author)`);
+  if (fat.length) lines.push(`- Enxugar ${fat.length} descriptions gordas com revisão por fixture: \`node scripts/skill-catalog-budget.mjs\` (dry-run). Não usar \`--apply\` sem revisar triggers descartados; o script bloqueia skills cobertas por fixture positiva salvo \`--force\`.`);
   if (flagged.no_triggers.length) lines.push(`- Adicionar "Trigger em:" no description das skills sem triggers explícitos`);
   if (flagged.no_evals.length) lines.push(`- Criar \`evals/triggers/<slug>.json\` pras skills sem fixture (formato JSON com should_trigger/shouldnt_trigger)`);
   if (flagged.agents_weak.length) lines.push(`- Refinar descriptions dos subagents flagged`);

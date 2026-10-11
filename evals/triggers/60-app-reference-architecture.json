@@ -1,0 +1,20 @@
+{
+  "skill": "60-app-reference-architecture",
+  "should_trigger": [
+    "criar um app do zero com Next.js e Tauri",
+    "preciso gerar um APK do zero",
+    "definir arquitetura de referencia para um SaaS",
+    "montar auth dual web e app",
+    "implementar Google Play IAP",
+    "planejar push multi-canal para o app mobile",
+    "usar assinatura Stripe e Play Store",
+    "começar com boilerplate de app"
+  ],
+  "shouldnt_trigger": [
+    "corrigir um componente React existente",
+    "auditar um fluxo de paywall",
+    "traduzir a interface para arabe",
+    "investigar um sistema legado sem docs",
+    "criar uma campanha de crescimento"
+  ]
+}

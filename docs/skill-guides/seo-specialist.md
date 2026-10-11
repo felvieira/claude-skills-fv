@@ -73,15 +73,9 @@ export function generateMetadata({
 }
 ```
 
-### Regras inegociaveis de title e description
+### Title, description e canonical
 
-| Campo | Limite | Regra |
-|-------|--------|-------|
-| `<title>` | 50-60 chars | Keyword principal + nome do site |
-| `meta description` | 120-155 chars | Resumo + CTA implicito |
-| `og:image` | 1200x630px | Arquivo otimizado, sem texto pequeno |
-| `canonical` | URL exata | Sempre presente, nunca relativa |
-
+Não há limite fixo de caracteres que garanta exibição: o Google pode reescrever títulos e truncar conforme dispositivo e largura. Escrever título e descrição únicos, úteis e concisos; confirmar a aparência nas páginas reais. A canonical deve ser URL absoluta da versão preferida, consistente com sitemap e redirecionamentos. O tamanho de `og:image` depende do consumidor; 1200×630 é um formato comum, não um requisito de indexação.
 ---
 
 ## Schema Markup — JSON-LD
@@ -143,6 +137,8 @@ export function OrganizationSchema({
 
 ### FAQPage
 
+`FAQPage` descreve FAQs visíveis, mas **não gera rich results do Google** desde maio de 2026 e não traz benefício de citação em IA comprovado. Não adicioná-lo só por SEO; validar a intenção e a [política atual](https://developers.google.com/search/updates#faq-deprecation).
+
 ```tsx
 interface FAQItem { question: string; answer: string; }
 
@@ -192,7 +188,7 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
 }
 ```
 
-**Validar em:** [Google Rich Results Test](https://search.google.com/test/rich-results)
+**Validar tipos ainda elegíveis em:** [Google Rich Results Test](https://search.google.com/test/rich-results). Schema.org válido não implica rich result.
 
 ---
 
@@ -237,15 +233,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ## Core Web Vitals
 
-| Metrica | Alvo | O que mede |
-|---------|------|-----------|
-| **LCP** | < 2.5s | Maior elemento visivel (hero, imagem principal) |
-| **FID** | < 100ms | Resposta a primeira interacao |
-| **CLS** | < 0.1 | Estabilidade visual — sem layout shift |
-| **INP** | < 200ms | Responsividade geral de interacoes |
-| **TTFB** | < 800ms | Velocidade do servidor |
+| Métrica | Limiar bom no 75º percentil de campo | O que mede |
+|---|---|---|
+| **LCP** | ≤ 2,5 s | carregamento do maior elemento visível |
+| **INP** | ≤ 200 ms | responsividade das interações; substituiu FID |
+| **CLS** | ≤ 0,1 | estabilidade visual |
 
-Todas as metricas devem estar na zona **verde** do Google PageSpeed Insights.
+TTFB é diagnóstico do servidor, não Core Web Vital. Conferir dados de campo quando disponíveis; Lighthouse é medição de laboratório e ajuda a encontrar causas, não garante experiência de todos os usuários.
 
 ### Diagnostico rapido
 
@@ -397,13 +391,12 @@ export function ThirdPartyScripts() {
 ### On-Page
 
 ```
-☐ H1 unica e descritiva em cada pagina
-☐ Title tag < 60 caracteres com keyword principal
-☐ Meta description < 155 caracteres com CTA implicito
-☐ Alt text em todas as imagens
-☐ Links internos entre paginas relacionadas
-☐ Breadcrumbs implementados (schema incluido)
-☐ Conteudo minimo de 300 palavras por pagina
+☐ H1 descritivo e headings legíveis
+☐ Title e meta description úteis e únicos, sem limite arbitrário de caracteres
+☐ Alt text descritivo quando a imagem transmite informação
+☐ Links internos entre páginas relacionadas
+☐ Breadcrumbs quando ajudam a navegação; schema só se elegível e fiel ao conteúdo
+☐ Conteúdo suficiente para responder à intenção do usuário, sem mínimo de palavras
 ```
 
 ### Acessibilidade (impacta SEO)

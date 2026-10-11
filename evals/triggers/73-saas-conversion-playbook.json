@@ -1,0 +1,20 @@
+{
+  "skill": "73-saas-conversion-playbook",
+  "should_trigger": [
+    "onde colocar o paywall no onboarding do meu SaaS",
+    "decidir entre freemium ou trial",
+    "desenhar um fluxo de paywall multi-pagina",
+    "qual deve ser o evento de ativação",
+    "auditar meu funil de assinatura",
+    "criar uma timeline do trial",
+    "planejar cancel-save e win-back",
+    "paywall que converte"
+  ],
+  "shouldnt_trigger": [
+    "corrigir layout responsivo de uma tela",
+    "criar um endpoint de cobrança",
+    "escrever um useEffect sem antipattern",
+    "configurar o pipeline de deploy",
+    "pesquisar concorrentes antes da decisão"
+  ]
+}

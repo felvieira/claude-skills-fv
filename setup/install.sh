@@ -55,6 +55,8 @@ PROFILE="daily-dev"
 NO_INPUT=false
 ASSUME_YES=false
 MEMORY_BACKEND=""
+UPGRADE_AI_MEMORY=false
+AI_MEMORY_BACKUP=""
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -65,6 +67,15 @@ while [[ $# -gt 0 ]]; do
       ;;
     --memory-backend)
       MEMORY_BACKEND="${2:-}"
+      shift 2
+      ;;
+    --upgrade-ai-memory)
+      UPGRADE_AI_MEMORY=true
+      shift
+      ;;
+    --backup-to)
+      [[ $# -ge 2 && -n "$2" ]] || { err "--backup-to requires an absolute archive path"; exit 2; }
+      AI_MEMORY_BACKUP="$2"
       shift 2
       ;;
     --no-input)
@@ -82,6 +93,13 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+if [[ "$UPGRADE_AI_MEMORY" == true ]]; then
+  [[ -n "$AI_MEMORY_BACKUP" ]] || { err "--upgrade-ai-memory requires --backup-to ABSOLUTE_FILE"; exit 2; }
+  [[ "$MEMORY_BACKEND" != "native" ]] || { err "Cannot upgrade ai-memory with --memory-backend native"; exit 2; }
+elif [[ -n "$AI_MEMORY_BACKUP" ]]; then
+  err "--backup-to requires --upgrade-ai-memory"
+  exit 2
+fi
 
 TARGET_DIR="${POSITIONAL_ARGS[0]:-.}"
 TARGET_DIR="$(to_node_path "$(cd "$TARGET_DIR" && pwd)")"
@@ -770,12 +788,13 @@ echo ""
 VAULT_INIT="$SCRIPT_DIR/scripts/init-vault.mjs"
 [[ -f "$VAULT_INIT" ]] || VAULT_INIT="$TARGET_DIR/.bot/scripts/init-vault.mjs"
 
-# Backend de memória: ai-memory (github.com/akitaonrails/ai-memory) quando Docker
-# está disponível, com fallback automático pro vault nativo Zettelkasten. Auto-detect
-# por padrão — usuário pode forçar com --memory-backend native|ai-memory, ou
-# --profile lean/--no-input, que sempre cai no nativo (nunca baixa imagem Docker
-# silenciosamente num install não-interativo).
-if [[ -n "$MEMORY_BACKEND" ]]; then
+# Backend de memória: o install normal detecta Docker e preserva o servidor já
+# instalado; somente --upgrade-ai-memory --backup-to ABSOLUTE_FILE atualiza um
+# container existente após backup externo. --no-input sem upgrade explícito
+# continua usando o vault nativo.
+if [[ "$UPGRADE_AI_MEMORY" == true ]]; then
+  export DEVKIT_MEMORY_BACKEND="ai-memory"
+elif [[ -n "$MEMORY_BACKEND" ]]; then
   export DEVKIT_MEMORY_BACKEND="$MEMORY_BACKEND"
 elif [[ "$SKIP_OPTIONAL_INSTALLS" == true ]] || [[ "$NO_INPUT" == true ]]; then
   export DEVKIT_MEMORY_BACKEND="native"
@@ -783,9 +802,17 @@ fi
 
 if command -v node >/dev/null 2>&1 && [[ -f "$VAULT_INIT" ]]; then
   echo " ${GREEN}Vault de memória:${RESET}"
-  node "$VAULT_INIT" 2>&1 | sed 's/^/   /'
+  VAULT_ARGS=()
+  if [[ "$UPGRADE_AI_MEMORY" == true ]]; then
+    VAULT_ARGS+=(--upgrade-ai-memory --backup-to "$(to_node_path "$AI_MEMORY_BACKUP")")
+  fi
+  node "$VAULT_INIT" "${VAULT_ARGS[@]}" 2>&1 | sed 's/^/   /'
   echo ""
 else
+  if [[ "$UPGRADE_AI_MEMORY" == true ]]; then
+    err "Cannot upgrade ai-memory: Node or scripts/init-vault.mjs unavailable"
+    exit 1
+  fi
   echo " ${YELLOW}Vault de memória:${RESET} pulado (Node não encontrado ou script ausente)."
   echo "   Crie manualmente depois: ${BOLD}node .bot/scripts/init-vault.mjs${RESET}"
   echo ""

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { spawn } from 'child_process';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { homedir } from 'os';
 import { isHookDisabled, readHookConfig, resolveBotPath, isAiMemoryActive } from './utils.mjs';
 
@@ -10,6 +10,15 @@ const BOOTSTRAP_DEFAULTS = {
   meta_skill_path: 'docs/skill-guides/skill-discovery.md',
 };
 const MAX_META_SKILL_CHARS = 2000;
+const PROXY_CHARS_PER_TOKEN = 4;
+
+function firstExisting(candidates) {
+  return candidates.find((candidate) => existsSync(candidate)) || null;
+}
+
+function runtimePath(relativePath) {
+  return firstExisting([resolveBotPath(relativePath), relativePath]);
+}
 
 let _input = '';
 process.stdin.setEncoding('utf-8');
@@ -21,13 +30,16 @@ process.stdin.on('end', () => {
   }
 
   const parts = [];
+  const addPart = (text, priority) => parts.push({ text: String(text), priority, order: parts.length });
+  const focusPath = runtimePath('docs/context/current-focus.md');
+  const rulesPath = runtimePath('GLOBAL.md');
 
   // --- Current focus ---
-  if (existsSync('.bot/docs/context/current-focus.md')) {
+  if (focusPath) {
     try {
-      const focus = readFileSync('.bot/docs/context/current-focus.md', 'utf-8');
+      const focus = readFileSync(focusPath, 'utf-8');
       const firstLine = focus.split('\n').find(l => l.trim() && !l.startsWith('#')) || '';
-      if (firstLine) parts.push(`Last focus: "${firstLine.trim()}"`);
+      if (firstLine) addPart(`Last focus: "${firstLine.trim()}"`, 100);
     } catch {}
   }
 
@@ -50,7 +62,7 @@ process.stdin.on('end', () => {
               const snippet = pContent.length > MAX_PATTERNS_CHARS
                 ? pContent.slice(0, MAX_PATTERNS_CHARS) + '\n[...truncated — ver memory/patterns.md completo]'
                 : pContent;
-              parts.push(`[Code Style Map — skill 47]\n${snippet}`);
+              addPart(`[Code Style Map — skill 47]\n${snippet}`, 30);
             }
           }
         }
@@ -69,11 +81,23 @@ process.stdin.on('end', () => {
     for (const candidate of candidates) {
       if (existsSync(candidate)) {
         try {
-          let content = readFileSync(candidate, 'utf-8');
-          if (content.length > MAX_META_SKILL_CHARS) {
-            content = content.slice(0, MAX_META_SKILL_CHARS) + '\n[...truncated]';
+          if (config.meta_skill_path === BOOTSTRAP_DEFAULTS.meta_skill_path) {
+            // The full routing guide is available on demand; a clipped table at
+            // every session start costs context and can hide relevant routes.
+            addPart(
+              `[Skill Discovery] Unsure which kit skill, command or agent fits? Read ${candidate} ` +
+              `(decision tree). Invoke numbered skills with Skill(), subagents with Agent(); ` +
+              `do not dispatch a numbered skill as an agent.`,
+              90,
+            );
+          } else {
+            // Explicit custom bootstrap content retains the existing injection contract.
+            let content = readFileSync(candidate, 'utf-8');
+            if (content.length > MAX_META_SKILL_CHARS) {
+              content = content.slice(0, MAX_META_SKILL_CHARS) + '\n[...truncated]';
+            }
+            addPart(`[Skill Discovery]\n${content}`, 90);
           }
-          parts.push(`[Skill Discovery]\n${content}`);
         } catch {}
         break;
       }
@@ -161,11 +185,12 @@ process.stdin.on('end', () => {
         if (existsSync(pending)) {
           try {
             const body = readFileSync(pending, 'utf-8');
-            parts.push(
+            addPart(
               `[memory-curator] O curador autonomo aplicou a manutencao mecanica da memoria ` +
               `(decay, archive, dedup) e deixou trabalho SEMANTICO que precisa do seu julgamento ` +
               `em ${pending}. Quando houver folga nesta sessao, resolva os candidatos a merge ` +
-              `listados la e delete o arquivo. Conteudo:\n\n${body.slice(0, 1500)}`
+              `listados la e delete o arquivo. Conteudo:\n\n${body.slice(0, 1500)}`,
+              40,
             );
           } catch { /* skip unreadable */ }
           break; // so o primeiro vault encontrado
@@ -192,10 +217,11 @@ process.stdin.on('end', () => {
           try {
             const lines = readFileSync(md, 'utf-8').split('\n').length;
             if (lines > ccCfg.claude_md_warn_lines) {
-              parts.push(
+              addPart(
                 `[context-cost] ${md} tem ${lines} linhas (recomendado < ${ccCfg.claude_md_warn_lines}). ` +
                 `Cada sessao carrega esse arquivo inteiro — considere modulariza-lo como indice ` +
-                `(ex: "regras de design em docs/design.md") pra reduzir custo por sessao. Ver policies/token-efficiency.md.`
+                `(ex: "regras de design em docs/design.md") pra reduzir custo por sessao. Ver policies/token-efficiency.md.`,
+                20,
               );
             }
           } catch { /* skip unreadable */ }
@@ -218,33 +244,48 @@ process.stdin.on('end', () => {
         }
       }
       if (projectMcpCount >= ccCfg.mcp_warn_count) {
-        parts.push(
+        addPart(
           `[context-cost] Pelo menos ${projectMcpCount} MCP server(s) configurado(s) neste projeto ` +
           `(o total real pode ser maior — ha MCPs globais e de plugins). Cada MCP ativo entra no ` +
-          `contexto de TODO prompt, mesmo sem uso. Onde possivel, prefira skills (lazy-load) a MCPs. Ver policies/token-efficiency.md.`
+          `contexto de TODO prompt, mesmo sem uso. Onde possivel, prefira skills (lazy-load) a MCPs. Ver policies/token-efficiency.md.`,
+          20,
         );
       }
     }
   } catch { /* never block session start */ }
 
   // --- Token budget guard ---
-  // Estimate tokens (rough: 1 token ≈ 4 chars). Trim low-value parts if over budget.
-  const budgetTokens = parseInt(process.env.DEVKIT_SESSION_INJECT_TOKENS || '2000', 10);
-  const estimateTokens = (s) => Math.ceil(s.length / 4);
-  const totalChars = parts.reduce((sum, p) => sum + p.length, 0);
-  const estimatedTokens = estimateTokens(totalChars);
-  if (estimatedTokens > budgetTokens) {
-    // Trim from the end (lowest priority parts added last) until under budget
-    let current = estimatedTokens;
-    while (parts.length > 1 && current > budgetTokens) {
-      const removed = parts.pop();
-      current -= estimateTokens(removed);
+  // Estimate the complete emitted systemMessage (wrapper + parts). The ratio
+  // is a proxy; only host telemetry can measure provider tokens.
+  const configuredBudget = Number.parseInt(process.env.DEVKIT_SESSION_INJECT_TOKENS || '2000', 10);
+  const budgetTokens = Number.isFinite(configuredBudget) ? Math.max(0, configuredBudget) : 2000;
+  const budgetChars = budgetTokens * PROXY_CHARS_PER_TOKEN;
+  const renderMessage = (selectedParts) => {
+    const body = selectedParts.length ? ` ${selectedParts.join('\n\n')}` : '';
+    const focusInstruction = focusPath ? ` Read ${focusPath} for session state.` : '';
+    const rulesInstruction = rulesPath ? ` Kit rules: ${rulesPath}.` : '';
+    return `[DevTeamKit] Session started.${body}${focusInstruction}${rulesInstruction}`;
+  };
+
+  const selected = [];
+  const candidates = parts.slice().sort((a, b) => b.priority - a.priority || a.order - b.order);
+  for (const part of candidates) {
+    const ordered = [...selected, part].sort((a, b) => a.order - b.order);
+    if (renderMessage(ordered.map((item) => item.text)).length <= budgetChars) {
+      selected.push(part);
+      continue;
+    }
+    const currentLength = renderMessage(selected.sort((a, b) => a.order - b.order).map((item) => item.text)).length;
+    const separatorLength = selected.length ? 2 : 1;
+    const available = budgetChars - currentLength - separatorLength;
+    if (available > 16) {
+      selected.push({ ...part, text: `${part.text.slice(0, available - 1).trimEnd()}…` });
     }
   }
 
-  const additionalContext = parts.length > 0
-    ? `[DevTeamKit] Session started. ${parts.join('\n\n')} Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.`
-    : '[DevTeamKit] Session started. Read .bot/docs/context/current-focus.md for session state. Kit rules: .bot/GLOBAL.md.';
+  const additionalContext = renderMessage(
+    selected.sort((a, b) => a.order - b.order).map((item) => item.text),
+  );
 
   // SessionStart hooks: hookSpecificOutput NOT in the canonical event list.
   // Use systemMessage at top-level instead.

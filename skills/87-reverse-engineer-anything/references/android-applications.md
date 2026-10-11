@@ -1,0 +1,8 @@
+# APK Android distribuído — análise estática
+
+Adaptação de [REA v36 — android-applications](https://github.com/morluto/rea/blob/6d8f95e38dfc847d911430483b812ff4951b373d/.agents/skills/reverse-engineer-anything/references/android-applications.md), MIT. Observe a [governança da skill](../SKILL.md) para instalação e execução.
+
+- Para código Android use `inspect_android_package` no **APK especificado** para identidade, manifesto, cobertura e Evidence. Depois `search_android_classes` → `inspect_android_class` (inventário de membros) → `inspect_android_method` (pseudocódigo), e `trace_android_references` para referências recebidas, **somente** se cada ferramenta aparecer no catálogo conectado. Todas usam caminho próprio do APK, não pedem `open_binary` prévio. Escolha `overload_index` do inventário da classe, nunca ao acaso.
+- Para **inventário do ZIP/APK**, não código de classes, use `open_binary` + `inspect_artifact`. REA upstream inclui Android em main/npm 4.1.0, mas skill atual não torna servidor antigo capaz de oferecê-lo.
+- A inspeção requer JDK Java 17+ **com `jdk.compiler`** e JAR headless JADX MCP 0.7.1 fornecidos separadamente; `REA_JADX_MCP_JAR` seleciona caminho absoluto e `JAVA_HOME` pode selecionar Java. Setup REA não instala JADX nem Java e doctor de Hopper/Ghidra não testa JADX. Não instale requisitos automaticamente; informe qual falta para responder ao pedido.
+- APK não é iniciado e não precisa de emulador. Manifesto, decompilação e chamadas entrantes são observações estáticas, não execução; reflection, dynamic loading e referências não resolvidas ficam desconhecidas. Cite digest, localização, diagnósticos e cobertura. Execução em emulador exige autorização específica e outro workflow.

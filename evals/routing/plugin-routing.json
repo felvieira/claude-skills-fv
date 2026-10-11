@@ -186,5 +186,48 @@
     "prompt": "monta o showreel com mola fechada e uma trilha sintetizada travada no bpm",
     "plugins": ["ai-integration"],
     "skills": ["86-code-motion-film"]
+  },
+  {
+    "name": "REA inspects packaged Electron app without source",
+    "prompt": "inspecionar asar desse app electron sem codigo fonte com rea-agents",
+    "plugins": ["development"],
+    "skills": ["87-reverse-engineer-anything"]
+  },
+  {
+    "name": "REA inspects shipped APK rather than source repository",
+    "prompt": "decompilar apk instalado sem codigo fonte para entender uma feature",
+    "plugins": ["development"],
+    "skills": ["87-reverse-engineer-anything"]
+  },
+  {
+    "name": "REA examines native binary evidence",
+    "prompt": "analisar binario executavel compilado e mostrar evidencias",
+    "plugins": ["development"],
+    "skills": ["87-reverse-engineer-anything"]
+  },
+  {
+    "name": "context weight routes to the budget skill",
+    "prompt": "minha sessão está lenta e quero saber quanto contexto estou usando, incluindo o overhead do MCP",
+    "plugins": ["development"],
+    "skills": ["49-context-budget"],
+    "max_skill_count": 1,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "fixed context cost routes without completion-cost confusion",
+    "prompt": "qual o custo fixo de contexto do kit antes de qualquer completion",
+    "plugins": ["development"],
+    "skills": ["49-context-budget"],
+    "max_skill_count": 1,
+    "max_recommendation_count": 1
+  },
+  {
+    "name": "completion spend does not route to context budget",
+    "prompt": "quanto gastei em tokens nas completions desta sessão",
+    "exclude_plugins": ["development", "core-discovery", "design-quality", "product-marketing", "ai-integration", "release-ops"],
+    "risk": "low",
+    "requires_human_review": false,
+    "max_skill_count": 0,
+    "max_recommendation_count": 0
   }
 ]

@@ -5,11 +5,11 @@ Maximizar eficiencia de tokens, cache e API calls para reduzir custo real sem sa
 
 ## Prompt Caching
 
-- Manter sessoes continuas e longas — nao fechar/reabrir sem necessidade
-- Evitar /clear a menos que o contexto esteja poluido demais
-- CLAUDE.md bem escrito carrega uma vez e fica em cache — investir nele
-- Nao trocar de branch/projeto no meio da sessao sem necessidade
-- Pausas > 5 min invalidam cache — agrupar trabalho em blocos continuos
+- Manter sessoes continuas e longas pode reaproveitar cache, mas a política exata depende do host, provider, prefixo e configuração; não tratar como garantia.
+- Evitar /clear a menos que o contexto esteja poluído demais; compare o custo de recomeçar com a telemetria disponível.
+- CLAUDE.md curto pode ser cacheável, mas “carrega uma vez” não prova que o host o enviou uma única vez; medir payload quando a superfície expõe essa informação.
+- Não trocar de branch/projeto no meio da sessão sem necessidade.
+- Não assumir TTL fixo para cache nem que uma pausa específica invalida cache sem evidência do host.
 
 ## Reducao de Tokens por Requisicao
 
@@ -73,7 +73,14 @@ Desde **v2.9.0**, o `output-compressor` tem uma stage **antes** da pipeline intr
 
 ## Progressive Skill Loading
 
-Ver `policies/progressive-skill-loading.md`. Skills numeradas carregam **só quando trigger explícito** (palavra-chave, intent classification, pedido direto), nunca todas de uma vez. Custo evitado: ~31k tokens por sessão (39 skills × ~800 tokens). Mecanismo coordenado por 4 hooks (`keyword-detector`, `pre-execution-gate`, `session-start`, `pre-tool-enforcer`).
+Ver `policies/progressive-skill-loading.md`. Skills numeradas devem carregar **somente quando necessárias**, não pela quantidade de arquivos em `skills/`. Arquivos de skill em disco são inventário, não tokens da sessão até haver evidência de carregamento; medir saída efetiva de hooks e catálogo ativo antes de atribuir economia.
+
+## Medição de contexto
+
+- Separar bytes UTF-8 em disco, inventário `name + description`, payload capturado do host e componentes não expostos.
+- `chars ÷ 4` é uma estimativa proxy, não uma medição de tokens do provider.
+- Use `node scripts/skill-catalog-budget.mjs` e `node scripts/skill-health.mjs` para inventário; passe `--observed <json>` quando houver captura de `systemMessage`/`additionalContext`.
+- Não rodar `--apply` durante uma auditoria. Compactação de headers exige revisão de triggers e evals.
 
 ## Observability Trace Tags
 
