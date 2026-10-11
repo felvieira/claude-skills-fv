@@ -31,7 +31,7 @@ Eles **não são intercambiáveis**:
 
 ### Skills numeradas (`skills/NN-name/SKILL.md`)
 
-86 skills hoje. Sempre prefixo numérico `01-` a `87-` (+ futuras; o ID 16 foi descontinuado e nunca reaproveitado).
+87 skills hoje. Sempre prefixo numérico `01-` a `88-` (+ futuras; o ID 16 foi descontinuado e nunca reaproveitado).
 
 ```typescript
 // CORRETO

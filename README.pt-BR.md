@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 86 Skills Especialistas para Coding Agents
+# Dev Team Kit — 87 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.102.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-86-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.103.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-87-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -12,6 +12,7 @@
 
 ### ✨ Novidades
 
+- **v2.103.0** — skill 88 (Anatomy) adicionada: figuras isométricas ricas e interativas (SVG, shaders WebGL, 3D) que explicam conceitos técnicos como máquinas físicas reais com motor puro em Node e auditoria geométrica de colisões.
 - **v2.102.0** — a skill 86 ganha guias de decisão (tipos de filme, seis estilos com movimento-assinatura, efeitos como funções puras em `fx.mjs`, tabela de ações por agente).
 - **v2.99.0** — a skill 86 prova que um filme é determinístico (`check-film.mjs`), escuta uma trilha atrás de andamento, tempo forte e drops e corta compassos inteiros (`beats.mjs`), e revisa quadros com revisores de contexto limpo que dão notas em sete dimensões.
 - **v2.98.0** — a skill 84 ganha um motor de briefing (ideia → fatos verificados → pacote de planos; o `briefing-qa.mjs` reprova número sem fonte) e dez modelos de prompt por tipo de clipe.
@@ -90,7 +91,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 86 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 87 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -114,7 +115,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 86 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 87 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -151,14 +152,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 86 skills (86 diretórios de skill instalados; o ID 16 é reservado).
+Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 87 skills (87 diretórios de skill instalados; o ID 16 é reservado).
 O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 86 skills | ✅ | ✅ | ✅ |
+| 87 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -207,7 +208,7 @@ Agentes sem slash commands acionam as guardas pelo shell: `node scripts/session-
 
 ---
 
-## Os 86 Especialistas
+## Os 87 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -364,7 +365,7 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 | 84 | **AI Video Direction** | dirige uma produção de vídeo gerado por IA de ponta a ponta: história, scene engine e tarefas de atuação, folhas de personagem e placas de cenário, um prompt por clipe (Seedance via Higgsfield), QA quadro a quadro, reparo e pós (fala nativa, trilha por sequência, loudness). Desde a v2.98.0 começa por um **motor de briefing** (ideia → fatos verificados → pacote de planos; o `briefing-qa.mjs` reprova número, preço ou depoimento sem fonte) e traz dez modelos de prompt por tipo de clipe. Dinheiro só sai depois que cada etapa barata foi aprovada |
 | 85 | **Illustration Studio** | conjuntos de ícones e ilustrações consistentes em SVG, com linter (`svg-icon-lint.mjs`: paleta, contraste, peso de traço, pontos de ancoragem) e exportador (sprite, componentes React, folha de contato) que recusa um conjunto com erros |
 | 86 | **Code Motion Film** | filmes de motion design escritos como programa: a página expõe `seek(t)`, o Chromium headless captura cada quadro e o ffmpeg codifica, então o render é determinístico e corrigir é editar uma linha. Inclui doctor de dependências que instala e prova a pilha, molas em forma fechada, grade de batidas e trilha sintetizada, `check-film.mjs` (fonte limpa, mesmo quadro em qualquer ordem de seek, loop fechado), `beats.mjs` (andamento, tempo forte, drops, cortes em compassos inteiros), revisores de contexto limpo com notas, motion blur e supersampling, guias de tipo/estilo/efeito e um filme de referência em 1080p com régua de qualidade de 11 critérios. Os textos da galeria ficam numa biblioteca local, nunca no repositório |
-
+| 88 | **Anatomy** | constrói figuras isométricas ricas, interativas e detalhadas (SVG, shaders WebGL, 3D) que explicam conceitos técnicos como máquinas físicas reais — sombreamento em quatro tons, ordem correta de pintura, cartão com leitura numérica ao vivo, motor puro em Node (`kit/`) e auditoria geométrica (`audit.mjs`) comprovando zero colisões |
 ---
 
 ## Pipeline Principal
@@ -1050,7 +1051,7 @@ A atribuição completa (licença + escopo) está em [`NOTICE`](./NOTICE), prese
 | [Hanako — Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) | Inspirou a regra de aresta falsa no validador ("and then" não é dependência), o envelope de retorno com SCOPE (retornar a unidade, não o lote), `split_by` em blocos paralelos, a lane fechada na permission ladder, e o destino de fix `bad_plan` | não lançado |
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Segunda peça da mesma autora já citada por harness-categories; após análise de gap contra o kit, inspirou o schema de task contract, a resposta estruturada de tool + permission ladder nomeada, a taxonomia de falha por destino-de-fix, e a métrica-alvo "accepted outputs / human review minutes" | não lançado |
 | [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspirou o pacote de recuperação no PreCompact (`policies/compaction-recovery.md`), os estados `rejected`/`superseded`/`stale` e a linha de frescor das learned-skills, o ranking pela árvore de trabalho, o eval de memória com controles negativos e a redação por formato + auditoria de transcritos. Não adotado: o aviso de comando (a própria medição do projeto não achou efeito), o binário Go, os parsers de 35 agentes e embeddings. Os números publicados por ele não foram verificados de forma independente | v2.86.0 |
-
+| [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) | Figuras isométricas explicativas interativas em SVG como máquinas reais, shader em quatro tons, motor puro em Node (`kit/`), auditoria de colisão geométrica e camadas WebGL/3D (skill 88) | v2.103.0 |
 Toda inspiração acima é em nível de **ideia**. Não empacotamos código desses projetos; nossas implementações são independentes e alinhadas às convenções do kit (zero runtime deps, markdown-first). Quando a abordagem de um projeto não se encaixava (LangGraph runtime, servidores proxy, CLIs Python, etc.), registramos isso em [`NOTICE`](./NOTICE).
 
 ---

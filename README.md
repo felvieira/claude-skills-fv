@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 86 Specialist Skills for Coding Agents
+# Dev Team Kit — 87 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.102.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-86-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.103.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-87-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -16,6 +16,7 @@
 
 ### ✨ What's new
 
+- **v2.103.0** — skill 88 (Anatomy) added: detailed interactive isometric figures (SVG, WebGL shaders, 3D) that explain technical concepts as real physical machines with pure Node engine and geometric collision audit.
 - **v2.102.0** — skill 86 gets decision guides (film types, six styles with a signature move, pure-function effects in `fx.mjs`, per-agent action table).
 - **v2.99.0** — skill 86 can prove a film is deterministic (`check-film.mjs`), listen to a track for tempo, downbeat and drops and cut whole bars (`beats.mjs`), and review frames with clean-context reviewers that score seven dimensions.
 - **v2.98.0** — skill 84 gets a briefing engine (idea → verified facts → shot pack, `briefing-qa.mjs` rejects numbers without a source) and ten clip-type prompt templates.
@@ -114,7 +115,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 86 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 87 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -151,14 +152,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 86 skills (86 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 87 skills (87 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 86 skills | ✅ | ✅ | ✅ |
+| 87 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -207,7 +208,7 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 
 ---
 
-## The 86 Specialists
+## The 87 Specialists
 
 ### Management and Coordination
 
@@ -380,7 +381,7 @@ The init script creates `~/.dev-team-kit/blog-config.json` so the skill knows wh
 | 84 | **AI Video Direction** | directs a generated-video production end to end: story, scene engine and acting tasks, character sheets and location plates, one prompt per clip (Seedance via Higgsfield), frame-by-frame QA, repair and post (native speech, per-sequence score, loudness). Since v2.98.0 it starts from a **briefing engine** (idea → verified facts → shot pack; `briefing-qa.mjs` rejects any number, price or testimonial without a source) and ships ten clip-type prompt templates. Money is spent only after each cheap step is approved |
 | 85 | **Illustration Studio** | consistent icon sets and illustrations as SVG, with a linter (`svg-icon-lint.mjs`: palette, contrast, stroke weight, anchor points) and an exporter (sprite, React components, contact sheet) that refuses a set with errors |
 | 86 | **Code Motion Film** | motion-design films written as a program: the page exposes `seek(t)`, headless Chromium captures each frame and ffmpeg encodes it, so renders are deterministic and a fix is one edited line. Includes a dependency doctor that installs and proves the stack, closed-form springs, a beat grid and a synthesized score, `check-film.mjs` (clean source, same frame in any seek order, closed loop), `beats.mjs` (tempo, downbeat, drops, whole-bar cuts), clean-context reviewers with scores, motion blur and supersampling, film-type/style/effect guides and a 1080p reference film with an 11-point quality bar. Gallery texts stay in a local library, never in the repo |
-
+| 88 | **Anatomy** | builds crafted, highly detailed, interactive isometric figures (SVG, WebGL shaders, 3D) that explain technical concepts as real physical machines — four-tone shading, correct painter's order, card frame with live readout, pure Node engine (`kit/`), and an automated audit (`audit.mjs`) proving zero collisions |
 ---
 
 ## Main Pipeline
@@ -1074,7 +1075,7 @@ Full third-party attribution (license + scope) is in [`NOTICE`](./NOTICE), prese
 | [Hanako — Loops and Graphs](https://x.com/hanakoxbt/status/2091515787366306154) | Inspired the false-edge validator rule ("and then" is not a dependency), the return envelope with SCOPE (return the unit, not the batch), `split_by` on parallel blocks, the closed lane in the permission ladder, and the `bad_plan` fix destination | unreleased |
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Second piece by an author already cited for harness-categories; after gap analysis against the kit, inspired the task-contract schema, structured tool-response shape + named permission ladder, fix-destination failure taxonomy, and the "accepted outputs / human review minutes" target metric | unreleased |
 | [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspired the PreCompact recovery packet (`policies/compaction-recovery.md`), the `rejected`/`superseded`/`stale` learned-skill states and freshness line, working-tree-aware ranking, the negative-control memory eval and the value-shape redaction + transcript audit. Not adopted: the command-warning hook (its own measurement found no effect), the Go binary, 35-agent parsers and embeddings. Its published numbers were not independently verified | v2.86.0 |
-
+| [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) | Interactive isometric SVG figures as physical machines, four-tone shader, pure Node engine (`kit/`), geometric collision audit, and WebGL/3D layers (skill 88) | v2.103.0 |
 Every entry above is an **idea-level** inspiration. We do not bundle code from these projects; our implementations are independent and aligned with this kit's zero-runtime-dep, markdown-first conventions. When a project's approach didn't fit (LangGraph runtime, proxy servers, Python CLIs, etc.), we said so in [`NOTICE`](./NOTICE).
 
 ---

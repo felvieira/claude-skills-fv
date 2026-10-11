@@ -26,6 +26,15 @@ morluto/rea
   6d8f95e38dfc847d911430483b812ff4951b373d. Its copyright and full MIT
   license are preserved in skills/87-reverse-engineer-anything/LICENSE-REA.
 
+--------------------------------------------------------------------------------
+wheresryan22/anatomy
+  https://github.com/wheresryan22/anatomy
+  License: MIT
+  skills/88-anatomy/ adapts Anatomy (detailed interactive isometric figures in
+  SVG, WebGL and 3D) by Ryan (@wheresryan22). Upstream engine in kit/,
+  references, examples, scripts, and full MIT license are preserved in
+  skills/88-anatomy/LICENSE-ANATOMY.
+
 Washi1337/ghidra-nativeaot
   https://github.com/Washi1337/ghidra-nativeaot
   License: MIT

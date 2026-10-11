@@ -5,7 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [2.103.0] - 2026-10-11 — Skill 88 (Anatomy): figuras isométricas explicativas como máquinas reais
+
+### Adicionado
+- **Skill 88 (Anatomy)**: constrói figuras isométricas ricas, interativas e detalhadas (SVG, WebGL shaders, modo 3D) que explicam conceitos técnicos de software como instrumentos e máquinas físicas reais.
+  - Motor geométrico puro em Node (`kit/iso-kit.mjs`, `kit/lathe.mjs`, `kit/tube.mjs`) e componentes React (`kit/react/draw.tsx`, `kit/react/live.tsx`).
+  - Auditoria geométrica automatizada (`kit/audit.mjs`), garantindo zero colisões, folgas e penetrações (`node build.mjs --audit`).
+  - Validador visual de extremidades de traço (`scripts/lines.mjs`) e harness de verificação (`scripts/turn-check.mjs`).
+  - Oito exemplos completos em `examples/` (`dial-indicator`, `desk-computer`, `arcade-cabinet`, `raptor-engine`, `ripple-tank`, `spot-plate`, `test-rig`, `turning-dial`).
+  - Integração no catálogo de design (`plugins/catalog/design-quality.json`), evals de roteamento e fixture de triggers (`evals/triggers/88-anatomy.json`).
+  - Atribuição e preservação integral da licença MIT do projeto upstream [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) em `NOTICE` e `LICENSE-ANATOMY`.
 
 ### Corrigido
 - **Catalog budget das skills**: Claude/Codex/Grok injetam `name` + `description` de **todas** as skills do plugin em todo turno (~14k tokens hoje, 75/86 descriptions >400 chars). O body continua lazy; a description não. `skill-health.mjs` agora reporta chars/tokens do catálogo e flagra description gorda. Policy em `skill-manifest.md` + `progressive-skill-loading.md`. Skill 35 e skill 49 passam a tratar o catálogo como custo fixo. Medir/compactar: `node scripts/skill-catalog-budget.mjs` (`--apply` reescreve o bloco `description`).

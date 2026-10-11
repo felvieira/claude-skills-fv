@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 86 skills + 16 subagents + 47 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 87 skills + 16 subagents + 47 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 86 skills, 16 subagents, 47 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-10 (skill 87 — REA para engenharia reversa de artefatos distribuídos)
+> **Versão:** 87 skills, 16 subagents, 47 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais em SVG/WebGL/3D)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 86 especialistas
+- [Skills por categoria](#skills-por-categoria) — 87 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -468,11 +468,12 @@ Catálogo de roteamento: `plugins/catalog/ai-integration.json` (capacidade `ai-v
 
 ### Ícones e Ilustração
 
-Catálogo de roteamento: `plugins/catalog/design-quality.json` (capacidade `icon-illustration`). A 85 cria o conjunto e confere as regras; favicon/PWA/OG é a 36; imagem raster por IA, a 17; diagrama, a 76.
+Catálogo de roteamento: `plugins/catalog/design-quality.json` (capacidades `icon-illustration` e `isometric-anatomy`). A 85 cria o conjunto e confere as regras; a 88 cria figuras isométricas interativas que explicam sistemas como máquinas físicas reais; favicon/PWA/OG é a 36; imagem raster por IA, a 17; diagrama, a 76.
 
 | # | Skill | Quando ativar | Exemplo de prompt |
 |---|---|---|---|
 | 85 | **Illustration Studio** | conjunto de ícones/ilustrações SVG num estilo só: brief, regras de traço, grade 24, paleta de 6 cores, formas componíveis, linter determinístico, folha de contato, sprite e componentes React | "desenha um conjunto de 24 ícones com traço de 2px e uma cor de destaque, e exporta sprite e React" |
+| 88 | **Anatomy** | figuras isométricas ricas, interativas e detalhadas (SVG, WebGL, 3D) que explicam conceitos técnicos como máquinas e mecanismos físicos reais | "quero desenhar uma figura isométrica interativa em SVG explicando a arquitetura do rate limiter estilo Linear" |
 
 ---
 

@@ -1,0 +1,22 @@
+{
+  "skill": "88-anatomy",
+  "should_trigger": [
+    "quero desenhar diagrama isométrico para explicar nosso sistema de filas",
+    "criar uma figura isométrica rica para a documentação de arquitetura",
+    "gerar um isometric svg interativo estilo Linear com peças e parafusos",
+    "preciso de um desenho técnico Linear-style para nossa landing page",
+    "fazer um isometric explainer de como funciona o rate limiter de token bucket",
+    "transformar essa arquitetura em diagrama de arquitetura em máquina com molas e engrenagens",
+    "fazer uma ilustração isométrica em corte com peças detalhadas",
+    "desenhar gráfico interativo em svg mostrando o fluxo com mostrador ao vivo",
+    "adicionar shader webgl no svg isométrico para efeito de chama e calor",
+    "gerar um anatomy diagram com kit de corte mecânico em SVG"
+  ],
+  "shouldnt_trigger": [
+    "crie um diagrama mermaid simples com as tabelas do banco de dados",
+    "adicione transição de hover suave nos botões do header em CSS",
+    "grave um vídeo demonstrativo com corte de áudio sincronizado em BPM",
+    "gere um conjunto de 12 ícones flat em SVG para a barra de navegação",
+    "construa uma cena 3D imersiva no Three.js com câmera orbital em perspectiva"
+  ]
+}

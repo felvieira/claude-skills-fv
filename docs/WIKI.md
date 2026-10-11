@@ -1,7 +1,7 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 86 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
-> **Last updated:** 2026-10-10 (skill 87 — REA for shipped-artifact reverse engineering)
+> **Version:** 87 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
+> **Last updated:** 2026-10-11 (skill 88 — Anatomy for explanatory isometric machine figures)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (45) — shortcuts by phase](#4-slash-commands-45)
-5. [Skills (73) — specialists by category](#5-skills-73)
+5. [Skills (87) — specialists by category](#5-skills-87)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (62) — shared rules](#7-policies-62)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -407,7 +407,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (86)
+## 5. Skills (87)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -996,6 +996,15 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 ---
 
+#### Skill 88 — Anatomy
+
+**What it does:** builds crafted, highly detailed, interactive isometric SVG figures (standalone HTML, React components, with optional WebGL shaders and 3D mode) that explain technical concepts, algorithms or systems as real physical machines. Includes four-tone automatic shading, a pure Node geometric engine (`kit/`), and an automated audit (`audit.mjs`) proving zero collisions, clearances and depth-order violations.
+**When to activate:** you need an isometric explanatory diagram, a Linear-style technical drawing, a visual figure for documentation, articles or landing pages, or an interactive explainer where physical mechanism mirrors software behavior.
+**Problem it solves:** replaces abstract boxes-and-arrows or flat bland diagrams with recognizable, dense physical machines that readers explore.
+**Concrete example:** explaining a database connection pool as a physical gantry plotter visiting wells, with springs, micrometer gauges and live numeric readouts.
+**Takeaway:** bundled [`skills/88-anatomy/SKILL.md`](../skills/88-anatomy/SKILL.md) provides the complete engine, references, scripts, and examples with zero runtime dependencies. Run `node build.mjs --audit` to guarantee geometric correctness before completion.
+---
+
 ## 6. Subagents (16)
 
 Subagents are specialists dispatchable via `Task` tool. Unlike skills (markdown loaded by the orchestrator), subagents run in an isolated session with their own context. Ideal for well-scoped tasks that benefit from fresh context.
@@ -1110,7 +1119,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 The plugin auto-discovers skill directories:
-- **86 skills** in `skills/NN-name/SKILL.md` (no explicit skill list in this manifest)
+- **87 skills** in `skills/NN-name/SKILL.md` (no explicit skill list in this manifest)
 - **16 agents** in `.claude/agents/<name>.md`
 - **47 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1123,7 +1132,7 @@ The plugin auto-discovers skill directories:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 86 skills, hooks, 47 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
+Installs globally: 87 skills, hooks, 47 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1148,7 +1157,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 86 skills | ✓ | ✓ | ✓ |
+| 87 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

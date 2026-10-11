@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 86 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
-> **Última atualização:** 2026-10-10 (skill 87 — REA para artefatos distribuídos)
+> **Versão:** 87 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
+> **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -392,7 +392,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (86)
+## 5. Skills (87)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -976,6 +976,15 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 ---
 
+#### Skill 88 — Anatomy
+
+**O que faz:** cria figuras isométricas ricas, interativas e detalhadas em SVG (HTML standalone, componentes React, com shaders WebGL opcionais e modo 3D) que explicam conceitos técnicos, algoritmos ou sistemas como máquinas físicas reais. Inclui sombreamento automático em quatro tons, motor geométrico em Node puro (`kit/`) e auditoria automatizada (`audit.mjs`) que comprova zero colisões, folgas e violações de profundidade.
+**Quando ativar:** você precisa de um diagrama explicativo isométrico, desenho técnico estilo "Linear", figura visual para documentação, artigos ou landing pages, ou um explicador interativo onde o mecanismo físico reflete o comportamento do software.
+**Problema que resolve:** substitui caixas e setas abstratas ou diagramas planos e sem vida por máquinas físicas reconhecíveis e densas com ranhuras, parafusos e mostradores.
+**Exemplo concreto:** explicar um pool de conexões de banco de dados como um plotter gantry físico visitando poços, com molas, micrômetros e leituras numéricas ao vivo.
+**Takeaway:** [`skills/88-anatomy/SKILL.md`](../skills/88-anatomy/SKILL.md) embute o motor completo, referências, scripts e exemplos em Node puro sem dependências externas. Rode `node build.mjs --audit` para assegurar integridade geométrica antes da entrega.
+---
+
 ## 6. Subagents (16)
 
 Subagents são especialistas dispatcháveis via `Task` tool. Diferente de skills (que são markdown carregado pelo orchestrator), subagents rodam em sessão isolada com contexto próprio. Ideal para tarefas com escopo bem definido que se beneficiam de fresh context.
@@ -1090,7 +1099,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 O plugin descobre automaticamente as pastas de skill:
-- **86 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
+- **87 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1103,7 +1112,7 @@ O plugin descobre automaticamente as pastas de skill:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 86 skills, hooks, 47 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
+Instala globalmente: 87 skills, hooks, 47 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1128,7 +1137,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 86 skills | ✓ | ✓ | ✓ |
+| 87 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -12,6 +12,7 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Review / deploy** | `/review` → `/ship` |
 | **Dúvida / exploração** | Context Manager (08) → Repo Auditor (18) |
 | **App/binary/APK/ASAR entregue sem fonte** | REA (87) — análise de artefato/runtime com evidência; toolkit externo só quando necessário |
+| **Figura isométrica / diagrama explicativo como máquina** | Anatomy (88) — figuras técnicas ricas interativas em SVG/WebGL/3D como máquinas físicas |
 | **Melhoria de UI** | Design Intelligence (29) → UI/UX (02) → Frontend (04) → QA (05) |
 | **Integração de IA** | AI Integration Architect (25) → Prompt Engineer (26) → Backend (03) |
 | **Documentação** | Documenter (10) → Reviewer (11) |

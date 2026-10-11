@@ -206,6 +206,12 @@
     "skills": ["87-reverse-engineer-anything"]
   },
   {
+    "name": "Anatomy routes for isometric explainer diagram",
+    "prompt": "quero desenhar uma figura isometrica interativa em svg explicando nossa arquitetura",
+    "plugins": ["design-quality"],
+    "skills": ["88-anatomy"]
+  },
+  {
     "name": "context weight routes to the budget skill",
     "prompt": "minha sessão está lenta e quero saber quanto contexto estou usando, incluindo o overhead do MCP",
     "plugins": ["development"],
