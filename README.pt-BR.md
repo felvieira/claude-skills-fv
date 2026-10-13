@@ -796,7 +796,7 @@ repo-consumidor/
     └── templates/
 ```
 
-O repo consumidor também recebe `.claude/commands/` (47 slash commands) na raiz, instalado pelo `setup/install.sh`.
+O repo consumidor também recebe `.claude/commands/` (48 slash commands) na raiz, instalado pelo `setup/install.sh`.
 
 
 ---
@@ -1052,6 +1052,7 @@ A atribuição completa (licença + escopo) está em [`NOTICE`](./NOTICE), prese
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Segunda peça da mesma autora já citada por harness-categories; após análise de gap contra o kit, inspirou o schema de task contract, a resposta estruturada de tool + permission ladder nomeada, a taxonomia de falha por destino-de-fix, e a métrica-alvo "accepted outputs / human review minutes" | não lançado |
 | [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspirou o pacote de recuperação no PreCompact (`policies/compaction-recovery.md`), os estados `rejected`/`superseded`/`stale` e a linha de frescor das learned-skills, o ranking pela árvore de trabalho, o eval de memória com controles negativos e a redação por formato + auditoria de transcritos. Não adotado: o aviso de comando (a própria medição do projeto não achou efeito), o binário Go, os parsers de 35 agentes e embeddings. Os números publicados por ele não foram verificados de forma independente | v2.86.0 |
 | [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) | Figuras isométricas explicativas interativas em SVG como máquinas reais, shader em quatro tons, motor puro em Node (`kit/`), auditoria de colisão geométrica e camadas WebGL/3D (skill 88) | v2.103.0 |
+| [zazencodes/zazencodes-season-3](https://github.com/zazencodes/zazencodes-season-3) | Arquitetura de software factory multi-agente: spec-writer, builder em worktree com alocação de portas, banca de 4 revisores paralelos com PASS/CHANGES, approver com gate de risco (`/factory`) | v2.103.0 |
 Toda inspiração acima é em nível de **ideia**. Não empacotamos código desses projetos; nossas implementações são independentes e alinhadas às convenções do kit (zero runtime deps, markdown-first). Quando a abordagem de um projeto não se encaixava (LangGraph runtime, servidores proxy, CLIs Python, etc.), registramos isso em [`NOTICE`](./NOTICE).
 
 ---

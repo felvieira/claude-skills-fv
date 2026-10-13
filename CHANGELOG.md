@@ -15,6 +15,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
   - Oito exemplos completos em `examples/` (`dial-indicator`, `desk-computer`, `arcade-cabinet`, `raptor-engine`, `ripple-tank`, `spot-plate`, `test-rig`, `turning-dial`).
   - Integração no catálogo de design (`plugins/catalog/design-quality.json`), evals de roteamento e fixture de triggers (`evals/triggers/88-anatomy.json`).
   - Atribuição e preservação integral da licença MIT do projeto upstream [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) em `NOTICE` e `LICENSE-ANATOMY`.
+- **Comando `/factory` (Software Factory Autônoma)**: linha de montagem industrial multi-agente inspirada em `zazencodes/zazencodes-season-3`.
+  - Orquestração de 7 papéis especializados: `spec-writer` (especificação formal sem código), `builder` (worktree isolado com portas dedicadas `5100 + 10n`), banca 4D de revisores paralelos (`reviewer-security`, `reviewer-code`, `reviewer-ui`, `reviewer-ux`) com contrato estrito `PASS/CHANGES`, e gatekeeper `approver` com taxonomia de risco para auto-merge na `main` vs escalonamento humano.
+  - Subcomandos `/factory <feature>`, `/factory next` (claim atômico no backlog), `/factory approve <job-id>` e `/factory rework <job-id> <nota>`.
+  - CLI utilitária zero-dependência `scripts/factory-cli.mjs` (`init`, `status`, `next`, `port`, `approve`, `rework`, `serve`).
+  - Dashboard visual em tempo real `templates/factory/dashboard.html` e fila `templates/factory/backlog.md`.
 
 ### Corrigido
 - **Catalog budget das skills**: Claude/Codex/Grok injetam `name` + `description` de **todas** as skills do plugin em todo turno (~14k tokens hoje, 75/86 descriptions >400 chars). O body continua lazy; a description não. `skill-health.mjs` agora reporta chars/tokens do catálogo e flagra description gorda. Policy em `skill-manifest.md` + `progressive-skill-loading.md`. Skill 35 e skill 49 passam a tratar o catálogo como custo fixo. Medir/compactar: `node scripts/skill-catalog-budget.mjs` (`--apply` reescreve o bloco `description`).

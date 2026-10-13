@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 87 skills + 16 subagents + 47 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 87 skills + 16 subagents + 48 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,7 +8,7 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 87 skills, 16 subagents, 47 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Versão:** 87 skills, 16 subagents, 48 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
 > **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais em SVG/WebGL/3D)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -296,6 +296,14 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 **Problema que resolve:** maximizar throughput aproveitando paralelismo de worktree.
 **Exemplo:** `node scripts/auto-loop.mjs "fix all eslint warnings" --worktree --parallel 4`
 **Takeaway:** **paralelo via worktree, não thread.** Isolamento real previne corrupção de estado.
+
+### `/factory` — Software Factory Autônoma
+
+**O que faz:** linha de montagem multi-agente: spec-writer → builder em worktree com porta dedicada (`5100 + 10n`) → 4 revisores paralelos (Security, Code, UI, UX) com veredito `PASS/CHANGES` → approver com gatekeeper de risco (merge vs escalate para humano). Inclui backlog atômico (`/factory next`) e dashboard visual local.
+**Quando usar:** feature completa que exige auditoria multi-ângulo rigorosa antes do merge na `main`; processamento em esteira com fila de backlog e acompanhamento visual.
+**Problema que resolve:** loops cegos que mergeiam sem revisão independente de segurança/UX, quebram telas ou colidem portas de servidores de dev entre worktrees simultâneos.
+**Exemplo:** `/factory "exportação de relatórios em CSV"` ou `/factory next`
+**Takeaway:** **separação estrita de responsabilidades.** O builder nunca aprova o próprio código; a banca 4D revisa em paralelo com contratos de arquivo estritos.
 
 ### `/worktree` — Worktree isolado
 

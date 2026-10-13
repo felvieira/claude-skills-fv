@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Team Factory — Visual Board</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --heading: #f0f6fc;
+      --accent: #58a6ff;
+      --success: #238636;
+      --success-text: #3fb950;
+      --warning: #d29922;
+      --danger: #da3633;
+      --danger-text: #f85149;
+      --chip-bg: #21262d;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f8fa;
+        --surface: #ffffff;
+        --surface-border: #d0d7de;
+        --text: #24292f;
+        --text-muted: #57606a;
+        --heading: #1f2328;
+        --accent: #0969da;
+        --success: #1a7f37;
+        --success-text: #1a7f37;
+        --warning: #9a6700;
+        --danger: #cf222e;
+        --danger-text: #cf222e;
+        --chip-bg: #f3f4f6;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--heading);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--accent);
+      border: 1px solid var(--surface-border);
+    }
+    .status-bar {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success-text);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--success-text);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      align-items: start;
+    }
+    .column {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 120px);
+    }
+    .column-header {
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--heading);
+      border-bottom: 1px solid var(--surface-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .column-count {
+      font-size: 0.75rem;
+      background: var(--chip-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 10px;
+      color: var(--text-muted);
+    }
+    .column-body {
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+      min-height: 120px;
+    }
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.1s ease, border-color 0.1s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .card-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--heading);
+      line-height: 1.3;
+    }
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--surface-border);
+    }
+    .review-chip {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      background: var(--chip-bg);
+      border: 1px solid var(--surface-border);
+    }
+    .review-chip.pass {
+      background: rgba(46, 160, 67, 0.15);
+      border-color: rgba(46, 160, 67, 0.4);
+      color: var(--success-text);
+    }
+    .review-chip.changes {
+      background: rgba(248, 81, 73, 0.15);
+      border-color: rgba(248, 81, 73, 0.4);
+      color: var(--danger-text);
+    }
+    .review-chip.pending {
+      color: var(--text-muted);
+    }
+    .card.needs-human {
+      border-left: 3px solid var(--warning);
+    }
+    .card.merged {
+      border-left: 3px solid var(--success-text);
+      opacity: 0.85;
+    }
+    .empty-state {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+      border: 1px dashed var(--surface-border);
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🏭 Software Factory <span class="badge">Visual Assembly Line</span></h1>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+        Multi-agent pipeline: Spec → Worktree Build → 4D Parallel Review Board → Risk Approver Gate
+      </p>
+    </div>
+    <div class="status-bar">
+      <span><span class="live-dot"></span> Monitorando jobs (2s)</span>
+      <span id="last-update" style="font-family: monospace;">--:--:--</span>
+    </div>
+  </header>
+
+  <main class="board">
+    <div class="column" data-stage="spec">
+      <div class="column-header">
+        <span>1. Spec</span>
+        <span class="column-count" id="count-spec">0</span>
+      </div>
+      <div class="column-body" id="col-spec"></div>
+    </div>
+
+    <div class="column" data-stage="build">
+      <div class="column-header">
+        <span>2. Build</span>
+        <span class="column-count" id="count-build">0</span>
+      </div>
+      <div class="column-body" id="col-build"></div>
+    </div>
+
+    <div class="column" data-stage="review">
+      <div class="column-header">
+        <span>3. Review (4D)</span>
+        <span class="column-count" id="count-review">0</span>
+      </div>
+      <div class="column-body" id="col-review"></div>
+    </div>
+
+    <div class="column" data-stage="approve">
+      <div class="column-header">
+        <span>4. Approver</span>
+        <span class="column-count" id="count-approve">0</span>
+      </div>
+      <div class="column-body" id="col-approve"></div>
+    </div>
+
+    <div class="column" data-stage="needs-human">
+      <div class="column-header" style="color: var(--warning);">
+        <span>⚠️ Needs Human</span>
+        <span class="column-count" id="count-needs-human">0</span>
+      </div>
+      <div class="column-body" id="col-needs-human"></div>
+    </div>
+
+    <div class="column" data-stage="merged">
+      <div class="column-header" style="color: var(--success-text);">
+        <span>✅ Merged</span>
+        <span class="column-count" id="count-merged">0</span>
+      </div>
+      <div class="column-body" id="col-merged"></div>
+    </div>
+  </main>
+
+  <script>
+    const STAGES = ['spec', 'build', 'review', 'approve', 'needs-human', 'merged'];
+
+    async function fetchJobs() {
+      try {
+        const res = await fetch('/api/jobs');
+        if (res.ok) {
+          const jobs = await res.json();
+          renderJobs(jobs);
+        } else {
+          fallbackRender();
+        }
+      } catch (err) {
+        fallbackRender();
+      }
+      document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+    }
+
+    function renderJobs(jobs) {
+      const counts = { spec: 0, build: 0, review: 0, approve: 0, 'needs-human': 0, merged: 0 };
+      const containers = {};
+      
+      STAGES.forEach(stage => {
+        containers[stage] = document.getElementById(`col-${stage}`);
+        containers[stage].innerHTML = '';
+      });
+
+      jobs.forEach(job => {
+        const stage = job.stage || 'spec';
+        if (counts[stage] !== undefined) counts[stage]++;
+
+        const card = document.createElement('div');
+        card.className = `card ${stage}`;
+        
+        let reviewHtml = '';
+        if (job.reviews && (stage === 'review' || stage === 'approve' || stage === 'needs-human' || stage === 'merged')) {
+          const rev = job.reviews;
+          const items = ['security', 'code', 'ui', 'ux'].map(type => {
+            const val = rev[type] || 'pending';
+            const cls = val === 'PASS' ? 'pass' : (val === 'CHANGES' ? 'changes' : 'pending');
+            return `<div class="review-chip ${cls}"><span>${type}</span><span>${val}</span></div>`;
+          }).join('');
+          reviewHtml = `<div class="reviews-grid">${items}</div>`;
+        }
+
+        const roundStr = job.round ? ` · Round ${job.round}` : '';
+        const portStr = job.port ? ` · Port ${job.port}` : '';
+
+        card.innerHTML = `
+          <div class="card-id">${job.id || 'job'}</div>
+          <div class="card-title">${escapeHtml(job.feature || 'Sem título')}</div>
+          <div class="card-meta">
+            <span>Branch: ${escapeHtml(job.branch || '-')}</span>
+            <span>${roundStr}${portStr}</span>
+          </div>
+          ${reviewHtml}
+        `;
+
+        if (containers[stage]) {
+          containers[stage].appendChild(card);
+        }
+      });
+
+      STAGES.forEach(stage => {
+        document.getElementById(`count-${stage}`).textContent = counts[stage];
+        if (counts[stage] === 0 && containers[stage]) {
+          containers[stage].innerHTML = '<div class="empty-state">Nenhum job</div>';
+        }
+      });
+    }
+
+    function fallbackRender() {
+      STAGES.forEach(stage => {
+        const el = document.getElementById(`col-${stage}`);
+        if (!el.hasChildNodes() || el.querySelector('.empty-state')) {
+          el.innerHTML = '<div class="empty-state">Inicie com <code>node scripts/factory-cli.mjs serve</code></div>';
+        }
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    fetchJobs();
+    setInterval(fetchJobs, 2000);
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 87 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
+> **Version:** 87 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-10-11 (skill 88 — Anatomy for explanatory isometric machine figures)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -16,7 +16,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 1. [How the kit works in 60 seconds](#1-how-the-kit-works-in-60-seconds)
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
-4. [Slash commands (45) — shortcuts by phase](#4-slash-commands-45)
+4. [Slash commands (48) — shortcuts by phase](#4-slash-commands-48)
 5. [Skills (87) — specialists by category](#5-skills-87)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (62) — shared rules](#7-policies-62)
@@ -145,7 +145,7 @@ Worker C: password reset (DB + back + front + e2e test) → mergeable on its own
 
 ---
 
-## 4. Slash commands (45)
+## 4. Slash commands (48)
 
 These are phase shortcuts. No need to memorize skill names — call the shortcut, it routes.
 
@@ -362,6 +362,14 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 **Problem it solves:** manually orchestrating parallel workers is expensive and error-prone.
 **Example:** `node scripts/auto-loop.mjs "task" --worktree --parallel 4 --polish standard`
 **Takeaway:** **real parallelism requires worktrees.** Without them, 2 workers on the same repo = chaos.
+
+#### `/factory` — Autonomous Software Factory
+
+**What it does:** multi-agent assembly line: spec-writer → builder on dedicated worktree with port allocation (`5100 + 10n`) → 4 parallel reviewers (Security, Code, UI, UX) with strict `PASS/CHANGES` verdict → risk-based approver gatekeeper (auto-merge to `main` vs escalate to human). Includes atomic backlog claiming (`/factory next`) and real-time visual web dashboard (`factory/dashboard.html`).
+**When to use:** complete feature development requiring multi-angle review before merge; batch task processing from a queue with live visual progress.
+**Problem it solves:** unreviewed autonomous loops merging security or UX regressions, and dev port conflicts between concurrent worktrees.
+**Example:** `/factory "export reports to CSV and JSON"` or `/factory next`
+**Takeaway:** **strict role separation and risk gating.** Builders never approve their own code; the 4D review board runs in parallel; risky changes (auth, money, migrations, CI) escalate to humans.
 
 #### `/worktree` — Isolated worktree
 
@@ -1121,7 +1129,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 The plugin auto-discovers skill directories:
 - **87 skills** in `skills/NN-name/SKILL.md` (no explicit skill list in this manifest)
 - **16 agents** in `.claude/agents/<name>.md`
-- **47 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
+- **48 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
 
 ### Install modes (3 options)
@@ -1132,7 +1140,7 @@ The plugin auto-discovers skill directories:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 87 skills, hooks, 47 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
+Installs globally: 87 skills, hooks, 48 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 

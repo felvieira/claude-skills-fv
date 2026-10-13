@@ -820,7 +820,7 @@ consumer-repo/
     └── templates/
 ```
 
-The consumer repo also receives `.claude/commands/` (47 slash commands) at the root, installed by `setup/install.sh`.
+The consumer repo also receives `.claude/commands/` (48 slash commands) at the root, installed by `setup/install.sh`.
 
 
 ---
@@ -1076,6 +1076,7 @@ Full third-party attribution (license + scope) is in [`NOTICE`](./NOTICE), prese
 | Birgitta Böckeler (Thoughtworks) — [Harness Engineering: Build a Reliable AI Agent in 6 Layers](https://x.com/iiiichigo_chan/status/2093765205276713218) | Second piece by an author already cited for harness-categories; after gap analysis against the kit, inspired the task-contract schema, structured tool-response shape + named permission ladder, fix-destination failure taxonomy, and the "accepted outputs / human review minutes" target metric | unreleased |
 | [vshulcz/deja-vu](https://github.com/vshulcz/deja-vu) | Inspired the PreCompact recovery packet (`policies/compaction-recovery.md`), the `rejected`/`superseded`/`stale` learned-skill states and freshness line, working-tree-aware ranking, the negative-control memory eval and the value-shape redaction + transcript audit. Not adopted: the command-warning hook (its own measurement found no effect), the Go binary, 35-agent parsers and embeddings. Its published numbers were not independently verified | v2.86.0 |
 | [wheresryan22/anatomy](https://github.com/wheresryan22/anatomy) | Interactive isometric SVG figures as physical machines, four-tone shader, pure Node engine (`kit/`), geometric collision audit, and WebGL/3D layers (skill 88) | v2.103.0 |
+| [zazencodes/zazencodes-season-3](https://github.com/zazencodes/zazencodes-season-3) | Multi-agent software factory architecture: spec-writer, builder in worktree with port allocation, 4D parallel review board with PASS/CHANGES, approver risk gate (`/factory`) | v2.103.0 |
 Every entry above is an **idea-level** inspiration. We do not bundle code from these projects; our implementations are independent and aligned with this kit's zero-runtime-dep, markdown-first conventions. When a project's approach didn't fit (LangGraph runtime, proxy servers, Python CLIs, etc.), we said so in [`NOTICE`](./NOTICE).
 
 ---

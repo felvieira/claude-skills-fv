@@ -35,6 +35,14 @@ wheresryan22/anatomy
   references, examples, scripts, and full MIT license are preserved in
   skills/88-anatomy/LICENSE-ANATOMY.
 
+--------------------------------------------------------------------------------
+zazencodes/zazencodes-season-3
+  https://github.com/zazencodes/zazencodes-season-3
+  License: MIT
+  Inspired the /factory multi-agent assembly line architecture (spec-writer,
+  builder in isolated worktree, 4D parallel review board with PASS/CHANGES
+  contract, risk approver gate, backlog queue, and visual dashboard).
+
 Washi1337/ghidra-nativeaot
   https://github.com/Washi1337/ghidra-nativeaot
   License: MIT

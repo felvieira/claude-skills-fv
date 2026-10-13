@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 87 skills · 16 subagents · 47 slash commands · 65 policies · 29 hooks · 22 rules
+> **Versão:** 87 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -343,6 +343,14 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 **Problema que resolve:** orquestrar workers paralelos manualmente é caro e propenso a conflito.
 **Exemplo:** `node scripts/auto-loop.mjs "task" --worktree --parallel 4 --polish standard`
 **Takeaway:** **paralelismo real exige worktrees.** Sem isso, 2 workers no mesmo repo = chaos.
+
+#### `/factory` — Software Factory Autônoma
+
+**O que faz:** linha de montagem industrial multi-agente: spec-writer → builder em worktree dedicado com porta isolada (`5100 + 10n`) → banca de 4 revisores paralelos (Security, Code, UI, UX) com veredito estrito `PASS/CHANGES` → approver com gatekeeper de risco (auto-merge para `main` vs escalonamento para humano). Inclui fila de backlog (`/factory next`) e dashboard visual local (`factory/dashboard.html`).
+**Quando usar:** desenvolvimento de feature completa que exige auditoria multi-ângulo rigorosa antes de mergear na branch principal; esteira com fila e painel visual.
+**Problema que resolve:** loops autônomos sem divisão de papéis que mergeiam código sem checagem independente de segurança/UX e causam colisão de portas em servidores locais.
+**Exemplo:** `/factory "exportação de relatórios em CSV"` ou `/factory next`
+**Takeaway:** **separação estrita de responsabilidades e gate de risco.** Quem constrói nunca aprova; a banca 4D roda em paralelo com contratos de arquivo estritos.
 
 #### `/worktree` — Worktree isolado
 
@@ -1112,7 +1120,7 @@ O plugin descobre automaticamente as pastas de skill:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 87 skills, hooks, 47 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
+Instala globalmente: 87 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
