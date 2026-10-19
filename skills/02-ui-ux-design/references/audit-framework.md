@@ -59,6 +59,7 @@ Este veredito não é um item a mais na tabela de achados — é a moldura que d
 | Formulário, checkout, tratamento de erro | `references/forms-and-transactions.md` |
 | Acessibilidade e verificação | `skills/22-accessibility-specialist/SKILL.md` — não duplicado aqui |
 | Tokens, componente, governança de design system | seção "Três Camadas de Token" e "Adotar um Design System Existente" no SKILL.md principal |
+| Auditoria prática de semântica, formulários, foco, movimento, conteúdo e estados web | `references/web-interface-review.md` — checklist curado de Vercel; usar junto da WCAG e das regras do projeto, não como substituto |
 | Fontes e limites das regras aplicadas | seção "Hierarquia de Evidência" abaixo |
 
 ## Classificar Cada Achado

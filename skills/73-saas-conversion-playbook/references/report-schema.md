@@ -10,6 +10,8 @@ Subtítulo: `Playbook {A|B|Híbrido} · {modelo recomendado} · {data}`
 - Frase-prova do aha
 - Playbook escolhido e por quê (3 bullets)
 - Modelo comercial recomendado + 1 frase de R/1K (qual alavanca move mais receita)
+- Barreira comportamental observada ou `HIPOTESE`, mecanismo escolhido e evidência que o sustentaria
+- Salvaguarda de escolha informada e um guardrail para detectar dano ou pressão indevida
 - 5 mudanças desta semana (priorizadas por vazamento, não por gosto)
 - Riscos se copiar o playbook errado
 

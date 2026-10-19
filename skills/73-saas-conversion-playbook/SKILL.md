@@ -87,16 +87,28 @@ Relatório markdown (ou PDF se pedido) seguindo `references/report-schema.md`:
 3. **Classificar A ou B** com a regra de `references/playbook.md`: o aha é um plano revelado (A) ou
    um artefato criado (B)? Escrever a frase-prova ("o aha é X"). Híbrido = playbook dominante + 2
    empréstimos do outro, nunca metade de cada.
-4. **Mapear funil atual vs. canônico** — toda recomendação tem tela, gatilho, copy e evento.
-5. **Escrever o relatório** no schema de `references/report-schema.md`, no idioma do usuário
+4. **Diagnosticar a barreira de decisão antes de propor persuasão.** Nomear o comportamento desejado,
+   o ponto da jornada e a evidência disponível. Se a barreira ainda não estiver clara, usar COM-B
+   (capacidade, oportunidade, motivação) para localizar o bloqueio; usar Fogg (motivação, facilidade,
+   prompt) como checagem rápida da ação proposta. Tratar esses modelos como hipóteses de trabalho,
+   não como prova sobre um usuário individual. Escolher no máximo um mecanismo psicológico por
+   recomendação e explicar como ele reduz uma barreira real.
+5. **Aplicar a salvaguarda ética.** A comunicação deve ajudar a pessoa a decidir com informação
+   suficiente: preço e renovação visíveis, urgência e escassez verificáveis, opção de recusar/cancelar
+   clara, e nenhuma culpa, ameaça ou perda fabricada. Defaults só são aceitáveis quando a escolha
+   continua explícita e reversível. Não usar vieses para esconder custo, restringir saída ou pressionar
+   alguém em situação vulnerável. Para cada hipótese, definir uma métrica de resultado e ao menos um
+   guardrail de dano (por exemplo, reembolso, cancelamento precoce, reclamação ou suporte).
+6. **Mapear funil atual vs. canônico** — toda recomendação tem tela, gatilho, copy e evento.
+7. **Escrever o relatório** no schema de `references/report-schema.md`, no idioma do usuário
    (default pt-BR), adaptando `assets/copy-bank.md` ao vocabulário real do produto. A seção de
    paywall usa `references/paywall-flow.md` para decidir momento, número de páginas e alavanca
    dominante antes de preencher os 14 blocos. Quando o pedido é só o paywall, entregar no formato
    "Entrega" daquele arquivo em vez do relatório completo.
-6. **Checkpoint antes de entregar:** reler as métricas-alvo citadas contra a tabela de
+8. **Checkpoint antes de entregar:** reler as métricas-alvo citadas contra a tabela de
    `references/playbook.md` — todo número fora dessas faixas ou sem rótulo `HIPOTESE` volta pra
    correção antes do relatório sair. Confirmar que nenhuma tela ficou sem evento de analytics.
-7. **Oferecer o próximo passo** (wireframe da tela 1, ou o backlog priorizado) — não implementar
+9. **Oferecer o próximo passo** (wireframe da tela 1, ou o backlog priorizado) — não implementar
    código a menos que o usuário peça explicitamente.
 
 ## Regras de Diagnóstico
@@ -120,6 +132,8 @@ Relatório markdown (ou PDF se pedido) seguindo `references/report-schema.md`:
 - Chat ao vivo como alavanca default em produto consumer de ticket baixo
 - Prometer lift percentual específico como garantia deste relatório — benchmarks são faixa, não promessa
 - Copiar duração de trial do concorrente sem calcular contra o TTV (time-to-value) do próprio produto
+- Usar escassez, aversão à perda, defaults ou progresso incompleto para pressionar sem base real,
+  ocultar condições, dificultar recusa/cancelamento ou explorar vulnerabilidade
 
 ## Evidência de Conclusão
 
@@ -167,6 +181,11 @@ Relatório markdown (ou PDF se pedido) seguindo `references/report-schema.md`:
 Conteúdo consolidado a partir de material de benchmark de conversão SaaS fornecido pelo usuário
 (pesquisa própria de mercado sobre onboarding, paywall e lifecycle de assinatura), adaptado ao
 formato e às convenções deste kit.
+
+O diagnóstico comportamental COM-B e Fogg foi inspirado em conceitos resumidos pela skill
+[`marketing-psychology`](https://github.com/coreyhaines31/marketingskills/tree/main/skills/marketing-psychology)
+(Corey Haines, MIT License; consultada em 2026-10-19). Esta skill usa uma seleção própria, com
+salvaguardas de escolha informada; não incorpora o catálogo nem a redação da fonte.
 
 `references/paywall-flow.md` e as variações de copy de paywall/downsell (2026-09-27) vieram da skill
 `paywall-flow-design` de um pacote consolidado pelo usuário, que resume o estudo da Mobbin com

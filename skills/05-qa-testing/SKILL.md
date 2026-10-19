@@ -153,6 +153,8 @@ Usar `Playwright MCP` quando a tarefa exigir:
 
 Isso complementa os testes e2e formais e ajuda especialmente em verificacoes visuais ou exploratorias.
 
+Em QA de interface web, usar `skills/02-ui-ux-design/references/web-interface-review.md` como roteiro complementar para teclado, foco, formulários, movimento reduzido e conteúdo extremo. Confirmar os estados no browser e registrar evidência; a presença de atributos no código, sozinha, não comprova que a interação funciona.
+
 ## Padroes de Teste Playwright (referencia)
 
 `references/playwright-patterns.md` — quando escolher Page Object Model vs Fixtures vs Helper function (e por que fixtures e o ponto de partida padrao), arvore de decisao pra debugar teste flaky (UI-driven, race condition, data/paralelismo, state leak, CI-only), sharding paralelo (`--workers` vs `--shard`) e mock de OAuth/SSO em teste E2E (interceptar callback + endpoint de sessao, nunca o provider real).

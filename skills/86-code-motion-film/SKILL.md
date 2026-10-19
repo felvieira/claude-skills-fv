@@ -90,7 +90,7 @@ node skills/86-code-motion-film/scripts/doctor.mjs --install  # se faltar algo, 
 | Etapa | Arquivo | O que decide |
 |---|---|---|
 | 0 Pré-requisitos | `skills/86-code-motion-film/scripts/doctor.mjs` | ffmpeg + Playwright + Chromium presentes e provados |
-| 1 Motor | `references/ENGINE.md` | rota A (`seek(t)` + Playwright + ffmpeg, zero dependência) ou B (framework) |
+| 1 Motor | `references/ENGINE.md`; `references/REMOTION.md` quando usar Remotion | rota A (`seek(t)` + Playwright + ffmpeg, zero dependência) ou B (framework) |
 | 2 Brief | `references/BRIEF.md` | uma frase testa o motor; spec de estados e brief de diretor testam a ideia |
 | 2b Modelos | `references/MODELOS.md` | famílias de estilo para NOMEAR como referência (galeria prompt-motion.com) |
 | 2c Padrão | `references/PADRAO.md` | camadas T0–T3, anatomia do brief de diretor, blocos reutilizáveis, como reproduzir uma entrada; índice em `references/INDICE-GALERIA.md` |
@@ -190,3 +190,4 @@ uma sessão por marca: o motor, a síntese de áudio e a exportação já existe
 - Artigo "How to build motion design studio with Opus 5.5" (Movez, set/2026), mais o que quebrou ao reimplementar aqui; as partes de código desta skill são nossas e estão testadas.
 - Galeria prompt-motion.com: só o padrão destilado entra no repo; os textos ficam na biblioteca local (`references/PADRAO.md`).
 - https://github.com/kaventro/motion-designer (MIT): inspirou o verificador de determinismo, a análise de andamento e drops, os revisores com notas e o vocabulário de movimento. Nada foi copiado (`NOTICE`).
+- Orientações técnicas resumidas da skill oficial [`remotion-best-practices`](https://github.com/remotion-dev/skills/blob/main/skills/remotion-best-practices/SKILL.md) e de sua referência [`remotion-markup`](https://github.com/remotion-dev/remotion/blob/main/packages/skills/skills/remotion-markup/SKILL.md) (consultadas em 2026-10-19). O repositório de skills não declara licença; a referência própria não reproduz código ou trechos da fonte. Consulte a licença aplicável à versão instalada do Remotion antes de usar o framework.

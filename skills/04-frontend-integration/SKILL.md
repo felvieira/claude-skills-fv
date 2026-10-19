@@ -74,6 +74,34 @@ Para estrutura de pastas e exemplos completos de store, auth e API client, consu
 - server state separado do estado local
 - estados de loading, erro, vazio e retry definidos por tela
 
+## Performance em React e Next.js
+
+Ao implementar ou revisar uma tela, priorize gargalos percebidos pelo usuario: cascatas de rede, JavaScript enviado ao navegador e trabalho repetido de renderizacao. Primeiro identifique o caminho lento; aplique memoizacao ou outras otimizacoes locais somente quando o perfil ou o comportamento observado justificar.
+
+### Dados e renderizacao no servidor
+
+- Inicie em paralelo buscas independentes com `Promise.all`; para dependencias parciais, comece cada busca assim que seus dados de entrada estiverem disponiveis. Mantenha sequencial apenas o que realmente depende do resultado anterior.
+- Adie `await` para o ramo que usa o resultado e verifique condicoes locais baratas antes de iniciar operacoes remotas que talvez sejam desnecessarias.
+- No App Router do Next.js, prefira Server Components para conteudo sem interacao e mantenha `use client` na menor subarvore interativa possivel. Passe para componentes de cliente apenas os dados que eles precisam.
+- Use `Suspense` para liberar partes independentes da pagina enquanto dados nao criticos chegam. Mantenha o fallback com dimensoes proximas ao conteudo e nao atrase conteudo essencial para SEO ou decisoes de layout.
+- Em SSR/RSC, nao guarde dados especificos de uma requisicao em variaveis mutaveis no escopo do modulo; isso pode misturar estado entre requisicoes.
+
+```ts
+const [profile, notifications] = await Promise.all([
+  getProfile(userId),
+  getNotifications(userId),
+]);
+```
+
+### Bundle e fronteiras de cliente
+
+- Prefira importar diretamente o modulo usado quando uma biblioteca expoe um barrel pesado e o bundler nao consegue remover reexportacoes nao usadas.
+- Carregue componentes grandes e pouco frequentes sob demanda; mantenha bibliotecas de analytics e outros terceiros nao essenciais fora do caminho inicial quando a integracao permitir.
+- Coloque estado e assinaturas perto do componente que os consome para evitar rerenderizar subarvores amplas. Para estado derivado e efeitos que apenas sincronizam estado React, consulte a skill `79-react-useeffect-review`.
+- Nao adicione `memo`, `useMemo` ou `useCallback` por padrao: primeiro confirme que ha trabalho caro ou renderizacao repetida relevante. Para interacoes caras que bloqueiam a entrada, avalie `startTransition` ou `useDeferredValue`.
+
+Ao aplicar uma otimizacao, preserve comportamento, acessibilidade e estabilidade visual; confirme o efeito com profiling ou comparacao do bundle quando o projeto oferecer essas ferramentas.
+
 ## Storage Client-Side Reativo
 
 Para persistir preferencia de UI, filtro de tela ou qualquer estado nao sensivel que precisa sobreviver a reload ou sincronizar entre abas, o default e o middleware `persist` do Zustand (`zustand/middleware`) quando o projeto ja usa Zustand para esse estado — nao adicionar dependencia nova so pra isso.
@@ -589,6 +617,7 @@ Entregar:
 
 - Seção "Biblioteca de Componentes para Apps Document-Heavy" curada a partir de [extend-hq/ui](https://github.com/extend-hq/ui) (MIT, ~1.5k stars) — não é port literal do README, é resumo dos componentes e do modo de instalação relevantes para esta skill. Confirmado por leitura direta do repo (licença, stack, comando de instalação) e da página https://www.extend.ai/ui. O kit já modelava Extend como referência visual em `skills/02-ui-ux-design/data/products.csv` e `ui-reasoning.csv`, mas não tinha nenhuma menção à biblioteca de componentes React em si — esse era o gap real medido antes de adicionar esta seção.
 - Seção "Storage Client-Side Reativo" curada a partir de [franciscop/brownies](https://github.com/franciscop/brownies) (MIT, 2.566 stars, 61 forks, release 4.0.1). API confirmada por leitura direta de `readme.md` e `package.json` do repo: getter/setter direto em `cookies`/`local`/`session`/`db` (não `.get()`/`.set()`), `db` assíncrono, `subscribe(obj, key, cb)`/`unsubscribe()` para reagir a mudanças entre abas. Gap medido: grep por `localStorage|sessionStorage|indexedDB|subscribe()` em skill 04 e `patterns/` não retornava nada — a skill cobria Zustand/React Query para estado de app, mas não tinha padrão para storage local reativo. Tratado como nota de baixa prioridade: o middleware `persist` do Zustand já cobre a maior parte desse caso quando o projeto já usa Zustand.
+- Performance em React/Next.js: adaptação de alto nível, em redação própria e sem trechos literais, de [Vercel React Best Practices](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) — cascatas de rede, bundle inicial, fronteiras server/client e renderização.
 
 ## Integração com Pipeline
 

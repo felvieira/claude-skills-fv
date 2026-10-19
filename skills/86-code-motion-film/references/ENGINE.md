@@ -26,7 +26,8 @@ de `window.ready`.
 
 Escolha B quando há equipe/reuso, timeline longa com muitas cenas ou componentes React: **HyperFrames** (HTML) ou
 **Remotion** (React). Peça explicitamente: sem isso o modelo prefere a rota A. Se o ambiente tiver a skill do framework
-(`hyperframes`, `remotion-best-practices`), use-a para a estrutura e use `motion.mjs` (molas, batidas) como biblioteca.
+(`hyperframes`, `remotion-best-practices`), use-a para a estrutura; para Remotion, consulte também
+`references/REMOTION.md`. Use `motion.mjs` (molas, batidas) como biblioteca quando isso couber no framework.
 
 ## Determinismo — verificador
 

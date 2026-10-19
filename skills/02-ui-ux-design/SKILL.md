@@ -116,6 +116,8 @@ Depois de escolher a âncora, calibrar 3 dials de 1-10 antes de gerar tokens ou 
 
 Registrar os 3 valores escolhidos (com justificativa de 1 frase cada) no handoff para Frontend — eles orientam decisões que o Frontend tomaria sozinho por falta de contexto.
 
+**Validar a direção antes de detalhar:** resumir público, tarefa principal, paleta, tipografia, composição e princípios da tela; conferir cada escolha contra o conteúdo real do produto. Na hero, escolher a forma que melhor mostra o assunto (copy, imagem, demonstração ou interação), sem assumir headline centralizada com estatísticas como padrão. Depois da primeira implementação visual ou protótipo, e antes de finalizar, comparar a proposta com o brief e revisar o primeiro screenshot: se a composição servir igualmente a qualquer produto da categoria, ou se os adornos não explicarem hierarquia ou conteúdo, ajustar a direção e remover o que sobrou. O checklist de construção e crítica está em `references/audit-framework.md`; esta etapa é inspirada e curada da skill [`anthropics/skills/frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design).
+
 **Anti-padrões a evitar (independente da âncora):**
 
 - Fonts genéricas sem justificativa: Arial, Inter, Roboto, Space Grotesk, system-ui default
@@ -593,6 +595,8 @@ Comunicar:
 ## Fontes
 
 - Aesthetic anchors pattern adapted from [anthropics/skills/frontend-design](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (custom license, see source).
+- O passo de validar a direção visual contra público, conteúdo, tarefa e screenshot antes de implementar é uma síntese curada de `anthropics/skills/frontend-design`; não é uma cópia integral da skill.
+- Checklist local de revisão web em `references/web-interface-review.md`, sintetizado de [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines) (licença e termos na fonte). A lista foi selecionada para complementar as regras locais; consulta de atualizações upstream é opcional e só deve ocorrer quando atualidade da regra for relevante.
 - Intensity dials (DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY) e em-dash ban inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
 - Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
 - Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
