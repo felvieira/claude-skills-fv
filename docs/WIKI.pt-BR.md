@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 87 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
+> **Versão:** 88 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -400,7 +400,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (87)
+## 5. Skills (88)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -561,6 +561,12 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **O que faz:** pesquisa concorrentes, captura screenshots, analisa tendências visuais, entrega dossier estratégico para UI/UX.
 **Quando ativar:** feature inovadora ou rebranding — antes de UI/UX começar.
 **Problema que resolve:** design "do nada" sem benchmark de mercado.
+
+#### Skill 89 — UI Facelift
+
+**O que faz:** inspeciona e implementa uma rodada ampla de melhorias de UX/UI em um app, sistema ou landing existente. Mapeia rotas, conteúdo, controles e comportamento atuais; preserva regras de negócio e funcionalidades visíveis; melhora hierarquia, direção visual, acessibilidade, responsividade e acabamento conforme os achados; verifica os fluxos alterados e relata evidências e lacunas.
+**Quando ativar:** o pedido é modernizar ou redesenhar um produto existente e aplicar as mudanças diretamente.
+**Problema que resolve:** um redesign pode melhorar a aparência e quebrar rotas, formulários, handlers ou comportamento já usado. A UI Facelift trata esses itens como contrato de preservação e chama apenas as skills especialistas necessárias para os achados.
 
 ### Categoria: Development
 
@@ -1107,7 +1113,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 O plugin descobre automaticamente as pastas de skill:
-- **87 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
+- **88 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1120,7 +1126,7 @@ O plugin descobre automaticamente as pastas de skill:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 87 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
+Instala globalmente: 88 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1145,7 +1151,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 87 skills | ✓ | ✓ | ✓ |
+| 88 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -5,6 +5,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.104.0] - 2026-10-23 — UI Facelift e refinamentos de UX/UI
+
+### Adicionado
+- Skill 89 **UI Facelift**: implementa melhorias amplas de UX/UI em produtos existentes, com inventário funcional antes/depois, preservação de regras e roteamento seletivo para skills especialistas. Atualiza o catálogo de design, fixtures de descoberta, documentação bilíngue e total de skills.
+- Roteamento de redesign amplo separado das skills 02 (design/auditoria focalizada) e 29 (benchmark competitivo).
+
 ## [2.103.0] - 2026-10-11 — Skill 88 (Anatomy): figuras isométricas explicativas como máquinas reais
 
 ### Adicionado

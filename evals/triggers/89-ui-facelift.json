@@ -1,0 +1,22 @@
+{
+  "skill": "89-ui-facelift",
+  "should_trigger": [
+    "faz um UI Facelift nesse app",
+    "redesenhar o sistema inteiro e preservar as funcionalidades",
+    "modernizar o visual desta landing existente",
+    "aplicar melhorias de UX e UI no aplicativo atual",
+    "melhorar todas as telas do produto sem mexer nas regras de negócio",
+    "quero um redesign completo da interface do nosso SaaS",
+    "melhora a experiência e a aparência do sistema que já temos",
+    "refazer a interface do site e manter os formulários funcionando",
+    "implement a UI facelift across the existing product",
+    "modernize this app's interface without changing its business logic"
+  ],
+  "shouldnt_trigger": [
+    "desenha um wireframe novo para a tela de login",
+    "pesquisa os concorrentes e monta um moodboard visual",
+    "corrige somente o scroll horizontal no celular",
+    "ajusta o alinhamento óptico deste botão",
+    "faz uma auditoria de UX sem alterar nenhum arquivo"
+  ]
+}

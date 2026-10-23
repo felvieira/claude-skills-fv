@@ -2,9 +2,11 @@
 name: design-intelligence
 description: |
   Skill de Inteligencia de Design Competitivo e Geracao de UI. Use quando precisar pesquisar concorrentes,
-  analisar tendencias visuais de um nicho, gerar moodboards, ou melhorar interface existente com base em
-  benchmarking visual. Trigger em: "melhorar interface", "pesquisar concorrentes", "benchmark visual",
-  "tendencias de design", "moodboard", "redesign", "design competitivo", "analise visual", "referencia UI".
+  analisar tendencias visuais de um nicho ou gerar moodboards. Para implementar um facelift amplo, use
+  `89-ui-facelift`, que consulta esta skill quando benchmarking for solicitado ou necessário.
+  Trigger em: "pesquisar concorrentes", "benchmark visual", "tendencias de design", "moodboard",
+  "design competitivo", "analise visual dos concorrentes", "referencia visual de mercado",
+  "referências de mercado", "melhores landings", "referencia UI pra dashboard".
 allowed-tools: Read, Write, Bash, WebSearch, mcp__plugin_playwright_playwright__*
 metadata:
   argument-hint: "[nicho ou descricao do projeto]"
@@ -21,7 +23,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 ## Quando Usar
 
 - pesquisar concorrentes visuais de um nicho antes de construir interface
-- melhorar interface existente com base em benchmarking visual e tendencias
+- pesquisar referências competitivas que alimentarão uma melhoria da interface existente
 - gerar moodboard e direcao visual antes do UI/UX comecar
 - analisar o que os melhores do nicho estao fazendo (paleta, tipografia, layout, CTAs)
 
@@ -34,7 +36,7 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 ## Pontos de Entrada no Pipeline
 
 1. **Feature nova:** `PO -> Design Intelligence (29) -> UI/UX -> Frontend -> ...`
-2. **Melhoria de UI existente:** `Design Intelligence (29) -> UI/UX -> Frontend -> ...` (pula o PO)
+2. **Facelift de UI existente:** `UI Facelift (89)` coordena a implementação; acionar Design Intelligence (29) somente quando benchmark competitivo for solicitado ou necessário
 
 ## Entradas Esperadas
 

@@ -4,7 +4,21 @@ Carregar quando o escopo da auditoria/implementação for uma superfície que ex
 
 ## Fronteira com a Skill 61
 
-Estratégia de conteúdo, priorização de pauta, esquema de precificação pública e arquitetura de aquisição são de `skills/61-content-growth-engine/SKILL.md` — não duplicado aqui. Este arquivo cobre a **auditoria da página em si**: hierarquia, CTA, confiança, e os antipadrões específicos de superfície de conversão.
+Estratégia de conteúdo, priorização de pauta, esquema de precificação pública e arquitetura de aquisição são de `skills/61-content-growth-engine/SKILL.md` — não duplicado aqui. Este arquivo cobre o **desenho e a avaliação da página em si**: estrutura, hierarquia, CTA, confiança e os antipadrões específicos de superfície de conversão.
+
+## Estruturar a Página pelo Trabalho do Visitante
+
+Aplicar ao desenhar ou redesenhar uma landing page, página de produto, pricing ou site institucional:
+
+1. Identificar a tarefa que trouxe a pessoa à página e a decisão ou ação que ela precisa tomar.
+2. Inventariar o material real disponível: conteúdo, funcionalidades demonstráveis, imagens, preços, provas e informações ausentes. Não preencher lacunas com métricas, depoimentos, clientes ou logos inventados.
+3. Escolher a ordem das seções para explicar o produto e apoiar essa tarefa. Cada seção precisa cumprir uma função própria; remover as que apenas repetem uma afirmação ou ocupam espaço.
+4. Escolher a composição de cada seção pelo conteúdo: texto quando a mensagem é central, imagem quando ela mostra algo real, demonstração quando o produto precisa ser entendido em uso. A ação principal aparece onde a pessoa tem informação suficiente para agir.
+5. Variar ritmo e composição conforme o conteúdo e o objetivo. Use páginas vizinhas como referência de consistência de marca, não como molde de uma sequência obrigatória de hero, benefícios, prova social, pricing e CTA.
+
+Antes da implementação, registrar um esboço curto com tarefa, seções na ordem prevista, função de cada seção e material que será mostrado. Não impor quantidade fixa de palavras ou seções: densidade, comprimento e hierarquia dependem do produto, da tela e do conteúdo.
+
+Em um redesign completo explicitamente autorizado, fazer um inventário antes/depois de headings, links, campos, handlers e fluxos existentes. Preservar conteúdo e comportamento fora do escopo acordado; verificar o inventário depois do redesenho. Auditoria continua sendo somente relatório, conforme `references/audit-framework.md`.
 
 ## O Que Auditar Numa Landing Page
 

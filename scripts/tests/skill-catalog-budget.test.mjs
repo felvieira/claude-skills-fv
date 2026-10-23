@@ -20,7 +20,7 @@ function runCatalog(args = []) {
 
 test('catalog report separates disk inventory from proxy estimates', () => {
   const report = runCatalog();
-  assert.equal(report.inventory.skills, 87);
+  assert.equal(report.inventory.skills, 88);
   assert.ok(report.inventory.descriptionBytes >= report.inventory.descriptionChars);
   assert.ok(report.inventory.catalogEntryBytes >= report.inventory.catalogEntryChars);
   assert.equal(report.observed, null);

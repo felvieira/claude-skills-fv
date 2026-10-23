@@ -44,7 +44,7 @@ requires:                 # other skill ids this one depends on
 |------|------|---------|
 | Primeira frase (propósito) | ≤160 chars | Mantém o propósito legível sob truncamento/seleção |
 | `Trigger em:` | ≤12 frases | Mantém o conjunto de roteamento revisável |
-| Total | ≤400 chars | 87 skills × 400 ≈ 8.7k **proxy tokens**; não é medição de payload do host |
+| Total | ≤400 chars | 88 skills × 400 ≈ 8.8k **proxy tokens**; não é medição de payload do host |
 
 Prosa longa, gotchas, protocolo: **body**, nunca description. `skill-health.mjs` flagra description >400. Primeiro rode `node scripts/skill-catalog-budget.mjs` sem `--apply`; o relatório marca triggers cobertos por fixture que seriam descartados. Só aplique após revisar evals; `--force` ignora essa proteção.
 

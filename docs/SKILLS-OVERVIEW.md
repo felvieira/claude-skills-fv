@@ -1,6 +1,6 @@
 # Dev Team Kit — Skills, Modos & Subagents
 
-> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 87 skills + 16 subagents + 48 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
+> **Procurando a wiki completa?** → [`docs/WIKI.md`](./WIKI.md). Tem **todos os 88 skills + 16 subagents + 48 commands + 65 policies + 29 hooks + 22 rules path-scoped + plugin + MCP**, formato aihero, com exemplos.
 >
 > Esta página (`SKILLS-OVERVIEW.md`) é a versão **resumida** — para visão de 5 minutos. WIKI tem o detalhe item-por-item.
 
@@ -8,8 +8,8 @@
 
 Página única para o pessoal entender o kit em 5 minutos. Copia o formato do post [5 Agent Skills I Use Every Day](https://www.aihero.dev/5-agent-skills-i-use-every-day): cada item tem nome, o que faz, quando usar, problema que resolve, exemplo concreto e takeaway.
 
-> **Versão:** 87 skills, 16 subagents, 48 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
-> **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais em SVG/WebGL/3D)
+> **Versão:** 88 skills, 16 subagents, 48 slash commands, 65 policies, 29 hooks, 22 rules path-scoped (TS/Python/React/backend/database/frontend + common)
+> **Última atualização:** 2026-10-23 (skill 89 — UI Facelift para modernizar sistemas e landings existentes preservando comportamento)
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
 ---
@@ -19,7 +19,7 @@ Página única para o pessoal entender o kit em 5 minutos. Copia o formato do po
 - [Os 2 fluxos: clássico vs discovery](#os-2-fluxos-clássico-vs-discovery) — escolher antes de iniciar
 - [Princípio fundamental: Vertical Slicing](#princípio-fundamental-vertical-slicing)
 - [Modos de uso (slash commands)](#modos-de-uso-slash-commands) — atalhos por fase
-- [Skills por categoria](#skills-por-categoria) — 87 especialistas
+- [Skills por categoria](#skills-por-categoria) — 88 especialistas
 - [Subagents dispatcháveis](#subagents-dispatcháveis) — 16 agentes via Task tool
 - [Policies que governam tudo](#policies-que-governam-tudo) — 22 regras compartilhadas
 - [Quando usar o quê: árvore de decisão](#quando-usar-o-quê-árvore-de-decisão)
@@ -364,6 +364,7 @@ São 12+ atalhos por fase. Não precisa decorar nome de skill — chama o atalho
 | 01 | **PO** | spec, user stories, critérios de aceitação, prioridade | "escreve a spec de dark mode com persistência por usuário" |
 | 02 | **UI/UX Designer** | layout, design tokens, responsividade, heurísticas | "desenha o fluxo de checkout desse app mobile" |
 | 29 | **Design Intelligence** | benchmark competitivo, screenshots, dossier estratégico | "pesquisa como os concorrentes fazem onboarding" |
+| 89 | **UI Facelift** | redesign amplo de app/landing existente, implementação direta e preservação funcional | "moderniza o sistema inteiro sem quebrar os fluxos" |
 | 36 | **Web Asset Generator** | favicons, PWA icons, OG images, manifest, snippet HTML | "gera o favicon e o OG image a partir desse logo" |
 | 56 | **Responsive Conversion** | converter UI desktop-first em mobile, corrigir layout quebrado, modal/bottom sheet | "essa tela quebra no celular, conserta o layout" |
 | 57 | **Mobile UX Foundations** | zona do polegar, dark mode físico, performance percebida, UX de auth/onboarding/permissão | "onde eu coloco a navegação principal nesse app mobile?" |

@@ -1,20 +1,8 @@
 ---
 name: ui-ux-design
 description: |
-  Skill do Designer UI/UX para interfaces e experiência do usuário: wireframes, design system tokens,
-  componentes de UI, fluxos de navegação, acessibilidade, derivação de paleta (OKLCH, 60/30/10), leis
-  cognitivas de layout (Hick, Fitts, Gestalt, Von Restorff) e estados vazios por tipo. Cobre também
-  auditoria de interface: modo dual auditoria/implementação, classificação de achado
-  (norma/evidência/heurística/preferência) e priorização por severidade.
-  Trigger em: "design", "UI", "UX", "interface", "wireframe", "componente visual",
-  "layout", "responsivo", "mobile first", "acessibilidade básica", "acessibilidade dos componentes",
-  "wcag", "design system", "protótipo", "Figma", "aesthetic anchor", "âncora estética",
-  "paleta", "esquema de cores", "estado vazio", "empty state", "quantas opções mostrar",
-  "auditar a interface", "auditar essa tela", "revisar o design", "auditoria de UI",
-  "avaliar a usabilidade", "achados de UX", "review de design", "dar um parecer",
-  "parecer sobre a usabilidade", "psicologia do app", "o app parece frio", "peak-end",
-  "tela de sucesso", "barra de progresso", "labor illusion", "choice overload",
-  "página de produto", "PDP", "ficha de produto", "adicionar ao carrinho", "tela de compra".
+  Projeta telas, fluxos e design systems; audita UX, acessibilidade e corrige achados focados. Facelift amplo vai para `89-ui-facelift`.
+  Trigger em: "design system", "wireframe", "aesthetic anchor", "responsiva em telas", "protótipo no Figma", "paleta", "WCAG", "componente visual", "mobile first", "decisão de UX", "auditar essa tela", "design dessa interface".
 ---
 
 # UI/UX Designer - Interface e Usabilidade
@@ -39,6 +27,8 @@ Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — z
 
 Quando o pedido for uma landing page ou site inteiro estruturado como jornada de scroll (scrollytelling, estilo Apple product page, video que escruba com o scroll) — nao so a interface estatica — ver `skills/64-scroll-storytelling/SKILL.md`. Ela consome a direcao estetica definida aqui (paleta, tipografia) como insumo pra escolher o mundo visual, mas decide a arquitetura de scroll (gramatica de pagina, jornada, variedade de efeito) por conta propria.
 
+Para site, landing page, pricing ou página de produto, carregar `references/marketing-surfaces.md` também durante o desenho: a estrutura deve nascer da tarefa do visitante, do conteúdo e das provas disponíveis, não de uma sequência fixa de seções. Essa orientação não substitui a arquitetura de fluxos e telas de produtos operacionais.
+
 ## Dois Modos: Desenhar vs. Auditar
 
 O corpo deste arquivo (âncora estética, tokens, leis cognitivas) é para **desenhar do zero** — interface que ainda não existe.
@@ -51,11 +41,13 @@ Quando o pedido é **revisar, avaliar ou corrigir** uma interface que já existe
 - transformar spec em estrutura de tela e decisao de usabilidade
 - auditar interface existente (ver "Dois Modos" acima — carrega `references/audit-framework.md`)
 - corrigir interface existente quando explicitamente autorizado a editar
+- aprofundar ou implementar uma correção estrutural delimitada de UX após auditoria
 
 ## Quando Nao Usar
 
 - para decidir regras de negocio ou contrato de API sozinho
 - para editar arquivo quando o pedido só autorizou análise — ver modo Auditoria acima
+- para facelift completo de app, sistema ou landing existente — usar `skills/89-ui-facelift`
 - para construir feature nova a partir de spec — isso é `skills/04-frontend-integration/SKILL.md`. O modo Implementação desta skill é escopado a corrigir a causa de um achado de auditoria, não a implementar funcionalidade nova
 
 ## Entradas Esperadas
@@ -116,7 +108,7 @@ Depois de escolher a âncora, calibrar 3 dials de 1-10 antes de gerar tokens ou 
 
 Registrar os 3 valores escolhidos (com justificativa de 1 frase cada) no handoff para Frontend — eles orientam decisões que o Frontend tomaria sozinho por falta de contexto.
 
-**Validar a direção antes de detalhar:** resumir público, tarefa principal, paleta, tipografia, composição e princípios da tela; conferir cada escolha contra o conteúdo real do produto. Na hero, escolher a forma que melhor mostra o assunto (copy, imagem, demonstração ou interação), sem assumir headline centralizada com estatísticas como padrão. Depois da primeira implementação visual ou protótipo, e antes de finalizar, comparar a proposta com o brief e revisar o primeiro screenshot: se a composição servir igualmente a qualquer produto da categoria, ou se os adornos não explicarem hierarquia ou conteúdo, ajustar a direção e remover o que sobrou. O checklist de construção e crítica está em `references/audit-framework.md`; esta etapa é inspirada e curada da skill [`anthropics/skills/frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design).
+**Validar a direção antes de detalhar:** resumir público, tarefa principal, paleta, tipografia, composição e princípios da tela; conferir cada escolha contra o conteúdo real do produto. Na hero, escolher a forma que melhor mostra o assunto (copy, imagem, demonstração ou interação), sem assumir headline centralizada com estatísticas como padrão. Para páginas web, derivar as seções do trabalho do visitante e variar a composição conforme o material e a decisão de cada trecho; não repetir a mesma sequência de hero, benefícios, depoimentos e CTA em páginas vizinhas sem justificativa. Depois da primeira implementação visual ou protótipo, e antes de finalizar, comparar a proposta com o brief e revisar o primeiro screenshot: se a composição servir igualmente a qualquer produto da categoria, ou se os adornos não explicarem hierarquia ou conteúdo, ajustar a direção e remover o que sobrou. O checklist de construção e crítica está em `references/audit-framework.md`; esta etapa é inspirada e curada da skill [`anthropics/skills/frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design).
 
 **Anti-padrões a evitar (independente da âncora):**
 
@@ -598,7 +590,7 @@ Comunicar:
 - O passo de validar a direção visual contra público, conteúdo, tarefa e screenshot antes de implementar é uma síntese curada de `anthropics/skills/frontend-design`; não é uma cópia integral da skill.
 - Checklist local de revisão web em `references/web-interface-review.md`, sintetizado de [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines) (licença e termos na fonte). A lista foi selecionada para complementar as regras locais; consulta de atualizações upstream é opcional e só deve ocorrer quando atualidade da regra for relevante.
 - Intensity dials (DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY) e em-dash ban inspirados em [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill).
-- Anti-padroes de "AI purple gradient"/layout centralizado genérico reforçados por [usehallmark.com](https://www.usehallmark.com/).
+- Orientação de estruturar páginas pelo trabalho do visitante, usar conteúdo e provas reais para decidir a composição e variar a anatomia entre páginas adaptada de [nutlope/hallmark](https://github.com/Nutlope/hallmark) (MIT); as regras foram curadas para o escopo do kit, sem importar limites universais de texto ou composição. Anti-padrões de "AI purple gradient"/layout centralizado genérico também foram reforçados por [usehallmark.com](https://www.usehallmark.com/).
 - Leis cognitivas, esquemas de cor e taxonomia de empty state consolidados a partir do blog da [Blush](https://blush.design/blog) (design psychology, color theory, empty states) — curados aqui para decisão de interface digital; recomendações de ilustração do material original, que são CTA do produto deles, ficaram de fora.
 - Estrutura de "Anti-padrões por indústria/vertical" (paleta banida + tipografia a evitar + anti-padrão específico por vertical) inspirado em [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), que mapeia 161 combinações estilo→cor→tipografia→anti-padrão por indústria; aqui curado para as 6 verticais mais comuns neste kit, não um port literal.
 - `scripts/design_search.py` + `data/*.csv` (2026-08-22): motor de busca BM25 e os 15 catálogos de decisão portados de [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) (MIT) — o repo cresceu bastante desde a absorção acima (jul/2026): 84 estilos, 192 paletas, 74 pares de tipografia, 119 guidelines de UX/a11y com código, 25 tipos de gráfico, 21 stacks. `scripts/design_search_core.py` é o motor original quase inalterado (stdlib puro, já testado, calibrado por domínio); `design_search.py` é um wrapper CLI mais enxuto que o `search.py` original — não porta `--design-system`/`--persist`/`--variance`/`--motion`/`--density` (gerador de design system completo do produto deles), porque essa decisão já é papel desta skill em prosa guiada por contexto do projeto — portar o gerador duplicaria a mesma decisão de dois jeitos.
