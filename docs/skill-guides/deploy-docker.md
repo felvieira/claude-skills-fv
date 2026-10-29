@@ -19,210 +19,89 @@
 
 ## Dockerfiles Multi-Stage
 
-### Backend (Node.js / Express)
+### Backend Node.js: exemplo adaptável
+
+Exemplo para um projeto npm com `package-lock.json`, build em `dist/` e dependências de runtime declaradas em `dependencies`. Escolha um LTS ainda suportado e fixe tag e digest verificados no registry; atualize ambos periodicamente. Alpine usa musl: valide módulos nativos e bibliotecas do projeto, ou use uma base Debian slim compatível. Adapte comandos e arquivos a workspaces, geração Prisma e demais artefatos do projeto.
 
 ```dockerfile
-# Dockerfile.backend
-
-FROM node:20-alpine AS deps
+# syntax=docker/dockerfile:1
+# Exemplo: substituir por imagem suportada e digest verificado no projeto.
+ARG NODE_IMAGE=node:24-bookworm-slim
+FROM ${NODE_IMAGE} AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
-
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+RUN --mount=type=cache,target=/root/.npm npm ci
 COPY . .
-RUN npx prisma generate
+# Se o projeto usar Prisma, gere o cliente aqui com a CLI instalada no build.
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM ${NODE_IMAGE} AS production-deps
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev && mkdir -p node_modules
 
+FROM ${NODE_IMAGE} AS runtime
+WORKDIR /app
 ENV NODE_ENV=production
-
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 appuser
-
-COPY --from=builder --chown=appuser:nodejs /app/dist ./dist
-COPY --from=builder --chown=appuser:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=appuser:nodejs /app/prisma ./prisma
-COPY --from=builder /app/package.json ./
-
-USER appuser
-
+COPY --from=production-deps --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --chown=node:node package.json ./
+USER node
 EXPOSE 3001
-
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
-
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+# Apenas se a aplicação implementar GET /health; adaptar porta e tempos.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+  CMD node -e "require('http').get('http://127.0.0.1:3001/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+CMD ["node", "dist/server.js"]
 ```
 
-### Frontend (Next.js)
+`npm ci` exige lockfile coerente; scripts de instalação e dependências nativas precisam ser auditados. O estágio `production-deps` reinstala pacotes: aplicações com módulos gerados (como Prisma) devem copiar ou gerar os artefatos de runtime necessários, respeitando versão da CLI, biblioteca do sistema e arquitetura; testar a imagem final. Migrations não rodam no `CMD`: usar job de release separado, com artefato/CLI apropriado, uma vez, após backup e avaliação de compatibilidade.
 
-```dockerfile
-# Dockerfile.frontend
+Exemplo de `.dockerignore` na raiz do contexto (adaptar para não excluir arquivos necessários):
 
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_APP_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
-
-CMD ["node", "server.js"]
+```gitignore
+.git
+node_modules
+.env
+.env.*
+!.env.example
+coverage
+dist
+.next
+*.log
 ```
 
----
+Copiar primeiro manifests/lockfile melhora o cache, mas arquivos de configuração de dependências e manifests de workspace também precisam entrar antes do `npm ci`. Não enviar segredos em `COPY`, `ARG` ou `ENV`: use `RUN --mount=type=secret` e garanta que o comando não os grave em artefatos, cache ou logs. Valores `NEXT_PUBLIC_*` são públicos e entram no bundle. Segredos em `.npmrc` não devem entrar no contexto.
+
+### Frontend
+
+Para Next.js, habilitar e verificar a saída standalone antes de copiá-la; incluir assets e arquivos de runtime exigidos pela versão instalada. Usar a mesma disciplina de LTS, digest, usuário sem privilégios, cache, segredo e verificação acima. `public/` pode não existir; não copiá-la incondicionalmente. Definir healthcheck apenas para endpoint existente. Não reaproveitar sem validação exemplos para outras stacks.
 
 ## Docker Compose Completo
 
+Ajustar ao projeto e testar suporte do runtime. Este recorte não cria banco, proxy nem endpoint:
+
 ```yaml
-# docker-compose.yml
-version: '3.8'
-
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.frontend
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    depends_on:
-      backend:
-        condition: service_healthy
-    networks:
-      - app-network
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
+    image: ${IMAGE_REF:?informe imagem aprovada por digest}
     restart: unless-stopped
-    ports:
-      - "3001:3001"
-    env_file:
-      - ./backend/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 0.5
     networks:
       - app-network
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - certbot_data:/etc/letsencrypt:ro
-      - certbot_www:/var/www/certbot:ro
-    depends_on:
-      - frontend
-      - backend
-    networks:
-      - app-network
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - certbot_data:/etc/letsencrypt
-      - certbot_www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
-volumes:
-  postgres_data:
-  redis_data:
-  certbot_data:
-  certbot_www:
-
 networks:
   app-network:
-    driver: bridge
+    internal: true
 ```
+
+`IMAGE_REF` deve ser uma referência completa `nome@sha256:...`; a interpolação apenas verifica que não está vazia, não valida o digest. `internal: true` impede acesso externo direto inclusive para APIs remotas: anexar outra rede com saída controlada se a aplicação precisar. Adicionar proxy ou serviços de dados à rede apropriada; não publicar portas de banco/cache no host por padrão. Montar diretórios graváveis explícitos quando necessários. A configuração é ponto de partida: validar capacidades, limites, escrita, conectividade e saúde no ambiente real.
 
 ---
 
@@ -307,129 +186,12 @@ server {
 
 ## CI/CD — GitHub Actions
 
-```yaml
-# .github/workflows/deploy.yml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [main, staging]
-  pull_request:
-    branches: [main]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run type-check
-
-  test-unit:
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npm run test:coverage
-      - uses: actions/upload-artifact@v4
-        with: { name: coverage-report, path: coverage/ }
-
-  test-e2e:
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with: { name: playwright-report, path: playwright-report/ }
-
-  security:
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm audit --audit-level=high
-      - uses: aquasecurity/trivy-action@master
-        with: { scan-type: fs, severity: CRITICAL,HIGH }
-
-  build:
-    needs: [test-unit, test-e2e, security]
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  deploy-staging:
-    needs: build
-    if: github.ref == 'refs/heads/staging'
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            cd /app
-            docker compose pull
-            docker compose up -d --force-recreate
-            docker compose exec backend npx prisma migrate deploy
-            docker system prune -f
-
-  deploy-production:
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            cd /app
-            docker compose exec postgres pg_dump -U $DB_USER $DB_NAME > backup_$(date +%Y%m%d_%H%M).sql
-            docker compose pull
-            docker compose up -d --force-recreate
-            docker compose exec backend npx prisma migrate deploy
-            sleep 10
-            curl -f http://localhost:3000/api/health || (docker compose logs --tail=50 && exit 1)
-            docker system prune -f
-```
+1. Em PR, executar lint/testes e `docker build --check` quando suportado; builds de contribuições não confiáveis não recebem credenciais nem publicam artefatos.
+2. Fixar actions e bases por SHA/digest verificado, com política de atualização. Restringir `GITHUB_TOKEN` e credenciais por job. Não interpolar entradas não confiáveis em shell.
+3. Construir uma vez, gerar SBOM e proveniência quando a plataforma suportar, e avaliar vulnerabilidades do **artefato final** e dependências, além do repositório. Bloquear conforme política de severidade e manter exceções justificadas, com prazo e responsável. Ausência de achados conhecidos não prova ausência de falhas.
+4. Testar a mesma imagem por digest em ambiente isolado: usuário não root, arquivos e segredos, inicialização, probe, encerramento por SIGTERM, fluxos representativos e limites. Medir tamanho, build frio/quente, tempo de inicialização, memória e latência, comparando com baseline.
+5. Publicar e promover o digest efetivamente testado após aprovação aplicável. Separar migração de schema do início de réplicas, com backup, compatibilidade entre versões, plano de rollback e processo de execução única. Rollback de imagem não reverte schema ou dados automaticamente.
+6. Não rodar `docker system prune` em deploy: pode remover recursos compartilhados. Limpeza é tarefa separada, com inventário e autorização apropriada.
 
 ---
 
@@ -502,32 +264,7 @@ Usar para deploy gradual de features arriscadas. Permite desligar sem redeploy.
 
 ## Rollback
 
-```bash
-#!/bin/bash
-# scripts/rollback.sh
-
-PREVIOUS_TAG=$1
-
-if [ -z "$PREVIOUS_TAG" ]; then
-  echo "Uso: ./rollback.sh <tag-anterior>"
-  docker images --format "{{.Tag}}" ghcr.io/org/app | head -10
-  exit 1
-fi
-
-echo "Iniciando rollback para $PREVIOUS_TAG..."
-
-export IMAGE_TAG=$PREVIOUS_TAG
-docker compose up -d --force-recreate
-
-sleep 10
-if curl -sf http://localhost:3000/api/health > /dev/null; then
-  echo "Rollback concluido com sucesso."
-else
-  echo "Rollback falhou — verificar logs"
-  docker compose logs --tail=50
-  exit 1
-fi
-```
+Manter identificados o digest saudável anterior e o candidato. Confirmar que a versão anterior é compatível com schema, dados e integrações antes de promover ou reverter. Atualizar o registro de versão saudável somente após validação da promoção; se não houver versão anterior conhecida, interromper e escalar. Testar o plano com os procedimentos e aprovações do ambiente. Reverter a imagem não reverte migrações ou dados.
 
 ---
 

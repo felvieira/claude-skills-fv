@@ -5,6 +5,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.104.1] - 2026-10-29 — Imagens Docker mais seguras
+
+### Alterado
+- Atualiza a skill de Docker e o guia de deploy com build multi-stage, segurança de runtime, validação da imagem e migrações controladas.
+
 ## [2.104.0] - 2026-10-23 — UI Facelift e refinamentos de UX/UI
 
 ### Adicionado
