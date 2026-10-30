@@ -1,9 +1,9 @@
 > 🌎 [English version](README.md) · 🇧🇷 Versão em Português
 
-# Dev Team Kit — 88 Skills Especialistas para Coding Agents
+# Dev Team Kit — 89 Skills Especialistas para Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.104.1-0f766e)
-![Skills](https://img.shields.io/badge/skills-88-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.105.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-89-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -12,6 +12,7 @@
 
 ### ✨ Novidades
 
+- **v2.105.0** — adiciona RAG Engineering e reforça a crítica visual e a robustez na UI Facelift.
 - **v2.104.0** — adiciona a skill 89 (UI Facelift) para implementar melhorias amplas de UX/UI em produtos existentes preservando comportamento e regras de negócio; refina o roteamento e as orientações de desenho de páginas.
 - **v2.103.0** — skill 88 (Anatomy) adicionada: figuras isométricas ricas e interativas (SVG, shaders WebGL, 3D) que explicam conceitos técnicos como máquinas físicas reais com motor puro em Node e auditoria geométrica de colisões.
 - **v2.102.0** — a skill 86 ganha guias de decisão (tipos de filme, seis estilos com movimento-assinatura, efeitos como funções puras em `fx.mjs`, tabela de ações por agente).
@@ -92,7 +93,7 @@ Sem mensalidade. Sem trial. Sem tier premium escondido. Clona, instala, usa pra 
 
 ## O Que É
 
-O **Dev Team Kit** é um conjunto de 88 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, UI facelift, copy, SEO, observability e mais.
+O **Dev Team Kit** é um conjunto de 89 skills especializadas que transforma qualquer agente de coding compatível em um time completo de desenvolvimento — com orchestrator, backend, frontend, QA, security, deploy, design, UI facelift, copy, SEO, observability e mais.
 
 **O que você ganha:**
 
@@ -116,7 +117,7 @@ A arquitetura do kit se mapeia para a [hierarquia de engenharia de contexto](htt
 
 ### Modo 1 — Plugin Global (Claude Code)
 
-Instala as 88 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
+Instala as 89 skills e hooks globalmente. Funciona em qualquer projeto sem configuração adicional.
 
 ```bash
 # Via Claude Code CLI
@@ -156,14 +157,14 @@ O instalador inclui `setup/` e todos os diretórios do kit em `.bot/`. Suporta f
 - `--no-input` — sem prompts, usa defaults
 - `--yes` — aceita tudo automaticamente
 
-Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 88 skills (88 diretórios de skill instalados; o ID 16 é reservado).
+Na tabela abaixo, considere o `dev-team-kit` como 38 tools apoiadas pelas 89 skills (89 diretórios de skill instalados; o ID 16 é reservado).
 O MCP expoe 38 tools apoiadas pelas skills instaladas.
 
 ### Comparativo dos Modos
 
 | O que é instalado | Plugin Global | /devkit-install-fv | Bash direto |
 |---|:---:|:---:|:---:|
-| 88 skills | ✅ | ✅ | ✅ |
+| 89 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -212,7 +213,7 @@ Agentes sem slash commands acionam as guardas pelo shell: `node scripts/session-
 
 ---
 
-## Os 88 Especialistas
+## Os 89 Especialistas
 
 ### Gestao e Coordenacao
 
@@ -276,6 +277,7 @@ O comando aceita `--repo`, `--output` e `--site` para destinos explícitos. Rode
 | 01 | **PO** | escreve spec, histórias de usuário, critérios de aceitação e define prioridade |
 | 02 | **UI/UX Designer** | define layout, sistema de tokens, responsividade e heurísticas de uso |
 | 29 | **Design Intelligence** | pesquisa concorrentes, captura screenshots, analisa tendências visuais e entrega dossier estratégico para UI/UX |
+| 90 | **RAG Engineering** | projeta, implementa e avalia sistemas RAG com evidências e controle de acesso |
 | 89 | **UI Facelift** | melhora um app, sistema ou landing existente em UX e UI, preservando rotas, comportamento e regras de negócio |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph e Twitter card images, manifest e snippets de meta tags — derivados de logo ou texto da marca |
 | 56 | **Responsive Conversion** | converte UI desktop-first em mobile, corrige layout quebrado (por que filho de flex/grid não pega 100%, `dvh` vs `vh`, safe area, scroll horizontal) e é dona dos padrões de modal/bottom sheet e confirmação destrutiva |

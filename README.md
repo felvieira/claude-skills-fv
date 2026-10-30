@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 88 Specialist Skills for Coding Agents
+# Dev Team Kit — 89 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.104.1-0f766e)
-![Skills](https://img.shields.io/badge/skills-88-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.105.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-89-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -16,6 +16,7 @@
 
 ### ✨ What's new
 
+- **v2.105.0** — adds RAG Engineering and strengthens visual critique and resilience in UI Facelift.
 - **v2.104.0** — adds skill 89 (UI Facelift) for broad UX/UI implementation on existing products while preserving behavior and business rules; refines routing and page-design guidance.
 - **v2.103.0** — skill 88 (Anatomy) added: detailed interactive isometric figures (SVG, WebGL shaders, 3D) that explain technical concepts as real physical machines with pure Node engine and geometric collision audit.
 - **v2.102.0** — skill 86 gets decision guides (film types, six styles with a signature move, pure-function effects in `fx.mjs`, per-agent action table).
@@ -116,7 +117,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 88 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 89 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -156,14 +157,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 88 skills (88 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 89 skills (89 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 88 skills | ✅ | ✅ | ✅ |
+| 89 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -212,7 +213,7 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 
 ---
 
-## The 88 Specialists
+## The 89 Specialists
 
 ### Management and Coordination
 
@@ -276,6 +277,7 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 | 01 | **PO** | writes spec, user stories, acceptance criteria and sets priority |
 | 02 | **UI/UX Designer** | defines layout, token system, responsiveness and usage heuristics |
 | 29 | **Design Intelligence** | researches competitors, captures screenshots, analyzes visual trends and ships a strategic dossier for UI/UX |
+| 90 | **RAG Engineering** | designs, implements and evaluates retrieval-augmented systems with evidence and access control |
 | 89 | **UI Facelift** | improves an existing app, system or landing across UX and UI while preserving routes, behavior and business rules |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph and Twitter card images, manifest and meta tag snippets — derived from a logo or brand text |
 | 56 | **Responsive Conversion** | converts desktop-first UI to working mobile, fixes broken layout (why a flex/grid child won't fill 100%, `dvh` vs `vh`, safe area, horizontal scroll), and owns modal/bottom-sheet and destructive-confirmation patterns |

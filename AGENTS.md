@@ -128,7 +128,7 @@ O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
 | Universo | Localização | Invocação | Convenção de nome |
 |---|---|---|---|
-| **Skills** (87 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`88-` (o 16 é reservado) |
+| **Skills** (89 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`90-` (o 16 é reservado) |
 | **Subagents** (16 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
 **Apenas estes 16 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.

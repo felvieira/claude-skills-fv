@@ -46,8 +46,8 @@
     "scenario_type": "ai-feature",
     "prompt": "crie um chatbot com LLM e RAG para suporte do produto",
     "plugins": ["ai-integration"],
-    "skills": ["25-ai-integration-architect", "26-prompt-engineer"],
-    "max_skill_count": 2,
+    "skills": ["25-ai-integration-architect", "26-prompt-engineer", "90-rag-engineering"],
+    "max_skill_count": 3,
     "max_recommendation_count": 1
   },
   {

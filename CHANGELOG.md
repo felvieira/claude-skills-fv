@@ -5,6 +5,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.105.0] - 2026-10-29 — RAG Engineering e UI Facelift
+
+### Adicionado
+- Skill 90 **RAG Engineering**: fluxo de ingestão, recuperação, segurança e avaliação, com mapa de técnicas para apoiar a escolha conforme o projeto.
+
+### Alterado
+- UI Facelift reforça crítica visual, coerência dos componentes e verificação de estados e conteúdo extremo.
+
 ## [2.104.1] - 2026-10-29 — Imagens Docker mais seguras
 
 ### Alterado

@@ -55,6 +55,8 @@ Quando faltar um detalhe estético, inferir a partir da marca, do produto e dos 
 
 Ler as instruções do repositório, identificar stack, rotas, componentes compartilhados, tokens, estilos e formas de execução. Usar o projeto como fonte da verdade. Reaproveitar padrões válidos e respeitar alterações locais não relacionadas.
 
+Consultar `PRODUCT.md` e `DESIGN.md` quando existirem, além das convenções reais do código. Distinguir decisões documentadas de suposições; não criar esses arquivos automaticamente nem presumir que refletem a implementação atual.
+
 Se o usuário fornecer uma URL, inspecionar as páginas e fluxos que estão no escopo. Se houver repositório correspondente, conferir também como a interface está implementada. Não tratar screenshot isolado como prova dos fluxos internos.
 
 ### 2. Mapear e preservar o comportamento
@@ -85,11 +87,15 @@ Julgar a interface contra o objetivo real do produto, usando apenas as lentes pe
 
 Em site ou landing, derivar seções da tarefa do visitante, do material real e das decisões que a página precisa apoiar. Não impor a mesma sequência de seções a produtos diferentes.
 
+Antes de consultar resultados de ferramentas automáticas, formular uma crítica visual própria: a composição e as interações expressam este produto ou serviriam igualmente a outro? Registrar pontos fortes e problemas prioritários com evidência. Depois, confrontar essa avaliação com verificações disponíveis; um detector limpo não comprova qualidade visual.
+
 ### 4. Escolher as mudanças e implementá-las
 
 Priorizar o que melhora tarefas reais e corrigir primeiro problemas que bloqueiam compreensão, navegação ou conclusão do fluxo. Em seguida, resolver inconsistências sistêmicas; deixar refinamentos visuais locais para depois.
 
 Ao fazer um facelift amplo, começar por tokens, componentes e padrões compartilhados quando isso reduzir inconsistência entre telas. Propagar a direção visual às rotas no escopo. Manter textos, dados e comportamento ligados à lógica existente; microcopy pode ser ajustada para clareza sem mudar alegações ou regras.
+
+Classificar cada inconsistência antes de corrigi-la: valor reutilizável ausente, componente compartilhado ignorado, divergência de fluxo ou hierarquia, ou defeito local. Corrigir na menor camada que resolva a causa, sem transformar exceções isoladas em abstrações globais.
 
 Trabalhar em batches revisáveis. Se a mudança revelar necessidade de alteração estrutural além da UI autorizada, separar essa necessidade no relatório e preservar o contrato existente.
 
@@ -114,6 +120,8 @@ Não pesquisar concorrentes, instalar MCPs, gerar mídia paga ou enviar código 
 ### 6. Verificar o resultado
 
 Revisar o diff e comparar a implementação com o mapa de comportamento da etapa 2. Verificar visualmente as rotas alteradas e larguras relevantes quando o browser estiver disponível. Percorrer os fluxos preservados e os novos estados que a mudança tocou; executar os testes relevantes existentes quando isso for apropriado ao pedido e ao ambiente.
+
+Exercitar, quando aplicável e viável, conteúdo vazio e extenso, listas grandes, ampliação de texto, tradução mais longa, teclado e estados de erro, lentidão ou permissão. Confirmar que o conteúdo essencial continua acessível quando houver truncamento ou falha. Registrar explicitamente cenários que não foram exercitados.
 
 Se a verificação visual, interação real ou teste não foi executado, declarar isso claramente. Código presente, build, screenshot isolado ou resposta HTTP não prova por si só que todo o produto está correto.
 
@@ -144,3 +152,5 @@ Se a verificação visual, interação real ou teste não foi executado, declara
 ## Integração com Pipeline
 
 Para redesenho amplo de UI existente: `89-ui-facelift` coordena descoberta, análise, implementação e verificação. Aciona 29 apenas para benchmark; aciona as skills especializadas conforme os achados. Não substitui o pipeline de feature nova: `01 -> 02 -> 04 -> 05`.
+
+As práticas de crítica anterior ao detector, classificação de inconsistências e verificação com dados extremos foram adaptadas de [Impeccable](https://github.com/pbakaus/impeccable), de Paul Bakaus (Apache-2.0), revisão `02523ae`.

@@ -1,6 +1,6 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 88 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
+> **Versão:** 89 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
 > **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -400,7 +400,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (88)
+## 5. Skills (89)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -561,6 +561,10 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **O que faz:** pesquisa concorrentes, captura screenshots, analisa tendências visuais, entrega dossier estratégico para UI/UX.
 **Quando ativar:** feature inovadora ou rebranding — antes de UI/UX começar.
 **Problema que resolve:** design "do nada" sem benchmark de mercado.
+
+#### Skill 90 — RAG Engineering
+
+**O que faz:** projeta, implementa e avalia sistemas RAG com fontes, controle de acesso e comparação mensurável de técnicas.
 
 #### Skill 89 — UI Facelift
 
@@ -1113,7 +1117,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 O plugin descobre automaticamente as pastas de skill:
-- **88 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
+- **89 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1126,7 +1130,7 @@ O plugin descobre automaticamente as pastas de skill:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 88 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
+Instala globalmente: 89 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1151,7 +1155,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 88 skills | ✓ | ✓ | ✓ |
+| 89 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |
