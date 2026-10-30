@@ -1,10 +1,8 @@
 ---
 name: reverse-engineer-anything
 description: |
-  Investiga aplicativos distribuídos e artefatos sem código-fonte confiável com REA:
-  binários, APKs, ASAR/Electron, firmware e observação passiva de browser.
+  Investiga sistemas distribuidos e artefatos por engenharia reversa autorizada.
   Trigger em: "analisar binário", "decompilar APK", "inspecionar ASAR", "analisar app Electron sem código-fonte", "inspecionar firmware", "browser sem código-fonte", "reverse engineer this binary", "comparar versões compiladas", "rea-agents", "usar REA", "REA MCP", "engenharia reversa de binário", "engenharia reversa de aplicativo distribuído".
-  Para engenharia reversa de código-fonte legado, prefira Detective Spec; para mapa de repo, Repo Auditor.
 allowed-tools: Read, Grep, Glob, Bash, mcp__rea__*
 metadata:
   argument-hint: "<artefato-local-ou-app-do-usuario> [pergunta-ou-versoes]"

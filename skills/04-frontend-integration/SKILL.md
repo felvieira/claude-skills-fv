@@ -1,11 +1,8 @@
 ---
 name: frontend-integration
 description: |
-  Skill do Frontend Developer para implementação com React/Next.js, Zustand, React Query, e Skeleton loading.
-  Use quando precisar implementar componentes, páginas, integração com API, gerenciamento de estado, ou
-  qualquer código frontend. Trigger em: "React", "Next.js", "componente", "página", "Zustand", "React Query",
-  "TanStack Query", "skeleton", "loading", "hook", "frontend", "integração", "mobile responsive", "Tailwind",
-  "formulário", "roteamento".
+  Implementa interfaces e integra o frontend com APIs e estados.
+  Trigger em: "React", "Next.js", "componente", "página", "Zustand", "React Query", "TanStack Query", "skeleton", "loading", "hook", "frontend", "integração", "mobile responsive", "Tailwind", "formulário", "roteamento".
 ---
 
 # Frontend Developer - React/Next.js + Zustand + React Query

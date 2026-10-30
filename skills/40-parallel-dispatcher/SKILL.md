@@ -1,13 +1,8 @@
 ---
 name: parallel-dispatcher
 description: |
-  Skill especializada em paralelizar trabalho via subagents corretamente — sem cair na armadilha
-  skill-vs-agent. Use quando precisar despachar N slices verticais, N reviews, ou N tarefas
-  independentes em paralelo, e quando reviewers/agentes paralelos discordam sobre o mesmo achado
-  e a decisão de arbitrar/bloquear precisa de um critério formal. Trigger em: "paralelize", "N slices",
-  "dispatch paralelo", "worktree paralelo", "5 workers", "dispatch em paralelo", "fan-out",
-  "scatter-gather", "comprehensive review", "multi-agent parallel", "reviewers discordam",
-  "achados divergentes", "arbitragem entre agentes", "quem decide quando os agentes discordam".
+  Divide trabalho independente e orienta sua execucao paralela.
+  Trigger em: "paralelize", "N slices", "dispatch paralelo", "worktree paralelo", "5 workers", "dispatch em paralelo", "fan-out", "scatter-gather", "comprehensive review", "multi-agent parallel", "reviewers discordam", "achados divergentes", "arbitragem entre agentes", "quem decide quando os agentes discordam".
 ---
 
 # Parallel Dispatcher — Como Paralelizar sem Quebrar (SKILL 40)

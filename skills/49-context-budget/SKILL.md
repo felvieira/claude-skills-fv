@@ -1,13 +1,8 @@
 ---
 name: context-budget
 description: |
-  Audita o peso de contexto efetivamente observável na sessão — instruções raiz, hooks,
-  MCP anunciados, rules ativas e skills invocadas. Estima tokens; headroom apenas
-  quando o host informa janela e uso real. Distinto do cost-tracker (skill 30).
-  Trigger em: "contexto inchado", "context overflow", "quanto contexto estou usando",
-  "sessao lenta", "respostas degradadas", "context budget", "tokens carregados",
-  "custo fixo de contexto", "overhead de rules", "overhead dos agents",
-  "impacto do MCP no contexto", "headroom de contexto"
+  Mede e reduz o peso de contexto carregado pelo agente.
+  Trigger em: "contexto inchado", "context overflow", "quanto contexto estou usando", "sessao lenta", "respostas degradadas", "context budget", "tokens carregados", "custo fixo de contexto", "overhead de rules", "overhead dos agents", "impacto do MCP no contexto", "headroom de contexto".
 metadata:
   id: 49-context-budget
   version: 1.0.0

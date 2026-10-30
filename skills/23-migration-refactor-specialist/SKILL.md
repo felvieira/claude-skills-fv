@@ -1,11 +1,8 @@
 ---
 name: migration-refactor-specialist
 description: |
-  Skill para migracoes, modernizacao de legacy e refactors estruturais. Use quando precisar fazer upgrades grandes,
-  extracao incremental, strangler pattern, compatibilidade de transicao e rollout seguro.
-  Trigger em: "migracao de framework", "modernizacao de legacy", "strangler pattern", "refactor estrutural", "upgrade grande", "extracao incremental", "migracao de runtime", "trocar ORM", "rollout incremental de refactor", "migrar para",
-  "spring boot 3", "spring boot 2 para 3", "jakarta migration", "javax para jakarta", "openrewrite", "upgrade spring boot",
-  "migrar jdk 21", "jdk 21 upgrade", "java 21 migration", "spring boot upgrade", "spring 3 migration".
+  Planeja e executa migracoes e refatoracoes incrementais.
+  Trigger em: "migracao de framework", "modernizacao de legacy", "strangler pattern", "refactor estrutural", "upgrade grande", "extracao incremental", "migracao de runtime", "trocar ORM", "rollout incremental de refactor", "migrar para", "spring boot 3", "spring boot 2 para 3", "jakarta migration", "javax para jakarta", "openrewrite", "upgrade spring boot", "migrar jdk 21", "jdk 21 upgrade", "java 21 migration", "spring boot upgrade", "spring 3 migration".
 ---
 
 # Migration Refactor Specialist

@@ -16,8 +16,8 @@
  *   node scripts/skill-catalog-budget.mjs --apply --force
  *
  * Teto de design: primeira frase ≤160 chars, ≤12 triggers, total ≤400 chars.
- * A compactação nunca corta um trigger no meio. Sem `--force`, uma skill com
- * trigger usado por fixture positiva e descartado é preservada sem rewrite.
+ * A compactação nunca corta um trigger no meio. Sem `--force`, não reescreve
+ * uma descrição que perderia qualquer trigger ou teria o propósito truncado.
  */
 import {
   readFileSync,
@@ -27,6 +27,7 @@ import {
   statSync,
 } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { matchesTrigger } from './lib/trigger-match.mjs';
 
 const ROOT = resolve(process.cwd());
 const SKILLS_DIR = join(ROOT, 'skills');
@@ -54,10 +55,6 @@ function proxyTokens(chars) {
   return Math.ceil(chars / PROXY_CHARS_PER_TOKEN);
 }
 
-function fold(value) {
-  return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-}
-
 function parseDescription(frontmatter) {
   const lines = frontmatter.split('\n');
   const index = lines.findIndex((line) => /^description\s*:/.test(line));
@@ -82,8 +79,8 @@ function extractTriggers(description) {
   const index = description.search(/[Tt]rigger\s+em\s*:/);
   if (index < 0) return [];
   const tail = description.slice(index).replace(/^[Tt]rigger\s+em\s*:/i, '');
-  const quoted = [...tail.matchAll(/["']([^"'\n]{2,160})["']/g)]
-    .map((match) => match[1].trim())
+  const quoted = [...tail.matchAll(/"([^"\n]{2,160})"|'([^'\n]{2,160})'/g)]
+    .map((match) => (match[1] ?? match[2]).trim())
     .filter(Boolean);
   if (quoted.length) return [...new Set(quoted)];
   return [...new Set(tail
@@ -116,8 +113,7 @@ function buildDescription(description, skillId) {
   }
   const coverage = new Map(triggers.map((trigger) => [trigger, 0]));
   for (const trigger of triggers) {
-    const normalized = fold(trigger);
-    coverage.set(trigger, positivePrompts.filter((prompt) => fold(prompt).includes(normalized)).length);
+    coverage.set(trigger, positivePrompts.filter((prompt) => matchesTrigger(prompt, trigger)).length);
   }
 
   const ranked = triggers
@@ -176,7 +172,7 @@ function rewriteFrontmatter(content, newDescription) {
     ...yamlBlock(newDescription).trimEnd().split('\n'),
     ...lines.slice(end),
   ];
-  return `---\n${next.join('\n')}\n---${content.slice(match[0].length)}`;
+  return `---\n${next.join('\n')}\n---\n${content.slice(match[0].length)}`;
 }
 
 function loadSkills() {
@@ -280,8 +276,9 @@ function applyChanges(report) {
   let saved = 0;
   let skipped = 0;
   for (const skill of report.skills) {
+    if (skill.chars <= MAX_TOTAL) continue;
     if (!skill.compacted.description || skill.compacted.description === skill.description) continue;
-    if (skill.compacted.droppedFixtureTriggers.length && !force) {
+    if ((skill.compacted.dropped.length || skill.compacted.description.includes('…')) && !force) {
       skipped += 1;
       continue;
     }
@@ -291,7 +288,7 @@ function applyChanges(report) {
     saved += skill.chars - skill.compacted.description.length;
   }
   console.log(`applied_chars_saved=${saved} (~${proxyTokens(saved)} proxy tokens/turn)`);
-  console.log(`skipped_fixture_risk=${skipped}; use --force only after eval review`);
+  console.log(`skipped_trigger_or_truncation_risk=${skipped}; use --force only after manual and eval review`);
 }
 
 const report = buildReport();

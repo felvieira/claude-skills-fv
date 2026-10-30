@@ -1,8 +1,7 @@
 ---
 name: data-analytics
 description: |
-  Skill para definicao de eventos, naming de tracking, funis, metricas de produto e instrumentacao analitica.
-  Use quando precisar medir valor entregue, ativacao, conversao, retencao e comportamento do usuario.
+  Define eventos, metricas e analises de produto.
   Trigger em: "tracking", "analytics", "eventos de produto", "funil de conversao", "instrumentar evento", "metrica de produto", "ativacao", "retencao", "naming de evento", "tracking plan", "data analytics", "PostHog", "Amplitude", "Mixpanel".
 ---
 

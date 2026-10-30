@@ -1,16 +1,8 @@
 ---
 name: illustration-studio
 description: |
-  Estúdio de ícones e ilustrações SVG: um conjunto, um estilo, sempre. Parte de um brief (assunto,
-  contexto, humor, o que o conjunto nunca pode parecer), fixa regras de traço, grade, paleta e
-  formas, desenha cada ícone com poucas peças reutilizáveis, confere com um linter determinístico
-  (viewBox, traço 2, pontas redondas, pixels inteiros, margem de segurança, peso parecido) e exporta
-  sprite, componentes React e folha de contato. Também extrai regras (não adjetivos) de uma
-  referência. Favicon/PWA/OG é a skill 36; imagem raster por IA é a 17; diagrama é a 76.
-  Trigger em: "conjunto de ícones", "icon set", "ícones SVG", "desenhar ícones", "ilustração",
-  "ilustrações vetoriais", "estilo de ícone", "grade de ícones", "keyline", "sprite de ícones",
-  "pacote de ícones", "design de ícones", "linha de ícones", "icon pack", "line icons",
-  "ícones consistentes", "ícones com traço", "illustration studio".
+  Cria e valida icones e ilustracoes SVG.
+  Trigger em: "conjunto de ícones", "icon set", "ícones SVG", "desenhar ícones", "ilustração", "ilustrações vetoriais", "estilo de ícone", "grade de ícones", "keyline", "sprite de ícones", "pacote de ícones", "design de ícones", "linha de ícones", "icon pack", "line icons", "ícones consistentes", "ícones com traço", "illustration studio".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *)
 metadata:
   argument-hint: "<nome do conjunto> <quantidade> [onde aparece e em que tamanho]"

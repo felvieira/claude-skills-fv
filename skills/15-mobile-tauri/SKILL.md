@@ -1,11 +1,8 @@
 ---
 name: mobile-tauri
 description: |
-  Skill OPCIONAL do Mobile/Desktop Developer para criar apps nativos usando Tauri v2. Use quando precisar
-  gerar APK Android, executável Windows/macOS/Linux, ou adaptar o frontend web para plataformas nativas.
-  Trigger em: "mobile", "Tauri", "APK", "app nativo", "desktop app", "Windows app", "macOS app",
-  "Android", "cross-platform", "build nativo", "executável", ".exe", ".dmg", ".deb", ".AppImage",
-  "notificação nativa", "file system nativo".
+  Implementa e empacota aplicacoes mobile e desktop com Tauri.
+  Trigger em: "mobile", "Tauri", "APK", "app nativo", "desktop app", "Windows app", "macOS app", "Android", "cross-platform", "build nativo", "executável", ".exe", ".dmg", ".deb", ".AppImage", "notificação nativa", "file system nativo".
 ---
 
 # Mobile/Desktop Developer - Tauri v2 (OPCIONAL)

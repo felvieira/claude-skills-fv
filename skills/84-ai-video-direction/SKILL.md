@@ -1,17 +1,8 @@
 ---
 name: ai-video-direction
 description: |
-  Direção de vídeo com IA de ponta a ponta: história, roteiro, direção de cena, folhas de
-  personagem, placas de cenário, prompt por clipe (template v4), geração no Seedance 2.5
-  reference-to-video pela API da Higgsfield, QA quadro a quadro, reparo e pós-produção (fala
-  nativa com lip sync, trilha por sequência, SFX, legendas, loudness). Regras nascidas de erros
-  pagos num filme real de 3 min. Integrar vídeo num app é a skill 27; só editar, a 75.
-  Trigger em: "gerar vídeo com IA", "filme com IA", "dirigir vídeo com IA", "seedance",
-  "higgsfield", "prompt de vídeo", "storytelling", "roteiro de vídeo", "folha de personagem",
-  "placa de cenário", "reference-to-video", "direção de cena", "lip sync",
-  "trilha por sequência", "continuidade entre clipes", "AI video direction", "AI film",
-  "video prompt", "character sheet", "scene direction", "talking head", "briefing de vídeo",
-  "ideia para vídeo", "vídeo publicitário com IA", "comercial de app com IA", "motor de briefing", "quadro composto".
+  Dirige producao de video com IA do briefing a pos-producao.
+  Trigger em: "gerar vídeo com IA", "filme com IA", "dirigir vídeo com IA", "seedance", "higgsfield", "prompt de vídeo", "storytelling", "roteiro de vídeo", "folha de personagem", "placa de cenário", "reference-to-video", "direção de cena", "lip sync", "trilha por sequência", "continuidade entre clipes", "AI video direction", "AI film", "video prompt", "character sheet", "scene direction", "talking head", "briefing de vídeo", "ideia para vídeo", "vídeo publicitário com IA", "comercial de app com IA", "motor de briefing", "quadro composto".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *), Bash(ffmpeg *), Bash(ffprobe *)
 metadata:
   argument-hint: "<ideia, história ou roteiro> [duração] [proporção] [idioma das falas]"

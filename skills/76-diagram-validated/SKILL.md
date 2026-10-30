@@ -1,15 +1,8 @@
 ---
 name: diagram-validated
 description: |
-  Skill de geração de diagrama técnico com conclusão sustentada por evidência, não por afirmação —
-  gera SVG determinístico a partir de contrato JSON, valida geometria (colisão de rótulo, seta órfã,
-  nó sobreposto) e faz readback visual em PNG antes de declarar o diagrama pronto. Cobre 14 tipos de
-  UML (class, sequence, state machine, ER, deployment, etc.) e diagramas de arquitetura/fluxo, em 12
-  estilos visuais nomeados.
-  Trigger em: "diagrama de arquitetura", "diagrama de classe", "diagrama de sequência", "UML",
-  "diagrama de deployment", "diagrama ER", "state machine diagram", "gerar diagrama técnico",
-  "diagrama com validação", "SVG determinístico", "diagrama fica desalinhado", "roteamento ortogonal",
-  "geometry-safe diagram", "diagrama de componentes".
+  Cria diagramas tecnicos e valida sua sintaxe e coerencia.
+  Trigger em: "diagrama de arquitetura", "diagrama de classe", "diagrama de sequência", "UML", "diagrama de deployment", "diagrama ER", "state machine diagram", "gerar diagrama técnico", "diagrama com validação", "SVG determinístico", "diagrama fica desalinhado", "roteamento ortogonal", "geometry-safe diagram", "diagrama de componentes".
 allowed-tools: Read, Grep, Glob, Write, Bash(python *), Bash(python3 *), Bash(magick *)
 metadata:
   argument-hint: "<tipo-de-diagrama> <contrato.json> [--style N]"

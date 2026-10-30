@@ -33,6 +33,13 @@ export function skillKey(raw) {
   return String(raw || "").trim().replace(/^.*:/, "").toLowerCase();
 }
 
+// Explicit Skill events may name the directory or the portable skill slug.
+export function canonicalSkillKey(raw, skills) {
+  const key = skillKey(raw);
+  const matches = skills.filter((s) => s.toLowerCase() === key || s.replace(/^\d{2}-/, '').toLowerCase() === key);
+  return matches.length === 1 ? matches[0].toLowerCase() : key;
+}
+
 function eventFiles(autoDir) {
   try {
     return readdirSync(autoDir).filter((n) => /^events(\.\d{4}-\d{2}-\d{2}.*)?\.jsonl$/.test(n)).map((n) => join(autoDir, n));
@@ -54,7 +61,7 @@ function autoDirs() {
   return [...found];
 }
 
-async function countFile(file, since, counts, last) {
+async function countFile(file, since, counts, last, skills) {
   const rl = createInterface({ input: createReadStream(file, { encoding: "utf8" }), crlfDelay: Infinity });
   for await (const line of rl) {
     if (!line.includes('"Skill"')) continue; // barato: evita JSON.parse na maioria das linhas
@@ -62,7 +69,7 @@ async function countFile(file, since, counts, last) {
       const ev = JSON.parse(line);
       if (ev.tool !== "Skill") continue;
       if (since && Date.parse(ev.ts) < since) continue;
-      const key = skillKey(ev.args?.skill ?? ev.args?.name);
+      const key = canonicalSkillKey(ev.args?.skill ?? ev.args?.name, skills);
       if (!key) continue;
       counts.set(key, (counts.get(key) || 0) + 1);
       if (!last.has(key) || ev.ts > last.get(key)) last.set(key, ev.ts);
@@ -80,27 +87,27 @@ async function main() {
   const dirs = autoDirs();
   const counts = new Map();
   const last = new Map();
-  let files = 0;
-  for (const dir of dirs) for (const f of eventFiles(dir)) { files++; await countFile(f, since, counts, last); }
-
   const skills = kitSkills();
+  let files = 0;
+  for (const dir of dirs) for (const f of eventFiles(dir)) { files++; await countFile(f, since, counts, last, skills); }
+
   const known = new Set(skills.map((s) => s.toLowerCase()));
   const rows = skills
     .map((s) => ({ skill: s, calls: counts.get(s.toLowerCase()) || 0, last: last.get(s.toLowerCase()) || null }))
     .sort((a, b) => b.calls - a.calls || a.skill.localeCompare(b.skill));
   const outsiders = [...counts].filter(([k]) => !known.has(k)).map(([skill, calls]) => ({ skill, calls })).sort((a, b) => b.calls - a.calls);
   const total = rows.reduce((n, r) => n + r.calls, 0);
-  const result = { projects: dirs.length, files, total_kit_calls: total, never_called: rows.filter((r) => !r.calls).length, kit_skills: skills.length, rows, outsiders };
+  const result = { projects: dirs.length, files, total_kit_calls: total, never_called: rows.filter((r) => !r.calls).length, measurement_scope: 'explicit logged Skill tool events only; zero does not prove absence of use', kit_skills: skills.length, rows, outsiders };
 
   if (asJson) return console.log(JSON.stringify(result, null, 2));
   console.log(`Fontes: ${dirs.length} projeto(s) com .auto, ${files} arquivo(s) de eventos${sinceDays ? `, ultimos ${sinceDays} dias` : ""}.`);
-  console.log(`Chamadas a skills do kit: ${total} em ${skills.length - result.never_called}/${skills.length} skills; nunca chamadas: ${result.never_called}.\n`);
+  console.log(`Eventos Skill do kit: ${total} em ${skills.length - result.never_called}/${skills.length} skills; sem evento registrado: ${result.never_called}.\n`);
   console.log("Mais usadas:");
   for (const r of rows.filter((x) => x.calls).slice(0, 15)) console.log(`  ${String(r.calls).padStart(5)}  ${r.skill}  (ultima: ${r.last?.slice(0, 10)})`);
-  console.log("\nNunca chamadas (revisar descricao/gatilho antes de concluir qualquer coisa):");
+  console.log("\nSem evento Skill registrado:");
   console.log(`  ${rows.filter((r) => !r.calls).map((r) => r.skill).join("\n  ") || "(nenhuma)"}`);
   if (outsiders.length) console.log(`\nChamadas a skills de fora do kit: ${outsiders.slice(0, 8).map((o) => `${o.skill} x${o.calls}`).join(", ")}`);
-  console.log("\nLimite: so conta o que passou pelo session-event-logger; skill rara de proposito (ex.: migracao) tambem aparece aqui.");
+  console.log("\nLimite: conta apenas eventos explícitos da ferramenta Skill registrados pelo logger. Leituras de SKILL.md e invocações por outros hosts não são observadas; zero não prova ausência de uso.");
 }
 
 // compara pelo caminho real: process.argv[1] pode vir por link simbolico (macOS /var -> /private/var) e import.meta.url nao; sem isso o script sai em silencio sem rodar

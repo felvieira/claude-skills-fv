@@ -1,10 +1,8 @@
 ---
 name: context-manager
 description: |
-  Skill de gerenciamento de contexto e tarefas usando o mecanismo de task, memoria ou checklist disponivel no ambiente,
-  com persistencia enxuta entre sessoes quando fizer sentido. Use quando precisar organizar tarefas, acompanhar progresso,
-  trocar foco de trabalho, ou manter historico resumido. Trigger em: "criar tarefa", "lista de tarefas", "status",
-  "progresso", "trocar foco", "resetar contexto", "o que falta", "proxima tarefa", "historico", "pipeline de tarefas".
+  Organiza contexto, tarefas e handoff entre sessoes.
+  Trigger em: "criar tarefa", "lista de tarefas", "status", "progresso", "trocar foco", "resetar contexto", "o que falta", "proxima tarefa", "historico", "pipeline de tarefas".
 ---
 
 # Context Manager - Gerenciamento de Contexto e Tarefas

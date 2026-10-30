@@ -36,7 +36,7 @@ export function buildChildArgs(opts, task) {
   // but redundant, so check both.
   const defaultModel = process.env.CLAUDE_LOOP_MODEL || 'claude-sonnet-4-5';
   if (opts.agent && opts.agent !== 'claude') args.push('--agent', String(opts.agent));
-  if (opts.model && opts.model !== defaultModel) args.push('--model', String(opts.model));
+  if (opts.model && (opts.agent !== 'claude' || opts.model !== defaultModel)) args.push('--model', String(opts.model));
   if (opts.maxIterations) args.push('--max-iterations', String(opts.maxIterations));
   if (opts.maxTokens) args.push('--max-tokens', String(opts.maxTokens));
   if (opts.stopWhen) args.push('--stop-when', String(opts.stopWhen));

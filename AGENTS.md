@@ -128,15 +128,15 @@ O kit tem **dois universos** que compartilham o prefixo `dev-team-kit-fv:`:
 
 | Universo | Localização | Invocação | Convenção de nome |
 |---|---|---|---|
-| **Skills** (89 itens) | `skills/NN-name/SKILL.md` | `Skill(skill: "dev-team-kit-fv:NN-name")` | numerado `01-`...`90-` (o 16 é reservado) |
+| **Skills** (89 itens) | `skills/NN-name/SKILL.md` | mecanismo ou arquivo anunciado pelo host | pastas `01-`...`90-` (o 16 é reservado); nome exposto pode não ter número |
 | **Subagents** (16 itens) | `agents/name.md` | `Agent(subagent_type: "dev-team-kit-fv:name")` | semântico kebab-case |
 
-**Apenas estes 16 nomes** são `subagent_type` válidos. Qualquer outro nome com prefixo `dev-team-kit-fv:` é skill, não subagent.
+Os 16 papéis de `agents/` são os subagents do kit em hosts que os registram; nomes expostos variam conforme o host. Confirme o catálogo real antes de invocar.
 
 Detalhes completos: `policies/skills-vs-agents.md`. Hook fail-fast: `hooks/scripts/agent-dispatch-validator.mjs`.
 
 ### Despacho sob demanda
 
-Os nomes e papéis válidos ficam em `agents/*.md` e `policies/skills-vs-agents.md`; consulte o agente escolhido antes de despachar. Passe um prompt autocontido ao `Agent`, pois ele não vê a conversa principal. Para paralelizar slices, use `general-purpose` isolado por worktree e peça que cada agente invoque `Skill(...)` **dentro** da própria sessão. Exemplo em `templates/parallel-slice-prompt.md` e `skills/40-parallel-dispatcher/SKILL.md`.
+Os nomes e papéis ficam em `agents/*.md` e `policies/skills-vs-agents.md`; consulte o papel antes de despachar. Use a ferramenta disponível no host, apenas com autorização aplicável, e forneça contexto autocontido. Onde não houver despacho, leia o papel como instrução local.
 
-Nunca passe uma skill numerada (`dev-team-kit-fv:04-frontend-integration`) em `subagent_type`: o hook `agent-dispatch-validator` bloqueia essa confusão. Use `Skill(skill: "dev-team-kit-fv:04-frontend-integration")` para carregar o playbook na sessão atual; `Agent(subagent_type: "dev-team-kit-fv:code-reviewer", ...)` para delegar a um subagent real.
+Nunca passe uma skill como tipo de subagent. A identificação pelo prefixo numérico é específica do caminho do kit e não substitui o catálogo de ferramentas do host. Ver `docs/skill-guides/agent-compatibility.md`.

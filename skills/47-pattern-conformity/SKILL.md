@@ -1,17 +1,8 @@
 ---
 name: pattern-conformity
 description: |
-  Extrai e codifica os padroes de coding do projeto existente (naming, estrutura de arquivos, error
-  handling, testing style, import style, API design, async patterns) e usa esses padroes como
-  restricao sobre novo codigo. Garante que o agente code "igual ao resto do projeto" em vez de
-  inventar convencoes proprias. Produce um "code style map" salvo em memory/patterns.md que
-  todas as skills de geracao de codigo devem consultar.
-  Trigger em: "segue o padrao do projeto", "coda igual ao resto", "nao reinventa padrao",
-  "detecta padroes do codebase", "code style do projeto", "padrao do projeto", "convencao do projeto",
-  "coda consistente", "mesma convencao", "sem reinventar roda", "padrao de codigo",
-  "patterns do codebase", "pattern enforcement", "conformidade de padrao",
-  "convencoes de naming", "padrao de tratamento de erro", "mesma estrutura do projeto",
-  "detecta as convencoes", "extrai padroes de coding", "como o projeto estrutura".
+  Extrai e aplica convencoes existentes do repositorio.
+  Trigger em: "segue o padrao do projeto", "coda igual ao resto", "nao reinventa padrao", "detecta padroes do codebase", "code style do projeto", "padrao do projeto", "convencao do projeto", "coda consistente", "mesma convencao", "sem reinventar roda", "padrao de codigo", "patterns do codebase", "pattern enforcement", "conformidade de padrao", "convencoes de naming", "padrao de tratamento de erro", "mesma estrutura do projeto", "detecta as convencoes", "extrai padroes de coding", "como o projeto estrutura".
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   argument-hint: "[area-alvo] [--update]"

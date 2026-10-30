@@ -1,17 +1,8 @@
 ---
 name: using-git-worktrees
 description: |
-  Skill de isolamento de workspace via git worktree, com deteccao de isolamento existente,
-  preferencia por ferramenta nativa (`EnterWorktree`/`ExitWorktree` ou dispatcher do kit
-  `/worktree`) antes de cair para `git worktree add` cru, e baseline de testes obrigatoria
-  antes de liberar a task para trabalho. Eleva o comando `/worktree` do kit para protocolo
-  completo quando a situacao exige as garantias extras (evitar aninhamento de worktree,
-  confirmar workspace limpo antes de comecar).
-  Trigger em: "worktree", "isolar workspace", "trabalhar isolado", "workspace isolado",
-  "criar worktree", "ja estou num worktree", "aninhar worktree", "worktree dentro de worktree",
-  "baseline de testes", "verificar baseline limpa", "detectar isolamento", "git worktree add",
-  "ferramenta nativa de worktree", "EnterWorktree", "plano de implementacao isolado",
-  "trabalho paralelo sem afetar o branch atual".
+  Isola trabalho em Git worktrees com verificacoes de seguranca.
+  Trigger em: "worktree", "isolar workspace", "trabalhar isolado", "workspace isolado", "criar worktree", "ja estou num worktree", "aninhar worktree", "worktree dentro de worktree", "baseline de testes", "verificar baseline limpa", "detectar isolamento", "git worktree add", "ferramenta nativa de worktree", "EnterWorktree", "plano de implementacao isolado", "trabalho paralelo sem afetar o branch atual".
 ---
 
 # Using Git Worktrees — Protocolo Completo de Isolamento

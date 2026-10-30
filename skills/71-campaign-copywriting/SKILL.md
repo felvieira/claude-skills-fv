@@ -1,12 +1,8 @@
 ---
 name: campaign-copywriting
 description: |
-  Transforma uma estratégia de campanha com evidence ledger em rotas de copy rastreáveis, distintas
-  e adequadas ao canal. Não refaz pesquisa e não inventa claims. Trigger em: "copy baseada na
-  pesquisa", "copy baseada na pesquisa e mantenha as evidencias", "copy deck da campanha",
-  "variações de anúncio com evidência", "variacoes de anuncio", "copy rastreável", "transforma a
-  estratégia em anúncios", "transforma a estrategia", "rotas de copy da campanha", "copy com claim
-  ledger".
+  Transforma estrategia de campanha em mensagens e copy.
+  Trigger em: "copy baseada na pesquisa", "copy baseada na pesquisa e mantenha as evidencias", "copy deck da campanha", "variações de anúncio com evidência", "variacoes de anuncio", "copy rastreável", "transforma a estratégia em anúncios", "transforma a estrategia", "rotas de copy da campanha", "copy com claim ledger".
 allowed-tools: Read, Grep, Glob
 metadata:
   argument-hint: "<ResearchStrategyArtifact> [--channel <canal>] [--duration <segundos>]"

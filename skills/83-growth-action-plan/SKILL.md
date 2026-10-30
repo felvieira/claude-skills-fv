@@ -1,16 +1,8 @@
 ---
 name: growth-action-plan
 description: |
-  Transforma a descrição de um produto (app ou SaaS) num plano de ação operacional de 4 semanas de
-  produto e growth: diagnóstico em 8 linhas, funil canônico vs atual, telas, paywall, retenção,
-  psicologia de UI, distribuição citável por agentes de IA, eventos com scorecard e backlog semanal.
-  Cada recomendação sai com tela, gatilho, copy, evento de analytics e dono (produto/design/growth).
-  Orquestra as skills 73 (conversão/paywall), 82 (retenção), 02 (psicologia de sessão e página de
-  produto), 61 (distribuição por agentes) e 21 (eventos), lendo só a referência de cada seção.
-  Trigger em: "plano de ação de growth", "plano de 4 semanas", "plano de growth", "plano de produto
-  e growth", "diretor de produto e growth", "relatório de growth", "plano operacional de conversão
-  e retenção", "growth do meu app", "o que fazer nas próximas 4 semanas", "plano de conversão,
-  retenção e distribuição", "auditoria completa de app", "funil até retenção".
+  Transforma estrategia de crescimento em plano de acoes.
+  Trigger em: "plano de ação de growth", "plano de 4 semanas", "plano de growth", "plano de produto e growth", "diretor de produto e growth", "relatório de growth", "plano operacional de conversão e retenção", "growth do meu app", "o que fazer nas próximas 4 semanas", "plano de conversão, retenção e distribuição", "auditoria completa de app", "funil até retenção".
 allowed-tools: Read, Grep, Glob, Write, WebFetch
 metadata:
   argument-hint: "<descrição do produto, URL ou o template PRODUTO preenchido>"

@@ -1,14 +1,8 @@
 ---
 name: ux-research
 description: |
-  Skill de UX Research / Discovery qualitativo — entrevista com usuário, criação de persona baseada em
-  pesquisa, mapa de jornada (journey map), teste de usabilidade qualitativo, arquitetura de informação,
-  card sorting e validação de problema antes de especificar. Antecede o PO (01) e o UI/UX (02): entende
-  PARA QUEM e POR QUE antes de definir O QUÊ e COMO. Base no livro de Fabricio Teixeira (Casa do Código).
-  Trigger em: "pesquisa com usuário", "user research", "UX research", "discovery", "entrevista com usuário",
-  "entrevista em profundidade", "persona", "criar persona", "mapa de jornada", "journey map", "mapa de empatia",
-  "teste de usabilidade", "usability testing", "validar problema", "arquitetura de informação", "card sorting",
-  "taxonomia", "proposição de valor", "produto que ninguém usa", "começar pelo usuário", "focus group".
+  Planeja pesquisa de usuarios, jornadas e testes de usabilidade.
+  Trigger em: "pesquisa com usuário", "user research", "UX research", "discovery", "entrevista com usuário", "entrevista em profundidade", "persona", "criar persona", "mapa de jornada", "journey map", "mapa de empatia", "teste de usabilidade", "usability testing", "validar problema", "arquitetura de informação", "card sorting", "taxonomia", "proposição de valor", "produto que ninguém usa", "começar pelo usuário", "focus group".
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   argument-hint: "[entregavel: entrevista|persona|jornada|teste-usabilidade|AI|validacao] [produto] [publico-alvo]"

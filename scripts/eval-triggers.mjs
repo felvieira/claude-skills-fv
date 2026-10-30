@@ -5,7 +5,7 @@
  * Runtime para as fixtures em evals/triggers/<skill-id>.json.
  *
  * Para cada prompt em should_trigger / shouldnt_trigger, simula a heurística
- * de discovery do harness: faz match (case-insensitive, substring) de cada
+ * de discovery: faz match sem acentos e com fronteiras para palavras isoladas de cada
  * trigger declarado no frontmatter da skill (linha "Trigger em: ...") contra
  * o prompt. Se ANY trigger casa, o prompt é considerado "matched".
  *
@@ -33,6 +33,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { matchesTrigger } from "./lib/trigger-match.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -62,10 +63,6 @@ const maxShouldnt = Number(flag("--max-shouldnt") ?? 20); // %
 // acento ("validacao final", "producao", "ultima verificacao") devem casar
 // triggers declarados com acento ("validação final", "produção", etc).
 // NFD decompõe (ç → c + cedilha) e strip combining marks remove os diacríticos.
-function foldAccents(s) {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
-
 // ─── Extrai triggers da SKILL.md ─────────────────────────────────────────────
 // Os triggers vivem DENTRO do campo `description:` (texto livre YAML multiline),
 // numa frase tipo: Trigger em: "x", "y", "z". O frontmatter inteiro pode ser
@@ -87,8 +84,8 @@ function extractTriggers(skillBody) {
   const block = stopAt > 0 ? tail.slice(0, stopAt) : tail;
 
   // Extrai strings entre aspas duplas/simples (dropping the regex header marker)
-  const quoted = [...block.matchAll(/["']([^"']{2,80})["']/g)].map((m) =>
-    m[1].toLowerCase().trim(),
+  const quoted = [...block.matchAll(/"([^"\n]*(?:\n[^"\n]*)*)"|'([^'\n]*(?:\n[^'\n]*)*)'/g)].map((m) =>
+    (m[1] ?? m[2]).replace(/\s+/g, " ").toLowerCase().trim(),
   );
   if (quoted.length > 0) return [...new Set(quoted)];
 
@@ -105,14 +102,11 @@ function extractTriggers(skillBody) {
 }
 
 // ─── Match heurístico ────────────────────────────────────────────────────────
-// Case-insensitive E accent-insensitive (NFD fold). Ambos lados normalizados
-// antes do includes() pra que "validacao final" case "validação final".
+// A heurística é local e não representa o roteamento semântico de todos os hosts.
 function matchesAnyTrigger(prompt, triggers) {
-  const p = foldAccents(prompt.toLowerCase());
   for (const t of triggers) {
     if (!t) continue;
-    const tNorm = foldAccents(t.toLowerCase());
-    if (p.includes(tNorm)) {
+    if (matchesTrigger(prompt, t)) {
       return { matched: true, by: t }; // retorna trigger ORIGINAL (com acento)
     }
   }

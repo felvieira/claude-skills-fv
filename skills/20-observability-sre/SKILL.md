@@ -1,8 +1,7 @@
 ---
 name: observability-sre
 description: |
-  Skill de observabilidade e confiabilidade operacional. Use quando precisar definir logs, metricas, tracing,
-  alertas, health checks, readiness, error budgets, rollback e operacao segura de servicos.
+  Melhora observabilidade, confiabilidade e resposta a incidentes.
   Trigger em: "observabilidade", "observability", "SRE", "logs estruturados", "metricas", "tracing distribuido", "health check", "readiness probe", "error budget", "SLO", "alertas", "rollback seguro", "runbook operacional".
 ---
 

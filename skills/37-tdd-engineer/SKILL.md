@@ -1,12 +1,9 @@
 ---
 name: tdd-engineer
 description: |
-  Test-Driven Development com red-green-refactor enforced. Use quando construir feature ou
-  fix de bug usando TDD, mencionar "red-green-refactor", quiser tracer bullets, ou pedir
-  desenvolvimento test-first. Combate o anti-padrao "horizontal slicing" (escrever todos
-  os testes antes de toda a implementacao).
-  Trigger em: "tdd", "test-first", "red-green-refactor", "tracer bullet", "behavior test",
-  "integration test", "tdd deep module", "interface design test".
+  Test-Driven Development com red-green-refactor enforced. Trigger em: "tdd", "test-first",
+  "red-green-refactor", "tracer bullet", "behavior test", "integration test", "tdd deep module",
+  "interface design test".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--module=path] [--behavior=descricao]"

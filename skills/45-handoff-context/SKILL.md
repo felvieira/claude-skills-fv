@@ -1,12 +1,8 @@
 ---
 name: handoff-context
 description: |
-  Produz pacote prospectivo de handoff pra outro agente, modelo ou dev humano pegar a task de
-  onde parou — sem contexto da sessao atual. Diferente de session-summary (skill 31) que e
-  retrospectivo: handoff-context monta o briefing acionavel pra quem chega cego.
-  Trigger em: "handoff", "passar bastao", "passar o bastao", "delega pra outro", "delega isso",
-  "transfer context", "passar contexto", "outro dev vai pegar", "outro agente vai continuar",
-  "preciso passar isso", "briefing prospectivo", "sessao fresh", "preparar handoff", "monta o pacote".
+  Prepara contexto e pendencias para outra sessao ou agente.
+  Trigger em: "handoff", "passar bastao", "passar o bastao", "delega pra outro", "delega isso", "transfer context", "passar contexto", "outro dev vai pegar", "outro agente vai continuar", "preciso passar isso", "briefing prospectivo", "sessao fresh", "preparar handoff", "monta o pacote".
 allowed-tools: Read, Write, Glob, Grep, Bash
 metadata:
   argument-hint: "[--feature=<nome>] [--target=human|agent|fresh-session]"

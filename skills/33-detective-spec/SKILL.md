@@ -1,10 +1,8 @@
 ---
 name: detective-spec
 description: |
-  Engenharia reversa de specs para sistemas legados. Use quando precisar extrair specs executaveis,
-  regras de negocio, contratos de modulo, fluxos e ADRs retroativos a partir de codigo existente sem
-  spec previa. Trigger em: "legado", "engenharia reversa", "extrair spec", "documentar codigo existente",
-  "vibe coding sem doc", "detective", "reverse spec", "o que esse codigo faz", "spec a partir do codigo".
+  Reconstrói especificacoes e regras de sistemas existentes.
+  Trigger em: "legado", "engenharia reversa", "extrair spec", "documentar codigo existente", "vibe coding sem doc", "detective", "reverse spec", "o que esse codigo faz", "spec a partir do codigo".
 allowed-tools: Read, Grep, Glob, Bash(git *), Bash(ls *), Bash(wc *), Bash(find *), Bash(graphify *), Bash(python3 *)
 metadata:
   argument-hint: "[caminho-do-repo] [--module=path] [--phase=1|2|3|4|5] [--resume]"

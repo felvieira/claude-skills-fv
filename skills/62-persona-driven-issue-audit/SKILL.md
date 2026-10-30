@@ -1,17 +1,8 @@
 ---
 name: persona-driven-issue-audit
 description: |
-  Skill de auditoria em massa via personas simuladas: infere proto-personas do repositorio, confirma
-  com o humano sem bloquear, e roda ate PR — encontra bugs, abre issues com dedup, analista comenta
-  solucao, frota paralela abre PR onde a confianca e alta ou comenta wontfix, reviewer decide.
-  Termina em issues residuais, nunca merge automatico.
-  Trigger em: "simulando usuarios reais diferentes", "fazer a IA impersonar persona e testar o app",
-  "encontrar bugs de usabilidade em massa antes do lancamento", "numa auditoria, como triar tudo isso",
-  "frota de agentes paralelos abrindo PR", "regras de dedup de issue quando varios agentes reportam",
-  "abrir PR automatica ou comentar wontfix", "escalar QA exploratorio com IA sem virar gargalo",
-  "simular usuario nao tecnico testando o produto", "PRs deveriam ser aprovadas automaticamente",
-  "nao tenho personas escritas, da pra gerar a partir do repo", "auditoria automatica do produto sem
-  preparar nada antes", "inferir persona a partir do codigo do projeto".
+  Audita issues e fluxos em escala com personas representativas.
+  Trigger em: "simulando usuarios reais diferentes", "fazer a IA impersonar persona e testar o app", "encontrar bugs de usabilidade em massa antes do lancamento", "numa auditoria, como triar tudo isso", "frota de agentes paralelos abrindo PR", "regras de dedup de issue quando varios agentes reportam", "abrir PR automatica ou comentar wontfix", "escalar QA exploratorio com IA sem virar gargalo", "simular usuario nao tecnico testando o produto", "PRs deveriam ser aprovadas automaticamente", "nao tenho personas escritas, da pra gerar a partir do repo", "auditoria automatica do produto sem preparar nada antes", "inferir persona a partir do codigo do projeto".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(gh *), Agent
 metadata:
   argument-hint: "[--fase=personas|testar|analisar|fix|review|triagem] [--max-agentes=N] [--personas=auto|arquivo]"

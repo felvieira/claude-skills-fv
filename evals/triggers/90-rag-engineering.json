@@ -1,5 +1,5 @@
 {
   "skill": "90-rag-engineering",
   "should_trigger": ["implementar RAG nos documentos", "retrieval augmented generation para o suporte", "melhorar busca semântica", "usar busca híbrida no catálogo", "avaliar reranking", "pipeline de recuperação de documentos", "retrieval evaluation com dados rotulados", "chunking de documentos PDF", "projetar graph rag", "construir agentic rag"],
-  "shouldnt_trigger": ["corrigir o layout do painel", "configurar backup do banco", "criar autenticação OAuth", "editar imagens do produto", "escrever um teste de formulário"]
+  "shouldnt_trigger": ["corrigir o layout do painel", "configurar backup do banco", "criar autenticação OAuth", "editar imagens do produto", "escrever um teste de formulário", "implementar drag and drop no painel"]
 }

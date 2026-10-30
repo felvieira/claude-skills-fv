@@ -1,17 +1,8 @@
 ---
 name: saas-conversion-playbook
 description: |
-  Audita e desenha o funil de conversão de assinatura de um SaaS ou app — onboarding, evento de
-  ativação, paywall, gatilhos in-app, modelo comercial (freemium/trial/hard paywall/reverse trial)
-  e lifecycle de e-mail. Classifica o produto em playbook A (consumer/resultado pessoal) ou B
-  (ferramenta B2B/PLG) e usa isso para recomendar telas, copy e métricas-alvo com benchmark real,
-  não achismo. Aprofunda taticamente a seção de monetização da skill 01 (po-feature-spec).
-  Trigger em: "auditoria de conversão", "auditar meu SaaS", "onde colocar o paywall", "desenhar
-  onboarding", "trial to paid", "freemium ou trial", "reverse trial", "hard paywall", "evento de
-  ativação", "aha moment", "gatilho de upgrade", "funil de assinatura", "R por mil usuários",
-  "modelo de monetização SaaS", "quiz de onboarding", "paywall genérico", "downsell", "cancel-save",
-  "paywall que converte", "paywall multi-página", "fluxo de paywall", "timeline do trial",
-  "win-back", "fricção positiva", "quando mostrar o paywall", "teste de paywall".
+  Audita e melhora a conversao do funil SaaS.
+  Trigger em: "auditoria de conversão", "auditar meu SaaS", "onde colocar o paywall", "desenhar onboarding", "trial to paid", "freemium ou trial", "reverse trial", "hard paywall", "evento de ativação", "aha moment", "gatilho de upgrade", "funil de assinatura", "R por mil usuários", "modelo de monetização SaaS", "quiz de onboarding", "paywall genérico", "downsell", "cancel-save", "paywall que converte", "paywall multi-página", "fluxo de paywall", "timeline do trial", "win-back", "fricção positiva", "quando mostrar o paywall", "teste de paywall".
 allowed-tools: Read, Grep, Glob, Write
 metadata:
   argument-hint: "<URL, pitch ou descrição do produto> [--modelo atual]"

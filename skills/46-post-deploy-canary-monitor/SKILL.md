@@ -1,15 +1,8 @@
 ---
 name: post-deploy-canary-monitor
 description: |
-  Vigia producao apos deploy fechar, comparando metricas e screenshots contra baseline pre-deploy.
-  Detecta regressao silenciosa (console errors, perf drop, broken pages) nas primeiras horas/dias.
-  Diferente de skill 43 (canary-deployment) que faz promocao gradual durante o deploy: esta skill
-  comeca QUANDO o deploy ja fechou 100% e fica vigiando ate confirmar que esta saudavel ou
-  escalar pra rollback.
-  Trigger em: "monitor producao", "monitora producao", "monitora se", "watch deploy",
-  "watch production", "post-deploy check", "pos-deploy", "depois do deploy", "depois do rollout",
-  "vigiar producao", "regressao silenciosa", "deploy passou mas", "verificar producao",
-  "deploy stuck", "production health check", "screenshot diff", "lcp regrediu", "baseline comparativo".
+  Monitora a saude e regressoes de producao apos deploy.
+  Trigger em: "monitor producao", "monitora producao", "monitora se", "watch deploy", "watch production", "post-deploy check", "pos-deploy", "depois do deploy", "depois do rollout", "vigiar producao", "regressao silenciosa", "deploy passou mas", "verificar producao", "deploy stuck", "production health check", "screenshot diff", "lcp regrediu", "baseline comparativo".
 allowed-tools: Read, Write, Bash, Glob
 metadata:
   argument-hint: "[--url=https://prod.exemplo] [--baseline=path] [--interval=15m] [--duration=24h]"

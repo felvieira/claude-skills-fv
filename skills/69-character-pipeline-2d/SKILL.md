@@ -1,15 +1,7 @@
 ---
 name: character-pipeline-2d
 description: |
-  Skill de pipeline 2D de personagem e orquestracao geral do pipeline character-to-runtime. Cobre as
-  cinco estrategias de producao de sprite/animacao 2D (3D->spritesheet, arte 2D->rig skeletal,
-  video IA->frames, frame-by-frame IA, hibrido), o contrato MotionPlan.json (LLM como diretor de
-  intencao/timing/fases), geracao 2D via Qwen-Image-Layered/Qwen-Image-Edit, SAM para mascara,
-  occlusion completion, DWPose/MMPose e CanonicalPoseSequence, Wan-Animate como motion
-  reference/previs, ComfyUI headless, rig 2D esqueletal (Blender Grease Pencil, Spine CLI,
-  LoongBones), CLI assetctl, rasterizacao deterministica, atlas packing, hitbox/hurtbox,
-  integracao runtime Godot/Phaser, e testes/CI com build graph content-addressed. Assume pipeline
-  3D ate GLB pronto via skill 68.
+  Skill de pipeline 2D de personagem e orquestracao geral do pipeline character-to-runtime.
   Trigger em: "pipeline de personagem 2D", "spritesheet", "MotionPlan", "Qwen-Image-Layered",
   "occlusion completion", "DWPose", "CanonicalPoseSequence", "Wan-Animate", "ComfyUI headless",
   "rig 2D esqueletal", "Spine CLI", "assetctl".

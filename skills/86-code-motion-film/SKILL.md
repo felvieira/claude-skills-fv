@@ -1,19 +1,8 @@
 ---
 name: code-motion-film
 description: |
-  Filme de motion design escrito como PROGRAMA: o modelo escreve `seek(t)` (pinta o quadro exato de
-  qualquer instante), um Chromium headless chama quadro a quadro e o ffmpeg costura o MP4 — render
-  determinístico, correção é editar uma linha e renderizar de novo. Cobre o brief de diretor (uma
-  frase para testar o motor, spec de estados para ideias de verdade), molas em forma fechada com
-  `track()`, trilha travada em BPM, laço de crítica (renderizar quadros, pontuar, corrigir até 8+) e
-  exportação para 16:9, 9:16 e 1:1 a partir de uma só linha do tempo. Vídeo gerado por modelo
-  (Seedance etc.) é a skill 84; animação de UI em produto é a 12; só editar/ffmpeg é a 75; slides, a 77.
-  Trigger em: "filme de motion", "motion design com código", "vídeo em código", "seek(t)",
-  "showreel", "vídeo de lançamento", "launch video", "vídeo de produto em código", "mola fechada",
-  "renderizar html em mp4", "playwright ffmpeg vídeo", "trilha sintetizada", "animação determinística",
-  "critique loop de vídeo", "motion reel", "film from code", "code-rendered video",
-  "prompt-motion", "brief de diretor", "reproduzir vídeo de motion", "padrão de brief de motion",
-  "verificar determinismo do filme", "bpm da música", "cortar trilha no compasso", "drop da música", "revisores de vídeo".
+  Cria filmes de motion design programaticos e renderizaveis.
+  Trigger em: "filme de motion", "motion design com código", "vídeo em código", "seek(t)", "showreel", "vídeo de lançamento", "launch video", "vídeo de produto em código", "mola fechada", "renderizar html em mp4", "playwright ffmpeg vídeo", "trilha sintetizada", "animação determinística", "critique loop de vídeo", "motion reel", "film from code", "code-rendered video", "prompt-motion", "brief de diretor", "reproduzir vídeo de motion", "padrão de brief de motion", "verificar determinismo do filme", "bpm da música", "cortar trilha no compasso", "drop da música", "revisores de vídeo".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(node *), Bash(ffmpeg *), Bash(ffprobe *)
 metadata:
   argument-hint: "<ideia ou URL do produto> [duração] [formato 16:9|9:16|1:1] [referência]"

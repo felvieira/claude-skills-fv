@@ -1,10 +1,8 @@
 ---
 name: program-router
 description: |
-  Decide a composicao minima de plugins, skills e, quando necessario, programs declarativos para uma task.
-  Use antes de improvisar um pipeline ou quando o usuario perguntar qual skill, plugin, workflow ou program usar.
-  Trigger em: "qual skill", "qual plugin", "qual program", "qual workflow", "roteie essa task",
-  "auto orchestrate", "feature grande", "build app", "review PR", "discovery", "legacy", "greenfield".
+  Seleciona a composicao minima de skills e plugins para uma tarefa.
+  Trigger em: "qual skill", "qual plugin", "qual program", "qual workflow", "roteie essa task", "auto orchestrate", "feature grande", "build app", "review PR", "discovery", "legacy", "greenfield".
 allowed-tools: Read, Glob, AskUserQuestion, Bash(node scripts/route-task.mjs *), Bash(node scripts/run-program.mjs *)
 ---
 

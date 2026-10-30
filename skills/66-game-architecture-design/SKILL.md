@@ -1,17 +1,8 @@
 ---
 name: game-architecture-design
 description: |
-  Skill de arquitetura, design review e balanceamento numerico de jogos — a camada de decisao antes
-  de codigo de engine. Cobre selecao de paradigma (entidade rica vs data-driven vs prototipo), design
-  de sistemas especificos (combate, skill, IA, narrativa, UI, PCG), revisao critica de GDD/mecanica/
-  nivel com achado baseado em evidencia, e modelagem numerica de economia, progressao e drop rate.
-  Nao gera codigo de Unity/Unreal/Godot — para isso ver skill 67.
-  Trigger em: "arquitetura de jogo", "design de sistema de combate", "sistema de skill de jogo",
-  "GDD", "game design document", "revisar mecanica de jogo", "balancear economia do jogo",
-  "curva de progressao", "drop rate", "pity system", "loot table", "metagame", "PvP balance",
-  "paradigma de arquitetura de jogo", "ECS vs OOP para jogo", "sistema de IA de jogo",
-  "procedural content generation", "PCG", "revisao de design de jogo", "avaliar proposta de balance",
-  "diagnosticar desbalanceamento", "economia de jogo mobile", "sistema de buff e debuff".
+  Projeta e revisa arquitetura e sistemas de jogos.
+  Trigger em: "arquitetura de jogo", "design de sistema de combate", "sistema de skill de jogo", "GDD", "game design document", "revisar mecanica de jogo", "balancear economia do jogo", "curva de progressao", "drop rate", "pity system", "loot table", "metagame", "PvP balance", "paradigma de arquitetura de jogo", "ECS vs OOP para jogo", "sistema de IA de jogo", "procedural content generation", "PCG", "revisao de design de jogo", "avaliar proposta de balance", "diagnosticar desbalanceamento", "economia de jogo mobile", "sistema de buff e debuff".
 ---
 
 # Game Architecture Design — Arquitetura, Review e Balanceamento de Jogo

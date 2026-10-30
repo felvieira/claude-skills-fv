@@ -1,11 +1,7 @@
 # Repo Audit
-- Status: atualizado pós-auditoria geral
-- Ultima revisao: 2026-07-10 (v2.40.0)
-- Stack real: kit de skills em markdown para Claude/OpenCode — `GLOBAL.md`, `policies/` (57), `templates/`, `skills/` (53 skills, numeradas 01-53 com gap no 16), `agents/` (16 subagents), `commands/` (43 slash commands), `hooks/` (28 scripts .mjs registrados em hooks.json), `programs/` (7 pipelines YAML), `evals/`, `bench/`
-- Convencoes detectadas: governanca global persistida, skills numeradas por papel, guides sob demanda, templates curtos, evals versionados (48/48 PASS), auditoria reutilizavel do proprio repo, CHANGELOG em Keep a Changelog (`## [X.Y.Z] - data — slug`)
-- Assets e contexto visual: ha `Image Generator`, `Asset Librarian` e `docs/repo-audit/assets.md`; o sistema espera reutilizacao de contexto visual antes de gerar novos assets
-- Testes e qualidade: evals documentais em `evals/` (triggers + skills, cobertura ate skill 53) e quality gates via policies; nao ha suite automatizada de app, pois o repo e um kit de instrucoes e artefatos
-- Deploy e observabilidade: skills dedicadas de deploy (07), observabilidade (20) e canary (43/46); orientacoes operacionais vivem em skills, guides e templates
-- Knowledge graph: `graphify-out/` (local-only, gitignored) com `.graphifyignore` excluindo `bench/`, `templates/stack-default/` e `*.min.js` — 185 nos / 230 edges focados na logica do kit
-- Higiene: `bench/ab/out/` e gitignored (so scripts do bench sao versionados); vault de memoria protegido por `.gitignore` + pre-commit hook (v2.34.1)
-- Riscos/Gaps: README carrega tabela historica longa de versoes (943 linhas, candidata a enxugar); README.pt-BR.md tende a defasar do README.md (sincronizar a cada release); contagens em plugin.json devem ser revisadas a cada skill/command novo
+
+- Revisão estática: 2026-10-30. O kit reúne 89 skills, 16 papéis de subagent, 48 commands e 65 policies; a skill 16 permanece reservada.
+- Estrutura: `GLOBAL.md`, `policies/`, `skills/`, `agents/`, `commands/`, `hooks/`, `scripts/`, `templates/`, `evals/` e guias sob demanda. O MCP fica em `mcp-server/`.
+- Integração: Claude e Codex têm plugin; Grok possui perfil de memória adaptado; OMP pode descobrir skills pelo diretório nativo. O carregamento efetivo e os hooks dependem do host e da configuração. Consultar `docs/skill-guides/agent-compatibility.md`.
+- Evidência: consistência, roteamento e fixtures de gatilhos são verificáveis por scripts locais. Testes simulados não comprovam inferência real ou disponibilidade de ferramentas em todos os hosts.
+- Riscos: descrições extensas têm custo de contexto variável por host; mudanças de CLI e configuração devem ser verificadas na instalação real. Não transformar ausência de eventos de telemetria em prova de ausência de uso.

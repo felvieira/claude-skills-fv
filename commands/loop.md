@@ -1,10 +1,10 @@
 ---
-description: Loop autônomo v2 — multi-agente (claude/codex), worktree paralelo, polishing pass, quick wins do gnhf
+description: Loop autônomo v2 — Claude, Codex, Grok e OMP, worktree paralelo e polishing pass
 ---
 
 # /loop — Autonomous Loop v2
 
-Invoca `scripts/auto-loop.mjs` para executar uma task de forma completamente autônoma. Versão 2 adiciona suporte multi-agente (claude + codex), worktree integrado com modo paralelo, passe de qualidade configurável (polishing pass), e quick wins inspirados no [gnhf](https://github.com/kunchenguid/gnhf).
+Invoca `scripts/auto-loop.mjs` para executar uma task de forma autônoma. Suporta Claude, Codex, Grok e OMP, worktree integrado com modo paralelo e passe de qualidade configurável. Os adaptadores têm testes simulados e o OMP respondeu a um teste real mínimo; valide autenticação, permissões e comportamento na sua instalação antes de usá-los em trabalho real.
 
 **Diferença em relação ao `/auto`:**
 - `/auto` — prompt-based: Claude lê o protocolo e executa no contexto atual
@@ -30,10 +30,10 @@ node scripts/auto-loop.mjs --worktree --parallel 3 \
 
 | Flag | Descrição | Default |
 |------|-----------|---------|
-| `--agent claude\|codex` | Agente a usar | `claude` |
-| `--model <name>` | Modelo (apenas para `claude`) | `$CLAUDE_LOOP_MODEL` se definida, senão `claude-sonnet-4-5` |
+| `--agent claude\|codex\|grok\|omp` | Agente a usar | `claude` |
+| `--model <name>` | Modelo para Claude, Grok ou OMP; Codex usa a configuração do host | Claude: `$CLAUDE_LOOP_MODEL` ou `claude-sonnet-4-5`; Grok/OMP: padrão do host |
 | `--max-iterations <n>` | Cap de iterações | auto (8/12/15) |
-| `--max-tokens <n>` | Aborta quando tokens cumulativos passam de `n` | unlimited |
+| `--max-tokens <n>` | Aborta quando tokens cumulativos passam de `n`; indisponível em Grok e OMP | unlimited |
 | `--stop-when "<cond>"` | Encerra loop quando agente reporta condição satisfeita | — |
 | `--contract <path.json>` | Contrato formal (`schemas/task-contract.schema.json`) — `done_when` dirige conclusão, `escalate_when` para o loop e sinaliza pro usuário em vez do agente decidir sozinho | — |
 | `--polish none\|light\|standard\|full` | Passe de qualidade após validation | `standard` |
@@ -89,6 +89,10 @@ node scripts/auto-loop.mjs "implementar JWT auth" --polish=full
 
 # Codex em vez de Claude
 node scripts/auto-loop.mjs "refatorar módulo X" --agent codex
+
+# Grok ou OMP usando o modelo configurado no host
+node scripts/auto-loop.mjs "refatorar módulo X" --agent grok --no-commit
+node scripts/auto-loop.mjs "refatorar módulo X" --agent omp --no-commit
 
 # Cap de tokens (aborta gracefully se exceder)
 node scripts/auto-loop.mjs "task longa" --max-tokens 5000000

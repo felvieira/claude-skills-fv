@@ -6,11 +6,10 @@
 
 | Pergunta | Resposta |
 |---|---|
-| Quero carregar um playbook/contexto na sessão atual? | Use `Skill` tool. |
-| Quero delegar trabalho num turno isolado (subagent)? | Use `Agent` tool. |
-| Vi `dev-team-kit-fv:NN-name` (com número)? | **Skill.** `Skill(skill: "dev-team-kit-fv:NN-name")` |
-| Vi `dev-team-kit-fv:name` (sem número, kebab-case)? | **Agent.** `Agent(subagent_type: "dev-team-kit-fv:name")` |
-| Quero paralelizar 5 slices de frontend? | `general-purpose` × 5 com `isolation: "worktree"`, cada um invoca a skill internamente. **Nunca** passe skill como `subagent_type`. |
+| Quero carregar um playbook/contexto na sessão atual? | Use o mecanismo de skill do host; se faltar, leia o `SKILL.md`. |
+| Quero delegar trabalho num turno isolado? | Use a ferramenta de subagent anunciada pelo host, quando autorizada. |
+| Vi `dev-team-kit-fv:name`? | Consulte o catálogo: um nome sem número pode ser uma skill ou um agente. |
+| Quero paralelizar slices? | Use isolamento e subagentes apenas quando suportados e autorizados; nunca passe uma skill como tipo de subagent. |
 
 ---
 
@@ -21,9 +20,8 @@
 **Agent = quem executa.** Um turno isolado com contexto novo, tools próprias, prompt self-contained. Não vê sua conversa.
 
 Eles **não são intercambiáveis**:
-- Pedir "skill 11-reviewer" via `Agent` quebra com `InputValidationError` (skill não é subagent_type válido).
-- Pedir "general-purpose" via `Skill` quebra (general-purpose não é skill).
-- Pedir "skill no prompt" pra um `general-purpose` **não invoca a skill** — só sinaliza intenção. O subagent precisa rodar `Skill` tool internamente.
+- Uma skill não é um tipo de subagent; uma tarefa delegada deve carregar o playbook pelo mecanismo disponível no host ou ler o arquivo.
+- Não presumir que pedir uma skill no prompt garante que ela foi carregada; conferir a evidência do host.
 
 ---
 
@@ -31,10 +29,10 @@ Eles **não são intercambiáveis**:
 
 ### Skills numeradas (`skills/NN-name/SKILL.md`)
 
-89 skills hoje. Sempre prefixo numérico `01-` a `90-` (+ futuras; o ID 16 foi descontinuado e nunca reaproveitado).
+89 skills hoje. As pastas têm prefixo `01-` a `90-` (16 reservado); o nome exposto pode vir do frontmatter sem prefixo. Consulte o catálogo do host.
 
 ```typescript
-// CORRETO
+// Exemplo de Claude quando esses nomes estiverem disponíveis no catálogo
 Skill({ skill: "dev-team-kit-fv:04-frontend-integration" })
 Skill({ skill: "dev-team-kit-fv:09-orchestrator" })
 Skill({ skill: "dev-team-kit-fv:37-tdd-engineer" })
@@ -45,7 +43,7 @@ Agent({ subagent_type: "dev-team-kit-fv:04-frontend-integration", ... })
 
 ### Subagents (`agents/name.md`)
 
-16 subagents hoje. Sempre nome semântico kebab-case (sem número).
+16 papéis no kit. Os nomes abaixo são específicos do registro Claude e não garantem disponibilidade em outros hosts.
 
 ```typescript
 // CORRETO
@@ -80,7 +78,7 @@ dev-team-kit-fv:test-engineer
 dev-team-kit-fv:variant-analysis
 ```
 
-Qualquer outro nome com prefixo `dev-team-kit-fv:` → é **skill**, não subagent.
+Para outros hosts, use os tipos e permissões que eles anunciam; nomes sem número também podem identificar skills.
 
 ---
 
@@ -102,6 +100,8 @@ Alguns conceitos têm **ambos** — skill (playbook) E agent (executor). Use cad
 ---
 
 ## Anti-Padrões (Registrados)
+
+Os exemplos de `Skill` e `Agent` abaixo descrevem a interface Claude quando os nomes e ferramentas estiverem registrados. Em outros hosts, carregue a skill pelo catálogo disponível ou leia seu `SKILL.md`; use delegação somente quando o host e as instruções da sessão a permitirem.
 
 ### Anti-padrão 1 — "Passar skill numerada como subagent_type"
 
@@ -199,7 +199,7 @@ Use quando: feature completa, quer Ralph loop com circuit breaker e telemetria.
 node scripts/auto-loop.mjs --worktree --parallel 5 "implementar feature X em 5 slices"
 ```
 
-Cada worker é um processo Claude independente com `cwd` próprio (worktree isolado).
+Cada worker é um processo do agente escolhido com `cwd` próprio (worktree isolado); o padrão é Claude.
 
 ### Caminho C — `/swarm` (autonomia total)
 

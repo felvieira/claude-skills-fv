@@ -1,17 +1,8 @@
 ---
 name: business-discovery
 description: |
-  Skill de entrevista guiada com dono de negócio não-técnico para mapear as ferramentas que ele já
-  usa (planilha, Shopify, WhatsApp, e-mail) e gerar um mapa visual de dados (HTML self-contained com
-  Sankey interativo), uma lista de oportunidades priorizadas, e um plano de 30 dias do que automatizar
-  primeiro. Cobre 9 arquétipos de negócio (e-commerce, SaaS, serviços profissionais, clínica, consultoria
-  financeira, criador de conteúdo, restaurante multi-unidade, corretora imobiliária, prestador de serviço
-  local). Nunca usa jargão técnico com o operador — traduz tudo inline. Audita `.claude/` existente antes
-  de perguntar, pra não re-perguntar o que já foi construído.
-  Trigger em: "mapear minhas ferramentas", "o que eu deveria automatizar primeiro",
-  "meu negócio usa planilha e whatsapp", "entrevista com o dono", "mapa de dados do meu negócio",
-  "por onde eu começo a automatizar", "auditoria de ferramentas", "dono de negócio sem programador",
-  "arquétipo de negócio", "pantry prep plate", "plano de 30 dias pra automatizar".
+  Conduz discovery de negocio e converte respostas em requisitos.
+  Trigger em: "mapear minhas ferramentas", "o que eu deveria automatizar primeiro", "meu negócio usa planilha e whatsapp", "entrevista com o dono", "mapa de dados do meu negócio", "por onde eu começo a automatizar", "auditoria de ferramentas", "dono de negócio sem programador", "arquétipo de negócio", "pantry prep plate", "plano de 30 dias pra automatizar".
 allowed-tools: Read, Grep, Glob, Write, Bash(python *), Bash(python3 *)
 metadata:
   argument-hint: "[arquétipo | --audit | --resume]"

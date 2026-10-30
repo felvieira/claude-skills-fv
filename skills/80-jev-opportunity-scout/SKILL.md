@@ -1,17 +1,8 @@
 ---
 name: jev-opportunity-scout
 description: |
-  Analisa o projeto atual em busca de decisões semânticas implementadas de forma frágil — cadeia de
-  if/else com string matching, regex de classificação, palavra-chave hardcoded, ou chamada de LLM
-  genérica fazendo prompt-and-parse pra extrair categoria/score/booleano — e aponta onde substituir por
-  um judgment tipado do Jev (TypeSafe System One) resolveria com mais precisão e menos código de cola.
-  Nunca instala nem chama a API sozinha: entrega uma lista de candidatos com localização exata, o tipo
-  de primitivo que encaixa (Choice/Noul/Score), e por que o padrão atual é frágil ali. A decisão de
-  integrar fica com o usuário.
-  Trigger em: "onde eu poderia usar o jev", "faz sentido usar typesafe aqui", "classificação está
-  frágil", "if/else de categoria", "onde usar judgment tipado", "oportunidade de ia semântica",
-  "roteamento por regex está ruim", "analisa esse código pra ver onde IA ajudaria",
-  "jev opportunity", "system one typesafe".
+  Busca oportunidades de produto e crescimento a partir do projeto.
+  Trigger em: "onde eu poderia usar o jev", "faz sentido usar typesafe aqui", "classificação está frágil", "if/else de categoria", "onde usar judgment tipado", "oportunidade de ia semântica", "roteamento por regex está ruim", "analisa esse código pra ver onde IA ajudaria", "jev opportunity", "system one typesafe".
 allowed-tools: Read, Grep, Glob
 metadata:
   argument-hint: "[caminho-a-escanear]"

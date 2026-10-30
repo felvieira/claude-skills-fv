@@ -5,6 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.106.0] - 2026-10-30 — Compatibilidade e descoberta de skills
+
+### Adicionado
+- Adaptadores experimentais do auto-loop para Grok e OMP e guia de compatibilidade por host.
+
+### Alterado
+- Revisa e reduz as descrições preservando os gatilhos existentes; impede compactações automáticas com perda de gatilhos ou propósito truncado.
+- Corrige correspondências de palavras isoladas e tratamento de apóstrofos nos testes de descoberta.
+- Esclarece os limites de telemetria e de contagem de tokens por host.
+
 ## [2.105.0] - 2026-10-29 — RAG Engineering e UI Facelift
 
 ### Adicionado

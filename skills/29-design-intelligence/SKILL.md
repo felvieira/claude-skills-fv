@@ -1,12 +1,8 @@
 ---
 name: design-intelligence
 description: |
-  Skill de Inteligencia de Design Competitivo e Geracao de UI. Use quando precisar pesquisar concorrentes,
-  analisar tendencias visuais de um nicho ou gerar moodboards. Para implementar um facelift amplo, use
-  `89-ui-facelift`, que consulta esta skill quando benchmarking for solicitado ou necessário.
-  Trigger em: "pesquisar concorrentes", "benchmark visual", "tendencias de design", "moodboard",
-  "design competitivo", "analise visual dos concorrentes", "referencia visual de mercado",
-  "referências de mercado", "melhores landings", "referencia UI pra dashboard".
+  Pesquisa referencias, identidade visual e direcao de design.
+  Trigger em: "pesquisar concorrentes", "benchmark visual", "tendencias de design", "moodboard", "design competitivo", "analise visual dos concorrentes", "referencia visual de mercado", "referências de mercado", "melhores landings", "referencia UI pra dashboard".
 allowed-tools: Read, Write, Bash, WebSearch, mcp__plugin_playwright_playwright__*
 metadata:
   argument-hint: "[nicho ou descricao do projeto]"

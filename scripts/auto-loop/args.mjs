@@ -71,6 +71,7 @@ export function parseArgs(argv) {
   };
 
   const positional = [];
+  let modelExplicit = false;
   for (let i = 0; i < argv.length; i++) {
     let a = argv[i];
 
@@ -108,12 +109,12 @@ export function parseArgs(argv) {
           opts.polish = val;
           break;
         case '--agent':
-          if (!['claude', 'codex'].includes(val)) {
-            throw new Error(`Invalid --agent value: ${val}. Use claude|codex`);
+          if (!['claude', 'codex', 'grok', 'omp'].includes(val)) {
+            throw new Error(`Invalid --agent value: ${val}. Use claude|codex|grok|omp`);
           }
           opts.agent = val;
           break;
-        case '--model': opts.model = val; break;
+        case '--model': opts.model = val; modelExplicit = true; break;
         case '--parallel': opts.parallel = parseInt(val, 10); break;
       }
       continue;
@@ -138,6 +139,10 @@ export function parseArgs(argv) {
     positional.push(a);
   }
 
+  if ((opts.agent === 'grok' || opts.agent === 'omp') && !modelExplicit) opts.model = null;
+  if ((opts.agent === 'grok' || opts.agent === 'omp') && opts.maxTokens > 0) {
+    throw new Error(`--max-tokens is unavailable for ${opts.agent}: token usage is not measured`);
+  }
   opts.tasks = positional;
 
   if (opts.parallel > 0) {
@@ -186,10 +191,10 @@ Usage:
   auto-loop --worktree --parallel N -- t1 -- t2   Run N tasks in parallel worktrees
 
 Flags:
-  --agent claude|codex          Agent to use (default: claude)
-  --model <name>                Model name (claude only, default: $CLAUDE_LOOP_MODEL or claude-sonnet-4-5)
+  --agent claude|codex|grok|omp Agent to use (default: claude)
+  --model <name>                Explicit model (claude, grok, omp; codex uses its configured default)
   --max-iterations <n>          Cap iterations (default: auto by complexity)
-  --max-tokens <n>              Abort when cumulative tokens exceed n
+  --max-tokens <n>              Abort on cumulative tokens (unavailable for grok/omp)
   --stop-when "<condition>"     End loop when agent reports condition met
   --contract <path>             Formal task contract (JSON, schemas/task-contract.schema.json).
                                   done_when drives completion, escalate_when stops and

@@ -1,11 +1,8 @@
 ---
 name: deploy-docker
 description: |
-  Skill do DevOps/Deployer para dockerização, CI/CD, e deploy de aplicações. Use quando precisar criar
-  Dockerfile, docker-compose, configurar pipeline CI/CD, deploy em cloud, configurar nginx, SSL,
-  ou qualquer operação de infraestrutura. Trigger em: "deploy", "Docker", "Dockerfile", "docker-compose",
-  "CI/CD", "pipeline CI/CD", "GitHub Actions", "nginx", "SSL", "produção", "staging", "Kubernetes", "AWS",
-  "infraestrutura", "ambiente", "build", "release".
+  Prepara imagens, infraestrutura e deploy de aplicacoes.
+  Trigger em: "deploy", "Docker", "Dockerfile", "docker-compose", "CI/CD", "pipeline CI/CD", "GitHub Actions", "nginx", "SSL", "produção", "staging", "Kubernetes", "AWS", "infraestrutura", "ambiente", "build", "release".
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash(docker *), Bash(docker-compose *), Bash(git *), Bash(npm run *), Bash(gh *)
 ---
 

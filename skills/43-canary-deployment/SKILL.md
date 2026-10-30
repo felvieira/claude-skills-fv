@@ -1,11 +1,8 @@
 ---
 name: canary-deployment
 description: |
-  Skill para rollout gradual de release com observacao continua de metricas e rollback automatico.
-  Cobre estrategias canary (traffic-based, feature flag, blue-green), thresholds de seguranca e gatilhos
-  de abort. Use quando precisar promover uma release ja aprovada em producao reduzindo blast radius.
-  Trigger em: "canary", "canary deployment", "rollout gradual", "blue-green", "feature flag rollout",
-  "progressive deployment", "gradual release", "rollback automatico", "deploy seguro".
+  Planeja rollout gradual, observacao e rollback de releases.
+  Trigger em: "canary", "canary deployment", "rollout gradual", "blue-green", "feature flag rollout", "progressive deployment", "gradual release", "rollback automatico", "deploy seguro".
 ---
 
 # Canary Deployment

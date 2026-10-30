@@ -1,14 +1,8 @@
 ---
 name: marketing-reporting-analytics
 description: |
-  Skill de Marketing Analytics Ops para relatorios de campanha, setup tecnico de GA4/GTM, auditoria de
-  infraestrutura de dados de marketing e calculadoras financeiras (CAC payback, ROI/ROAS). Use quando
-  precisar montar relatorio de performance de Ads, configurar GA4 do zero, auditar tracking de marketing
-  ou calcular retorno de investimento em aquisicao.
-  Trigger em: "relatorio de ads", "relatorio de campanha", "relatorio de performance", "relatorio mensal", "performance report", "Google Ads report",
-  "Google Ads", "GA4", "setup GA4", "GTM", "Google Tag Manager", "Universal Analytics", "auditoria de dados de marketing",
-  "auditar dados de marketing", "data audit", "pixel do Meta", "Meta Ads", "CAC payback", "payback period", "ROI de marketing",
-  "ROI de", "ROAS", "calculadora de ROI", "cost per acquisition", "customer acquisition cost".
+  Analisa e reporta desempenho, infraestrutura e metricas de marketing.
+  Trigger em: "relatorio de ads", "relatorio de campanha", "relatorio de performance", "relatorio mensal", "performance report", "Google Ads report", "Google Ads", "GA4", "setup GA4", "GTM", "Google Tag Manager", "Universal Analytics", "auditoria de dados de marketing", "auditar dados de marketing", "data audit", "pixel do Meta", "Meta Ads", "CAC payback", "payback period", "ROI de marketing", "ROI de", "ROAS", "calculadora de ROI", "cost per acquisition", "customer acquisition cost".
 ---
 
 # Marketing Reporting & Analytics Ops

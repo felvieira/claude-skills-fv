@@ -1,17 +1,8 @@
 ---
 name: web3d-scene-runtime
 description: |
-  Monta e renderiza cena 3D interativa no browser a partir de uma scene description estruturada —
-  o elo entre asset GLB pronto e pagina real. Cobre o schema de scene description que um LLM emite
-  (camera, luzes, ambiente, slots de asset, materiais, particulas), WebGPURenderer com fallback
-  WebGL2 automatico, camera navegavel (OrbitControls/orbit manual, raycasting), e orcamento de
-  performance web (Draco/KTX2, LOD, dispose, pixelRatio, prefers-reduced-motion, fallback estatico).
-  Nao gera mesh 3D nem anima personagem — consome GLB da skill 68/69.
-  Trigger em: "three.js", "WebGPU", "WebGPURenderer", "WebGL", "cena 3D no browser",
-  "landing page com 3D", "produto 3D interativo no site", "configurador 3D", "visualizador 3D",
-  "carregar GLB na pagina", "GLTFLoader", "camera navegavel", "OrbitControls", "raycasting",
-  "scene description", "montar cena proceduralmente", "3D interativo em vez de video",
-  "react-three-fiber", "R3F", "modelo 3D no site", "girar o produto na tela".
+  Monta e renderiza cenas 3D interativas na web.
+  Trigger em: "three.js", "WebGPU", "WebGPURenderer", "WebGL", "cena 3D no browser", "landing page com 3D", "produto 3D interativo no site", "configurador 3D", "visualizador 3D", "carregar GLB na pagina", "GLTFLoader", "camera navegavel", "OrbitControls", "raycasting", "scene description", "montar cena proceduralmente", "3D interativo em vez de video", "react-three-fiber", "R3F", "modelo 3D no site", "girar o produto na tela".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "<scene description | prompt de cena> [--renderer webgpu|webgl] [--stack vanilla|r3f]"

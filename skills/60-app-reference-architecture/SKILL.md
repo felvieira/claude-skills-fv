@@ -1,16 +1,8 @@
 ---
 name: app-reference-architecture
 description: |
-  Molde arquitetural completo para apps novos que precisam de login, pagamento, push, landing
-  page, web app e APK Android a partir do mesmo codigo-fonte (Next.js + Tauri v2), deploy via
-  Docker/Coolify e build/publicacao de APK via GitHub Actions. Extraido por engenharia reversa de
-  3 apps reais em producao do autor (gastos-app, memrapp, VisaLab) para que todo app novo nasca na
-  mesma estrutura testada, sem reinventar auth dual, build estatico Tauri, multi-pagamento
-  (Stripe + Google Play IAP + Pix) ou push multi-canal a cada projeto.
-  Trigger em: "novo app", "app do zero", "greenfield mobile", "Next.js + Tauri", "APK do zero",
-  "arquitetura de referencia", "auth dual web e app", "gerar APK a partir do Next.js",
-  "template de SaaS", "monetizar app mobile", "Google Play IAP", "assinatura Stripe e Play Store",
-  "mesma estrutura dos outros apps", "boilerplate de app", "starter kit mobile+web".
+  Define arquitetura de referencia para aplicacoes completas.
+  Trigger em: "novo app", "app do zero", "greenfield mobile", "Next.js + Tauri", "APK do zero", "arquitetura de referencia", "auth dual web e app", "gerar APK a partir do Next.js", "template de SaaS", "monetizar app mobile", "Google Play IAP", "assinatura Stripe e Play Store", "mesma estrutura dos outros apps", "boilerplate de app", "starter kit mobile+web".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--fase=setup|auth|pagamento|push|tauri|docker|cicd] [--app-tipo=saas-simples|conteudo|ia-pesada]"

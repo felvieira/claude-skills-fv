@@ -1,7 +1,7 @@
 ---
 name: anatomy
 description: |
-  Cria figuras isométricas ricas, interativas e detalhadas (SVG, WebGL, 3D) que explicam conceitos técnicos como máquinas e mecanismos físicos reais.
+  Cria figuras isometricas para explicar anatomia de sistemas.
   Trigger em: "desenhar diagrama isométrico", "figura isométrica", "isometric svg", "desenho técnico Linear-style", "isometric explainer", "diagrama de arquitetura em máquina", "ilustração isométrica", "interativo em svg", "shader webgl no svg", "anatomy diagram".
 argument-hint: "<ideia técnica ou conceito a explicar> [standalone-html|react] [--light|--dark]"
 allowed-tools: Read, Grep, Glob, Bash(node *), Edit, Write

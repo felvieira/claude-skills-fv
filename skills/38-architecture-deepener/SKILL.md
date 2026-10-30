@@ -1,14 +1,8 @@
 ---
 name: architecture-deepener
 description: |
-  Encontra oportunidades de "deepening" no codebase — refactors que transformam modulos
-  shallow (interface complexa, implementacao simples) em deep (interface simples,
-  implementacao rica). Foco em testabilidade e AI-navigability. Use quando usuario
-  quiser melhorar arquitetura, encontrar oportunidades de refactor, consolidar modulos
-  acoplados, ou preparar codebase para trabalho de agente.
-  Trigger em: "deepening", "deep module", "shallow module", "refactor architecture",
-  "improve architecture", "consolidate modules", "agent-friendly codebase",
-  "AI-navigable", "module depth".
+  Identifica melhorias estruturais e fronteiras arquiteturais.
+  Trigger em: "deepening", "deep module", "shallow module", "refactor architecture", "improve architecture", "consolidate modules", "agent-friendly codebase", "AI-navigable", "module depth".
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   argument-hint: "[--scope=src/foo] [--max-candidates=N]"

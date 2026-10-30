@@ -1,17 +1,8 @@
 ---
 name: research-prep
 description: |
-  Coleta e organiza informacao tecnica multi-fonte antes de escrever docs, PRDs, ADRs ou artigos.
-  Busca em: docs oficiais, GitHub (repos + issues), Stack Overflow, papers e blogs de referencia.
-  Ranqueia fontes por autoridade (oficial 40% + recencia 30% + profundidade 20% + comunidade 10%).
-  Output: memory/research/<slug>.md pronto para alimentar as skills documenter, po-feature-spec,
-  prompt-engineer ou blog-publisher.
-  Trigger em: "pesquisa tecnica", "levanta informacao", "coleta docs", "busca referencias",
-  "preciso de fontes", "research antes de escrever", "levanta o que existe sobre",
-  "benchmark de solucoes", "o que existe sobre X", "quero entender o estado da arte",
-  "compara abordagens", "levanta referencias", "faz um research de", "coleta fontes sobre",
-  "pesquisa sobre", "quero saber o que existe de", "monta um dossie tecnico",
-  "background tecnico", "due diligence tecnica", "levantamento de alternativas".
+  Pesquisa fontes tecnicas, evidencia e alternativas antes de implementar.
+  Trigger em: "pesquisa tecnica", "levanta informacao", "coleta docs", "busca referencias", "preciso de fontes", "research antes de escrever", "levanta o que existe sobre", "benchmark de solucoes", "o que existe sobre X", "quero entender o estado da arte", "compara abordagens", "levanta referencias", "faz um research de", "coleta fontes sobre", "pesquisa sobre", "quero saber o que existe de", "monta um dossie tecnico", "background tecnico", "due diligence tecnica", "levantamento de alternativas".
 allowed-tools: WebSearch, WebFetch, Bash, Read, Write, Grep, Glob
 metadata:
   argument-hint: "<topico> [--depth quick|deep] [--output <slug>]"

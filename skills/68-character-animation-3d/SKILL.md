@@ -1,17 +1,8 @@
 ---
 name: character-animation-3d
 description: |
-  Skill de pipeline de conteudo/asset para animacao de personagem 3D humanoide via AccuRIG + Blender
-  headless + IA de motion. Cobre rigging com AccuRIG, Blender como "compilador de animacao" via CLI,
-  deform bones vs pose bones, formatos (FBX/USD/glTF/BVH/Alembic/NPY-JSON), mapa de tecnologias de IA
-  de motion, AccuRIG AI Deep Search vs sintese real (SayMotion/MDM/MoMask), canonical/semantic
-  skeleton com bone aliasing, matematica de retargeting via delta de rotacao, root motion, e bake de
-  constraints/IK. Nao cobre codigo de engine — ver skill 67.
-  Trigger em: "AccuRIG", "rig de personagem 3D", "retargeting de animacao",
-  "script bpy que roda headless com blender --background --python", "deform bones vs pose bones",
-  "root motion que ta duplicando o deslocamento", "armature.data.bones e armature.pose.bones",
-  "semantic bone mapping pra desacoplar do nome CC_Base_L_Upperarm", "text-to-motion",
-  "MDM ou MoMask pra gerar animacao", "bake de constraints e IK antes de exportar FBX pro Unity".
+  Produz personagens e animacoes 3D para uso em runtime.
+  Trigger em: "AccuRIG", "rig de personagem 3D", "retargeting de animacao", "script bpy que roda headless com blender --background --python", "deform bones vs pose bones", "root motion que ta duplicando o deslocamento", "armature.data.bones e armature.pose.bones", "semantic bone mapping pra desacoplar do nome CC_Base_L_Upperarm", "text-to-motion", "MDM ou MoMask pra gerar animacao", "bake de constraints e IK antes de exportar FBX pro Unity".
 ---
 
 # Character Animation 3D — AccuRIG, Blender Headless e IA de Motion

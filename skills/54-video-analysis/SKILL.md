@@ -1,13 +1,8 @@
 ---
 name: video-analysis
 description: |
-  Skill para analisar conteudo de video existente: baixar, extrair frames, transcrever audio e responder
-  perguntas sobre o que acontece no video. Use quando precisar entender, resumir ou buscar informacao dentro
-  de um video ja existente — nao para gerar video novo (isso e skill 27).
-  Trigger em: "transcrever video", "transcrever esse video", "baixar video do youtube", "extrair frames do video",
-  "extrair frames desse video", "legenda automatica", "resumir video", "resumir esse video", "analisar video",
-  "analisar o conteudo desse video", "o que acontece nesse video", "whisper", "yt-dlp", "transcription video",
-  "extract frames from this video".
+  Analisa videos, transcricoes e quadros para responder sobre seu conteudo.
+  Trigger em: "transcrever video", "transcrever esse video", "baixar video do youtube", "extrair frames do video", "extrair frames desse video", "legenda automatica", "resumir video", "resumir esse video", "analisar video", "analisar o conteudo desse video", "o que acontece nesse video", "whisper", "yt-dlp", "transcription video", "extract frames from this video".
 allowed-tools: Read, Write, Bash(node *), Bash(python *), Bash(ffmpeg *), Bash(yt-dlp *)
 metadata:
   argument-hint: "[url ou caminho do video] [pergunta opcional]"

@@ -1,19 +1,8 @@
 ---
 name: seo-specialist
 description: |
-  Especialista SEO agnóstico: auditoria técnica e on-page, metadados, indexação, sitemap,
-  dados estruturados, Core Web Vitals (LCP, INP, CLS), pesquisa de palavras-chave,
-  links, SEO local, produtos, hreflang e GEO/AEO. No Claude Code, pode encaminhar
-  auditorias amplas ao plugin oficial claude-seo quando instalado sob demanda.
-  Trigger em: "SEO", "auditoria SEO", "meta tags", "Open Graph metadata", "sitemap",
-  "schema markup", "Core Web Vitals", "performance", "LCP", "INP", "CLS", "ranking",
-  "canonical", "robots.txt", "GEO", "AEO", "Answer Engine", "LLM citation",
-  "AI Overview", "llms.txt", "keyword research", "pesquisa de palavra-chave",
-  "palavra-chave", "keyword", "cauda longa", "long tail", "search intent",
-  "volume de busca", "KEI", "link building", "backlink", "off-page",
-  "guest posting", "autoridade de domínio", "anchor text", "nofollow",
-  "SEO local", "Google Business Profile", "Merchant Center", "hreflang",
-  "SEO ecommerce", "SEO drift", "SEO agentic", "Google-Extended", "FAQPage".
+  Audita e melhora SEO tecnico, conteudo e descoberta em busca e IA.
+  Trigger em: "SEO", "auditoria SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals", "performance", "LCP", "INP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine", "LLM citation", "AI Overview", "llms.txt", "keyword research", "pesquisa de palavra-chave", "palavra-chave", "keyword", "cauda longa", "long tail", "search intent", "volume de busca", "KEI", "link building", "backlink", "off-page", "guest posting", "autoridade de domínio", "anchor text", "nofollow", "SEO local", "Google Business Profile", "Merchant Center", "hreflang", "SEO ecommerce", "SEO drift", "SEO agentic", "Google-Extended", "FAQPage".
 ---
 
 # SEO Specialist - Otimização para Motores de Busca

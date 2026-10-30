@@ -1,11 +1,8 @@
 ---
 name: reviewer
 description: |
-  Skill do Reviewer Final para validação completa antes do deploy. Use quando precisar validar que todos
-  os passos do pipeline foram executados, checar qualidade de código, confirmar segurança, confirmar QA,
-  confirmar documentação, ou gerar relatório de aprovação/rejeição. Trigger em: "review final", "reviewer",
-  "aprovação", "rejeição", "validação final", "gate de deploy", "checklist final", "aprovar deploy",
-  "pode deployar", "pronto pra produção", "validar entrega", "review completo", "última verificação".
+  Revisa a entrega e valida criterios antes de liberar.
+  Trigger em: "review final", "reviewer", "aprovação", "rejeição", "validação final", "gate de deploy", "checklist final", "aprovar deploy", "pode deployar", "pronto pra produção", "validar entrega", "review completo", "última verificação".
 ---
 
 # Reviewer Final - Gate de Deploy (SKILL)

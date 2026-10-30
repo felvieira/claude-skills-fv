@@ -1,11 +1,8 @@
 ---
 name: backend-api
 description: |
-  Skill do Backend Developer para definição de APIs, banco de dados, e lógica de servidor. Use quando 
-  precisar definir schemas de banco, endpoints REST/GraphQL, validação server-side, autenticação, 
-  migrations, ou qualquer lógica de backend. Trigger em: "API", "endpoint", "banco de dados", "schema",
-  "migration", "backend", "servidor", "autenticação", "JWT", "middleware", "ORM", "Prisma", "PostgreSQL",
-  "Node.js", "Express", "NestJS", "validação server-side".
+  Projeta e implementa APIs, dados, autenticacao e logica de backend.
+  Trigger em: "API", "endpoint", "banco de dados", "schema", "migration", "backend", "servidor", "autenticação", "JWT", "middleware", "ORM", "Prisma", "PostgreSQL", "Node.js", "Express", "NestJS", "validação server-side".
 ---
 
 # Backend Developer - API e Banco de Dados

@@ -1,15 +1,8 @@
 ---
 name: frontend-slides
 description: |
-  Skill de geração de apresentações (decks) em HTML single-file, com palco fixo 1920×1080 que
-  escala uniformemente (letterbox, nunca reflow). Antes de escrever o deck inteiro, gera 3 previews
-  reais de uma única slide (preset seguro, template ousado, curinga) para o usuário escolher por
-  imagem, não por descrição em prosa. Cobre 12 presets nomeados, exporta para PDF via Playwright e
-  deploy no Vercel.
-  Trigger em: "criar uma apresentação", "gera os slides", "deck de apresentação", "slides em HTML",
-  "apresentação para pitch", "slide deck", "converte esse PPTX", "apresentação estilo Keynote",
-  "deck single-file", "slides fixos 16:9", "apresentação sem usar PowerPoint",
-  "exportar essa apresentação em PDF".
+  Cria apresentacoes web com slides navegaveis.
+  Trigger em: "criar uma apresentação", "gera os slides", "deck de apresentação", "slides em HTML", "apresentação para pitch", "slide deck", "converte esse PPTX", "apresentação estilo Keynote", "deck single-file", "slides fixos 16:9", "apresentação sem usar PowerPoint", "exportar essa apresentação em PDF".
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash(python *), Bash(bash *), Bash(npx playwright *)
 metadata:
   argument-hint: "<tema-da-apresentação> [--from-pptx <arquivo>]"

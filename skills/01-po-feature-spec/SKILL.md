@@ -1,13 +1,8 @@
 ---
 name: po-feature-spec
 description: |
-  Skill do Product Owner para especificação de features. Use quando precisar definir requisitos de negócio,
-  escrever user stories, critérios de aceitação, priorização de backlog, ou qualquer documento de especificação
-  de produto. Inclui fundamento de negócio para discovery: validação de hipótese, problema vs. necessidade,
-  MVP, modelo de monetização e métricas pirata (AARRR) como input da spec.
-  Trigger em: "nova feature", "especificação", "user story", "requisito", "backlog", "PO", 
-  "definir escopo", "critério de aceitação", "MVP", "roadmap", "validação de hipótese", "discovery",
-  "monetização", "pricing", "product-market fit", "métricas AARRR".
+  Especifica requisitos, historias, prioridades e criterios de aceite de produto.
+  Trigger em: "nova feature", "especificação", "user story", "requisito", "backlog", "PO", "definir escopo", "critério de aceitação", "MVP", "roadmap", "validação de hipótese", "discovery", "monetização", "pricing", "product-market fit", "métricas AARRR".
 ---
 
 # Product Owner - Especificação de Features

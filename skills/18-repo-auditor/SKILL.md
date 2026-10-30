@@ -1,9 +1,7 @@
 ---
 name: repo-auditor
 description: |
-  Skill de auditoria inicial e continua do repositorio. Use quando precisar mapear stack real, convencoes,
-  assets, testes, docs, riscos e pontos de integracao antes de executar outras skills. O resultado deve ser
-  persistido em markdown reutilizavel para reduzir releitura e economizar tokens.
+  Audita o repositorio e registra sua stack, riscos e convencoes.
   Trigger em: "repo audit", "auditar repositorio", "mapear stack do projeto", "harnessability score", "repo-audit", "auditoria de repo", "fotografia do repo", "current.md", "mapear convencoes do projeto", "inventariar o codebase".
 allowed-tools: Read, Grep, Glob, Bash(git *), Bash(ls *), Bash(wc *), Bash(find *)
 metadata:
@@ -150,7 +148,7 @@ Quando rodado com flag `--recommend-automation` (ou usuario pede explicitamente 
 
 ### Skills do kit recomendadas
 
-Apontar quais das 37 skills se aplicam ao projeto:
+Apontar quais skills do catálogo atual se aplicam ao projeto:
 - Frontend? → skills 02, 04, 22 (a11y), 36 (web-assets)
 - Backend? → skills 03, 06 (security), 20 (observability)
 - Mobile? → skill 15 (mobile-tauri)

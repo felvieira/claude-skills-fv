@@ -1,12 +1,8 @@
 ---
 name: campaign-research-strategy
 description: |
-  Pesquisa mercado, concorrentes, público e voz do consumidor para formar uma base estratégica
-  verificável de campanha antes de copy ou direção visual. Produz um evidence ledger, claims
-  autorizados, oportunidades priorizadas e guardrails. Trigger em: "pesquisa de campanha",
-  "base estratégica do anúncio", "research de concorrentes para campanha", "pesquisa concorrentes
-  para a campanha", "voz do consumidor", "evidence ledger de marketing", "ângulos de campanha com
-  evidência", "angulos de campanha", "estratégia antes da copy".
+  Pesquisa mercado e define estrategia e publico de campanha.
+  Trigger em: "pesquisa de campanha", "base estratégica do anúncio", "research de concorrentes para campanha", "pesquisa concorrentes para a campanha", "voz do consumidor", "evidence ledger de marketing", "ângulos de campanha com evidência", "angulos de campanha", "estratégia antes da copy".
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch
 metadata:
   argument-hint: "<produto/oferta> [--market <mercado>] [--depth none|targeted|deep]"

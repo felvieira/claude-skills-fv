@@ -1,13 +1,8 @@
 ---
 name: zoom-out
 description: |
-  Produz mapa de modulos e callers quando o agente esta perdido numa area de codigo desconhecida.
-  Sobe uma camada de abstracao e da visao de bairro antes de tocar codigo. Use quando estiver
-  unfamiliar com uma area, ao iniciar trabalho em modulo novo, ou quando o usuario pedir
-  "visao geral", "mapa", "estou perdido", "como isso encaixa".
-  Trigger em: "zoom out", "mapa de modulos", "mapa dos modulos", "estou perdido", "perdido nesse codigo",
-  "como isso encaixa", "como se conecta", "callers principais", "visao geral", "big picture",
-  "neighborhood", "broader context", "higher level perspective".
+  Mapeia modulos, chamadas e relacoes para entender o sistema.
+  Trigger em: "zoom out", "mapa de modulos", "mapa dos modulos", "estou perdido", "perdido nesse codigo", "como isso encaixa", "como se conecta", "callers principais", "visao geral", "big picture", "neighborhood", "broader context", "higher level perspective".
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   argument-hint: "[caminho-alvo] [--depth=2]"

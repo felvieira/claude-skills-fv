@@ -1,13 +1,8 @@
 ---
 name: documenter
 description: |
-  Skill de Documentação por nível de decisão. Use quando precisar documentar features, APIs, arquitetura,
-  setup, operação, ou manter documentação existente atualizada. Trigger em: "documentar", "documentação",
-  "docs", "ADR", "architecture decision record", "README", "feature doc", "api doc", "setup doc",
-  "runbook", "troubleshooting", "doc de operação", "registrar decisão", "atualizar docs",
-  "documentar repositório", "repo wiki", "mapa de arquitetura", "C4", "documentação completa do código",
-  "regras de negócio", "RPA", "automação", "segurança do app", "melhorias do repositório",
-  "site da documentação", "HTML offline", "buscar na documentação".
+  Documenta arquitetura, decisoes, uso e operacao do projeto.
+  Trigger em: "documentar", "documentação", "docs", "ADR", "architecture decision record", "README", "feature doc", "api doc", "setup doc", "runbook", "troubleshooting", "doc de operação", "registrar decisão", "atualizar docs", "documentar repositório", "repo wiki", "mapa de arquitetura", "C4", "documentação completa do código", "regras de negócio", "RPA", "automação", "segurança do app", "melhorias do repositório", "site da documentação", "HTML offline", "buscar na documentação".
 ---
 
 # Documenter - Documentação por Nível de Decisão

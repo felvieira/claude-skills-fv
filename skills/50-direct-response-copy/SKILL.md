@@ -1,12 +1,8 @@
 ---
 name: direct-response-copy
 description: |
-  Skill de copy de direct response — headlines com gatilhos mentais, anúncios, e-mails de venda,
-  legendas de Instagram, VSL e páginas de venda de infoproduto. Carrega biblioteca de fórmulas de
-  headline em 20 categorias de gatilho + os 8 gatilhos mentais + estrutura de storytelling de venda.
-  Trigger em: "direct response", "copy de anuncio", "copy de venda", "headline", "gatilho mental",
-  "criativo de ads", "email de venda", "legenda", "instagram", "caption", "copy predadora", "VSL",
-  "pagina de vendas", "lancamento digital", "infoproduto", "lead magnet", "anuncio", "prova social".
+  Cria copy de resposta direta para anuncios e vendas.
+  Trigger em: "direct response", "copy de anuncio", "copy de venda", "headline", "gatilho mental", "criativo de ads", "email de venda", "legenda", "instagram", "caption", "copy predadora", "VSL", "pagina de vendas", "lancamento digital", "infoproduto", "lead magnet", "anuncio", "prova social".
 allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   argument-hint: "[peça: headline|anuncio|email|legenda|pagina-de-vendas] [avatar] [oferta]"

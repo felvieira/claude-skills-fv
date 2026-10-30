@@ -1,15 +1,8 @@
 ---
 name: retention-loops
 description: |
-  Diagnostica e desenha retenção de app ou SaaS: por que o usuário volta (ou não) em D1, D7, D30 e
-  D90. Audita as 5 táticas que aparecem juntas em apps de alta retenção (personalização que muda o
-  canvas, aha rápido, loop de hábito na cadência real do job, comunidade depois do resultado pessoal,
-  switching cost ético) e prescreve um movimento por tática com tela, gatilho, copy e evento. Separa
-  lock-in ético (ativo que o usuário construiu, export livre) de lock-in hostil.
-  Trigger em: "retenção", "retenção baixa", "usuário não volta", "usuário some depois do primeiro
-  dia", "D1", "D7", "D30", "churn de uso", "hábito", "loop de hábito", "streak", "deixar o app
-  grudento", "por que o usuário volta", "switching cost", "lock-in ético", "comunidade no app",
-  "personalização do app", "engajamento recorrente".
+  Diagnostica retencao e projeta loops de uso recorrente.
+  Trigger em: "retenção", "retenção baixa", "usuário não volta", "usuário some depois do primeiro dia", "D1", "D7", "D30", "churn de uso", "hábito", "loop de hábito", "streak", "deixar o app grudento", "por que o usuário volta", "switching cost", "lock-in ético", "comunidade no app", "personalização do app", "engajamento recorrente".
 allowed-tools: Read, Grep, Glob, Write
 metadata:
   argument-hint: "<produto ou URL> [--cadencia=diaria|semanal|episodica] [--d1=x --d7=y --d30=z]"

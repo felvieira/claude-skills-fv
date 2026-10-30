@@ -1,11 +1,8 @@
 ---
 name: security-review
 description: |
-  Skill do Security Reviewer para auditoria de segurança e boas práticas. Use quando precisar revisar
-  código para vulnerabilidades, validar implementação de auth, checar OWASP Top 10, revisar CORS/CSRF/XSS,
-  garantir DRY e clean code, ou qualquer review de segurança. Trigger em: "segurança", "security review",
-  "vulnerabilidade", "OWASP", "XSS", "CSRF", "CORS", "injection", "HttpOnly", "cookie seguro", "DRY",
-  "code review", "boas práticas", "audit", "pentest", "sanitização".
+  Revisa seguranca de codigo, configuracao e aplicacoes.
+  Trigger em: "segurança", "security review", "vulnerabilidade", "OWASP", "XSS", "CSRF", "CORS", "injection", "HttpOnly", "cookie seguro", "DRY", "code review", "boas práticas", "audit", "pentest", "sanitização".
 allowed-tools: Read, Grep, Glob, Bash(grep *), Bash(git log *), Bash(git diff *), Bash(npm audit *), Bash(npx *), Bash(pip audit *)
 ---
 

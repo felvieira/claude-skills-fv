@@ -18,25 +18,13 @@ Este kit organiza um time virtual de especialistas para desenvolver, revisar e d
 - **Verificar antes de afirmar.** Nunca escreva "X funcionou" sem evidencia observavel (exit code 0, query result, HTTP 200, log line real). Se nao tem prova → escreva "implementado — verificar com [comando]". Afirmar sem evidencia e o padrao que gera logs enganosos e falsa confianca. Hook `claim-verifier` intercepta afirmacoes sem prova — ver `policies/claim-verification.md`
 - **Compactar proativamente.** Nao esperar auto-compact em 95% (modelo ja degradado). Rodar `/compact` ao mudar de assunto ou aos 60% de contexto. Hook `context-turn-counter` avisa a cada 25 turnos e sugere handoff a cada 50. Para handoff: salvar estado em `D:\claude-memory\logs\` e abrir nova sessao com prompt de retomada — ver `policies/token-efficiency.md`
 - **Investigar antes de perguntar.** Nunca pergunte ao usuario algo auto-descobrivel (user do github, gh logado, branch, package manager, porta, versao de runtime, stack). Rode o comando/leitura primeiro (`gh auth status`, `git config`, `Glob` lockfile, MCP `whoami`). So pergunte preferencia/intencao/trade-off que so existe na cabeca do usuario — ver `policies/investigate-first.md`. Hook `investigate-first-guard` intercepta `AskUserQuestion` auto-descobrivel
-- Definir `model` explicito ao spawnar subagents — ver `policies/model-routing.md`
+- Usar o modelo padrão do host para subagentes; alterar somente quando a tarefa, o usuário ou a política aplicável exigir e o host aceitar.
 - Respeitar hierarquia de contexto (Rules > Specs > Source > Errors > Conversation) e trust levels — ver `policies/context-engineering.md`
-- **Skills ≠ Agents.** `Skill` tool carrega playbook no contexto atual; `Agent` tool executa turno isolado com subagent. Nunca passar nome de skill numerada (`NN-name`) como `subagent_type`. Ver `policies/skills-vs-agents.md`
+- **Skills ≠ Agents.** Skill é playbook no contexto atual; subagent é execução isolada quando o host oferece e autoriza despacho. Use a ferramenta e o nome anunciados pelo host; nunca passe skill como tipo de subagent. Ver `policies/skills-vs-agents.md`.
 
 ## Skills vs Agents (regra crítica)
 
-`Skill` tool ≠ `Agent` tool. Detalhes em `policies/skills-vs-agents.md`.
-
-- **Skills** (`skills/NN-*/`): carregam contexto via `Skill(skill: "dev-team-kit-fv:NN-name")`.
-  Nomes começam com número (`01-`, `04-`, `09-`...).
-- **Subagents** (`agents/*.md`): executam turno isolado via `Agent(subagent_type: "dev-team-kit-fv:name")`.
-  Nomes são semânticos (kebab-case sem número): `code-reviewer`, `debugger`, etc.
-
-Regra mnemônica:
-- Prefixo `dev-team-kit-fv:` + número → **skill**, use `Skill` tool.
-- Prefixo `dev-team-kit-fv:` sem número → **agent**, use `Agent` tool.
-
-Paralelizar uma skill = dispare N `general-purpose` com `isolation: "worktree"`,
-o prompt instrui invocar `Skill` lá dentro. **NUNCA** passe nome de skill como `subagent_type`.
+Skills vivem em `skills/NN-*/SKILL.md`; o número identifica a pasta do kit, mas o nome anunciado pelo host pode vir do frontmatter e não ter número. Consulte o catálogo da sessão e carregue a skill pelo mecanismo disponível; sem ferramenta própria, leia o arquivo. Os papéis em `agents/*.md` são instruções de subagent, não skills. Despache apenas quando o host suportar e o usuário autorizar, respeitando os nomes anunciados e as regras da sessão. Detalhes e limites por agente: `docs/skill-guides/agent-compatibility.md`.
 
 ## Hierarquia de Instrucoes
 1. `GLOBAL.md`

@@ -2,8 +2,7 @@
 name: campaign-visual-direction
 description: |
   Converte estratégia e copy aprovadas em conceito visual, Bíblia de Continuidade e shot intents
-  estruturados. Separa referências de identidade e linguagem e reserva texto/UI para overlays
-  determinísticos. Trigger em: "direção visual da campanha", "bíblia de continuidade do anúncio",
+  estruturados. Trigger em: "direção visual da campanha", "bíblia de continuidade do anúncio",
   "shot intents", "shot list publicitário", "shot list publicitaria", "handoff visual da copy",
   "conceito visual com continuidade", "planejar cenas do anúncio", "planeja as cenas do anuncio".
 allowed-tools: Read, Grep, Glob

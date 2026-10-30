@@ -1,8 +1,8 @@
 ---
 name: ui-facelift
 description: |
-  Implementa um redesenho amplo de UX/UI em apps, sistemas e landings existentes, preservando funcionalidades e regras de negócio. Para tela nova, auditoria sem edição ou ajuste pontual, use as skills especializadas.
-  Trigger em: "UI Facelift", "redesenhar o sistema inteiro", "modernizar o visual desta landing", "aplicar melhorias de UX e UI", "redesign completo", "melhorar a aparência do sistema", "refazer a interface do site", "melhorar todas as telas", "modernize this app's interface", "improve the entire existing app's UI".
+  Implementa redesign amplo de UX/UI preservando funcoes e regras de negocio.
+  Trigger em: "UI Facelift", "redesenhar o sistema inteiro", "modernizar o visual desta landing", "aplicar melhorias de UX e UI", "redesign completo", "melhorar a aparência do sistema", "melhora a experiência e a aparência do sistema", "refazer a interface do site", "melhorar todas as telas", "modernize this app's interface", "improve the entire existing app's UI".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[repo, URL, rotas ou escopo opcional]"

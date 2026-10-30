@@ -1,16 +1,8 @@
 ---
 name: ffmpeg-media
 description: |
-  Skill de edição e manipulação mecânica de vídeo/áudio via ffmpeg — corte, junção, legenda, normalização
-  de loudness, detecção de silêncio, redação, correção de aspect ratio, mudança de velocidade, extração de
-  metadados. Roda 100% local via scripts Python (stdlib + subprocess), sem API paga e sem upload de arquivo.
-  Preenche o gap que a skill 27 (video-integration-specialist) declara fora de escopo: geração de vídeo por
-  IA não é edição de vídeo existente.
-  Trigger em: "segundos desse video", "cortar esse video", "juntar clipes", "clipes num video so", "queimar essa legenda", "legenda .srt no video",
-  "normaliza esse audio", "-14 LUFS", "loudness", "remove os trechos de silencio", "detecta silencio",
-  "muda esse video de 16:9 pra 9:16", "aspect ratio sem esticar", "borra o rosto", "borrar rosto no video",
-  "sincroniza esse audio", "audio separado com o video", "extrai os metadados desse", "metadados desse arquivo de video",
-  "exporta esse video no formato", "formato certo pro TikTok", "ffmpeg", "editar video local sem re-encodar".
+  Edita, converte e inspeciona audio e video com FFmpeg.
+  Trigger em: "segundos desse video", "cortar esse video", "juntar clipes", "clipes num video so", "queimar essa legenda", "legenda .srt no video", "normaliza esse audio", "-14 LUFS", "loudness", "remove os trechos de silencio", "detecta silencio", "muda esse video de 16:9 pra 9:16", "aspect ratio sem esticar", "borra o rosto", "borrar rosto no video", "sincroniza esse audio", "audio separado com o video", "extrai os metadados desse", "metadados desse arquivo de video", "exporta esse video no formato", "formato certo pro TikTok", "ffmpeg", "editar video local sem re-encodar".
 allowed-tools: Read, Grep, Glob, Bash(ffmpeg *), Bash(ffprobe *), Bash(python *), Bash(python3 *)
 metadata:
   argument-hint: "<operação> <arquivo(s)> [--dry-run] [--json]"

@@ -1,15 +1,8 @@
 ---
 name: doubt-driven-review
 description: |
-  Skill de revisão adversarial em tempo real — submete toda decisão não-trivial a um revisor de contexto
-  fresco, viesado a REFUTAR, antes dela ficar de pé. Diferente do Reviewer final (skill 11, veredito pos-hoc
-  em PR pronta), esta skill entra EM VOO, enquanto corrigir rota ainda é barato. Use antes de decisão
-  arquitetural sob incerteza, antes de commitar código não-trivial, antes de afirmar um fato não-óbvio
-  ("isso é seguro", "isso escala"), ou trabalhando em código que você não entende totalmente. Trigger em:
-  "tem certeza disso", "migration nao vai quebrar", "duvida isso", "decisao de arquitetura antes de eu commitar",
-  "revisa antes de eu commitar", "revisa isso adversarialmente", "isso ta certo mesmo", "questiona essa
-  suposicao", "declarar isso seguro", "refuta essa claim", "decisao", "adversarial review", "doubt driven",
-  "segunda opiniao antes de seguir", "acho que ta certo mas".
+  Revisa afirmacoes e decisoes com duvida sistematica e evidencias.
+  Trigger em: "tem certeza disso", "migration nao vai quebrar", "duvida isso", "decisao de arquitetura antes de eu commitar", "revisa antes de eu commitar", "revisa isso adversarialmente", "isso ta certo mesmo", "questiona essa suposicao", "declarar isso seguro", "refuta essa claim", "decisao", "adversarial review", "doubt driven", "segunda opiniao antes de seguir", "acho que ta certo mas".
 ---
 
 # Doubt-Driven Review - Revisão Adversarial em Tempo Real

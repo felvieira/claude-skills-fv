@@ -1,12 +1,8 @@
 ---
 name: motion-design
 description: |
-  Skill de Motion Design para animações, transições e micro-interações. Use quando precisar definir ou implementar
-  animações de interface, transições entre páginas, efeitos de hover/click/focus, loading states animados, ou
-  qualquer interação visual com movimento. Trigger em: "animacao", "transicao", "motion", "micro-interacao",
-  "framer motion", "spring", "easing", "parallax", "scroll animation", "hover effect",
-  "shared element", "flip", "layout animation", "haptic", "vibracao", "som de interface",
-  "reduced motion", "flash", "piscando", "quando nao animar", "animacao demais".
+  Projeta e implementa animacoes e microinteracoes de interface.
+  Trigger em: "animacao", "transicao", "motion", "micro-interacao", "framer motion", "spring", "easing", "parallax", "scroll animation", "hover effect", "shared element", "flip", "layout animation", "haptic", "vibracao", "som de interface", "reduced motion", "flash", "piscando", "quando nao animar", "animacao demais".
 ---
 
 # Motion Design - Animações, Transições e Micro-Interações

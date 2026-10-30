@@ -1,13 +1,8 @@
 ---
 name: responsive-conversion
 description: |
-  Skill de conversao de interface web para mobile e correcao de layout quebrado. Use quando componente
-  nao ocupa 100% da largura, corta no meio da tela, quebra em telas pequenas, tem scroll horizontal
-  indevido, modal estourando viewport, ou quando precisar definir padroes de confirmacao para acoes
-  destrutivas (excluir, enviar, cadastrar). Trigger em: "responsivo", "mobile", "nao pega 100%",
-  "cortando na tela", "quebrou no celular", "scroll horizontal", "viewport", "safe area", "notch",
-  "bottom sheet", "modal no mobile", "confirmacao de exclusao", "modal de confirmar", "undo",
-  "grid quebrado", "overflow", "converter para mobile", "adaptar layout".
+  Corrige interfaces responsivas e problemas de viewport mobile.
+  Trigger em: "responsivo", "mobile", "nao pega 100%", "cortando na tela", "quebrou no celular", "scroll horizontal", "viewport", "safe area", "notch", "bottom sheet", "modal no mobile", "confirmacao de exclusao", "modal de confirmar", "undo", "grid quebrado", "overflow", "converter para mobile", "adaptar layout".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--audit=path] [--scope=page|component|app] [--target=mobile|tablet|all]"

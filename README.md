@@ -183,6 +183,7 @@ The MCP exposes 38 tools backed by the installed skills.
 | **Claude Code** | ✅ | ✅ | ✅ | ✅ | full support — native plugin |
 | **Codex** | ✅ | ✅ | ✅ | ❌ | hooks via `.codex/hooks.json` (open the session at the repo root) or the Codex plugin; no slash commands — use the CLI scripts |
 | **Grok Build** | ✅ via `AGENTS.md` | ⚠️ opt-in | ✅ | ❌ | ignores the Claude plugin (`[compat.claude] hooks = false`); `install-memory-hooks.mjs --runtime grok` registers memory (+ optional guards) |
+| **OMP (oh-my-pi)** | ⚠️ manual copy | host-dependent | host-dependent | host-dependent | see [agent compatibility](docs/skill-guides/agent-compatibility.md); real runtime validation remains outstanding |
 | **Cursor** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via AGENTS.md, MCP via config |
 | **Windsurf** | ✅ via `.bot/` | ❌ | ✅ | ❌ | skills via rules, MCP via `.windsurf/mcp.json` |
 | **GitHub Copilot** | ✅ via `.bot/` | ❌ | ❌ | ❌ | skills via `.github/copilot-instructions.md` |

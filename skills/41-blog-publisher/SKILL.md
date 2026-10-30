@@ -1,11 +1,8 @@
 ---
 name: blog-publisher
 description: |
-  Skill compositora que pega texto/assunto e gera post de blog HTML completo no repo
-  configurado em ~/.dev-team-kit/blog-config.json, com imagens (via skill 17 fal.ai ou
-  skill 42 Playwright screenshot), commit+push automático, retorna URL pública via GitHub Pages.
-  Trigger em: "post no blog", "publicar post", "escrever post", "blog post", "publish blog",
-  "gera post", "criar post", "novo post no meu blog".
+  Prepara e publica artigos de blog com assets e verificacoes.
+  Trigger em: "post no blog", "publicar post", "escrever post", "blog post", "publish blog", "gera post", "criar post", "novo post no meu blog".
 allowed-tools: Read, Write, Edit, Bash, Skill, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize
 metadata:
   argument-hint: "[assunto ou texto do post]"

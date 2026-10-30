@@ -1,15 +1,8 @@
 ---
 name: artemis-android-testing
 description: |
-  Testa um app Android real (debug build, APK local, ou app já instalado) no emulador usando
-  google/artemis — agente que executa a tarefa em linguagem natural (navegar, tocar, preencher
-  campo, verificar texto na tela) via Accessibility Helper + Gemini, sem escrever um teste
-  instrumentado. Usa a instalação local já configurada em D:\Repos\GERAL\artemis, com
-  GEMINI_API_KEY já presente no .env e emulador Medium_Phone_API_36.0 disponível.
-  Trigger em: "testa esse apk no emulador", "roda isso no artemis", "abre o emulador e testa",
-  "verifica isso no android", "testa a tela de", "no celular", "simula um usuário tocando",
-  "testa no emulador com IA", "funcionando no android antes de", "antes de dar merge",
-  "antes de commitar", "testa esse app no celular".
+  Testa aplicacoes Android em dispositivo ou emulador real.
+  Trigger em: "testa esse apk no emulador", "roda isso no artemis", "abre o emulador e testa", "verifica isso no android", "testa a tela de", "no celular", "simula um usuário tocando", "testa no emulador com IA", "funcionando no android antes de", "antes de dar merge", "antes de commitar", "testa esse app no celular".
 allowed-tools: Bash, Read, Grep, Glob
 metadata:
   argument-hint: "<tarefa em linguagem natural> [--apk caminho.apk] [--profile flash|pro]"

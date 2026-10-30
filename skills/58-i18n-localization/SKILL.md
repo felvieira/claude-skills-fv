@@ -1,14 +1,8 @@
 ---
 name: i18n-localization
 description: |
-  Internacionalizacao e localizacao — preparar o produto para outro idioma, regiao ou direcao de
-  escrita antes de existir tradutor no projeto. Use ao construir qualquer UI que possa receber outro
-  idioma, ao formatar data/numero/moeda, ao lidar com plural, ao testar expansao de texto e RTL, ou
-  quando texto traduzido quebra o layout.
-  Trigger em: "i18n", "internacionalizacao", "localizacao", "l10n", "traducao", "multi-idioma",
-  "outro idioma", "RTL", "arabe", "hebraico", "direita para esquerda", "pseudolocale",
-  "texto quebrou traduzido", "formato de data", "formato de moeda", "plural", "locale",
-  "timezone", "fuso horario", "expansao de texto".
+  Planeja e implementa internacionalizacao e localizacao.
+  Trigger em: "i18n", "internacionalizacao", "localizacao", "l10n", "traducao", "multi-idioma", "outro idioma", "RTL", "arabe", "hebraico", "direita para esquerda", "pseudolocale", "texto quebrou traduzido", "formato de data", "formato de moeda", "plural", "locale", "timezone", "fuso horario", "expansao de texto".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--audit=path] [--target-locales=pt-BR,en,ar]"

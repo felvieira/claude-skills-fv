@@ -1,15 +1,8 @@
 ---
 name: closed-loop-revenue
 description: |
-  Fecha o loop entre clique pago, evento, venda real e margem — a cadeia de identidade
-  (GCLID/UTM/transaction_id/CRM) que faz o dado de aquisicao bater com o financeiro. Use ao instrumentar
-  um funil que gera receita, ao descobrir que analytics e backend discordam, ao decidir se uma campanha
-  da lucro (nao so ROAS), ou ao enviar conversao offline / valor de lead de volta pra plataforma.
-  Trigger em: "GCLID", "UTM", "conversao offline", "enhanced conversions", "measurement plan",
-  "plano de medicao", "reconciliacao", "analytics nao bate", "receita nao bate", "duplicou conversao",
-  "margem de contribuicao", "break-even ROAS", "ROAS de equilibrio", "value-based bidding",
-  "smart bidding", "target ROAS", "qualidade de lead", "lead nao vira venda", "consent mode",
-  "closed loop", "atribuicao".
+  Conecta campanhas, eventos e receita em um ciclo mensuravel.
+  Trigger em: "GCLID", "UTM", "conversao offline", "enhanced conversions", "measurement plan", "plano de medicao", "reconciliacao", "analytics nao bate", "receita nao bate", "duplicou conversao", "margem de contribuicao", "break-even ROAS", "ROAS de equilibrio", "value-based bidding", "smart bidding", "target ROAS", "qualidade de lead", "lead nao vira venda", "consent mode", "closed loop", "atribuicao".
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   argument-hint: "[--audit] [--funnel=ecommerce|leadgen]"
