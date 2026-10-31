@@ -1,5 +1,11 @@
 [
   {
+    "name": "unslop routes to interface refinement",
+    "prompt": "faça um unslop nesta landing e tire a cara de IA",
+    "plugins": ["design-quality"],
+    "skills": ["91-unslop"]
+  },
+  {
     "name": "landing page combines marketing and design",
     "prompt": "crie a copy e o design de uma landing page para nosso produto",
     "plugins": ["product-marketing", "design-quality"],

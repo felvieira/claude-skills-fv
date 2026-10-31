@@ -5,6 +5,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.107.0] - 2026-10-31 — Unslop
+
+### Adicionado
+- Skill 91 **Unslop**: diagnóstico e melhoria de interfaces existentes com foco em identidade, preservação funcional e evidência de validação.
+
 ## [2.106.0] - 2026-10-30 — Compatibilidade e descoberta de skills
 
 ### Adicionado

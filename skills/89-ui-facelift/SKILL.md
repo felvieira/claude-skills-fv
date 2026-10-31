@@ -111,6 +111,7 @@ Esta skill coordena o passe amplo e implementa as mudanças. Consultar o conteú
 - `58-i18n-localization`: crescimento de texto, formatos por locale e RTL
 - `12-motion-design`: sistema de movimento ou interação animada relevante
 - `52-ui-polish`: acabamento dos componentes após estrutura e responsividade
+- `91-unslop`: revisão visual por camadas quando houver sinais concretos de aparência genérica de IA
 - `64-scroll-storytelling`: página cuja arquitetura usa o scroll como narrativa
 - `17-image-generator`: asset que realmente falta; seguir o fluxo e os limites de custo dessa skill
 - `05-qa-testing` e `79-react-useeffect-review`: regressão de comportamento e antipadrões React, quando aplicáveis

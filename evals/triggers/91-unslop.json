@@ -1,0 +1,19 @@
+{
+  "skill": "91-unslop",
+  "should_trigger": [
+    "faça um unslop neste dashboard",
+    "quero tirar cara de IA desta landing",
+    "essa tela parece feito por IA, melhore",
+    "corrija o visual genérico de IA do aplicativo",
+    "quero deixar a interface menos genérica",
+    "refine this AI-looking UI",
+    "remove AI slop from this page"
+  ],
+  "shouldnt_trigger": [
+    "melhore a busca RAG dos documentos",
+    "corrija o webhook do backend",
+    "gere uma transcrição do vídeo",
+    "execute os testes de autenticação",
+    "ajuste somente o overflow no celular"
+  ]
+}

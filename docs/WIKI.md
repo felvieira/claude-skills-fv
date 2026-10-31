@@ -1,6 +1,6 @@
 # Dev Team Kit — Full Wiki
 
-> **Version:** 89 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
+> **Version:** 90 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
 > **Last updated:** 2026-10-11 (skill 88 — Anatomy for explanatory isometric machine figures)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Install:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
@@ -17,7 +17,7 @@ Single-page wiki of the entire kit. Every item follows the format from [5 Agent 
 2. [The 2 flows: classic vs discovery](#2-the-2-flows-classic-vs-discovery)
 3. [Core principle: Vertical Slicing](#3-core-principle-vertical-slicing)
 4. [Slash commands (48) — shortcuts by phase](#4-slash-commands-48)
-5. [Skills (89) — specialists by category](#5-skills-89)
+5. [Skills (90) — specialists by category](#5-skills-90)
 6. [Subagents (16) — dispatchable via Task tool](#6-subagents-16)
 7. [Policies (62) — shared rules](#7-policies-62)
 8. [Plugin: how the kit is distributed](#8-plugin-how-the-kit-is-distributed)
@@ -415,7 +415,7 @@ These are phase shortcuts. No need to memorize skill names — call the shortcut
 
 ---
 
-## 5. Skills (89)
+## 5. Skills (90)
 
 Each skill is a specialty. Has frontmatter with `description` (activation triggers), `allowed-tools` (tool scope), and SKILL.md with protocol. Skill 16 is intentionally absent — its scope was folded into `policies/model-routing.md` to keep model selection rules in one place.
 
@@ -581,6 +581,10 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **What it does:** researches competitors, captures screenshots, analyzes visual trends, delivers strategic dossier for UI/UX.
 **When to activate:** innovative feature or rebranding — before UI/UX starts.
 **Problem it solves:** design "from nothing" without market benchmark.
+
+#### Skill 91 — Unslop
+
+**What it does:** audits and refines generic-looking UI in layers while preserving brand and functionality.
 
 #### Skill 90 — RAG Engineering
 
@@ -1137,7 +1141,7 @@ Haiku for boilerplate, Sonnet for implementation, Opus for architecture. Replace
 ### Manifest: `.claude-plugin/plugin.json`
 
 The plugin auto-discovers skill directories:
-- **89 skills** in `skills/NN-name/SKILL.md` (no explicit skill list in this manifest)
+- **90 skills** in `skills/NN-name/SKILL.md` (no explicit skill list in this manifest)
 - **16 agents** in `.claude/agents/<name>.md`
 - **48 commands** in `commands/<name>.md` (copied to a consumer repo's `.claude/commands/`)
 - **hooks** in `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1150,7 +1154,7 @@ The plugin auto-discovers skill directories:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Installs globally: 89 skills, hooks, 48 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
+Installs globally: 90 skills, hooks, 48 commands. Works in any project without additional config. **Does not include:** policies, MCP server, templates, docs (those go in `.bot/`). REA's analysis engine/MCP is a separate optional install.
 
 #### Mode 2 — Full kit per repo (`/devkit-install-fv`)
 
@@ -1175,7 +1179,7 @@ Supports non-interactive profiles: `--profile lean`, `--no-input`, `--yes`.
 
 | What's included | Global plugin | `/devkit-install-fv` | Direct Bash |
 |---|:---:|:---:|:---:|
-| 89 skills | ✓ | ✓ | ✓ |
+| 90 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -1,6 +1,6 @@
 # Dev Team Kit — MCP Server
 
-MCP server que expoe 38 tools do Dev Team Kit, apoiadas pelas 89 skills instaladas, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
+MCP server que expoe 38 tools do Dev Team Kit, apoiadas pelas 90 skills instaladas, para qualquer cliente MCP (Claude Code, Cursor, Windsurf, Gemini CLI, etc.).
 
 ## Setup
 
