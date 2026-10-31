@@ -108,6 +108,8 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ☐ Sem arquivos não utilizados
 ```
 
+Ao revisar comentários, preserve restrições, contratos, segurança, licenças, justificativas e pendências acionáveis. Não imponha limite arbitrário de linhas; veja `skills/91-unslop/references/revisao-texto-codigo.md`. Em alteração restrita a comentários, não mude código executável.
+
 ### Testes
 
 ```

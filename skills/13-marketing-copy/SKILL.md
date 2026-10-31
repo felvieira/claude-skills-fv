@@ -19,6 +19,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-guides/marketing-copy.md` apenas quando necessario.
 
+Para revisar texto de interface, consulte `skills/91-unslop/references/revisao-texto-codigo.md`: preserve fatos e significado, confira promessas e identifique informação ausente. Um termo isolado não comprova autoria por IA nem torna um texto inadequado.
+
 ## Quando Usar
 
 - escrever ou revisar headline, CTA, microcopy e copy de conversao
@@ -48,7 +50,7 @@ Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-g
 2. Criar headlines e subheadlines que capturam atenção e comunicam valor
 3. Escrever CTAs de alta conversão com verbos de ação claros
 4. Produzir microcopy (botões, tooltips, mensagens de erro, empty states)
-5. Estruturar landing pages completas seguindo a fórmula AIDA
+5. Estruturar landing pages conforme o conteúdo e a jornada; AIDA é uma opção quando fizer sentido
 6. Escrever textos de onboarding que reduzem fricção e aceleram ativação
 7. Garantir consistência linguística em toda a aplicação (tom, voz, terminologia)
 
@@ -56,7 +58,7 @@ Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-g
 
 ### Fórmula AIDA para Landing Pages
 
-Toda landing page segue esta progressão:
+AIDA é uma progressão possível, não um modelo obrigatório:
 
 ```
 ATTENTION → Headline que para o scroll. Promessa clara e específica.
@@ -70,7 +72,7 @@ ACTION    → CTA impossível de ignorar. Sem ambiguidade, sem fricção.
 ```
 1. Benefício > Feature
    Errado:  "Sistema com criptografia AES-256"
-   Certo:   "Seus dados protegidos com criptografia de nível bancário"
+   Melhor: "Criptografia AES-256 para seus dados" — apenas se confirmado no produto
 
 2. Uma ideia por frase
    Errado:  "Nossa plataforma é rápida, segura e fácil de usar com integrações"

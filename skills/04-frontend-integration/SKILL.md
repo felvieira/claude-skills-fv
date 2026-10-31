@@ -17,6 +17,8 @@ Para snippets extensos e exemplos completos, consultar `docs/skill-guides/fronte
 
 Para integracoes locais de MCP com bibliotecas visuais, consultar `docs/skill-guides/ui-component-mcps.md`.
 
+Ao alterar mídia ou recursos da página, reserve dimensões e investigue prioridade e scripts conforme o contexto. Identifique o elemento de LCP por medição antes de priorizá-lo e não afirme melhoria de desempenho sem dados; consulte `skills/91-unslop/references/evidencia-web.md` quando aplicável.
+
 Quando a tarefa exigir navegacao real, screenshots ou verificacao visual do app rodando, esta skill pode configurar ou reutilizar `Playwright MCP` localmente.
 
 ## Quando Usar

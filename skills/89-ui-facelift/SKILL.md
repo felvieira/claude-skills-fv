@@ -87,6 +87,8 @@ Julgar a interface contra o objetivo real do produto, usando apenas as lentes pe
 
 Em site ou landing, derivar seções da tarefa do visitante, do material real e das decisões que a página precisa apoiar. Não impor a mesma sequência de seções a produtos diferentes.
 
+Quando a tela parecer genérica ou perder personalidade após a limpeza, use `skills/91-unslop/references/criterios-de-qualidade.md` para avaliar identidade, densidade, ritmo e movimento pelo objetivo real. A falta de um arquivo de design não bloqueia a entrega: registre a direção inferida e suas incertezas.
+
 Antes de consultar resultados de ferramentas automáticas, formular uma crítica visual própria: a composição e as interações expressam este produto ou serviriam igualmente a outro? Registrar pontos fortes e problemas prioritários com evidência. Depois, confrontar essa avaliação com verificações disponíveis; um detector limpo não comprova qualidade visual.
 
 ### 4. Escolher as mudanças e implementá-las

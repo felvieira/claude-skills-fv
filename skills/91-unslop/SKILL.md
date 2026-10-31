@@ -54,8 +54,12 @@ Investigue as telas e o código acessíveis, objetivos do produto, público, mar
 - `references/diagnostico.md`: matriz de achados, impactos e evidências.
 - `references/decisoes-visuais.md`: critérios para componentes, dados, acessibilidade e recursos.
 - `references/verificacao.md`: roteiro de testes, evidência e limites de observação.
+- `references/criterios-de-qualidade.md`: decisões de identidade, hierarquia, ritmo e movimento com exemplos.
+- `references/revisao-texto-codigo.md`: revisão contextual de copy e comentários sem apagar informações importantes.
+- `references/evidencia-web.md`: testes de acessibilidade e desempenho, com limites de cada evidência.
 - `examples/README.md`: exemplo sintético com código e capturas reais para treinar comparação. As imagens registram um caso, não uma estética obrigatória.
 - `skills/91-unslop/scripts/capture-local.mjs`: compara dois HTMLs locais em viewport idêntico sem sobrescrever capturas; veja pré-requisitos e limites em `examples/README.md`.
+- `skills/91-unslop/scripts/contrast.mjs`: calcula a razão entre duas cores opacas; não substitui testes da interface.
 
 ## Handoff
 

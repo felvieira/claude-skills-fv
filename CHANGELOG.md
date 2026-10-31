@@ -5,6 +5,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.108.0] - 2026-10-31 — Unslop contextual
+
+### Alterado
+- Aprofunda Unslop e skills relacionadas com critérios visuais, revisão de copy e comentários, acessibilidade e evidência de desempenho.
+- Adiciona calculadora local de contraste para cores opacas e casos de avaliação contextual.
+
 ## [2.107.0] - 2026-10-31 — Unslop
 
 ### Adicionado

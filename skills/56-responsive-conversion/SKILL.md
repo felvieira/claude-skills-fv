@@ -18,6 +18,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para catalogo completo de bugs com snippet de fix por framework (Tailwind, CSS puro, styled-components), consultar `docs/skill-guides/responsive-conversion.md` apenas quando necessario.
 
+Em telas alteradas, complemente a comparação visual com teclado, zoom, conteúdo longo e estados relevantes; marque cada verificação indisponível. `skills/91-unslop/references/evidencia-web.md` separa o que foi observado do que ainda é hipótese.
+
 Fronteira com skills vizinhas:
 - **02-ui-ux-design** define ancora estetica, tokens e wireframe **antes** de codar — esta skill nao redefine estetica, herda a que ja existe
 - **52-ui-polish** cuida do acabamento micro (border radius concentrico, alinhamento optico) **depois** que o layout esta correto — layout quebrado nao se resolve com polish
