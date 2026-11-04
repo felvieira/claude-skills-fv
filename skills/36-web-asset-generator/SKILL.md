@@ -301,6 +301,14 @@ OG image precisa URL absoluta (`https://...`), nao relativa (`/og-image.png`). S
 ### "Mesma OG image para todas as paginas"
 Pagina de produto X com OG generico do site = baixa CTR. Por pagina importante, gerar OG dedicada.
 
+
+## Tecnicas de derivacao (references/)
+
+Carregar `references/derivation-and-overlays.md` quando o trabalho passar de favicon/OG basico:
+escada de derivacao de formatos (resize->crop->expand->reframe->recompor), overlay
+deterministico de texto letter-perfect, thumbnail legivel em feed, e regra do master unico
+(toda derivacao sai do master aprovado, nunca de derivada).
+
 ## Evidencia de Conclusao
 
 - todos os assets do quadro "Especificacoes Por Plataforma" gerados

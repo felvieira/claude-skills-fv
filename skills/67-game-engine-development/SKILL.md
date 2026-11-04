@@ -2,7 +2,7 @@
 name: game-engine-development
 description: |
   Implementa codigo e sistemas de runtime para jogos.
-  Trigger em: "Unity C#", "Unreal C++", "MonoBehaviour", "ScriptableObject", "UCLASS", "UPROPERTY", "UFUNCTION", "object pooling jogo", "ECS Unity", "otimizar FPS", "profiler Unity", "Unreal Insights", "multiplayer networking jogo", "client-side prediction", "lag compensation", "state machine jogo", "spatial partitioning", "coroutine Unity", "Blueprint callable", "smart pointer Unreal", "implementar sistema de jogo em Unity", "Godot GDScript".
+  Trigger em: "Unity C#", "Unreal C++", "MonoBehaviour", "ScriptableObject", "UCLASS", "UPROPERTY", "UFUNCTION", "object pooling jogo", "ECS Unity", "otimizar FPS", "profiler Unity", "Unreal Insights", "multiplayer networking jogo", "client-side prediction", "lag compensation", "state machine jogo", "spatial partitioning", "coroutine Unity", "Blueprint callable", "smart pointer Unreal", "implementar sistema de jogo em Unity", "Godot GDScript", "Godot instalado", "Roblox Studio", "Luau", "Rojo", "Unity batch mode", "UnrealEditor-Cmd", "Niagara", "Sequencer Unreal", "AssetPostprocessor", "Addressables", "Tilemap", "Cinemachine", "VFX Graph", "Shader Graph", "DataStore", "dirigir engine instalada".
 ---
 
 # Game Engine Development — Unity C# e Unreal C++
@@ -27,6 +27,11 @@ cinco de cara:
 | ECS e padroes de design (state machine, command, observer, service locator, spatial grid) | `references/ecs-patterns.md` |
 | Otimizacao de performance — profiling, memoria, batching, LOD, culling, updates | `references/performance-optimization.md` |
 | Multiplayer networking — cliente-servidor, predicao, lag compensation, serializacao | `references/multiplayer-networking.md` |
+| Arte de jogo gerada por IA — sprites, tilesets, parallax, texturas PBR, skybox, sheets | `references/game-art-assets.md` |
+| Unreal instalada: Editor Python, materiais, lighting, world building, Niagara, Sequencer, pipeline, performance | `references/unreal-content-production.md` |
+| Unity instalada: batch/CLI, 2D, animacao+CM, UI, VFX, shaders, URP lighting, mobile, web, pipeline | `references/unity-content-production.md` |
+| Godot instalada: headless jobs, arquitetura, 2D/3D, animacao, gameplay, UI, VFX, shaders, multiplayer, export | `references/godot-content-production.md` |
+| Roblox Studio instalada: MCP, Luau, remotes, DataStores, ambiente, assets/UGC, monetizacao, performance | `references/roblox-content-production.md` |
 
 Esta skill entrega **codigo**, nao decisao de design. Para escolher paradigma de arquitetura, revisar
 um GDD, ou calcular numero de balance antes de implementar, ver
@@ -101,22 +106,18 @@ constroi.
 | Pular profiling antes de declarar otimizado | Medir com Profiler/Insights antes e depois da mudanca |
 | `PrimaryActorTick.bCanEverTick = true` (Unreal) sem precisar de Tick | Desabilitar Tick, usar Timer pra atualizacao periodica |
 | Ponteiro raw pra UObject no Unreal (quebra garbage collection) | `UPROPERTY()` pra referencia gerenciada, `TWeakPtr` pra evitar ciclo |
-| Assumir que Godot tem a mesma profundidade de cobertura que Unity/Unreal aqui | Avisar explicitamente — ver "Cobertura de Godot" |
+| Assumir que Godot tem a mesma profundidade de cobertura de codigo que Unity/Unreal aqui | Avisar — ver "Cobertura de Godot"; para dirigir Godot INSTALADA ha `references/godot-content-production.md` |
 
 ## Cobertura de Godot
 
-Esta skill **nao tem** references dedicado a Godot/GDScript porque nenhuma das fontes avaliadas na
-curadoria (`Yuki001/game-dev-skills`, `Jeffallan/claude-skills`) continha profundidade real nesse motor
-— o Jeffallan cobre exclusivamente Unity C# e Unreal C++ nas cinco references de `game-developer`, e o
-Yuki001 nao tem skill de engine alguma (so arquitetura/design/asset, cobertos pela skill 66). Forcar uma
-sexta reference de Godot com o mesmo nivel de detalhe teria exigido inventar profundidade que nenhuma
-fonte real sustentava.
-
-Quando o pedido for especificamente Godot: os padrões de arquitetura de `skills/66-game-architecture-design/SKILL.md`
-(ECS vs entidade rica, state machine, object pooling conceitual) se transferem sem trocar de motor —
-só a sintaxe muda. Para a sintaxe GDScript/C# do Godot em si, tratar como gap conhecido do kit e
-recorrer à documentação oficial (`docs.godotengine.org`) ou pesquisa direta em vez de fingir
-equivalência de profundidade com as referências de Unity/Unreal desta skill.
+A fonte original desta skill (`Yuki001/game-dev-skills`, `Jeffallan/claude-skills`) nao tinha
+profundidade real de CODIGO em Godot — por isso `references/` de codigo ficou em Unity/Unreal.
+Depois disso o gap de DIRIGIR a engine instalada foi coberto por
+`references/godot-content-production.md` (destilado de scenario-labs/skills, MIT): headless
+jobs, arquitetura, 2D/3D, animacao, UI, VFX, shaders, multiplayer, performance e export. Ele
+cobre operacao da engine e producao de conteudo; para decisoes de padrao de codigo GDScript,
+os padroes de `skills/66-game-architecture-design/SKILL.md` se transferem e a documentacao
+oficial (`docs.godotengine.org`) continua sendo a fonte.
 
 ## Handoff
 

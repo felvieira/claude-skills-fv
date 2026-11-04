@@ -2,7 +2,7 @@
 name: character-animation-3d
 description: |
   Produz personagens e animacoes 3D para uso em runtime.
-  Trigger em: "AccuRIG", "rig de personagem 3D", "retargeting de animacao", "script bpy que roda headless com blender --background --python", "deform bones vs pose bones", "root motion que ta duplicando o deslocamento", "armature.data.bones e armature.pose.bones", "semantic bone mapping pra desacoplar do nome CC_Base_L_Upperarm", "text-to-motion", "MDM ou MoMask pra gerar animacao", "bake de constraints e IK antes de exportar FBX pro Unity".
+  Trigger em: "AccuRIG", "rig de personagem 3D", "retargeting de animacao", "script bpy que roda headless com blender --background --python", "deform bones vs pose bones", "root motion que ta duplicando o deslocamento", "armature.data.bones e armature.pose.bones", "semantic bone mapping pra desacoplar do nome CC_Base_L_Upperarm", "text-to-motion", "MDM ou MoMask pra gerar animacao", "bake de constraints e IK antes de exportar FBX pro Unity", "Blender instalado", "Maya instalado", "ZBrush instalado", "sculpt", "retopologia", "XGen groom", "mayapy", "ZScript", "GoZ", "polypaint".
 ---
 
 # Character Animation 3D — AccuRIG, Blender Headless e IA de Motion
@@ -26,6 +26,9 @@ arquivo do topico relevante a task, nao os quatro de cara:
 | Blender CLI headless, import multi-formato, semantic bone mapping (`BONE_ALIASES` completo) | `references/blender-cli-and-semantic-mapping.md` |
 | Mapa comparativo de IA de motion, AccuRIG AI Deep Search vs sintese, os 4 formatos de output de IA | `references/ai-motion-tech-map.md` |
 | Matematica de retargeting, root motion, bake de constraints, script completo de pipeline CLI | `references/retargeting-math-and-scripts.md` |
+| Blender instalada: modelagem, sculpt, retopo, UV/bake, shading, hair, rig, animacao, GeoNodes, grease pencil, render, export | `references/blender-dcc.md` |
+| Maya instalada: mayapy batch, modeling, rig, skinning, animacao, groom, FX, lookdev, Arnold, pipeline | `references/maya-dcc.md` |
+| ZBrush instalada: bridge, sculpt, hard surface, polypaint, pose/print, retopo/export, automacao/GoZ | `references/zbrush-dcc.md` |
 
 ## Quando Usar
 

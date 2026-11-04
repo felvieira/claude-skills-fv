@@ -16,6 +16,7 @@
 
 ### ✨ What's new
 
+- **v2.109.0** — 13 new `references/` distilled from [scenario-labs/skills](https://github.com/scenario-labs/skills) (MIT): image/game-art/3D/video/audio generation knowledge inside skills 17, 36, 67, 74, 84, plus one drive-the-installed-app reference per expert tool — Blender, Maya, ZBrush (skill 68) and Unreal, Unity, Godot, Roblox (skill 67). Each file opens with install detection; no MCP architecture adopted.
 - **v2.105.0** — adds RAG Engineering and strengthens visual critique and resilience in UI Facelift.
 - **v2.104.0** — adds skill 89 (UI Facelift) for broad UX/UI implementation on existing products while preserving behavior and business rules; refines routing and page-design guidance.
 - **v2.103.0** — skill 88 (Anatomy) added: detailed interactive isometric figures (SVG, WebGL shaders, 3D) that explain technical concepts as real physical machines with pure Node engine and geometric collision audit.

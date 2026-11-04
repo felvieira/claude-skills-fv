@@ -437,6 +437,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** projeto precisa de imagem nova ou derivada.
 **Problema que resolve:** "imagem aqui" placeholder em landing page.
 **Takeaway:** **decisão por modelo é por custo + qualidade.** Pipeline multi-modelo (iterar barato → validar médio → final premium) custa $0.10-$0.50 por hero. Detalhes em `docs/skill-guides/image-generator-models.md`.
+**References estendidas (v2.109.0):** `references/generation-techniques.md` (destilado de scenario-labs/skills, MIT) cobre consistência (escada baseline+delta), multi-referência por papel, packshot de produto, brand kit, overlay determinístico de texto, derivação de formatos, rubrica de qualidade + bake-off de modelos e recuperação de moderação.
 
 #### Skill 18 — Repo Auditor
 
@@ -540,6 +541,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** antes do primeiro deploy; rebrand; adicionar suporte PWA; preparar landing.
 **Problema que resolve:** deploy sem favicon, OG image em branco no WhatsApp, PWA sem maskable.
 **Takeaway:** **handoff direto da skill 17** — skill 17 cria criativo, skill 36 deriva pacote operacional.
+**References estendidas (v2.109.0):** `references/derivation-and-overlays.md` — escada de derivação de formatos (resize→crop→expand→reframe→recompor), overlays de texto letter-perfect, legibilidade de thumbnail, regra do master único.
 
 ### Categoria: Product and Design
 
@@ -853,6 +855,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** implementar um sistema de jogo em Unity (C#) — MonoBehaviour, ScriptableObject, pooling, gerenciamento de estado; implementar em Unreal Engine (C++) — Actor, Component, UPROPERTY/UFUNCTION exposto a Blueprint; aplicar um padrão de design de jogo específico (ECS, state machine, object pooling, spatial partitioning); otimizar performance (draw calls, pressão de garbage collection, LOD/culling, profiling); implementar networking multiplayer (arquitetura servidor-autoritativo, predição de cliente, lag compensation).
 **Diferente de:** a skill 66 (game-architecture-design) é dona da decisão de design e dos números de balance — a skill 67 só constrói; não decide o que construir nem por quê.
 **Takeaway:** **não finja cobertura que a fonte não tem** — a fonte MIT de onde esta skill porta código ([Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills)) cobre Unity e Unreal com código de produção real, mas tem zero conteúdo de Godot em qualquer lugar do repositório; a skill diz isso explicitamente numa seção "Cobertura de Godot" em vez de responder pergunta de Godot silenciosamente com chute com sabor de Unity.
+**References estendidas (v2.109.0):** `references/game-art-assets.md` (arte de jogo gerada por IA) + quatro referências de dirigir engine instalada: `unreal-content-production.md`, `unity-content-production.md`, `godot-content-production.md`, `roblox-content-production.md` — detecção, canais headless/batch, pontes MCP, regras por domínio e armadilhas de versão. Destiladas das expert tools da scenario-labs (MIT).
 
 #### Skill 68 — Character Animation 3D
 
@@ -860,6 +863,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** riggar um personagem 3D humanoide via AccuRIG e normalizá-lo no Blender; fazer retargeting de movimento de qualquer fonte (mocap, text-to-motion, vídeo) sobre um rig certificado; decidir qual tecnologia de IA de motion serve pra um caso (text-to-motion vs video-to-motion vs pose estimation vs ferramenta de retargeting); rodar Blender headless (`--background --python`) como parte de um pipeline de build; escrever ou debugar a matemática de retargeting via delta de quaternion relativo à rest pose.
 **Diferente de:** a skill 67 (game-engine-development) é dona do código de engine runtime (Unity C#/Unreal C++) — a skill 68 fica a montante disso, produzindo o `character.glb`/`animation.glb` certificados que a engine consome; nunca escreve código de gameplay sozinha. A skill 69 (character-pipeline-2d) assume que a saída 3D desta skill já existe e foca em derivar assets 2D a partir dela.
 **Takeaway:** **o AI Deep Search do próprio AccuRIG não é um gerador text-to-motion** — é busca semântica sobre uma biblioteca já existente de 4500+ movimentos curados, ferramenta fundamentalmente diferente de um modelo de síntese como SayMotion ou MDM que inventa uma sequência nova a partir de um prompt; confundir os dois leva a esperar geração de ação inédita de uma feature de busca que só pode devolver o que alguém já capturou.
+**References estendidas (v2.109.0):** `references/blender-dcc.md`, `maya-dcc.md`, `zbrush-dcc.md` — dirigir a DCC instalada (detecção, headless/batch + pontes ao vivo, regras por domínio, armadilhas de versão). Destiladas das expert tools da scenario-labs (MIT).
 
 #### Skill 69 — Character Pipeline 2D
 
@@ -897,6 +901,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **O que faz:** transforma uma scene description estruturada (câmera, luzes, ambiente, slots de asset GLB, materiais, partículas) em cena 3D real e interativa no browser — WebGPURenderer com fallback WebGL2 automático, câmera navegável com raycasting, e orçamento de performance medido (Draco/KTX2, LOD, dispose, `prefers-reduced-motion`, fallback estático).
 **Quando ativar:** landing page ou site onde o visitante gira/explora um objeto 3D, configurador de produto, visualizar GLB no browser, ou decidir entre WebGPU e WebGL2.
 **Takeaway:** fecha o handoff que as skills 68/69 nunca tiveram — elas certificavam um `.glb` mas só entregavam pra Unity/Unreal/Godot, nunca pra uma página. A cena continua editável por campo em vez de re-gerada como vídeo; guidelines de código three.js seguem no `threejs.csv` da skill 02, não duplicadas aqui.
+**References estendidas (v2.109.0):** `references/generating-3d-assets.md` — como produzir o GLB/FBX que a skill renderiza: conceito→mesh, retexture, topologia quad, rigging, video-to-motion, splats, orbit views, LoRA.
 
 ---
 
@@ -977,6 +982,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **O que faz:** conduz um filme gerado por IA de ponta a ponta: história (3 propostas com motores diferentes, depois a bíblia), roteiro com falas literais no idioma do projeto (padrão PT-BR), direção de cena (scene engine, acting task por personagem com estímulo → resposta, beats, mapa do mundo, leis de física, STATE IN/OUT por clipe), folhas de personagem e placas de cenário como referência, um prompt v4 autocontido por clipe de 5 a 8 s, Seedance 2.5 reference-to-video na API da Higgsfield (só folhas + placa, sem quadro inicial), QA por folha de 8 quadros e STT, reparo local e pós (fala nativa com lip sync, trilha por sequência com crossfade na transição, ducking por sidechain, SFX gerados, cartelas e legendas via libass, −14 LUFS).
 **Quando ativar:** "gerar vídeo com IA", "escreve o prompt do Seedance", "folha de personagem", "reference-to-video", um clipe gerado saiu errado (corpo flutuando, objeto que reaparece, fala em outro idioma, bloqueio de moderação).
 **Takeaway:** cada regra vem de um erro pago num filme real de 3 minutos em 7 épocas (chapéu que caiu e deixou o personagem careca, portão que o prompt descreveu e a placa não tinha, multidão correndo para o vulcão). Anuncia o custo estimado antes de cada rodada paga e nunca afirma que um clipe foi conferido sem olhar os quadros e o áudio. `references/armadilhas-do-produto.md` lista os 41 furos achados ao auditar um pipeline automático contra o método manual. Integrar vídeo num app continua na skill 27; só editar, na 75.
+**References estendidas (v2.109.0):** `references/modelos-de-video.md` (contrato por família — Seedance, Veo, Kling, Hailuo, Omni, Grok, Vidu, Wan, Runway, Luma — mais condicionamento, lip sync, montagem, captions e pipelines prontos de música/ads/UGC/recast) e `references/modelos-de-audio.md` (música, SFX, TTS, dublagem, video→audio; famílias ElevenLabs/MiniMax/ACE-Step). Destiladas de scenario-labs/skills (MIT).
 
 #### Skill 85 — Illustration Studio
 
@@ -1278,6 +1284,7 @@ O kit não nasceu do zero. Foi composto a partir de:
 
 - **[mattpocock/skills](https://github.com/mattpocock/skills)** ([AI Hero post](https://www.aihero.dev/5-agent-skills-i-use-every-day)) — `/grill-me`, `/to-prd`, `/to-issues`, skill 37 (TDD Engineer), skill 38 (Architecture Deepener). Adaptados ao kit (frontmatter, integração com policies, gates de aprovação).
 - **[Reversa](https://github.com/sandeco/reversa)** — skill 33 (Detective Spec). Adaptado para integrar com Graphify + repo-audit + memória persistente.
+- **[scenario-labs/skills](https://github.com/scenario-labs/skills)** (MIT) — 167 Agent Skills de geração de mídia. NÃO adotamos a arquitetura deles (Scenario MCP hospedado); destilamos o conhecimento agnóstico de provider em `references/` dentro das nossas skills: `17/references/generation-techniques.md` (imagem), `36/references/derivation-and-overlays.md` (formatos/overlays), `67/references/game-art-assets.md` (arte de jogo), `74/references/generating-3d-assets.md` (3D/mocap/splats/LoRA), `84/references/modelos-de-video.md` + `modelos-de-audio.md` (famílias de modelo e pipelines). As famílias expert de DCC/game engine entraram como uma reference por tool, no estilo dirigir-o-app-instalado: `68/references/{blender,maya,zbrush}-dcc.md` e `67/references/{unreal,unity,godot,roblox}-content-production.md`.
 - **Strunk & White — Elements of Style** — `policies/writing-clarity.md`. 10 regras adaptadas para output de agente.
 
 ### Inspirações conceituais

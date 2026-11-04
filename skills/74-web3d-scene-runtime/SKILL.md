@@ -27,6 +27,7 @@ Conteudo denso vive em `references/` — carregar so o arquivo relevante:
 |---|---|
 | Schema completo do scene description (campos, tipos, exemplo end-to-end, regras de validacao) | `references/scene-schema.md` |
 | Setup de renderer, compressao de asset, orcamento de performance e matriz de fallback | `references/renderer-and-performance.md` |
+| Gerar o asset 3D que entra na cena — conceito->mesh, retexture, rig, mocap, splats, orbit views, LoRA | `references/generating-3d-assets.md` |
 
 **Guidelines de codigo three.js nao vivem aqui.** A skill 02 ja mantem 53 guidelines verificadas
 (three.js 0.185.1) com Do/Don't e codigo bom/ruim em `skills/02-ui-ux-design/data/stacks/threejs.csv`.

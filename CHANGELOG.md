@@ -5,6 +5,22 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [2.109.0] - 2026-11-04 — Scenario Labs destilado: mídia + expert tools
+
+### Adicionado
+- 13 novas `references/` destiladas de [scenario-labs/skills](https://github.com/scenario-labs/skills) (MIT) — conhecimento agnóstico de provider, SEM adotar a arquitetura Scenario MCP:
+  - **Imagem** (skill 17): `references/generation-techniques.md` — contrato universal de run, baseline+delta, multi-referência, packshot, brand kit, overlay de texto, derivação de formatos, rubrica de qualidade, bake-off, moderação.
+  - **Formatos web** (skill 36): `references/derivation-and-overlays.md` — escada de derivação, overlay letter-perfect, thumbnails, master único.
+  - **Arte de jogo** (skill 67): `references/game-art-assets.md` — sprites, tilesets, parallax, texturas PBR, skybox, kits side-view.
+  - **3D** (skill 74): `references/generating-3d-assets.md` — conceito→mesh, retexture, rig, video-to-motion, splats, orbit views, LoRA.
+  - **Vídeo/áudio** (skill 84): `references/modelos-de-video.md` (10 famílias de modelo + pipelines prontos música/ads/UGC/recast) e `references/modelos-de-audio.md` (música, SFX, TTS, dublagem).
+  - **Expert tools** — uma reference por app instalado, estilo dirigir-a-tool: `68/references/{blender,maya,zbrush}-dcc.md` e `67/references/{unreal,unity,godot,roblox}-content-production.md`. Cada arquivo abre com `## Detectar instalacao`; sem a tool, o agente ignora.
+
+### Alterado
+- Triggers das skills 17, 67, 68 e 84 ampliados para os novos domínios (packshot, sprite, skybox, Godot, Roblox, Maya, ZBrush, TTS, dublagem, UGC...).
+- Skill 67: nota "Cobertura de Godot" atualizada — gap de código continua, gap de dirigir a engine instalada fechado.
+- `docs/WIKI.md` e `docs/WIKI.pt-BR.md`: notas "Extended references" nas skills 17, 36, 67, 68, 74, 84 + atribuição scenario-labs em Direct adaptations.
+
 ## [2.108.0] - 2026-10-31 — Unslop contextual
 
 ### Alterado

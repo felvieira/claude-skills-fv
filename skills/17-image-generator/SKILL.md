@@ -4,7 +4,10 @@ description: |
   Skill para geracao e adaptacao de assets visuais. Use quando o projeto precisar de hero image,
   background, ilustracao, icone, favicon, mascote ou derivacao de imagem existente sem destoar do app.
   Trigger em: "gerar imagem", "criar imagem", "hero image", "background image", "favicon png", "icone",
-  "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons".
+  "mascote", "illustration", "remover fundo", "transparent icon", "tauri icons", "packshot",
+  "product shot", "sprite", "sprite sheet", "tileset", "textura seamless", "skybox", "panorama 360",
+  "storyboard", "thumbnail", "brand kit", "logo", "consistencia de personagem", "texto na imagem",
+  "batch de imagens", "modelo de imagem".
 allowed-tools: Read, Write, Bash(node *), Bash(python *), Bash(uv run *)
 metadata:
   argument-hint: "[tipo: t2i|i2i|rembg|ico] [prompt ou caminho-da-imagem]"
@@ -110,6 +113,15 @@ Fonte única: [`models/image-models.json`](../../models/image-models.json) — a
 | `pwa-icon` | maskable icon, manifest, browserconfig | **36 (Web Asset Generator)** — dedicada |
 
 **Divisao clara:** skill 17 e para assets criativos (geracao do zero ou derivacao). Skill 36 e para assets web operacionais derivados de logo existente (favicon, OG, PWA — pipeline mecanico, nao criativo). Se logo ainda nao existe, skill 17 cria primeiro; depois skill 36 deriva os formatos.
+
+## Tecnicas de dominio (references/)
+
+Carregar `references/generation-techniques.md` sob demanda quando o pedido cair num destes
+dominios — regras universais (schema e o contrato, sizing silencioso, texto em imagem) +
+secoes dedicadas: consistencia/baseline+delta, multi-referencia, packshot de produto, brand
+kit, overlay deterministico de texto, derivacao de formatos, rubrica de qualidade, bake-off
+de modelos e moderacao. Para assets de jogo (sprite sheet, tileset, parallax, textura PBR,
+skybox), cruzar com `skills/67-game-engine-development/references/game-art-assets.md`.
 
 ## Regras de Prompt
 

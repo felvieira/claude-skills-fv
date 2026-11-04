@@ -457,6 +457,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 - Override only with justification (e.g., `--model gemini-3-pro` for complex typography in OG cards)
 **Example:** `node scripts/generate-image.mjs --prompt "minimalist hero" --aspect 16:9 --out public/hero.jpg`
 **Takeaway:** **default rule is canonical — no inventing.** Multi-model pipeline (iterate cheap → validate → final) still costs $0.10-$0.50 per hero. 6 consumer skills (02 UI/UX, 04 Frontend, 14 SEO, 19 Asset Librarian, 29 Design Intel, 36 Web Assets) all reference skill 17 for image needs.
+**Extended references (v2.2x):** `references/generation-techniques.md` (distilled from scenario-labs/skills, MIT) covers consistency (baseline+delta ladder), multi-reference role assignment, product shots, brand kit, deterministic text overlay, format derivation, quality rubric + model bake-off, and moderation recovery.
 
 #### Skill 18 — Repo Auditor
 
@@ -560,6 +561,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** before first deploy; rebrand; adding PWA support; preparing a landing page.
 **Problem it solves:** deploy without favicon, blank OG image on WhatsApp, PWA without maskable icon.
 **Takeaway:** **direct handoff from skill 17** — skill 17 creates the creative, skill 36 derives the operational pack.
+**Extended references (v2.2x):** `references/derivation-and-overlays.md` — format derivation ladder (resize→crop→expand→reframe→recompose), letter-perfect text overlays, thumbnail readability rules, master-only derivation.
 
 ### Category: Product and Design
 
@@ -873,6 +875,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** implementing a game system in Unity (C#) — MonoBehaviour, ScriptableObject, pooling, state management; implementing one in Unreal Engine (C++) — Actor, Component, UPROPERTY/UFUNCTION exposed to Blueprint; applying a specific game design pattern (ECS, state machine, object pooling, spatial partitioning); optimizing performance (draw calls, garbage-collection pressure, LOD/culling, profiling); implementing multiplayer networking (server-authoritative architecture, client prediction, lag compensation).
 **Distinct from:** skill 66 (game-architecture-design) owns the design decision and the balance numbers — skill 67 only builds; it does not decide what system to build or why.
 **Takeaway:** **don't fake coverage a source doesn't have** — the MIT source this skill ports from ([Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills)) covers Unity and Unreal with real production code, but has zero Godot content anywhere in the repository; the skill says so explicitly in a "Cobertura de Godot" section instead of quietly answering Godot questions with Unity-flavored guesses.
+**Extended references (v2.2x):** `references/game-art-assets.md` — AI-generated game art: sprite sheets & frame alignment, tilesets/Wang sets, parallax planes, seamless/PBR textures, skyboxes, side-scroller kits, magenta-keyed video loops.
 
 #### Skill 68 — Character Animation 3D
 
@@ -880,6 +883,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **When to activate:** rigging a humanoid 3D character via AccuRIG and normalizing it in Blender; retargeting motion from any source (mocap, text-to-motion, video) onto a certified rig; deciding which motion-AI technology fits a case (text-to-motion vs video-to-motion vs pose estimation vs a retargeting tool); running Blender headless (`--background --python`) as part of a build pipeline; writing or debugging the quaternion-delta retargeting math against a rest pose.
 **Distinct from:** skill 67 (game-engine-development) owns runtime engine code (Unity C#/Unreal C++) — skill 68 is upstream of that, producing the certified `character.glb`/`animation.glb` the engine consumes; it never writes gameplay code itself. Skill 69 (character-pipeline-2d) assumes this skill's 3D output already exists and focuses on deriving 2D assets from it.
 **Takeaway:** **AccuRIG's own AI Deep Search is not a text-to-motion generator** — it's semantic search over an existing library of 4500+ curated motions, a fundamentally different tool from a synthesis model like SayMotion or MDM that invents a new sequence from a prompt; confusing the two leads to expecting novel-action generation from a search feature that can only ever return what someone already captured.
+**Extended references (v2.2x):** `references/blender-dcc.md`, `maya-dcc.md`, `zbrush-dcc.md` — drive the installed DCC (detection, headless/batch + live bridges, per-domain production rules, version traps). Distilled from scenario-labs expert tools (MIT).
 
 #### Skill 69 — Character Pipeline 2D
 
@@ -917,6 +921,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **What it does:** turns a structured scene description (camera, lights, environment, GLB asset slots, materials, particles) into a real interactive 3D scene in the browser — WebGPURenderer with automatic WebGL2 fallback, navigable camera with raycasting, and a measured web performance budget (Draco/KTX2, LOD, dispose, `prefers-reduced-motion`, static fallback).
 **When to activate:** a landing page or site where the visitor rotates/explores a 3D object, a product configurator, viewing a GLB in the browser, or choosing between WebGPU and WebGL2.
 **Takeaway:** closes the handoff skills 68/69 never had — they certified a `.glb` but only ever delivered it to Unity/Unreal/Godot, never to a page. The scene stays editable by field instead of re-generated like a video; three.js code guidelines stay in skill 02's `threejs.csv`, not duplicated here.
+**Extended references (v2.2x):** `references/generating-3d-assets.md` — how to produce the GLB/FBX this skill renders: concept→mesh, retexture, quad topology, rigging, video-to-motion, splat worlds, orbit views, LoRA training.
 
 ---
 
@@ -997,6 +1002,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 **What it does:** runs an AI-generated film end to end: story (3 proposals with different engines, then a bible), script with literal lines in the project language (PT-BR by default), scene direction (scene engine, per-character acting task with stimulus → response, beats, world map, physics laws, STATE IN/OUT per clip), character sheets and location plates as references, one self-contained v4 prompt per 5–8 s clip, Seedance 2.5 reference-to-video on the Higgsfield API (sheets + plate only, no start frame), QA from an 8-frame contact sheet plus STT, local repair, and post (native lip-synced speech, one score per sequence with crossfade at the transition, sidechain ducking, generated SFX, chapter cards and subtitles via libass, −14 LUFS).
 **When to activate:** "make a video with AI", "write the Seedance prompt", "character sheet", "reference-to-video", a generated clip came out wrong (floating body, object reappearing, speech in the wrong language, moderation block).
 **Takeaway:** every rule comes from a paid mistake in a real 3-minute, 7-era film (a hat that fell and left the character bald, a gate the prompt described but the plate didn't have, a crowd running toward the volcano). Announces the estimated cost before every paid round and never claims a clip was checked without looking at its frames and its audio. `references/armadilhas-do-produto.md` lists the 41 holes found when auditing an automated pipeline against the manual method. Integrating video into an app stays with skill 27; plain editing with skill 75.
+**Extended references (v2.2x):** `references/modelos-de-video.md` (per-family contracts — Seedance, Veo, Kling, Hailuo, Omni, Grok, Vidu, Wan, Runway, Luma — plus conditioning, lipsync, assembly, captions, ready pipelines for music videos/ads/UGC/recasts) and `references/modelos-de-audio.md` (music, SFX, TTS, dubbing, video→audio scoring; ElevenLabs/MiniMax/ACE-Step families). Both distilled from scenario-labs/skills (MIT).
 
 #### Skill 85 — Illustration Studio
 
@@ -1300,6 +1306,7 @@ The kit wasn't built from scratch. It was composed from:
 - **[Reversa](https://github.com/sandeco/reversa)** — skill 33 (Detective Spec). Adapted to integrate with Graphify + repo-audit + persistent memory.
 - **[gstack / Garry Tan](https://github.com/garrytan/gstack)** — `policies/boil-the-lake.md` (completeness philosophy adapted from `ETHOS.md`); skill 45 (post-deploy-canary-monitor, adapted from `canary` skill).
 - **[ECC / affaan-m](https://github.com/affaan-m/ECC)** — `/instinct-export`, `/instinct-import`, `/instinct-promote`, `/multi-plan`, `/aside`, `/skill-health` (all v2.19.0). Adapted to integrate with `.bot/learned-skills/` (our memory tiers) and skill 40 (parallel-dispatcher).
+- **[scenario-labs/skills](https://github.com/scenario-labs/skills)** (MIT) — 167 Agent Skills for media generation. We did NOT adopt their Scenario-MCP architecture; we distilled the provider-agnostic knowledge into `references/` files inside our own skills: `17/references/generation-techniques.md` (image), `36/references/derivation-and-overlays.md` (formats/overlays), `67/references/game-art-assets.md` (game art), `74/references/generating-3d-assets.md` (3D/mocap/splats/LoRA), `84/references/modelos-de-video.md` + `modelos-de-audio.md` (video/audio model families and pipelines). Their DCC/game-engine expert families also came in as one reference per tool, drive-the-installed-app style: `68/references/{blender,maya,zbrush}-dcc.md` and `67/references/{unreal,unity,godot,roblox}-content-production.md`.
 - **Strunk & White — Elements of Style** — `policies/writing-clarity.md`. 10 rules adapted for agent output.
 
 ### External complementary plugins
