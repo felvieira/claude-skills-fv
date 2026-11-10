@@ -1,10 +1,8 @@
 ---
 name: qa-testing
 description: |
-  Skill do QA Engineer para testes unitarios, integracao e E2E. Use quando precisar escrever testes,
-  validar regressao, revisar cobertura, configurar estrategia de QA, ou evidenciar qualidade antes de release.
-  Trigger em: "teste", "test", "QA", "Playwright", "Vitest", "Jest", "E2E", "coverage", "mock",
-  "fixture", "regressao", "teste de integracao", "testing library".
+  Planeja QA, escreve testes e verifica comportamento, regressao e cobertura antes de release.
+  Trigger em: "teste", "test", "QA", "Playwright", "Vitest", "Jest", "E2E", "coverage", "mock", "fixture", "regressao", "teste de integracao", "testing library", "mutation testing", "teste de mutação", "mutantes sobreviventes".
 ---
 
 # QA Engineer - Testes Unitarios e E2E (SKILL)
@@ -20,73 +18,53 @@ O QA garante que o comportamento entregue continua correto antes de avancar no p
 
 > **Inspiração:** Birgitta Böckeler — _"Mutation and structural testing are computational feedback sensors that have been underused in the past, but are now having a resurgence."_ Ver `docs/inspiration/harness-engineering.md`.
 
-**Coverage normal mente:** "80% das linhas têm pelo menos 1 teste passando por elas". Mas isso não diz se os testes **detectam bugs**. Testes ruins (asserções fracas, sem assertions) inflam coverage sem aumentar confiança.
+Cobertura informa quais partes foram exercitadas, não quais defeitos os testes detectariam. Mutação introduz diferenças controladas no código para investigar essa sensibilidade.
 
-**Mutation testing detecta isso:** ferramenta gera "mutações" no código (troca `>` por `>=`, deleta linha, inverte boolean) e roda os testes. Se os testes **não falham** após mutação, eles são fracos.
+Um mutante sobrevivente exige triagem: pode indicar lacuna de teste, diferença fora do contrato ou mutação equivalente. Timeout, erro de infraestrutura e código que não compila não comprovam detecção por asserção.
 
 ### Quando aplicar
 
 | Situação | Recomendação |
 |---|---|
-| Coverage > 60% mas bugs ainda escapam | ✅ Forte — sinal claro de testes fracos |
-| Lógica complexa de negócio (cálculos, regras) | ✅ Forte — todo edge case importa |
-| Greenfield, time aprendendo TDD | ✅ Médio — ensina a escrever assertions melhores |
-| Prototype/spike throwaway | ❌ Skip — overhead > ganho |
-| Coverage < 40% | ❌ Skip antes — coverage primeiro, mutation depois |
-| CI lento (>10min) | 🟡 Cuidado — mutation roda em paralelo a coverage |
+| Regra crítica alterada, cálculo ou decisão com limites | Começar por essa função e seus testes relevantes |
+| Cobertura alta e regressões recorrentes | Investigar asserções e casos de fronteira |
+| Pouca cobertura no módulo escolhido | Criar testes úteis antes ou junto da análise; percentual global não decide sozinho |
+| Prototipagem descartável ou alteração mecânica | Avaliar se o custo acrescenta evidência útil |
+| CI lento ou testes com efeitos externos | Limitar tempo/workers e controlar os efeitos antes de executar |
 
 ### Tools por linguagem
 
 | Linguagem | Tool | Notas |
 |---|---|---|
-| JS/TS | [Stryker Mutator](https://stryker-mutator.io/) | `@stryker-mutator/core` — config via stryker.config.json |
-| Python | [mutmut](https://github.com/boxed/mutmut) | `pip install mutmut`, simples |
-| Python | [Cosmic Ray](https://github.com/sixty-north/cosmic-ray) | Mais sofisticado, configurável |
-| Java | [PIT (Pitest)](https://pitest.org/) | Padrão de mercado JVM |
+| JS/TS | [Stryker Mutator](https://stryker-mutator.io/) | Verificar compatibilidade com o runner do projeto |
+| Python | [mutmut](https://github.com/boxed/mutmut) | Usar ambiente do projeto |
+| Python | [Cosmic Ray](https://github.com/sixty-north/cosmic-ray) | Avaliar configuração e orçamento |
+| Java | [PIT (Pitest)](https://pitest.org/) | Verificar integração com o build |
 | .NET | [Stryker.NET](https://stryker-mutator.io/docs/stryker-net/introduction/) | mesma família do JS |
-| Rust | [cargo-mutants](https://github.com/sourcefrog/cargo-mutants) | Maduro, integra com cargo |
-| Go | [go-mutesting](https://github.com/zimmski/go-mutesting) | Menos popular mas funciona |
-| Ruby | [mutant](https://github.com/mbj/mutant) | Tipo gold standard pra Ruby |
+| Rust | [cargo-mutants](https://github.com/sourcefrog/cargo-mutants) | Verificar toolchain e comandos de teste |
+| Go | [go-mutesting](https://github.com/zimmski/go-mutesting) | Verificar suporte à versão da linguagem |
+| Ruby | [mutant](https://github.com/mbj/mutant) | Verificar ambiente e runner |
 
 ### Workflow recomendado
 
-```
-1. Tem coverage instalado? Se não, comece por isso (skill 05 normal flow)
-2. Coverage > 60%? Se não, focar em coverage antes
-3. Sim → adicione mutation tool ao package.json/equivalent
-4. Roda primeiro full: `npx stryker run` (vai demorar)
-5. Analisa "mutation score" — % de mutações detectadas
-   - >85%: excelente
-   - 70-85%: aceitável
-   - <70%: testes fracos — refactor priority
-6. Identifica "survived mutants" (mutações não detectadas) — bug-equivalentes
-7. Pra cada survived, escreva teste que mata o mutante
-8. Plug no CI:
-   - Diário (não cada commit — caro)
-   - Threshold mínimo (não regression)
-```
+1. Definir contrato, revisão/estado dos arquivos, funções-alvo, tempo máximo e limite de workers.
+2. Reutilizar ferramentas disponíveis. Instalação ou regeneração de relatórios deve estar coberta pelo trabalho autorizado; não executá-la como efeito oculto de um relatório.
+3. Rodar o baseline dos testes relevantes no ambiente controlado. Se falhar, resolver a causa antes de interpretar mutações.
+4. Executar primeiro o escopo selecionado. Ampliar somente quando os resultados ou riscos justificarem.
+5. Separar detecção de mutante válido por asserção, sobrevivente, não coberto, equivalente justificado, timeout, inválido e erro de infraestrutura. Registrar denominador e itens não executados.
+6. Corrigir lacunas de teste que alteram comportamento observável; justificar equivalentes sem mudar a regra correta. Revalidar o escopo afetado.
+7. Se o projeto adotar gate, usar baseline e limite acordados para aquela área, com orçamento de CI. Resultado cacheado precisa ser revalidado quando testes, dependências ou configuração mudarem.
 
 ### Plug no kit
 
-Esta skill (05) deve **automaticamente sugerir** mutation testing quando detectar:
-- `package.json` com `coverage > 60%`
-- ou `pyproject.toml` com pytest + coverage
-- ou ambiente similar maduro
-
-Sugestão padrão:
-```
-"Coverage está em X% — bom suficiente pra adicionar mutation testing.
- Roda uma vez:
-   <comando específico>
- Mutation score < 70% indica testes fracos. Veja policies/quality-gates.md."
-```
+Use `docs/skill-guides/architecture-and-evidence.md` para a triagem e os testes de repetição, concorrência e recuperação. `scripts/code-quality-report.mjs --input <json> [--json]` consolida medições normalizadas; ele não executa ferramentas nem verifica os artefatos declarados. Não use esse relatório como prova de execução.
 
 ### Integração com skill 37 (TDD)
 
 Skill 37 (TDD) usa **approved fixtures** para behaviour harness gap.
 Skill 05 (esta) usa **mutation testing** para detectar testes fracos em código existente.
 
-Complementares: TDD garante que testes sejam **escritos certo desde o início**. Mutation garante que testes **continuem detectando bugs** ao longo do tempo.
+TDD ajuda a formular contratos testáveis; mutação investiga a sensibilidade dos testes existentes. As duas técnicas exigem critérios corretos e evidência de execução; nenhuma garante ausência de defeitos.
 
 ## QA Tradicional (resto da skill)
 

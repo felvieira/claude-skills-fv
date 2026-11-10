@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * score-design — pontua objetivamente a UI produzida por cada braço do bench A/B.
+ * score-design — compara sinais heurísticos e pares de contraste entre braços.
  *
  * O bench que originou `rules/frontend/ui-design.md` rodou uma vez, expôs 3 UIs
  * indigo quase idênticas, e a correção foi escrever uma regra. Ninguém rodou de
- * novo pra provar que a regra funcionou. Este script fecha esse loop: roda os
- * dois checkers em cada braço e devolve um número comparável entre versões.
+ * novo pra provar que a regra funcionou. Este script coleta evidências parciais;
+ * os sinais não provam qualidade visual e a comparação exige revisão humana.
  *
  * Uso:
  *   node bench/ab/score-design.mjs <dir-braço-1> <dir-braço-2> ...
@@ -42,27 +42,28 @@ function runChecker(script, target) {
 }
 
 /**
- * Score 0-100. Erro de design genérico pesa mais que aviso, e falha de contraste
- * pesa como erro — acessibilidade não é preferência.
+ * A pontuação é apenas a porcentagem de pares de contraste identificados que
+ * passaram. Sem pares, é null. Sinais estéticos são reportados sem penalidade.
  */
 function scoreArm(name, generic, contrast) {
   const genericErrors = generic?.errors?.length ?? 0;
   const genericWarns = generic?.warns?.length ?? 0;
   const contrastFails = contrast?.failures?.length ?? 0;
 
-  const penalty = genericErrors * 15 + contrastFails * 15 + genericWarns * 3;
-  const score = Math.max(0, 100 - penalty);
+  const contrastPairs = contrast?.pairs ?? 0;
+  const score = contrastPairs > 0 ? Math.round((contrastPairs - contrastFails) / contrastPairs * 100) : null;
 
   return {
     arm: name,
     score,
+    scoreType: "static-contrast-pairs-percent",
     genericErrors,
     genericWarns,
     contrastFails,
     filesScanned: generic?.scanned ?? 0,
-    contrastPairs: contrast?.pairs ?? 0,
-    // Assinatura do default estatístico: o que o bench original expôs.
-    signals: [...new Set((generic?.errors ?? []).map((e) => e.rule))],
+    contrastPairs,
+    contrastSkippedTokens: contrast?.skippedTokens ?? null,
+    signals: [...new Set([...(generic?.errors ?? []), ...(generic?.warns ?? [])].map((e) => e.rule))],
   };
 }
 
@@ -97,20 +98,20 @@ async function main() {
     results.push(scoreArm(path.basename(target), generic, contrast));
   }
 
-  results.sort((a, b) => b.score - a.score);
+  results.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
 
   if (asJson) {
     console.log(JSON.stringify({ results }, null, 2));
     return 0;
   }
 
-  console.log("\nDesign score por braço (0-100, maior é melhor)\n");
-  console.log("braço".padEnd(22) + "score".padEnd(8) + "erros".padEnd(8) + "contraste".padEnd(12) + "avisos");
+  console.log("\nPares de contraste aprovados (%) e pistas visuais por braço\n");
+  console.log("braço".padEnd(22) + "pares%".padEnd(8) + "erros".padEnd(8) + "contraste".padEnd(12) + "avisos");
   console.log("-".repeat(60));
   for (const r of results) {
     console.log(
       r.arm.padEnd(22) +
-      String(r.score).padEnd(8) +
+      String(r.score ?? "n/a").padEnd(8) +
       String(r.genericErrors).padEnd(8) +
       String(r.contrastFails).padEnd(12) +
       String(r.genericWarns)
@@ -119,12 +120,11 @@ async function main() {
 
   const withSignals = results.filter((r) => r.signals.length > 0);
   if (withSignals.length > 0) {
-    console.log("\nSinais de default estatístico encontrados:");
+    console.log("\nPistas visuais encontradas para revisão contextual:");
     for (const r of withSignals) console.log(`  ${r.arm}: ${r.signals.join(", ")}`);
   }
 
-  console.log("\nComparar entre versões do kit responde a pergunta que importa:");
-  console.log("a regra escrita mudou o resultado, ou só documentou a intenção?");
+  console.log("\nTokens não interpretados, pares não medidos e aparência renderizada exigem verificação própria; isto não é nota de design.");
   return 0;
 }
 

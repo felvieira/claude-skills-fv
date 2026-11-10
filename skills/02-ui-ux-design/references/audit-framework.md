@@ -13,7 +13,7 @@ Se o pedido é ambíguo entre os dois, tratar como auditoria e perguntar antes d
 
 ## Fluxo — 9 Passos, Nesta Ordem
 
-1. **Inspecionar antes de opinar.** Produto real (se acessível), repositório, instruções do projeto (`CLAUDE.md`, design tokens existentes, convenções). Achado sem ter visto o produto de verdade é suposição vestida de auditoria. Se a auditoria é comparação entre dois estados (antes/depois, design/implementação) e o achado depende de medir posicionamento/espaçamento/cor fino, seguir `policies/visual-diff-precision.md` — uma comparação numa passada só captura diferença grande e perde a fina. Se o ambiente expõe uma ferramenta de sub-agente/Task e a auditoria não é um fix pontual (tela completa, produto, ou pedido explícito de "review de design"), rodar este passo em **dupla avaliação cega** — ver seção própria abaixo.
+1. **Inspecionar antes de opinar.** Produto real (se acessível), repositório, instruções do projeto (`CLAUDE.md`, design tokens existentes, convenções). Achado sem ter visto o produto de verdade é suposição vestida de auditoria. Se a comparação depende de medir posição, espaçamento ou cor, seguir `policies/visual-diff-precision.md`. Dupla avaliação independente pode ser usada quando o host e a autorização aplicável permitirem; ver seção própria abaixo.
 2. **Classificar o contexto.** Tipo de produto, público, tarefa principal da tela, plataforma, restrições técnicas, métrica de sucesso. Toda suposição inevitável (não dá pra descobrir e é preciso seguir) se declara explicitamente — nunca vira fato silencioso no relatório.
 3. **Ler só as referências aplicáveis** (ver tabela abaixo) — carregar as 8 de uma vez é desperdício de contexto quando a tarefa é, por exemplo, só sobre um formulário.
 4. **Mapear a jornada antes de avaliar decoração.** Happy path, exceções, estados, recuperação de erro — nessa ordem. Avaliar cor e tipografia antes de saber se o fluxo fecha é folha em cima de fundação rachada.
@@ -27,15 +27,15 @@ Se o pedido é ambíguo entre os dois, tratar como auditoria e perguntar antes d
 
 Uma auditoria feita num único contexto sofre do mesmo viés que atropela o passo 5 (classificar achado): a primeira impressão ancora o resto. Ver um relatório de heurísticas antes de julgar se a interface foi desenhada **para este produto** faz a leitura de especificidade nascer contaminada pelo que já foi notado. A correção é estrutural, não de atenção — rodar duas avaliações que não se veem, e só depois reconciliar.
 
-**Quando aplicar**: auditoria de tela completa, produto ou fluxo — não um achado pontual — e a ferramenta de sub-agente/Task está disponível neste ambiente.
+**Quando aplicar**: auditoria de tela completa, produto ou fluxo, quando houver ferramenta de subagente e autorização aplicável. Disponibilidade por si só não autoriza despacho.
 
 **Avaliação A — leitura de design.** Sub-agente isolado, sem acesso ao resultado de B. Produz: **veredito de especificidade** (abaixo), os 10 itens do checklist de Nielsen já existente na seção "Heurísticas de Nielsen - Checklist" do `SKILL.md` principal (não recriar a tabela aqui — aplicar a mesma), pontos fortes, achados priorizados.
 
-**Avaliação B — evidência determinística.** Sub-agente isolado, sem acesso ao resultado de A. Roda o que houver de verificável mecanicamente neste projeto — `scripts/check-design-generic.mjs` e `scripts/check-contrast.mjs` (já existentes nesta skill, ver seção "Verificacao" do `SKILL.md` principal) contam como esta camada quando o achado é sobre indigo default, `system-ui`, gradiente clichê ou contraste fora de WCAG. Se o projeto expõe inspeção de browser (screenshot, DOM), essa evidência entra aqui também. Reporta contagem e localização, não opinião.
+**Avaliação B — evidência verificável.** Quando o host e a autorização permitirem, uma leitura separada roda verificações disponíveis, como `scripts/check-design-generic.mjs` e `scripts/check-contrast.mjs`. O primeiro localiza pistas, não defeitos automáticos; o segundo calcula pares que consegue identificar. Capturas e DOM também são evidências quando disponíveis. Reportar localização e limites de cada método.
 
-**Regra dura de isolamento**: nenhuma das duas avaliações pode ler o output da outra antes de terminar. Se o ambiente não tem ferramenta de sub-agente, ou o usuário recusou paralelismo, rodar sequencial (A completa, depois B, depois síntese) é aceitável **mas o relatório final abre com um aviso de execução degradada** — declarar explicitamente que rodou em contexto único e por quê, em vez de apresentar o resultado como se fosse duas leituras independentes. Uma auditoria degradada silenciosa é uma auditoria que finge ter isolamento que não teve.
+**Regra de isolamento**: nenhuma das duas avaliações independentes lê o output da outra antes de terminar. Sem ferramenta ou autorização, execute sequencialmente e informe que foi uma única leitura; não apresente o resultado como avaliações independentes.
 
-**Síntese**: não concatenar A e B. Marcar onde concordam, onde B pegou algo que A não viu (ou vice-versa), e onde um achado de B parece falso positivo à luz do contexto que só A tinha (ex: contraste "baixo" que é intencional numa marca já validada). A síntese entra na tabela de achados do passo 6, com a etiqueta de classificação normal (norma/evidência/heurística/preferência) — dupla avaliação é sobre **como chegar** ao achado, não substitui a classificação de qual tipo de achado ele é.
+**Síntese**: não concatenar A e B. Marcar onde concordam, onde B pegou algo que A não viu e onde uma pista visual é apropriada à identidade do produto. Contraste insuficiente sob o requisito aplicável deve ser tratado, não descartado por preferência de marca. A síntese entra na tabela de achados com a classificação normal de evidência.
 
 ### Veredito de Especificidade — Antes de Ver Qualquer Evidência
 
@@ -43,7 +43,7 @@ Pergunta que a Avaliação A responde **antes** de olhar achados de B ou rodar q
 
 Sinais de interface **category-interchangeable** (genérica para a categoria, não para o produto):
 - Layout, copy e hierarquia que servem qualquer produto do mesmo segmento sem trocar uma palavra
-- Escolhas visuais que batem com os "Anti-padrões" e "Sinais de paleta genérica" já listados no `SKILL.md` principal (gradiente roxo-rosa, indigo-500 default, Inter sem justificativa) — se esses sinais aparecem, o veredito de especificidade já está parcialmente respondido
+- Repetição de escolhas sem relação aparente com a tarefa, o conteúdo ou a identidade. Uma fonte, paleta, gradiente ou componente isolado é pista para investigar, nunca prova de falta de especificidade.
 - Nenhuma decisão de design rastreável até uma característica real deste produto (público, dado que ele mostra, ação que ele prioriza)
 
 Este veredito não é um item a mais na tabela de achados — é a moldura que decide se a auditoria está avaliando um produto com identidade ou uma casca reaproveitável, e isso muda a severidade que outros achados recebem (achado estético em interface já genérica pesa menos que o problema de fundo: falta de identidade).

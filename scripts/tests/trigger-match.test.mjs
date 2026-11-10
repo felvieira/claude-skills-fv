@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { matchesTrigger } from '../lib/trigger-match.mjs';
+import { extractTriggers } from '../lib/skill-triggers.mjs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -22,4 +23,9 @@ test('fixture evaluator keeps apostrophes within quoted trigger phrases', () => 
   const sample = result.should.samples.find((item) => item.prompt.startsWith("modernize this app's interface"));
   assert.equal(sample.by, "modernize this app's interface");
   assert.ok(result.should.samples.every((item) => item.matched));
+});
+
+test('shared frontmatter parser handles multiple triggers, apostrophes and Windows line endings', () => {
+  const body = '\uFEFF---\r\nname: example\r\ndescription: |\r\n  Trigger em: "primeiro", "modernize this app\'s interface", "terceiro".\r\nmetadata:\r\n  other: "not a trigger"\r\n---\r\n';
+  assert.deepEqual(extractTriggers(body), ['primeiro', "modernize this app's interface", 'terceiro']);
 });

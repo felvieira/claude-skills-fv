@@ -2,7 +2,7 @@
 name: architecture-deepener
 description: |
   Identifica melhorias estruturais e fronteiras arquiteturais.
-  Trigger em: "deepening", "deep module", "shallow module", "refactor architecture", "improve architecture", "consolidate modules", "agent-friendly codebase", "AI-navigable", "module depth".
+  Trigger em: "deepening", "deep module", "shallow module", "refactor architecture", "improve architecture", "consolidate modules", "agent-friendly codebase", "AI-navigable", "module depth", "melhorar a arquitetura", "fronteiras de domínio", "estado compartilhado".
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   argument-hint: "[--scope=src/foo] [--max-candidates=N]"
@@ -69,15 +69,25 @@ Esta skill segue `GLOBAL.md`, `policies/source-driven.md`, `policies/writing-cla
 >
 > **One adapter = hypothetical seam. Two adapters = real seam.**
 
+Essa última heurística ajuda a identificar abstração especulativa, mas uma fronteira de IO ou confiança pode justificar um adaptador mesmo com uma única implementação. Não invente um segundo adaptador para legitimar uma separação útil.
+
+## Contratos, estado e recuperação
+
+Para cada candidato, descreva a invariante, os estados/transições, o dono da escrita e a fronteira de confiança. Proponha uma representação que impeça combinações inválidas sem supor que tipos validam dados externos. Separe decisões de domínio de IO quando houver ganho de clareza e testabilidade; evite camadas pass-through.
+
+Quando houver estado compartilhado ou repetição, verifique a estrutura que arbitra concorrência, a identidade da intenção e os efeitos após uma queda. Um lock local não coordena processos distintos. Um candidato arquitetural deve indicar o cenário que comprovaria sua vantagem, a menor etapa de transição e os contratos que permaneceriam válidos.
+
+Use `docs/skill-guides/architecture-and-evidence.md` e `examples/architecture-decisions.md` para os cenários de domínio, duplicação, falha de hipótese e recuperação. Métricas podem localizar fricção, mas não justificam extrair módulos ou remover guardas por si sós.
+
 ## Glossario (use exatamente — consistencia e o ponto)
 
-Nao deslizar para "component", "service", "API", "boundary". Definicoes:
+Use os termos do domínio e distinga os conceitos arquiteturais abaixo. Uma fronteira de confiança descreve mudança de trust; um seam descreve onde substituir comportamento. Não trate os dois como sinônimos.
 
 - **Module** — qualquer coisa com interface e implementacao (funcao, classe, package, slice).
 - **Interface** — tudo que o caller precisa saber para usar o modulo: tipos, invariantes, modos de erro, ordering, config. **Nao apenas a assinatura de tipo.**
 - **Implementation** — codigo dentro.
 - **Depth** — leverage na interface: muito comportamento atras de interface pequena. **Deep** = alta leverage. **Shallow** = interface quase tao complexa quanto a implementacao.
-- **Seam** — onde uma interface vive; lugar onde comportamento pode ser alterado sem editar in place. (Use isso, nao "boundary".)
+- **Seam** — onde uma interface vive; lugar onde comportamento pode ser alterado sem editar in place.
 - **Adapter** — coisa concreta satisfazendo uma interface em um seam.
 - **Leverage** — o que callers ganham com depth.
 - **Locality** — o que mantenedores ganham com depth: mudanca, bugs, conhecimento concentrados em um lugar.
@@ -155,7 +165,7 @@ Lista numerada de **deepening opportunities**. Para cada candidato:
 
 **Conflitos com ADR:** se candidato contradiz ADR existente, so trazer quando friccao for real o suficiente para reabrir o ADR. Marcar claramente: _"contradicts ADR-0007 — but worth reopening because…"_. NAO listar todo refactor teorico que ADR proibe.
 
-**NAO propor interfaces ainda.** Perguntar: "Qual destes voce quer explorar?"
+Em auditoria exploratória sem candidato definido, apresente as opções antes de aprofundar interfaces. Se o usuário já delimitou o candidato ou autorizou o escopo, avance com esse contexto; não peça a mesma escolha novamente.
 
 ### Fase 3 — Grilling Loop (sobre o candidato escolhido)
 
@@ -167,7 +177,7 @@ Side effects acontecem inline conforme decisoes cristalizam:
 - **Refinando termo durante a conversa?** Atualizar `CONTEXT.md` ali mesmo.
 - **Usuario rejeita candidato com motivo "load-bearing"?** Oferecer ADR: _"Quer registrar isso como ADR para que reviews futuros nao re-sugiram?"_. So oferecer quando o motivo seria realmente necessario para um explorador futuro evitar re-sugestao — pular motivos efemeros ("nao vale a pena agora") e auto-evidentes.
 
-**Checkpoint apos o deepening implementado:** rodar a suite de testes que a Fase 2 previu que "sobreviveriam" pela interface nova — se algum teste que deveria sobreviver quebrou, a interface nova vazou detalhe de implementação que o deepening deveria ter escondido. Corrigir a interface (não o teste) e rodar de novo antes de considerar o deepening concluído.
+**Checkpoint após o deepening implementado:** execute os testes dos contratos preservados e dos consumidores afetados. Uma falha pede investigação: regressão, alteração autorizada de interface, teste acoplado ou ambiente. Não ajuste a expectativa para esconder regressão; também não trate qualquer falha como prova automática de vazamento arquitetural. Propriedades de concorrência/IO exigem integração com o mecanismo relevante.
 
 ## Heuristicas de Detecao
 
@@ -239,9 +249,12 @@ Distinguir **layer** (separacao logica — reduz acoplamento no codigo) de **tie
 **Files:** src/foo.ts, src/bar.ts, src/baz/index.ts
 **Problem:** entender Order intake exige pular entre FooBarHandler, OrderService, OrderValidator e OrderRepository. Validacao acontece em 3 lugares com regras ligeiramente diferentes (RN-005 vs RN-012).
 **Solution:** consolidar Order intake atras de modulo unico `OrderIntake` com interface `intake(rawOrder): Order | OrderError`. Esconder validacao + persistencia + emit-event atras desse seam.
+**Invariants and ownership:** declarar quais regras precisam ser iguais, quais variam por contrato e quem arbitra a escrita do pedido.
+**Recovery:** definir como persistencia e emit-event se recuperam de queda/repeticao, sem supor atomicidade entre banco e recurso externo.
+**Verification and first step:** teste de caracterizacao do contrato, cenario de falha relevante e menor etapa de migracao compativel.
 **Benefits:**
 - **Leverage:** callers param de saber sobre os 4 modulos
-- **Locality:** validacao em 1 lugar, RN-005 vs RN-012 conflito vira impossivel
+- **Locality:** regras comuns ficam em um lugar; diferencas legitimas entre RN-005 e RN-012 continuam explicitas
 - **Testabilidade:** 1 interface a testar, vs 4 hoje. Testes ficam integration-style por default.
 
 ### 2. ...

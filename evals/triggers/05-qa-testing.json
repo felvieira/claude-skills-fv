@@ -10,7 +10,10 @@
     "como validar regressao apos esse refactor",
     "estrategia de QA antes de release pro fim de semana",
     "teste de integracao com banco em memoria",
-    "testing library nao acha o elemento renderizado"
+    "testing library nao acha o elemento renderizado",
+    "aplicar mutation testing nas regras alteradas",
+    "planejar teste de mutação com orçamento de execução",
+    "investigar mutantes sobreviventes no cálculo"
   ],
   "shouldnt_trigger": [
     "configurar dominio customizado no Vercel",

@@ -19,7 +19,7 @@ Validar que a skill 56 corrige layout quebrado pela **causa raiz**, não por sin
 
 ## Evidências Mínimas
 - relatório sintoma → causa → fix por ocorrência
-- `node scripts/check-design-generic.mjs <path>` sem erro de `vh-fullscreen` após o fix
+- `100vh` residual é revisto no contexto: pode ser fallback acompanhado de `100dvh`; verificar a interface renderizada
 - checklist de conversão marcado, com item não aplicável justificado
 
 ## Reprova Se

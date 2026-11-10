@@ -372,6 +372,8 @@ Isso cobre a mecânica pontual. Quando o pedido é a página inteira estruturada
 
 **Regra dura:** nunca escutar scroll manualmente (`window.addEventListener('scroll')` em estado React) para dirigir animação — sempre `ScrollTrigger` (ou `useScroll`/`IntersectionObserver` para o caso simples). Listener manual perde sincronia de frame e não limpa corretamente.
 
+Quando o custo de movimento for relevante, consulte `skills/92-design-director/references/evidencia-e-captura.md`: observe rotas e posições reais, loops e recursos fora da tela, retomada, limpeza e movimento reduzido. Relate medições e limites sem prometer melhora não medida.
+
 ### Sticky-stack (cards empilhando ao rolar)
 
 ```typescript

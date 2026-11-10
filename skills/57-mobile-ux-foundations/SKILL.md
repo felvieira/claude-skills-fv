@@ -102,19 +102,17 @@ Respeitar a preferencia de sistema quando o usuario desativa vibracao.
 
 ## 2. Dark Mode — Fisiologia, nao inversao
 
-O erro mais comum e inverter polos: `#FFFFFF` vira `#000000` e o texto vira branco puro. Isso quebra em tres frentes simultaneas:
+Inverter automaticamente branco e preto pode produzir problemas que precisam de verificacao:
 
-1. **Halation (irradiacao).** Texto em luminancia maxima sobre ausencia total de luz faz as letras "sangrarem". Para quem tem astigmatismo — parcela grande da populacao — o texto borra e a leitura fica insustentavel em poucos minutos.
-2. **Smearing em OLED.** Preto puro desliga o diodo. Ao rolar, o pixel precisa de tempo para reacender, deixando rastro fantasma no texto em movimento.
-3. **Morte da elevacao.** Sem luz residual no fundo, sombra nao existe — e o modelo de profundidade em Z (modal sobre pagina, card sobre superficie) deixa de funcionar.
+1. **Irradiacao.** Contraste muito intenso pode gerar desconforto ou reduzir legibilidade para algumas pessoas; verifique texto e preferencias de brilho.
+2. **Rastro em OLED.** Alguns paineis podem apresentar rastro em transicoes escuras; observe no dispositivo quando essa evidencia for necessaria.
+3. **Distincao de camadas.** Sombras podem ser discretas sobre preto; use superficies, bordas ou outros sinais quando ajudarem a separar elementos.
 
-Por isso a superficie base do tema escuro e **cinza profundo, `#121212`**, nao preto puro. Ele preserva descanso visual, permite sombra, evita smearing e ainda entrega o ganho de bateria em OLED.
-
-Preto puro fica restrito a: modo de economia extrema de bateria e consumo de midia em tela cheia (video, leitura imersiva).
+Cinza profundo como `#121212` e uma opcao de partida, nao uma cor obrigatoria. Preto puro tambem pode ser apropriado conforme marca, plataforma, conteudo e preferencia da pessoa. Verifique leitura, contraste, distincao de superficies e comportamento nos dispositivos acessiveis; nao prometa conforto ou economia sem medicao.
 
 ### Elevacao no escuro
 
-No claro, elevacao se expressa por sombra. No escuro, sombra some — elevacao se expressa por **superficie mais clara**: quanto mais alto o elemento na pilha Z, mais claro o fundo dele.
+No escuro, superficies mais claras ou bordas podem comunicar elevacao quando a sombra sozinha nao distingue as camadas. Confirme a hierarquia no tema real.
 
 ```css
 --surface-0: #121212;  /* base */
@@ -125,7 +123,7 @@ No claro, elevacao se expressa por sombra. No escuro, sombra some — elevacao s
 
 ### Cor de marca e semantica no escuro
 
-Cor saturada vibra e "queima" contra fundo escuro. Regra: **dessaturar e clarear** a versao escura de toda cor de marca e de estado.
+Uma cor muito saturada pode competir com o conteudo ou perder contraste no escuro. Ajuste quando a leitura, a marca ou o estado exigirem; compare os temas reais.
 
 | Estado | No claro | No escuro |
 | --- | --- | --- |
@@ -133,7 +131,7 @@ Cor saturada vibra e "queima" contra fundo escuro. Regra: **dessaturar e clarear
 | Sucesso | Verde saturado | Verde suave |
 | Alerta | Ambar forte | Ambar pastel |
 
-Nunca reaproveitar o mesmo hex nos dois temas — o significado sobrevive, o valor nao.
+O mesmo valor pode servir aos dois temas se mantiver significado e contraste adequado em ambos.
 
 ### Contraste minimo (WCAG AA)
 
@@ -324,15 +322,15 @@ Ergonomia:
 - [ ] Haptic mapeado por significado, respeitando preferencia do sistema
 
 Dark mode:
-- [ ] Superficie base `#121212` ou equivalente, nunca preto puro
-- [ ] Elevacao por superficie mais clara, nao por sombra
-- [ ] Cores de marca e de estado dessaturadas na versao escura
-- [ ] Contraste 4.5:1 (corpo) e 3:1 (texto grande/icone) verificado **nos dois temas**
+- [ ] Superficie escura escolhida pelo contexto, com leitura e contraste verificados
+- [ ] Superficies e elevacao distinguiveis com cores, bordas ou sombras adequadas ao contexto
+- [ ] Cores de marca e de estado legiveis e distinguiveis na versao escura
+- [ ] Contraste de texto e componentes verificado em cada tema existente
 - [ ] Fonte em unidade que escala (`sp`/`rem`/Dynamic Type), nunca `px` fixo
 - [ ] Container com `min-height` em vez de altura fixa, para nao cortar texto ampliado
 - [ ] Testado a 200% de zoom e no maior passo de fonte do sistema, sem scroll horizontal
 
-**Checkpoint de contraste:** rodar `node scripts/check-contrast.mjs <css>` (skill 02) nos dois temas — não estimar visualmente "parece escuro o suficiente". Item de contraste só marca quando o script confirma o ratio, exit code 0 nos dois temas.
+**Checkpoint de contraste:** o `node scripts/check-contrast.mjs <css>` verifica somente pares identificáveis de tokens opacos e usa o limiar conservador de texto normal. Confira também os usos renderizados, estados e temas existentes; transparência e cores que o script não interpreta exigem avaliação própria. Exit 0, sozinho, não comprova contraste da interface.
 
 Percepcao:
 - [ ] Feedback de toque em ate 100ms

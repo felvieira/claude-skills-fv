@@ -53,6 +53,12 @@ Recomendar rodar `/analyze --strict` antes de release para detectar violacoes cr
 - stack preferida
 - estilo idealizado de arquitetura
 
+## Evidência de arquitetura e métricas
+
+Antes de usar complexidade/CRAP, cobertura, similaridade ou mutação em um gate, confira função/escopo, revisão, método e resultado da coleta. Dado ausente, falho, incompatível ou antigo não vira zero nem aprovação. Limites bloqueantes precisam estar definidos pelo projeto; estes indicadores, isolados, são sinais para investigação.
+
+Não reduza scores removendo validação, fragmentando responsabilidades ou ajustando testes para aceitar regressões. Para concorrência, repetição e recuperação, a evidência precisa exercitar o mecanismo relevante. Mutação exige baseline válido e triagem separada de equivalentes, inválidos, timeout, erro e código não coberto. Consulte `docs/skill-guides/architecture-and-evidence.md`.
+
 ## Gate de prosa (docs, PRDs, copy)
 
 Qualquer entrega que inclua prosa que humanos vão ler (docs de usuário, PRDs, copy, release notes, changelogs narrativos) deve passar por `policies/anti-ai-writing.md` antes de finalizar.

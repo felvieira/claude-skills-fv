@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "scope": "Demonstração sintética de métricas por função",
+  "revision": "synthetic-example-v1",
+  "synthetic": true,
+  "functions": [
+    {
+      "file": "src/orders/confirm.ts",
+      "line": 12,
+      "name": "confirmOrder",
+      "complexity": { "status": "measured", "value": 6, "revision": "synthetic-example-v1", "evidence": "synthetic/complexity.json#confirmOrder" },
+      "coverage": { "status": "measured", "covered": 9, "total": 10, "kind": "branch", "revision": "synthetic-example-v1", "evidence": "synthetic/coverage.json#confirmOrder" }
+    },
+    {
+      "file": "src/orders/notify.ts",
+      "line": 8,
+      "name": "notifyOrder",
+      "complexity": { "status": "measured", "value": 3, "revision": "synthetic-example-v1", "evidence": "synthetic/complexity.json#notifyOrder" },
+      "coverage": { "status": "missing", "reason": "Exemplo sem medição de cobertura para esta função." }
+    }
+  ],
+  "duplications": [
+    {
+      "left": { "file": "src/signup/validate.ts", "line": 4 },
+      "right": { "file": "src/search/validate.ts", "line": 7 },
+      "similarity": 0.91,
+      "revision": "synthetic-example-v1",
+      "status": "justified",
+      "reason": "Os validadores atendem contratos e motivos para mudar diferentes.",
+      "evidence": "synthetic/duplication.json#pair-1"
+    }
+  ],
+  "mutation": {
+    "status": "measured",
+    "revision": "synthetic-example-v1",
+    "evidence": "synthetic/mutation.json",
+    "baseline": "passed",
+    "counts": { "killed": 8, "survived": 2, "uncovered": 1, "timeout": 1, "invalid": 2, "equivalent": 1, "error": 0 },
+    "triageEvidence": "synthetic/equivalent-review.md#case-1"
+  }
+}

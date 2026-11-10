@@ -1,33 +1,30 @@
-# Eval - UI/UX Design: âncora estética e tokens derivados
+# Eval - UI/UX Design: direção visual e tokens coerentes
 
 ## Objetivo
-Validar que a skill 02 escolhe **uma** âncora estética e deriva paleta/tipografia dela, em vez de cair no default estatístico (indigo + system-ui). Este é o modo de falha nº1 de UI gerada por IA: não é feiura, é ausência de decisão.
+Validar que a skill 02 define uma direção coerente com o produto, suas tarefas e sua identidade, com decisões aplicáveis à interface.
 
 ## Entrada
 - briefing: "crie a interface de um app de controle de gastos pessoais"
 - nenhuma direção visual fornecida pelo usuário (o caso que expõe o default)
 
 ## Esperado
-- **uma** âncora nomeada explicitamente, com justificativa de 1 frase
-- paleta derivada da âncora, com hex codes — nenhum deles indigo `#4f46e5`/`#6366f1`
-- par tipográfico display + body nomeado (não `system-ui` sozinho)
-- os 3 dials registrados com valor e justificativa: DESIGN_VARIANCE, VISUAL_DENSITY, MOTION_INTENSITY
+- direção e hierarquia explicadas em função da tarefa e do público
+- paleta e tipografia adequadas ao contexto e à marca, com contraste verificável
+- densidade e movimento ajustados à superfície, sem exigir números ou arquivos extras
 - estados de componente especificados por comportamento, não só listados por nome
-- se o projeto tem vertical clara (fintech, saúde, e-commerce…), os anti-padrões daquela vertical aplicados
+- problemas relevantes da vertical considerados sem substituir evidência por estereótipos
 
 ## Evidências Mínimas
-- `node scripts/check-design-generic.mjs <path>` sai com **exit 0** nos arquivos gerados
-- âncora citada por nome no handoff para Frontend
+- achados do scanner de padrões, se usado, são avaliados no contexto da interface
+- direção e decisões necessárias são comunicadas na implementação ou handoff
 - tokens de cor com contraste verificável (ver eval `accessibility-contrast-tokens`)
 
 ## Reprova Se
-- usa indigo/violeta do Tailwind sem justificativa explícita
-- declara `font-family: system-ui` como escolha (e não como último fallback da pilha)
-- entrega tokens sem nomear a âncora — "moderno e limpo" não é âncora
-- mistura duas âncoras (ex: brutalista + refined) diluindo as duas
-- gradiente roxo→rosa em fundo branco
+- usa uma descrição vaga como único critério, sem ligá-la a decisões de layout e fluxo
+- declara a interface validada sem inspecionar os estados e superfícies pertinentes
+- reprova uma cor, fonte ou gradiente isoladamente sem considerar a marca e o uso
 
 ## Casos Limite
-- **usuário já tem marca definida**: a âncora vem da marca; a skill não a substitui, deriva dela
-- **projeto adota design system pronto** (Carbon/Fluent/M3): âncora e design system são decisões separadas — o DS resolve componente, a âncora resolve pele
-- **refresh de UI existente**: herdar o que funciona, não redesenhar do zero; despachar skill 56 para auditar antes
+- **usuário já tem marca definida**: preservar o que funciona e respeitar sua identidade
+- **projeto adota design system pronto**: usar seus contratos e avaliar onde há espaço para expressão
+- **refresh de UI existente**: preservar fluxos e consultar a skill 56 para responsividade quando necessário

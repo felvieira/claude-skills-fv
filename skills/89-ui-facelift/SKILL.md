@@ -14,6 +14,8 @@ metadata:
 
 Recebe um app, sistema ou landing existente, entende como ele funciona, identifica as melhorias de UX/UI de maior impacto e as implementa no próprio projeto. Preserva rotas, conteúdo essencial, comportamento, contratos e regras de negócio.
 
+`92-design-director` é a entrada geral para criação e redesign de produto; ele usa este protocolo para interfaces existentes. Esta skill também pode ser invocada diretamente por quem pedir UI Facelift.
+
 ## Governança Global
 
 Segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/tool-safety.md`, `policies/evals.md`, `policies/claim-verification.md` e `policies/stack-flexibility.md`.
@@ -27,7 +29,7 @@ Segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/to
 
 ## Quando Não Usar
 
-- criar uma interface nova sem produto existente — usar `skills/02-ui-ux-design` e `skills/04-frontend-integration`
+- criar uma interface nova sem produto existente — usar `skills/92-design-director`, `skills/02-ui-ux-design` e `skills/04-frontend-integration`
 - analisar sem editar ou produzir uma auditoria — usar `skills/02-ui-ux-design` no modo Auditoria
 - corrigir um problema isolado de overflow, mobile ou modal — usar `skills/56-responsive-conversion`
 - refinar um único componente já funcional — usar `skills/52-ui-polish`
@@ -155,5 +157,7 @@ Se a verificação visual, interação real ou teste não foi executado, declara
 ## Integração com Pipeline
 
 Para redesenho amplo de UI existente: `89-ui-facelift` coordena descoberta, análise, implementação e verificação. Aciona 29 apenas para benchmark; aciona as skills especializadas conforme os achados. Não substitui o pipeline de feature nova: `01 -> 02 -> 04 -> 05`.
+
+Em criação e redesign abrangentes, `92-design-director` mantém a direção comum; este protocolo continua responsável pelo mapa de comportamento e pela execução do facelift. Para capturas de rotas locais e perfil de movimento, consulte `skills/92-design-director/references/evidencia-e-captura.md`.
 
 As práticas de crítica anterior ao detector, classificação de inconsistências e verificação com dados extremos foram adaptadas de [Impeccable](https://github.com/pbakaus/impeccable), de Paul Bakaus (Apache-2.0), revisão `02523ae`.

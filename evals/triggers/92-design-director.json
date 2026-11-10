@@ -1,0 +1,31 @@
+{
+  "skill": "92-design-director",
+  "should_trigger": [
+    "preciso criar uma landing para divulgar meu produto",
+    "crie uma landing para este serviço",
+    "crie a copy e o design de uma landing page para o produto",
+    "vamos criar um site para a empresa",
+    "crie um site com as páginas principais",
+    "quero criar um app para acompanhar entregas",
+    "crie um app de finanças pessoais",
+    "preciso criar um aplicativo para pacientes",
+    "crie um sistema para gerenciar entregas",
+    "preciso criar um sistema para minha equipe",
+    "faça um redesign completo deste sistema",
+    "quero o redesign de um app já existente",
+    "preciso do redesign do app mantendo as funções",
+    "melhorar todas as telas mantendo as funções",
+    "preciso mudar o design do app inteiro",
+    "create a landing page for our product",
+    "build an app for managing projects",
+    "redesign entire app without changing behavior"
+  ],
+  "shouldnt_trigger": [
+    "ajuste o alinhamento deste botão",
+    "analise a acessibilidade deste formulário",
+    "pesquise concorrentes e referências visuais",
+    "configure o banco de dados e a API",
+    "escreva somente o texto deste anúncio",
+    "corrija o overflow do modal no celular"
+  ]
+}

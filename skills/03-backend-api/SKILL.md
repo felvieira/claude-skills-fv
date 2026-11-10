@@ -15,6 +15,16 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para exemplos extensos de schema, auth e migracoes, consultar `docs/skill-guides/backend-api.md` apenas quando necessario.
 
+## Contrato de domínio antes da implementação
+
+- Nomear invariantes, estados válidos, transições e o dono da escrita antes de adicionar lógica ou estado compartilhado.
+- Fazer parsing e validação em cada fronteira de confiança; tipos internos não validam JSON nem substituem autorização.
+- Manter a decisão de domínio separada de IO quando isso reduzir acoplamento, sem criar camadas que apenas repassem chamadas.
+- Definir identidade da intenção, atomicidade e recuperação quando houver retry, concorrência ou efeito externo. Não prometer execução exatamente uma vez só porque existe uma transação local.
+- Validar repetição e payload divergente, disputa entre escritores e queda antes/depois do commit com os mecanismos usados pelo sistema.
+
+Guia e cenários próprios: `docs/skill-guides/architecture-and-evidence.md`; SQL e estratégias de idempotência em `references/idempotencia-e-postgres-avancado.md`.
+
 ## Quando Usar
 
 - definir schema, endpoint, auth ou regra de servidor

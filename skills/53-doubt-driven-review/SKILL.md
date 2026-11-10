@@ -50,6 +50,8 @@ Esta skill é desenhada pro **orquestrador da sessão principal**, onde o Passo 
 
 ## O Processo
 
+Quando correções diferentes conservarem uma hipótese e falharem no mesmo cenário, descreva a hipótese, a evidência contrária e os atores que possuem/alteram o estado. Escolha um experimento que diferencie uma hipótese nova antes de repetir o mesmo mecanismo. O exemplo de mutex local em duas instâncias e o formato de registro estão em `docs/skill-guides/architecture-and-evidence.md`. Isso orienta a investigação; não autoriza mudar regras de negócio fora do pedido.
+
 Copiar este checklist ao aplicar a skill:
 
 ```

@@ -3,14 +3,13 @@ name: design-intelligence
 description: |
   Pesquisa referencias, identidade visual e direcao de design.
   Trigger em: "pesquisar concorrentes", "benchmark visual", "tendencias de design", "moodboard", "design competitivo", "analise visual dos concorrentes", "referencia visual de mercado", "referências de mercado", "melhores landings", "referencia UI pra dashboard".
-allowed-tools: Read, Write, Bash, WebSearch, mcp__plugin_playwright_playwright__*
 metadata:
   argument-hint: "[nicho ou descricao do projeto]"
 ---
 
 # Design Intelligence - Pesquisa Competitiva e Geracao de UI
 
-Pesquisa concorrentes, analisa tendencias visuais do nicho, gera moodboards proprietarios e entrega dossie estrategico completo para o UI/UX Designer (skill 02) executar.
+Pesquisa referências e tendências quando isso ajuda uma decisão de design; entrega direção fundamentada para `92-design-director` e `02-ui-ux-design`. Moodboard é opcional.
 
 ## Governanca Global
 
@@ -31,8 +30,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 ## Pontos de Entrada no Pipeline
 
-1. **Feature nova:** `PO -> Design Intelligence (29) -> UI/UX -> Frontend -> ...`
-2. **Facelift de UI existente:** `UI Facelift (89)` coordena a implementação; acionar Design Intelligence (29) somente quando benchmark competitivo for solicitado ou necessário
+1. **Criação ou redesign abrangente:** `Design Director (92)` coordena; acionar esta skill quando a pesquisa for solicitada ou necessária a uma decisão concreta.
+2. **Facelift de UI existente:** `UI Facelift (89)` preserva e implementa os fluxos; esta skill fornece pesquisa ou análise quando pertinente.
 
 ## Entradas Esperadas
 
@@ -44,8 +43,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 ## Saidas Esperadas
 
 - dossie completo em `docs/design-intelligence/dossier.md`
-- screenshots e imagens de referencia
-- moodboards gerados via skill 17
+- screenshots e imagens de referencia quando úteis e acessíveis
+- moodboard apenas quando ajudar a decisão e houver autorização aplicável
 - handoff claro para UI/UX (skill 02)
 
 ## Responsabilidades
@@ -54,30 +53,28 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 2. Capturar screenshots e imagens de referencia dos concorrentes
 3. Analisar padroes visuais competitivos (paleta, tipografia, layout, CTAs, conversao)
 4. Definir estrategia visual: o que copiar, o que evitar, o que diferenciar
-5. Gerar moodboards proprietarios via Image Generator (skill 17)
+5. Considerar moodboard ou asset apenas se ajudar a decisão, seguindo custo e autorização aplicáveis
 6. Consolidar dossie estrategico para o UI/UX
 
 ## Stack de Ferramentas
 
-### Busca de Concorrentes (obrigatorio)
+### Busca de concorrentes
 
-**Default:** Brave Search API via WebSearch
-**Fallback:** WebSearch nativo do ambiente
+Use a ferramenta de pesquisa disponível e autorizada no host. Se a pesquisa não estiver disponível, declare o limite e use apenas o material acessível.
 
 Buscar:
 - top 5 concorrentes diretos do nicho
 - referencias em Awwwards, Dribbble, Behance para o nicho
 - tendencias de design do segmento
 
-### Captura Visual e Scraping (obrigatorio)
+### Captura visual
 
-**Default:** Playwright MCP
-**Opcional:** Firecrawl API (se disponivel no ambiente)
+Use o navegador disponível conforme as instruções do host; não instale um MCP ou ferramenta automaticamente.
 
 Acoes:
 - navegar em cada resultado encontrado
 - tirar screenshot full-page de cada concorrente
-- extrair imagens relevantes (heros, cards, CTAs) parseando DOM e baixando `img[src]`
+- registrar apenas referências necessárias, respeitando direitos, privacidade e permissões; não baixar assets indiscriminadamente
 - salvar em `docs/design-intelligence/screenshots/` e `docs/design-intelligence/references/`
 
 ### Analise Visual (obrigatorio)
@@ -86,13 +83,9 @@ Acoes:
 
 O Model Routing define o tier adequado para analisar screenshots (tipicamente Deep para analise multimodal). Funciona independente do ambiente.
 
-### Geracao de Moodboard (obrigatorio)
+### Moodboard e geração de imagem (opcionais)
 
-**Execucao:** delegar para Image Generator (skill 17)
-
-Montar super-prompt enriquecido com insights da analise e fazer handoff para o skill 17 gerar moodboards proprietarios.
-
-**Regra default da skill 17** (aplica automaticamente): moodboard sem referência → `grok-imagine` ($0.020/img × 4 painéis = $0.080). Com screenshots de referência → `gemini-25-flash` ($0.039/img). Override só se moodboard precisar de tipografia complexa (`--model gemini-3-pro`).
+Use quando uma composição visual ajudar a resolver uma decisão concreta. Prefira assets existentes ou uma descrição quando suficientes. Se geração for apropriada, siga a skill 17 e as regras vigentes de autorização e custo; não presuma fornecedor, preço, quantidade de imagens ou geração paga.
 
 ## Modo Redesign — Auditoria de UI Existente
 
@@ -102,7 +95,7 @@ Ponto de entrada 2 (linha "Melhoria de UI existente") usa este protocolo em vez 
 
 1. **Scan**: ler o código da UI existente — framework, método de estilização (Tailwind, CSS vanilla, styled-components), estrutura de componentes.
 2. **Diagnose**: rodar o checklist de 7 dimensões abaixo, listando todo padrão genérico, ponto fraco e estado faltante encontrado.
-3. **Fix**: aplicar upgrades na ordem de prioridade, trabalhando com a stack existente (não trocar framework/lib no meio do redesign).
+3. **Fix**: quando implementação estiver autorizada, aplicar correções por prioridade com a stack existente; em pedido somente de análise, relatar os achados sem editar.
 4. **Reverify**: rodar o checklist de 7 dimensões de novo contra o resultado — um fix de uma dimensão pode introduzir problema em outra (ex: trocar componente genérico por custom pode remover o estado de foco que o componente nativo tinha de graça). Item que ainda falhar volta pro passo 3, não segue pro artefato final.
 
 ### Checklist de 7 dimensões
@@ -110,7 +103,7 @@ Ponto de entrada 2 (linha "Melhoria de UI existente") usa este protocolo em vez 
 | Dimensão | O que checar |
 |---|---|
 | Tipografia | fontes default do browser, hierarquia fraca, variação de peso insuficiente, largura de linha excessiva, palavra órfã |
-| Cor e superfície | paleta inconsistente, saturação, fundo genérico, qualidade de sombra — sinal clássico: "gradiente roxo/azul de IA" |
+| Cor e superfície | contraste, coerência com a marca, função da cor, saturação e qualidade de sombra no contexto |
 | Layout | viés de centralização, grid de cards genérico, unidades de viewport, alinhamento e espaçamento inconsistentes |
 | Interatividade e estados | hover state ausente, foco sem indicador, falta de estado de loading/empty/error, feedback de navegação |
 | Conteúdo | nomes repetitivos, dados irreais, tom de copy genérico ("Elevate", "Seamless"), avatares idênticos |
@@ -119,7 +112,7 @@ Ponto de entrada 2 (linha "Melhoria de UI existente") usa este protocolo em vez 
 
 ### Ordem de execução dos upgrades
 
-`troca de fonte → limpeza de cor → estados interativos → layout/espaçamento → substituição de componente → design de estados → polimento tipográfico`
+Priorizar tarefas bloqueadas, controles e estados; depois corrigir inconsistências sistêmicas, hierarquia e acabamento. Trocar fonte, cor ou componente somente quando houver motivo no produto.
 
 Preservar estrutura de URL, labels de navegação e nomes de campo de formulário existentes, salvo aprovação explícita do usuário — redesign visual não é desculpa pra quebrar link externo ou integração já em uso.
 
@@ -130,9 +123,8 @@ Preservar estrutura de URL, labels de navegação e nomes de campo de formulári
 ### Fase 1: Discovery
 
 1. Consultar Asset Librarian (skill 19) para inventariar o que o projeto ja tem
-2. Brave Search: buscar top 5 concorrentes diretos
-3. Brave Search: buscar referencias em Awwwards, Dribbble, Behance
-4. Playwright: navegar, screenshot full-page, extrair imagens do DOM
+2. Pesquisar concorrentes e referências adequados à pergunta usando a ferramenta disponível
+3. Navegar e registrar capturas úteis quando possível; conferir se páginas dinâmicas foram capturadas integralmente
 
 **Artefato:** `docs/design-intelligence/01-discovery.md`
 
@@ -150,16 +142,16 @@ Preservar estrutura de URL, labels de navegação e nomes de campo de formulári
 1. Cruzar tendencias do nicho com identidade atual do projeto
 2. Definir recomendacoes: paleta, tipografia, hierarquia, CTAs
 3. Classificar: copiar (padroes que funcionam) / evitar (cliches) / diferenciar (oportunidades)
-4. **Checar diversidade estrutural:** antes de fechar a recomendacao de layout, buscar dossies anteriores em `docs/design-intelligence/` (deste workspace ou de outros projetos, se acessiveis) e listar quais estruturas de secao (formato de hero, grid de features, layout de pricing) ja foram recomendadas recentemente. Se a estrutura proposta repete uma ja usada em projeto anterior sem justificativa (ex: o nicho realmente exige aquele padrao), marcar como risco de "mesma forma de novo" na secao 4 do dossie e propor uma variacao estrutural alternativa antes de seguir para o moodboard.
-5. Montar briefing estruturado para Image Generator (skill 17)
+4. **Checar diversidade estrutural:** compare a proposta com referências pertinentes e com o próprio produto. Se a composição parecer intercambiável, investigue como o conteúdo e a tarefa podem orientar outra solução; não acesse outros projetos sem necessidade.
+5. Se uma imagem for necessária e autorizada, montar briefing para Image Generator (skill 17)
 
 **Artefato:** `docs/design-intelligence/03-strategy.md`
 
-### Fase 4: Moodboard
+### Fase 4: Moodboard opcional
 
-1. Handoff para Image Generator (skill 17) com super-prompt enriquecido
-2. Skill 17 gera moodboards mesclando tendencias com identidade propria
-3. Receber assets gerados
+1. Definir que decisão o moodboard deve apoiar e verificar autorização e custo.
+2. Usar referências permitidas, assets existentes ou, quando apropriado, a skill 17.
+3. Registrar o resultado e seus limites; não gerar imagem só para preencher o dossiê.
 
 **Artefato:** `docs/design-intelligence/04-moodboard/` (imagens geradas)
 
@@ -192,7 +184,7 @@ Consolidar tudo num documento unico:
 - CTAs e copy direction
 
 ## 5. Moodboard e Referencias Visuais
-- Moodboards gerados via skill 17
+- Moodboard, somente se produzido por necessidade e com autorização aplicável
 - Screenshots curados dos concorrentes
 
 ## 6. Handoff para UI/UX
@@ -208,8 +200,7 @@ docs/design-intelligence/
 ├── 01-discovery.md
 ├── 02-analysis.md
 ├── 03-strategy.md
-├── 04-moodboard/
-│   └── (imagens geradas pelo skill 17)
+├── 04-moodboard/       <- opcional, quando necessário e autorizado
 ├── screenshots/
 │   └── (screenshots full-page dos concorrentes)
 ├── references/
@@ -225,7 +216,8 @@ Se uma fase falhar, a skill retoma da ultima fase completa. Cada fase salva arte
 
 - `Asset Librarian (19)`: fornece inventario de assets e identidade visual existente
 - `Model Routing (policy)`: define tier de modelo para analise de screenshots. Ver `policies/model-routing.md`
-- `Image Generator (17)`: gera moodboards proprietarios a partir do briefing
+- `Image Generator (17)`: gera imagens quando necessárias e autorizadas
+- `Design Director (92)`: coordena a criação ou redesign abrangente
 - `UI/UX Designer (02)`: recebe o dossie final e executa a interface
 - `Orchestrator (09)`: coordena quando esta skill entra no pipeline
 
@@ -234,7 +226,7 @@ Se uma fase falhar, a skill retoma da ultima fase completa. Cada fase salva arte
 - concorrentes pesquisados e capturados
 - analise visual estruturada produzida
 - estrategia definida com copiar/evitar/diferenciar
-- moodboards gerados via skill 17
+- decisão sobre usar ou dispensar moodboard e evidência das imagens efetivamente produzidas
 - dossie final consolidado em `docs/design-intelligence/dossier.md`
 - handoff claro para UI/UX (skill 02)
 
@@ -243,7 +235,7 @@ Se uma fase falhar, a skill retoma da ultima fase completa. Cada fase salva arte
 Entregar para UI/UX (skill 02):
 
 - `docs/design-intelligence/dossier.md` com toda a inteligencia visual
-- imagens de referencia e moodboards em `docs/design-intelligence/`
+- referências e moodboard em `docs/design-intelligence/`, quando produzidos
 - design tokens sugeridos para o projeto
 - direcao clara: copiar / evitar / diferenciar
 

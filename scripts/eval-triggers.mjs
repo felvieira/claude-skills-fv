@@ -34,6 +34,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { matchesTrigger } from "./lib/trigger-match.mjs";
+import { extractTriggers } from "./lib/skill-triggers.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -63,44 +64,6 @@ const maxShouldnt = Number(flag("--max-shouldnt") ?? 20); // %
 // acento ("validacao final", "producao", "ultima verificacao") devem casar
 // triggers declarados com acento ("validação final", "produção", etc).
 // NFD decompõe (ç → c + cedilha) e strip combining marks remove os diacríticos.
-// ─── Extrai triggers da SKILL.md ─────────────────────────────────────────────
-// Os triggers vivem DENTRO do campo `description:` (texto livre YAML multiline),
-// numa frase tipo: Trigger em: "x", "y", "z". O frontmatter inteiro pode ser
-// usado como sopa de texto — extraímos todas as strings entre aspas.
-function extractTriggers(skillBody) {
-  const fmMatch = skillBody.match(/^---\n([\s\S]*?)\n---/);
-  const fm = fmMatch ? fmMatch[1] : skillBody.slice(0, 2000);
-
-  // Procura "Trigger em:" (case-insensitive) e captura o resto da description
-  // até o final do frontmatter — paramos no \n--- (fim do FM) ou em uma linha
-  // que comece com top-level YAML key (sem indent + identifier + :).
-  const idx = fm.search(/[Tt]rigger\s+em\s*:/);
-  if (idx < 0) return [];
-
-  const tail = fm.slice(idx);
-  // Termina no próximo top-level YAML key (linha sem indent começando com letra)
-  // ou consome até o fim do frontmatter.
-  const stopAt = tail.search(/\n[A-Za-z_][A-Za-z0-9_-]*\s*:/);
-  const block = stopAt > 0 ? tail.slice(0, stopAt) : tail;
-
-  // Extrai strings entre aspas duplas/simples (dropping the regex header marker)
-  const quoted = [...block.matchAll(/"([^"\n]*(?:\n[^"\n]*)*)"|'([^'\n]*(?:\n[^'\n]*)*)'/g)].map((m) =>
-    (m[1] ?? m[2]).replace(/\s+/g, " ").toLowerCase().trim(),
-  );
-  if (quoted.length > 0) return [...new Set(quoted)];
-
-  // Fallback: tira "Trigger em:" e separa por vírgula
-  return [
-    ...new Set(
-      block
-        .replace(/^[Tt]rigger\s+em\s*:/, "")
-        .split(/[,\n]/)
-        .map((s) => s.replace(/["'`.]/g, "").trim().toLowerCase())
-        .filter((s) => s.length >= 2 && s.length <= 80),
-    ),
-  ];
-}
-
 // ─── Match heurístico ────────────────────────────────────────────────────────
 // A heurística é local e não representa o roteamento semântico de todos os hosts.
 function matchesAnyTrigger(prompt, triggers) {

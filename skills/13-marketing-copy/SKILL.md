@@ -19,6 +19,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para formulas, templates de copy e exemplos mais longos, consultar `docs/skill-guides/marketing-copy.md` apenas quando necessario.
 
+Em criação ou redesign abrangente de landing, `92-design-director` coordena a direção de produto; esta skill aprofunda a copy comercial quando ela fizer parte do pedido.
+
 Para revisar texto de interface, consulte `skills/91-unslop/references/revisao-texto-codigo.md`: preserve fatos e significado, confira promessas e identifique informação ausente. Um termo isolado não comprova autoria por IA nem torna um texto inadequado.
 
 ## Quando Usar

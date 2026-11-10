@@ -1,7 +1,7 @@
 # Dev Team Kit — Wiki Completa
 
-> **Versão:** 90 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
-> **Última atualização:** 2026-10-11 (skill 88 — Anatomy para figuras isométricas explicativas como máquinas reais)
+> **Versão:** 91 skills · 16 subagents · 48 slash commands · 65 policies · 29 hooks · 22 rules
+> **Última atualização:** 2026-11-10 (v2.110.0 — Design Director e arquitetura com evidências)
 > **Repo:** https://github.com/felvieira/claude-skills-fv
 > **Instalação:** `claude plugin install https://github.com/felvieira/claude-skills-fv`
 
@@ -19,7 +19,7 @@ Wiki única do kit. Cada item segue o formato do post [5 Agent Skills I Use Ever
 2. [Os 2 fluxos: clássico vs discovery](#2-os-2-fluxos-clássico-vs-discovery)
 3. [Princípio fundamental: Vertical Slicing](#3-princípio-fundamental-vertical-slicing)
 4. [Slash commands (23) — atalhos por fase](#4-slash-commands-23)
-5. [Skills (62) — especialistas por categoria](#5-skills-62)
+5. [Skills (91) — especialistas por categoria](#5-skills-91)
 6. [Subagents (16) — despacháveis via Task tool](#6-subagents-16)
 7. [Policies (62) — regras compartilhadas](#7-policies-62)
 8. [Plugin: como o kit é distribuído](#8-plugin-como-o-kit-é-distribuído)
@@ -400,7 +400,7 @@ São atalhos por fase. Não precisa decorar nome de skill — chama o atalho, el
 
 ---
 
-## 5. Skills (90)
+## 5. Skills (91)
 
 Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de ativação), `allowed-tools` (escopo de ferramentas), e SKILL.md com protocolo. Skill 16 está intencionalmente ausente — o escopo dela foi consolidado em `policies/model-routing.md` para manter regras de escolha de modelo num só lugar.
 
@@ -561,8 +561,14 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 #### Skill 29 — Design Intelligence
 
 **O que faz:** pesquisa concorrentes, captura screenshots, analisa tendências visuais, entrega dossier estratégico para UI/UX.
-**Quando ativar:** feature inovadora ou rebranding — antes de UI/UX começar.
-**Problema que resolve:** design "do nada" sem benchmark de mercado.
+**Quando ativar:** pesquisa competitiva solicitada ou necessária para resolver uma decisão de design. Moodboards e imagens geradas são opcionais.
+**Problema que resolve:** decisão de design que precisa de referências pertinentes.
+
+#### Skill 92 — Design Director
+
+**O que faz:** é a entrada para criar ou redesenhar um app, site ou landing. Define direção coerente com o produto e consulta as skills de UX/UI, acessibilidade, responsividade, movimento, Unslop e implementação conforme a necessidade.
+**Quando ativar:** pedido de interface completa ou redesign amplo. Em auditoria sem autorização de edição, apresenta achados sem alterar o produto.
+**Evidência:** inclui guias por superfície, exemplos e captura local opcional; alegações visuais e funcionais exigem verificações reais.
 
 #### Skill 91 — Unslop
 
@@ -614,6 +620,8 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 **Quando ativar:** site público; antes de Google indexar.
 
 ### Categoria: Quality and Delivery
+
+**Arquitetura e evidências:** as skills 03, 05, 11, 34, 37, 38 e 53 compartilham `docs/skill-guides/architecture-and-evidence.md`: invariantes de domínio, fronteiras de confiança, posse do estado, repetição/recuperação e revisão contextual de métricas. Inclui cenários próprios e template de decisão. `scripts/code-quality-report.mjs` consolida entradas normalizadas; não executa scanners nem verifica os artefatos citados. O detalhe de fixtures aprovadas fica sob demanda em `docs/skill-guides/tdd-approved-fixtures.md`.
 
 #### Skill 05 — QA Engineer
 
@@ -786,7 +794,7 @@ Cada skill é uma especialidade. Tem frontmatter com `description` (triggers de 
 
 #### Skill 57 — Mobile UX Foundations
 
-**O que faz:** as decisões que antecedem o layout, cada uma ancorada em dado biométrico ou fisiológico e não em gosto — ergonomia da zona do polegar (onde a navegação pode morar, por que ação destrutiva fica no canto difícil), fisiologia do dark mode (`#121212` como base, nunca preto puro: halation, smearing OLED, elevação morta), performance percebida (limiares 100ms/1s/10s; skeleton entre 1–10s, nada abaixo de 1s), UX de auth/onboarding (passkeys, NIST SP 800-63B contra regra draconiana de senha, permission priming) e a taxonomia de padrão de onboarding ligada ao momento de ativação.
+**O que faz:** orienta ergonomia da zona do polegar, escolhas contextuais de tema escuro, performance percebida e UX de autenticação, onboarding e permissões. Cores são verificadas contra o produto e o contraste real, sem proibição universal.
 **Quando ativar:** antes de decidir onde fica a navegação, antes de escolher as superfícies do dark mode, quando o usuário abandona no primeiro uso, ou quando o app "parece lento" sem ser lento.
 
 #### Skill 58 — i18n & Localization
@@ -1127,7 +1135,7 @@ Haiku para boilerplate, Sonnet para implementação, Opus para arquitetura. Subs
 ### Manifesto: `.claude-plugin/plugin.json`
 
 O plugin descobre automaticamente as pastas de skill:
-- **90 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
+- **91 skills** em `skills/NN-nome/SKILL.md` (sem lista explícita nesse manifesto)
 - **16 agents** em `.claude/agents/<name>.md`
 - **23 commands** em `.claude/commands/<name>.md` (cc-format) + `commands/<name>.md` (kit-format)
 - **hooks** em `hooks/hooks.json` (lifecycle: SessionStart, PreToolUse, PostToolUse, Stop)
@@ -1140,7 +1148,7 @@ O plugin descobre automaticamente as pastas de skill:
 claude plugin install https://github.com/felvieira/claude-skills-fv
 ```
 
-Instala globalmente: 90 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
+Instala globalmente: 91 skills, hooks, 48 commands. Funciona em qualquer projeto sem config adicional. **Não inclui:** policies, MCP server, templates, docs (esses ficam no `.bot/`). O motor/MCP do REA exige instalação opcional separada.
 
 #### Modo 2 — Kit completo por repo (`/devkit-install-fv`)
 
@@ -1165,7 +1173,7 @@ Suporta perfis não-interativos: `--profile lean`, `--no-input`, `--yes`.
 
 | O que entra | Plugin global | `/devkit-install-fv` | Bash direto |
 |---|:---:|:---:|:---:|
-| 90 skills | ✓ | ✓ | ✓ |
+| 91 skills | ✓ | ✓ | ✓ |
 | Hooks (lifecycle) | ✓ | ✓ | ✓ |
 | Slash commands | ✓ | ✓ | ✓ |
 | Policies | ✗ | ✓ | ✓ |

@@ -73,8 +73,8 @@ O Accessibility Specialist traz rigor dedicado para acessibilidade digital — t
 
 | Contexto | Minimo AA | Recomendado AAA |
 |----------|-----------|-----------------|
-| Texto normal (< 18px) | 4.5:1 | 7:1 |
-| Texto grande (>= 18px ou 14px bold) | 3:1 | 4.5:1 |
+| Texto normal | 4.5:1 | 7:1 |
+| Texto grande (>= 24px ou aproximadamente >= 18,5px bold) | 3:1 | 4.5:1 |
 | Componentes de UI e graficos | 3:1 | — |
 | Texto decorativo | Sem requisito | — |
 

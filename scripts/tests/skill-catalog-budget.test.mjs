@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { test } from 'node:test';
 import { dirname, join, resolve } from 'node:path';
@@ -20,7 +20,11 @@ function runCatalog(args = []) {
 
 test('catalog report separates disk inventory from proxy estimates', () => {
   const report = runCatalog();
-  assert.equal(report.inventory.skills, 90);
+  const skillsDir = join(root, 'skills');
+  const onDisk = readdirSync(skillsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && /^\d{2}-/.test(entry.name) && existsSync(join(skillsDir, entry.name, 'SKILL.md')));
+  assert.equal(report.inventory.skills, onDisk.length);
+  assert.ok(report.skills.some((skill) => skill.slug === '92-design-director'));
   assert.ok(report.inventory.descriptionBytes >= report.inventory.descriptionChars);
   assert.ok(report.inventory.catalogEntryBytes >= report.inventory.catalogEntryChars);
   assert.equal(report.observed, null);

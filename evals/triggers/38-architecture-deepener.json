@@ -10,7 +10,10 @@
     "tornar o repo AI-navigable antes do agente assumir",
     "analisar module depth do diretório src/billing",
     "achar deep module candidates pra refatorar",
-    "deepening de modulo shallow que tá vazando complexidade"
+    "deepening de modulo shallow que tá vazando complexidade",
+    "melhorar a arquitetura sem mudar os contratos",
+    "revisar fronteiras de domínio e entrada de dados",
+    "analisar estado compartilhado entre módulos"
   ],
   "shouldnt_trigger": [
     "criar Dockerfile multistage",

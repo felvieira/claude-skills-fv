@@ -30,6 +30,9 @@ export async function runRoutingEvals() {
     if (!containsAll(actualPlugins, testCase.plugins || [])) failures.push(`missing plugins: ${(testCase.plugins || []).filter((id) => !actualPlugins.includes(id)).join(", ")}`);
     if (!containsAll(actualExternalPlugins, testCase.external_plugins || [])) failures.push(`missing external plugins: ${(testCase.external_plugins || []).filter((id) => !actualExternalPlugins.includes(id)).join(", ")}`);
     if (!containsAll(route.skills, testCase.skills || [])) failures.push(`missing skills: ${(testCase.skills || []).filter((id) => !route.skills.includes(id)).join(", ")}`);
+    for (const skill of testCase.exclude_skills || []) {
+      if (route.skills.includes(skill)) failures.push(`unexpected skill: ${skill}`);
+    }
     for (const plugin of testCase.exclude_plugins || []) {
       if (actualPlugins.includes(plugin)) failures.push(`unexpected plugin: ${plugin}`);
     }

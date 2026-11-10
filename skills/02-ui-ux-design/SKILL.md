@@ -9,6 +9,8 @@ description: |
 
 O Designer é responsável por traduzir user stories em interfaces utilizáveis, acessíveis e bonitas.
 
+Para criar ou redesenhar um produto inteiro, `92-design-director` é a entrada principal e consulta esta skill para direção, estrutura e heurísticas. Esta skill continua disponível para desenho ou auditoria focada.
+
 ## Governanca Global
 
 Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `policies/token-efficiency.md`, `policies/stack-flexibility.md`, `policies/evals.md` e `policies/visual-diff-precision.md` (comparar dois screenshots/estados para achar diferença fina de posicionamento, espaçamento ou cor — obrigatória no modo Auditoria quando o achado depende de medir, não só descrever).
@@ -23,7 +25,7 @@ Esta skill decide como a interface **vai** parecer, antes de existir. Para conve
 
 Se o produto pode receber outro idioma — mesmo que hoje seja so pt-BR — ver `skills/58-i18n-localization/SKILL.md` antes de fixar largura de botao, alinhamento ou formato de data: texto traduzido cresce ate 30% e RTL inverte o layout inteiro. Preparar depois custa muito mais que projetar assim desde o inicio.
 
-Para as restricoes fisiologicas que os tokens desta skill tem de respeitar — zona do polegar (onde a navegacao pode morar), superficie base do dark mode (`#121212`, nunca preto puro) e contraste minimo verificado nos dois temas — ver `skills/57-mobile-ux-foundations/SKILL.md`. Essa skill tambem cobre percepcao de espera (skeleton vs. spinner por faixa de duracao) e UX de login/onboarding/permissao.
+Para ergonomia, temas escuros e contraste verificado nos temas existentes, ver `skills/57-mobile-ux-foundations/SKILL.md`. Essa skill tambem cobre percepcao de espera (skeleton vs. spinner por faixa de duracao) e UX de login/onboarding/permissao.
 
 Quando o pedido for uma landing page ou site inteiro estruturado como jornada de scroll (scrollytelling, estilo Apple product page, video que escruba com o scroll) — nao so a interface estatica — ver `skills/64-scroll-storytelling/SKILL.md`. Ela consome a direcao estetica definida aqui (paleta, tipografia) como insumo pra escolher o mundo visual, mas decide a arquitetura de scroll (gramatica de pagina, jornada, variedade de efeito) por conta propria.
 
@@ -76,9 +78,9 @@ Quando o pedido é **revisar, avaliar ou corrigir** uma interface que já existe
 
 ## Direção Estética — Aesthetic Anchors
 
-Antes de qualquer wireframe ou token, escolher **uma** âncora estética e comprometer com ela. Interface sem direção vira média genérica — o padrão "SaaS azul com Inter". A âncora orienta paleta, tipografia, textura, densidade, ritmo visual e até a complexidade da implementação. Misturar âncoras dilui o resultado; escolher uma e executar com precisão diferencia.
+Antes de detalhar wireframes ou tokens, defina uma direção coerente com produto, tarefa, marca e conteúdo. A direção orienta paleta, tipografia, textura, densidade e movimento. Use uma âncora ou combine referências quando isso fizer sentido; nenhuma fonte ou cor isolada determina se a interface é genérica.
 
-Âncoras disponíveis (escolher 1):
+Exemplos de âncoras, não uma lista obrigatória:
 
 - **Brutally minimal** — preto/branco/cinza, tipografia neutra precisa (Helvetica, Söhne, Aktiv), espaço em branco generoso, zero ornamento
 - **Maximalist chaos** — múltiplas cores saturadas, sobreposições, layers, animações densas, tipografia mista e expressiva
@@ -93,8 +95,8 @@ Antes de qualquer wireframe ou token, escolher **uma** âncora estética e compr
 - **Industrial/utilitarian** — monoespaçadas técnicas (JetBrains Mono, IBM Plex Mono), tabelas de dados, grids visíveis, paletas funcionais (verde terminal, âmbar)
 
 **Regra de complexidade casada com visão:**
-- Maximalist/editorial/art deco exigem implementação elaborada (layers, custom shaders, animações orquestradas) — código simples nessas âncoras parece preguiçoso
-- Brutally minimal/refined exigem precisão obsessiva em espaçamento, tipografia e timing — código complicado nessas âncoras parece poluído
+- Uma direção expressiva pode precisar de composição, mídia ou movimento mais elaborados; use apenas o que contribuir para a tarefa e funcionar no ambiente.
+- Uma direção contida depende de precisão em hierarquia, espaçamento, tipografia e estados, sem exigir ausência de personalidade.
 
 **Reforço de atmosfera:** uma vez escolhida a âncora, considerar gradient meshes, noise/grain overlays, padrões geométricos, transparências em camadas, sombras dramáticas, cursors customizados — desde que alinhados à âncora (não como ornamento solto).
 
@@ -110,29 +112,9 @@ Registrar os 3 valores escolhidos (com justificativa de 1 frase cada) no handoff
 
 **Validar a direção antes de detalhar:** resumir público, tarefa principal, paleta, tipografia, composição e princípios da tela; conferir cada escolha contra o conteúdo real do produto. Na hero, escolher a forma que melhor mostra o assunto (copy, imagem, demonstração ou interação), sem assumir headline centralizada com estatísticas como padrão. Para páginas web, derivar as seções do trabalho do visitante e variar a composição conforme o material e a decisão de cada trecho; não repetir a mesma sequência de hero, benefícios, depoimentos e CTA em páginas vizinhas sem justificativa. Depois da primeira implementação visual ou protótipo, e antes de finalizar, comparar a proposta com o brief e revisar o primeiro screenshot: se a composição servir igualmente a qualquer produto da categoria, ou se os adornos não explicarem hierarquia ou conteúdo, ajustar a direção e remover o que sobrou. O checklist de construção e crítica está em `references/audit-framework.md`; esta etapa é inspirada e curada da skill [`anthropics/skills/frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design).
 
-**Anti-padrões a evitar (independente da âncora):**
+**Sinais para investigar, não proibições:** fontes, gradientes, sombras, raios, cards, ícones e composições repetidas podem servir ao produto ou parecer arbitrários. Avalie função, conjunto, marca, leitura e acessibilidade antes de alterá-los. Siga a voz e as regras editoriais aplicáveis à copy.
 
-- Fonts genéricas sem justificativa: Arial, Inter, Roboto, Space Grotesk, system-ui default
-- Gradiente roxo-para-rosa em fundo branco (clichê "AI SaaS 2023")
-- Paleta indigo-500/violet-500 default do Tailwind sem customização
-- Sombras `shadow-lg` genéricas sem direção de luz definida
-- Border-radius `rounded-2xl` em tudo sem razão estética
-- "Bento grid" como solução padrão para qualquer landing
-- Hero com headline + subhead + 2 CTAs centralizado sem identidade
-- Em-dash (—) como recurso estilístico em copy de interface (headline, CTA, microcopy) — tell reconhecível de texto gerado por IA; usar ponto, vírgula ou quebrar em duas frases
-
-**Anti-padrões por indústria/vertical:**
-
-Quando o projeto se encaixa claramente em uma destas verticais, aplicar também as restrições específicas — além dos anti-padrões gerais acima:
-
-| Vertical | Paleta banida | Tipografia a evitar | Anti-padrão específico |
-| --- | --- | --- | --- |
-| **Banking/fintech tradicional** | Gradiente roxo-rosa, "AI purple" genérico | Sans geométrica sem peso (sinaliza informalidade) | Dashboards com excesso de cor — dados financeiros pedem paleta contida e hierarquia por peso tipográfico, não por cor |
-| **Fintech consumer/neobank** | Verde escuro corporativo tradicional (sinaliza banco legado) | Serif (sinaliza "tradicional demais" pro público) | Copiar 1:1 o layout de app bancário legado — a expectativa do segmento é mobile-first, não desktop-first adaptado |
-| **Saúde/wellness** | Azul clínico frio isolado sem calor (sinaliza hospital impessoal) | Tipografia condensada/técnica como corpo de texto | Ícones médicos genéricos de stock (cruz vermelha, estetoscópio) como atalho visual |
-| **E-commerce** | — (paleta é dirigida pela marca do produto, não pela vertical) | Display font pesada em preço/CTA de compra (reduz legibilidade em decisão rápida) | Grid de produto sem hierarquia de destaque — tudo do mesmo tamanho força o usuário a escolher sem orientação |
-| **SaaS B2B (operacional/dashboard)** | Paleta vibrante multi-cor sem função (cor deve significar estado, não decorar) | Display expressivo em dados tabulares | Onboarding com tour de 10 passos antes de deixar o usuário agir — fricção que a persona B2B não tolera |
-| **Educação/e-learning** | Paleta infantilizada em produto para adulto (erro comum em upskilling B2C) | Tipografia lúdica quando o público é profissional | Gamificação genérica (barra de XP, badges) sem conexão com o resultado real de aprendizagem |
+**Perguntas por contexto:** em finanças, mantenha valores, unidades e ações claros; em saúde, não sugira segurança ou resultados sem evidência; em comércio, preserve comparação e decisão de compra; em dashboards, mantenha densidade útil; em educação, relacione motivação e feedback ao aprendizado. Paleta e tipografia pertencem à identidade e às necessidades reais de cada produto, não a uma lista de cores proibidas por setor.
 
 ## Adotar um Design System Existente
 
@@ -184,7 +166,7 @@ python skills/02-ui-ux-design/scripts/design_search.py "useEffect cleanup" --sta
 
 ## Derivar a Paleta — Não Copiar a Padrão
 
-O azul `#3b82f6` do bloco abaixo é **placeholder**, não default. Paleta herdada sem decisão é a marca registrada de interface genérica — junto com Inter e `border-radius: 8px`. A paleta se deriva da âncora estética, nesta ordem:
+O azul `#3b82f6` do bloco abaixo é um **placeholder**. Escolha a paleta a partir da marca, da tarefa e das superfícies reais; uma fonte ou raio isolado não define a identidade do produto:
 
 1. **Uma cor de marca** (hue primário). Vem do produto, do setor ou da âncora — não do framework. Se o produto já tem marca, ela manda.
 2. **Escolher o esquema** a partir do hue primário:
@@ -196,13 +178,13 @@ O azul `#3b82f6` do bloco abaixo é **placeholder**, não default. Paleta herdad
 | **Complementar** (oposto, ~180°) | primário + oposto **só como acento** | destacar CTA e alertas contra a base | nunca em texto sobre fundo do hue oposto (vibração ótica); nunca em áreas grandes lado a lado |
 | **Tríade** (3 hues a ~120°) | um domina, dois em papel de apoio | marca expressiva, produto lúdico, ilustração | dividir 60/30/10 — três cores em proporção igual não tem foco |
 
-3. **Gerar a escala em OKLCH, não em HSL.** Em HSL, mesma `lightness` em hues diferentes produz cores com brilho percebido diferente — é por isso que amarelo `hsl(50 90% 50%)` parece muito mais claro que azul `hsl(240 90% 50%)`, e a escala fica inconsistente. OKLCH é perceptualmente uniforme: fixar `L` entrega contraste equivalente entre hues. Em CSS moderno: `oklch(0.65 0.15 250)`.
+3. **Considere OKLCH para escalas de cor.** Sua luminosidade perceptual pode facilitar ajustes entre hues, mas valores iguais de `L` não garantem contraste WCAG equivalente. Meça os pares usados, respeite gamut e compatibilidade do projeto; HSL e outros modelos também podem ser adequados.
 4. **Separar cor de marca de cor semântica.** `success`/`warning`/`error`/`info` são canais de significado. Se o primário da marca for vermelho, o `error` precisa de outro sinal (ícone, peso, posição) — senão erro e marca se confundem.
 5. **Validar contraste antes de fechar** — a paleta bonita que reprova em 4.5:1 vai ser remendada depois com cinza aleatório. Rodar `scripts/check-contrast.mjs`; regras em `skills/22-accessibility-specialist/SKILL.md`.
 
-**Regra dos 60/30/10** — 60% neutro dominante (fundo/superfície), 30% secundário (blocos, bordas, estados), 10% acento (CTA, foco, destaque). Acento em mais de ~10% da tela deixa de ser acento.
+**Proporções de cor:** 60/30/10 pode servir como ponto de partida para fundo, secundário e acento; ajuste à identidade, ao conteúdo e à hierarquia real, sem tratar percentuais como requisito.
 
-**Sinais de paleta genérica:** azul-500 do Tailwind sem justificativa; gradiente roxo→rosa como "identidade"; cor de marca aplicada em toda superfície em vez de reservada ao acento; `success` verde / `error` vermelho como única distinção (falha para daltonismo — ver skill 22).
+**Pistas para revisar a paleta:** escolhas sem relação com a marca ou tarefa; cor usada sem hierarquia; e estados diferenciados apenas por cor. Azul, gradiente e proporção de acento não são defeitos isoladamente. Consulte a skill 22 para contraste e distinção de estados.
 
 **RGB é o único modelo relevante aqui.** CMYK só entra se o entregável for impresso (material de marca, embalagem) — nesse caso, cor de tela e cor impressa divergem e a marca precisa dos dois valores especificados.
 
@@ -273,7 +255,7 @@ export const tokens = {
   typography: {
     fontFamily: {
       // CHOOSE ONE that fits the aesthetic anchor — see "Direção Estética" section.
-      // NEVER default to Inter/Roboto/Arial without justification.
+      // Choose or retain fonts for readability, brand and available assets.
       // Examples by anchor: minimal → Helvetica/Söhne; editorial → Fraunces + Inter Tight;
       // retro-futuristic → Eurostile/Orbitron; refined → Didot/Bodoni + Söhne.
       // Pair a distinctive display font with a refined, legible body font.
@@ -526,7 +508,7 @@ Estratégia e estrutura sem checklist formal são o motivo mais comum de retraba
 
 ## Quando precisar de imagem (hero, ilustração, mascote, background)
 
-Não gere prompt direto pra FAL/DALL-E. **Despache a skill 17 (`image-generator`)** com contexto visual coletado nesta etapa:
+Se uma imagem realmente ajudar a tarefa, prefira assets existentes. Quando geração for necessária e autorizada, consulte a skill 17 (`image-generator`) com o contexto visual:
 
 ```
 Contexto: hero image pra landing de [produto]
@@ -536,7 +518,7 @@ Composição esperada: [centro/lateral/full-bleed]
 Referências (se houver): paths de assets existentes no projeto
 ```
 
-Skill 17 aplica a regra default (grok-imagine pra t2i, gemini-25-flash pra edit) — você só precisa passar contexto, ela escolhe model + executa.
+Siga as regras vigentes de custo e autorização da skill 17 e do ambiente. Não gere mídia automaticamente para preencher uma seção ou ilustrar a própria skill.
 
 ## Verificacao — a ancora foi mesmo aplicada?
 
@@ -544,14 +526,10 @@ Declarar a ancora nao garante que ela chegou no codigo. Dois checkers transforma
 
 ```bash
 node scripts/check-design-generic.mjs <path>   # indigo default, system-ui, gradiente AI, preto puro
-node scripts/check-contrast.mjs <path>         # ratio WCAG calculado, nos DOIS temas
+node scripts/check-contrast.mjs <path>         # pares opacos identificáveis; verificar os temas usados
 ```
 
-Ambos falham com exit 1 quando encontram problema (`--warn` so reporta, `--json` para consumo programatico). O hook `design-anchor-guard` roda o primeiro conjunto de regras no momento da escrita e **bloqueia** arquivo visual com sinal de default estatistico.
-
-Se o checker acusa indigo, a ancora nao foi aplicada — foi declarada e esquecida.
-
-**Loop de fechamento:** rodar os dois checkers → se algum falhar (exit 1), corrigir só o token/classe apontado (nao redesenhar a tela) → rodar de novo. Repetir até os dois passarem limpo. Não é aceitável entregar com o checker vermelho e uma nota dizendo "ajustar depois" — "depois" é o Frontend implementando o token errado.
+O primeiro relata pistas para revisão contextual; retorna 0 por padrão e oferece `--strict` para quem quiser tratar sinais como falha. O hook `design-anchor-guard` também só avisa quando padrões coincidem. Um detector limpo não comprova qualidade, e um sinal isolado não invalida a marca. O segundo calcula pares de cores identificáveis e deve ser complementado pela verificação das cores realmente renderizadas e dos estados relevantes.
 
 ## Evidencia de Conclusao
 

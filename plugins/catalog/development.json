@@ -8,6 +8,11 @@
   "trust": "core",
   "policies": ["policies/evals.md", "policies/tool-safety.md"],
   "capabilities": [
+    {"id": "architecture-contracts", "when_any": ["melhorar a arquitetura", "fronteiras de dominio", "estado compartilhado", "invariantes de dominio", "ownership do estado", "contrato de dominio"], "when_none": ["arquitetura visual"], "skills": ["38-architecture-deepener"]},
+    {"id": "replay-and-concurrency", "when_any": ["idempotencia", "reentrega de evento", "retry duplica", "disputa entre escritores", "queda depois do commit"], "skills": ["03-backend-api", "05-qa-testing"]},
+    {"id": "quality-measurements", "when_any": ["crap score", "score crap", "crap por funcao", "complexidade ciclomatica", "duplicacao estrutural"], "skills": ["34-static-analysis", "11-reviewer"]},
+    {"id": "mutation-evidence", "when_any": ["mutation testing", "teste de mutacao", "mutantes sobreviventes", "mutante equivalente"], "skills": ["05-qa-testing"]},
+    {"id": "reconsider-premise", "when_any": ["mesma premissa", "hipotese compartilhada", "duas correcoes falharam"], "skills": ["53-doubt-driven-review", "38-architecture-deepener"]},
     {"id": "app-reference-architecture", "when_any": ["novo app", "app novo", "app do zero", "greenfield", "next.js + tauri", "nextjs e tauri", "next e tauri", "tauri", "apk do zero", "gerar apk", "arquitetura de referencia", "auth dual", "template de saas", "monetizar app mobile", "google play iap", "play billing", "assinatura stripe", "push multi-canal", "web e apk"], "skills": ["60-app-reference-architecture", "03-backend-api"]},
     {"id": "backend-api", "when_any": ["api", "backend", "endpoint", "banco de dados", "database", "webhook"], "skills": ["03-backend-api", "05-qa-testing"]},
     {"id": "frontend-build", "when_any": ["componente", "react", "frontend", "tela", "implementar interface"], "skills": ["04-frontend-integration", "05-qa-testing"]},

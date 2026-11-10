@@ -4,10 +4,10 @@
 
 > 🇧🇷 [Versão em Português](README.pt-BR.md) · 🌎 English version
 
-# Dev Team Kit — 90 Specialist Skills for Coding Agents
+# Dev Team Kit — 91 Specialist Skills for Coding Agents
 
-![Version](https://img.shields.io/badge/version-2.105.0-0f766e)
-![Skills](https://img.shields.io/badge/skills-90-1d4ed8)
+![Version](https://img.shields.io/badge/version-2.110.0-0f766e)
+![Skills](https://img.shields.io/badge/skills-91-1d4ed8)
 ![Plugin](https://img.shields.io/badge/Claude%20Code-plugin-f59e0b)
 ![License](https://img.shields.io/badge/license-Apache--2.0-7c3aed)
 
@@ -16,6 +16,7 @@
 
 ### ✨ What's new
 
+- **v2.110.0** — adds Design Director as the entry point for creating or redesigning apps, sites and landing pages; consolidates UI Facelift, Unslop and contextual design checks. Architecture, backend, TDD and QA now share contract and evidence guides, examples and a local code-quality report. Marketing references cover app discovery, conversion measurement, subscription attribution and experiments.
 - **v2.109.0** — 13 new `references/` distilled from [scenario-labs/skills](https://github.com/scenario-labs/skills) (MIT): image/game-art/3D/video/audio generation knowledge inside skills 17, 36, 67, 74, 84, plus one drive-the-installed-app reference per expert tool — Blender, Maya, ZBrush (skill 68) and Unreal, Unity, Godot, Roblox (skill 67). Each file opens with install detection; no MCP architecture adopted.
 - **v2.105.0** — adds RAG Engineering and strengthens visual critique and resilience in UI Facelift.
 - **v2.104.0** — adds skill 89 (UI Facelift) for broad UX/UI implementation on existing products while preserving behavior and business rules; refines routing and page-design guidance.
@@ -82,7 +83,7 @@ A **QA engineer** that follows the "prove-it" principle: if you say it works, pr
 - **SEO** that optimizes before Google indexes — your site is born findable
 
 ### 🚀 From zero to deploy without hiring 5 freelancers
-Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **81 specialists in total** (85 installed skill directories; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
+Backend, frontend, mobile (Tauri), observability, analytics, accessibility (WCAG), refactoring, release, **canary deployments** (v2.12+), documentation — **91 specialists in total** (IDs 01–92; ID 16 is reserved). Each task goes to the right professional, on the right AI model (Haiku for simple, Sonnet for medium, Opus for architecture) — you don't pay Opus to generate boilerplate.
 
 ### 🔌 Works with everything you already use
 Native **Claude Code** plugin + universal MCP server that runs in **Cursor, Windsurf, Copilot, Gemini CLI** and any MCP-compatible agent. **Zero vendor lock-in.** Switched tools? Your team comes with you.
@@ -94,7 +95,7 @@ No subscription. No trial. No hidden premium tier. Clone it, install it, use it 
 
 ## What It Is
 
-The **Dev Team Kit** is a set of 79 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
+The **Dev Team Kit** is a set of 91 specialized skills that turns any compatible coding agent into a complete development team — with orchestrator, backend, frontend, QA, security, deploy, design, copy, SEO, observability, blog publishing automation and more.
 
 **What you get:**
 
@@ -118,7 +119,7 @@ The kit's architecture maps to the [context engineering hierarchy](https://githu
 
 ### Mode 1 — Global Plugin (Claude Code)
 
-Installs the 90 skills and hooks globally. Works in any project with no extra configuration.
+Installs the 91 skills and hooks globally. Works in any project with no extra configuration.
 
 ```bash
 # Via Claude Code CLI
@@ -158,14 +159,14 @@ The installer ships `setup/` and every kit directory under `.bot/`. Supports non
 - `--no-input` — no prompts, uses defaults
 - `--yes` — accepts everything automatically
 
-In the table below, treat `dev-team-kit` as 38 tools backed by the 90 skills (90 installed skill directories; ID 16 is reserved).
+In the table below, treat `dev-team-kit` as 38 tools backed by the 91 skills (91 installed skill directories; ID 16 is reserved).
 The MCP exposes 38 tools backed by the installed skills.
 
 ### Install Modes Compared
 
 | What gets installed | Global Plugin | /devkit-install-fv | Direct Bash |
 |---|:---:|:---:|:---:|
-| 90 skills | ✅ | ✅ | ✅ |
+| 91 skills | ✅ | ✅ | ✅ |
 | Hooks (lifecycle) | ✅ | ✅ | ✅ |
 | Slash commands | ✅ | ✅ | ✅ |
 | Policies | ❌ | ✅ | ✅ |
@@ -215,7 +216,25 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 
 ---
 
-## The 90 Specialists
+## Updating a global installation
+
+For an existing Claude Code installation:
+
+```bash
+claude plugin marketplace update claude-skills-fv
+claude plugin update dev-team-kit-fv@claude-skills-fv --scope user
+```
+
+With a Codex CLI that provides `plugin marketplace upgrade` and `plugin add`:
+
+```bash
+codex plugin marketplace upgrade claude-skills-fv
+codex plugin add dev-team-kit-fv@claude-skills-fv
+```
+
+Restart the client or open a new session to load the updated catalog. Project-local `.bot/` copies are separate installations; update them in their own repositories when needed.
+
+## The 91 Specialists
 
 ### Management and Coordination
 
@@ -241,7 +260,7 @@ Agents without slash commands drive the guards from the shell: `node scripts/ses
 | 31 | **Session Summary** | consolidates a session summary for clean handoff between long sessions |
 | 32 | **Smart Suggestions** | suggests the next most impactful action based on the project's real state |
 | 33 | **Detective Spec** | reverse-engineers executable specs from legacy code — modules, business rules, flows, retroactive ADRs, zero writes outside `_detective_sdd/` |
-| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — sustains the kit as it grows past 79 specialists |
+| 35 | **Skill Author** | meta-skill to create, edit, eval and optimize the kit's own skills — maintains skill quality and discovery as the kit grows |
 | 38 | **Architecture Deepener** | finds deepening opportunities (deletion test, deep modules) using domain glossary + architecture vocabulary; pairs with skill 23 (Migration & Refactor) for execution |
 | 39 | **Program Router** | decides which `programs/*.yml` pipeline to run from task classification — works alongside the orchestrator (ad-hoc) and the intent-classifier hook (suggestion) |
 | 40 | **Parallel Dispatcher** | fans out N independent slices/reviews to subagents correctly, avoiding the skill-vs-agent trap; scatter-gather with worktree isolation |
@@ -274,17 +293,29 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 
 ### Product and Design
 
+**Creating a landing page or app, or improving an entire product? Start with [Design Director](skills/92-design-director/SKILL.md).** It establishes direction from the product and coordinates the relevant specialists. For an existing product, it applies UI Facelift to preserve routes, integrations and business rules.
+
+| Request | Skill |
+|---|---|
+| Create a landing page, site or app; redesign the whole product | [92 — Design Director](skills/92-design-director/SKILL.md) |
+| Implement a broad UX/UI redesign of an existing product | [89 — UI Facelift](skills/89-ui-facelift/SKILL.md) |
+| Improve generic visuals, product copy or redundant comments | [91 — Unslop](skills/91-unslop/SKILL.md) |
+| Refine spacing, alignment and interaction details | [52 — UI Polish](skills/52-ui-polish/SKILL.md) |
+
+Example request: “Use Design Director to improve this app across its pages on mobile and desktop, preserving its functionality.” An audit request produces findings; an implementation request applies changes within the authorized scope. The workflow covers hierarchy, typography, real content, accessibility, responsive layouts, states and appropriate motion. Its own guides, before/after HTML and screenshots, contrast calculator and local capture tools support verification; a build or screenshot alone does not prove every flow works.
+
 | # | Skill | What it does |
 |---|---|---|
 | 01 | **PO** | writes spec, user stories, acceptance criteria and sets priority |
 | 02 | **UI/UX Designer** | defines layout, token system, responsiveness and usage heuristics |
 | 29 | **Design Intelligence** | researches competitors, captures screenshots, analyzes visual trends and ships a strategic dossier for UI/UX |
+| 92 | **Design Director** | leads creation or redesign of apps, sites and landing pages using the relevant design specialists |
 | 91 | **Unslop** | refines generic AI-looking interfaces while preserving product identity and behavior |
 | 90 | **RAG Engineering** | designs, implements and evaluates retrieval-augmented systems with evidence and access control |
 | 89 | **UI Facelift** | improves an existing app, system or landing across UX and UI while preserving routes, behavior and business rules |
 | 36 | **Web Asset Generator** | favicons (multi-size), PWA icons (incl. maskable), Open Graph and Twitter card images, manifest and meta tag snippets — derived from a logo or brand text |
 | 56 | **Responsive Conversion** | converts desktop-first UI to working mobile, fixes broken layout (why a flex/grid child won't fill 100%, `dvh` vs `vh`, safe area, horizontal scroll), and owns modal/bottom-sheet and destructive-confirmation patterns |
-| 57 | **Mobile UX Foundations** | thumb-zone ergonomics (where navigation may live), dark mode physiology (`#121212`, never pure black), perceived performance (skeleton vs. spinner by duration band), and auth/onboarding/permission UX (passkeys, NIST password rules, permission priming) |
+| 57 | **Mobile UX Foundations** | thumb-zone ergonomics, contextual dark mode, perceived performance, and auth/onboarding/permission UX |
 | 58 | **i18n & Localization** | prepares a product for another language, region or writing direction *before* a translator exists: string externalization, plural via platform API, locale formatters, +30% text expansion, RTL with logical properties, and pseudolocale/RTL as regression tests |
 | 59 | **Closed-Loop Revenue** | closes the chain from ad click to margin: identity (GCLID/UTM/`transaction_id`/CRM), backend as the source of revenue truth, reconciliation with a declared tolerance, break-even ROAS derived from real contribution margin, and offline conversion so lead-gen bidding learns from closed deals rather than submitted forms |
 | 51 | **UX Research** | qualitative discovery — user interview scripts, research-based persona, journey mapping (moments of truth, pain point, opportunity), information architecture (card sort, tree test) and usability testing (SUS score, task success rate) |
@@ -294,6 +325,8 @@ Use `--repo`, `--output`, and `--site` for explicit destinations. Run `node scri
 | 79 | **React useEffect Review** | checklist of when NOT to use `useEffect`, distilled from React's own "You Might Not Need an Effect" doc — decision tree, 9 side-by-side antipatterns (derived state, filtering in Effect, reset-via-Effect, event logic in Effect, Effect chains, notifying a parent, lifting data up, fetch without cleanup, duplicate dev-mode init) and their fixes (`useMemo`, `key` prop, `useSyncExternalStore`, lifting state up, cleanup-safe fetch hook) |
 
 ### Development
+
+**Architecture and test evidence:** [the shared guide](docs/skill-guides/architecture-and-evidence.md) connects domain invariants, trust boundaries, state ownership and failure recovery to backend, TDD, QA and review. It includes [decision examples](skills/38-architecture-deepener/examples/architecture-decisions.md), an [evidence template](templates/architecture-evidence.md) and a [local report tool](scripts/code-quality-report.mjs) that consolidates normalized measurements without running scanners. Missing or stale measurements remain explicit gaps. See [approved fixtures](docs/skill-guides/tdd-approved-fixtures.md) for snapshot review and refactoring safeguards.
 
 | # | Skill | What it does |
 |---|---|---|
@@ -850,13 +883,13 @@ These verify the design rules instead of merely stating them. Point them at the 
 
 ```bash
 node scripts/check-design-generic.mjs src/    # indigo default, system-ui, AI gradient, pure black, 100vh
-node scripts/check-contrast.mjs src/          # WCAG ratio computed, in BOTH themes
-node bench/ab/score-design.mjs <arm-dirs...>  # 0–100 score per arm, to compare across kit versions
+node scripts/check-contrast.mjs src/          # identifiable opaque token pairs; inspect each used theme
+node bench/ab/score-design.mjs <arm-dirs...>  # measured contrast pairs and advisory signals
 ```
 
-Both exit `1` on failure (`--warn` reports only, `--json` for programmatic use). The `design-anchor-guard` hook applies the first set at write time and **blocks** a visual file carrying the statistical-default signature — escape hatch is a `design-anchor: allow` comment in the file.
+The generic-pattern checker reports advisory signals and exits `0` by default; `--strict` makes signals fail and `--json` emits structured output. The `design-anchor-guard` hook offers a nonblocking contextual reminder when several signals co-occur. The contrast checker has its own failure criteria and limitations.
 
-Caveat worth knowing: `check-contrast` reads `#hex` and `rgb()` tokens. Colours declared in `hsl()`, `oklch()` or `var()` are skipped and still need manual verification.
+`check-contrast` evaluates identifiable opaque `#hex` and `rgb()` token pairs using the conservative normal-text threshold. Transparency, `rgba()`, `hsl()`, `oklch()`, `var()` and actual rendered uses need separate verification; a passing static check is not an accessibility audit.
 
 ---
 

@@ -21,7 +21,7 @@ Siga `GLOBAL.md`, `policies/execution.md`, `policies/tool-safety.md`, `policies/
 
 - **Usar:** interface existente com pedido de retirar aparência artificial, diferenciar uma landing ou melhorar a qualidade percebida.
 - **Análise apenas:** entregue diagnóstico quando o pedido for somente analisar; não edite sem indicação de implementação.
-- **Redesign amplo:** `89-ui-facelift` coordena rotas e fluxos; esta skill aprofunda identidade visual quando pertinente.
+- **Criação ou redesign amplo:** `92-design-director` mantém a direção geral; em interfaces existentes `89-ui-facelift` cobre rotas e fluxos. Esta skill aprofunda identidade visual quando pertinente.
 - **Problema localizado:** `52-ui-polish`, `56-responsive-conversion` ou `22-accessibility-specialist`, conforme o caso.
 - **Sem repositório:** uma URL permite observação e, se solicitado, protótipo local. Não afirme que alterou o produto remoto.
 

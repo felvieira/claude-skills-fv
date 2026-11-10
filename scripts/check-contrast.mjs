@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * check-contrast — calcula o contraste real dos tokens de cor, nos DOIS temas.
+ * check-contrast — estima contraste de pares identificáveis de tokens opacos.
  *
  * As skills 02, 22 e 57 declaram "4.5:1 para texto, 3:1 para texto grande e UI".
  * Declarar nao verifica nada. Este script extrai os tokens de cor do CSS e
- * computa o ratio WCAG de cada par texto/superficie — inclusive no tema escuro,
- * que e onde a maioria das paletas falha (passa no claro, quebra no escuro).
+ * computa o ratio de pares texto/superficie encontrados no mesmo bloco.
+ * Nao identifica quais pares sao usados nem prova conformidade da interface.
  *
  * Uso:
  *   node scripts/check-contrast.mjs <arquivo.css...>   # falha (exit 1) abaixo do minimo
@@ -21,7 +21,6 @@ import fs from "fs/promises";
 import path from "path";
 
 const AA_NORMAL = 4.5; // texto corpo
-const AA_LARGE = 3.0;  // >=18pt (ou >=14pt bold), icone, borda de UI
 
 // ---------------------------------------------------------------------------
 // Cor: parsing e luminancia relativa (WCAG 2.x)
@@ -44,6 +43,8 @@ function parseColor(raw) {
     let h = hex[1];
     if (h.length === 3 || h.length === 4) h = [...h].map((c) => c + c).join("");
     if (h.length !== 6 && h.length !== 8) return null;
+    // Transparencia depende da composicao real: nao inventar um fundo.
+    if (h.length === 8 && h.slice(6) !== "ff") return null;
     return [
       parseInt(h.slice(0, 2), 16),
       parseInt(h.slice(2, 4), 16),
@@ -51,17 +52,20 @@ function parseColor(raw) {
     ];
   }
 
-  const rgb = value.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/);
-  if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
+  const rgb = value.match(/^rgb\(\s*(\d+(?:\.\d+)?)(?:\s*,\s*|\s+)(\d+(?:\.\d+)?)(?:\s*,\s*|\s+)(\d+(?:\.\d+)?)\s*\)$/);
+  if (rgb) {
+    const channels = rgb.slice(1).map(Number);
+    return channels.every((channel) => channel >= 0 && channel <= 255) ? channels : null;
+  }
 
-  return null; // hsl/oklch/var() ficam fora deste passe — melhor pular que errar
+  return null; // rgba/transparencia/hsl/oklch/var exigem avaliacao no contexto real
 }
 
 /** Luminancia relativa conforme WCAG 2.x. */
 function luminance([r, g, b]) {
   const [rs, gs, bs] = [r, g, b].map((channel) => {
     const c = channel / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -116,15 +120,17 @@ function extractScopes(css) {
     const body = match[2];
 
     const tokens = [];
+    let skippedTokens = 0;
     const declRe = /(--[\w-]+)\s*:\s*([^;]+);/g;
     let decl;
     while ((decl = declRe.exec(body)) !== null) {
       const name = decl[1];
       const color = parseColor(decl[2]);
       if (color) tokens.push({ name, color, raw: decl[2].trim() });
+      else if (TEXT_HINT.test(name) || SURFACE_HINT.test(name)) skippedTokens++;
     }
 
-    if (tokens.length > 0) scopes.push({ selector, tokens });
+    if (tokens.length > 0 || skippedTokens > 0) scopes.push({ selector, tokens, skippedTokens });
   }
 
   return scopes;
@@ -154,9 +160,9 @@ function analyzeScope(scope, theme, file) {
       }
 
       const ratio = contrastRatio(text.color, surface.color);
-      // Token "muted"/"placeholder" e secundario por design: cobrado no piso de 3:1.
-      const isSecondary = /(muted|placeholder|disabled|subtle|tertiary)/.test(text.name);
-      const required = isSecondary ? AA_LARGE : AA_NORMAL;
+      // O nome do token nao determina tamanho, peso ou se e componente inativo.
+      // Use o piso conservador de texto normal; excecoes dependem do uso real.
+      const required = AA_NORMAL;
 
       results.push({
         file,
@@ -216,6 +222,7 @@ async function main() {
   for (const target of opts.paths) await collectCss(target, files);
 
   const all = [];
+  let skippedTokens = 0;
   for (const file of files) {
     const css = await fs.readFile(file, "utf8");
 
@@ -226,6 +233,7 @@ async function main() {
     while ((m = mediaRe.exec(css)) !== null) darkMediaRanges.push(m.index);
 
     for (const scope of extractScopes(css)) {
+      skippedTokens += scope.skippedTokens;
       const scopeIndex = css.indexOf(scope.selector);
       const inDarkMedia = darkMediaRanges.some((start) => scopeIndex > start && scopeIndex < start + 2000);
       all.push(...analyzeScope(scope, themeOf(scope.selector, inDarkMedia), file));
@@ -235,20 +243,20 @@ async function main() {
   const failures = all.filter((r) => !r.pass);
 
   if (opts.json) {
-    console.log(JSON.stringify({ scanned: files.length, pairs: all.length, failures }, null, 2));
+    console.log(JSON.stringify({ scanned: files.length, pairs: all.length, skippedTokens, failures }, null, 2));
     return failures.length > 0 && !opts.warnOnly ? 1 : 0;
   }
 
   if (all.length === 0) {
     console.log(`Contrast check: nenhum par texto/superficie encontrado em ${files.length} arquivo(s).`);
-    console.log("Tokens em hsl()/oklch()/var() nao sao avaliados neste passe.");
+    console.log(`Tokens de texto/superficie nao interpretados: ${skippedTokens}. Verifique transparencia, hsl(), oklch(), var() e os usos reais.`);
     return 0;
   }
 
   const themes = [...new Set(all.map((r) => r.theme))];
 
   if (failures.length === 0) {
-    console.log(`Contrast check passed (${all.length} pares, temas: ${themes.join(", ")}).`);
+    console.log(`Contrast check: ${all.length} pares estaticos passaram (temas: ${themes.join(", ")}); ${skippedTokens} token(s) nao interpretado(s). Confira os usos reais.`);
     return 0;
   }
 
@@ -257,7 +265,7 @@ async function main() {
     console.log(`FALHA ${f.file} [${f.theme}] ${f.selector}`);
     console.log(`      ${f.text} sobre ${f.surface}: ${f.ratio}:1 (minimo ${f.required}:1)`);
   }
-  console.log(`\n${failures.length} par(es) abaixo do minimo WCAG AA.`);
+  console.log(`\n${failures.length} par(es) abaixo de 4.5:1; ${skippedTokens} token(s) nao interpretado(s). Revise tamanho, uso e excecoes no contexto real.`);
 
   if (!opts.warnOnly) {
     console.log("\nContraste precisa passar nos DOIS temas — passar no claro nao garante o escuro.");

@@ -17,7 +17,7 @@ Validar que contraste é **calculado**, não declarado. As skills 02, 22 e 57 ci
 - erro ganha ícone + texto, não só cor
 
 ## Evidências Mínimas
-- `node scripts/check-contrast.mjs <css>` sai com **exit 0**
+- `node scripts/check-contrast.mjs <css>` identifica pares relevantes; os usos renderizados e tokens nao interpretados sao verificados separadamente
 - relatório cita o ratio de cada par corrigido, não só "ajustado"
 - decisão registrada quando um par fica abaixo de propósito (ex: texto desabilitado), com justificativa
 
@@ -26,10 +26,10 @@ Validar que contraste é **calculado**, não declarado. As skills 02, 22 e 57 ci
 - verifica só o tema claro
 - usa legenda colorida ao lado do gráfico como única forma de distinguir série — exige casar cor com item, exatamente o que o daltônico não consegue
 - baixa o texto para cinza claro sobre branco "por estética" sem checar o ratio
-- trata `--muted`/`--placeholder` como isento — o piso de 3:1 continua valendo
+- trata `--muted`/`--placeholder` como texto grande apenas pelo nome; texto normal exige 4,5:1
 
 ## Casos Limite
-- **tokens em `hsl()`/`oklch()`/`var()`**: o checker pula esses; exigir verificação manual documentada
+- **transparência, `rgba()`, `hsl()`, `oklch()` ou `var()`**: o checker pula esses; exigir verificação manual documentada no contexto renderizado
 - **texto sobre imagem**: contraste depende do pixel real — exige overlay ou faixa sólida
 - **superfície semântica** (`--status-error-bg`): pareia com o texto da mesma família, não com o texto padrão
 - **tema único por decisão** (app dark-only): documentar a escolha; o checker avalia o que existe

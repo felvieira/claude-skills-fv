@@ -2,6 +2,8 @@
 
 Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aqui.
 
+Os aliases `keyword-triggers`, as exclusões `keyword-exclude` e o desempate `keyword-priority` no metadata são lidos pelo detector de gatilhos do kit quando esse hook está registrado. Outros hosts podem ignorar esses campos: a descrição da skill e a descoberta nativa continuam necessárias, e a seleção por modelo depende do host.
+
 ## Decision Tree — Tipo de Task → Skill(s) Sugerida(s)
 
 | Tipo de Task | Caminho Recomendado |
@@ -13,11 +15,11 @@ Este guia é o mapa mental do kit. Quando não souber qual skill usar, comece aq
 | **Dúvida / exploração** | Context Manager (08) → Repo Auditor (18) |
 | **App/binary/APK/ASAR entregue sem fonte** | REA (87) — análise de artefato/runtime com evidência; toolkit externo só quando necessário |
 | **Figura isométrica / diagrama explicativo como máquina** | Anatomy (88) — figuras técnicas ricas interativas em SVG/WebGL/3D como máquinas físicas |
-| **Melhoria de UI** | Design Intelligence (29) → UI/UX (02) → Frontend (04) → QA (05) |
+| **Criar app/site ou melhorar UI inteira** | Design Director (92) coordena; UI Facelift (89) para produto existente e especialistas conforme o problema |
 | **Integração de IA** | AI Integration Architect (25) → Prompt Engineer (26) → Backend (03) |
 | **Documentação** | Documenter (10) → Reviewer (11) |
 | **Auditoria de boas práticas** | `/best` (Reviewer 11 + Security 06 + QA 05) |
-| **Landing page** | Copy (13) → Design Intelligence (29) → UI/UX (02) → Frontend (04) → SEO (14) |
+| **Landing page** | Design Director (92); Copy (13), UI/UX (02), Frontend (04) e SEO (14) quando pertinentes; pesquisa competitiva (29) sob demanda |
 | **Release formal** | Reviewer (11) → Observability (20) → Release Manager (24) → Deploy (07) |
 | **Task autônoma** (sem intervenção, via prompt) | `/auto` — loop completo com circuit breaker no contexto atual |
 | **Task autônoma** (sem intervenção, via subprocess) | `/loop` — `node scripts/auto-loop.mjs "task"` — ralph-identical |

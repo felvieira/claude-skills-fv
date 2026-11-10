@@ -63,11 +63,11 @@ Ferramentas automaticas pegam ~30-40% das violacoes WCAG. As outras exigem mao e
 
 **Perceivable**
 - [ ] **1.1.1** Todo `<img>` com `alt` (decorativa → `alt=""`); icone-botao com label acessivel
-- [ ] **1.4.3** Contraste texto ≥ 4.5:1 (≥ 3:1 para ≥ 24px ou ≥ 19px bold)
+- [ ] **1.4.3** Contraste texto ≥ 4.5:1 (≥ 3:1 para texto grande: ≥ 24px ou aproximadamente ≥ 18,5px bold)
 - [ ] **1.4.11** Contraste de UI nao-texto (borda de input, icone, foco) ≥ 3:1
 - [ ] **1.4.11 (grafico)** Barra, linha e fatia ≥ 3:1 contra o fundo **e** contra a serie vizinha; serie distinguivel sem depender de cor (rotulo direto, padrao de preenchimento, espessura ou marcador diferente) — legenda colorida ao lado do grafico nao resolve para daltonismo
 
-> Contraste de token e **calculavel**, nao opinavel: `node scripts/check-contrast.mjs <css>` computa o ratio de cada par texto/superficie nos **dois** temas e falha (exit 1) abaixo do minimo. Passar no claro nao garante o escuro. Tokens em `hsl()`/`oklch()`/`var()` ficam fora desse passe e exigem verificacao manual documentada.
+> `node scripts/check-contrast.mjs <css>` calcula pares de tokens opacos identificaveis em cada bloco, usando 4,5:1 como piso conservador: o nome do token nao informa tamanho, peso, estado ou uso real. Examine os temas existentes e seus estados renderizados; o resultado nao e auditoria completa. Transparencia, `rgba()`, `hsl()`, `oklch()`, `var()` e pares nao identificados exigem verificacao no contexto real. O contador de tokens ignorados nao detecta todas as limitacoes.
 
 Para duas cores opacas já identificadas na interface, `node skills/91-unslop/scripts/contrast.mjs "#000000" "#ffffff" normal` calcula um par pontual; `large` e `ui` usam limiar 3:1. Ele não resolve transparência, imagem ou gradiente, nem prova conformidade da interface. Consulte `skills/91-unslop/references/evidencia-web.md` para os limites dos testes.
 - [ ] **1.4.4 / 1.4.10** Texto escala a 200% e faz reflow a 320px sem scroll horizontal

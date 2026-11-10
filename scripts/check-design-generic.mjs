@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * check-design-generic — detecta a assinatura do "default estatistico" em UI gerada.
- *
- * O modo de falha mais comum de UI gerada por IA nao e feiura: e ausencia de decisao.
- * O modelo cai na media do treino — indigo, system-ui, card branco sobre cinza, tudo
- * arredondado igual. `rules/frontend/ui-design.md` proibe isso em prosa; este script
- * transforma a proibicao em verificacao.
+ * check-design-generic — localiza padrões para revisão contextual.
+ * O scanner não conhece a marca, o conteúdo ou a interface renderizada e não
+ * determina se uma escolha é um defeito ou se foi gerada por IA.
  *
  * Uso:
- *   node scripts/check-design-generic.mjs <path...>     # falha (exit 1) se achar
- *   node scripts/check-design-generic.mjs --warn <path> # so reporta (exit 0)
+ *   node scripts/check-design-generic.mjs <path...>     # avisos, exit 0
+ *   node scripts/check-design-generic.mjs --strict <path> # exit 1 se houver aviso
+ *   node scripts/check-design-generic.mjs --warn <path> # alias do padrão
  *   node scripts/check-design-generic.mjs --json <path> # saida estruturada
  *
  * Sem path, varre o cwd. Ignora node_modules, dist, build, .next e afins.
@@ -26,86 +24,87 @@ const IGNORED_DIRS = new Set([
 ]);
 
 /**
- * Cada regra descreve UM sinal de "nenhuma decisao estetica foi tomada".
- * `why` explica o problema; `fix` diz o que fazer — mensagem de erro sem saida
- * so gera frustracao.
+ * Cada regra localiza um padrão que pode merecer revisão, nunca um defeito por si só.
  */
 const RULES = [
   {
     id: "indigo-default",
-    severity: "error",
+    severity: "warn",
     // Os dois indigos default do Tailwind, o roxo/violeta vizinho e o azul-500.
     pattern: /#(4f46e5|6366f1|4338ca|818cf8|7c3aed|8b5cf6|3b82f6)\b|\b(indigo|violet)-(400|500|600|700)\b/gi,
-    why: "indigo/violeta default do Tailwind — a cor que a IA escolhe quando nao escolheu nada",
-    fix: "derive o accent da ancora estetica (skill 02). Se voce chegou no indigo, pulou a decisao",
+    why: "cor indigo/violeta encontrada",
+    fix: "confira funcao, identidade e contraste no contexto",
   },
   {
     id: "system-ui-only",
-    severity: "error",
-    // system-ui/-apple-system como fonte declarada, sem par tipografico proprio.
+    severity: "warn",
+    // Localiza declaracao; nao determina se a pilha tipografica e adequada.
     pattern: /font-family:\s*(system-ui|-apple-system|BlinkMacSystemFont)[^;]*;/gi,
-    why: "system-ui como unica fonte — ausencia de par tipografico",
-    fix: "escolha display + body coerentes com a ancora (skill 02). system-ui so como ultimo fallback da pilha",
+    why: "fonte de sistema declarada",
+    fix: "confira legibilidade, idiomas e adequacao ao produto",
   },
   {
     id: "ai-gradient",
-    severity: "error",
+    severity: "warn",
     // O gradiente roxo→rosa que virou cliche de "AI SaaS".
     pattern: /(from-(purple|violet|indigo|fuchsia)-\d{3}\s+to-(pink|rose|fuchsia|purple)-\d{3})|linear-gradient\([^)]*#(8b5cf6|a855f7|d946ef|ec4899)/gi,
-    why: "gradiente roxo-para-rosa — cliche visual de 'AI SaaS'",
-    fix: "se a ancora pede gradiente, derive-o da paleta propria; senao, superficie solida",
+    why: "gradiente roxo-para-rosa encontrado",
+    fix: "avalie sua funcao, identidade e contraste",
   },
   {
     id: "uniform-radius",
     severity: "warn",
-    // Nao ha como saber o raio "certo" sem contexto; o sinal e a repeticao cega.
+    // A contagem apenas indica repeticao para revisao contextual.
     pattern: /\brounded-(lg|xl|2xl)\b/g,
     threshold: 12,
-    why: "mesmo border-radius repetido em tudo — sem hierarquia de superficie",
-    fix: "raio concentrico: externo = interno + padding (skill 52). Nem todo elemento e um card",
+    why: "classes de raio repetidas no arquivo",
+    fix: "verifique se repeticao e hierarquia servem aos componentes",
   },
   {
     id: "directionless-shadow",
     severity: "warn",
     pattern: /\bshadow-(md|lg|xl|2xl)\b/g,
     threshold: 8,
-    why: "shadow default repetido — sombra sem direcao de luz definida",
-    fix: "sombra em camadas com direcao consistente, ou borda (skill 52)",
+    why: "classes de sombra repetidas no arquivo",
+    fix: "confira consistencia e separacao das superficies",
   },
   {
     id: "pure-black-dark",
-    severity: "error",
-    // Preto puro como superficie: halation, smearing OLED, elevacao morta (skill 57).
+    severity: "warn",
+    // Uma superficie preta pode ser intencional e apropriada ao produto.
     pattern: /(background(-color)?|--\w*bg\w*|--\w*surface\w*)\s*:\s*(#000\b|#000000\b|black\b|rgb\(0,\s*0,\s*0\))/gi,
-    why: "preto puro como superficie — causa halation, smearing em OLED e mata elevacao",
-    fix: "use #121212 ou equivalente da ancora; elevacao no escuro e superficie mais clara (skill 57)",
+    why: "preto puro usado como superficie",
+    fix: "verifique leitura, contraste e distincao de camadas no tema",
   },
   {
     id: "raw-hex-sprawl",
     severity: "warn",
-    // Hex solto espalhado no arquivo = paleta ad-hoc, sem escala derivada nem token.
+    // Muitos valores podem indicar oportunidade de tokens, conforme o contexto.
     pattern: /#[0-9a-f]{6}\b/gi,
     threshold: 15,
-    why: "muitos hex crus no mesmo arquivo — paleta ad-hoc em vez de escala derivada",
-    fix: "centralize em tokens e derive a escala do hue de marca em OKLCH (skill 02, 'Derivar a Paleta')",
+    why: "muitas cores hexadecimais no mesmo arquivo",
+    fix: "verifique se tokens compartilhados resolveriam repeticao relevante",
   },
   {
     id: "vh-fullscreen",
     severity: "warn",
-    // 100vh sem dvh na sequencia: corta atras da barra do browser mobile (skill 56).
+    // Localiza 100vh, mesmo quando existe fallback; verificar no navegador.
     pattern: /\b(100vh|h-screen|min-h-screen)\b/g,
-    why: "altura de viewport legada — corta conteudo atras da barra do browser mobile",
-    fix: "use dvh (h-dvh / 100dvh) com 100vh so como fallback anterior (skill 56)",
+    why: "altura de viewport que pode variar em navegadores mobile",
+    fix: "confira o comportamento real e use dvh ou conteudo fluido quando necessario",
   },
 ];
 
 function parseArgs(argv) {
-  const opts = { warnOnly: false, json: false, paths: [] };
+  const opts = { warnOnly: false, strict: false, json: false, paths: [] };
   for (const arg of argv) {
     if (arg === "--warn") opts.warnOnly = true;
+    else if (arg === "--strict") opts.strict = true;
     else if (arg === "--json") opts.json = true;
     else if (!arg.startsWith("--")) opts.paths.push(arg);
+    else throw new Error(`Opcao desconhecida: ${arg}`);
   }
+  if (opts.warnOnly && opts.strict) throw new Error("Use --warn ou --strict, nao ambos.");
   if (opts.paths.length === 0) opts.paths.push(".");
   return opts;
 }
@@ -141,7 +140,7 @@ function lineOf(content, index) {
 
 /**
  * Regra com `threshold` so reporta acima de N ocorrencias no MESMO arquivo —
- * `rounded-lg` uma vez e escolha; trinta vezes e ausencia de hierarquia.
+ * O limiar reduz ruido; repeticao nao comprova falta de hierarquia.
  */
 function scanFile(file, content) {
   const findings = [];
@@ -173,6 +172,12 @@ async function main() {
   const files = [];
   for (const target of opts.paths) await collectFiles(target, files);
 
+  if (files.length === 0) {
+    if (opts.json) console.log(JSON.stringify({ scanned: 0, errors: [], warns: [], problem: "Nenhum arquivo visual encontrado." }, null, 2));
+    else console.error("Nenhum arquivo visual encontrado nos caminhos informados.");
+    return 1;
+  }
+
   const findings = [];
   for (const file of files) {
     const content = await fs.readFile(file, "utf8");
@@ -184,11 +189,11 @@ async function main() {
 
   if (opts.json) {
     console.log(JSON.stringify({ scanned: files.length, errors, warns }, null, 2));
-    return errors.length > 0 && !opts.warnOnly ? 1 : 0;
+    return opts.strict && findings.length > 0 ? 1 : 0;
   }
 
   if (findings.length === 0) {
-    console.log(`Design check passed (${files.length} arquivos, nenhum sinal de default generico).`);
+    console.log(`Nenhum padrao procurado encontrado em ${files.length} arquivo(s); isso nao comprova qualidade visual.`);
     return 0;
   }
 
@@ -207,12 +212,8 @@ async function main() {
 
   console.log(`${errors.length} erro(s), ${warns.length} aviso(s).`);
 
-  if (errors.length > 0 && !opts.warnOnly) {
-    console.log("\nUI generica e ausencia de decisao estetica, nao questao de gosto.");
-    console.log("Rode a skill 02 (ui-ux-design) e escolha UMA ancora antes de estilizar.");
-    return 1;
-  }
-  return 0;
+  console.log("\nAvisos sao pistas; confirme marca, tarefa e interface antes de mudar o design.");
+  return opts.strict && findings.length > 0 ? 1 : 0;
 }
 
 main()

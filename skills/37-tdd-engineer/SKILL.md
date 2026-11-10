@@ -28,87 +28,16 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/quality-gates.m
 
 ## Pattern: Approved Fixtures (v2.5.0+)
 
-> Inspirado em Birgitta Böckeler (Thoughtworks) — _"behaviour harness"_ é o gap mais difícil da indústria. Approved fixtures é uma das poucas técnicas que aumentam confiança em testes AI-gerados o suficiente pra reduzir supervisão. Ver `docs/inspiration/harness-engineering.md`.
+Para saídas complexas e determinísticas, compare a execução com um resultado esperado validado semanticamente. Separe candidato gerado de fixture aprovada; nunca autoaprove o output do próprio código como oráculo. Falta de fixture é setup, não RED comportamental. Use somente quando acrescentar evidência útil.
 
-### Conceito
+Fluxo, ferramentas e referências preservadas em `docs/skill-guides/tdd-approved-fixtures.md`, carregado sob demanda. A skill 05 complementa com mutação e integração.
 
-Em vez de o LLM escrever **asserções**, ele:
-1. Roda a feature com inputs de teste
-2. Captura o output produzido
-3. **Você revisa** o output uma vez e aprova (commit do "fixture")
-4. Testes futuros comparam contra o fixture aprovado
-
-Vantagem: humano revisa **dados** (concretos, fáceis), não **asserções** (abstratas, fáceis de errar). Diferente de snapshot testing comum porque o fixture é **explicitamente aprovado**, não auto-gerado e auto-comparado.
-
-### Quando usar
-
-**Encaixa bem:**
-- Output complexo (relatório financeiro, recomendação ML, formatação)
-- Transformações de dados (parser → AST, pipeline ETL)
-- Renderização (markdown → HTML, JSON → CSV)
-- Email/notification rendering
-
-**Não encaixa:**
-- Comportamento dependente de tempo, random, ambiente externo
-- Side effects (writes, network calls) — use mock/stub
-- Lógica trivial (overhead > ganho)
-
-### Workflow
-
-```
-Round 1 — geração inicial
-1. Descreve behavior: "função gera relatório mensal"
-2. LLM cria teste estrutural:
-   - setup input
-   - chama função
-   - persiste output em fixtures/<feature>.approved.txt
-   - assert: output === readFile(fixture)
-3. LLM roda → falha (fixture não existe)
-4. LLM cria fixture com output atual
-5. PARA — passa pro humano
-
-Round 2 — review humano
-6. Abrir fixtures/<feature>.approved.txt
-7. Verificar se output é semanticamente correto
-8. Aprovar (commit) ou rejeitar (descrita erro)
-
-Round 3 — em diante
-9. Mudanças que alteram output: fixture quebra
-10. LLM mostra diff: "fixture mudou de X pra Y"
-11. Aprovar diff (commit) ou tratar como regressão
-```
-
-### Anti-padrões
-
-- ❌ Auto-aprovar snapshots sem review (vira sticker)
-- ❌ Usar pra lógica trivial (overhead > ganho)
-- ❌ Fixtures gigantes (>1KB) — quebra review
-- ❌ Fixtures binários — usar perceptual hash
-- ❌ Múltiplos asserts no mesmo teste
-
-### Integração
-
-- Skill 05 (QA) sugere approved fixtures pra features candidatas
-- Subagent `test-engineer` usa pattern por padrão pra business logic
-- `/spec` flagga: "output complexo → considere approved fixtures"
-
-### Tools
-
-- **JS/TS:** [`approvals-js`](https://github.com/approvals/approvals.node)
-- **Python:** [`approvaltests`](https://github.com/approvals/ApprovalTests.Python)
-- **Java:** [`approvaltests-java`](https://github.com/approvals/ApprovalTests.Java)
-
-### Referência
-
-- [Approval Tests](https://approvaltests.com/) — site canônico
-- Llewellyn Falco — autor original do approach
-
-**Mau teste** acopla a implementacao: mocka colaboradores internos, testa metodo privado, verifica via DB direto. Sinal de alerta: teste quebra ao refactorar **sem** mudar comportamento. Se renomear funcao interna quebra teste, o teste estava testando implementacao.
+**Mau teste** acopla a implementação: substitui a lógica que deveria exercitar ou inspeciona detalhes privados sem relação com o contrato. Quebrar apenas por renomear uma função interna é sinal desse acoplamento. Verificar o estado persistido pode ser necessário para provar uma invariante de integração; escolha a observação conforme a propriedade testada.
 
 ## Quando Usar
 
 - nova feature com complexidade nao trivial
-- bug fix em codigo critico (TDD garante regressao)
+- bug fix em codigo critico (teste que detecta o defeito antes da correcao)
 - refactor de modulo nao testado (escrever testes pegando o comportamento atual antes de mexer)
 - design de modulo novo onde interface ainda nao esta clara (TDD revela interface boa)
 - equipe nova precisando convencao de testabilidade
@@ -191,7 +120,9 @@ RED:   Escrever teste para o primeiro comportamento → teste falha
 GREEN: Escrever codigo minimo para passar → teste passa
 ```
 
-Esse e o **tracer bullet** — prova que o caminho funciona end-to-end.
+Observe a falha esperada antes da implementação: ela precisa demonstrar o comportamento ausente. Erro de import, ambiente, timeout ou fixture inexistente não é essa demonstração. Em legado, caracterize o contrato atual antes de alterar a estrutura. Quando um teste honesto for impraticável, explique o motivo e escolha outra verificação adequada; não escreva um teste artificial só para produzir vermelho.
+
+Esse é o **tracer bullet** — primeira evidência do comportamento no nível testado. Só descreva o caminho como end-to-end quando a execução realmente atravessar as integrações correspondentes.
 
 ### Fase 3 — Loop Incremental
 
@@ -220,7 +151,9 @@ Apos todos os testes passarem, procurar oportunidades de refactor:
 
 **Nunca refactore enquanto RED.** Chegue ao GREEN primeiro.
 
-**Se um refactor quebrar um teste que passava:** o refactor mudou comportamento observável, não só estrutura interna — reverter o passo de refactor (não ajustar o teste pra passar de novo). Um teste bem escrito sobrevive a refactor por definição (checklist abaixo); teste quebrado por refactor é sinal de que o refactor extrapolou escopo ou o teste testava implementação, não comportamento.
+**Se um refactor quebrar um teste que passava:** investigue regressão, alteração autorizada de contrato, teste acoplado à implementação ou falha de ambiente. Corrija ou reverta uma regressão; ajuste um teste acoplado somente com evidência de que o contrato foi preservado. Não atualize expectativas apenas para obter verde. Uma mudança deliberada da interface pública exige testes e consumidores compatíveis com o contrato novo.
+
+Para contratos de domínio, parsing nas fronteiras, repetição de efeitos e uso contextual de métricas, consulte `docs/skill-guides/architecture-and-evidence.md`. Teste a interface pública e o mecanismo real quando a propriedade depender de banco, fila ou concorrência.
 
 ## Checklist Por Ciclo
 

@@ -101,7 +101,7 @@ Usar `templates/review.md` e `templates/rejection.md` como formatos padrao. So c
 ☐ Nenhum console.log no código
 ☐ Nenhum any no TypeScript
 ☐ Imports organizados (external → internal → relative)
-☐ Sem código duplicado (DRY)
+☐ Duplicações avaliadas pelo significado e motivos para mudar; extrações preservam contratos
 ☐ Princípios SOLID respeitados
 ☐ Sem variáveis não utilizadas
 ☐ Sem funções não utilizadas
@@ -115,11 +115,20 @@ Ao revisar comentários, preserve restrições, contratos, segurança, licenças
 ```
 ☐ Testes unitários passando
 ☐ Testes E2E passando
-☐ Cobertura >= 80%
+☐ Cobertura e escopo exigidos pelo projeto atendidos, com medições disponíveis e atuais
 ☐ Nenhum teste flaky
 ☐ Critérios de aceitação do PO cobertos por testes
 ☐ CI green (todos os testes passam no pipeline)
 ```
+
+### Arquitetura e validade das evidências
+
+- Conferir invariantes, fronteiras de confiança, posse da escrita e comportamento sob repetição/queda quando o delta os afetar. Uma asserção de concorrência precisa exercitar o mecanismo que coordena os escritores.
+- Confirmar que métricas pertencem à função, revisão e método declarados. Resultado ausente, antigo ou falho não é sucesso nem medição de zero.
+- Usar complexidade/CRAP e similaridade para investigar; bloquear somente conforme risco ou critério explícito do projeto. Dividir funções para baixar o score não comprova melhoria.
+- Em mutação, conferir baseline, denominador e triagem de equivalentes, inválidos, timeout e infraestrutura. Uma taxa alta não resolve itens fora do escopo ou não executados.
+
+Consulte `docs/skill-guides/architecture-and-evidence.md`. Se receber saída de `scripts/code-quality-report.mjs`, examine os artefatos reais: `evidenceValidation: declared-only` significa que o script apenas consolidou as declarações da entrada. Justifique itens não aplicáveis ou indisponíveis; a lacuna impede aprovação quando compromete um critério necessário, não apenas porque uma métrica opcional falta.
 
 ### Segurança
 

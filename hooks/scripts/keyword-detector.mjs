@@ -6,6 +6,8 @@ import {
 import { join } from "path";
 import { readHookConfig, resolveBotPath, isHookDisabled } from "./utils.mjs";
 import { parseFrontmatter, gitSnapshot, filesChangedSince } from "./memory-lib.mjs";
+import { matchesTrigger, normalizeTrigger } from "../../scripts/lib/trigger-match.mjs";
+import { extractTriggers } from "../../scripts/lib/skill-triggers.mjs";
 
 const LEARNED_STATES = new Set(["accepted", "rejected", "superseded", "stale"]);
 // Bonus de ranking (so desempata, nunca passa por cima de relevancia/score):
@@ -31,34 +33,40 @@ const INFORMATIONAL_PATTERNS = [
 ];
 
 function isInformational(text, keyword, windowSize = 80) {
-  const idx = text.toLowerCase().indexOf(keyword.toLowerCase());
+  const normalized = normalizeTrigger(text);
+  const idx = normalized.indexOf(normalizeTrigger(keyword));
   if (idx === -1) return false;
   const start = Math.max(0, idx - windowSize);
-  const end = Math.min(text.length, idx + keyword.length + windowSize);
-  const window = text.slice(start, end);
+  const end = Math.min(normalized.length, idx + keyword.length + windowSize);
+  const window = normalized.slice(start, end);
   return INFORMATIONAL_PATTERNS.some((p) => p.test(window));
 }
 
 function loadSkillTriggers() {
   const skills = [];
-  const skillsDir = existsSync(resolveBotPath("skills"))
-    ? resolveBotPath("skills")
-    : "skills";
-  if (!existsSync(skillsDir)) return skills;
+  const candidates = [resolveBotPath("skills"), process.env.CLAUDE_PLUGIN_ROOT && join(process.env.CLAUDE_PLUGIN_ROOT, "skills"), "skills"];
+  const seen = new Set();
 
-  for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
-    const skillFile = join(skillsDir, entry.name, "SKILL.md");
-    if (!existsSync(skillFile)) continue;
-    try {
-      const content = readFileSync(skillFile, "utf-8");
-      const triggerMatch = content.match(/Trigger em:\s*"([^"]+)"/);
-      if (!triggerMatch) continue;
-      const triggers = triggerMatch[1].split(",").map((t) => t.trim().toLowerCase());
-      const nameMatch = content.match(/^name:\s*(.+)$/m);
-      const name = nameMatch ? nameMatch[1].trim() : entry.name;
-      skills.push({ id: entry.name, name, triggers });
-    } catch {}
+  for (const skillsDir of candidates.filter((dir) => dir && existsSync(dir))) {
+    for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory() || seen.has(entry.name)) continue;
+      const skillFile = join(skillsDir, entry.name, "SKILL.md");
+      if (!existsSync(skillFile)) continue;
+      try {
+        const content = readFileSync(skillFile, "utf-8");
+        const frontmatter = content.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---/)?.[1] || "";
+        const aliases = (frontmatter.match(/^\s+keyword-triggers:\s*"([^"]+)"/m)?.[1] || "")
+          .split("|").map((value) => value.trim()).filter(Boolean);
+        const triggers = [...new Set([...extractTriggers(content), ...aliases])];
+        if (triggers.length === 0) continue;
+        // Priority only breaks ties in specificity; most skills need no metadata.
+        const priority = Number(frontmatter.match(/^\s+keyword-priority:\s*["']?(\d+)/m)?.[1] || 0);
+        const exclusions = (frontmatter.match(/^\s+keyword-exclude:\s*"([^"]+)"/m)?.[1] || "")
+          .split("|").map((value) => value.trim()).filter(Boolean);
+        skills.push({ id: entry.name, triggers, priority, exclusions });
+        seen.add(entry.name);
+      } catch {}
+    }
   }
   return skills;
 }
@@ -369,28 +377,35 @@ process.stdin.on("end", () => {
 
   // Perfil "so memoria" (agentes que nao falam o vocabulario do kit): sem gatilhos de skill.
   const skills = process.env.DEVKIT_LEARNED_ONLY === "1" ? [] : loadSkillTriggers();
-  for (const skill of skills) {
-    const matched = skill.triggers.some((trigger) => {
-      if (!clean.toLowerCase().includes(trigger)) return false;
-      return !isInformational(clean, trigger, infoWindow);
-    });
-    if (!matched) continue;
+  const clauses = clean.split(/[.;\n]| e (?=\w)/i).map((clause) => clause.trim()).filter(Boolean);
+  const matches = [];
+  for (const skill of skills) for (const clause of clauses) {
+    if (skill.exclusions.some((phrase) => matchesTrigger(clause, phrase))) continue;
+    for (const trigger of skill.triggers) {
+      if (matchesTrigger(clause, trigger) && !isInformational(clean, trigger, infoWindow)) {
+        matches.push({ skill, trigger });
+      }
+    }
+  }
+  matches.sort((a, b) => b.trigger.split(/\s+/).length - a.trigger.split(/\s+/).length ||
+    b.trigger.length - a.trigger.length || b.skill.priority - a.skill.priority || a.skill.id.localeCompare(b.skill.id));
+  if (matches.length > 0) {
+    const { skill, trigger } = matches[0];
     additionalContextParts.push(
       [
         `[keyword-detector] 🎯 Skill matched: ${skill.id}`,
         ``,
-        `Where: trigger="${skill.name}" found in the user prompt (non-informational context)`,
+        `Where: trigger="${trigger}" found in the user prompt (non-informational context)`,
         ``,
         `Why this matters: skill ${skill.id} encapsulates the playbook for this kind of task. Using it ensures the kit's conventions are followed instead of improvising.`,
         ``,
-        `How to use: invoke via the Skill tool with name "${skill.id}". The skill loads its own SKILL.md and instructions automatically — you don't need to read it manually.`,
+        `How to use: use the host's skill discovery or read skills/${skill.id}/SKILL.md from the installed kit.`,
         ``,
         `Skip if: the prompt is informational ("explain X", "what is Y") rather than a task request.`,
         ``,
         `References: skills/${skill.id}/SKILL.md, policies/self-correcting-sensors.md`,
       ].join("\n")
     );
-    break;
   }
 
   session.injected = injectedThisSession;

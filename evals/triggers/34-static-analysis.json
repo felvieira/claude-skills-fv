@@ -10,13 +10,17 @@
     "pre-deploy security scan obrigatório",
     "OWASP scan pra checar top 10",
     "CVE check nas dependências do projeto",
-    "auditoria automatizada antes da release"
+    "auditoria automatizada antes da release",
+    "calcular CRAP score por função com cobertura disponível",
+    "analisar complexidade ciclomática das funções alteradas",
+    "investigar duplicação estrutural entre validadores"
   ],
   "shouldnt_trigger": [
     "criar componente React com Zustand",
     "definir tokens visuais do design system",
     "escrever copy nova pra landing",
     "tirar print da home pra blog",
-    "gerar favicon a partir do logo"
+    "gerar favicon a partir do logo",
+    "this landing looks like crap"
   ]
 }

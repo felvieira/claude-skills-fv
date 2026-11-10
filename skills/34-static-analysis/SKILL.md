@@ -1,11 +1,9 @@
 ---
 name: static-analysis
 description: |
-  Skill de scan automatizado de codigo para vulnerabilidades, bugs e code smells via Semgrep e CodeQL.
-  Use antes de toda release, em PRs grandes, ou quando suspeitar de classe de bug recorrente.
-  Trigger em: "semgrep", "codeql", "static analysis", "scan de seguranca", "SAST", "varredura",
-  "pre-deploy security", "OWASP scan", "CVE check", "auditoria automatizada".
-allowed-tools: Read, Grep, Glob, Bash(semgrep *), Bash(codeql *), Bash(npx *), Bash(pip *)
+  Analisa vulnerabilidades, bugs e sinais de manutencao com evidencias.
+  Trigger em: "semgrep", "codeql", "static analysis", "scan de seguranca", "SAST", "varredura", "pre-deploy security", "OWASP scan", "CVE check", "auditoria automatizada", "CRAP score", "complexidade ciclomática", "duplicação estrutural".
+allowed-tools: Read, Grep, Glob, Bash(semgrep *), Bash(codeql *), Bash(npx *), Bash(pip *), Bash(node scripts/code-quality-report.mjs *)
 metadata:
   argument-hint: "[--tool=semgrep|codeql|both] [--ruleset=p/owasp-top-ten] [--lang=js,py,go]"
 ---
@@ -20,6 +18,14 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/tool-safety.md`
 
 Consultar `docs/skill-guides/static-analysis.md` para rulesets avancados, custom rules e integracao em CI.
 
+## Evidência de manutenção sob demanda
+
+Complexidade por função, cobertura e duplicação estrutural ajudam a priorizar investigação; não substituem SAST nem comprovam qualidade arquitetural. Reutilize medições disponíveis da mesma revisão e do mesmo escopo. Sem dados confiáveis, registre ausência, falha, incompatibilidade ou resultado antigo; não preencha com zero ou aprovação.
+
+`node scripts/code-quality-report.mjs --input <json> [--json]` consolida dados normalizados e calcula CRAP quando complexidade e cobertura da função estão disponíveis. O script não executa scanners nem valida os artefatos citados. O formato e os limites estão em `docs/skill-guides/architecture-and-evidence.md`; `examples/code-quality-input.json` é uma demonstração sintética.
+
+Classifique similaridades como candidatas antes de propor extração. Confirme que significado, invariantes e motivos para mudar coincidem; justifique duplicações mantidas. Encaminhe decisões de estrutura à skill 38 e qualidade dos testes à skill 05. Limites bloqueantes vêm do projeto; não adote um CRAP ou percentual de similaridade universal.
+
 ## Quando Usar
 
 - pre-release (toda release passa por scan)
@@ -28,12 +34,13 @@ Consultar `docs/skill-guides/static-analysis.md` para rulesets avancados, custom
 - suspeita de classe de bug recorrente (ex: SQL injection, SSRF, prototype pollution)
 - antes de promover modulo para producao
 - auditoria periodica (mensal ou trimestral)
+- investigação de complexidade por função ou candidatos a duplicação, quando solicitada
 
 ## Quando Nao Usar
 
-- bug fix localizado em arquivo conhecido
-- refactor sem mudanca de comportamento
-- prototipagem inicial (onde codigo ainda muda muito)
+- não ampliar bugfix localizado para scan completo sem risco ou pedido que justifique
+- não transformar refactor sem risco de segurança em SAST obrigatório; métricas podem ser analisadas quando pertinentes
+- não impor a bateria completa a uma prototipagem descartável
 
 ## Entradas Esperadas
 

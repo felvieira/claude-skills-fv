@@ -12,42 +12,31 @@ paths:
 ---
 # Frontend UI — aesthetic direction (always-on when touching visual files)
 
-> The single most common failure of AI-generated UI is the *generic default*: indigo/blue accent, `system-ui` font, white card on grey, rounded corners, no point of view. It happens because no aesthetic decision was made — the model fell back to the statistical mean. This rule forces a decision.
+Start with the product, its users, content and tasks. A coherent visual direction should make those specific needs clear and preserve the existing brand and behavior when appropriate.
 
 ## Before writing any CSS or styling a component
 
-1. **Pick exactly ONE aesthetic anchor and commit to it.** Mixing anchors dilutes into the same generic mean. Choose one:
-   - **Brutally minimal** — black/white/grey, precise neutral type (Helvetica, Söhne, Aktiv), generous whitespace, zero ornament
-   - **Editorial** — serif display type, asymmetric layout, strong typographic hierarchy, magazine feel
-   - **Warm / organic** — earthy palette, soft shadows, rounded but not generic, humanist sans
-   - **Technical / data-dense** — monospace accents, tight grid, high information density, terminal-adjacent
-   - **Playful / bold** — saturated color, oversized type, motion, personality
-   - **Refined dark** — true dark (not grey-on-grey), one vivid accent, high contrast, premium feel
-
-2. **Derive tokens from the anchor**, not from defaults:
-   - **Never** default to `#4f46e5` / `#6366f1` indigo. If you reach for indigo, you skipped the decision.
-   - **Never** default to `system-ui` / `-apple-system` alone — choose a typeface that fits the anchor (even a Google Font import is a decision; the system stack is the absence of one).
-   - Define a real palette (bg, surface, border, text, muted, accent, danger) tied to the anchor.
-
-3. **Empty states, loading states, and error states are part of the design** — not afterthoughts. A skeleton over a spinner; an empty state with a clear next action.
-
-4. **Match the user's language.** If the prompt/spec is in Portuguese, the UI copy is in Portuguese. Don't ship English UI for a Portuguese product.
+1. Establish a direction from the brand, task, audience and supplied references. One or more influences can be combined when the result is coherent. Existing product tokens and platform conventions are evidence.
+2. Choose typography, color, spacing, imagery and motion for their role. A common font, color, gradient or component is not a defect by itself. Check the complete composition rather than banning isolated styles.
+3. Design applicable loading, empty, error, success and permission states. Preserve useful information and existing functionality during a redesign.
+4. Match the product's language and use truthful content. Do not invent testimonials, metrics, certifications or working integrations.
+5. Verify responsive behavior, semantics, keyboard access, focus, contrast and reduced motion as applicable. Record what was not tested.
 
 ## Why this exists
 
-A bench of "crie um app completo todo list" across 3 agents produced three near-identical indigo-on-grey UIs with `system-ui` — because none picked an anchor. The fix is not "try harder", it's "decide first". One anchor, executed precisely, beats the average of all of them.
+A generic result often comes from decisions that do not reflect the product. The remedy is to connect visual choices with real content and tasks, not to substitute another fixed palette.
 
-That bench ran once, exposed the problem, and the fix was writing this rule — but nobody re-ran it to prove the rule changed anything. `bench/ab/score-design.mjs` closes that loop: it scores each arm objectively so "did the rule work?" has a number, not an opinion.
+That bench ran once and exposed a repeated composition; it did not prove a universal rule. `bench/ab/score-design.mjs` reports limited contrast measurements and style signals that need visual review.
 
-## Enforced, not just stated
+## Checks and limits
 
-This rule is verified, not only documented:
+Use these tools when applicable:
 
 ```bash
-node scripts/check-design-generic.mjs <path>   # indigo default, system-ui, AI gradient, pure black
-node scripts/check-contrast.mjs <path>         # WCAG ratio computed, in BOTH themes
+node scripts/check-design-generic.mjs <path>   # advisory signals; --strict is opt-in
+node scripts/check-contrast.mjs <path>         # identifiable opaque token pairs; inspect each used theme
 ```
 
-The `design-anchor-guard` hook (PreToolUse) **blocks** a visual file being written with the statistical-default signature. Escape hatch for a genuine false positive: add the comment `design-anchor: allow` to the file. Toggle: `hooks/config.json → design_anchor_guard.enabled=false`.
+The `design-anchor-guard` hook offers a nonblocking reminder when several patterns co-occur. Neither its output nor a clean scan proves visual quality. Contrast must be checked against the actual rendered colors and relevant states.
 
-Deep playbook → skill `02-ui-ux-design` (aesthetic anchors, tokens, accessibility, responsive). Component patterns → skill `04-frontend-integration`.
+Whole product → skill `92-design-director`. Deep playbook → `02-ui-ux-design`; existing product redesign → `89-ui-facelift`; component implementation → `04-frontend-integration`.

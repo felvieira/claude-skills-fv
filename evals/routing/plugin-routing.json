@@ -1,5 +1,88 @@
 [
   {
+    "name": "architecture invariants reach the focused architecture skill",
+    "prompt": "melhorar a arquitetura definindo invariantes de domínio",
+    "plugins": ["development"],
+    "skills": ["38-architecture-deepener"],
+    "exclude_skills": ["92-design-director"]
+  },
+  {
+    "name": "function metrics reach analysis and contextual review",
+    "prompt": "investigar CRAP score e complexidade ciclomática por função",
+    "plugins": ["development"],
+    "skills": ["34-static-analysis", "11-reviewer"]
+  },
+  {
+    "name": "mutation triage does not require a whole product pipeline",
+    "prompt": "investigar mutantes sobreviventes e um mutante equivalente",
+    "plugins": ["development"],
+    "skills": ["05-qa-testing"],
+    "exclude_skills": ["92-design-director", "60-app-reference-architecture"]
+  },
+  {
+    "name": "replay and recovery reach backend and verification",
+    "prompt": "validar idempotência e queda depois do commit",
+    "plugins": ["development"],
+    "skills": ["03-backend-api", "05-qa-testing"]
+  },
+  {
+    "name": "repeated premise failure reaches adversarial investigation",
+    "prompt": "duas correções falharam pela mesma premissa",
+    "plugins": ["development"],
+    "skills": ["53-doubt-driven-review", "38-architecture-deepener"]
+  },
+  {
+    "name": "visual architecture does not imply domain refactoring",
+    "prompt": "melhorar a arquitetura visual da landing",
+    "exclude_skills": ["38-architecture-deepener"]
+  },
+  {
+    "name": "new landing uses the unified design entry",
+    "prompt": "crie uma landing page para apresentar o produto e implemente a interface",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director"]
+  },
+  {
+    "name": "new app uses the unified design entry",
+    "prompt": "quero um app de entregas com telas para acompanhar pedidos",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director"]
+  },
+  {
+    "name": "whole product redesign uses the unified design entry",
+    "prompt": "redesenhar o sistema inteiro preservando as funcionalidades",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director"]
+  },
+  {
+    "name": "explicit facelift keeps the specialist",
+    "prompt": "faça um UI Facelift nesse app",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director", "89-ui-facelift"]
+  },
+  {
+    "name": "redesign request in natural language reaches the unified entry",
+    "prompt": "faça o redesign de um app que já existe",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director"]
+  },
+  {
+    "name": "design work can preserve the backend",
+    "prompt": "crie uma landing sem editar o backend existente",
+    "plugins": ["design-quality"],
+    "skills": ["92-design-director"]
+  },
+  {
+    "name": "backend only does not invoke visual direction",
+    "prompt": "crie um app somente backend sem interface",
+    "exclude_skills": ["92-design-director"]
+  },
+  {
+    "name": "copy only does not invoke whole product creation",
+    "prompt": "crie uma landing: apenas copy para o produto",
+    "exclude_skills": ["92-design-director"]
+  },
+  {
     "name": "unslop routes to interface refinement",
     "prompt": "faça um unslop nesta landing e tire a cara de IA",
     "plugins": ["design-quality"],
@@ -9,7 +92,7 @@
     "name": "landing page combines marketing and design",
     "prompt": "crie a copy e o design de uma landing page para nosso produto",
     "plugins": ["product-marketing", "design-quality"],
-    "skills": ["13-marketing-copy", "02-ui-ux-design"]
+    "skills": ["13-marketing-copy", "02-ui-ux-design", "92-design-director"]
   },
   {
     "name": "seo stays in product marketing",

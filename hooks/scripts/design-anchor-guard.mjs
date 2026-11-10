@@ -3,17 +3,10 @@
 /**
  * design-anchor-guard — PreToolUse.
  *
- * O `pre-build-gate` injeta o checklist de design no prompt, mas nao impede nada:
- * ele e UserPromptSubmit e sempre sai com continue. Este guard fecha a lacuna no
- * momento que importa — quando um arquivo visual esta prestes a ser escrito com a
- * assinatura do default estatistico (indigo, system-ui, gradiente roxo-rosa,
- * preto puro como superficie).
- *
- * Bloqueia (permissionDecision: "deny") e diz o que fazer. Toggle:
- * hooks/config.json -> design_anchor_guard.enabled=false
- *
- * Escopo deliberadamente estreito: so os sinais que sao INEQUIVOCAMENTE ausencia
- * de decisao. Guard que bloqueia demais e desligado, e ai nao protege nada.
+ * Um conjunto de sinais pode indicar uma interface pouco específica. A análise
+ * textual não conhece marca, tarefa ou resultado visual; por isso o hook só
+ * oferece contexto para revisão e nunca bloqueia uma escolha estética.
+ * Toggle: hooks/config.json -> design_anchor_guard.enabled=false.
  */
 
 import { appendFileSync, mkdirSync } from "fs";
@@ -26,25 +19,25 @@ const SIGNALS = [
     id: "indigo-default",
     pattern: /#(4f46e5|6366f1|4338ca)\b|\bbg-indigo-(500|600)\b|\btext-indigo-(500|600)\b/i,
     label: "indigo default do Tailwind (#4f46e5 / indigo-500/600)",
-    fix: "derive o accent da ancora estetica escolhida. Chegar no indigo = a decisao foi pulada",
+    fix: "confira se a cor serve a marca, hierarquia e contraste",
   },
   {
     id: "ai-gradient",
     pattern: /from-(purple|violet|indigo)-\d{3}\s+to-(pink|rose|fuchsia)-\d{3}/i,
-    label: "gradiente roxo-para-rosa (cliche 'AI SaaS')",
-    fix: "se a ancora pede gradiente, derive da paleta propria; senao use superficie solida",
+    label: "gradiente roxo-para-rosa",
+    fix: "avalie a funcao do gradiente e a leitura sobre ele",
   },
   {
     id: "system-ui-only",
     pattern: /font-family:\s*(system-ui|-apple-system)\s*[,;]/i,
-    label: "system-ui como fonte declarada (sem par tipografico)",
-    fix: "escolha display + body coerentes com a ancora; system-ui so no fim da pilha de fallback",
+    label: "system-ui como fonte declarada",
+    fix: "confira legibilidade, idioma e coerencia com a identidade",
   },
   {
     id: "pure-black-surface",
     pattern: /(background(-color)?|--\w*(bg|surface)\w*)\s*:\s*(#000\b|#000000\b|black\b)/i,
     label: "preto puro como superficie",
-    fix: "use #121212 ou equivalente — preto puro causa halation, smearing OLED e mata elevacao (skill 57)",
+    fix: "verifique contraste, leitura e separacao de superficies nos temas usados",
   },
 ];
 
@@ -82,20 +75,18 @@ process.stdin.on("end", () => {
   if (/design-anchor:\s*allow/i.test(write.text)) return allow();
 
   const hits = SIGNALS.filter((s) => s.pattern.test(write.text));
-  if (hits.length === 0) return allow();
+  if (hits.length < 2) return allow();
 
   const reason = [
-    `BLOQUEADO pelo design-anchor-guard: ${hits.length} sinal(is) de UI generica em ${write.path}`,
+    `Revisão contextual: ${hits.length} padrões visuais encontrados em ${write.path}.`,
     ``,
     ...hits.flatMap((h) => [`  - ${h.label}`, `    -> ${h.fix}`]),
     ``,
-    `O modo de falha mais comum de UI gerada por IA nao e feiura, e ausencia de decisao:`,
-    `o modelo cai na media do treino. Escolha UMA ancora estetica (skill 02-ui-ux-design)`,
-    `e derive paleta e tipografia dela antes de estilizar.`,
+    `Padrões isolados ou combinados não provam defeito nem autoria. Confira a tarefa,`,
+    `a identidade e a interface renderizada antes de decidir qualquer mudança.`,
     ``,
     `Verificar o arquivo inteiro: node scripts/check-design-generic.mjs <path>`,
-    `Falso positivo? adicione o comentario "design-anchor: allow" no arquivo.`,
-    `Desligar: hooks/config.json -> design_anchor_guard.enabled=false`,
+    `Para silenciar este aviso no trecho: comentario "design-anchor: allow".`,
   ].join("\n");
 
   try {
@@ -115,8 +106,7 @@ process.stdin.on("end", () => {
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {
       hookEventName: "PreToolUse",
-      permissionDecision: "deny",
-      permissionDecisionReason: reason,
+      additionalContext: reason,
     },
   }));
 });

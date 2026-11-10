@@ -5,11 +5,21 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [2.110.0] - 2026-11-10 — Design Director e arquitetura com evidências
+
+### Adicionado
+- Skill 92 **Design Director**: entrada para criação e redesign de apps, sites e landings, com guias contextuais, exemplos, captura local e avaliações de descoberta.
+- Guia próprio de arquitetura por contratos e evidências, exemplos de domínio/repetição e template de decisão; relatório local `code-quality-report.mjs` para consolidar medições normalizadas sem executar scanners.
 
 ### Alterado
-- Skills 14, 55, 59 e 73: referencias sob demanda para ASO, auditoria de conversoes e campanhas de apps, atribuicao de assinaturas e desenho de experimentos, inspiradas no projeto MIT `coreyhaines31/marketingskills`.
-- Roteamento de marketing reconhece ASO e medicao de campanhas de aplicativos sem substituir as skills existentes.
+- Skills 14, 55, 59 e 73: referências sob demanda para ASO, auditoria de conversões e campanhas de apps, atribuição de assinaturas e desenho de experimentos, inspiradas no projeto MIT `coreyhaines31/marketingskills`.
+- Roteamento de marketing reconhece ASO e medição de campanhas de aplicativos sem substituir as skills existentes.
+- Integra invariantes, fronteiras de confiança, posse do estado, recuperação e revisão de hipóteses nas skills de arquitetura, backend, TDD, QA, análise estática e revisão. Revisa mutação com baseline, escopo/orçamento e triagem explícitos; métricas ausentes/antigas não viram aprovação.
+- Move o fluxo extenso de fixtures aprovadas para guia sob demanda e esclarece a diferença entre setup, falha comportamental, regressão e teste acoplado durante refatoração.
+- Organiza o roteamento das skills de design, torna moodboards opcionais e remove proibições estéticas universais nas orientações afetadas.
+- Corrige a descoberta por hook para ler todos os gatilhos e usar o catálogo do plugin instalado; prioriza a skill consolidada em pedidos amplos quando há empate.
+- Converte sinais estéticos em avisos contextuais, com `--strict` opcional; o benchmark passa a informar apenas a porcentagem dos pares estáticos de contraste identificados, não uma nota de design.
+- Corrige o verificador de contraste para tratar texto secundário com o piso conservador de texto normal e informar tokens não interpretados, sem calcular cores transparentes como opacas.
 
 ## [2.109.0] - 2026-11-04 — Scenario Labs destilado: mídia + expert tools
 
