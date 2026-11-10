@@ -5,6 +5,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Alterado
+- Skills 14, 55, 59 e 73: referencias sob demanda para ASO, auditoria de conversoes e campanhas de apps, atribuicao de assinaturas e desenho de experimentos, inspiradas no projeto MIT `coreyhaines31/marketingskills`.
+- Roteamento de marketing reconhece ASO e medicao de campanhas de aplicativos sem substituir as skills existentes.
+
 ## [2.109.0] - 2026-11-04 — Scenario Labs destilado: mídia + expert tools
 
 ### Adicionado

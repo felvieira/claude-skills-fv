@@ -20,6 +20,7 @@ e backlog de 4 semanas. Não implementa código — entrega spec pronta para han
 Segue `GLOBAL.md`, `policies/source-driven.md`, `policies/handoffs.md` e `policies/evals.md`.
 Toda métrica-alvo citada vem de `references/playbook.md`; não inventar número fora dessas faixas.
 Hipótese sem evidência direta do produto recebe o rótulo `HIPOTESE` — nunca vira fato no relatório.
+Para planejar ou interpretar testes de conversão, consulte `references/experiment-design.md`.
 
 **Fronteira com skills vizinhas:**
 - `01-po-feature-spec` decide **se** cobrar e qual a proposta de valor — esta skill decide **como**

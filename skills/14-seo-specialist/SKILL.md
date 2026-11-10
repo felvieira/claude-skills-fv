@@ -2,6 +2,7 @@
 name: seo-specialist
 description: |
   Audita e melhora SEO tecnico, conteudo e descoberta em busca e IA.
+  Inclui ASO e auditoria de ficha Google Play ou App Store.
   Trigger em: "SEO", "auditoria SEO", "meta tags", "Open Graph metadata", "sitemap", "schema markup", "Core Web Vitals", "performance", "LCP", "INP", "CLS", "ranking", "canonical", "robots.txt", "GEO", "AEO", "Answer Engine", "LLM citation", "AI Overview", "llms.txt", "keyword research", "pesquisa de palavra-chave", "palavra-chave", "keyword", "cauda longa", "long tail", "search intent", "volume de busca", "KEI", "link building", "backlink", "off-page", "guest posting", "autoridade de domínio", "anchor text", "nofollow", "SEO local", "Google Business Profile", "Merchant Center", "hreflang", "SEO ecommerce", "SEO drift", "SEO agentic", "Google-Extended", "FAQPage".
 ---
 
@@ -16,6 +17,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 **Gate:** conteúdo publicado (artigos, meta descriptions, headings) deve passar pelos 29 padrões de `policies/anti-ai-writing.md` antes de finalizar. Priorizar clareza, fontes e autoria verificáveis; não prometer efeito direto sobre ranking.
 
 Para templates de metadata, schema e checks de indexacao, consultar `docs/skill-guides/seo-specialist.md` apenas quando necessario.
+
+Para descoberta e conversao em Google Play ou App Store, consultar `references/app-store-discovery.md`; ASO nao substitui SEO web nem dados da loja.
 
 ## Auditoria completa com claude-seo (opcional)
 

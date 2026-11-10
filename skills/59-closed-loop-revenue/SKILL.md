@@ -20,6 +20,8 @@ Esta skill segue `GLOBAL.md`, `policies/execution.md`, `policies/handoffs.md`, `
 
 Para formulas completas, contrato de evento por tipo de funil e receita de auditoria, consultar `docs/skill-guides/closed-loop-revenue.md` apenas quando necessario.
 
+Para atribuicao entre canais, reconciliacao de assinaturas e limites de inferencia causal, ler `references/attribution-and-subscriptions.md` quando a pergunta exigir.
+
 Fronteira com skills vizinhas:
 - **21-data-analytics** define **o que** trackear no produto (taxonomia de evento, funil de ativacao/retencao) — esta skill cobre a **identidade** e a **reconciliacao com dinheiro**
 - **55-marketing-reporting-analytics** faz setup de GA4/GTM e monta relatorio de campanha — esta skill garante que o dado dentro do relatorio bate com o financeiro

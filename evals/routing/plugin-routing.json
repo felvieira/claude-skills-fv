@@ -234,6 +234,18 @@
     "max_recommendation_count": 1
   },
   {
+    "name": "app conversion tracking routes to measurement and revenue",
+    "prompt": "auditar campanha de app: conversao firebase nao chega no google ads",
+    "plugins": ["product-marketing"],
+    "skills": ["55-marketing-reporting-analytics", "59-closed-loop-revenue", "21-data-analytics"]
+  },
+  {
+    "name": "app store discovery routes to SEO specialist",
+    "prompt": "auditar ASO da ficha da google play",
+    "plugins": ["product-marketing"],
+    "skills": ["14-seo-specialist"]
+  },
+  {
     "name": "completion spend does not route to context budget",
     "prompt": "quanto gastei em tokens nas completions desta sessão",
     "exclude_plugins": ["development", "core-discovery", "design-quality", "product-marketing", "ai-integration", "release-ops"],

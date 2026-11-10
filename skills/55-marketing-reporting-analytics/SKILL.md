@@ -2,6 +2,7 @@
 name: marketing-reporting-analytics
 description: |
   Analisa e reporta desempenho, infraestrutura e metricas de marketing.
+  Cobre conversoes ausentes ou duplicadas, Firebase, campanhas de app e auditoria de lances.
   Trigger em: "relatorio de ads", "relatorio de campanha", "relatorio de performance", "relatorio mensal", "performance report", "Google Ads report", "Google Ads", "GA4", "setup GA4", "GTM", "Google Tag Manager", "Universal Analytics", "auditoria de dados de marketing", "auditar dados de marketing", "data audit", "pixel do Meta", "Meta Ads", "CAC payback", "payback period", "ROI de marketing", "ROI de", "ROAS", "calculadora de ROI", "cost per acquisition", "customer acquisition cost".
 ---
 
@@ -23,6 +24,8 @@ Setup de tracking de terceiro (GA4, GTM, Meta Pixel) e auditoria de dados tocam 
 
 ## Quando Usar
 
+- auditar ou corrigir conversoes ausentes/duplicadas em Google Ads, Firebase, GA4 e outras plataformas; para app, ler `references/conversion-and-app-ads.md`
+- analisar e otimizar campanhas de app sem confundir instalacao, ativacao e assinatura; ler `references/conversion-and-app-ads.md`
 - montar relatorio de performance de campanha (Google Ads, Meta Ads) para stakeholder
 - configurar GA4 e GTM tecnicamente do zero, ou migrar de Universal Analytics
 - auditar a infraestrutura de dados de marketing de um projeto (tags, pixels, atribuicao, warehouse)
