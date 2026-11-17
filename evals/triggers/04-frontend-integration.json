@@ -10,7 +10,10 @@
     "criar hook customizado pra debounce de input de busca",
     "deixar o layout responsivo em mobile com Tailwind",
     "formulário de cadastro com validação client-side",
-    "configurar roteamento dinâmico em /produtos/[slug]"
+    "configurar roteamento dinâmico em /produtos/[slug]",
+    "implementar dialog acessível com a API HTMLDialogElement e fallback",
+    "usar CSS container queries na página e manter suporte aos browsers do projeto",
+    "adicionar transição com View Transition API respeitando prefers-reduced-motion"
   ],
   "shouldnt_trigger": [
     "rodar migration drop coluna deprecated no postgres",

@@ -331,7 +331,7 @@ Example request: “Use Design Director to improve this app across its pages on 
 | # | Skill | What it does |
 |---|---|---|
 | 03 | **Backend Engineer** | REST/GraphQL APIs, contracts, auth, validation, database and integrations |
-| 04 | **Frontend Engineer** | React/Next.js, state, API calls, performance and app experience |
+| 04 | **Frontend Engineer** | React/Next.js, state, API calls, performance, app experience and native web-platform guidance when the host provides it |
 | 12 | **Motion Designer** | animations, transitions, micro-interactions and coherent visual behavior |
 | 15 | **Mobile / Tauri** | optional extension for desktop and mobile apps with Tauri + React Native |
 | 60 | **App Reference Architecture** | blueprint for new apps needing login + payment + push + web app + Android APK from one Next.js + Tauri codebase — dual auth, dual payment (Stripe + Google Play IAP), dual push, static-export build script, Docker/CI-CD, distilled from 3 real production apps |

@@ -614,7 +614,7 @@ Each skill is a specialty. Has frontmatter with `description` (activation trigge
 
 #### Skill 04 — Frontend Engineer
 
-**What it does:** React/Next.js, state, API calls, performance, experience.
+**What it does:** React/Next.js, state, API calls, performance, experience and native web-platform guidance when the host provides it.
 **When to activate:** frontend implementation.
 
 #### Skill 12 — Motion Designer

@@ -2,7 +2,7 @@
 name: frontend-integration
 description: |
   Implementa interfaces e integra o frontend com APIs e estados.
-  Trigger em: "React", "Next.js", "componente", "página", "Zustand", "React Query", "TanStack Query", "skeleton", "loading", "hook", "frontend", "integração", "mobile responsive", "Tailwind", "formulário", "roteamento".
+  Trigger em: "React", "Next.js", "componente", "página", "Zustand", "React Query", "TanStack Query", "skeleton", "loading", "hook", "frontend", "integração", "mobile responsive", "Tailwind", "formulário", "roteamento", "HTML", "CSS", "JavaScript no navegador", "API do browser".
 ---
 
 # Frontend Developer - React/Next.js + Zustand + React Query
@@ -22,6 +22,18 @@ Ao criar ou redesenhar um app, site ou landing de ponta a ponta, `92-design-dire
 Ao alterar mídia ou recursos da página, reserve dimensões e investigue prioridade e scripts conforme o contexto. Identifique o elemento de LCP por medição antes de priorizá-lo e não afirme melhoria de desempenho sem dados; consulte `skills/91-unslop/references/evidencia-web.md` quando aplicável.
 
 Quando a tarefa exigir navegacao real, screenshots ou verificacao visual do app rodando, esta skill pode configurar ou reutilizar `Playwright MCP` localmente.
+
+## Orientação da Plataforma Web
+
+Antes de alterar HTML, CSS ou JavaScript executado no navegador, consulte Modern Web Guidance pelo motor existente, quando disponível:
+
+- **Tandrio:** o Terminal interativo recebe a regra e usa a versão fixada pelo app. Em Edit, Test ou Maestro, solicite `web_guidance_search` e depois `web_guidance_retrieve`; o host executa as consultas.
+- **Ginga/OMP:** use `ginga_web_guidance_search` e `ginga_web_guidance_retrieve`. Se o OMP expuser devices, leia `xd://ginga_web_guidance_search` ou `xd://ginga_web_guidance_retrieve` e envie os argumentos JSON pelo mesmo device. O corpus já vem integrado; não instale o pacote npm.
+- **Outros hosts:** use somente uma fonte aprovada que já esteja disponível. Não instale pacote nem abra acesso de rede apenas para obter essas orientações.
+
+Busque uma capacidade por vez, com 2–5 termos de ação em inglês, sem nome de framework ou projeto; recupere apenas os guias pertinentes. Adapte exemplos à stack e ao suporte de navegadores do projeto, incluindo acessibilidade e fallback. Regras do projeto e decisão explícita do usuário prevalecem. Ignore guias fora do escopo ou incompatíveis. Se usar guias, cite cada ID aplicado e o motivo no resumo final.
+
+Pule tarefas de backend, infraestrutura, scripts, testes e mudanças triviais. Se o recurso estiver desligado ou indisponível, continue sem ele; não alegue consulta que não ocorreu.
 
 ## Quando Usar
 
